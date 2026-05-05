@@ -36,8 +36,8 @@ function resolveConfig(cfg) {
   };
 }
 
-const gameParam  = new URLSearchParams(location.search).get('game') || 'fh';
-const gameConfig = resolveConfig(GAME_CONFIGS[gameParam] ?? fhConfig);
+const gameParam  = new URLSearchParams(location.search).get('game') || 'gh';
+const gameConfig = resolveConfig(GAME_CONFIGS[gameParam] ?? ghConfig);
 
 export const GAME_ID   = gameConfig.id;
 export const GAME_NAME = gameConfig.name;
@@ -45,10 +45,15 @@ export const GAME_NAME = gameConfig.name;
 // ─── Asset path helpers ─────────────────────────────────────────────────────
 
 function urlize(s)    { return s.replace(/ /g, '_').toLowerCase(); }
+function tileUrl(entry, side = '') {
+  const title = entry.title + side;
+  if (entry.game === 'gh2') return title.replace(/ /g, '_');
+  return urlize(title);
+}
 function hyphenize(s) { return s.replace(/ /g, '-').toLowerCase(); }
 
 export const assetPath = {
-  tile       : (entry, side = '') => `images/${entry.game}/tiles/${urlize(entry.title + side)}.png`,
+  tile       : (entry, side = '') => `images/${entry.game}/tiles/${tileUrl(entry, side)}.png`,
   overlay    : (entry, opened)    => {
     if (entry.classOverlay) return `images/common/class_overlays/${entry.img}.png`;
     if (entry.game === 'gh2' && entry.hasOpenClose)
