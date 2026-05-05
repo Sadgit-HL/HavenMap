@@ -73,27 +73,28 @@ const OVERLAY_ROLES = [
 
 const STACK_KIND_PRIORITY = { mercenary: 0, monster: 0, overlay: 1, tile: 2, summon: 3 };
 const SHORTCUTS = [
-  ['Esc', 'Close panels or clear selection'],
   ['A', 'Toggle add panel'],
   ['/', 'Focus add search'],
+  ['Esc', 'Close panels or clear selection'],
+  ['?', 'Open shortcuts'],
+  ['Space+drag', 'Pan board'],
+  ['Wheel', 'Zoom board'],
+  ['0', 'Reset view'],
+  ['H', 'Frame selected hex or object'],
   ['R', 'Rotate selected object'],
   ['L', 'Lock or unlock selected object'],
+  ['Del / Backspace', 'Delete selected object'],
   ['E', 'Normal or elite monster'],
   ['+ / -', 'Adjust current HP'],
   ['[ / ]', 'Cycle stacked objects'],
   ['Shift+[ / ]', 'Move selected object in stack order'],
-  ['G', 'Toggle grid labels'],
-  ['H', 'Frame selected hex or object'],
-  ['0', 'Reset view'],
   ['Ctrl+C', 'Copy selected object'],
   ['Ctrl+V', 'Paste copied object to selected hex'],
-  ['Alt+drag', 'Copy dragged object'],
   ['Ctrl+D', 'Duplicate selected object'],
+  ['Alt+drag', 'Copy dragged object'],
   ['Ctrl+Z', 'Undo'],
   ['Ctrl+Y', 'Redo'],
-  ['Space+drag', 'Pan board'],
-  ['Wheel', 'Zoom board'],
-  ['?', 'Open settings shortcuts'],
+  ['G', 'Toggle grid labels'],
 ];
 
 let copiedObject = null;
