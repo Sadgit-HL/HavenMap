@@ -36,8 +36,8 @@ function resolveConfig(cfg) {
   };
 }
 
-const gameParam  = new URLSearchParams(location.search).get('game') || 'gh';
-const gameConfig = resolveConfig(GAME_CONFIGS[gameParam] ?? ghConfig);
+const gameParam  = new URLSearchParams(location.search).get('game') || 'fh';
+const gameConfig = resolveConfig(GAME_CONFIGS[gameParam] ?? fhConfig);
 
 export const GAME_ID   = gameConfig.id;
 export const GAME_NAME = gameConfig.name;
