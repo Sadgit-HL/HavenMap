@@ -2,13 +2,13 @@ import { state, patch } from './state.js';
 import { ELEMENTS } from './games/common.js';
 
 // 0=inert 1=waning 2=strong — cycle forward on click
-function cycleElement(index) {
+export function cycleElement(index) {
   const els = [...state.elements];
   els[index] = (els[index] + 1) % 3;
   patch({ elements: els });
 }
 
-function endOfRound() {
+export function endOfRound() {
   const els = state.elements.map(v => Math.max(0, v - 1));
   patch({ elements: els });
 }

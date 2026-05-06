@@ -6,6 +6,7 @@ import { initSidebar }                                 from './sidebar.js';
 import { initElements, renderElements }                from './elements.js';
 import { initLevel, renderLevel }                      from './level.js';
 import { initShare }                                   from './share.js';
+import { initMobile }                                  from './mobile.js';
 import { HEX_W, HEX_H, COLS, ROWS }                   from './hex.js';
 import { GAME_NAME }                                   from './data.js';
 import { clearSelection }                              from './uiState.js';
@@ -21,7 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initRender(svgEl);
 
-  const SIDEBAR_W = 280;
+  const isMobileLayout = window.matchMedia('(max-width: 760px)').matches;
+  const SIDEBAR_W = isMobileLayout ? 0 : 280;
 
   // Scale so ~20 columns fill the viewport width (excluding sidebar)
   const viewW = window.innerWidth - SIDEBAR_W;
@@ -44,13 +46,25 @@ document.addEventListener('DOMContentLoaded', () => {
     if (label) label.textContent = Math.round(zoom * 100) + '%';
   }
 
+  function defaultZoomForViewport() {
+    const isMobile = window.matchMedia('(max-width: 760px)').matches;
+    if (!isMobile) return 1;
+    const w = window.innerWidth;
+    if (w <= 360) return 2.6;
+    if (w <= 390) return 2.8;
+    if (w <= 430) return 3.0;
+    if (w <= 560) return 2.6;
+    return 2.2;
+  }
+
   initControls(svgEl, scale, xOffset);
-  applyZoom(1);
+  applyZoom(defaultZoomForViewport());
   initDrag(svgEl);
   initSidebar();
   initElements();
   initLevel();
   initShare();
+  initMobile();
 
   function updateHistoryButtons() {
     if (undoBtn) undoBtn.disabled = !canUndo();

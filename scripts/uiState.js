@@ -10,6 +10,9 @@ export const uiState = {
   addPanelSearch:   '',
   recentAdds:       [],
   condPickerOpen:   false,
+  mobilePanel:      'selection',
+  mobileDetailsOpen:false,
+  mobileMoveMode:   false,
 };
 
 const listeners = [];
@@ -21,6 +24,9 @@ export function selectHex(col, row) {
   uiState.selected     = null;
   uiState.stack        = [];
   uiState.addPanelOpen = false;
+  uiState.mobilePanel  = 'selection';
+  uiState.mobileDetailsOpen = false;
+  uiState.mobileMoveMode = false;
   notify();
 }
 
@@ -29,6 +35,9 @@ export function selectObject(kind, idx, col, row) {
   uiState.selected     = { kind, idx };
   uiState.stack        = [];
   uiState.addPanelOpen = false;
+  uiState.mobilePanel  = 'selection';
+  uiState.mobileDetailsOpen = false;
+  uiState.mobileMoveMode = false;
   notify();
 }
 
@@ -37,6 +46,9 @@ export function showStack(objects, col, row) {
   uiState.selected     = null;
   uiState.stack        = objects;
   uiState.addPanelOpen = false;
+  uiState.mobilePanel  = 'selection';
+  uiState.mobileDetailsOpen = false;
+  uiState.mobileMoveMode = false;
   notify();
 }
 
@@ -45,6 +57,9 @@ export function showStackWithSelection(objects, col, row, kind, idx) {
   uiState.selected     = { kind, idx };
   uiState.stack        = objects;
   uiState.addPanelOpen = false;
+  uiState.mobilePanel  = 'selection';
+  uiState.mobileDetailsOpen = false;
+  uiState.mobileMoveMode = false;
   notify();
 }
 
@@ -64,6 +79,8 @@ export function clearSelection() {
   uiState.selected     = null;
   uiState.stack        = [];
   uiState.addPanelOpen = false;
+  uiState.mobileDetailsOpen = false;
+  uiState.mobileMoveMode = false;
   notify();
 }
 
@@ -73,7 +90,7 @@ export function toggleSection(key) {
   notify();
 }
 
-export function openAddPanel()  { uiState.addPanelOpen = true;  uiState.addPanelTab = 'monsters'; uiState.addPanelSearch = ''; notify(); }
+export function openAddPanel()  { uiState.addPanelOpen = true; uiState.mobileDetailsOpen = false; uiState.addPanelTab = 'monsters'; uiState.addPanelSearch = ''; notify(); }
 export function closeAddPanel() { uiState.addPanelOpen = false; uiState.addPanelSearch = ''; notify(); }
 export function setAddTab(tab)  { uiState.addPanelTab = tab; uiState.addPanelSearch = ''; notify(); }
 export function rememberAdd(kind, id) {
@@ -85,3 +102,13 @@ export function rememberAdd(kind, id) {
 }
 export function toggleCondPicker() { uiState.condPickerOpen = !uiState.condPickerOpen; notify(); }
 export function closeCondPicker()  { uiState.condPickerOpen = false; notify(); }
+export function setMobilePanel(panel) {
+  uiState.mobilePanel = panel;
+  uiState.mobileDetailsOpen = false;
+  uiState.addPanelOpen = false;
+  uiState.addPanelSearch = '';
+  notify();
+}
+export function openMobileDetails()  { uiState.mobileDetailsOpen = true; notify(); }
+export function closeMobileDetails() { uiState.mobileDetailsOpen = false; notify(); }
+export function setMobileMoveMode(active) { uiState.mobileMoveMode = Boolean(active); notify(); }

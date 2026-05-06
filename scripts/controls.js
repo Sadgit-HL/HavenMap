@@ -3,7 +3,7 @@
 
 const ROT_STEP  = 60;    // degrees per rotate click (hex-aligned)
 const ZOOM_MIN  = 0.5;
-const ZOOM_MAX  = 3.0;
+const ZOOM_MAX  = 5.0;
 const ZOOM_STEP = 0.1;
 
 const view = { rot: 0, scale: 1, zoom: 1, panX: 0, panY: 0 };
@@ -57,7 +57,9 @@ export function resetView() {
 export function centerBoardPoint(x, y) {
   if (!svgEl) return;
   const scale = view.scale * view.zoom;
-  const sidebarW = Number(getComputedStyle(document.documentElement).getPropertyValue('--sidebar-w').replace('px', '')) || 280;
+  const sidebarW = window.matchMedia('(max-width: 760px)').matches
+    ? 0
+    : Number(getComputedStyle(document.documentElement).getPropertyValue('--sidebar-w').replace('px', '')) || 280;
   const targetX = (window.innerWidth - sidebarW) / 2;
   const targetY = (window.innerHeight - 64) / 2;
   view.panX = targetX - xOffset - x * scale;

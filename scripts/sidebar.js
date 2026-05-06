@@ -2,6 +2,7 @@ import {
   uiState, subscribeUI,
   toggleSection, openAddPanel, closeAddPanel, setAddTab,
   rememberAdd,
+  closeMobileDetails,
   toggleCondPicker, closeCondPicker,
   deselectObject, selectFromStack,
   selectHex, selectObject, showStack, showStackWithSelection, clearSelection,
@@ -594,6 +595,7 @@ function handleAction(dataset) {
   if (action === 'back')      { deselectObject(); return; }
   if (action === 'open-add')  { openAddPanel(); return; }
   if (action === 'close-add') { closeAddPanel();  return; }
+  if (action === 'close-mobile-details') { closeMobileDetails(); return; }
 
   const sel = uiState.selected;
   if (!sel) return;
@@ -721,7 +723,10 @@ function findAllAt(col, row) {
 function render() {
   const panel = document.getElementById('sidebar-panel');
   const { selected, stack, selectedHex, addPanelOpen } = uiState;
-  document.documentElement.style.setProperty('--sidebar-w', addPanelOpen ? '480px' : '280px');
+  const sidebarW = window.matchMedia('(max-width: 760px)').matches
+    ? '0px'
+    : addPanelOpen ? '480px' : '280px';
+  document.documentElement.style.setProperty('--sidebar-w', sidebarW);
 
   if (!selectedHex && !selected && stack.length === 0) {
     panel.innerHTML = hint('Select a hex') +
@@ -744,6 +749,9 @@ function render() {
     html = `<div class="sp-type">Hex</div><div class="sp-name">${colLabel(col)}${row}</div>`;
   }
 
+  if (uiState.mobileDetailsOpen && !uiState.addPanelOpen) {
+    html = `<button class="sp-panel-back mobile-overlay-close" data-action="close-mobile-details">&#8592; Close</button>` + html;
+  }
   html += `<div class="sp-divider"></div><button class="sp-add-btn" data-action="open-add">+</button>`;
   panel.innerHTML = html;
 }

@@ -1,8 +1,8 @@
 import { pixelToHex, hexCenter, footprintHexes, HEX_W, HEX_H, COLS, ROWS } from './hex.js';
 import { state, patch } from './state.js';
-import { uiState, selectHex, selectObject, showStack, showStackWithSelection } from './uiState.js';
+import { uiState, selectHex, selectObject, showStack, showStackWithSelection, setMobileMoveMode } from './uiState.js';
 import { TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES, SUMMONS, generateStandeeNum } from './data.js';
-import { panBy } from './controls.js';
+import { panBy, setZoom, getZoom } from './controls.js';
 
 const SVG_NS         = 'http://www.w3.org/2000/svg';
 const DRAG_THRESHOLD = 4;
@@ -25,6 +25,9 @@ let highlightEl = null;
 let pointerInBoard = false;
 let spaceHeld = false;
 let panning = null;
+let touchPan = null;
+let pinch = null;
+let touchStart = null;
 
 // Maps kind → state array key.
 const STATE_KEY = {
@@ -53,8 +56,30 @@ export function initDrag(svg) {
   svg.addEventListener('mouseleave', () => { pointerInBoard = false; updatePanCursor(); });
   window.addEventListener('mousemove', onMousemove);
   window.addEventListener('mouseup',   onMouseup);
+  svg.addEventListener('touchstart', onTouchstart, { passive: false });
+  svg.addEventListener('touchmove', onTouchmove, { passive: false });
+  svg.addEventListener('touchend', onTouchend, { passive: false });
+  svg.addEventListener('touchcancel', onTouchend, { passive: false });
   window.addEventListener('keydown', onKeydown);
   window.addEventListener('keyup', onKeyup);
+}
+
+function isMobileTouchLayout() {
+  return window.matchMedia('(max-width: 760px)').matches;
+}
+
+function moveSelectedTo(col, row) {
+  const sel = uiState.selected;
+  if (!sel) return false;
+  const arr = arrForKind(sel.kind);
+  const obj = arr[sel.idx];
+  if (!obj || obj.locked) return false;
+  const nextCol = Math.max(1, Math.min(COLS, col));
+  const nextRow = Math.max(0, Math.min(ROWS, row));
+  patch({ [STATE_KEY[sel.kind]]: arr.map((item, i) => i === sel.idx ? { ...item, x: nextCol, y: nextRow } : item) });
+  setMobileMoveMode(false);
+  selectObject(sel.kind, sel.idx, nextCol, nextRow);
+  return true;
 }
 
 // ─── Coordinate conversion ────────────────────────────────────────────────────
@@ -162,6 +187,12 @@ function onKeyup(e) {
 
 function onMousedown(e) {
   if (e.button !== 0) return;
+  if (uiState.mobileMoveMode && uiState.selected) {
+    const { x, y } = toBoard(e.clientX, e.clientY);
+    const { col, row } = pixelToHex(x, y);
+    if (moveSelectedTo(col, row)) e.preventDefault();
+    return;
+  }
   if (spaceHeld) {
     panning = { clientX: e.clientX, clientY: e.clientY };
     updatePanCursor();
@@ -184,6 +215,7 @@ function onMousedown(e) {
 
 function onMousemove(e) {
   if (panning) {
+    e.preventDefault();
     const dx = e.clientX - panning.clientX;
     const dy = e.clientY - panning.clientY;
     panning = { clientX: e.clientX, clientY: e.clientY };
@@ -211,6 +243,7 @@ function onMousemove(e) {
 
 function onMouseup(e) {
   if (panning) {
+    e.preventDefault();
     panning = null;
     updatePanCursor();
     return;
@@ -253,6 +286,11 @@ function onMouseup(e) {
     hasDragged = false;
     isCopying  = false;
 
+    if (uiState.mobileMoveMode && uiState.selected) {
+      moveSelectedTo(col, row);
+      return;
+    }
+
     if (allObjects.length === 0) {
       selectHex(col, row);
     } else if (allObjects.length === 1) {
@@ -268,5 +306,66 @@ function onMouseup(e) {
       const next    = sorted[nextIdx];
       showStackWithSelection(sorted, col, row, next.kind, next.idx);
     }
+  }
+}
+
+function touchDistance(t0, t1) {
+  return Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
+}
+
+function onTouchstart(e) {
+  if (!isMobileTouchLayout()) return;
+  if (e.target.closest('#mobile-shell, #sidebar-panel, #settings-panel')) return;
+  if (e.touches.length === 1) {
+    const t = e.touches[0];
+    touchPan = { clientX: t.clientX, clientY: t.clientY };
+    touchStart = { clientX: t.clientX, clientY: t.clientY, moved: false };
+    pinch = null;
+  } else if (e.touches.length === 2) {
+    touchPan = null;
+    touchStart = null;
+    pinch = {
+      distance: touchDistance(e.touches[0], e.touches[1]),
+      zoom: getZoom(),
+    };
+    e.preventDefault();
+  }
+}
+
+function onTouchmove(e) {
+  if (!isMobileTouchLayout()) return;
+  if (e.touches.length === 1 && touchPan) {
+    const t = e.touches[0];
+    const dx = t.clientX - touchPan.clientX;
+    const dy = t.clientY - touchPan.clientY;
+    if (touchStart && !touchStart.moved) {
+      const totalDx = t.clientX - touchStart.clientX;
+      const totalDy = t.clientY - touchStart.clientY;
+      touchStart.moved = totalDx * totalDx + totalDy * totalDy >= DRAG_THRESHOLD * DRAG_THRESHOLD;
+    }
+    touchPan = { clientX: t.clientX, clientY: t.clientY };
+    if (touchStart?.moved) {
+      panBy(dx, dy);
+      e.preventDefault();
+    }
+  } else if (e.touches.length === 2 && pinch) {
+    const nextDistance = touchDistance(e.touches[0], e.touches[1]);
+    if (pinch.distance > 0) setZoom(pinch.zoom * (nextDistance / pinch.distance));
+    e.preventDefault();
+  }
+}
+
+function onTouchend(e) {
+  if (!isMobileTouchLayout()) return;
+  if (e.touches.length === 0) {
+    if (touchStart?.moved) e.preventDefault();
+    touchPan = null;
+    touchStart = null;
+    pinch = null;
+  } else if (e.touches.length === 1) {
+    const t = e.touches[0];
+    touchPan = { clientX: t.clientX, clientY: t.clientY };
+    touchStart = { clientX: t.clientX, clientY: t.clientY, moved: false };
+    pinch = null;
   }
 }
