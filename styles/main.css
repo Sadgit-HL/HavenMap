@@ -2024,11 +2024,11 @@ body {
 
   .mobile-stat {
     display: grid;
-    grid-template-columns: auto 24px minmax(20px, auto) 24px;
+    grid-template-columns: auto 30px minmax(20px, auto) 30px;
     align-items: center;
     gap: 4px;
-    min-height: 26px;
-    padding: 2px 5px 2px 7px;
+    min-height: 30px;
+    padding: 2px 6px 2px 8px;
     border: 1px solid rgba(255 255 255 / 0.10);
     border-radius: 6px;
     background: rgba(255 255 255 / 0.04);
@@ -2065,13 +2065,13 @@ body {
   }
 
   .mobile-stat-btn {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     border: 1px solid rgba(255 255 255 / 0.14);
     border-radius: 4px;
     background: rgba(255 255 255 / 0.06);
     color: rgba(255 255 255 / 0.82);
-    font-size: 18px;
+    font-size: 15px;
     line-height: 1;
   }
 
