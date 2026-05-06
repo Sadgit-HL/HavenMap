@@ -8,9 +8,11 @@ import {
   selectHex, selectObject, showStack, showStackWithSelection, clearSelection,
 } from './uiState.js';
 import { state, patch, subscribe } from './state.js';
-import { assetPath, TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES, SUMMONS, CONDITIONS, GAME_ID, GAME_REGISTRY, getMonsterStats, getMercenaryStats, getMonsterCount, generateStandeeNum } from './data.js';
+import { getShareMode, setShareMode, SHARE_MODES } from './share.js';
+import { assetPath, TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES, SUMMONS, CONDITIONS, GAME_ID, GAME_REGISTRY, getMonsterStats, getMonsterCount, generateStandeeNum } from './data.js';
 import { colLabel, footprintHexes, hexCenter } from './hex.js';
 import { centerBoardPoint } from './controls.js';
+import { displayCurrentHp, displayMaxHp } from './hp.js';
 
 // ─── Kind → state key + data table ───────────────────────────────────────────
 
@@ -24,6 +26,18 @@ const KIND_MAP = {
 
 function arrForKind(kind)        { return state[KIND_MAP[kind]?.stateKey] || []; }
 function patchKind(kind, newArr) { patch({ [KIND_MAP[kind].stateKey]: newArr }); }
+
+function hpContextPatch(kind, obj) {
+  if (kind === 'monster') return { _hpLevel: state.CurrentLevel, _hpRole: obj.role || 'normal' };
+  if (kind === 'mercenary') return { _hpLevel: obj.level != null ? Number(obj.level) : 0 };
+  return {};
+}
+
+function maxHpContextPatch(kind, obj) {
+  if (kind === 'monster') return { _maxhpLevel: state.CurrentLevel, _maxhpRole: obj.role || 'normal' };
+  if (kind === 'mercenary') return { _maxhpLevel: obj.level != null ? Number(obj.level) : 0 };
+  return {};
+}
 
 // Role labels shown as the object type in the inspect panel
 const ROLE_LABEL = {
@@ -166,6 +180,15 @@ export function initSidebar() {
       `</button>` +
       `</div>` +
       `<div class="settings-section">` +
+      `<div class="settings-label">Share</div>` +
+      `<label class="sg-select-wrap">` +
+      `<select class="sg-select" id="share-mode-select" title="Select share link type">` +
+      `<option value="${SHARE_MODES.ISGD}"${getShareMode() === SHARE_MODES.ISGD ? ' selected' : ''}>is.gd short URL</option>` +
+      `<option value="${SHARE_MODES.LZ}"${getShareMode() === SHARE_MODES.LZ ? ' selected' : ''}>LZ-string local URL</option>` +
+      `</select>` +
+      `</label>` +
+      `</div>` +
+      `<div class="settings-section">` +
       `<div class="settings-label">Help</div>` +
       `<button class="sg-row sg-help-row" data-action="show-shortcuts">` +
       `<span class="sg-row-label">Keyboard shortcuts</span>` +
@@ -193,6 +216,13 @@ export function initSidebar() {
   });
 
   settingsPanel.addEventListener('change', e => {
+    const shareSelect = e.target.closest('#share-mode-select');
+    if (shareSelect) {
+      setShareMode(shareSelect.value);
+      buildSettingsPanel();
+      return;
+    }
+
     const select = e.target.closest('#game-select');
     if (!select || select.value === GAME_ID) return;
     const hasContent = state.tiles.length || state.monsters.length || state.mercenaries.length || state.overlays.length;
@@ -394,7 +424,12 @@ function editCounter(span) {
       const arr = arrForKind(sel.kind);
       const obj = arr[sel.idx];
       if (obj) {
-        patchKind(sel.kind, arr.map((x, i) => i === sel.idx ? { ...x, [field]: newVal } : x));
+        patchKind(sel.kind, arr.map((x, i) => i === sel.idx ? {
+          ...x,
+          [field]: newVal,
+          ...(field === 'hp' ? hpContextPatch(sel.kind, x) : {}),
+          ...(field === 'maxhp' ? maxHpContextPatch(sel.kind, x) : {}),
+        } : x));
       }
     }
   }
@@ -500,7 +535,14 @@ function toggleSelectedMonsterRole() {
   const ctx = selectedObject();
   if (!ctx || ctx.sel.kind !== 'monster' || ctx.obj.role === 'boss') return false;
   const next = ctx.obj.role === 'elite' ? 'normal' : 'elite';
-  patchKind('monster', ctx.arr.map((x, i) => i === ctx.sel.idx ? { ...x, role: next, _maxhpLevel: undefined, _maxhpRole: undefined } : x));
+  patchKind('monster', ctx.arr.map((x, i) => i === ctx.sel.idx ? {
+    ...x,
+    role: next,
+    _maxhpLevel: undefined,
+    _maxhpRole: undefined,
+    _hpLevel: undefined,
+    _hpRole: undefined,
+  } : x));
   return true;
 }
 
@@ -509,8 +551,8 @@ function adjustSelectedHp(delta) {
   if (!ctx) return false;
   const canTrackHp = ctx.sel.kind === 'mercenary' || ctx.sel.kind === 'summon' || ctx.sel.kind === 'monster' || ctx.obj.hp !== undefined;
   if (!canTrackHp) return false;
-  const hp = Math.max(0, (Number(ctx.obj.hp) || 0) + delta);
-  patchKind(ctx.sel.kind, ctx.arr.map((x, i) => i === ctx.sel.idx ? { ...x, hp } : x));
+  const hp = Math.max(0, displayCurrentHp(ctx.sel.kind, ctx.obj) + delta);
+  patchKind(ctx.sel.kind, ctx.arr.map((x, i) => i === ctx.sel.idx ? { ...x, hp, ...hpContextPatch(ctx.sel.kind, x) } : x));
   return true;
 }
 
@@ -622,17 +664,20 @@ function handleAction(dataset) {
       const nextLevel = currentLevel + delta;
       newVal = nextLevel > 9 ? 1 : nextLevel < 1 ? 9 : nextLevel;
       // When level changes, mark that maxhp needs to be reset
-      patchKind(kind, arr.map((x, i) => i === idx ? { ...x, [field]: newVal, _maxhpLevel: undefined } : x));
+      patchKind(kind, arr.map((x, i) => i === idx ? { ...x, [field]: newVal, _maxhpLevel: undefined, _hpLevel: undefined } : x));
     } else if (field === 'maxhp' && kind === 'mercenary') {
       // Record the level this maxhp was set for
-      newVal = Math.max(0, (Number(obj[field]) || 0) + delta);
+      newVal = Math.max(0, (displayMaxHp(kind, obj) || 0) + delta);
       const currentLevel = Number(obj.level) || 0;
       patchKind(kind, arr.map((x, i) => i === idx ? { ...x, [field]: newVal, _maxhpLevel: currentLevel } : x));
     } else if (field === 'maxhp' && kind === 'monster') {
       // Record the level and role this maxhp was set for
-      newVal = Math.max(0, (Number(obj[field]) || 0) + delta);
+      newVal = Math.max(0, (displayMaxHp(kind, obj) || 0) + delta);
       const currentRole = obj.role || 'normal';
       patchKind(kind, arr.map((x, i) => i === idx ? { ...x, [field]: newVal, _maxhpLevel: state.CurrentLevel, _maxhpRole: currentRole } : x));
+    } else if (field === 'hp' && (kind === 'mercenary' || kind === 'monster')) {
+      newVal = Math.max(0, displayCurrentHp(kind, obj) + delta);
+      patchKind(kind, arr.map((x, i) => i === idx ? { ...x, [field]: newVal, ...hpContextPatch(kind, x) } : x));
     } else {
       // All other fields: clamp to 0 minimum
       newVal = Math.max(0, (Number(obj[field]) || 0) + delta);
@@ -642,7 +687,7 @@ function handleAction(dataset) {
   }
 
   if (action === 'hp-enable') {
-    patchKind(kind, arr.map((x, i) => i === idx ? { ...x, hp: 0, maxhp: 0 } : x));
+    patchKind(kind, arr.map((x, i) => i === idx ? { ...x, hp: 0, maxhp: 0, ...hpContextPatch(kind, x), ...maxHpContextPatch(kind, x) } : x));
     return;
   }
 
@@ -665,7 +710,7 @@ function handleAction(dataset) {
     patchKind(kind, arr.map((x, i) => i === idx ? { ...x, locked: !x.locked } : x));
   } else if (action === 'toggle-role' && kind === 'monster' && obj.role !== 'boss') {
     const next = obj.role === 'normal' ? 'elite' : 'normal';
-    patchKind('monster', arr.map((x, i) => i === idx ? { ...x, role: next, _maxhpLevel: undefined, _maxhpRole: undefined } : x));
+    patchKind('monster', arr.map((x, i) => i === idx ? { ...x, role: next, _maxhpLevel: undefined, _maxhpRole: undefined, _hpLevel: undefined, _hpRole: undefined } : x));
   } else if (action === 'toggle-door' && kind === 'overlay' && obj.role === 'door') {
     patchKind('overlay', arr.map((x, i) => i === idx ? { ...x, opened: !x.opened } : x));
   } else if (action === 'cycle-role' && kind === 'overlay') {
@@ -695,7 +740,7 @@ function placeSomething(kind, id) {
   if (kind === 'tile') {
     patch({ tiles: [...(state.tiles || []), { ...base, side: '' }] });
   } else if (kind === 'mercenary') {
-    patch({ mercenaries: [...(state.mercenaries || []), base] });
+    patch({ mercenaries: [...(state.mercenaries || []), { ...base, level: 1 }] });
   } else if (kind === 'summon') {
     patch({ summons: [...(state.summons || []), base] });
   } else if (kind === 'monster') {
@@ -865,44 +910,17 @@ function objectPanel(kind, idx) {
 function mercenaryStats(obj, kind = 'mercenary') {
   const isMercenary = kind === 'mercenary';
   const isMonster = kind === 'monster';
-  const hp    = Number(obj.hp)    || 0;
+  const hp    = displayCurrentHp(kind, obj);
   const gold  = Number(obj.gold)  || 0;
 
   // Get level-based stats from game config
-  let maxHp = Number(obj.maxhp) || 0;
+  let maxHp = displayMaxHp(kind, obj) || 0;
   let xp    = Number(obj.xp)    || 0;
 
   if (isMonster) {
     const isElite = obj.role === 'elite';
     const levelStats = getMonsterStats(obj.id, state.CurrentLevel, isElite);
-    const currentRole = obj.role || 'normal';
-    const maxhpLevel = obj._maxhpLevel != null ? obj._maxhpLevel : -1;
-    const maxhpRole = obj._maxhpRole != null ? obj._maxhpRole : '';
-    if (state.CurrentLevel !== maxhpLevel || currentRole !== maxhpRole) {
-      // Level or role changed, reset to default
-      if (levelStats.maxHp != null) maxHp = levelStats.maxHp;
-    } else if (obj.maxhp != null) {
-      // Level and role same and maxhp was manually set, use the manual value
-      maxHp = Number(obj.maxhp);
-    } else if (levelStats.maxHp != null) {
-      // Level and role same and maxhp not set, use default
-      maxHp = levelStats.maxHp;
-    }
     if (levelStats.xp != null) xp = levelStats.xp;
-  } else if (isMercenary) {
-    const objLevel = obj.level != null ? Number(obj.level) : 0;
-    const levelStats = getMercenaryStats(obj.id, objLevel);
-    // Reset maxHp to level default if level changed, otherwise use stored maxhp if manually set
-    if (objLevel !== obj._maxhpLevel) {
-      // Level changed, reset to default
-      if (levelStats.maxHp != null) maxHp = levelStats.maxHp;
-    } else if (obj.maxhp != null) {
-      // Level same and maxhp was manually set, use the manual value
-      maxHp = obj.maxhp;
-    } else if (levelStats.maxHp != null) {
-      // Level same and maxhp not set, use default
-      maxHp = levelStats.maxHp;
-    }
   }
   const conds     = Array.isArray(obj.conditions) ? obj.conditions : [];
   const available = CONDITIONS.map(c => c.title).filter(t => !conds.includes(t));

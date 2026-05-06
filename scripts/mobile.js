@@ -5,6 +5,7 @@ import { cycleElement, endOfRound } from './elements.js';
 import { ELEMENTS } from './games/common.js';
 import { TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES, SUMMONS } from './data.js';
 import { colLabel } from './hex.js';
+import { displayCurrentHp } from './hp.js';
 
 const KIND_TABLE = {
   tile: TILES,
@@ -64,7 +65,7 @@ function quickStatsHtml() {
   const { sel, obj } = ctx;
   const canHp = sel.kind === 'mercenary' || sel.kind === 'summon' || sel.kind === 'monster' || obj.hp !== undefined;
   const rows = [];
-  if (canHp) rows.push({ key: 'hp', label: 'HP', value: Number(obj.hp) || 0 });
+  if (canHp) rows.push({ key: 'hp', label: 'HP', value: displayCurrentHp(sel.kind, obj) });
   if (sel.kind === 'mercenary' || sel.kind === 'summon') {
     rows.push({ key: 'xp', label: 'XP', value: Number(obj.xp) || 0 });
     rows.push({ key: 'gold', label: 'Gold', value: Number(obj.gold) || 0 });
@@ -85,8 +86,14 @@ function quickStatsHtml() {
 function adjustQuickStat(field, delta) {
   const ctx = selectedContext();
   if (!ctx) return;
-  const value = Math.max(0, (Number(ctx.obj[field]) || 0) + delta);
-  patch({ [ctx.key]: ctx.arr.map((item, i) => i === ctx.sel.idx ? { ...item, [field]: value } : item) });
+  const base = field === 'hp' ? displayCurrentHp(ctx.sel.kind, ctx.obj) : Number(ctx.obj[field]) || 0;
+  const value = Math.max(0, base + delta);
+  const hpContext = field === 'hp' && ctx.sel.kind === 'monster'
+    ? { _hpLevel: state.CurrentLevel, _hpRole: ctx.obj.role || 'normal' }
+    : field === 'hp' && ctx.sel.kind === 'mercenary'
+      ? { _hpLevel: ctx.obj.level != null ? Number(ctx.obj.level) : 0 }
+      : {};
+  patch({ [ctx.key]: ctx.arr.map((item, i) => i === ctx.sel.idx ? { ...item, [field]: value, ...hpContext } : item) });
 }
 
 function quickActionsHtml() {
@@ -122,7 +129,14 @@ function applyObjectAction(action) {
     const delta = action === 'rotate-cw' ? 60 : -60;
     patch({ [key]: arr.map((item, i) => i === sel.idx ? { ...item, angle: ((Number(item.angle) || 0) + delta + 360) % 360 } : item) });
   } else if (action === 'toggle-role' && sel.kind === 'monster' && obj.role !== 'boss') {
-    patch({ [key]: arr.map((item, i) => i === sel.idx ? { ...item, role: item.role === 'elite' ? 'normal' : 'elite', _maxhpLevel: undefined, _maxhpRole: undefined } : item) });
+    patch({ [key]: arr.map((item, i) => i === sel.idx ? {
+      ...item,
+      role: item.role === 'elite' ? 'normal' : 'elite',
+      _maxhpLevel: undefined,
+      _maxhpRole: undefined,
+      _hpLevel: undefined,
+      _hpRole: undefined,
+    } : item) });
   } else if (action === 'toggle-door' && sel.kind === 'overlay' && obj.role === 'door') {
     patch({ [key]: arr.map((item, i) => i === sel.idx ? { ...item, opened: !item.opened } : item) });
   } else if (action === 'remove') {

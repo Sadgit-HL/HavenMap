@@ -1,9 +1,10 @@
 // SVG rendering engine — reads from state, redraws all layers.
 
 import { hexCenter, imagePos, buildGridPath, colLabel, footprintHexes, COLS, ROWS, HEX_W, HEX_H } from './hex.js';
-import { assetPath, TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES, SUMMONS, getMercenaryStats, getMonsterStats } from './data.js';
+import { assetPath, TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES, SUMMONS } from './data.js';
 import { state } from './state.js';
 import { uiState } from './uiState.js';
+import { displayCurrentHp, displayMaxHp } from './hp.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
@@ -639,25 +640,11 @@ function renderMonsters(monsters) {
     renderRing(layerFigures, col, row, m.role);
     if (state.showObjectLabels) layerFigures.appendChild(svgLabel(colLabel(col) + row, col, row));
 
-    let displayMaxhp = null;
-    const isElite = m.role === 'elite';
-    const currentRole = m.role || 'normal';
-    const levelStats = getMonsterStats(m.id, state.CurrentLevel, isElite);
-    const maxhpLevel = m._maxhpLevel != null ? m._maxhpLevel : -1;
-    const maxhpRole = m._maxhpRole != null ? m._maxhpRole : '';
-    if (state.CurrentLevel !== maxhpLevel || currentRole !== maxhpRole) {
-      // Level or role changed, use default
-      if (levelStats.maxHp != null) displayMaxhp = levelStats.maxHp;
-    } else if (m.maxhp != null) {
-      // Level and role same and maxhp was manually set, use the manual value
-      displayMaxhp = Number(m.maxhp);
-    } else if (levelStats.maxHp != null) {
-      // Level and role same and maxhp not set, use default
-      displayMaxhp = levelStats.maxHp;
-    }
+    const displayMaxhp = displayMaxHp('monster', m);
+    const displayHp = displayCurrentHp('monster', m);
 
     layerFigures.appendChild(svgStatsLabel(
-      Number(m.hp) || 0, null, null, col, row, displayMaxhp, m.standeeNum
+      displayHp, null, null, col, row, displayMaxhp, m.standeeNum
     ));
     const condEl = svgConditions(Array.isArray(m.conditions) ? m.conditions : [], col, row);
     if (condEl) layerFigures.appendChild(condEl);
@@ -681,23 +668,11 @@ function renderMercenaries(mercenaries) {
     layerFigures.appendChild(img);
     if (state.showObjectLabels) layerFigures.appendChild(svgLabel(colLabel(col) + row, col, row));
 
-    // Compute maxhp with same logic as sidebar: reset on level change, persist if manually set at same level
-    let displayMaxhp = null;
-    const objLevel = h.level != null ? Number(h.level) : 0;
-    const levelStats = getMercenaryStats(h.id, objLevel);
-    if (objLevel !== h._maxhpLevel) {
-      // Level changed, use default
-      if (levelStats.maxHp != null) displayMaxhp = levelStats.maxHp;
-    } else if (h.maxhp != null) {
-      // Level same and maxhp was manually set
-      displayMaxhp = Number(h.maxhp);
-    } else if (levelStats.maxHp != null) {
-      // Level same and maxhp not set, use default
-      displayMaxhp = levelStats.maxHp;
-    }
+    const displayMaxhp = displayMaxHp('mercenary', h);
+    const displayHp = displayCurrentHp('mercenary', h);
 
     layerFigures.appendChild(svgStatsLabel(
-      Number(h.hp) || 0, Number(h.xp) || 0, Number(h.gold) || 0, col, row,
+      displayHp, Number(h.xp) || 0, Number(h.gold) || 0, col, row,
       displayMaxhp
     ));
     const condEl = svgConditions(Array.isArray(h.conditions) ? h.conditions : [], col, row);

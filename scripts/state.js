@@ -6,6 +6,7 @@
 //   '4.0.0'        — current: new local image assets, simplified overlay IDs
 
 import { TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES } from './data.js';
+import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from './lzString.js';
 
 // ─── Base64 (matches the original Base64.js encoder exactly) ────────────────
 
@@ -264,6 +265,14 @@ function stateHash() {
   return '#' + b64encode(JSON.stringify(state));
 }
 
+export function compressedStateHash() {
+  return '#lz:' + compressToEncodedURIComponent(JSON.stringify(state));
+}
+
+export function compressedStateUrl() {
+  return location.origin + location.pathname + location.search + compressedStateHash();
+}
+
 function setUrlHash(hash) {
   const url = hash && hash !== '#' ? hash : (location.pathname + location.search);
   history.replaceState(null, '', url);
@@ -284,7 +293,10 @@ function applyHash(hash) {
     Object.assign(state, emptyState());
   } else {
     try {
-      const raw      = JSON.parse(b64decode(normalized));
+      const rawJson  = normalized.startsWith('#lz:')
+        ? decompressFromEncodedURIComponent(normalized.slice(4))
+        : b64decode(normalized);
+      const raw      = JSON.parse(rawJson);
       const migrated = migrate(raw);
       Object.assign(state, emptyState(), migrated);
     } catch (e) {
