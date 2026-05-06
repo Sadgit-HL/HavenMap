@@ -30,6 +30,15 @@ async function createIsgdUrl(url) {
   return data.shorturl;
 }
 
+async function shareUrlForMode(mode) {
+  if (mode === SHARE_MODES.LZ) return compressedStateUrl();
+  return createIsgdUrl(location.href);
+}
+
+function fallbackUrlForMode(mode) {
+  return mode === SHARE_MODES.LZ ? compressedStateUrl() : location.href;
+}
+
 export function initShare() {
   const btn = document.getElementById('share-btn');
   if (!btn) return;
@@ -39,24 +48,19 @@ export function initShare() {
     btn.disabled = true;
 
     let copied = false;
+    const mode = getShareMode();
     try {
-      if (getShareMode() === SHARE_MODES.LZ) {
-        await copyBggUrl(compressedStateUrl());
-        btn.textContent = 'Copied!';
-        copied = true;
-      } else {
-        const shortUrl = await createIsgdUrl(location.href);
-        await copyBggUrl(shortUrl);
-        btn.textContent = 'Copied!';
-        copied = true;
-      }
+      const shareUrl = await shareUrlForMode(mode);
+      await copyBggUrl(shareUrl);
+      btn.textContent = 'Copied!';
+      copied = true;
     } catch (e) {
       console.warn('Share failed:', e);
     }
 
     if (!copied) {
       try {
-        await copyBggUrl(compressedStateUrl());
+        await copyBggUrl(fallbackUrlForMode(mode));
         btn.textContent = 'URL copied';
       } catch {
         btn.textContent = 'Failed';
