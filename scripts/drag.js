@@ -2,7 +2,7 @@ import { pixelToHex, hexCenter, footprintHexes, HEX_W, HEX_H, COLS, ROWS } from 
 import { state, patch } from './state.js';
 import { uiState, selectHex, selectObject, showStack, showStackWithSelection, setMobileMoveMode } from './uiState.js';
 import { TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES, SUMMONS, generateStandeeNum } from './data.js';
-import { panBy, setZoom, getZoom } from './controls.js';
+import { panBy, setZoomAroundClient, getZoom } from './controls.js';
 
 const SVG_NS         = 'http://www.w3.org/2000/svg';
 const DRAG_THRESHOLD = 4;
@@ -350,7 +350,11 @@ function onTouchmove(e) {
     }
   } else if (e.touches.length === 2 && pinch) {
     const nextDistance = touchDistance(e.touches[0], e.touches[1]);
-    if (pinch.distance > 0) setZoom(pinch.zoom * (nextDistance / pinch.distance));
+    if (pinch.distance > 0) {
+      const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      setZoomAroundClient(pinch.zoom * (nextDistance / pinch.distance), midX, midY);
+    }
     e.preventDefault();
   }
 }
