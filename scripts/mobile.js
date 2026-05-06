@@ -163,6 +163,7 @@ function selectionHtml() {
   const canAdd = Boolean(uiState.selectedHex);
   const ctx = selectedContext();
   const canMove = Boolean(uiState.selected && ctx?.obj && !ctx.obj.locked);
+  const detailsLabel = uiState.mobileDetailsOpen ? 'Close' : 'Details';
   return `
     <div class="mobile-selection${uiState.mobileMoveMode ? ' is-moving' : ''}">
       <div class="mobile-selection-copy">
@@ -172,7 +173,7 @@ function selectionHtml() {
       </div>
       <div class="mobile-selection-actions">
         <button class="mobile-btn" data-mobile-action="move" ${canMove ? '' : 'disabled'}>${uiState.mobileMoveMode ? 'Cancel' : 'Move'}</button>
-        <button class="mobile-btn" data-mobile-action="details" ${sel.hasSelection ? '' : 'disabled'}>Details</button>
+        <button class="mobile-btn" data-mobile-action="details" ${sel.hasSelection ? '' : 'disabled'}>${detailsLabel}</button>
         <button class="mobile-btn mobile-btn--accent" data-mobile-action="add" ${canAdd ? '' : 'disabled'}>Add</button>
       </div>
       ${quickStatsHtml()}
@@ -208,26 +209,6 @@ function render() {
   document.querySelectorAll('[data-mobile-panel]').forEach(btn => {
     btn.classList.toggle('is-active', btn.dataset.mobilePanel === active);
   });
-  renderSettingsClose();
-}
-
-function renderSettingsClose() {
-  const settingsPanel = document.getElementById('settings-panel');
-  if (!settingsPanel) return;
-  let closeBtn = settingsPanel.querySelector('.mobile-settings-close');
-  const isOpen = settingsPanel.classList.contains('open');
-  if (!isOpen) {
-    closeBtn?.remove();
-    return;
-  }
-  if (!closeBtn) {
-    closeBtn = document.createElement('button');
-    closeBtn.type = 'button';
-    closeBtn.className = 'sp-panel-back mobile-settings-close';
-    closeBtn.dataset.mobileAction = 'close-settings';
-    closeBtn.textContent = '← Close';
-    settingsPanel.prepend(closeBtn);
-  }
 }
 
 function openSettings() {
@@ -238,7 +219,6 @@ function openSettings() {
   settingsPanel?.classList.add('open');
   settingsBtn?.classList.add('active');
   document.body.classList.add('mobile-settings-open');
-  renderSettingsClose();
 }
 
 function closeSettings() {
@@ -331,10 +311,14 @@ export function initMobile() {
     }
     else if (action === 'details') {
       e.stopPropagation();
-      closeAddPanel();
-      closeSettings();
-      setMobileMoveMode(false);
-      openMobileDetails();
+      if (uiState.mobileDetailsOpen) {
+        closeMobileDetails();
+      } else {
+        closeAddPanel();
+        closeSettings();
+        setMobileMoveMode(false);
+        openMobileDetails();
+      }
     }
     else if (action === 'move') {
       e.stopPropagation();
@@ -344,16 +328,11 @@ export function initMobile() {
       setMobileMoveMode(!uiState.mobileMoveMode);
     }
     else if (action === 'settings') openSettings();
-    else if (action === 'close-settings') closeSettings();
     render();
   });
 
   document.addEventListener('click', e => {
     if (!isMobileLayout()) return;
-    if (e.target.closest('[data-mobile-action="close-settings"]')) {
-      closeSettings();
-      return;
-    }
     if (e.target.closest('[data-action="close-mobile-details"]')) {
       closeMobileDetails();
       return;
@@ -379,7 +358,6 @@ export function initMobile() {
 
   document.getElementById('settings-btn')?.addEventListener('click', () => {
     document.body.classList.toggle('mobile-settings-open', document.getElementById('settings-panel')?.classList.contains('open') || false);
-    renderSettingsClose();
   });
 
   subscribe(render);

@@ -998,12 +998,12 @@ body {
 
 /* ── Mercenary stats ─────────────────────────────────────────── */
 .sp-stats {
-  padding: 8px 12px 4px;
+  padding: 6px 10px 4px;
 }
 
 .sp-stats--monster {
   margin-top: 8px;
-  padding: 10px 12px 8px;
+  padding: 8px 10px 6px;
   border: 1px solid rgba(255 255 255 / 0.08);
   border-radius: 6px;
   background: rgba(255 255 255 / 0.025);
@@ -1012,7 +1012,7 @@ body {
 .sp-stat-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 7px;
+  gap: 6px;
 }
 
 .sp-stat-grid--monster {
@@ -1022,7 +1022,7 @@ body {
 .sp-stat-tile {
   position: relative;
   min-width: 0;
-  padding: 8px 8px 8px 11px;
+  padding: 6px 7px 6px 10px;
   border: 1px solid rgba(255 255 255 / 0.08);
   border-radius: 6px;
   background: rgba(255 255 255 / 0.035);
@@ -1043,16 +1043,9 @@ body {
   background: color-mix(in srgb, var(--stat-color) 7%, rgba(255 255 255 / 0.035));
 }
 
-.sp-stat-grid--monster .sp-stat-tile--hp {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-}
-
 .sp-stat-grid--monster .sp-stat-tile--hp .sp-counter-val {
-  min-width: 32px;
-  font-size: 22px;
+  min-width: 30px;
+  font-size: 19px;
 }
 
 .sp-stat-tile--readonly {
@@ -1061,15 +1054,15 @@ body {
 
 .sp-stat-tile--level,
 .sp-stat-tile--standeenum {
-  padding-block: 6px;
+  padding-block: 5px;
 }
 
-.sp-stat-grid--mercenary .sp-stat-tile--level {
+.sp-stat-grid--mercenary .sp-stat-tile--gold {
   grid-column: 1 / -1;
 }
 
 .sp-stat-label {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -1077,7 +1070,7 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 6px;
+  margin-bottom: 5px;
   min-width: 0;
 }
 
@@ -1104,17 +1097,17 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 5px;
+  gap: 4px;
 }
 
 .sp-counter-btn {
-  width: 25px;
-  height: 25px;
+  width: 22px;
+  height: 22px;
   border: 1px solid rgba(255 255 255 / 0.20);
   border-radius: 5px;
   background: rgba(255 255 255 / 0.06);
   color: rgba(255 255 255 / 0.85);
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1;
   cursor: pointer;
   padding: 0;
@@ -1128,9 +1121,9 @@ body {
 }
 
 .sp-counter-val {
-  min-width: 26px;
+  min-width: 24px;
   text-align: center;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   color: rgba(255 255 255 / 0.88);
   line-height: 1;
@@ -1141,7 +1134,7 @@ body {
 }
 
 .sp-counter--readonly .sp-counter-val {
-  font-size: 15px;
+  font-size: 14px;
   color: rgba(255 255 255 / 0.68);
 }
 
@@ -1610,21 +1603,33 @@ body {
   }
 
   #settings-btn {
-    display: none;
-    min-height: 28px;
-    padding: 4px 0;
+    position: fixed;
+    right: 12px;
+    bottom: calc(var(--mobile-shell-h) + 12px);
+    z-index: 1301;
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0;
+    border: 1px solid rgba(255 255 255 / 0.16);
+    border-radius: 999px;
+    background: rgba(10 10 30 / 0.94);
+    box-shadow: 0 12px 30px rgba(0 0 0 / 0.38);
+    color: rgba(255 255 255 / 0.82);
   }
 
   #settings-panel.open {
     position: fixed;
-    inset: 12px;
+    left: 12px;
+    right: 12px;
+    bottom: calc(var(--mobile-shell-h) + 68px);
     z-index: 1300;
     display: block;
     overflow-y: auto;
-    max-height: calc(100dvh - 24px);
+    max-height: min(52dvh, 420px);
     padding: 14px;
     border: 1px solid rgba(255 255 255 / 0.14);
-    border-radius: 8px;
+    border-radius: 12px;
     background: rgba(10 10 30 / 0.98);
     box-shadow: 0 18px 60px rgba(0 0 0 / 0.55);
   }
@@ -1642,36 +1647,21 @@ body {
     text-transform: uppercase;
   }
 
-  #settings-panel.open .mobile-settings-close {
-    position: sticky;
-    top: -14px;
-    z-index: 3;
-    display: block;
-    width: calc(100% + 28px);
-    margin: -14px -14px 12px;
-    padding: 12px 14px;
-    border-radius: 8px 8px 0 0;
-    background: rgba(10 10 30 / 0.98);
-    border-bottom: 1px solid rgba(255 255 255 / 0.10);
-    text-align: left;
+  #settings-btn.active {
+    color: rgba(255 255 255 / 0.96);
+    background: rgba(255 255 255 / 0.12);
+    border-color: rgba(255 255 255 / 0.24);
   }
 
-  #settings-panel.open:has(.mobile-settings-close)::before {
-    margin-top: 0;
-   }
+  body.mobile-add-open #settings-btn,
+  body.mobile-details-open #settings-btn {
+    opacity: 0;
+    pointer-events: none;
+  }
 
-  #settings-panel.open + #settings-btn {
-    display: flex;
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1301;
-    width: 32px;
-    min-height: 32px;
-    border: 1px solid rgba(255 255 255 / 0.16);
-    border-radius: 6px;
-    background: rgba(255 255 255 / 0.08);
-    color: rgba(255 255 255 / 0.82);
+  body.mobile-settings-open #settings-btn {
+    z-index: 1300;
+    bottom: calc(var(--mobile-shell-h) + 16px);
   }
 
   body.mobile-add-open::before,
@@ -1687,28 +1677,24 @@ body {
   body.mobile-details-open #sidebar-panel:has(.sp-obj-header),
   #sidebar-panel:has(.sp-add-header) {
     position: fixed;
-    inset: 12px;
+    left: 12px;
+    right: 12px;
+    bottom: calc(var(--mobile-shell-h) + 68px);
     z-index: 1250;
     display: block;
     overflow-y: auto;
-    max-height: calc(100dvh - 24px);
+    max-height: min(52dvh, 420px);
     padding: 14px;
     border: 1px solid rgba(255 255 255 / 0.14);
-    border-radius: 8px;
+    border-radius: 12px;
     background: rgba(10 10 30 / 0.98);
     box-shadow: 0 18px 60px rgba(0 0 0 / 0.55);
   }
 
-  body.mobile-details-open #sidebar-panel:has(.sp-obj-header) .sp-obj-header:first-child,
-  #sidebar-panel:has(.sp-add-header) .sp-add-header {
-    position: sticky;
-    top: -14px;
-    z-index: 2;
-    margin: -14px -14px 12px;
-    padding: 12px 14px;
-    border-radius: 8px 8px 0 0;
-    background: rgba(10 10 30 / 0.98);
-    border-bottom: 1px solid rgba(255 255 255 / 0.10);
+  body.mobile-details-open #sidebar-panel:has(.sp-obj-header) {
+    top: 12px;
+    bottom: 12px;
+    max-height: none;
   }
 
   #sidebar-panel:has(.sp-add-header) .ap-sticky {
@@ -1717,30 +1703,23 @@ body {
     padding-inline: 14px;
   }
 
+  #sidebar-panel:has(.sp-add-header) .sp-add-header {
+    position: sticky;
+    top: -14px;
+    z-index: 2;
+    margin: -14px -14px 12px;
+    padding: 12px 14px;
+    border-radius: 12px 12px 0 0;
+    background: rgba(10 10 30 / 0.98);
+    border-bottom: 1px solid rgba(255 255 255 / 0.10);
+  }
+
   body.mobile-details-open #sidebar-panel:has(.sp-obj-header) {
     display: block;
   }
 
   #sidebar-panel:has(.sp-add-header) {
     display: block;
-  }
-
-  body.mobile-details-open #sidebar-panel:has(.sp-obj-header) > .sp-divider:last-of-type {
-    display: none;
-  }
-
-  .mobile-overlay-close {
-    position: sticky;
-    top: -14px;
-    z-index: 3;
-    display: block;
-    width: calc(100% + 28px);
-    margin: -14px -14px 12px;
-    padding: 12px 14px;
-    border-radius: 8px 8px 0 0;
-    background: rgba(10 10 30 / 0.98);
-    border-bottom: 1px solid rgba(255 255 255 / 0.10);
-    text-align: left;
   }
 
   #element-bar {
@@ -2016,6 +1995,56 @@ body {
     border-color: rgba(255 90 90 / 0.28);
     background: rgba(255 90 90 / 0.10);
     color: rgba(255 150 150 / 0.92);
+  }
+
+  .sp-stats {
+    padding: 8px 12px 4px;
+  }
+
+  .sp-stats--monster {
+    padding: 10px 12px 8px;
+  }
+
+  .sp-stat-grid {
+    gap: 7px;
+  }
+
+  .sp-stat-tile {
+    padding: 8px 8px 8px 11px;
+  }
+
+  .sp-stat-grid--monster .sp-stat-tile--hp .sp-counter-val {
+    min-width: 32px;
+    font-size: 22px;
+  }
+
+  .sp-stat-tile--level,
+  .sp-stat-tile--standeenum {
+    padding-block: 6px;
+  }
+
+  .sp-stat-label {
+    font-size: 10px;
+    margin-bottom: 6px;
+  }
+
+  .sp-counter {
+    gap: 5px;
+  }
+
+  .sp-counter-btn {
+    width: 25px;
+    height: 25px;
+    font-size: 16px;
+  }
+
+  .sp-counter-val {
+    min-width: 26px;
+    font-size: 18px;
+  }
+
+  .sp-counter--readonly .sp-counter-val {
+    font-size: 15px;
   }
 
   .mobile-mini-btn:disabled {

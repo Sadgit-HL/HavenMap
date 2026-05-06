@@ -38,6 +38,28 @@ export function setZoom(z) {
   return view.zoom;
 }
 
+export function setZoomAroundClient(z, clientX, clientY) {
+  if (!svgEl || !boardGroup) return setZoom(z);
+
+  const pointer = svgEl.createSVGPoint();
+  pointer.x = clientX;
+  pointer.y = clientY;
+  const boardPoint = pointer.matrixTransform(boardGroup.getScreenCTM().inverse());
+
+  view.zoom = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, z));
+  applyTransform();
+
+  const anchored = svgEl.createSVGPoint();
+  anchored.x = boardPoint.x;
+  anchored.y = boardPoint.y;
+  const screenPoint = anchored.matrixTransform(boardGroup.getScreenCTM());
+  view.panX += clientX - screenPoint.x;
+  view.panY += clientY - screenPoint.y;
+  applyTransform();
+
+  return view.zoom;
+}
+
 export function getZoom() { return view.zoom; }
 export function panBy(dx, dy) {
   view.panX += dx;

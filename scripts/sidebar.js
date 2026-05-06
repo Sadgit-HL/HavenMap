@@ -160,6 +160,10 @@ export function initSidebar() {
       `<span class="sg-row-label">Grid labels</span>` +
       `<span class="sg-switch" aria-hidden="true"></span>` +
       `</button>` +
+      `<button class="sg-row sg-toggle-row${state.showObjectLabels ? ' active' : ''}" data-toggle="showObjectLabels">` +
+      `<span class="sg-row-label">Object labels</span>` +
+      `<span class="sg-switch" aria-hidden="true"></span>` +
+      `</button>` +
       `</div>` +
       `<div class="settings-section">` +
       `<div class="settings-label">Help</div>` +
@@ -175,7 +179,9 @@ export function initSidebar() {
   settingsPanel.addEventListener('click', e => {
     const toggle = e.target.closest('[data-toggle]');
     if (toggle) {
-      patch({ showGridLabels: !state.showGridLabels });
+      const key = toggle.dataset.toggle;
+      if (!key) return;
+      patch({ [key]: !state[key] });
       buildSettingsPanel();
       return;
     }
@@ -749,10 +755,10 @@ function render() {
     html = `<div class="sp-type">Hex</div><div class="sp-name">${colLabel(col)}${row}</div>`;
   }
 
-  if (uiState.mobileDetailsOpen && !uiState.addPanelOpen) {
-    html = `<button class="sp-panel-back mobile-overlay-close" data-action="close-mobile-details">&#8592; Close</button>` + html;
-  }
   html += `<div class="sp-divider"></div><button class="sp-add-btn" data-action="open-add">+</button>`;
+  if (uiState.mobileDetailsOpen && !uiState.addPanelOpen) {
+    html += `<div class="sp-divider"></div><button class="sp-add-btn" data-action="close-mobile-details">Close</button>`;
+  }
   panel.innerHTML = html;
 }
 
@@ -813,7 +819,11 @@ function objectPanel(kind, idx) {
     const entry = KIND_MAP[kind].data.byId.get(Number(obj.id));
     if (entry) {
       const cardSrc = assetPath.mercenaryMat(entry.title);
-      statCardHtml = `<img class="sp-stat-card" data-zoom-w="700" src="${cardSrc}" onerror="this.style.display='none'" alt="">`;
+      statCardHtml = `
+        <div class="sp-card-section">
+          <div class="sp-subhead">Character Mat</div>
+          <img class="sp-stat-card" data-zoom-w="700" src="${cardSrc}" onerror="this.style.display='none'" alt="">
+        </div>`;
     }
   }
 
@@ -949,20 +959,21 @@ function mercenaryStats(obj, kind = 'mercenary') {
       <img class="sp-cond-img" src="${condImg(t)}" alt="${t}">
     </div>`).join('');
 
+  const showConditionsHeader = isMonster || isMercenary;
+  const framedStats = isMonster || isMercenary;
+
   return `
-    <div class="sp-stats${isMonster ? ' sp-stats--monster' : ''}">
-      ${isMonster ? `<div class="sp-subhead">Combat</div>` : ''}
+    <div class="sp-stats${framedStats ? ' sp-stats--monster' : ''}">
+      ${framedStats ? `<div class="sp-subhead">Combat</div>` : ''}
       <div class="sp-stat-grid${isMonster ? ' sp-stat-grid--monster' : ''}${isMercenary ? ' sp-stat-grid--mercenary' : ''}">
         ${counter('HP', 'hp', hp)}
+        ${isMonster ? levelRow : isMercenary ? levelRow : ''}
         ${counter('Max HP', 'maxhp', maxHp)}
-        ${isMonster ? levelRow : ''}
-        ${standeeNumRow}
+        ${isMonster ? standeeNumRow : isMercenary ? counter('XP', 'xp', xp) : ''}
         ${isMercenary ? counter('Gold', 'gold', gold) : ''}
-        ${isMercenary ? counter('XP',   'xp',  xp)   : ''}
-        ${isMercenary ? levelRow : ''}
       </div>
       <div class="sp-cond-section">
-        ${isMonster ? `<div class="sp-subhead sp-subhead--conditions">Conditions</div>` : ''}
+        ${showConditionsHeader ? `<div class="sp-subhead sp-subhead--conditions">Conditions</div>` : ''}
         <div class="sp-cond-row">
           ${conds.length > 0 ? `<div class="sp-cond-active">${activeTiles}</div>` : ''}
           ${available.length > 0 ? `

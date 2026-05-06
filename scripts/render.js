@@ -637,7 +637,7 @@ function renderMonsters(monsters) {
     img.dataset.topOff  = data.top;
     layerFigures.appendChild(img);
     renderRing(layerFigures, col, row, m.role);
-    layerFigures.appendChild(svgLabel(colLabel(col) + row, col, row));
+    if (state.showObjectLabels) layerFigures.appendChild(svgLabel(colLabel(col) + row, col, row));
 
     let displayMaxhp = null;
     const isElite = m.role === 'elite';
@@ -679,7 +679,7 @@ function renderMercenaries(mercenaries) {
     img.dataset.leftOff = data.left;
     img.dataset.topOff  = data.top;
     layerFigures.appendChild(img);
-    layerFigures.appendChild(svgLabel(colLabel(col) + row, col, row));
+    if (state.showObjectLabels) layerFigures.appendChild(svgLabel(colLabel(col) + row, col, row));
 
     // Compute maxhp with same logic as sidebar: reset on level change, persist if manually set at same level
     let displayMaxhp = null;
@@ -720,7 +720,7 @@ function renderSummons(summons) {
     img.dataset.leftOff = data.left;
     img.dataset.topOff  = data.top;
     layerFigures.appendChild(img);
-    layerFigures.appendChild(svgLabel(colLabel(col) + row, col, row));
+    if (state.showObjectLabels) layerFigures.appendChild(svgLabel(colLabel(col) + row, col, row));
     layerFigures.appendChild(svgStatsLabel(
       Number(h.hp) || 0, Number(h.xp) || 0, Number(h.gold) || 0, col, row,
       h.maxhp != null ? Number(h.maxhp) : null

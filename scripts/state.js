@@ -83,6 +83,7 @@ function emptyState() {
     questObjectives: {},
     elements:        [0, 0, 0, 0, 0, 0], // fire ice air earth light dark — 0=inert 1=waning 2=strong
     showGridLabels:  false,
+    showObjectLabels: true,
   };
 }
 
