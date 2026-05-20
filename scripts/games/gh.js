@@ -87,6 +87,10 @@ const OVERLAY_ROWS = [
   // ── Hazardous terrain ─────────────────────────────────────────────
   { id:  5, title: 'hot coals',   img: 'hot-coals',   ...TH,  defaultRole: 'hazardous' },
   { id:  6, title: 'thorns',      img: 'thorns',      ...SH,  defaultRole: 'hazardous' },
+  // -- Traps --------------------------------------------------------
+  { id: 55, title: 'bear trap',   img: 'bear-trap',   ...SH, defaultRole: 'trap' },
+  { id: 56, title: 'poison trap', img: 'poison-trap', ...SH, defaultRole: 'trap' },
+  { id: 57, title: 'spike trap',  img: 'spike-trap',  ...SH, defaultRole: 'trap' },
   // ── Walls ─────────────────────────────────────────────────────────
   { id:  7, title: 'dark pit',    img: 'dark-pit',    ...TH,  defaultRole: 'wall' },
   { id:  8, title: 'wall',        img: 'wall',        ...WH,  defaultRole: 'wall' },
