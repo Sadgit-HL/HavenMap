@@ -97,7 +97,7 @@ const SHORTCUTS = [
   ['0', 'Reset view'],
   ['H', 'Frame selected hex or object'],
   ['R', 'Rotate selected object'],
-  ['L', 'Lock or unlock selected object'],
+  ['L', 'Place 1 coin in selected hex'],
   ['Del / Backspace', 'Delete selected object'],
   ['E', 'Normal or elite monster'],
   ['+ / -', 'Adjust current HP'],
@@ -283,7 +283,7 @@ export function initSidebar() {
         e.preventDefault();
       }
     } else if (key === 'l') {
-      if (toggleSelectedLock()) e.preventDefault();
+      if (placeCoinAtSelectedHex()) e.preventDefault();
     } else if (key === 'e') {
       if (toggleSelectedMonsterRole()) e.preventDefault();
     } else if (key === '+' || key === '=') {
@@ -528,6 +528,14 @@ function toggleSelectedLock() {
   const ctx = selectedObject();
   if (!ctx) return false;
   patchKind(ctx.sel.kind, ctx.arr.map((x, i) => i === ctx.sel.idx ? { ...x, locked: !x.locked } : x));
+  return true;
+}
+
+function placeCoinAtSelectedHex() {
+  if (!uiState.selectedHex) return false;
+  const coin = OVERLAY_OBJECTS.byTitle.get('coin');
+  if (!coin) return false;
+  placeSomething('overlay', Number(coin.id));
   return true;
 }
 
