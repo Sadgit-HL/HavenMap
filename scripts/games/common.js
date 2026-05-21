@@ -92,7 +92,7 @@ export const MERCENARY_ROWS = [
   { id: 37, title: 'Spellweaver', source: 'Gloomhaven' },
   { id: 38, title: 'Soultether', source: 'Gloomhaven' },
   { id: 39, title: 'Sunkeeper', source: 'Frosthaven' },
-  { id: 40, title: 'Tinkerer', source: 'Frosthaven' },
+  { id: 40, title: 'Tinkerer', source: 'Gloomhaven' },
   { id: 41, title: 'Trapper', source: 'Frosthaven' },
   { id: 42, title: 'Voidwarden', source: 'Jaws of the Lion' },
   { id: 43, title: 'Wildfury', source: 'Gloomhaven' },
