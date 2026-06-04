@@ -7,6 +7,7 @@ import { initElements, renderElements }                from './elements.js';
 import { initLevel, renderLevel }                      from './level.js';
 import { initShare }                                   from './share.js';
 import { initMobile }                                  from './mobile.js';
+import { initLosLineTool }                             from './losLine.js';
 import { HEX_W, HEX_H, COLS, ROWS, hexCenter }        from './hex.js';
 import { GAME_NAME }                                   from './data.js';
 import { clearSelection }                              from './uiState.js';
@@ -66,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initControls(svgEl, scale, xOffset);
   applyZoom(defaultZoomForViewport());
+  initLosLineTool(svgEl);
   initDrag(svgEl);
   initSidebar();
   initElements();

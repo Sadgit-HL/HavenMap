@@ -1,10 +1,10 @@
 import { state, patch } from './state.js';
 import { ELEMENTS } from './games/common.js';
 
-// 0=inert 1=waning 2=strong — cycle forward on click
+// 0=inert 1=waning 2=strong — click cycles inert -> strong -> waning.
 export function cycleElement(index) {
   const els = [...state.elements];
-  els[index] = (els[index] + 1) % 3;
+  els[index] = els[index] === 0 ? 2 : els[index] === 2 ? 1 : 0;
   patch({ elements: els });
 }
 

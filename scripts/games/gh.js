@@ -80,8 +80,10 @@ const OVERLAY_ROWS = [
   // ── Corridors ─────────────────────────────────────────────────────
   { id:  1, title: 'dirt floor 2h', img: 'dirt-floor-2h', ...TH, defaultRole: 'corridor' },
   { id:  2, title: 'dirt floor',   img: 'dirt-floor',    ...SH, defaultRole: 'corridor' },
-  { id:  3, title: 'rock floor',   img: 'rock-floor',    ...TH, defaultRole: 'corridor' },
-  { id:  4, title: 'stone floor',  img: 'stone-floor',   ...TH, defaultRole: 'corridor' },
+  { id:  3, title: 'rock floor 2h', img: 'rock-floor-2h', ...TH, defaultRole: 'corridor' },
+  { id:  4, title: 'stone floor 2h',  img: 'stone-floor-2h', ...TH, defaultRole: 'corridor' },
+  { id: 58, title: 'rock floor',     img: 'rock-floor',   ...SH, defaultRole: 'corridor' },
+  { id: 10, title: 'stone floor',     img: 'stone-floor',   ...SH, defaultRole: 'corridor' },
   // ── Difficult terrain ─────────────────────────────────────────────
   { id:  9, title: 'log',         img: 'log',         ...LH,  defaultRole: 'difficult' },
   // ── Hazardous terrain ─────────────────────────────────────────────
@@ -107,6 +109,7 @@ const OVERLAY_ROWS = [
   { id: 20, title: 'stump',        img: 'stump',        ...SH, defaultRole: 'obstacle' },
   { id: 21, title: 'table',        img: 'table',        ...LH, defaultRole: 'obstacle' },
   { id: 22, title: 'tree',         img: 'tree',         ...XH, defaultRole: 'obstacle' },
+  { id: 23, title: 'altar',        img: 'altar',        ...SH, defaultRole: 'obstacle' },
   // ── Loot ──────────────────────────────────────────────────────────
   { id: 31, title: 'chest', img: 'chest', ...SH, defaultRole: 'loot' },
   { id: 32, title: 'coin', img: 'coin', ...SH, defaultRole: 'loot' },
@@ -474,21 +477,21 @@ const MONSTER_STATS = {
   'night demon': {
     count: 8,
     levels: {
-      0: { normal: 2, elite: 3 },
-      1: { normal: 2, elite: 4 },
-      2: { normal: 3, elite: 5 },
-      3: { normal: 3, elite: 5 },
-      4: { normal: 5, elite: 7 },
-      5: { normal: 6, elite: 9 },
-      6: { normal: 8, elite: 12 },
-      7: { normal: 11, elite: 16 }
+      0: { normal: 3, elite: 5 },
+      1: { normal: 5, elite: 8 },
+      2: { normal: 6, elite: 11 },
+      3: { normal: 7, elite: 13 },
+      4: { normal: 8, elite: 15 },
+      5: { normal: 11, elite: 17 },
+      6: { normal: 16, elite: 23 },
+      7: { normal: 20, elite: 30 }
     }
   },
 
   'ooze': {
     count: 10,
     levels: {
-      0: { normal: 3, elite: 5 },
+      0: { normal: 4, elite: 8 },
       1: { normal: 4, elite: 6 },
       2: { normal: 5, elite: 8 },
       3: { normal: 6, elite: 9 },

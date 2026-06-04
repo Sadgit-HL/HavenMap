@@ -90,9 +90,11 @@ const STACK_KIND_PRIORITY = { mercenary: 0, monster: 0, overlay: 1, tile: 2, sum
 const SHORTCUTS = [
   ['A', 'Toggle add panel'],
   ['/', 'Focus add search'],
-  ['Esc', 'Close panels or clear selection'],
+  ['Esc', 'Close panels or clear selection/LOS lines'],
   ['?', 'Open shortcuts'],
   ['Space+drag', 'Pan board'],
+  ['Right-drag', 'Pan board'],
+  ['Shift+drag', 'Draw LOS ruler line'],
   ['Wheel', 'Zoom board'],
   ['0', 'Reset view'],
   ['H', 'Frame selected hex or object'],
@@ -836,11 +838,7 @@ function objectPanel(kind, idx) {
     ? (obj.role === 'boss' ? 'Boss' : obj.role === 'elite' ? 'Elite' : 'Normal')
     : '';
   const monsterMeta = kind === 'monster'
-    ? [
-        coord ? `Hex ${coord}` : '',
-        `Level ${state.CurrentLevel}`,
-        obj.standeeNum != null ? `Standee ${obj.standeeNum}` : '',
-      ].filter(Boolean).join(' · ')
+    ? (coord ? `Hex ${coord}` : '')
     : detail;
 
   // Extra contextual buttons

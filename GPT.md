@@ -315,6 +315,15 @@ Remaining known project notes from earlier planning:
 - JS detection should be limited to interactions that require it, using `matchMedia('(pointer: coarse)').matches` or `matchMedia('(max-width: 768px)').matches`; likely candidates are pinch zoom, touch panning, tap-to-preview stat cards, and bottom-sheet expand/collapse state.
 - Continue GUI roadmap later: autosave/dirty indicator, inline feedback, responsive/mobile behavior, inspector polish for other object types, and possible broader workflow shortcuts.
 
+Future project: line-of-sight tracker.
+
+- Rule target: a hex is in LOS from another hex if a line can be drawn from any part of the source hex to any part of the target hex without touching a wall line.
+- Preferred implementation: add a pure geometry module, likely `scripts\los.js`, that uses existing hex math from `hex.js` and works independently of DOM rendering.
+- Represent each hex as a polygon and each blocking edge as a line segment. Start blockers with overlay `role === 'wall'` and closed doors; leave obstacles, figures, traps, loot, difficult/hazardous terrain non-blocking unless later rules require a per-object override.
+- For pragmatic robustness, test sampled inset points rather than only center-to-center or exact vertices. Suggested samples per hex: center, six near-vertices inset toward center, and six near edge-midpoints inset toward center. LOS exists if any source sample to target sample segment does not intersect or touch a blocking wall segment.
+- Build blocker segments from wall/closed-door overlay footprints. For multi-hex blockers, remove shared internal edges and keep only exterior edges. Treat touching or collinear overlap with a wall segment as blocked, using a small epsilon for floating-point comparisons.
+- UI direction: add a `layer-los` SVG layer for highlights, plus a sidebar or toolbar toggle such as `Show LOS`. Compute visible hexes from the selected hex/object on demand and cache blocker segments after state changes.
+
 From `HavenMap\CLAUDE.md` recent history:
 
 - Monster level-dependent HP integration was added.

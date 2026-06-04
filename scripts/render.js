@@ -175,8 +175,8 @@ function svgStatsLabel(hp, xp, gold, col, row, maxHp = null, standeeNum = null) 
 
   const badges = [
     { symbol: '#', value: standeeNum, color: '#3d3d5c' },
-    { symbol: '♡', value: maxHp, color: '#2e7d32' },
     { symbol: '♥', value: hp,    color: '#c0392b' },
+    { symbol: '♡', value: maxHp, color: '#2e7d32' },
     { symbol: '★', value: xp,    color: '#4a55b0' },
     { symbol: '●', value: gold,  color: '#c07d00' },
   ].filter(b => b.value !== null && b.value !== undefined && b.value !== 0);

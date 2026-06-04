@@ -52,6 +52,7 @@ export function initDrag(svg) {
   dragLayer  = svg.querySelector('#layer-drag');
 
   svg.addEventListener('mousedown', onMousedown);
+  svg.addEventListener('contextmenu', e => e.preventDefault());
   svg.addEventListener('mouseenter', () => { pointerInBoard = true; updatePanCursor(); });
   svg.addEventListener('mouseleave', () => { pointerInBoard = false; updatePanCursor(); });
   window.addEventListener('mousemove', onMousemove);
@@ -186,6 +187,12 @@ function onKeyup(e) {
 // ─── Mouse handlers ───────────────────────────────────────────────────────────
 
 function onMousedown(e) {
+  if (e.button === 2) {
+    panning = { clientX: e.clientX, clientY: e.clientY };
+    updatePanCursor();
+    e.preventDefault();
+    return;
+  }
   if (e.button !== 0) return;
   if (uiState.mobileMoveMode && uiState.selected) {
     const { x, y } = toBoard(e.clientX, e.clientY);
