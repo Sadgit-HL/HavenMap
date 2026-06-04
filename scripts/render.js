@@ -170,13 +170,25 @@ function svgLabel(text, col, row) {
   return g;
 }
 
-function svgStatsLabel(hp, xp, gold, col, row, maxHp = null, standeeNum = null) {
+function starburstPath(cx, cy, outerR, innerR, points = 9) {
+  const coords = [];
+  for (let i = 0; i < points * 2; i += 1) {
+    const r = i % 2 === 0 ? outerR : innerR * (i % 4 === 1 ? 0.86 : 1.08);
+    const angle = -Math.PI / 2 + (Math.PI * i) / points;
+    coords.push(`${cx + Math.cos(angle) * r},${cy + Math.sin(angle) * r}`);
+  }
+  return `M${coords.join('L')}Z`;
+}
+
+function svgStatsLabel(hp, xp, gold, col, row, maxHp = null, standeeNum = null, damage = null, counter = null) {
   const { x: cx, y: cy } = hexCenter(col, row);
 
   const badges = [
     { symbol: '#', value: standeeNum, color: '#3d3d5c' },
     { symbol: '♥', value: hp,    color: '#c0392b' },
     { symbol: '♡', value: maxHp, color: '#2e7d32' },
+    { symbol: '✷', value: damage, color: '#b3261e' },
+    { symbol: '◈', value: counter, color: '#5c6f8f' },
     { symbol: '★', value: xp,    color: '#4a55b0' },
     { symbol: '●', value: gold,  color: '#c07d00' },
   ].filter(b => b.value !== null && b.value !== undefined && b.value !== 0);
@@ -189,19 +201,26 @@ function svgStatsLabel(hp, xp, gold, col, row, maxHp = null, standeeNum = null) 
   const g = document.createElementNS(SVG_NS, 'g');
   g.setAttribute('pointer-events', 'none');
 
-  badges.forEach(({ symbol, value, color }, i) => {
+  badges.forEach(({ symbol, value, color, shape }, i) => {
     const label = `${symbol} ${value}`;
     const bw    = Math.ceil(label.length * fs * 0.62 + 6);
     const bx    = cx - HEX_W * 0.22 - bw;
     const by    = cy - totalH / 2 + i * (badgeH + gap);
-
-    const rect = document.createElementNS(SVG_NS, 'rect');
-    rect.setAttribute('x', bx);      rect.setAttribute('y', by);
-    rect.setAttribute('width', bw);  rect.setAttribute('height', badgeH);
-    rect.setAttribute('rx', badgeH / 2);
-    rect.setAttribute('fill', color);
-    rect.setAttribute('opacity', '0.88');
-    g.appendChild(rect);
+    if (shape === 'burst') {
+      const burst = document.createElementNS(SVG_NS, 'path');
+      burst.setAttribute('d', starburstPath(bx + bw / 2, by + badgeH / 2, Math.max(bw, badgeH) / 2 + 2, badgeH / 2 - 1));
+      burst.setAttribute('fill', color);
+      burst.setAttribute('opacity', '0.92');
+      g.appendChild(burst);
+    } else {
+      const rect = document.createElementNS(SVG_NS, 'rect');
+      rect.setAttribute('x', bx);      rect.setAttribute('y', by);
+      rect.setAttribute('width', bw);  rect.setAttribute('height', badgeH);
+      rect.setAttribute('rx', badgeH / 2);
+      rect.setAttribute('fill', color);
+      rect.setAttribute('opacity', '0.88');
+      g.appendChild(rect);
+    }
 
     const t = document.createElementNS(SVG_NS, 'text');
     t.setAttribute('x', bx + bw / 2);
@@ -617,9 +636,12 @@ function renderOverlays(overlays) {
     renderFootprintRing(g, footprintHexes(col, row, data.hexes, angle), o.role, dy, dx);
     layer.appendChild(g);
 
-    if (o.hp !== undefined || o.maxhp !== undefined) {
+    if (o.hp !== undefined || o.maxhp !== undefined || o.damage !== undefined || o.counter !== undefined) {
       layer.appendChild(svgStatsLabel(Number(o.hp) || 0, null, null, col, row,
-        o.maxhp != null ? Number(o.maxhp) : null));
+        o.maxhp != null ? Number(o.maxhp) : null,
+        null,
+        o.damage != null ? Number(o.damage) : null,
+        o.counter != null ? Number(o.counter) : null));
     }
   }
 }
@@ -698,7 +720,8 @@ function renderSummons(summons) {
     if (state.showObjectLabels) layerFigures.appendChild(svgLabel(colLabel(col) + row, col, row));
     layerFigures.appendChild(svgStatsLabel(
       Number(h.hp) || 0, Number(h.xp) || 0, Number(h.gold) || 0, col, row,
-      h.maxhp != null ? Number(h.maxhp) : null
+      h.maxhp != null ? Number(h.maxhp) : null,
+      h.standeeNum
     ));
     const condEl = svgConditions(Array.isArray(h.conditions) ? h.conditions : [], col, row);
     if (condEl) layerFigures.appendChild(condEl);

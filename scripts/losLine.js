@@ -4,6 +4,12 @@ let svgEl = null;
 let boardGroup = null;
 let losLayer = null;
 let activeLine = null;
+let pointerInBoard = false;
+let shiftHeld = false;
+
+function updateCursorMode() {
+  svgEl?.classList.toggle('los-line-mode', pointerInBoard && (shiftHeld || Boolean(activeLine)));
+}
 
 function toBoard(clientX, clientY) {
   const pt = svgEl.createSVGPoint();
@@ -41,6 +47,7 @@ function onMousedown(e) {
   line.setAttribute('y2', start.y);
   losLayer.appendChild(line);
   activeLine = line;
+  updateCursorMode();
   stopBoardEvent(e);
 }
 
@@ -55,6 +62,7 @@ function onMouseup(e) {
   setLineEnd(activeLine, toBoard(e.clientX, e.clientY));
   activeLine.classList.remove('los-line-preview');
   activeLine = null;
+  updateCursorMode();
   stopBoardEvent(e);
 }
 
@@ -62,10 +70,28 @@ function onKeydown(e) {
   const target = e.target;
   const isTypingField = target instanceof HTMLElement &&
     (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName));
-  if (isTypingField || e.key !== 'Escape') return;
+  if (isTypingField) return;
+  if (e.key === 'Shift') {
+    shiftHeld = true;
+    updateCursorMode();
+    return;
+  }
+  if (e.key !== 'Escape') return;
   if (!losLayer?.childElementCount) return;
   clearLosLines();
   e.preventDefault();
+}
+
+function onKeyup(e) {
+  if (e.key !== 'Shift') return;
+  shiftHeld = false;
+  updateCursorMode();
+}
+
+function onBlur() {
+  shiftHeld = false;
+  activeLine = null;
+  updateCursorMode();
 }
 
 export function initLosLineTool(svg) {
@@ -75,7 +101,11 @@ export function initLosLineTool(svg) {
   if (!boardGroup || !losLayer) return;
 
   svg.addEventListener('mousedown', onMousedown, true);
+  svg.addEventListener('mouseenter', () => { pointerInBoard = true; updateCursorMode(); });
+  svg.addEventListener('mouseleave', () => { pointerInBoard = false; updateCursorMode(); });
   window.addEventListener('mousemove', onMousemove, true);
   window.addEventListener('mouseup', onMouseup, true);
   window.addEventListener('keydown', onKeydown);
+  window.addEventListener('keyup', onKeyup);
+  window.addEventListener('blur', onBlur);
 }

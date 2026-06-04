@@ -112,6 +112,19 @@ export function generateStandeeNum(monsterId, existingMonsters) {
   return available.length > 0 ? available[Math.floor(Math.random() * available.length)] : null;
 }
 
+export function generateTokenNum(tokenId, existingTokens) {
+  const usedNums = new Set();
+  for (const token of existingTokens || []) {
+    if (Number(token.id) === Number(tokenId) && token.standeeNum != null) {
+      usedNums.add(Number(token.standeeNum));
+    }
+  }
+
+  let num = 1;
+  while (usedNums.has(num)) num += 1;
+  return num;
+}
+
 // ─── Utilities ──────────────────────────────────────────────────────────────
 
 export function makeIndex(rows) {

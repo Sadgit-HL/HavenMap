@@ -1148,6 +1148,12 @@ body {
   background: rgba(255 255 255 / 0.08);
 }
 
+.sp-tracking-actions {
+  display: grid;
+  gap: 6px;
+  margin-top: 6px;
+}
+
 .sp-counter input[type="number"] {
   background: rgba(255 255 255 / 0.10);
   border: 1px solid rgba(255 255 255 / 0.25);
@@ -2186,6 +2192,11 @@ body {
 /* ── Draggable figures ───────────────────────────────────────── */
 #layer-figures image[data-kind] {
   cursor: grab;
+}
+
+#board-svg.los-line-mode,
+#board-svg.los-line-mode * {
+  cursor: crosshair !important;
 }
 
 .drag-highlight {

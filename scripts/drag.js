@@ -1,7 +1,7 @@
 import { pixelToHex, hexCenter, footprintHexes, HEX_W, HEX_H, COLS, ROWS } from './hex.js';
 import { state, patch } from './state.js';
 import { uiState, selectHex, selectObject, showStack, showStackWithSelection, setMobileMoveMode } from './uiState.js';
-import { TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES, SUMMONS, generateStandeeNum } from './data.js';
+import { TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES, SUMMONS, generateStandeeNum, generateTokenNum } from './data.js';
 import { panBy, setZoomAroundClient, getZoom } from './controls.js';
 
 const SVG_NS         = 'http://www.w3.org/2000/svg';
@@ -283,6 +283,9 @@ function onMouseup(e) {
           // Exclude old standeeNum and generate a new unique one
           const { standeeNum: _old, ...withoutStandee } = arr[idx];
           copied = { ...withoutStandee, x: col, y: row, standeeNum: generateStandeeNum(arr[idx].id, arr) };
+        } else if (kind === 'summon') {
+          const { standeeNum: _old, ...withoutStandee } = arr[idx];
+          copied = { ...withoutStandee, x: col, y: row, standeeNum: generateTokenNum(arr[idx].id, arr) };
         }
         patch({ [STATE_KEY[kind]]: [...arr, copied] });
       } else {

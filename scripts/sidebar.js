@@ -9,7 +9,7 @@ import {
 } from './uiState.js';
 import { state, patch, subscribe } from './state.js';
 import { getShareMode, setShareMode, SHARE_MODES } from './share.js';
-import { assetPath, TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES, SUMMONS, CONDITIONS, GAME_ID, GAME_REGISTRY, getMonsterStats, getMonsterCount, generateStandeeNum } from './data.js';
+import { assetPath, TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES, SUMMONS, CONDITIONS, GAME_ID, GAME_REGISTRY, getMonsterStats, getMonsterCount, generateStandeeNum, generateTokenNum } from './data.js';
 import { colLabel, footprintHexes, hexCenter } from './hex.js';
 import { centerBoardPoint } from './controls.js';
 import { displayCurrentHp, displayMaxHp } from './hp.js';
@@ -609,9 +609,15 @@ function frameSelectedHex() {
 
 function cloneForPlacement(kind, obj, hex) {
   const base = { ...obj, x: hex.col, y: hex.row, locked: false };
-  if (kind !== 'monster') return base;
-  const { standeeNum: _old, ...withoutStandee } = base;
-  return { ...withoutStandee, standeeNum: generateStandeeNum(obj.id, state.monsters || []) };
+  if (kind === 'monster') {
+    const { standeeNum: _old, ...withoutStandee } = base;
+    return { ...withoutStandee, standeeNum: generateStandeeNum(obj.id, state.monsters || []) };
+  }
+  if (kind === 'summon') {
+    const { standeeNum: _old, ...withoutStandee } = base;
+    return { ...withoutStandee, standeeNum: generateTokenNum(obj.id, state.summons || []) };
+  }
+  return base;
 }
 
 function pasteCopiedObject(hex) {
@@ -666,8 +672,8 @@ function handleAction(dataset) {
   const obj = arr[idx];
   if (!obj) return;
 
-  const statMatch = action.match(/^stat-(level|hp|maxhp|xp|gold)-(inc|dec)$/);
-  if (statMatch && (kind === 'mercenary' || kind === 'summon' || kind === 'monster' || (obj.hp !== undefined && (statMatch[1] === 'hp' || statMatch[1] === 'maxhp')))) {
+  const statMatch = action.match(/^stat-(level|hp|maxhp|xp|gold|damage|counter)-(inc|dec)$/);
+  if (statMatch && (kind === 'mercenary' || kind === 'summon' || kind === 'monster' || obj[statMatch[1]] !== undefined || (obj.hp !== undefined && statMatch[1] === 'maxhp'))) {
     const field = statMatch[1];
     const delta = statMatch[2] === 'inc' ? 1 : -1;
     let newVal;
@@ -707,6 +713,26 @@ function handleAction(dataset) {
 
   if (action === 'hp-disable') {
     patchKind(kind, arr.map((x, i) => { if (i !== idx) return x; const { hp: _h, maxhp: _m, ...rest } = x; return rest; }));
+    return;
+  }
+
+  if (action === 'damage-enable') {
+    patchKind(kind, arr.map((x, i) => i === idx ? { ...x, damage: 0 } : x));
+    return;
+  }
+
+  if (action === 'damage-disable') {
+    patchKind(kind, arr.map((x, i) => { if (i !== idx) return x; const { damage: _d, ...rest } = x; return rest; }));
+    return;
+  }
+
+  if (action === 'counter-enable') {
+    patchKind(kind, arr.map((x, i) => i === idx ? { ...x, counter: 0 } : x));
+    return;
+  }
+
+  if (action === 'counter-disable') {
+    patchKind(kind, arr.map((x, i) => { if (i !== idx) return x; const { counter: _c, ...rest } = x; return rest; }));
     return;
   }
 
@@ -758,7 +784,8 @@ function placeSomething(kind, id) {
   } else if (kind === 'mercenary') {
     patch({ mercenaries: [...(state.mercenaries || []), { ...base, level: 1 }] });
   } else if (kind === 'summon') {
-    patch({ summons: [...(state.summons || []), base] });
+    const standeeNum = generateTokenNum(id, state.summons || []);
+    patch({ summons: [...(state.summons || []), { ...base, standeeNum }] });
   } else if (kind === 'monster') {
     const entry = MONSTERS.byId.get(id);
     const role  = entry?.boss ? 'boss' : 'normal';
@@ -915,13 +942,14 @@ function objectPanel(kind, idx) {
       </div>
     </div>
     ${statCardHtml}
-    ${(kind === 'mercenary' || kind === 'summon' || kind === 'monster') ? mercenaryStats(obj, kind) : optionalHp(kind, obj)}
+    ${(kind === 'mercenary' || kind === 'summon' || kind === 'monster') ? mercenaryStats(obj, kind) : kind === 'overlay' ? optionalTracking(kind, obj) : ''}
   `;
 }
 
 function mercenaryStats(obj, kind = 'mercenary') {
   const isMercenary = kind === 'mercenary';
   const isMonster = kind === 'monster';
+  const isSummon = kind === 'summon';
   const hp    = displayCurrentHp(kind, obj);
   const gold  = Number(obj.gold)  || 0;
 
@@ -977,6 +1005,9 @@ function mercenaryStats(obj, kind = 'mercenary') {
   const standeeNumRow = isMonster && obj.standeeNum != null
     ? readOnlyCounter('Standee #', 'standeenum', obj.standeeNum)
     : '';
+  const summonStandeeNumRow = isSummon && obj.standeeNum != null
+    ? readOnlyCounter('Standee #', 'standeenum', obj.standeeNum)
+    : '';
 
   const activeTiles = conds.map(c => `
     <div class="sp-cond-tile" title="${c}">
@@ -997,7 +1028,7 @@ function mercenaryStats(obj, kind = 'mercenary') {
       ${framedStats ? `<div class="sp-subhead">Combat</div>` : ''}
       <div class="sp-stat-grid${isMonster ? ' sp-stat-grid--monster' : ''}${isMercenary ? ' sp-stat-grid--mercenary' : ''}">
         ${counter('HP', 'hp', hp)}
-        ${isMonster ? levelRow : isMercenary ? levelRow : ''}
+        ${isMonster ? levelRow : isMercenary ? levelRow : isSummon ? summonStandeeNumRow : ''}
         ${counter('Max HP', 'maxhp', maxHp)}
         ${isMonster ? standeeNumRow : isMercenary ? counter('XP', 'xp', xp) : ''}
         ${isMercenary ? counter('Gold', 'gold', gold) : ''}
@@ -1016,17 +1047,19 @@ function mercenaryStats(obj, kind = 'mercenary') {
     </div>`;
 }
 
-function optionalHp(kind, obj) {
-  if (obj.hp === undefined) {
-    return `<button class="sp-add-btn" data-action="hp-enable">+ Track HP</button>`;
-  }
-  const hp    = Number(obj.hp)    || 0;
-  const maxHp = Number(obj.maxhp) || 0;
+function optionalTracking(kind, obj) {
+  const hasHp = obj.hp !== undefined || obj.maxhp !== undefined;
+  const hasDamage = obj.damage !== undefined;
+  const hasCounter = obj.counter !== undefined;
+
+  const STAT_STYLE = {
+    hp:      { color: '#c0392b' },
+    maxhp:   { color: '#2e7d32' },
+    damage:  { color: '#b3261e' },
+    counter: { color: '#5c6f8f' },
+  };
+
   const counter = (label, field, val) => {
-    const STAT_STYLE = {
-      hp:    { color: '#c0392b' },
-      maxhp: { color: '#2e7d32' },
-    };
     const s = STAT_STYLE[field] || {};
     return `
     <div class="sp-stat-tile sp-stat-tile--${field}" style="--stat-color:${s.color || 'rgba(255 255 255 / 0.35)'}">
@@ -1038,13 +1071,31 @@ function optionalHp(kind, obj) {
       </div>
     </div>`;
   };
+
+  const buttons = [
+    !hasHp ? `<button class="sp-add-btn" data-action="hp-enable">+ Track HP</button>` : '',
+    !hasDamage ? `<button class="sp-add-btn" data-action="damage-enable">+ Track Damage</button>` : '',
+    !hasCounter ? `<button class="sp-add-btn" data-action="counter-enable">+ Track Counter</button>` : '',
+  ].filter(Boolean).join('');
+
+  const rows = [
+    hasHp ? counter('HP', 'hp', Number(obj.hp) || 0) : '',
+    hasHp ? counter('Max HP', 'maxhp', Number(obj.maxhp) || 0) : '',
+    hasDamage ? counter('Damage', 'damage', Number(obj.damage) || 0) : '',
+    hasCounter ? counter('Counter', 'counter', Number(obj.counter) || 0) : '',
+  ].filter(Boolean).join('');
+
+  if (!rows) return `<div class="sp-tracking-actions">${buttons}</div>`;
+
   return `
     <div class="sp-stats">
-      <div class="sp-stat-grid">
-        ${counter('HP', 'hp', hp)}
-        ${counter('Max HP', 'maxhp', maxHp)}
+      <div class="sp-stat-grid">${rows}</div>
+      <div class="sp-tracking-actions">
+        ${hasHp ? `<button class="sp-add-btn" data-action="hp-disable">− Remove HP tracking</button>` : ''}
+        ${hasDamage ? `<button class="sp-add-btn" data-action="damage-disable">− Remove Damage tracking</button>` : ''}
+        ${hasCounter ? `<button class="sp-add-btn" data-action="counter-disable">− Remove Counter tracking</button>` : ''}
+        ${buttons}
       </div>
-      <button class="sp-add-btn" data-action="hp-disable" style="margin-top:6px">− Remove HP tracking</button>
     </div>`;
 }
 
