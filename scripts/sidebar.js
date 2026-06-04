@@ -39,6 +39,10 @@ function maxHpContextPatch(kind, obj) {
   return {};
 }
 
+function rotationStep(kind, obj) {
+  return kind === 'overlay' && obj?.role === 'door' ? 30 : 60;
+}
+
 // Role labels shown as the object type in the inspect panel
 const ROLE_LABEL = {
   corridor:         'Corridor',
@@ -713,9 +717,11 @@ function handleAction(dataset) {
   }
 
   if (action === 'rotate-cw' && !obj.locked) {
-    patchKind(kind, arr.map((x, i) => i === idx ? { ...x, angle: ((Number(x.angle)||0) + 60) % 360 } : x));
+    const step = rotationStep(kind, obj);
+    patchKind(kind, arr.map((x, i) => i === idx ? { ...x, angle: ((Number(x.angle)||0) + step) % 360 } : x));
   } else if (action === 'rotate-ccw' && !obj.locked) {
-    patchKind(kind, arr.map((x, i) => i === idx ? { ...x, angle: ((Number(x.angle)||0) - 60 + 360) % 360 } : x));
+    const step = rotationStep(kind, obj);
+    patchKind(kind, arr.map((x, i) => i === idx ? { ...x, angle: ((Number(x.angle)||0) - step + 360) % 360 } : x));
   } else if (action === 'toggle-lock') {
     patchKind(kind, arr.map((x, i) => i === idx ? { ...x, locked: !x.locked } : x));
   } else if (action === 'toggle-role' && kind === 'monster' && obj.role !== 'boss') {

@@ -137,6 +137,10 @@ function isDraggable(token) {
   return !arrForKind(token.kind)[token.idx]?.locked;
 }
 
+function rotationStep(kind, obj) {
+  return kind === 'overlay' && obj?.role === 'door' ? 30 : 60;
+}
+
 function updatePanCursor() {
   if (panning) {
     document.body.style.cursor = 'grabbing';
@@ -153,9 +157,10 @@ function rotateSelectedClockwise() {
   const arr = arrForKind(sel.kind);
   const obj = arr[sel.idx];
   if (!obj || obj.locked) return false;
+  const step = rotationStep(sel.kind, obj);
   patch({
     [STATE_KEY[sel.kind]]: arr.map((item, i) =>
-      i === sel.idx ? { ...item, angle: ((Number(item.angle) || 0) + 60) % 360 } : item
+      i === sel.idx ? { ...item, angle: ((Number(item.angle) || 0) + step) % 360 } : item
     ),
   });
   return true;

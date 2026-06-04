@@ -116,6 +116,10 @@ function quickActionsHtml() {
   return `<div class="mobile-quick-actions">${buttons.join('')}</div>`;
 }
 
+function rotationStep(kind, obj) {
+  return kind === 'overlay' && obj?.role === 'door' ? 30 : 60;
+}
+
 function applyObjectAction(action) {
   const ctx = selectedContext();
   if (!ctx) return;
@@ -126,7 +130,8 @@ function applyObjectAction(action) {
   }
   if (obj.locked) return;
   if (action === 'rotate-ccw' || action === 'rotate-cw') {
-    const delta = action === 'rotate-cw' ? 60 : -60;
+    const step = rotationStep(sel.kind, obj);
+    const delta = action === 'rotate-cw' ? step : -step;
     patch({ [key]: arr.map((item, i) => i === sel.idx ? { ...item, angle: ((Number(item.angle) || 0) + delta + 360) % 360 } : item) });
   } else if (action === 'toggle-role' && sel.kind === 'monster' && obj.role !== 'boss') {
     patch({ [key]: arr.map((item, i) => i === sel.idx ? {
