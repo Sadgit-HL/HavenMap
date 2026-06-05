@@ -871,7 +871,7 @@ function objectPanel(kind, idx) {
     ? (obj.role === 'boss' ? 'Boss' : obj.role === 'elite' ? 'Elite' : 'Normal')
     : '';
   const monsterMeta = kind === 'monster'
-    ? (coord ? `Hex ${coord}` : '')
+    ? coord
     : detail;
 
   // Extra contextual buttons
