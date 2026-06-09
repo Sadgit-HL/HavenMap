@@ -635,7 +635,7 @@ function renderOverlays(overlays) {
     }
 
     g.appendChild(img);
-    renderFootprintRing(g, footprintHexes(col, row, data.hexes, angle), o.role, dy, dx);
+    if (!data.noRing) renderFootprintRing(g, footprintHexes(col, row, data.hexes, angle), o.role, dy, dx);
     layer.appendChild(g);
 
     if (o.hp !== undefined || o.maxhp !== undefined || o.damage !== undefined || o.counter !== undefined) {

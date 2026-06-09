@@ -119,9 +119,9 @@ const OVERLAY_ROWS = [
   { id: 66, title: 'barrel',       img: 'barrel',       left: 33, top: 28, w: 65, h: 56, defaultRole: 'obstacle' },
   { id: 65, title: 'sarcophagus',  img: 'sarcophagus-2h', ...TH, hexes: ['S'], defaultRole: 'obstacle' },
   // ── Loot ──────────────────────────────────────────────────────────
-  { id: 31, title: 'chest', img: 'chest', ...SH, defaultRole: 'loot' },
-  { id: 32, title: 'coin', img: 'coin', ...SH, defaultRole: 'loot' },
-  { id: 33, title: 'coin 5', img: 'coin5', ...SH, defaultRole: 'loot' },
+  { id: 31, title: 'chest',  img: 'chest', ...SH, defaultRole: 'loot' },
+  { id: 32, title: 'coin',   img: 'coin',  ...SH, defaultRole: 'loot', noRing: true },
+  { id: 33, title: 'coin 5', img: 'coin5', ...SH, defaultRole: 'loot', noRing: true },
   // ── Doors ─────────────────────────────────────────────────────────
   { id: 51, title: 'stone door',  img: 'stone-door', ...SH, defaultRole: 'door', hasOpenClose: true },
   { id: 52, title: 'wooden door', img: 'wooden-door',...SH, defaultRole: 'door', hasOpenClose: true },
