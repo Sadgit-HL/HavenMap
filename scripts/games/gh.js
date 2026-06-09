@@ -86,6 +86,10 @@ const OVERLAY_ROWS = [
   { id: 10, title: 'stone floor',     img: 'stone-floor',   ...SH, defaultRole: 'corridor' },
   // ── Difficult terrain ─────────────────────────────────────────────
   { id:  9, title: 'log',         img: 'log',         ...LH,  defaultRole: 'difficult' },
+  { id: 60, title: 'water',       img: 'water',       ...SH,  defaultRole: 'difficult' },
+  { id: 61, title: 'water 2h',    img: 'water-2h',    ...TH,  hexes: ['S'], defaultRole: 'difficult' },
+  { id: 62, title: 'water 3h',    img: 'water-3h',    ...XH,  defaultRole: 'difficult' },
+  { id: 63, title: 'rubble',      img: 'rubble',      ...SH,  defaultRole: 'difficult' },
   // ── Hazardous terrain ─────────────────────────────────────────────
   { id:  5, title: 'hot coals 2h', img: 'hot-coals-2h', ...TH, defaultRole: 'hazardous' },
   { id: 59, title: 'hot coals',    img: 'hot-coals',    ...SH, defaultRole: 'hazardous' },
@@ -99,10 +103,10 @@ const OVERLAY_ROWS = [
   { id:  8, title: 'wall',        img: 'wall',        ...WH,  defaultRole: 'wall' },
   // ── Obstacles ─────────────────────────────────────────────────────
   { id: 11, title: 'bookcase',     img: 'bookcase',    ...BKH, defaultRole: 'obstacle' },
-  { id: 12, title: 'boulder',      img: 'boulder',     ...BOH, defaultRole: 'obstacle' },
+  { id: 12, title: 'boulder',      img: 'boulder',     ...SH,  defaultRole: 'obstacle' },
   { id: 13, title: 'boulder 3h',   img: 'boulder-3h',   ...XH, defaultRole: 'obstacle' },
   { id: 14, title: 'bush',         img: 'bush',         ...SH, defaultRole: 'obstacle' },
-  { id: 15, title: 'cabinet',      img: 'cabinet',      ...SH, defaultRole: 'obstacle' },
+  { id: 15, title: 'cabinet',      img: 'cabinet',      left: 33, top: 28, w: 65, h: 56, defaultRole: 'obstacle' },
   { id: 16, title: 'crystal',      img: 'crystal',      ...SH, defaultRole: 'obstacle' },
   { id: 17, title: 'fountain',     img: 'fountain',     ...SH, defaultRole: 'obstacle' },
   { id: 18, title: 'rock column',  img: 'rock-column',  ...SH, defaultRole: 'obstacle' },
@@ -111,6 +115,9 @@ const OVERLAY_ROWS = [
   { id: 21, title: 'table',        img: 'table',        ...LH, defaultRole: 'obstacle' },
   { id: 22, title: 'tree',         img: 'tree',         ...XH, defaultRole: 'obstacle' },
   { id: 23, title: 'altar',        img: 'altar',        ...SH, defaultRole: 'obstacle' },
+  { id: 64, title: 'nest',         img: 'nest',         ...SH, defaultRole: 'obstacle' },
+  { id: 66, title: 'barrel',       img: 'barrel',       left: 33, top: 28, w: 65, h: 56, defaultRole: 'obstacle' },
+  { id: 65, title: 'sarcophagus',  img: 'sarcophagus-2h', ...TH, hexes: ['S'], defaultRole: 'obstacle' },
   // ── Loot ──────────────────────────────────────────────────────────
   { id: 31, title: 'chest', img: 'chest', ...SH, defaultRole: 'loot' },
   { id: 32, title: 'coin', img: 'coin', ...SH, defaultRole: 'loot' },
