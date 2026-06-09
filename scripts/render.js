@@ -35,10 +35,11 @@ const ROLE_RING = {
   obstacle:         { type:'single', color:'#44aa44' },
   objective:        { type:'single', color:'#ffcc00' },
   'class-overlay':  { type:'single', color:'#5c3317' },
+  loot:             { type:'single', color:'#c9a227' },
   normal:           { type:'double', inner:'#cc0000', outer:'#ffffff' },
   elite:            { type:'double', inner:'#cc0000', outer:'#ffcc00' },
   boss:             { type:'double', inner:'#cc0000', outer:'#111111' },
-  // loot, shadow, element, scenario-aid: no ring
+  // shadow, element, scenario-aid: no ring
 };
 
 // Roles that render on the overlay layer (floor level); rest go to figures layer.
@@ -441,6 +442,7 @@ const ROLE_ICON = {
   obstacle:         'obstacle.png',
   objective:        'objective.png',
   'class-overlay':  'class-overlay.png',
+  loot:             'loot.svg',
 };
 
 const ICON_SIZE = 22;
