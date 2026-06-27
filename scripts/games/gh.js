@@ -461,24 +461,24 @@ const MONSTER_STATS = {
       1: { normal: 2, elite: 3 },
       2: { normal: 2, elite: 3 },
       3: { normal: 3, elite: 4 },
-      4: { normal: 3, elite: 5 },
-      5: { normal: 4, elite: 6 },
-      6: { normal: 5, elite: 8 },
-      7: { normal: 7, elite: 11 }
+      4: { normal: 3, elite: 4 },
+      5: { normal: 4, elite: 5 },
+      6: { normal: 6, elite: 8 },
+      7: { normal: 7, elite: 10 }
     }
   },
 
   'lurker soldier': {
     count: 10,
     levels: {
-      0: { normal: 2, elite: 4 },
-      1: { normal: 4, elite: 5 },
-      2: { normal: 5, elite: 7 },
-      3: { normal: 6, elite: 9 },
-      4: { normal: 7, elite: 10 },
-      5: { normal: 9, elite: 13 },
-      6: { normal: 11, elite: 16 },
-      7: { normal: 14, elite: 21 }
+      0: { normal: 5, elite: 7 },
+      1: { normal: 7, elite: 9 },
+      2: { normal: 9, elite: 11 },
+      3: { normal: 10, elite: 13 },
+      4: { normal: 10, elite: 13 },
+      5: { normal: 11, elite: 15 },
+      6: { normal: 16, elite: 19 },
+      7: { normal: 20, elite: 27 }
     }
   },
 
@@ -500,125 +500,125 @@ const MONSTER_STATS = {
     count: 10,
     levels: {
       0: { normal: 4, elite: 8 },
-      1: { normal: 4, elite: 6 },
-      2: { normal: 5, elite: 8 },
-      3: { normal: 6, elite: 9 },
-      4: { normal: 8, elite: 11 },
-      5: { normal: 9, elite: 13 },
-      6: { normal: 12, elite: 18 },
-      7: { normal: 15, elite: 21 }
+      1: { normal: 5, elite: 9 },
+      2: { normal: 7, elite: 11 },
+      3: { normal: 8, elite: 11 },
+      4: { normal: 9, elite: 12 },
+      5: { normal: 10, elite: 15 },
+      6: { normal: 13, elite: 21 },
+      7: { normal: 17, elite: 27 }
     }
   },
 
   'rending drake': {
     count: 6,
     levels: {
-      0: { normal: 5, elite: 9 },
-      1: { normal: 7, elite: 11 },
-      2: { normal: 9, elite: 14 },
-      3: { normal: 11, elite: 17 },
-      4: { normal: 13, elite: 20 },
-      5: { normal: 16, elite: 25 },
-      6: { normal: 20, elite: 31 },
-      7: { normal: 26, elite: 41 }
+      0: { normal: 5, elite: 7 },
+      1: { normal: 6, elite: 7 },
+      2: { normal: 7, elite: 9 },
+      3: { normal: 7, elite: 10 },
+      4: { normal: 9, elite: 12 },
+      5: { normal: 10, elite: 15 },
+      6: { normal: 14, elite: 19 },
+      7: { normal: 18, elite: 24 }
     }
   },
 
   'savvas icestorm': {
     count: 4,
     levels: {
-      0: { normal: 6, elite: 8 },
-      1: { normal: 8, elite: 11 },
-      2: { normal: 9, elite: 13 },
-      3: { normal: 11, elite: 15 },
-      4: { normal: 14, elite: 19 },
-      5: { normal: 16, elite: 24 },
-      6: { normal: 20, elite: 31 },
-      7: { normal: 25, elite: 39 }
+      0: { normal: 7, elite: 12 },
+      1: { normal: 10, elite: 12 },
+      2: { normal: 12, elite: 15 },
+      3: { normal: 12, elite: 17 },
+      4: { normal: 13, elite: 17 },
+      5: { normal: 15, elite: 20 },
+      6: { normal: 16, elite: 26 },
+      7: { normal: 20, elite: 33 }
     }
   },
 
   'savvas lavaflow': {
     count: 4,
     levels: {
-      0: { normal: 8, elite: 11 },
-      1: { normal: 10, elite: 14 },
-      2: { normal: 12, elite: 17 },
+      0: { normal: 8, elite: 13 },
+      1: { normal: 9, elite: 15 },
+      2: { normal: 11, elite: 18 },
       3: { normal: 14, elite: 21 },
-      4: { normal: 17, elite: 23 },
-      5: { normal: 20, elite: 27 },
-      6: { normal: 25, elite: 35 },
-      7: { normal: 30, elite: 42 }
+      4: { normal: 16, elite: 25 },
+      5: { normal: 20, elite: 30 },
+      6: { normal: 28, elite: 40 },
+      7: { normal: 35, elite: 50 }
     }
   },
 
   'spitting drake': {
     count: 6,
     levels: {
-      0: { normal: 5, elite: 9 },
-      1: { normal: 7, elite: 11 },
-      2: { normal: 9, elite: 14 },
-      3: { normal: 11, elite: 17 },
-      4: { normal: 13, elite: 20 },
-      5: { normal: 16, elite: 25 },
-      6: { normal: 20, elite: 31 },
-      7: { normal: 26, elite: 41 }
+      0: { normal: 4, elite: 7 },
+      1: { normal: 5, elite: 9 },
+      2: { normal: 7, elite: 10 },
+      3: { normal: 8, elite: 13 },
+      4: { normal: 9, elite: 16 },
+      5: { normal: 12, elite: 19 },
+      6: { normal: 16, elite: 27 },
+      7: { normal: 22, elite: 34 }
     }
   },
 
   'stone construct': {
     count: 4,
     levels: {
-      0: { normal: 3, elite: 5 },
-      1: { normal: 5, elite: 8 },
-      2: { normal: 7, elite: 10 },
-      3: { normal: 9, elite: 11 },
-      4: { normal: 11, elite: 15 },
+      0: { normal: 10, elite: 10 },
+      1: { normal: 10, elite: 11 },
+      2: { normal: 11, elite: 14 },
+      3: { normal: 11, elite: 15 },
+      4: { normal: 12, elite: 17 },
       5: { normal: 13, elite: 19 },
-      6: { normal: 16, elite: 25 },
-      7: { normal: 20, elite: 32 }
+      6: { normal: 19, elite: 23 },
+      7: { normal: 22, elite: 26 }
     }
   },
 
   'sun demon': {
     count: 6,
     levels: {
-      0: { normal: 3, elite: 5 },
-      1: { normal: 4, elite: 6 },
-      2: { normal: 5, elite: 7 },
-      3: { normal: 6, elite: 9 },
-      4: { normal: 7, elite: 11 },
-      5: { normal: 9, elite: 14 },
-      6: { normal: 11, elite: 18 },
-      7: { normal: 14, elite: 23 }
+      0: { normal: 5, elite: 9 },
+      1: { normal: 8, elite: 12 },
+      2: { normal: 10, elite: 13 },
+      3: { normal: 11, elite: 16 },
+      4: { normal: 13, elite: 18 },
+      5: { normal: 13, elite: 18 },
+      6: { normal: 16, elite: 25 },
+      7: { normal: 19, elite: 27 }
     }
   },
 
   'vermling priest': {
     count: 6,
     levels: {
-      0: { normal: 3, elite: 5 },
-      1: { normal: 4, elite: 6 },
-      2: { normal: 5, elite: 8 },
-      3: { normal: 6, elite: 10 },
-      4: { normal: 7, elite: 12 },
-      5: { normal: 9, elite: 15 },
-      6: { normal: 12, elite: 20 },
-      7: { normal: 15, elite: 25 }
+      0: { normal: 2, elite: 3 },
+      1: { normal: 2, elite: 3 },
+      2: { normal: 3, elite: 4 },
+      3: { normal: 3, elite: 5 },
+      4: { normal: 3, elite: 5 },
+      5: { normal: 4, elite: 6 },
+      6: { normal: 5, elite: 8 },
+      7: { normal: 8, elite: 11 }
     }
   },
 
   'vermling scout': {
     count: 8,
     levels: {
-      0: { normal: 2, elite: 3 },
-      1: { normal: 3, elite: 4 },
+      0: { normal: 2, elite: 4 },
+      1: { normal: 3, elite: 5 },
       2: { normal: 3, elite: 5 },
-      3: { normal: 5, elite: 7 },
-      4: { normal: 6, elite: 8 },
-      5: { normal: 7, elite: 10 },
-      6: { normal: 9, elite: 13 },
-      7: { normal: 11, elite: 16 }
+      3: { normal: 4, elite: 7 },
+      4: { normal: 5, elite: 8 },
+      5: { normal: 7, elite: 11 },
+      6: { normal: 10, elite: 16 },
+      7: { normal: 15, elite: 23 }
     }
   },
 
