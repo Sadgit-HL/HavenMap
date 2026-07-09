@@ -20,7 +20,7 @@ export const CLASS_OVERLAY_ROWS = [
 
 // img = filename without extension, used as images/common/scenario/{img}.png
 // Sized/scaled down to match the coin token's rendered size and centered in the hex.
-const SC = { left: 25, top: 25, w: 50, h: 50, defaultRole: 'scenario', commonDir: 'scenario' };
+const SC = { left: 18.75, top: 18.75, w: 37.5, h: 37.5, defaultRole: 'scenario', commonDir: 'scenario' };
 export const SCENARIO_ROWS = [
   { id: 2001, title: 'scenario aid 0', img: '0', ...SC },
   { id: 2002, title: 'scenario aid 1', img: '1', ...SC },
