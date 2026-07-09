@@ -1,7 +1,7 @@
 // Game data aggregator. Selects a game config based on the ?game= URL param,
 // merges expansion configs with their base game, then builds indices.
 
-import { MERCENARY_ROWS, SUMMON_ROWS, CLASS_OVERLAY_ROWS, CONDITIONS, ELEMENTS } from './games/common.js';
+import { MERCENARY_ROWS, SUMMON_ROWS, CLASS_OVERLAY_ROWS, SCENARIO_ROWS, CONDITIONS, ELEMENTS } from './games/common.js';
 import fhConfig   from './games/fh.js';
 import ghConfig   from './games/gh.js';
 import jotlConfig from './games/jotl.js';
@@ -56,6 +56,7 @@ export const assetPath = {
   tile       : (entry, side = '') => `images/${entry.game}/tiles/${tileUrl(entry, side)}.png`,
   overlay    : (entry, opened)    => {
     if (entry.classOverlay) return `images/common/class_overlays/${entry.img}.png`;
+    if (entry.commonDir) return `images/common/${entry.commonDir}/${entry.img}.png`;
     if (entry.game === 'gh2' && entry.hasOpenClose)
       return `images/gh2/overlays/${entry.img}-${opened ? 'open' : 'close'}.png`;
     return `images/${entry.game}/overlays/${entry.img}${opened ? '-open' : ''}.png`;
@@ -136,7 +137,7 @@ export function makeIndex(rows) {
 // ─── Indices ─────────────────────────────────────────────────────────────────
 
 export const TILES           = makeIndex(gameConfig.tiles);
-export const OVERLAY_OBJECTS = makeIndex([...gameConfig.overlays, ...CLASS_OVERLAY_ROWS]);
+export const OVERLAY_OBJECTS = makeIndex([...gameConfig.overlays, ...CLASS_OVERLAY_ROWS, ...SCENARIO_ROWS]);
 export const MONSTERS        = makeIndex(gameConfig.monsters);
 export const MERCENARIES     = makeIndex(MERCENARY_ROWS);
 export const SUMMONS         = makeIndex(SUMMON_ROWS);

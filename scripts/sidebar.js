@@ -57,7 +57,7 @@ const ROLE_LABEL = {
   objective:        'Objective',
   loot:             'Loot',
   element:          'Element',
-  'scenario-aid':   'Scenario Aid',
+  scenario:         'Scenario',
   'class-overlay':  'Class Overlay',
 };
 
@@ -75,7 +75,7 @@ const ROLE_COLOR = {
   'class-overlay':  '#5c3317',
   normal:           '#ffffff',
   elite:            '#ffcc00',
-  // loot, element, scenario-aid, boss: no color
+  // loot, element, scenario, boss: no color
 };
 
 function roleDot(role, hollow = false) {
@@ -87,7 +87,7 @@ function roleDot(role, hollow = false) {
 
 const OVERLAY_ROLES = [
   'corridor','wall','ice','difficult','hazardous',
-  'trap','pressure-plate','obstacle','objective','loot','element','scenario-aid','class-overlay',
+  'trap','pressure-plate','obstacle','objective','loot','element','scenario','class-overlay',
 ];
 
 const STACK_KIND_PRIORITY = { mercenary: 0, monster: 0, overlay: 1, tile: 2, summon: 3 };
@@ -1162,7 +1162,7 @@ const TAB_SECTIONS = {
     { label: 'Objectives',      getItems: () => overlayByRole('objective')      },
     { label: 'Loot',            getItems: () => overlayByRole('loot')           },
     { label: 'Elements',        getItems: () => overlayByRole('element')        },
-    { label: 'Scenario Aids',   getItems: () => overlayByRole('scenario-aid')   },
+    { label: 'Scenario',        getItems: () => overlayByRole('scenario')       },
     { label: 'Class Overlays',  getItems: () => classOverlayItems()             },
   ],
   summons: [

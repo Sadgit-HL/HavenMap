@@ -39,7 +39,7 @@ const ROLE_RING = {
   normal:           { type:'double', inner:'#cc0000', outer:'#ffffff' },
   elite:            { type:'double', inner:'#cc0000', outer:'#ffcc00' },
   boss:             { type:'double', inner:'#cc0000', outer:'#111111' },
-  // shadow, element, scenario-aid: no ring
+  // shadow, element, scenario: no ring
 };
 
 // Roles that render on the overlay layer (floor level); rest go to figures layer.

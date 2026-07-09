@@ -18,6 +18,12 @@ export const CLASS_OVERLAY_ROWS = [
   { id: 1013, title: 'teleportation pad (Tinkerer)', img: 'tinkerer_teleportation_pad', ...CO },
 ];
 
+// img = filename without extension, used as images/common/scenario/{img}.png
+const SC = { left: 41, top: 35, w: 81, h: 70, defaultRole: 'scenario', commonDir: 'scenario' };
+export const SCENARIO_ROWS = [
+  { id: 2001, title: 'scenario aid', img: 'scenario_aid', ...SC },
+];
+
 export const ELEMENTS = [
   { key: 'air',   label: 'Air',   color: '#29b89a' },
   { key: 'dark',  label: 'Dark',  color: '#8855cc' },
