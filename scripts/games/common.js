@@ -19,9 +19,31 @@ export const CLASS_OVERLAY_ROWS = [
 ];
 
 // img = filename without extension, used as images/common/scenario/{img}.png
-const SC = { left: 41, top: 35, w: 81, h: 70, defaultRole: 'scenario', commonDir: 'scenario' };
+// Sized/scaled down to match the coin token's rendered size and centered in the hex.
+const SC = { left: 25, top: 25, w: 50, h: 50, defaultRole: 'scenario', commonDir: 'scenario' };
 export const SCENARIO_ROWS = [
-  { id: 2001, title: 'scenario aid', img: 'scenario_aid', ...SC },
+  { id: 2001, title: 'scenario aid 0', img: '0', ...SC },
+  { id: 2002, title: 'scenario aid 1', img: '1', ...SC },
+  { id: 2003, title: 'scenario aid 2', img: '2', ...SC },
+  { id: 2004, title: 'scenario aid 3', img: '3', ...SC },
+  { id: 2005, title: 'scenario aid 4', img: '4', ...SC },
+  { id: 2006, title: 'scenario aid 5', img: '5', ...SC },
+  { id: 2007, title: 'scenario aid 6', img: '6', ...SC },
+  { id: 2008, title: 'scenario aid 7', img: '7', ...SC },
+  { id: 2009, title: 'scenario aid 8', img: '8', ...SC },
+  { id: 2010, title: 'scenario aid 9', img: '9', ...SC },
+  { id: 2011, title: 'scenario aid a', img: 'a', ...SC },
+  { id: 2012, title: 'scenario aid b', img: 'b', ...SC },
+  { id: 2013, title: 'scenario aid c', img: 'c', ...SC },
+  { id: 2014, title: 'scenario aid d', img: 'd', ...SC },
+  { id: 2015, title: 'scenario aid e', img: 'e', ...SC },
+  { id: 2016, title: 'scenario aid g', img: 'g', ...SC },
+  { id: 2017, title: 'scenario aid h', img: 'h', ...SC },
+  { id: 2018, title: 'scenario aid i', img: 'i', ...SC },
+  { id: 2019, title: 'scenario aid j', img: 'j', ...SC },
+  { id: 2020, title: 'scenario aid k', img: 'k', ...SC },
+  { id: 2021, title: 'scenario aid l', img: 'l', ...SC },
+  { id: 2022, title: 'scenario aid m', img: 'm', ...SC },
 ];
 
 export const ELEMENTS = [
