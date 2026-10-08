@@ -755,6 +755,8 @@ function handleAction(dataset) {
     patchKind('monster', arr.map((x, i) => i === idx ? { ...x, role: next, _maxhpLevel: undefined, _maxhpRole: undefined, _hpLevel: undefined, _hpRole: undefined } : x));
   } else if (action === 'toggle-door' && kind === 'overlay' && obj.role === 'door') {
     patchKind('overlay', arr.map((x, i) => i === idx ? { ...x, opened: !x.opened } : x));
+  } else if (action === 'toggle-objective' && kind === 'overlay' && obj.role === 'door') {
+    patchKind('overlay', arr.map((x, i) => i === idx ? { ...x, objective: !x.objective } : x));
   } else if (action === 'cycle-role' && kind === 'overlay') {
     const cur  = OVERLAY_ROLES.indexOf(obj.role);
     const next = OVERLAY_ROLES[(cur + 1) % OVERLAY_ROLES.length];
@@ -881,7 +883,9 @@ function objectPanel(kind, idx) {
     extraBtn = `<button class="sp-icon-btn${isElite ? ' is-locked' : ''}" data-action="toggle-role" title="${isElite ? 'Elite → Normal' : 'Normal → Elite'}">${roleDot(obj.role)}</button>`;
   } else if (kind === 'overlay' && obj.role === 'door') {
     const isOpen = Boolean(obj.opened);
-    extraBtn = `<button class="sp-icon-btn${isOpen ? ' is-locked' : ''}" data-action="toggle-door" title="${isOpen ? 'Close door' : 'Open door'}">${roleDot('door', isOpen)}</button>`;
+    const isObjective = Boolean(obj.objective);
+    extraBtn = `<button class="sp-icon-btn${isOpen ? ' is-locked' : ''}" data-action="toggle-door" title="${isOpen ? 'Close door' : 'Open door'}">${roleDot('door', isOpen)}</button>` +
+      `<button class="sp-icon-btn${isObjective ? ' is-locked' : ''}" data-action="toggle-objective" title="${isObjective ? 'Remove objective marker' : 'Mark as objective'}">${roleDot('objective', !isObjective)}</button>`;
   } else if (kind === 'overlay') {
     extraBtn = `<button class="sp-icon-btn" data-action="cycle-role" title="${ROLE_LABEL[obj.role] || obj.role}">${roleDot(obj.role)}</button>`;
   }

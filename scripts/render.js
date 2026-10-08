@@ -484,7 +484,23 @@ function renderRing(layer, col, row, role, dy = 0, dx = 0) {
   drawRoleIcon(layer, col, row, role, dy, dx);
 }
 
-function renderFootprintRing(layer, hexList, role, dy = 0, dx = 0) {
+// Gold halo drawn beneath a role ring to mark a door as a scenario objective.
+function drawObjectiveHalo(layer, hexList, dy = 0, dx = 0) {
+  const color = ROLE_RING.objective.color;
+  if (hexList.length === 1) { drawRing(layer, hexList[0].col, hexList[0].row, color, 0.93, 8.25, dy, dx); return; }
+  const d = mergedFootprintPath(hexList, dy, dx);
+  if (!d) return;
+  const el = document.createElementNS(SVG_NS, 'path');
+  el.setAttribute('d', d);
+  el.setAttribute('fill', 'none');
+  el.setAttribute('stroke', color);
+  el.setAttribute('stroke-width', '8.25');
+  el.setAttribute('pointer-events', 'none');
+  layer.appendChild(el);
+}
+
+function renderFootprintRing(layer, hexList, role, dy = 0, dx = 0, objective = false) {
+  if (objective) drawObjectiveHalo(layer, hexList, dy, dx);
   if (hexList.length === 1) { renderRing(layer, hexList[0].col, hexList[0].row, role, dy, dx); return; }
   const ring = ROLE_RING[role];
   if (!ring) return;
@@ -635,7 +651,7 @@ function renderOverlays(overlays) {
     }
 
     g.appendChild(img);
-    if (!data.noRing) renderFootprintRing(g, footprintHexes(col, row, data.hexes, angle), o.role, dy, dx);
+    if (!data.noRing) renderFootprintRing(g, footprintHexes(col, row, data.hexes, angle), o.role, dy, dx, o.role === 'door' && !!o.objective);
     layer.appendChild(g);
 
     if (o.hp !== undefined || o.maxhp !== undefined || o.damage !== undefined || o.counter !== undefined) {

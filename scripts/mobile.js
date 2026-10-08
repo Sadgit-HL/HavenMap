@@ -110,6 +110,7 @@ function quickActionsHtml() {
   }
   if (sel.kind === 'overlay' && obj.role === 'door') {
     buttons.push(`<button class="mobile-mini-btn mobile-mini-btn--role" data-mobile-object-action="toggle-door">${obj.opened ? 'Open' : 'Closed'}</button>`);
+    buttons.push(`<button class="mobile-mini-btn${obj.objective ? ' is-active' : ''}" data-mobile-object-action="toggle-objective">Objective</button>`);
   }
   buttons.push(`<button class="mobile-mini-btn${locked ? ' is-active' : ''}" data-mobile-object-action="toggle-lock">${locked ? 'Locked' : 'Lock'}</button>`);
   buttons.push(`<button class="mobile-mini-btn mobile-mini-btn--danger" data-mobile-object-action="remove" ${locked ? 'disabled' : ''}>Delete</button>`);
@@ -144,6 +145,8 @@ function applyObjectAction(action) {
     } : item) });
   } else if (action === 'toggle-door' && sel.kind === 'overlay' && obj.role === 'door') {
     patch({ [key]: arr.map((item, i) => i === sel.idx ? { ...item, opened: !item.opened } : item) });
+  } else if (action === 'toggle-objective' && sel.kind === 'overlay' && obj.role === 'door') {
+    patch({ [key]: arr.map((item, i) => i === sel.idx ? { ...item, objective: !item.objective } : item) });
   } else if (action === 'remove') {
     patch({ [key]: arr.filter((_, i) => i !== sel.idx) });
   }
