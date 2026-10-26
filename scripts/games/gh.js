@@ -98,6 +98,8 @@ const OVERLAY_ROWS = [
   { id: 55, title: 'bear trap',   img: 'bear-trap',   ...SH, defaultRole: 'trap' },
   { id: 56, title: 'poison trap', img: 'poison-trap', ...SH, defaultRole: 'trap' },
   { id: 57, title: 'spike trap',  img: 'spike-trap',  ...SH, defaultRole: 'trap' },
+  // ── Pressure plates ───────────────────────────────────────────────
+  { id: 67, title: 'pressure plate', img: 'pressure-plate', left: 35, top: 35, w: 70, h: 70, defaultRole: 'pressure-plate' },
   // ── Walls ─────────────────────────────────────────────────────────
   { id:  7, title: 'dark pit',    img: 'dark-pit',    ...TH,  defaultRole: 'wall' },
   { id:  8, title: 'wall',        img: 'wall',        ...WH,  defaultRole: 'wall' },
