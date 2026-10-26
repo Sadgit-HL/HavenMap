@@ -116,7 +116,7 @@ const OVERLAY_ROWS = [
   { id: 20, title: 'stump',        img: 'stump',        ...SH, defaultRole: 'obstacle' },
   { id: 21, title: 'table',        img: 'table',        ...LH, defaultRole: 'obstacle' },
   { id: 22, title: 'tree',         img: 'tree',         ...XH, defaultRole: 'obstacle' },
-  { id: 23, title: 'altar',        img: 'altar',        ...SH, defaultRole: 'obstacle' },
+  { id: 23, title: 'altar',        img: 'altar',        left: 36, top: 31, w: 72, h: 62, defaultRole: 'obstacle' },
   { id: 64, title: 'nest',         img: 'nest',         ...SH, defaultRole: 'obstacle' },
   { id: 66, title: 'barrel',       img: 'barrel',       left: 33, top: 28, w: 65, h: 56, defaultRole: 'obstacle' },
   { id: 65, title: 'sarcophagus',  img: 'sarcophagus-2h', ...TH, hexes: ['S'], defaultRole: 'obstacle' },
