@@ -1,5 +1,6 @@
 import { state, patch } from './state.js';
 import { ELEMENTS } from './games/common.js';
+import { endRoundPatch } from './decks.js';
 
 // 0=inert 1=waning 2=strong — click cycles inert -> strong -> waning.
 export function cycleElement(index) {
@@ -10,7 +11,7 @@ export function cycleElement(index) {
 
 export function endOfRound() {
   const els = state.elements.map(v => Math.max(0, v - 1));
-  patch({ elements: els });
+  patch({ elements: els, ...endRoundPatch() });
 }
 
 export function renderElements() {

@@ -6,6 +6,7 @@ import { initSidebar }                                 from './sidebar.js';
 import { initElements, renderElements }                from './elements.js';
 import { initLevel, renderLevel }                      from './level.js';
 import { initShare }                                   from './share.js';
+import { initDecks, renderDecks }                      from './decks.js';
 import { initMobile }                                  from './mobile.js';
 import { initLosLineTool }                             from './losLine.js';
 import { HEX_W, HEX_H, COLS, ROWS, hexCenter }        from './hex.js';
@@ -73,6 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initElements();
   initLevel();
   initShare();
+  initDecks();
   initMobile();
 
   function updateHistoryButtons() {
@@ -128,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Re-render whenever state changes
-  subscribe(() => { renderAll(state); renderElements(); renderLevel(); setGridLabelsVisible(state.showGridLabels); updateHistoryButtons(); });
+  subscribe(() => { renderAll(state); renderElements(); renderDecks(); renderLevel(); setGridLabelsVisible(state.showGridLabels); updateHistoryButtons(); });
   subscribeUI(() => { renderSelection(); });
 
   // Load from URL hash (triggers the subscriber above)

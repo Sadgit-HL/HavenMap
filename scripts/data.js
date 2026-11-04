@@ -32,6 +32,7 @@ function resolveConfig(cfg) {
     overlays: [...base.overlays, ...cfg.overlays],
     monsters: [...base.monsters, ...cfg.monsters],
     monsterStats: { ...base.monsterStats, ...cfg.monsterStats },
+    decks:    cfg.decks ?? base.decks,
     mercenaryStats: { ...base.mercenaryStats, ...cfg.mercenaryStats },
   };
 }
@@ -66,6 +67,10 @@ export const assetPath = {
   mercenary  : (title)            => `images/common/mercenaries/${urlize(title)}.png`,
   mercenaryMat: (title)           => `images/common/mercenary_mats/${urlize(title)}.png`,
   summon     : (title)            => `images/common/summons/${urlize(title)}.png`,
+  attackMod  : (img)              => `images/common/attack_mods/${img}.webp`,
+  amBack     : ()                 => 'images/common/card_backs/gh-am-m-back.webp',
+  maBack     : ()                 => 'images/common/card_backs/gh-ma-back.webp',
+  abilityCard: (slug, n)          => `images/gh2/monsters/monster-abilities/gh2-ma-${slug}-${n}.webp`,
 };
 
 // ─── Level-dependent stats lookup ───────────────────────────────────────────
@@ -124,6 +129,23 @@ export function generateTokenNum(tokenId, existingTokens) {
   let num = 1;
   while (usedNums.has(num)) num += 1;
   return num;
+}
+
+// ─── Monster ability decks ──────────────────────────────────────────────────
+
+export const DECKS = gameConfig.decks || {};
+
+// Monsters whose title contains one of these words share that deck.
+const SHARED_DECK_WORDS = ['archer', 'scout', 'imp', 'guard', 'priest'];
+
+export function deckSlugFor(monsterId) {
+  const monster = MONSTERS.byId.get(Number(monsterId));
+  if (!monster) return null;
+  if (monster.boss) return DECKS.boss ? 'boss' : null;
+  const words = monster.title.split(' ');
+  const shared = SHARED_DECK_WORDS.find(w => words.includes(w));
+  const slug = shared || monster.title.replace(/ /g, '-');
+  return DECKS[slug] ? slug : null;
 }
 
 // ─── Utilities ──────────────────────────────────────────────────────────────

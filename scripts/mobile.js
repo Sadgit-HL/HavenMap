@@ -6,6 +6,8 @@ import { ELEMENTS } from './games/common.js';
 import { TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES, SUMMONS } from './data.js';
 import { colLabel } from './hex.js';
 import { displayCurrentHp } from './hp.js';
+import { openDeckPanel, closeDeckPanel, isDeckPanelOpen, toggleDeckView, deckPanelView } from './decks.js';
+import { assetPath } from './data.js';
 
 const KIND_TABLE = {
   tile: TILES,
@@ -180,6 +182,19 @@ function elementsHtml() {
     </div>`;
 }
 
+// Same two card-back buttons as the desktop bottom bar.
+function decksHtml() {
+  const v = deckPanelView();
+  const btn = (view, action, title, src) => `
+    <button class="deck-toggle-btn${v === view ? ' is-active' : ''}" type="button" data-mobile-action="${action}"
+        title="${title}" aria-label="${title}"><img src="${src}" alt="" draggable="false"></button>`;
+  return `
+    <div class="mobile-panel-row mobile-panel-row--decks">
+      ${btn('am', 'am-toggle', 'Attack modifier deck', assetPath.amBack())}
+      ${btn('abilities', 'decks-toggle', 'Monster ability decks', assetPath.maBack())}
+    </div>`;
+}
+
 function selectionHtml() {
   const sel = selectedLabel();
   const canAdd = Boolean(uiState.selectedHex);
@@ -226,6 +241,7 @@ function render() {
     active === 'controls' ? controlsHtml() :
     active === 'elements' ? elementsHtml() :
     active === 'settings' ? settingsHtml() :
+    active === 'decks' ? decksHtml() :
     selectionHtml();
 
   document.querySelectorAll('[data-mobile-panel]').forEach(btn => {
@@ -260,6 +276,10 @@ function hasMobileOverlay() {
 }
 
 function closeTopMobileOverlay() {
+  if (isDeckPanelOpen()) {
+    closeDeckPanel();
+    return true;
+  }
   if (document.getElementById('settings-panel')?.classList.contains('open')) {
     closeSettings();
     return true;
@@ -293,8 +313,10 @@ export function initMobile() {
       e.stopPropagation();
       const panel = tab.dataset.mobilePanel;
       closeSettings();
+      closeDeckPanel();
       setMobilePanel(panel);
       if (panel === 'settings') openSettings();
+      if (panel === 'decks') openDeckPanel();
       return;
     }
 
@@ -350,6 +372,8 @@ export function initMobile() {
       setMobileMoveMode(!uiState.mobileMoveMode);
     }
     else if (action === 'settings') openSettings();
+    else if (action === 'decks-toggle') toggleDeckView('abilities');
+    else if (action === 'am-toggle') toggleDeckView('am');
     render();
   });
 
@@ -367,7 +391,7 @@ export function initMobile() {
       return;
     }
     if (!hasMobileOverlay()) return;
-    if (e.target.closest('#sidebar-panel, #mobile-shell, #settings-btn')) return;
+    if (e.target.closest('#sidebar-panel, #mobile-shell, #settings-btn, #deck-panel')) return;
     closeTopMobileOverlay();
   });
 

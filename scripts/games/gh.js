@@ -2,6 +2,7 @@
 // Images live in images/gh2/ (not gh/).
 
 import { MERCENARY_STATS } from './common.js';
+import { GH_DECKS } from './gh_decks.js';
 
 const SH = { left: 41, top: 35, w:  81, h:  70 };
 // 2-hex overlays — fixed display height 156, width computed to preserve aspect ratio
@@ -706,4 +707,5 @@ export default {
   monsters:         MONSTER_ROWS,
   mercenaryStats:   MERCENARY_STATS,
   monsterStats:     MONSTER_STATS,
+  decks:            GH_DECKS,
 };
