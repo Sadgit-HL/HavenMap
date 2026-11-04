@@ -13,6 +13,7 @@ import { assetPath, TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES, SUMMONS, COND
 import { colLabel, footprintHexes, hexCenter } from './hex.js';
 import { centerBoardPoint } from './controls.js';
 import { displayCurrentHp, displayMaxHp } from './hp.js';
+import { activeCardsFor } from './decks.js';
 
 // ─── Kind → state key + data table ───────────────────────────────────────────
 
@@ -915,6 +916,25 @@ function objectPanel(kind, idx) {
     }
   }
 
+  // Ability cards drawn this round for this monster's deck (read-only; draw and discard live in the deck panel).
+  let activeHtml = '';
+  if (kind === 'monster') {
+    const act = activeCardsFor(obj.id);
+    if (act) {
+      const one = act.cards.length === 1 ? ' sp-active-row--one' : '';
+      activeHtml = `
+        <div class="sp-card-section sp-active-section">
+          <div class="sp-subhead">Active ability &middot; ${act.label}</div>
+          <div class="sp-active-row${one}">${act.cards.map(c => `
+            <div class="sp-active-item">
+              <img class="sp-stat-card sp-active-card" data-zoom-w="400" src="${c.src}" alt="Initiative ${c.init}">
+              <span class="sp-active-init">${c.init}${c.s ? ' &#8635;' : ''}</span>
+            </div>`).join('')}
+          </div>
+        </div>`;
+    }
+  }
+
   const standeeCount = kind === 'monster' ? getMonsterCount(obj.id) : null;
   const standeesLine = standeeCount != null ? `<div class="sp-standees">Standees: ${standeeCount}</div>` : '';
   const monsterRoleChip = kind === 'monster'
@@ -945,6 +965,7 @@ function objectPanel(kind, idx) {
         <button class="sp-icon-btn sp-icon-btn--danger" data-action="remove" title="Remove">&#215;</button>
       </div>
     </div>
+    ${activeHtml}
     ${statCardHtml}
     ${(kind === 'mercenary' || kind === 'summon' || kind === 'monster') ? mercenaryStats(obj, kind) : kind === 'overlay' ? optionalTracking(kind, obj) : ''}
   `;

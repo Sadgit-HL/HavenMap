@@ -579,6 +579,20 @@ body {
   padding: 4px 2px 0;
 }
 
+/* Ability cards drawn this round (monster inspect panel) */
+.sp-active-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.sp-active-item { position: relative; flex: 0 0 calc(50% - 4px); max-width: calc(50% - 4px); }
+.sp-active-row--one .sp-active-item { flex-basis: 100%; max-width: 100%; }
+.sp-stat-card.sp-active-card {
+  margin-bottom: 0;
+  box-shadow: 0 0 0 2px #f0b428, 0 0 14px 2px rgba(240 180 40 / 0.55);
+}
+.sp-active-init {
+  position: absolute; left: 6px; bottom: 6px;
+  min-width: 26px; padding: 1px 7px; border-radius: 999px; text-align: center;
+  background: #f0b428; color: #1a1200; font-weight: 700; font-size: 13px; font-variant-numeric: tabular-nums;
+}
+
 .sp-action-section {
   margin: 8px 2px 10px;
   padding: 8px 10px;
@@ -2314,6 +2328,20 @@ body {
 .dk-tab-count { font-variant-numeric: tabular-nums; opacity: 0.8; }
 .dk-dot { width: 7px; height: 7px; border-radius: 50%; background: #f0b428; display: inline-block; }
 .dk-slot--out img { opacity: 0.35; filter: grayscale(100%); }
+.dk-slot--active { transform: translateY(-2px); }
+.dk-slot--active img { box-shadow: 0 0 0 2px #f0b428, 0 0 16px 3px rgba(240 180 40 / 0.6); }
+.dk-slot--active .dk-init { background: #f0b428; border-color: #f0b428; color: #1a1200; }
+.dk-discard {
+  position: absolute; top: 4px; right: 4px; width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 6px; background: rgba(10 10 30 / 0.78); border: 1px solid rgba(240 180 40 / 0.7);
+  color: #ffe2a0; cursor: pointer;
+}
+.dk-discard:hover { background: #f0b428; color: #1a1200; }
+.dk-tab-act {
+  padding: 0 6px; border-radius: 999px; background: #f0b428; color: #1a1200;
+  font-weight: 700; font-size: 11px; line-height: 16px; font-variant-numeric: tabular-nums;
+}
 .dk-mark {
   position: absolute; top: 1px; right: 2px;
   font-size: 11px; line-height: 1; color: #f0b428;
@@ -2371,6 +2399,7 @@ body {
   }
   #deck-panel.open { display: block; }
   .dk-slots { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .dk-discard { width: 30px; height: 30px; }
   .am-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .mobile-panel-row--decks { justify-content: center; gap: 16px; }
   .deck-toggle-btn img { height: 52px; }

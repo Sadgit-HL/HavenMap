@@ -1,7 +1,8 @@
 // Monster ability decks: draw/discard state, reshuffle rules, GeekRoller code, and the floating panel.
 //
-// State (state.decks[slug]):  { deck: [n...], discard: [n...] }
-// A missing entry means a full deck with nothing discarded. Cards are identified by their
+// State (state.decks[slug]):  { deck: [n...], discard: [n...], active?: [n...] }
+// deck = still to draw, active = drawn this round (moved to discard at end of round), discard = drawn earlier.
+// A missing entry means a full deck with nothing drawn. Cards are identified by their
 // number n (1-8) within the deck; the iid (used in the roller code) comes from DECKS.
 
 import { state, patch } from './state.js';
@@ -25,19 +26,21 @@ export function deckState(slug) {
   return {
     deck:    s?.deck    ?? fullDeck(slug),
     discard: s?.discard ?? [],
+    active:  s?.active  ?? [],
   };
 }
 
 // Drop entries that equal the default so the share link stays short.
 function normalize(slug, ds) {
-  const isDefault = ds.deck.length === cardsOf(slug).length && ds.discard.length === 0;
+  const isDefault = ds.deck.length === cardsOf(slug).length && ds.discard.length === 0 && ds.active.length === 0;
   return isDefault ? null : ds;
 }
 
 function withDeck(slug, ds) {
   const next = { ...(state.decks || {}) };
   const n = normalize(slug, ds);
-  if (n) next[slug] = n; else delete next[slug];
+  if (n) next[slug] = { deck: n.deck, discard: n.discard, ...(n.active.length ? { active: n.active } : {}) };
+  else delete next[slug];
   return next;
 }
 
@@ -61,33 +64,46 @@ export function visibleSlugs() {
 
 // ─── Actions ─────────────────────────────────────────────────────────────────
 
-// Deck -> discard (any number of cards).
-export function discardCard(slug, n) {
+const byNumber = (a, b) => a - b;
+
+// Deck -> active: the card is drawn for this round (any number of cards).
+export function activateCard(slug, n) {
   const ds = deckState(slug);
   if (!ds.deck.includes(n)) return;
+  patch({ decks: withDeck(slug, { ...ds,
+    deck:   ds.deck.filter(x => x !== n),
+    active: [...ds.active, n],
+  }) });
+}
+
+// Active -> deck (undo a draw) or discard -> deck (correct a misclick).
+export function returnCard(slug, n) {
+  const ds = deckState(slug);
+  if (!ds.active.includes(n) && !ds.discard.includes(n)) return;
   patch({ decks: withDeck(slug, {
-    deck:    ds.deck.filter(x => x !== n),
+    deck:    [...ds.deck, n].sort(byNumber),
+    discard: ds.discard.filter(x => x !== n),
+    active:  ds.active.filter(x => x !== n),
+  }) });
+}
+
+// Active -> discard by hand, without waiting for end of round.
+export function discardActive(slug, n) {
+  const ds = deckState(slug);
+  if (!ds.active.includes(n)) return;
+  patch({ decks: withDeck(slug, { ...ds,
+    active:  ds.active.filter(x => x !== n),
     discard: [...ds.discard, n],
   }) });
 }
 
-// Discard -> deck (to correct a misclick).
-export function returnCard(slug, n) {
-  const ds = deckState(slug);
-  if (!ds.discard.includes(n)) return;
-  patch({ decks: withDeck(slug, {
-    deck:    [...ds.deck, n].sort((a, b) => a - b),
-    discard: ds.discard.filter(x => x !== n),
-  }) });
-}
-
 export function shuffleDeck(slug) {
-  patch({ decks: withDeck(slug, { deck: fullDeck(slug), discard: [] }) });
+  patch({ decks: withDeck(slug, { deck: fullDeck(slug), discard: [], active: [] }) });
 }
 
 // A deck reshuffles at end of round if its discard holds a shuffle card or the deck is empty.
 function needsReshuffle(slug, ds) {
-  return ds.deck.length === 0 || ds.discard.some(n => cardOf(slug, n)?.s);
+  return ds.deck.length === 0 || [...ds.discard, ...ds.active].some(n => cardOf(slug, n)?.s);
 }
 
 // Called at end of round. Returns the new decks object.
@@ -95,7 +111,9 @@ export function endRoundDecks() {
   const next = { ...(state.decks || {}) };
   for (const slug of Object.keys(next)) {
     if (!DECKS[slug]) continue;
-    if (needsReshuffle(slug, deckState(slug))) delete next[slug];
+    const ds = deckState(slug);
+    if (needsReshuffle(slug, ds)) { delete next[slug]; continue; }
+    if (ds.active.length) next[slug] = { deck: ds.deck, discard: [...ds.discard, ...ds.active] }; // active -> discard
   }
   return next;
 }
@@ -123,15 +141,18 @@ function deckLabel(slug) {
 const ICON_DICE = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg>';
 const ICON_SHUFFLE = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M10.59 9.17 5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>';
 const ICON_EDIT = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>';
+const ICON_TO_DISCARD = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>';
 const ICON_CHECK = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
 
-function slotHtml(slug, c, inDeck) {
-  const title = `Initiative ${c.init}${c.s ? ', shuffle' : ''}`;
-  return `<button class="dk-slot${inDeck ? '' : ' dk-slot--out'}" type="button"
+function slotHtml(slug, c, status) { // status: 'deck' | 'active' | 'discard'
+  const title = `Initiative ${c.init}${c.s ? ', shuffle' : ''}${status === 'active' ? ' (active, click to return to deck)' : ''}`;
+  return `<button class="dk-slot${status === 'discard' ? ' dk-slot--out' : ''}${status === 'active' ? ' dk-slot--active' : ''}" type="button"
       data-dk-toggle="${slug}" data-dk-n="${c.n}" title="${title}">
     <img src="${assetPath.abilityCard(slug, c.n)}" data-dk-full="${assetPath.abilityCard(slug, c.n)}" alt="card ${c.n}" loading="lazy">
     ${c.s ? '<span class="dk-mark">&#8635;</span>' : ''}
     <span class="dk-init${c.s ? ' dk-init--s' : ''}">${c.init}</span>
+    ${status === 'active' ? `<span class="dk-discard" role="button" tabindex="0" data-dk-discard="${slug}" data-dk-n="${c.n}"
+        title="Discard now" aria-label="Discard now">${ICON_TO_DISCARD}</span>` : ''}
   </button>`;
 }
 
@@ -139,7 +160,8 @@ function deckHtml(slug) {
   const ds = deckState(slug);
   // Lowest initiative first (the order monsters act); ties keep card order.
   const sorted = [...cardsOf(slug)].sort((a, b) => a.init - b.init || a.n - b.n);
-  const slots = sorted.map(c => slotHtml(slug, c, ds.deck.includes(c.n))).join('');
+  const status = n => (ds.active.includes(n) ? 'active' : ds.deck.includes(n) ? 'deck' : 'discard');
+  const slots = sorted.map(c => slotHtml(slug, c, status(c.n))).join('');
   const offMap = !presentSlugs().includes(slug);
 
   return `<div class="dk-deck${offMap ? ' dk-deck--off' : ''}" data-dk-slug="${slug}">
@@ -147,7 +169,23 @@ function deckHtml(slug) {
   </div>`;
 }
 
+// Cards drawn this round for a monster's deck, lowest initiative first (for the sidebar). null when none.
+export function activeCardsFor(monsterId) {
+  const slug = deckSlugFor(monsterId);
+  if (!slug) return null;
+  const ds = deckState(slug);
+  const cards = ds.active.map(n => cardOf(slug, n)).filter(Boolean)
+    .sort((a, b) => a.init - b.init || a.n - b.n)
+    .map(c => ({ n: c.n, init: c.init, s: Boolean(c.s), src: assetPath.abilityCard(slug, c.n) }));
+  return cards.length ? { slug, label: deckLabel(slug), cards } : null;
+}
+
 let selectedSlug = null; // which tab is shown; view state only, not saved in the map link
+
+// Initiatives of the cards drawn this round, lowest first, e.g. "34" or "12/34".
+function activeInits(slug, ds) {
+  return ds.active.map(n => cardOf(slug, n)?.init).filter(v => v != null).sort((a, b) => a - b).join('/');
+}
 
 function tabStripHtml(slugs, active) {
   const on = presentSlugs();
@@ -158,6 +196,7 @@ function tabStripHtml(slugs, active) {
         role="tab" aria-selected="${slug === active}" data-dk-tab="${slug}">
       <span class="dk-tab-name">${esc(deckLabel(slug))}</span>
       <span class="dk-tab-count">${ds.deck.length}/${cardsOf(slug).length}</span>
+      ${ds.active.length ? `<span class="dk-tab-act" title="Active this round: initiative">${activeInits(slug, ds)}</span>` : ''}
       ${needsReshuffle(slug, ds) ? '<i class="dk-dot" title="Shuffles at end of round"></i>' : ''}
     </button>`;
   }).join('') + `</div>`;
@@ -364,10 +403,12 @@ export function initDecks() {
     if (amRst) { if (confirm('Reset this deck to the standard 20 cards?')) amResetComposition(amRst.dataset.amG); return; }
     const amAdj = e.target.closest('[data-am-adj]');
     if (amAdj) { amAdjust(amAdj.dataset.amAdj, Number(amAdj.dataset.d), amAdj.dataset.amG); return; }
+    const dis = e.target.closest('[data-dk-discard]');
+    if (dis) { discardActive(dis.dataset.dkDiscard, Number(dis.dataset.dkN)); return; }
     const tog = e.target.closest('[data-dk-toggle]');
     if (tog) {
       const slug = tog.dataset.dkToggle, n = Number(tog.dataset.dkN);
-      if (deckState(slug).deck.includes(n)) discardCard(slug, n); else returnCard(slug, n);
+      if (deckState(slug).deck.includes(n)) activateCard(slug, n); else returnCard(slug, n);
       return;
     }
     const copy = e.target.closest('[data-dk-copy]');
