@@ -927,7 +927,6 @@ function objectPanel(kind, idx) {
           <div class="sp-active-row${act.cards.length === 1 ? ' sp-active-row--one' : ''}">${act.cards.map(c => `
             <div class="sp-active-item">
               <img class="sp-stat-card sp-active-card" data-zoom-w="400" src="${c.src}" alt="Initiative ${c.init}">
-              <span class="sp-active-init" title="Initiative${c.s ? ', shuffle' : ''}">${c.init}${c.s ? ' &#8635;' : ''}</span>
             </div>`).join('')}
           </div>
         </div>`;
