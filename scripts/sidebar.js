@@ -921,14 +921,13 @@ function objectPanel(kind, idx) {
   if (kind === 'monster') {
     const act = activeCardsFor(obj.id);
     if (act) {
-      const one = act.cards.length === 1 ? ' sp-active-row--one' : '';
       activeHtml = `
         <div class="sp-card-section sp-active-section">
           <div class="sp-subhead">Active ability &middot; ${act.label}</div>
-          <div class="sp-active-row${one}">${act.cards.map(c => `
+          <div class="sp-active-row${act.cards.length === 1 ? ' sp-active-row--one' : ''}">${act.cards.map(c => `
             <div class="sp-active-item">
               <img class="sp-stat-card sp-active-card" data-zoom-w="400" src="${c.src}" alt="Initiative ${c.init}">
-              <span class="sp-active-init">${c.init}${c.s ? ' &#8635;' : ''}</span>
+              <span class="sp-active-init" title="Initiative${c.s ? ', shuffle' : ''}">${c.init}${c.s ? ' &#8635;' : ''}</span>
             </div>`).join('')}
           </div>
         </div>`;
@@ -940,6 +939,20 @@ function objectPanel(kind, idx) {
   const monsterRoleChip = kind === 'monster'
     ? `<span class="sp-role-chip sp-role-chip--${obj.role || 'normal'}">${roleText}</span>`
     : '';
+
+  const toolbarHtml = `
+    <div class="sp-action-section">
+      <div class="sp-subhead">Object</div>
+      <div class="sp-toolbar">
+        <button class="sp-icon-btn" data-action="rotate-ccw" ${locked ? 'disabled' : ''} title="Rotate CCW">&#8634;</button>
+        <button class="sp-icon-btn" data-action="rotate-cw"  ${locked ? 'disabled' : ''} title="Rotate CW">&#8635;</button>
+        ${extraBtn}
+        <button class="${lockCls}" data-action="toggle-lock" title="${locked ? 'Unlock' : 'Lock'}">${locked ? '&#128274;' : '&#128275;'}</button>
+        <button class="sp-icon-btn sp-icon-btn--danger" data-action="remove" title="Remove">&#215;</button>
+      </div>
+    </div>`;
+  const statsHtml = (kind === 'mercenary' || kind === 'summon' || kind === 'monster') ? mercenaryStats(obj, kind)
+    : kind === 'overlay' ? optionalTracking(kind, obj) : '';
 
   return `
     ${backBtn}
@@ -955,19 +968,10 @@ function objectPanel(kind, idx) {
         ${kind === 'monster' ? `<div class="sp-meta-line">${monsterMeta}</div>` : detail ? `<div class="sp-meta-line">${detail}</div>` : ''}
       </div>
     </div>
-    <div class="sp-action-section">
-      <div class="sp-subhead">Object</div>
-      <div class="sp-toolbar">
-        <button class="sp-icon-btn" data-action="rotate-ccw" ${locked ? 'disabled' : ''} title="Rotate CCW">&#8634;</button>
-        <button class="sp-icon-btn" data-action="rotate-cw"  ${locked ? 'disabled' : ''} title="Rotate CW">&#8635;</button>
-        ${extraBtn}
-        <button class="${lockCls}" data-action="toggle-lock" title="${locked ? 'Unlock' : 'Lock'}">${locked ? '&#128274;' : '&#128275;'}</button>
-        <button class="sp-icon-btn sp-icon-btn--danger" data-action="remove" title="Remove">&#215;</button>
-      </div>
-    </div>
+    ${statsHtml}
     ${activeHtml}
     ${statCardHtml}
-    ${(kind === 'mercenary' || kind === 'summon' || kind === 'monster') ? mercenaryStats(obj, kind) : kind === 'overlay' ? optionalTracking(kind, obj) : ''}
+    ${toolbarHtml}
   `;
 }
 

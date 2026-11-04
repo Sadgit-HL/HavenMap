@@ -579,7 +579,7 @@ body {
   padding: 4px 2px 0;
 }
 
-/* Ability cards drawn this round (monster inspect panel) */
+/* Ability cards drawn this round (monster inspect panel): full column width, two per row */
 .sp-active-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
 .sp-active-item { position: relative; flex: 0 0 calc(50% - 4px); max-width: calc(50% - 4px); }
 .sp-active-row--one .sp-active-item { flex-basis: 100%; max-width: 100%; }
