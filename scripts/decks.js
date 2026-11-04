@@ -8,8 +8,8 @@ import { state, patch } from './state.js';
 import { DECKS, deckSlugFor, assetPath } from './data.js';
 import { uiState, subscribeUI } from './uiState.js';
 import {
-  AM_TYPES, AM_SPECIAL, amState, amNeedsReshuffle, amDeckTotal, amDraw, amReturn, amAdjust,
-  amShuffleNow, amEndRound, amRollerCode,
+  AM_TYPES, AM_SPECIAL, AM_GROUPS, amState, amNeedsReshuffle, amDeckTotal, amDraw, amReturn, amAdjust,
+  amShuffleNow, amEndRound, amRollerCode, amEditCard, amSetImbue, amResetComposition, AM_MAX_PER_TYPE,
 } from './attackMods.js';
 
 let view = null; // panel content: null (closed), 'abilities' or 'am'
@@ -102,7 +102,7 @@ export function endRoundDecks() {
 
 // End-of-round changes to every deck, for one patch() call (one undo step).
 export function endRoundPatch() {
-  return { decks: endRoundDecks(), am: amEndRound() };
+  return { decks: endRoundDecks(), am: amEndRound('m'), amA: amEndRound('a') };
 }
 
 // GeekRoller code for the cards still in the deck, e.g. 1custom3{iid:9903036;iid:9903037;iid:9903038}
@@ -122,6 +122,7 @@ function deckLabel(slug) {
 
 const ICON_DICE = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg>';
 const ICON_SHUFFLE = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M10.59 9.17 5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>';
+const ICON_EDIT = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>';
 const ICON_CHECK = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
 
 function slotHtml(slug, c, inDeck) {
@@ -179,45 +180,68 @@ function tabsHtml(slugs, active) {
   </div>`;
 }
 
-function amTileHtml(c, s, special) {
+function amTileHtml(c, s, special, g, edit) {
   const n = s.deck[c.key] || 0, disc = s.discard[c.key] || 0;
   const label = special ? c.label : c.face;
-  const foot = special
-    ? `<div class="am-adj"><button type="button" data-am-adj="${c.key}" data-d="-1" title="Remove one ${label} card">&minus;</button>
-         <button type="button" data-am-adj="${c.key}" data-d="1" title="Add one ${label} card" ${n >= c.max ? 'disabled' : ''}>+</button></div>`
-    : `<button class="am-ret" type="button" data-am-ret="${c.key}" ${disc ? '' : 'disabled'}
+  const base = s.base[c.key] || 0;
+  let foot;
+  if (special) {
+    foot = `<div class="am-adj"><button type="button" data-am-adj="${c.key}" data-am-g="${g}" data-d="-1" title="Remove one ${label} card">&minus;</button>
+         <button type="button" data-am-adj="${c.key}" data-am-g="${g}" data-d="1" title="Add one ${label} card" ${n >= c.max ? 'disabled' : ''}>+</button></div>`;
+  } else if (edit) {
+    foot = `<div class="am-adj am-adj--edit"><button type="button" data-am-edit="${c.key}" data-am-g="${g}" data-d="-1" title="Remove one ${label} card from the deck permanently" ${base ? '' : 'disabled'}>&minus;</button>
+         <button type="button" data-am-edit="${c.key}" data-am-g="${g}" data-d="1" title="Add one ${label} card to the deck permanently" ${base >= AM_MAX_PER_TYPE ? 'disabled' : ''}>+</button></div>`;
+  } else {
+    foot = `<button class="am-ret" type="button" data-am-ret="${c.key}" data-am-g="${g}" ${disc ? '' : 'disabled'}
          title="Return one ${label} from the discard to the deck">&#8630; ${disc}</button>`;
-  return `<div class="am-tile">
-    <button class="am-card${n ? '' : ' is-empty'}" type="button" data-am-draw="${c.key}" ${n ? '' : 'disabled'}
+  }
+  return `<div class="am-tile${!special && !base && !n && !disc ? ' am-tile--none' : ''}">
+    <button class="am-card${n ? '' : ' is-empty'}" type="button" data-am-draw="${c.key}" data-am-g="${g}" ${n ? '' : 'disabled'}
         title="${special ? 'Draw (removes the card from the game)' : 'Draw one ' + label}">
       <img src="${assetPath.attackMod(c.img)}" alt="${label}" draggable="false">
-      <span class="am-n">${n}${special ? '' : '/' + c.count}</span>
+      <span class="am-n">${n}${special ? '' : '/' + base}</span>
       ${c.shuffle ? '<span class="dk-mark">&#8635;</span>' : ''}
     </button>${foot}</div>`;
 }
 
+let amGroup = 'm'; // which attack modifier tab is shown; view state only
+let amEdit = false; // composition edit mode; view state only
+
 function amHtml() {
-  const s = amState();
+  const g = amGroup;
+  const s = amState(g);
   const pending = amNeedsReshuffle(s);
-  const tiles = [...AM_TYPES.map(c => amTileHtml(c, s, false)), ...AM_SPECIAL.map(c => amTileHtml(c, s, true))].join('');
-  // Same bar as the ability decks: title chip on the left, note and buttons pinned right.
+  // Cards that are not in the standard deck show up when present, or in edit mode so they can be added.
+  const shown = AM_TYPES.filter(c => !c.extra || amEdit || (s.base[c.key] || 0) > 0 || (s.deck[c.key] || 0) > 0 || (s.discard[c.key] || 0) > 0);
+  const tiles = [...shown.map(c => amTileHtml(c, s, false, g, amEdit)), ...AM_SPECIAL.map(c => amTileHtml(c, s, true, g, amEdit))].join('');
+  const editBar = amEdit ? `<div class="am-edit-bar">
+      ${g === 'm' ? `<span class="am-edit-lbl">Imbuement</span>
+      <span class="am-seg" role="group" aria-label="Imbuement level">${[0, 1, 2].map(l =>
+        `<button type="button" class="${s.lvl === l ? 'is-active' : ''}" data-am-imbue="${l}" data-am-g="${g}">${l === 0 ? 'Off' : l}</button>`).join('')}</span>` : ''}
+      <span class="am-edit-hint">+ / &minus; change the deck permanently</span>
+      <button type="button" class="am-edit-reset" data-am-reset data-am-g="${g}" title="Back to the standard 20 cards">Reset to standard</button>
+    </div>` : '';
+  // Same bar as the ability decks: tabs on the left, note and buttons pinned right.
+  const tabs = AM_GROUPS.map(t => `<button class="dk-tab${t.key === g ? ' is-active' : ''}" type="button"
+        role="tab" aria-selected="${t.key === g}" data-am-tab="${t.key}">
+      <img class="dk-tab-img" src="${assetPath.amBack()}" alt="" draggable="false">
+      <span class="dk-tab-name">${t.label}</span>
+      <span class="dk-tab-count">${amDeckTotal(t.key)}</span>
+      ${amNeedsReshuffle(amState(t.key)) ? '<i class="dk-dot" title="Shuffles at end of round"></i>' : ''}
+    </button>`).join('');
   return `<div class="dk-bar">
-    <div class="dk-tabs">
-      <span class="dk-tab is-active dk-tab--static">
-        <img class="dk-tab-img" src="${assetPath.amBack()}" alt="" draggable="false">
-        <span class="dk-tab-name">Attack modifiers</span>
-        <span class="dk-tab-count">${amDeckTotal()}</span>
-        ${pending ? '<i class="dk-dot" title="Shuffles at end of round"></i>' : ''}
-      </span>
-    </div>
+    <div class="dk-tabs" role="tablist">${tabs}</div>
     <div class="dk-bar-actions">
       ${pending ? '<span class="dk-note dk-note--pend">shuffles at end of round</span>' : ''}
-      <button class="dk-act" type="button" data-dk-copy="am" ${amDeckTotal() ? '' : 'disabled'}
+      <button class="dk-act${amEdit ? ' is-on' : ''}" type="button" data-am-edit-toggle aria-pressed="${amEdit}"
+        title="Edit deck composition" aria-label="Edit deck composition">${ICON_EDIT}</button>
+      <button class="dk-act" type="button" data-dk-copy="am:${g}" ${amDeckTotal(g) ? '' : 'disabled'}
         title="Copy GeekRoller code" aria-label="Copy GeekRoller code">${ICON_DICE}</button>
-      <button class="dk-act" type="button" data-dk-shuffle="am"
+      <button class="dk-act" type="button" data-dk-shuffle="am:${g}"
         title="Shuffle deck now" aria-label="Shuffle deck now">${ICON_SHUFFLE}</button>
     </div>
   </div>
+  ${editBar}
   <div class="dk-deck" data-dk-slug="am">
     <div class="am-grid">${tiles}</div>
   </div>`;
@@ -251,7 +275,7 @@ export function renderDecks() {
 async function copyCode(btn, slug) {
   const orig = btn.innerHTML;
   try {
-    await navigator.clipboard.writeText(slug === 'am' ? amRollerCode() : rollerCode(slug));
+    await navigator.clipboard.writeText(slug.startsWith('am:') ? amRollerCode(slug.slice(3)) : rollerCode(slug));
     btn.innerHTML = ICON_CHECK;
     btn.classList.add('dk-act--ok');
   } catch {
@@ -324,12 +348,22 @@ export function initDecks() {
   panel.addEventListener('click', e => {
     const tab = e.target.closest('[data-dk-tab]');
     if (tab) { selectedSlug = tab.dataset.dkTab; renderDecks(); return; }
+    const amTab = e.target.closest('[data-am-tab]');
+    if (amTab) { amGroup = amTab.dataset.amTab; renderDecks(); return; }
     const amDrawBtn = e.target.closest('[data-am-draw]');
-    if (amDrawBtn) { amDraw(amDrawBtn.dataset.amDraw); return; }
+    if (amDrawBtn) { amDraw(amDrawBtn.dataset.amDraw, amDrawBtn.dataset.amG); return; }
     const amRet = e.target.closest('[data-am-ret]');
-    if (amRet) { amReturn(amRet.dataset.amRet); return; }
+    if (amRet) { amReturn(amRet.dataset.amRet, amRet.dataset.amG); return; }
+    const amEd = e.target.closest('[data-am-edit]');
+    if (amEd) { amEditCard(amEd.dataset.amEdit, Number(amEd.dataset.d), amEd.dataset.amG); return; }
+    const amTog = e.target.closest('[data-am-edit-toggle]');
+    if (amTog) { amEdit = !amEdit; renderDecks(); return; }
+    const amImb = e.target.closest('[data-am-imbue]');
+    if (amImb) { amSetImbue(Number(amImb.dataset.amImbue), amImb.dataset.amG); return; }
+    const amRst = e.target.closest('[data-am-reset]');
+    if (amRst) { if (confirm('Reset this deck to the standard 20 cards?')) amResetComposition(amRst.dataset.amG); return; }
     const amAdj = e.target.closest('[data-am-adj]');
-    if (amAdj) { amAdjust(amAdj.dataset.amAdj, Number(amAdj.dataset.d)); return; }
+    if (amAdj) { amAdjust(amAdj.dataset.amAdj, Number(amAdj.dataset.d), amAdj.dataset.amG); return; }
     const tog = e.target.closest('[data-dk-toggle]');
     if (tog) {
       const slug = tog.dataset.dkToggle, n = Number(tog.dataset.dkN);
@@ -339,6 +373,6 @@ export function initDecks() {
     const copy = e.target.closest('[data-dk-copy]');
     if (copy) { copyCode(copy, copy.dataset.dkCopy); return; }
     const shuf = e.target.closest('[data-dk-shuffle]');
-    if (shuf) { if (shuf.dataset.dkShuffle === 'am') amShuffleNow(); else shuffleDeck(shuf.dataset.dkShuffle); }
+    if (shuf) { if (shuf.dataset.dkShuffle.startsWith('am:')) amShuffleNow(shuf.dataset.dkShuffle.slice(3)); else shuffleDeck(shuf.dataset.dkShuffle); }
   });
 }

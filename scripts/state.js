@@ -83,6 +83,7 @@ function emptyState() {
     overlays:        [],
     questObjectives: {},
     am:              null, // monster attack modifier deck: { deck:{key:n}, discard:{key:n} }; null = standard 20 cards
+    amA:             null, // ally attack modifier deck, same shape as am
     decks:           {}, // monster ability decks: slug -> { deck:[n], discard:[n] }; absent = full deck
     elements:        [0, 0, 0, 0, 0, 0], // fire ice air earth light dark — 0=inert 1=waning 2=strong
     showGridLabels:  false,

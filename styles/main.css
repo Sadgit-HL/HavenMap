@@ -2321,7 +2321,7 @@ body {
   pointer-events: none;
 }
 .dk-tab-img { display: block; height: 16px; width: auto; border-radius: 2px; }
-.am-grid { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 8px; max-width: 1100px; }
+.am-grid { display: grid; grid-template-columns: repeat(auto-fill, 112px); justify-content: start; gap: 8px; }
 .am-tile { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .am-card { position: relative; padding: 0; border: 0; background: none; cursor: pointer; color: inherit; font: inherit; }
 .am-card img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 4px; transition: opacity 0.12s, filter 0.12s; }
@@ -2340,6 +2340,17 @@ body {
 .am-ret:hover:not(:disabled), .am-adj button:hover:not(:disabled) { background: rgba(138 216 255 / 0.18); color: #fff; }
 .am-ret:disabled, .am-adj button:disabled { opacity: 0.35; cursor: default; }
 .am-adj { display: flex; gap: 4px; }
+.am-tile--none .am-card img { opacity: 0.45; }
+.dk-act.is-on { box-shadow: 0 0 0 2px rgba(240 180 40 / 0.85); color: #f0b428; }
+.am-edit-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 0 0 10px; max-width: 1100px; font-size: 12px; color: rgba(255 255 255 / 0.7); }
+.am-edit-lbl { font-weight: 600; color: #fff; }
+.am-seg { display: inline-flex; border: 1px solid rgba(255 255 255 / 0.2); border-radius: 6px; overflow: hidden; }
+.am-seg button { padding: 4px 12px; border: 0; background: rgba(255 255 255 / 0.05); color: inherit; font: inherit; cursor: pointer; }
+.am-seg button + button { border-left: 1px solid rgba(255 255 255 / 0.2); }
+.am-seg button.is-active { background: rgba(240 180 40 / 0.25); color: #f0b428; }
+.am-edit-hint { flex: 1 1 auto; opacity: 0.7; }
+.am-edit-reset { padding: 4px 12px; border: 1px solid rgba(255 255 255 / 0.2); border-radius: 6px; background: rgba(255 255 255 / 0.05); color: inherit; font: inherit; cursor: pointer; }
+.am-edit-reset:hover { background: rgba(138 216 255 / 0.18); color: #fff; }
 .am-adj button { flex: 1; font-size: 14px; line-height: 1; }
 .dk-empty { color: rgba(255 255 255 / 0.4); font-style: italic; }
 #deck-preview {
