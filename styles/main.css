@@ -2286,6 +2286,12 @@ body {
 .dk-act:active:not(:disabled) { transform: none; }
 .dk-act:focus-visible { outline: 2px solid rgba(138 216 255 / 0.85); outline-offset: 2px; }
 .dk-act:disabled { opacity: 0.35; cursor: default; box-shadow: none; }
+.dk-act--minor {
+  width: 30px; height: 30px; margin-left: 10px;
+  background: none; border-color: rgba(255 255 255 / 0.14); box-shadow: none;
+  color: rgba(255 255 255 / 0.55);
+}
+.dk-act--minor svg { width: 16px; height: 16px; }
 .dk-act--ok {
   background: linear-gradient(180deg, rgba(120 220 150 / 0.34), rgba(120 220 150 / 0.14));
   border-color: rgba(120 220 150 / 0.70);

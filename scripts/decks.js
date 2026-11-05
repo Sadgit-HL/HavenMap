@@ -272,12 +272,12 @@ function amHtml() {
     <div class="dk-tabs" role="tablist">${tabs}</div>
     <div class="dk-bar-actions">
       ${pending ? '<span class="dk-note dk-note--pend">shuffles at end of round</span>' : ''}
-      <button class="dk-act${amEdit ? ' is-on' : ''}" type="button" data-am-edit-toggle aria-pressed="${amEdit}"
-        title="Edit deck composition" aria-label="Edit deck composition">${ICON_EDIT}</button>
       <button class="dk-act" type="button" data-dk-copy="am:${g}" ${amDeckTotal(g) ? '' : 'disabled'}
         title="Copy GeekRoller code" aria-label="Copy GeekRoller code">${ICON_DICE}</button>
       <button class="dk-act" type="button" data-dk-shuffle="am:${g}"
         title="Shuffle deck now" aria-label="Shuffle deck now">${ICON_SHUFFLE}</button>
+      <button class="dk-act dk-act--minor${amEdit ? ' is-on' : ''}" type="button" data-am-edit-toggle aria-pressed="${amEdit}"
+        title="Edit deck composition" aria-label="Edit deck composition">${ICON_EDIT}</button>
     </div>
   </div>
   ${editBar}
