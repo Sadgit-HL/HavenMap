@@ -7,6 +7,7 @@
 //   decorated cards  the art slug, e.g. 'plus0pierce3flip'
 //   unique cards     'u-' + code, e.g. 'u-df1'
 import { PERKS } from '../games/perks.js';
+import { UNIQUE_FACE_TEXT } from './uniqueFaceText.js';
 
 // Mercenary title -> perk class name where the spelling differs.
 const CLASS_ALIAS = { 'HIVE': 'H.I.V.E.' };
@@ -32,8 +33,12 @@ export function cardKey(card) {
 
 const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 
-// Text for the GeekRoller code: "+0 Pierce 3 Rolling" for decorated faces, the quoted card text of
-// the perk for unique ones (the data has no value for those), else "Unique <code>".
+// Text for the GeekRoller code: "+0 Pierce 3 Rolling" for decorated faces, a hand-compacted
+// abbreviation (see uniqueFaceText.js and docs/unique-geekroller-codes.md) for unique ones with
+// one, else the quoted card text of the perk, else the perk's own (unquoted) description trimmed
+// the same way, else "Unique <code>" as a last resort when a perk has no text at all. BGG's
+// GeekRoller caps an entire roll at 241 characters total across every face, so these all stay
+// short rather than fully describing the effect -- the player can look up the code's meaning.
 function faceText(card, perk) {
   if (card.kind === 'shared') {
     const parts = [card.value];
@@ -43,9 +48,10 @@ function faceText(card, perk) {
     }
     return parts.join(' ').replace(/\s+/g, ' ').trim();
   }
-  const quoted = /"([^"]+)"/.exec(perk?.text || '')?.[1];
-  if (!quoted) return 'Unique ' + card.code;
-  const t = quoted.replace(/%flip%/g, '').replace(/%(\w+)%/g, '$1').replace(/\s+/g, ' ').trim();
+  if (UNIQUE_FACE_TEXT[card.code]) return UNIQUE_FACE_TEXT[card.code];
+  const raw = /"([^"]+)"/.exec(perk?.text || '')?.[1] ?? perk?.text;
+  if (!raw) return 'Unique ' + card.code;
+  const t = raw.replace(/%flip%/g, '').replace(/%(\w+)%/g, '$1').replace(/\s+/g, ' ').trim();
   return t.length > 60 ? t.slice(0, 57) + '...' : t;
 }
 

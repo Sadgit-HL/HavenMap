@@ -16,14 +16,15 @@ import { MERCENARIES } from './data.js';
 import { heroCatalog, heroPerkClass, perkDelta, perkBoxes, perkLabel, groupPerks } from './amd/heroDeck.js';
 
 // Order = order of faces in the GeekRoller code. Standard cards first, then cards added by imbuement.
+// allyImg: the ally deck's own badge ("A", vs the monster deck's "M") on otherwise identical cards.
 export const AM_TYPES = [
-  { key: 'p0',   face: '+0',   count: 6, value: '+0', img: 'monster/plus0',  shuffle: false },
-  { key: 'p1',   face: '+1',   count: 5, value: '+1', img: 'monster/plus1',  shuffle: false },
-  { key: 'm1',   face: '-1',   count: 5, value: '-1', img: 'monster/minus1',  shuffle: false },
-  { key: 'p2',   face: '+2',   count: 1, value: '+2', img: 'monster/plus2',  shuffle: false },
-  { key: 'm2',   face: '-2',   count: 1, value: '-2', img: 'monster/minus2',  shuffle: false },
-  { key: 'x2',   face: 'x2',   count: 1, value: 'x2', img: 'monster/x2',  shuffle: true  },
-  { key: 'miss', face: 'Miss', count: 1, value: 'null', img: 'monster/miss',  shuffle: true  },
+  { key: 'p0',   face: '+0',   count: 6, value: '+0', img: 'monster/plus0',  allyImg: 'ally/plus0',  shuffle: false },
+  { key: 'p1',   face: '+1',   count: 5, value: '+1', img: 'monster/plus1',  allyImg: 'ally/plus1',  shuffle: false },
+  { key: 'm1',   face: '-1',   count: 5, value: '-1', img: 'monster/minus1', allyImg: 'ally/minus1', shuffle: false },
+  { key: 'p2',   face: '+2',   count: 1, value: '+2', img: 'monster/plus2',  allyImg: 'ally/plus2',  shuffle: false },
+  { key: 'm2',   face: '-2',   count: 1, value: '-2', img: 'monster/minus2', allyImg: 'ally/minus2', shuffle: false },
+  { key: 'x2',   face: 'x2',   count: 1, value: 'x2', img: 'monster/x2',    allyImg: 'ally/x2',     shuffle: true  },
+  { key: 'miss', face: 'Miss', count: 1, value: 'null', img: 'monster/miss', allyImg: 'ally/miss',   shuffle: true  },
   // not in the standard deck (count 0); shown when present or in edit mode
   { key: 'i2m',  face: '+2 Muddle', count: 0, img: 'imbuement/plus2muddle', shuffle: false, extra: true },
   { key: 'i0p',  face: '+0 Poison', count: 0, img: 'imbuement/plus0poison', shuffle: false, extra: true },
@@ -34,9 +35,13 @@ export const AM_TYPES = [
 ];
 
 // Added and removed by hand, temporary. Face text is what goes into the roller code.
+// face is 'B'/'C' (not 'Bless'/'Curse'): up to 10 of each can be in a deck's GeekRoller code at
+// once (the party-wide combined cap, see amIsPartySpecial), and BGG's GeekRoller caps an entire
+// roll at 241 characters total across every face -- so these need to be as short as possible.
+// label stays the full word for the UI (button titles etc.).
 export const AM_SPECIAL = [
-  { key: 'bless', face: 'Bless', img: 'monster/bless', heroImg: 'hero/bless', label: 'Bless', max: 10 },
-  { key: 'curse', face: 'Curse', img: 'monster/curse', heroImg: 'hero/curse', label: 'Curse', max: 10 },
+  { key: 'bless', face: 'B', img: 'monster/bless', heroImg: 'hero/bless', label: 'Bless', max: 10 },
+  { key: 'curse', face: 'C', img: 'monster/curse', heroImg: 'hero/curse', label: 'Curse', max: 10 },
 ];
 
 // Monster imbuement (level 2 includes level 1): changes to the base composition.
@@ -100,6 +105,10 @@ export function amDecks() {
 
 // Hero decks (key 'h<i>') use the hero versions of bless/curse (no monster badge).
 export const amIsHero = g => heroIndex(g) !== undefined;
+
+// Decks whose bless/curse share one combined pool of 10 each (star badge): every hero deck plus
+// the ally deck. The monster deck has its own independent pool of 10 each (M badge).
+export const amIsPartySpecial = g => g === 'a' || amIsHero(g);
 
 // Only the monster deck is imbued.
 export const amSupportsImbue = g => g === 'm';
@@ -215,12 +224,32 @@ export function amReturn(key, g = 'm') {
   save(g, st);
 }
 
+// Current count of `key` (bless/curse) across every party deck (heroes + allies) except `exceptG`.
+function partySpecialTotal(key, exceptG) {
+  let total = exceptG === 'a' ? 0 : (amState('a').deck[key] || 0);
+  (state.mercenaries || []).forEach((h, i) => {
+    const g = 'h' + i;
+    if (g === exceptG || !heroTitle(i)) return;
+    total += amState(g).deck[key] || 0;
+  });
+  return total;
+}
+
+// Highest count deck g's `key` (bless/curse) may reach right now: the monster deck has its own
+// independent cap of spec.max; hero and ally decks share one combined cap of spec.max across the
+// whole party, so a deck's own room shrinks by whatever the rest of the party already holds.
+export function amSpecialCap(key, g) {
+  const spec = AM_SPECIAL.find(s => s.key === key);
+  if (!spec) return 0;
+  return amIsPartySpecial(g) ? Math.max(0, spec.max - partySpecialTotal(key, g)) : spec.max;
+}
+
 // Add (+1) or remove (-1) a bless or curse card.
 export function amAdjust(key, delta, g = 'm') {
   const spec = AM_SPECIAL.find(s => s.key === key);
   if (!spec) return;
   const st = amState(g);
-  const next = Math.max(0, Math.min(spec.max, st.deck[key] + delta));
+  const next = Math.max(0, Math.min(amSpecialCap(key, g), st.deck[key] + delta));
   if (next === st.deck[key]) return;
   st.deck[key] = next;
   save(g, st);

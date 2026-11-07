@@ -13,7 +13,7 @@ import { createHoverPreview, previewImage } from './hoverPreview.js';
 import { perkTextHtml } from './amd/perkText.js';
 import { escapeHtml as esc } from './escape.js';
 import {
-  AM_SPECIAL, amDecks, amSupportsImbue, amIsHero, amCardLocked, amState, amClassName, amHeroPerks, amToggleBox, amDeckInfo, amDraw, amReturn, amAdjust,
+  AM_SPECIAL, amDecks, amSupportsImbue, amIsPartySpecial, amSpecialCap, amCardLocked, amState, amClassName, amHeroPerks, amToggleBox, amDeckInfo, amDraw, amReturn, amAdjust,
   amShuffleNow, amEndRoundPatch, amRollerCode, amEditCard, amSetImbue, amResetComposition, AM_MAX_PER_TYPE,
 } from './attackMods.js';
 
@@ -230,7 +230,7 @@ function amTileHtml(c, s, special, g, editMode) {
   let foot;
   if (special) {
     foot = `<div class="am-adj"><button type="button" data-am-adj="${c.key}" data-am-g="${g}" data-d="-1" title="Remove one ${label} card">&minus;</button>
-         <button type="button" data-am-adj="${c.key}" data-am-g="${g}" data-d="1" title="Add one ${label} card" ${n >= c.max ? 'disabled' : ''}>+</button></div>`;
+         <button type="button" data-am-adj="${c.key}" data-am-g="${g}" data-d="1" title="Add one ${label} card" ${n >= amSpecialCap(c.key, g) ? 'disabled' : ''}>+</button></div>`;
   } else if (edit) {
     foot = `<div class="am-adj am-adj--edit"><button type="button" data-am-edit="${c.key}" data-am-g="${g}" data-d="-1" title="Remove one ${label} card from the deck permanently" ${base ? '' : 'disabled'}>&minus;</button>
          <button type="button" data-am-edit="${c.key}" data-am-g="${g}" data-d="1" title="Add one ${label} card to the deck permanently" ${base >= AM_MAX_PER_TYPE ? 'disabled' : ''}>+</button></div>`;
@@ -238,7 +238,11 @@ function amTileHtml(c, s, special, g, editMode) {
     foot = `<button class="am-ret" type="button" data-am-ret="${c.key}" data-am-g="${g}" ${disc ? '' : 'disabled'}
          title="Return one ${label} from the discard to the deck">&#8630; ${disc}</button>`;
   }
-  const src = c.card ? null : assetPath.attackMod(special && c.heroImg && amIsHero(g) ? c.heroImg : c.img);
+  const src = c.card ? null : assetPath.attackMod(
+    g === 'a' && c.allyImg ? c.allyImg :
+    special && c.heroImg && amIsPartySpecial(g) ? c.heroImg :
+    c.img
+  );
   return `<div class="am-tile${!special && !base && !n && !disc ? ' am-tile--none' : ''}">
     <button class="am-card${n ? '' : ' is-empty'}" type="button" data-am-draw="${c.key}" data-am-g="${g}" ${n ? '' : 'disabled'}
         title="${special ? 'Draw (removes the card from the game)' : 'Draw one ' + label}">
