@@ -31,22 +31,49 @@ export function cardKey(card) {
   return card.art.ref;
 }
 
-const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+// Same abbreviation vocabulary as docs/unique-geekroller-codes.md, so every attack modifier card
+// -- shared, unique, or special (Bless/Curse) -- encodes its effects the same way. Elements use
+// the monster-ability-card convention's "+X" (infuse this element), single-lettered F/I/E/W/L/D
+// (W for Wind, not A for Air: Frosthaven's own term, and it avoids colliding with A/Attack).
+const ELEMENT_ABBR = { air: 'W', dark: 'D', earth: 'E', fire: 'F', ice: 'I', light: 'L' };
+// heal/shield/retaliate/target/range use the same single letters as the stats on a monster card;
+// pierce/push/pull are kept short but not single-lettered (no precedent to go further); the two
+// long condition names are shortened; everything else is spelled out in full, lowercase.
+const WORD_ABBR = {
+  heal: 'H', shield: 'S', retaliate: 'Ret', target: 'T', range: 'R',
+  pierce: 'Prc', push: 'Push', pull: 'Pull',
+  immobilize: 'immo', invisible: 'inv',
+};
 
-// Text for the GeekRoller code: "+0 Pierce 3 Rolling" for decorated faces, a hand-compacted
-// abbreviation (see uniqueFaceText.js and docs/unique-geekroller-codes.md) for unique ones with
-// one, else the quoted card text of the perk, else the perk's own (unquoted) description trimmed
-// the same way, else "Unique <code>" as a last resort when a perk has no text at all. BGG's
-// GeekRoller caps an entire roll at 241 characters total across every face, so these all stay
-// short rather than fully describing the effect -- the player can look up the code's meaning.
+// "+F" for one element, "+F/W" for a multi-element wild/mixed face (e.g. "earthdark").
+function elementText(tokens) {
+  return '+' + tokens.map(t => t.word === 'any' ? 'Any' : ELEMENT_ABBR[t.word]).join('/');
+}
+
+// Text for the GeekRoller code: "+0: Prc3 >" for decorated faces, a hand-compacted abbreviation
+// (see uniqueFaceText.js and docs/unique-geekroller-codes.md) for unique ones with one, else the
+// quoted card text of the perk, else the perk's own (unquoted) description trimmed the same way,
+// else "Unique <code>" as a last resort when a perk has no text at all. BGG's GeekRoller caps an
+// entire roll at 241 characters total across every face, so these all stay short rather than
+// fully describing the effect -- the player can look up the code's meaning.
 function faceText(card, perk) {
   if (card.kind === 'shared') {
-    const parts = [card.value];
-    for (const t of card.tokens || []) {
+    const tokens = card.tokens || [];
+    // "any" + "convert-to-any" together decode "anytoany" (convert one infusion to any element);
+    // the lone "any" is just a parsing artifact of that slug, not a separate effect to show.
+    const hasConvert = tokens.some(t => t.key === 'convert-to-any');
+    const elements = hasConvert ? [] : tokens.filter(t => t.cat === 'element');
+    const rest = tokens.filter(t => t.cat !== 'element');
+    const parts = [];
+    if (elements.length) parts.push(elementText(elements));
+    for (const t of rest) {
       if (t.key === 'rolling') parts.push('>');
-      else parts.push(cap(t.word || t.key || '') + (t.amount !== undefined ? ' ' + t.amount : ''));
+      else if (t.key === 'convert-to-any') parts.push('conv Any');
+      else if (t.key === 'ally') parts.push('ally');
+      else parts.push((WORD_ABBR[t.word] || t.word || '') + (t.amount !== undefined ? t.amount : ''));
     }
-    return parts.join(' ').replace(/\s+/g, ' ').trim();
+    const effect = parts.join(' ').trim();
+    return effect ? card.value + ': ' + effect : card.value;
   }
   if (UNIQUE_FACE_TEXT[card.code]) return UNIQUE_FACE_TEXT[card.code];
   const raw = /"([^"]+)"/.exec(perk?.text || '')?.[1] ?? perk?.text;
