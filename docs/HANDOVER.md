@@ -1,19 +1,21 @@
-# Handover: HavenMap campaign tracking (branch `feature/hero-amd`)
+# Handover: HavenMap campaign tracking and hero modifier decks
 
-Written 2026-11-06. Read this first, then `campaign-schema.md` and `hero-modifier-faces.md` in this folder.
+Written 2026-11-06, updated 2026-11-07. Read this first, then `campaign-schema.md` and `hero-modifier-faces.md` in this folder.
+
+**Status:** the hero attack modifier decks are done and live on `main` (section 13, merged 2026-11-07, branch `feature/hero-amd` deleted). Campaign tracking (sections 1 to 8) is designed but not started. Sections 11 and 12 are the working log of the card-art groundwork and are partly superseded by section 13.
 
 Items marked (unverified) were inferred and not confirmed.
 
 ## 1. Goal
 
-Extend HavenMap (browser map helper for the group's play-by-forum Gloomhaven 2e campaign, 4 players) to track the full campaign: characters and modifier decks, ability card piles, items, scenarios, events with voting, and BGG post generation. Nothing in the running app has been changed.
+Extend HavenMap (browser map helper for the group's play-by-forum Gloomhaven 2e campaign, 4 players) to track the full campaign: characters and modifier decks, ability card piles, items, scenarios, events with voting, and BGG post generation. The per-hero modifier deck (section 13) is the first part and is done; the rest is not started.
 
 ## 2. Decisions made
 
 - **Session stays in the URL hash** (`#lz:`), as today. The URL posted per turn is an immutable snapshot and the forum thread is the history.
 - **Campaign data lives on a token-protected server** (small backend, e.g. a Cloudflare Worker with KV): 128-bit tokens in the URL fragment, hashes stored, roles admin, 4 players, read-only. Tokens must never be posted in the public thread.
 - **Commit step:** a finished session URL is committed to the campaign with a token, idempotent via a session ID, with a version check. Level-ups, enhancements and card selection are separate campaign edits.
-- **Per-hero modifier deck is a standalone feature** stored on the mercenary entry as `am`, built before any campaign work. Phase 1 is manual composition editing. There is no perk table (the group's sheet has none).
+- **Per-hero modifier deck is a standalone feature** stored on the mercenary entry as `am`, built before any campaign work. **Done** (section 13): the deck is derived from the class perks (perk table from FrosthavenAssistant) plus manual edits of the basic cards.
 - **Votes** on event cards are in scope, visible to everyone, cast in the campaign view with a player token.
 - **BBCode post generation** is in scope and belongs in the map app (client side, from the session). The Outpost Phase template is Frosthaven material and out of scope.
 - **Card art:** layered build from the PSD template (frame, sphere, number, icons), with Frosthaven Assistant images as an alternative source. Images may be used for this non-profit app (per the owner).
@@ -23,9 +25,8 @@ Full detail: `campaign-schema.md` (session schema, campaign record, API sketch, 
 
 ## 3. Repo and environment state
 
-- Repo: `C:\Users\hansen\ai\games\HavenMap\HavenMap` on `main`, remote `origin` = `Sadgit-HL/HavenMap`, GitHub Pages site `https://sadgit-hl.github.io/HavenMap/` (presumably deploys from `main`, unverified). Untouched.
-- Work happens in a separate git worktree: `C:\Users\hansen\ai\games\HavenMap\HavenMap-campaign`, branch `feature/hero-amd`.
-- `start.bat` (in `...\HavenMap`) serves the main folder on port 8080. To test this branch, run `py -m http.server 8081` inside the worktree.
+- Repo: `C:\Users\guido\ai\games\HavenMap\HavenMap` (earlier sessions ran as `hansen`), branch `main`, remote `origin` = `Sadgit-HL/HavenMap`, GitHub Pages site `https://sadgit-hl.github.io/HavenMap/` (presumably deploys from `main`, unverified). `main` contains the hero deck work (merge commit `4f11ab3`, 2026-11-07). The separate worktree `HavenMap-campaign` is no longer used.
+- `start.bat` (one level above the repo, not in git) serves the folder on port 8080: `http://localhost:8080/HavenMap/`.
 - The Photoshop template and the group workbook live in `C:\Users\hansen\ai\games\HavenMap\campaign_assets\` and must not be committed: `GH Attack Modifier Template.psd` (233 MB), `WHTracker.xlsx` (11 MB), and `psd-export\` (raw 874x591 PNG exports).
 - The app is vanilla ES modules, no build step. State is JSON in the URL hash, versioned by `mapVersion` (currently 4.0.0) with a migration chain in `scripts/state.js`.
 
@@ -58,13 +59,13 @@ Layer composition notes: the PSD's text layers use `PirataOne-Regular` (open fon
 - Measured map URL (late game): 2030 chars, 4111 raw JSON chars, overlays are 58% of the raw size. Omitting default keys (`locked:false`, `angle:0` and so on) is a cheap saving (code dependency unverified).
 - Sources of art: Worldhaven (`any2cards/worldhaven`) has Gloomhaven 1e, JotL, Frosthaven, Crimson Scales and others but no GH2 folder and no blank frames. The Frosthaven Assistant repo `Tarmslitaren/FrosthavenAssistant`, folder `frosthaven_assistant/assets/images/attack/perks`, has about 199 effect-named perk faces (400x267, baked-in numbers and corners). `flip` in those file names means rolling (checked visually). Gloomhaven Secretariat (`D:\github\gloomhavensecretariat`) has `imbue.svg` and `advancedImbue.svg`, the likely sources of the imbuement demon head.
 - The imbuement face art in `images/common/attack_mods/imbuement/*.webp` (formerly `gh-am-i-*`) was made in an earlier session (Nov 4). Its scratchpad (scripts, demon discs) may still exist at `C:\Users\hansen\AppData\Local\Temp\claude\56dd7208bf07e1b8\17407d27-507e-4d66-98ec-46f032128a11\scratchpad\imbue\`, but it is temporary storage.
-- The per-hero deck refactor target: `scripts/attackMods.js` keys everything by a group string `g` (`'m'` or `'a'`) mapped by `field(g)` to `state.am` or `state.amA`; the AM panel in `scripts/decks.js` repeats `data-am-g` on every control; `decks.js:123` hardcodes the end-of-round patch for the two groups. The plan: replace the string with a deck descriptor `{key, read(), write(), catalog, defaultBase}` and build the tabs dynamically (Monsters, Allies, one per hero). The mercenary entry survival of an `am` field across drag, removal and load is unverified and is the first thing to check.
+- The per-hero deck refactor planned here (descriptor instead of the `'m'`/`'a'` group string, tabs built per hero) was done; see section 13. The `am` field on a mercenary entry survives drag, removal, undo and load (verified).
 
 ## 7. Next steps, in order
 
 1. Run pass 3 of the Photoshop script, then verify the files (alpha, no FAILED lines in `manifest-pass3.txt`), run `tools/convert-psd-export.py`, and rebuild the comparison page.
 2. Resolve the open face questions (section 8) and finalise the face data (`hero-modifier-faces.md`) as a data file in `scripts/games/`.
-3. Implement the per-hero modifier deck (descriptor refactor of `attackMods.js` and `decks.js`) in this worktree, with the standalone manual editing first.
+3. ~~Implement the per-hero modifier deck~~ done, see section 13.
 4. Build the static ID tables, then the campaign server and token auth, then session start and commit, then events, items and flow views.
 5. Extend the BGG button into the post composer (turn post and aftermath post).
 
@@ -81,8 +82,8 @@ Layer composition notes: the PSD's text layers use `PirataOne-Regular` (open fon
 
 - Terse, direct answers, no emoji, no em dashes.
 - Confirm before destructive or high blast-radius actions.
-- Never add an AI co-author to git commits. Never hand-edit generated files or changelogs.
-- Keep the running app untouched until the branch is ready: develop on `feature/hero-amd` only.
+- Commits made with an AI assistant carry a `Co-Authored-By` line (owner's decision, 2026-11-07; this replaces the earlier rule against it). Never hand-edit generated files or changelogs.
+- Develop on a feature branch and merge to `main` when ready (`feature/hero-amd` was merged on 2026-11-07 and deleted).
 
 ## 10. Not committed (local only)
 
@@ -90,6 +91,8 @@ Layer composition notes: the PSD's text layers use `PirataOne-Regular` (open fon
 - The workbook, the PSD and the raw exports (in `campaign_assets`).
 
 ## 11. Update 2026-11-07: perks listing page (separate from sections 1-10 above)
+
+> Superseded in part by section 13: the baked scans described below are no longer used. Cards are composed from layers (`scripts/amd/`), `perks/card.js` moved to `scripts/amd/card.js`, the `shared/` scans were moved to `asset-backups/attack-modifier-cards/`, and the class badge is now the composed one (the open badge issue at the end of this section is gone).
 
 A second, independent task was done on this branch, on a different machine (`C:\Users\user\...`, not `C:\Users\hansen\...`): a standalone page listing every attack-modifier perk for every class across FH, GH2E, JotL and MP, with the perk's card art composited/shown. This is unrelated to the campaign-tracking goal in sections 1-9 above (which is still open and un-started) but lives on the same branch since it's the same card-art groundwork.
 
@@ -107,6 +110,8 @@ A second, independent task was done on this branch, on a different machine (`C:\
 **Cache busting**: `perks/index.html` and `perks/app.js` use `?v=N` query strings on their own asset imports to defeat browser caching during iteration (currently `v=9`). Bump the number on both files when editing `perks/*.css`/`*.js` so a plain refresh picks up changes.
 
 ## 12. Update 2026-11-07 (evening): layered rebuild of the shared faces and the compare page
+
+> Still accurate for the layer assets, tools and layout rules. Since then the composition code moved to `scripts/amd/compose.js` (layers are objects now, not URLs with `#xf:`/`#r180` suffixes), and the compare page's scan column is empty because the scans were moved to `asset-backups/attack-modifier-cards/reference-scans/`.
 
 Commits `718ea29` (assets) and `c0077cc` (code), pushed to `origin/feature/hero-amd`. Supersedes step 1 of section 7 and the asset counts in section 4. Machine: `C:\Users\guido\...` (not `hansen`).
 
@@ -172,6 +177,62 @@ All coordinates are on the 600x391 canvas. Implemented in `perks/compose.js`.
 - Backups of every replaced asset were kept only in `%TEMP%\bak`, which is not durable. The old versions of the 28 replaced files are in git history (`810c653`).
 - Campaign work (sections 1 to 8) is still not started.
 
+## 13. Hero attack modifier decks (done, merged to `main` 2026-11-07)
 
-## Update 2026-11-07: shared AMD card code
-Card rendering moved to `scripts/amd/` (see its README); `perks/index.html` now draws all cards composed (base, shared; unique stay baked). `images/common/attack_mods/` trimmed to what the lists load; the rest is in `asset-backups/attack-modifier-cards/` (README there). `perks/compose.html` still runs but its scan column is empty (scans parked).
+Scope: the official classes of Frosthaven, Gloomhaven 2nd Edition, Jaws of the Lion and the Mercenary Packs only. Hollowpact (a Crimson Scales class) was removed from the mercenary list, Shattersong was added (id 44, HP table from the FrosthavenAssistant data), and "Snow Dancer" is now `Snowdancer` everywhere (title, token image, perk class).
+
+### 13.1 What the app does
+
+- The attack modifier panel (card-back button next to end turn) has tabs: Monsters, Allies, then one per hero on the map, named by class (two heroes of one class get `#1` / `#2`). Selecting a hero on the map focuses its tab, selecting a monster focuses the Monsters tab. The panel is not opened or closed by selection.
+- A hero deck starts as the standard 20 cards. Draw, return, shuffle, end-of-round reshuffle (x2 or Miss drawn, or deck empty) and the GeekRoller code work as for monsters. Bless and Curse have their own +/- buttons and use the hero card art (no monster "M" badge).
+- **Perks** button (`Perks n/total`, only for classes with perk data): a list of the class perks with the cards each one swaps. Ticking a perk changes the base composition. The list shows:
+  - repeated perks (the same perk taken up to N times, N identical entries in the data) as one row with N separate blue boxes and an `xN` tag; each box counts on its own;
+  - `[double]` / `[triple]` perks (text perks with 2 or 3 checks) as one row with joined lavender boxes and an `all N` tag; the perk counts only when every box is ticked;
+  - the description only for perks without cards (the cards already show the effect), with `%token%` placeholders turned into icons (42 icons in `images/common/perk-icons/`).
+- **Edit** (pencil): basic cards (+0, +1, -1, ...) can be added and removed by hand (scenario effects). A hero's perk faces can only change through the perk list. The imbuement bar is monsters only.
+- Hovering a card (ability decks, attack modifier tiles, perk list) shows an enlarged preview above the panel.
+
+### 13.2 Code map
+
+| Where | What |
+|---|---|
+| `scripts/amd/` | App-agnostic card rendering and hero deck model. See `scripts/amd/README.md` for the file table. `card.js` is the entry point (`buildCard`), `heroDeck.js` the model, `perkText.js` the icon text. |
+| `scripts/attackMods.js` | Deck state and logic. A deck is addressed by key: `'m'` (monsters, `state.am`), `'a'` (allies, `state.amA`) or `'h<i>'` (the hero at `state.mercenaries[i]`, stored as `am`). `deckOf()` resolves storage and card catalog. Hero API: `amDecks`, `amHeroPerks`, `amToggleBox`, `amCardLocked`, `amClassName`. |
+| `scripts/decks.js` | The panel (tabs, tiles, perk rows). View state is in `amView`. Hero cards are mounted after render (`mountAmCards`, `amCardOf`). |
+| `scripts/hoverPreview.js` | Shared enlarged preview (`#deck-preview`). |
+| `scripts/state.js` | `withoutAm()` (copies of a hero start with a fresh deck, used by alt-drag copy and paste); heroes whose class no longer exists are dropped when a map loads. |
+| `perks/` | Standalone pages: `index.html` (all perks of all classes), `compose.html` (layered composition against the scans, dev tool). |
+| `tools/` | `extract-perks.mjs` + `perks-decode.mjs` (generate `scripts/games/perks.js` from the local FrosthavenAssistant clone in `asset-backups/amd/`), `check-perk-icons.mjs` (every perk text token has an icon), `convert-*.py` / `export-am-layers.jsx` (art pipeline, section 12). |
+
+### 13.3 State
+
+`mercenaries[i].am` holds only what differs from the standard deck (`null` or missing = standard):
+
+```
+{ discard:{key:n}, deck?:{key:n}, base?:{key:n}, lvl?, perks?:[entryIndex], boxes?:{entryIndex:bitmask} }
+```
+
+Card keys: `p0 p1 p2 m1 m2 x2 miss` (standard), the art slug for decorated faces, `u-<code>` for unique faces. `perks` are the taken perk entries (index into `PERKS[edition][class]`), `boxes` are the ticked boxes of multi-box perks that are not complete yet. Ticking a perk applies its card swap to `base` (and the draw state), unticking reverts it; manual edits of basic cards stay on top.
+
+### 13.4 Data and mapping
+
+- Perk data: `scripts/games/perks.js`, generated from FrosthavenAssistant (43 classes, 711 entries). The data repeats an entry once per box, which is why repeated perks are grouped in the UI. As a cross-check, gloomhavensecretariat's `data/<edition>/character/<class>.json` has an explicit `count` per perk; the sums equal the FrosthavenAssistant entry count plus the extra `[double]`/`[triple]` boxes for the 20 classes that could be matched by name (the others use codenames there, not mapped).
+- Mercenary title to perk class: by title, with one alias (`HIVE` -> `H.I.V.E.`). A class without perk data gets the plain deck and no Perks button.
+
+### 13.5 Assets
+
+- Runtime, under `images/common/attack_mods/`: `frames/ numbers/ spheres/ class_icons/ icons/{center,side,small}/ unique/` (what the perk lists load), `monster/` and `imbuement/` (live deck cards, named by face: `plus0 minus1 x2 miss bless curse`, `plus2muddle ...`), `hero/` (hero Bless and Curse). Icons in perk descriptions: `images/common/perk-icons/`.
+- Parked in `asset-backups/attack-modifier-cards/` (outside the repo, README there): the 101 reference scans and the layers no current face uses. The x2 frame, `c-x2` number and shuffle sphere were copied back because the hero x2 / Miss cards need them.
+
+### 13.6 Working notes
+
+- No test suite. Checks used: syntax check of every script, `node tools/check-perk-icons.mjs`, and browser runs (Playwright with Chrome against `python -m http.server`) of the panel flows. For rendering changes, compare the output of the compare page (all 101 faces) and the perk rows of a few heroes before and after.
+- Cache busting is by hand: `?v=` / `decks-N` strings in `index.html` (main.js, main.css, `amd.css`), in the imports of `scripts/amd/*` and `scripts/decks.js`, and in the `perks/*.html` pages. Bump them when editing the file they point at.
+- AI-assisted commits carry a `Co-Authored-By` line (owner's decision, 2026-11-07, see section 9).
+
+### 13.7 Open
+
+- Campaign tracking (sections 1 to 8) is not started.
+- Unique cards that stay in the active area when drawn are tracked like any card (no active-area state).
+- A perk-added `+1` merges into the standard `+1` count, so its tile has no class badge (only the perk list shows it).
+- Not refactored on purpose: alt-drag copy next to `cloneForPlacement`, the compare page's scan/transform scheme, further CSS consolidation, hand-bumped cache strings (no build step).

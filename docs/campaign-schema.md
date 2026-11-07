@@ -1,6 +1,6 @@
 # HavenMap campaign tracking: schema draft
 
-Status: draft, not implemented. Branch `feature/hero-amd`. Based on the current map state format (`mapVersion` 4.0.0), a measured late-game map URL, and the group's WHTracker.xlsx.
+Status: draft, not implemented (the per-hero modifier deck it builds on is done, see `HANDOVER.md` section 13). Based on the current map state format (`mapVersion` 4.0.0), a measured late-game map URL, and the group's WHTracker.xlsx.
 
 Items marked (unverified) are inferred and need confirming before they are built.
 
@@ -41,7 +41,7 @@ campaign: {
 Existing fields stay the single source for position, `level`, `hp`, `maxhp`, `xp`, `gold`, `conditions`. They are not duplicated.
 
 ```
-mercenaries[i].am = { deck:{faceKey:n}, discard:{faceKey:n}, base:{faceKey:n} }
+mercenaries[i].am = { discard:{faceKey:n}, deck?:{faceKey:n}, base?:{faceKey:n}, perks?:[entryIndex], boxes?:{entryIndex:bitmask} }   // as implemented: only differences from the standard deck are stored
     // personal modifier deck, same shape as the monster `am`.
     // Works in standalone mode. Absent = standard 20 cards.
 
@@ -65,7 +65,7 @@ Rules:
 1. Hand is derived: `deck` minus `disc`, `lost`, `act`. Not stored.
 2. Omit defaults: empty piles, standard modifier deck, all-ready items.
 3. `cmp.c` must match the hero class on commit, else the commit is rejected.
-4. Per-hero modifier deck faces come from a per-deck catalog (standard cards plus class extras), not the global `AM_TYPES` constant.
+4. Per-hero modifier deck faces come from a per-deck catalog (standard cards plus class extras), not the global `AM_TYPES` constant. Implemented: `heroCatalog` in `scripts/amd/heroDeck.js`.
 
 ## 3. Modifier deck face catalog
 
@@ -73,7 +73,7 @@ The spreadsheet stores free-text faces such as `+1 wild`, `+0 heal1`, `+2 streng
 
 - Each face has a numeric key in a static table, generated from the Card DB attack-modifier rows (image, display text, roller text, `shuffle` flag).
 - A hero deck state is counts per face key. The roller code is built from the face text, as the sheet does.
-- Base composition is edited manually (existing edit mode). No perk table: the sheet has none and records the deck directly.
+- Base composition: implemented as ticked class perks (`perks` on the hero's `am`) plus manual edits of the basic cards (edit mode). The group's sheet records the deck directly; importing from it is not built.
 
 ## 4. Campaign record (server)
 
@@ -230,7 +230,7 @@ Why the map and not the campaign view: the session already holds the cards, XP, 
 
 ## 10. Phasing
 
-1. Per-hero modifier deck: descriptor refactor of `attackMods.js` and the AM panel in `decks.js`, standalone, no campaign needed.
+1. ~~Per-hero modifier deck~~ done (deck key + `deckOf()` in `attackMods.js`, tabs per hero in `decks.js`).
 2. Static tables from the Card DB.
 3. Campaign record and server, token auth, read-only campaign view.
 4. Session start and commit.
