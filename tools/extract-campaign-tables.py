@@ -22,6 +22,7 @@ import openpyxl
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_XLSX = os.path.join(os.path.dirname(ROOT), 'asset-backups', 'WHTracker.xlsx')
 OUT = os.path.join(ROOT, 'scripts', 'games')
+DEFAULT_GHS_BG = os.path.join('D:' + os.sep, 'github', 'gloomhavensecretariat', 'data', 'fh', 'battle-goals.json')
 DEFAULT_GHS = os.path.join('D:' + os.sep, 'github', 'gloomhavensecretariat', 'data', 'gh2e', 'scenarios')
 ABILITY_SOURCES = ('gh2', 'mp')          # editions whose class ability cards the campaign can use
 
@@ -206,6 +207,25 @@ def main():
     write_module('gh2_events.js', 'City and road event cards: number and image count (front + option faces, '
                                   'the sheet has up to four per card).',
                  [('CITY_EVENTS', events('City Events', 'city')), ('ROAD_EVENTS', events('Road Events', 'road'))])
+
+    # --- battle goals (the Frosthaven set, used for every edition by the owner's decision) -------------------
+    norm = lambda t: re.sub(r'[^a-z0-9]', '', str(t).lower())
+    checks = {}
+    if os.path.isfile(DEFAULT_GHS_BG):
+        with open(DEFAULT_GHS_BG, encoding='utf-8') as f:
+            for g in json.load(f):
+                checks[norm(g['name'])] = (int(g['cardId']), g.get('checks', 1))
+    SLUG_FIX = {'pincusion': 'pincushion'}     # typo in the Card DB
+    goals = []
+    for r in rows:
+        if r[0] == 'Battle Goals' and r[46] == 'fh':
+            slug = SLUG_FIX.get(r[30], r[30])
+            cid, chk = checks.get(norm(slug), (None, 1))
+            goals.append({'id': cid, 'slug': slug, 'chk': chk})
+    goals.sort(key=lambda g: (g['id'] is None, g['id'] or 0, g['slug']))
+    write_module('battle_goals.js', 'Battle goal cards (the Frosthaven set, used for all editions): id = Gloomhaven '
+                                    'Secretariat card id (null if unmatched), slug, chk = checkmarks awarded.',
+                 [('BATTLE_GOALS', goals)])
 
     # --- personal quests and traits --------------------------------------------------------------------
     pq = [{'id': int(re.sub(r'\D', '', r[30])), 'slug': r[30]} for r in rows if r[0] == 'Personal Quests' and r[46] == 'gh2']
