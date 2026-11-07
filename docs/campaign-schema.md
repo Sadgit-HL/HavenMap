@@ -231,7 +231,7 @@ Why the map and not the campaign view: the session already holds the cards, XP, 
 ## 10. Phasing
 
 1. ~~Per-hero modifier deck~~ done (deck key + `deckOf()` in `attackMods.js`, tabs per hero in `decks.js`).
-2. Static tables from the Card DB.
+2. Static tables from the Card DB. First cut generated 2026-11-08 by `tools/extract-campaign-tables.py` into `scripts/games/gh2_*.js` (classes, 649 ability cards, 179 items, 101 scenarios and 19 stickers, 177 events, 22 personal quests, traits). Not yet extracted: the full scenario unlock graph ("GH2 Flow" tab), battle goals, the meaning of two item columns, and the item `n` copies check against the sheet.
 3. Campaign record and server, token auth, read-only campaign view.
 4. Session start and commit.
 5. Events, items, scenario flow views.
