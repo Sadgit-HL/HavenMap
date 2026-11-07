@@ -10,7 +10,7 @@ import { DECKS, deckSlugFor, assetPath } from './data.js';
 import { uiState, subscribeUI } from './uiState.js';
 import { buildCard } from './amd/card.js?v=2';
 import {
-  AM_TYPES, AM_SPECIAL, amDecks, amSupportsImbue, amState, amClassName, amNeedsReshuffle, amDeckTotal, amDraw, amReturn, amAdjust,
+  AM_TYPES, AM_SPECIAL, amDecks, amSupportsImbue, amState, amClassName, amHeroPerks, amTogglePerk, amNeedsReshuffle, amDeckTotal, amDraw, amReturn, amAdjust,
   amShuffleNow, amEndRoundPatch, amRollerCode, amEditCard, amSetImbue, amResetComposition, AM_MAX_PER_TYPE,
 } from './attackMods.js';
 
@@ -247,15 +247,33 @@ function amTileHtml(c, s, special, g, edit) {
 
 let amGroup = 'm'; // which attack modifier tab is shown; view state only
 let amEdit = false; // composition edit mode; view state only
+let amPerks = false; // show the perk list of a hero deck instead of its cards; view state only
+
+// Perk text from the data has %icon% markers; make it readable.
+const perkText = t => (t || '').replace(/%flip%/g, '(rolling)').replace(/%(\w+)%/g, '$1');
+
+// One perk row: ticks/unticks the perk. Cards are filled in by mountAmCards.
+function amPerkRowHtml(p, g) {
+  const group = (side, cards) => cards.map((_, i) => `<span class="am-pcard" data-am-pcard data-am-g="${g}" data-am-pi="${p.index}" data-am-side="${side}" data-am-ci="${i}"></span>`).join('');
+  const cards = (p.removes.length ? group('removes', p.removes) + '<span class="am-perk-arrow">&rarr;</span>' : '') + group('adds', p.adds);
+  return `<button type="button" class="am-perk${p.on ? ' is-on' : ''}" data-am-perk="${p.index}" data-am-g="${g}" aria-pressed="${p.on}">
+    <span class="am-perk-check">${p.on ? '&#10003;' : ''}</span>
+    <span class="am-perk-cards">${cards}</span>
+    ${p.text ? `<span class="am-perk-text">${perkText(p.text)}</span>` : ''}
+  </button>`;
+}
 
 function amHtml() {
   const tabList = amDecks();
+  
   if (!tabList.some(t => t.key === amGroup)) amGroup = 'm'; // e.g. the selected hero was removed
   const g = amGroup;
   const s = amState(g);
   const pending = amNeedsReshuffle(s);
   // Cards that are not in the standard deck show up when present, or in edit mode so they can be added.
   const shown = s.catalog.filter(c => !c.extra || amEdit || (s.base[c.key] || 0) > 0 || (s.deck[c.key] || 0) > 0 || (s.discard[c.key] || 0) > 0);
+  const hp = amHeroPerks(g);                 // null for monsters/allies and heroes without perk data
+  const showPerks = amPerks && !!hp;
   const tiles = [...shown.map(c => amTileHtml(c, s, false, g, amEdit)), ...AM_SPECIAL.map(c => amTileHtml(c, s, true, g, amEdit))].join('');
   const editBar = amEdit ? `<div class="am-edit-bar">
       ${amSupportsImbue(g) ? `<span class="am-edit-lbl">Imbuement</span>
@@ -280,13 +298,15 @@ function amHtml() {
         title="Copy GeekRoller code" aria-label="Copy GeekRoller code">${ICON_DICE}</button>
       <button class="dk-act" type="button" data-dk-shuffle="am:${g}"
         title="Shuffle deck now" aria-label="Shuffle deck now">${ICON_SHUFFLE}</button>
+      ${hp ? `<button class="dk-act dk-act--minor am-perks-btn${showPerks ? ' is-on' : ''}" type="button" data-am-perks-toggle aria-pressed="${showPerks}"
+        title="Choose perks">Perks ${hp.perks.filter(p => p.on).length}/${hp.perks.length}</button>` : ''}
       <button class="dk-act dk-act--minor${amEdit ? ' is-on' : ''}" type="button" data-am-edit-toggle aria-pressed="${amEdit}"
         title="Edit deck composition" aria-label="Edit deck composition">${ICON_EDIT}</button>
     </div>
   </div>
-  ${editBar}
+  ${showPerks ? '' : editBar}
   <div class="dk-deck" data-dk-slug="am">
-    <div class="am-grid">${tiles}</div>
+    ${showPerks ? `<div class="am-perks">${hp.perks.map(p => amPerkRowHtml(p, g)).join('')}</div>` : `<div class="am-grid">${tiles}</div>`}
   </div>`;
 }
 
@@ -298,6 +318,15 @@ export function deckPanelView() { return view; }
 
 // Hero tiles are composed cards: fill each placeholder slot with its card (scripts/amd).
 function mountAmCards(panel) {
+  const perkCache = new Map();
+  for (const el of panel.querySelectorAll('[data-am-pcard]')) {
+    const g = el.dataset.amG;
+    if (!perkCache.has(g)) perkCache.set(g, amHeroPerks(g));
+    const perk = perkCache.get(g)?.perks.find(p => p.index === Number(el.dataset.amPi));
+    const side = el.dataset.amSide;
+    const card = perk?.[side][Number(el.dataset.amCi)];
+    if (card) el.appendChild(buildCard(card, amClassName(g), side === 'adds'));
+  }
   for (const slot of panel.querySelectorAll('[data-am-slot]')) {
     const g = slot.dataset.amG;
     const entry = amState(g).catalog.find(c => c.key === slot.dataset.amSlot);
@@ -408,6 +437,10 @@ export function initDecks() {
     if (amRet) { amReturn(amRet.dataset.amRet, amRet.dataset.amG); return; }
     const amEd = e.target.closest('[data-am-edit]');
     if (amEd) { amEditCard(amEd.dataset.amEdit, Number(amEd.dataset.d), amEd.dataset.amG); return; }
+    const amPk = e.target.closest('[data-am-perk]');
+    if (amPk) { amTogglePerk(Number(amPk.dataset.amPerk), amPk.dataset.amG); return; }
+    const amPkTog = e.target.closest('[data-am-perks-toggle]');
+    if (amPkTog) { amPerks = !amPerks; renderDecks(); return; }
     const amTog = e.target.closest('[data-am-edit-toggle]');
     if (amTog) { amEdit = !amEdit; renderDecks(); return; }
     const amImb = e.target.closest('[data-am-imbue]');
