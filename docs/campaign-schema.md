@@ -231,7 +231,7 @@ Why the map and not the campaign view: the session already holds the cards, XP, 
 ## 10. Phasing
 
 1. ~~Per-hero modifier deck~~ done (deck key + `deckOf()` in `attackMods.js`, tabs per hero in `decks.js`).
-2. Static tables from the Card DB. First cut generated 2026-11-08 by `tools/extract-campaign-tables.py` into `scripts/games/gh2_*.js` (classes, 649 ability cards, 179 items, 101 scenarios and 19 stickers, 177 events, 22 personal quests, traits). Not yet extracted: the full scenario unlock graph ("GH2 Flow" tab), battle goals, the meaning of two item columns, and the item `n` copies check against the sheet.
+2. Static tables from the Card DB. First cut generated 2026-11-08 by `tools/extract-campaign-tables.py` into `scripts/games/gh2_*.js` (classes, 649 ability cards, 179 items, 101 scenarios and 19 stickers, 177 events, 22 personal quests, traits). Scenario unlock links (`init`, `unl`, `forced`) come from Gloomhaven Secretariat's gh2e data (AGPL-3.0, so check the licence before redistributing) and are partial: about 60 scenarios are unlocked by events, reputation or personal quests, which that data does not record; the split scenarios 23B, 25A and 25B have no row. Not yet extracted: battle goals (the Card DB has none for GH2), the meaning of two item columns, and a check of the item `n` copies against the sheet.
 3. Campaign record and server, token auth, read-only campaign view.
 4. Session start and commit.
 5. Events, items, scenario flow views.
