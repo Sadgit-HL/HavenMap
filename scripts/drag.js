@@ -279,6 +279,7 @@ function onMouseup(e) {
     if (arr[idx]) {
       if (isCopying) {
         let copied = { ...arr[idx], x: col, y: row };
+        if (kind === 'mercenary') { const { am: _am, ...withoutAm } = copied; copied = withoutAm; } // a copy gets its own (empty) modifier deck
         if (kind === 'monster') {
           // Exclude old standeeNum and generate a new unique one
           const { standeeNum: _old, ...withoutStandee } = arr[idx];

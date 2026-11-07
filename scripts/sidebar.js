@@ -618,6 +618,10 @@ function cloneForPlacement(kind, obj, hex) {
     const { standeeNum: _old, ...withoutStandee } = base;
     return { ...withoutStandee, standeeNum: generateTokenNum(obj.id, state.summons || []) };
   }
+  if (kind === 'mercenary') {
+    const { am: _am, ...withoutAm } = base; // a copy gets its own (empty) modifier deck
+    return withoutAm;
+  }
   return base;
 }
 

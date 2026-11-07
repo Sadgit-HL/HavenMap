@@ -9,8 +9,8 @@ import { state, patch } from './state.js';
 import { DECKS, deckSlugFor, assetPath } from './data.js';
 import { uiState, subscribeUI } from './uiState.js';
 import {
-  AM_TYPES, AM_SPECIAL, AM_GROUPS, amState, amNeedsReshuffle, amDeckTotal, amDraw, amReturn, amAdjust,
-  amShuffleNow, amEndRound, amRollerCode, amEditCard, amSetImbue, amResetComposition, AM_MAX_PER_TYPE,
+  AM_TYPES, AM_SPECIAL, amDecks, amSupportsImbue, amState, amNeedsReshuffle, amDeckTotal, amDraw, amReturn, amAdjust,
+  amShuffleNow, amEndRoundPatch, amRollerCode, amEditCard, amSetImbue, amResetComposition, AM_MAX_PER_TYPE,
 } from './attackMods.js';
 
 let view = null; // panel content: null (closed), 'abilities' or 'am'
@@ -120,7 +120,7 @@ export function endRoundDecks() {
 
 // End-of-round changes to every deck, for one patch() call (one undo step).
 export function endRoundPatch() {
-  return { decks: endRoundDecks(), am: amEndRound('m'), amA: amEndRound('a') };
+  return { decks: endRoundDecks(), ...amEndRoundPatch() };
 }
 
 // GeekRoller code for the cards still in the deck, e.g. 1custom3{iid:9903036;iid:9903037;iid:9903038}
@@ -247,6 +247,8 @@ let amGroup = 'm'; // which attack modifier tab is shown; view state only
 let amEdit = false; // composition edit mode; view state only
 
 function amHtml() {
+  const tabList = amDecks();
+  if (!tabList.some(t => t.key === amGroup)) amGroup = 'm'; // e.g. the selected hero was removed
   const g = amGroup;
   const s = amState(g);
   const pending = amNeedsReshuffle(s);
@@ -254,14 +256,14 @@ function amHtml() {
   const shown = AM_TYPES.filter(c => !c.extra || amEdit || (s.base[c.key] || 0) > 0 || (s.deck[c.key] || 0) > 0 || (s.discard[c.key] || 0) > 0);
   const tiles = [...shown.map(c => amTileHtml(c, s, false, g, amEdit)), ...AM_SPECIAL.map(c => amTileHtml(c, s, true, g, amEdit))].join('');
   const editBar = amEdit ? `<div class="am-edit-bar">
-      ${g === 'm' ? `<span class="am-edit-lbl">Imbuement</span>
+      ${amSupportsImbue(g) ? `<span class="am-edit-lbl">Imbuement</span>
       <span class="am-seg" role="group" aria-label="Imbuement level">${[0, 1, 2].map(l =>
         `<button type="button" class="${s.lvl === l ? 'is-active' : ''}" data-am-imbue="${l}" data-am-g="${g}">${l === 0 ? 'Off' : l}</button>`).join('')}</span>` : ''}
       <span class="am-edit-hint">+ / &minus; change the deck permanently</span>
       <button type="button" class="am-edit-reset" data-am-reset data-am-g="${g}" title="Back to the standard 20 cards">Reset to standard</button>
     </div>` : '';
   // Same bar as the ability decks: tabs on the left, note and buttons pinned right.
-  const tabs = AM_GROUPS.map(t => `<button class="dk-tab${t.key === g ? ' is-active' : ''}" type="button"
+  const tabs = tabList.map(t => `<button class="dk-tab${t.key === g ? ' is-active' : ''}" type="button"
         role="tab" aria-selected="${t.key === g}" data-am-tab="${t.key}">
       <img class="dk-tab-img" src="${assetPath.amBack()}" alt="" draggable="false">
       <span class="dk-tab-name">${t.label}</span>

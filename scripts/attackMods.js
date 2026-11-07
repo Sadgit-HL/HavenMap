@@ -5,9 +5,14 @@
 // deck/discard = current draw state. base = the full composition the deck returns to on a reshuffle
 // (permanent changes: perks, imbuement, manual edits). lvl = imbuement level applied to base.
 // A null entry means the standard 20-card deck with nothing discarded.
+//
+// Decks are addressed by a key: 'm' (monsters, state.am), 'a' (allies, state.amA) or 'h<i>' (the
+// hero at state.mercenaries[i], stored on that entry as `am`). deckOf() maps a key to where it is
+// read and written and to its card catalog, so all logic below is the same for every deck.
 // Bless and curse cards live only in the deck: when drawn they leave the game instead of being discarded.
 
 import { state, patch } from './state.js';
+import { MERCENARIES } from './data.js';
 
 // Order = order of faces in the GeekRoller code. Standard cards first, then cards added by imbuement.
 export const AM_TYPES = [
@@ -45,15 +50,55 @@ export const AM_GROUPS = [
   { key: 'm', label: 'Monsters' },
   { key: 'a', label: 'Allies' },
 ];
-const field = g => (g === 'a' ? 'amA' : 'am');
+const HERO_KEY = /^h(\d+)$/;
 
-const ALL = [...AM_TYPES, ...AM_SPECIAL];
+// Where a deck lives and what cards it can hold. Unknown keys (e.g. a hero that was removed) read as
+// the standard deck and ignore writes.
+function deckOf(g) {
+  if (g === 'm' || g === 'a') {
+    const f = g === 'a' ? 'amA' : 'am';
+    return { read: () => state[f], write: v => ({ [f]: v }), catalog: AM_TYPES, imbue: g === 'm' };
+  }
+  const i = Number(HERO_KEY.exec(g)?.[1]);
+  return {
+    read: () => state.mercenaries?.[i]?.am,
+    write: v => ({ mercenaries: withHeroAm(state.mercenaries, i, v) }),
+    catalog: AM_TYPES,
+    imbue: false,
+  };
+}
+
+// mercenaries with the am of entry i replaced (removed when null); same array if there is no entry i.
+function withHeroAm(mercs = [], i, am) {
+  if (!mercs[i]) return mercs;
+  return mercs.map((h, j) => {
+    if (j !== i) return h;
+    if (am != null) return { ...h, am };
+    const { am: _drop, ...rest } = h;
+    return rest;
+  });
+}
+
+// All decks to show as tabs: monsters, allies, then one per hero on the map.
+export function amDecks() {
+  const out = [...AM_GROUPS];
+  const mercs = state.mercenaries || [];
+  mercs.forEach((h, i) => {
+    const title = MERCENARIES.byId.get(Number(h.id))?.title || 'Hero';
+    const same = mercs.filter(x => x.id === h.id).length > 1;
+    out.push({ key: 'h' + i, label: same ? `${title} #${mercs.slice(0, i + 1).filter(x => x.id === h.id).length}` : title });
+  });
+  return out;
+}
+
+export const amSupportsImbue = g => deckOf(g).imbue;
+
 const isSpecial = key => AM_SPECIAL.some(s => s.key === key);
 const sum = o => Object.values(o).reduce((a, b) => a + b, 0);
 
-function defaultBase() {
+function defaultBase(catalog = AM_TYPES) {
   const b = {};
-  for (const t of AM_TYPES) b[t.key] = t.count;
+  for (const t of catalog) b[t.key] = t.count;
   return b;
 }
 
@@ -64,13 +109,15 @@ function deckFrom(base) {
 }
 
 export function amState(g = 'm') {
-  const s = state[field(g)];
-  const base = { ...defaultBase(), ...(s?.base || {}) };
+  const d = deckOf(g);
+  const s = d.read();
+  const base = { ...defaultBase(d.catalog), ...(s?.base || {}) };
   return {
     deck:    { ...deckFrom(base), ...(s?.deck || {}) },
     discard: { ...(s?.discard || {}) },
     base,
     lvl:     s?.lvl || 0,
+    catalog: d.catalog,
   };
 }
 
@@ -78,9 +125,9 @@ export function amState(g = 'm') {
 function pack(st) {
   const discard = {};
   for (const [k, v] of Object.entries(st.discard)) if (v > 0) discard[k] = v;
-  const def = defaultBase();
-  const baseDefault = AM_TYPES.every(c => (st.base[c.key] || 0) === (def[c.key] || 0));
-  const deckDefault = ALL.every(c => (st.deck[c.key] || 0) === (isSpecial(c.key) ? 0 : (st.base[c.key] || 0)));
+  const def = defaultBase(st.catalog);
+  const baseDefault = st.catalog.every(c => (st.base[c.key] || 0) === (def[c.key] || 0));
+  const deckDefault = [...st.catalog, ...AM_SPECIAL].every(c => (st.deck[c.key] || 0) === (isSpecial(c.key) ? 0 : (st.base[c.key] || 0)));
   if (!sum(discard) && baseDefault && deckDefault && !st.lvl) return null;
   const out = { deck: st.deck, discard };
   if (!baseDefault) out.base = st.base;
@@ -89,7 +136,7 @@ function pack(st) {
 }
 
 function save(g, st) {
-  patch({ [field(g)]: pack(st) });
+  patch(deckOf(g).write(pack(st)));
 }
 
 // Standard cards back in the deck per the base composition; bless and curse cards that were not drawn stay.
@@ -100,7 +147,7 @@ function reshuffled(st) {
 }
 
 export function amNeedsReshuffle(s = amState()) {
-  const shuffleDrawn = AM_TYPES.some(t => t.shuffle && (s.discard[t.key] || 0) > 0);
+  const shuffleDrawn = s.catalog.some(t => t.shuffle && (s.discard[t.key] || 0) > 0);
   return sum(s.deck) === 0 || shuffleDrawn;
 }
 
@@ -142,11 +189,20 @@ export function amShuffleNow(g = 'm') {
   save(g, { ...st, deck: reshuffled(st), discard: {} });
 }
 
-// For the end-of-round patch: returns the new value of state.am / state.amA.
-export function amEndRound(g = 'm') {
-  const st = amState(g);
-  if (!amNeedsReshuffle(st)) return state[field(g)] ?? null;
-  return pack({ ...st, deck: reshuffled(st), discard: {} });
+// For the end-of-round patch: the state changes that reshuffle every deck that needs it
+// ({am, amA, mercenaries}; a key is only present when that deck changes).
+export function amEndRoundPatch() {
+  const out = {};
+  let mercs = state.mercenaries;
+  for (const { key } of amDecks()) {
+    const st = amState(key);
+    if (!amNeedsReshuffle(st)) continue;
+    const packed = pack({ ...st, deck: reshuffled(st), discard: {} });
+    if (HERO_KEY.test(key)) mercs = withHeroAm(mercs, Number(HERO_KEY.exec(key)[1]), packed);
+    else Object.assign(out, deckOf(key).write(packed));
+  }
+  if (mercs !== state.mercenaries) out.mercenaries = mercs;
+  return out;
 }
 
 // ─── Composition changes (permanent) ─────────────────────────────────────────
@@ -201,16 +257,16 @@ export function amSetImbue(level, g = 'm') {
 // Back to the standard 20 cards (bless and curse cards in the deck are kept).
 export function amResetComposition(g = 'm') {
   const st = amState(g);
-  const base = defaultBase();
-  save(g, { base, lvl: 0, discard: {}, deck: reshuffled({ ...st, base }) });
+  const base = defaultBase(st.catalog);
+  save(g, { ...st, base, lvl: 0, discard: {}, deck: reshuffled({ ...st, base }) });
 }
 
 // ─── Roller ──────────────────────────────────────────────────────────────────
 
 // GeekRoller code, e.g. 1custom20{+0;+0;...;x2;Miss}
 export function amRollerCode(g = 'm') {
-  const { deck } = amState(g);
+  const { deck, catalog } = amState(g);
   const faces = [];
-  for (const c of ALL) for (let i = 0; i < (deck[c.key] || 0); i++) faces.push(c.face);
+  for (const c of [...catalog, ...AM_SPECIAL]) for (let i = 0; i < (deck[c.key] || 0); i++) faces.push(c.face);
   return faces.length ? `1custom${faces.length}{${faces.join(';')}}` : '';
 }
