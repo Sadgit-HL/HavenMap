@@ -73,7 +73,8 @@ function faceText(card, perk) {
       else parts.push((WORD_ABBR[t.word] || t.word || '') + (t.amount !== undefined ? t.amount : ''));
     }
     const effect = parts.join(' ').trim();
-    return effect ? card.value + ': ' + effect : card.value;
+    // A +0 card's value is left out when it has an effect ("Prc3 >", not "+0: Prc3 >"): saves characters.
+    return effect ? (card.value === '+0' ? effect : card.value + ': ' + effect) : card.value;
   }
   if (UNIQUE_FACE_TEXT[card.code]) return UNIQUE_FACE_TEXT[card.code];
   const raw = /"([^"]+)"/.exec(perk?.text || '')?.[1] ?? perk?.text;
