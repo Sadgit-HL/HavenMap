@@ -105,3 +105,69 @@ A second, independent task was done on this branch, on a different machine (`C:\
 **Not carried by git**: the `start.bat` fix (replacing `timeout` with `ping`-based delays, since `timeout` fails outright without an attached console) lives in `C:\Users\user\ai\games\HavenMap\start.bat`, **one level above this repo** — it is not part of this git repository and will not transfer via clone/pull. Redo it manually on a new machine if `start.bat` errors with "input redirection is not supported".
 
 **Cache busting**: `perks/index.html` and `perks/app.js` use `?v=N` query strings on their own asset imports to defeat browser caching during iteration (currently `v=9`). Bump the number on both files when editing `perks/*.css`/`*.js` so a plain refresh picks up changes.
+
+## 12. Update 2026-11-07 (evening): layered rebuild of the shared faces and the compare page
+
+Commits `718ea29` (assets) and `c0077cc` (code), pushed to `origin/feature/hero-amd`. Supersedes step 1 of section 7 and the asset counts in section 4. Machine: `C:\Users\guido\...` (not `hansen`).
+
+### 12.1 Direction
+
+The perks page with baked scans was a test. The cards are meant for the campaign and map apps, so the target is the layered build (frame + icons + badges + amounts), not the scans. `perks/compose.html` (served at `http://localhost:8080/HavenMap/perks/compose.html`, filter with `#q=<slug part>`) shows each of the 101 distinct shared faces three ways: scan, composed from our layers, and composed over scan (tick "Show difference" for a difference blend). It is the working surface for matching the scans.
+
+### 12.2 Icon source: use the FH template
+
+The first export came from the GH template and its glyphs do not match the Frosthaven scans (push, pull, wound, bless and the dual elements all differ). The FH template (`FH Attack Modifier Template.psd`) has the right art. `tools/export-am-layers.jsx` now writes to `psd-export-fh` when the document name starts with `FH`. The `DO` flags in the script currently have only `plain: true` on (petal-less Curse and Bless frames); set the others back to `true` for a full FH run. A full FH export has not been done. What exists was assembled from hand-exported files (below).
+
+Source files live outside the repo:
+- `C:\Users\guido\ai\games\HavenMap\asset-backups\amd\assets`: dual-element frames `E_D.png` ... `W_D.png` (15), `bless.png`, `Bless_icon.png`, `curse.png`, `class_circle.png`, `side_-1/0/+1/+2/+3.png`, `retaliate.png`.
+- `P:\tmp\HavenMap\asset-backups\psd-export`: pass 3 exports (30 frames, 12 Self/Ally icons), `push.png`, `pull.png`, `Wound.png`, the 15 `FH Dual Elements` pill PNGs (`fire or ice.png` ...), and 14 files from 02:05 (`Earth_Dark.png`, `Fire_Ice.png`, `Light_Wind.png` ...) that have **not** been looked at or converted.
+
+### 12.3 Assets now in `images/common/attack_mods/`
+
+- `frames/`: 30 modifier frames (pass 3), 15 `mixed-elements-<a>-<b>` two-tone frames, plain `curse` and `bless` without petals (the real cards have none).
+- `icons/center/`: replaced from FH art: push, pull, wound, bless, retaliate (fist disc, no label), pierce (baked X removed), and the 15 dual-element pills. New: Self/Ally heal, shield and retaliate icons, `conditions-ward-range`, `conditions-safeguard-ally` (glyph shrunk and raised).
+- `icons/small/target-ring.webp`: white ring glyph for "target N" lines (114x114, not full canvas).
+- `spheres/`: `badge-p0..p3`, `badge-m1`, `badge-m2` (built, see tools), `class-circle`.
+- Not replaced yet: everything in `icons/side/` (still the old GH-style art, except the new Self/Ally ones) and `numbers/`. The other centre icons (poison, stun, curse, strengthen, safeguard, ward, elements ...) have not been compared against the scans one by one.
+
+### 12.4 Tools added (`tools/`)
+
+| Script | What it does |
+|---|---|
+| `convert-psd-export.py` | Paths now overridable (argv or `PSD_EXPORT_SRC` / `AM_DST`). Also replaces centre icons for push, pull, Wound and the dual-element pills: it scales them into the box the old icon filled. |
+| `convert-dual-frames.py` | `?_?.png` dual frames, plus the Bless and Curse frames and the Bless icon. |
+| `convert-badges.py` | `side_*.png` and `class_circle.png` to `spheres/`; clears the faint texture alpha outside the disc. |
+| `convert-retaliate.py` | `retaliate.png` to `icons/center/effects-retaliate.webp`. |
+| `make-badge-m2.py` | Builds `badge-m2` from `badge-m1` (inpaints the "1", pastes the bevelled "-2" from `numbers/c-m2`). Replace it by a real export if one appears. |
+| `clean-pierce-icon.py` | Removes the X from the pierce icon and closes the shaft gap. Run it on the original icon, not twice. |
+| `make-raised-icon.py` | Generic: shrink and raise an icon's glyph inside the diamond. Args: icon, output name, scale, new glyph top. Safeguard was built with `conditions-safeguard conditions-safeguard-ally 0.9 134`. |
+| `make-ward-range-icon.py` | Same idea for ward (scale 0.77, box 252,103 to 340,231). |
+
+### 12.5 Photoshop script state (`export-am-layers.jsx`)
+
+- The corner badge export still fails. Cause: `Numbered Deck > Number/Symbol` is locked and its parent groups are `allLocked`. The script now unlocks the whole chain and relocks afterwards, which clears the group locks, but the text layer's own `allLocked` still raises "The command Set is not currently available". Workaround used: the owner exported `side_*.png` by hand. If this is revisited, try unlocking the text layer by hand in the Layers panel before running, or drop badge export.
+- Never save the PSD. The document must be ungrouped from its artboard first.
+- A failed run leaves group locks changed in the open document; harmless if not saved.
+
+### 12.6 Layout rules found by comparing with the scans
+
+All coordinates are on the 600x391 canvas. Implemented in `perks/compose.js`.
+- Every icon face: tinted frame named after the first icon (push and pull share `push-pull`, safeguard uses `poison`, heal uses `p0` and matches the scan). Two elements: per-pair two-tone frame, rotated 180 degrees for the seven slugs in `ROTATE_FRAME`. Three elements (`minus1airdarkearth`): `earth-wind` frame rotated, plus three element discs (scale 0.42) at wind (244,162), earth (359,162), dark (301,261).
+- Value badge disc at x29 y149 (96 px), class badge circle at x37 y268 (87 px, owner's measurement). Plain cards (no icon) keep the big centre number and have no value badge.
+- Amounts and labels: push number dark at (300,145); retaliate number white beside the fist at (373,193); pierce number white at (248,195); lone target "+N" at (217,197); target next to another icon: main icon scaled 0.73 and raised 29.5 px, white ring glyph at (281,289) and amount at (323,294) in Palatino bold; ward range line (hexagon + arrow SVG + amount) under the raised glyph; "Ally" label for strengthen and safeguard in rounded sans at (299.5,268); `curse 2` draws two curse diamonds at (258,157) and (340,238) at scale 0.557. Numbers use Pirata One (bundled in `perks/fonts/`) unless noted.
+- The pull number position (303,168) is estimated; no pull face exists in the data.
+
+### 12.7 Gotchas
+
+- The scans are 586x391 and the page shows them with `object-fit: cover` onto 600x391, so a plain resize in a script gives slightly different coordinates than the page. Measure against the page. A headless Chrome screenshot works: `chrome --headless=new --screenshot=... "http://localhost:8080/HavenMap/perks/compose.html#q=..."`.
+- Cache busting: `compose.js?v=22` and `compose.css?v=15` in `compose.html`; bump them on every edit. `perks/index.html` and `app.js` are at `?v=10`.
+- Overlay transforms use a `#xf:` or `#r180` suffix on the layer URL in `compose.js` (`stack()` strips it). Hacky but contained.
+
+### 12.8 Open items
+
+- Frames still missing: shield (3 faces) and retaliate (1) use the placeholder `p0`. The retaliate scan has a steel grey-blue frame.
+- The 68 `unique` faces and 26 multi-icon faces have not been rebuilt; only the handful above were matched. Rolling and the other side icons are still the old GH-style art.
+- The 14 unprocessed `psd-export` files from 02:05, and the `+4` badge (CSS placeholder on the page; no shared face uses it).
+- The class badge overlay on the old perks page (`.pc-class-badge`) was set to the owner's measurement (v=10) and never confirmed visually.
+- Backups of every replaced asset were kept only in `%TEMP%\bak`, which is not durable. The old versions of the 28 replaced files are in git history (`810c653`).
+- Campaign work (sections 1 to 8) is still not started.
