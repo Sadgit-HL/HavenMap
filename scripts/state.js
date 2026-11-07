@@ -301,6 +301,10 @@ function applyHash(hash) {
         : b64decode(normalized);
       const raw      = JSON.parse(rawJson);
       const migrated = migrate(raw);
+      // Drop heroes whose class is no longer in the game (e.g. a removed class from an old map link).
+      if (Array.isArray(migrated.mercenaries)) {
+        migrated.mercenaries = migrated.mercenaries.filter(h => h && MERCENARIES.byId.has(Number(h.id)));
+      }
       Object.assign(state, emptyState(), migrated);
     } catch (e) {
       console.warn('Could not parse URL hash, starting empty.', e);
