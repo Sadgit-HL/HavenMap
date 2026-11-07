@@ -314,6 +314,12 @@ function applyHash(hash) {
   setUrlHash(normalized);
 }
 
+// A mercenary entry without its attack modifier deck (for copies: a copy starts with a fresh deck).
+export function withoutAm(h) {
+  const { am: _am, ...rest } = h;
+  return rest;
+}
+
 export function patch(partial) {
   const beforeHash = stateHash();
   Object.assign(state, partial);

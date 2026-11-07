@@ -1,5 +1,5 @@
 import { pixelToHex, hexCenter, footprintHexes, HEX_W, HEX_H, COLS, ROWS } from './hex.js';
-import { state, patch } from './state.js';
+import { state, patch, withoutAm } from './state.js';
 import { uiState, selectHex, selectObject, showStack, showStackWithSelection, setMobileMoveMode } from './uiState.js';
 import { TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES, SUMMONS, generateStandeeNum, generateTokenNum } from './data.js';
 import { panBy, setZoomAroundClient, getZoom } from './controls.js';
@@ -279,7 +279,7 @@ function onMouseup(e) {
     if (arr[idx]) {
       if (isCopying) {
         let copied = { ...arr[idx], x: col, y: row };
-        if (kind === 'mercenary') { const { am: _am, ...withoutAm } = copied; copied = withoutAm; } // a copy gets its own (empty) modifier deck
+        if (kind === 'mercenary') copied = withoutAm(copied); // a copy gets its own (empty) modifier deck
         if (kind === 'monster') {
           // Exclude old standeeNum and generate a new unique one
           const { standeeNum: _old, ...withoutStandee } = arr[idx];

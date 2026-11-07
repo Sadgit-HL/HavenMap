@@ -2,7 +2,8 @@
 // Layers all share the 600x391 canvas, so they stack at 0,0. Corner value badges (not exported yet)
 // and the class badge are not drawn here.
 import { PERKS } from '../scripts/games/perks.js?v=10';
-import { BASE, compose, stack, addOverlays, withOverlays, withBadges } from '../scripts/amd/compose.js?v=1';
+import { compose, stack, addOverlays, withOverlays, withBadges } from '../scripts/amd/compose.js?v=3';
+import { ASSET_BASE as BASE } from '../scripts/amd/paths.js?v=2';
 
 // Distinct shared faces, with the classes that use each.
 const faces = new Map();
@@ -32,9 +33,9 @@ const main = document.getElementById('main');
 const countEl = document.getElementById('count');
 const entries = [...faces.entries()].sort((a, b) => a[0].localeCompare(b[0]));
 const built = entries.map(([ref, { card, used }]) => {
-  const c = compose(card);
+  const c = compose(card, true);
   const scan = `${BASE}/shared/${ref}.webp`;
-  const urls = c.layers.map(l => l[0]);
+  const urls = c.layers;
 
   const el = document.createElement('div');
   el.className = 'face';
@@ -69,7 +70,7 @@ const built = entries.map(([ref, { card, used }]) => {
   }
   const lay = document.createElement('div');
   lay.className = 'layers';
-  lay.textContent = c.layers.map(l => l[1]).join(' + ');
+  lay.textContent = c.layers.map(l => l.label).join(' + ');
   const u = document.createElement('div');
   u.className = 'used';
   u.textContent = `${used.size} classes: ${[...used].join(', ')}`;

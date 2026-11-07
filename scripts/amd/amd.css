@@ -39,7 +39,6 @@
 .cb-classgroup { position: absolute; inset: 0; }
 .cb-class { border-radius: 50%; }
 .cb-class img { position: absolute; left: 20%; top: 20%; width: 60%; height: 60%; object-fit: contain; }
-.stack .cb-class img { position: absolute; }
 
 /* Small dark digit on the push arrow: centred on its point, sized from the stack width (cqw). */
 .cb-digit {
@@ -49,7 +48,7 @@
 }
 
 /* Small white glyph + amount under a raised icon (target N). */
-.stack img.cb-glyph { position: absolute; height: auto; transform: translate(-50%, -50%); object-fit: contain; }
+.stack img.cb-glyph { height: auto; transform: translate(-50%, -50%); object-fit: contain; }
 .cb-digit.cb-digit-white {
   color: #fff; -webkit-text-stroke: 0;
   font: 700 7.4cqw/1 "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;

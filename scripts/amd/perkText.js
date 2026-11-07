@@ -3,7 +3,8 @@
 // inline. Icon files live in images/common/perk-icons/<token>.png (Frosthaven-style variants where
 // FrosthavenAssistant has them). A token without an icon is shown as its plain word, so nothing
 // disappears silently. Style: .pt-icon in scripts/amd/amd.css.
-const ICON_BASE = new URL('../../images/common/perk-icons', import.meta.url).href;
+import { PERK_ICON_BASE as ICON_BASE } from './paths.js?v=2';
+import { escapeHtml as esc } from '../escape.js';
 
 // Tokens that have an icon file. Keep in sync with the folder; tools/check-perk-icons.mjs verifies it
 // against every placeholder in perks.js.
@@ -17,8 +18,6 @@ export const PERK_ICON_TOKENS = new Set([
 
 // Words for the alt/title text and the fallback ("flip" is the rolling mark).
 const WORD = { flip: 'rolling', iceair: 'ice/air', icedark: 'ice/dark', iceearth: 'ice/earth', airearth: 'air/earth', lightdark: 'light/dark' };
-
-const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 export function perkTextHtml(text) {
   return esc(text || '').replace(/%(\w+)%/g, (_, tok) => {

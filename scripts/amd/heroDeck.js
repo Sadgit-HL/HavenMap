@@ -12,15 +12,16 @@ import { PERKS } from '../games/perks.js';
 const CLASS_ALIAS = { 'HIVE': 'H.I.V.E.' };
 
 const BASE_KEY = { '+0': 'p0', '+1': 'p1', '+2': 'p2', '+3': 'p3', '+4': 'p4', '-1': 'm1', '-2': 'm2', 'null': 'miss' };
-const STANDARD_CARD = { '+0': '+0', '+1': '+1', '+2': '+2', '-1': '-1', '-2': '-2', 'x2': 'x2', 'Miss': 'null' };
 
 // { edition, name, perks } for a mercenary title, or null when there is no perk data.
+const perkClasses = new Map();
 export function heroPerkClass(title) {
-  const name = CLASS_ALIAS[title] || title;
-  for (const [edition, classes] of Object.entries(PERKS)) {
-    if (classes[name]) return { edition, name, perks: classes[name] };
+  if (!perkClasses.has(title)) {
+    const name = CLASS_ALIAS[title] || title;
+    const edition = Object.keys(PERKS).find(ed => PERKS[ed][name]);
+    perkClasses.set(title, edition ? { edition, name, perks: PERKS[edition][name] } : null);
   }
-  return null;
+  return perkClasses.get(title);
 }
 
 export function cardKey(card) {
@@ -48,14 +49,16 @@ function faceText(card, perk) {
   return t.length > 60 ? t.slice(0, 57) + '...' : t;
 }
 
-const catalogs = new Map();
+// Catalogs built so far: standard-card list -> title -> catalog (the result depends on both).
+const catalogs = new WeakMap();
 
 // Card catalog of one class: the standard cards (counts as in `standard`) plus every other face its
 // perks add or remove, with count 0 (shown when present, or in edit mode). Each entry carries
 // `card`, the perks.js card, so the face can be drawn with scripts/amd/card.js.
 export function heroCatalog(title, standard) {
-  if (catalogs.has(title)) return catalogs.get(title);
-  const out = standard.filter(t => !t.extra).map(t => ({ ...t, card: { kind: 'base', value: STANDARD_CARD[t.face] } }));
+  const byTitle = catalogs.get(standard) || catalogs.set(standard, new Map()).get(standard);
+  if (byTitle.has(title)) return byTitle.get(title);
+  const out = standard.filter(t => !t.extra).map(t => ({ ...t, card: { kind: 'base', value: t.value } }));
   const seen = new Set(out.map(t => t.key));
   const cls = heroPerkClass(title);
   for (const perk of cls?.perks || []) {
@@ -67,7 +70,7 @@ export function heroCatalog(title, standard) {
       out.push({ key, face: faceText(card, perk), count: 0, shuffle: false, extra: true, rolling, card });
     }
   }
-  catalogs.set(title, out);
+  byTitle.set(title, out);
   return out;
 }
 
@@ -98,7 +101,8 @@ export function groupPerks(perks) {
 // What one perk does to the composition: { key: +n | -n }.
 export function perkDelta(perk) {
   const d = {};
-  for (const c of perk.adds) d[cardKey(c)] = (d[cardKey(c)] || 0) + 1;
-  for (const c of perk.removes) d[cardKey(c)] = (d[cardKey(c)] || 0) - 1;
+  const tally = (cards, n) => { for (const c of cards) { const k = cardKey(c); d[k] = (d[k] || 0) + n; } };
+  tally(perk.adds, 1);
+  tally(perk.removes, -1);
   return d;
 }

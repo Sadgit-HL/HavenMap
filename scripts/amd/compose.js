@@ -1,14 +1,14 @@
 // Layered composition of a decorated (shared) attack-modifier card from images/common/attack_mods.
 // Used by card.js (perk list, apps) and perks/compose.html (comparison page).
 
-import { ASSET_BASE as BASE } from './paths.js?v=1';
-export { BASE };
+import { ASSET_BASE as BASE } from './paths.js?v=2';
+import { img, layer } from './dom.js';
 const ICON_CATS = ['element', 'condition', 'effect'];
 const SELF_ALLY = new Set(['heal', 'shield']);   // retaliate: plain fist disc, amount drawn beside it
 // First-icon -> frame file where the names differ.
 const FRAME_ALIAS = { push: 'push-pull', pull: 'push-pull', safeguard: 'poison' }; // safeguard has no frame of its own: poison's
-const PLAIN_FRAME = { '+0': 'p0', '+1': 'positive', '+2': 'positive', '+3': 'positive', '+4': 'positive', '-1': 'negative', '-2': 'negative' };
-const PLAIN_NUMBER = { '+0': 'p0', '+1': 'p1', '+2': 'p2', '+3': 'p3', '+4': 'p4', '-1': 'm1', '-2': 'm2' };
+export const PLAIN_FRAME = { '+0': 'p0', '+1': 'positive', '+2': 'positive', '+3': 'positive', '+4': 'positive', '-1': 'negative', '-2': 'negative' };
+export const PLAIN_NUMBER = { '+0': 'p0', '+1': 'p1', '+2': 'p2', '+3': 'p3', '+4': 'p4', '-1': 'm1', '-2': 'm2' };
 // Two-tone dual-element faces whose scan has the pair the other way round: frame turned by 180 degrees.
 const ROTATE_FRAME = new Set(['plus0earthfire', 'plus0airearth', 'plus0iceearth', 'plus1airearth',
   'plus1earthfire', 'plus1iceearth', 'plus2airlight']);
@@ -40,7 +40,9 @@ const NUM_BBOX = {
   '+0': [181, 93, 381, 299], '+1': [193, 93, 368, 298], '+2': [184, 92, 382, 299], '+3': [186, 93, 374, 301],
   '+4': [177, 95, 391, 300], '-1': [200, 93, 361, 297], '-2': [190, 92, 377, 299],
 };
-const NUM_FILE = { '+0': 'p0', '+1': 'p1', '+2': 'p2', '+3': 'p3', '+4': 'p4', '-1': 'm1', '-2': 'm2' };
+
+// "a-b" or "b-a", whichever two-tone element pair exists, else null.
+const mixedPair = (a, b) => MIXED.has(`${a}-${b}`) ? `${a}-${b}` : MIXED.has(`${b}-${a}`) ? `${b}-${a}` : null;
 
 function pct(v, of) { return (v / of * 100) + '%'; }
 function box(el, b) {
@@ -50,32 +52,27 @@ function box(el, b) {
 
 // Exported badge discs (spheres/badge-<v>.webp, full 600x391 canvas). Values without one fall back
 // to the CSS placeholder below (+4 is not exported yet).
-const BADGE_IMG = { '+0': 'p0', '+1': 'p1', '+2': 'p2', '+3': 'p3', '-1': 'm1', '-2': 'm2' };
+const BADGE_IMG = { ...PLAIN_NUMBER };
+delete BADGE_IMG['+4'];
 
 function valueBadge(value) {
   if (BADGE_IMG[value]) {
-    const im = document.createElement('img');
-    im.src = `${BASE}/spheres/badge-${BADGE_IMG[value]}.webp`;
-    im.alt = '';
-    im.className = 'cb-full';
-    return im;
+    return img(`${BASE}/spheres/badge-${BADGE_IMG[value]}.webp`, 'cb-full');
   }
   const bb = NUM_BBOX[value];
   if (!bb) return null;
-  const wrap = document.createElement('div');
-  wrap.className = 'cb-value ' + (value.startsWith('+') ? (value === '+0' ? 'zero' : 'pos') : 'neg');
+  const wrap = layer('cb-value ' + (value.startsWith('+') ? (value === '+0' ? 'zero' : 'pos') : 'neg'));
   box(wrap, VALUE_BADGE);
   // Number cropped to its bbox, fitted into ~62% of the disc (centred).
   const w = bb[2] - bb[0], h = bb[3] - bb[1];
   const fit = 0.62 * VALUE_BADGE.d / Math.max(w, h);
   const nw = w * fit, nh = h * fit;
-  const num = document.createElement('div');
-  num.className = 'cb-num';
+  const num = layer('cb-num');
   num.style.left = pct((VALUE_BADGE.d - nw) / 2, VALUE_BADGE.d);
   num.style.top = pct((VALUE_BADGE.d - nh) / 2, VALUE_BADGE.d);
   num.style.width = pct(nw, VALUE_BADGE.d);
   num.style.height = pct(nh, VALUE_BADGE.d);
-  num.style.backgroundImage = `url(${BASE}/numbers/c-${NUM_FILE[value]}.webp)`;
+  num.style.backgroundImage = `url(${BASE}/numbers/c-${PLAIN_NUMBER[value]}.webp)`;
   num.style.backgroundSize = `${CANVAS.w / w * 100}% ${CANVAS.h / h * 100}%`;
   num.style.backgroundPosition = `${bb[0] / (CANVAS.w - w) * 100}% ${bb[1] / (CANVAS.h - h) * 100}%`;
   wrap.appendChild(num);
@@ -86,35 +83,33 @@ function valueBadge(value) {
 // Fitting each into the same box makes tall/wide ones look small. Size by area instead: every icon
 // gets the area of a `square`-sized (fraction of the badge circle) square, capped so the longest
 // side is at most 1.25x that. Centred in the circle.
-export function fitClassIcon(icon, square) {
+// The fitted box of an icon is the same for every card, so it is remembered per icon file and applied
+// at once (no waiting for the image, no flash of the unsized icon) after the first load.
+const fittedIcons = new Map();
+function fitClassIcon(icon, square) {
+  const key = `${icon.src}|${square}`;
+  const known = fittedIcons.get(key);
+  if (known) { Object.assign(icon.style, known); return; }
   const apply = () => {
     const ar = icon.naturalWidth / icon.naturalHeight;
     if (!ar) return;
     let w = square * Math.sqrt(ar), h = square / Math.sqrt(ar);
     const cap = square * 1.25, m = Math.max(w, h);
     if (m > cap) { w *= cap / m; h *= cap / m; }
-    Object.assign(icon.style, {
-      left: ((1 - w) / 2 * 100) + '%', top: ((1 - h) / 2 * 100) + '%',
-      width: (w * 100) + '%', height: (h * 100) + '%',
-    });
+    const box = { left: ((1 - w) / 2 * 100) + '%', top: ((1 - h) / 2 * 100) + '%', width: (w * 100) + '%', height: (h * 100) + '%' };
+    fittedIcons.set(key, box);
+    Object.assign(icon.style, box);
   };
   if (icon.complete && icon.naturalWidth) apply(); else icon.addEventListener('load', apply, { once: true });
 }
 
 function classBadge(cls) {
   if (!cls) return null;
-  const g = document.createElement('div');
-  g.className = 'cb-classgroup';
-  const circle = document.createElement('img');
-  circle.src = `${BASE}/spheres/class-circle.webp`;
-  circle.alt = '';
-  circle.className = 'cb-full';
-  const wrap = document.createElement('div');
-  wrap.className = 'cb-class';
+  const g = layer('cb-classgroup');
+  const circle = img(`${BASE}/spheres/class-circle.webp`, 'cb-full');
+  const wrap = layer('cb-class');
   box(wrap, CLASS_BADGE);
-  const ic = document.createElement('img');
-  ic.src = `${BASE}/class_icons/${cls}.webp`;
-  ic.alt = '';
+  const ic = img(`${BASE}/class_icons/${cls}.webp`);
   ic.onerror = () => ic.remove();
   fitClassIcon(ic, 0.6);
   wrap.appendChild(ic);
@@ -123,8 +118,7 @@ function classBadge(cls) {
 }
 
 export function badges(value, cls) {
-  const g = document.createElement('div');
-  g.className = 'cb';
+  const g = layer('cb');
   for (const b of [value ? valueBadge(value) : null, classBadge(cls)]) if (b) g.appendChild(b);
   return g;
 }
@@ -148,30 +142,34 @@ function allyLabelSvg() {
   </svg>`;
 }
 
-export function compose(card) {
+// Draws nothing itself: returns the layers (bottom to top), overlays and, when `diag` is set, the
+// diagnostic notes the compare page shows (perks/compose.html).
+// Layer: { src, label, icon?, transform?, origin? }.
+export function compose(card, diag = false) {
   const t = card.tokens;
   let icons = t.filter(x => ICON_CATS.includes(x.cat));
   let targetSmall = null;
   const has = key => t.some(x => x.key === key);
   const flags = [];
+  const note = (kind, text) => { if (diag) flags.push([kind, text]); };
   // "target N" next to another effect (e.g. blesstarget2) is a small "ring + N" line under the main
   // icon on the real card, not a second big icon: draw only the main icon, flag the target.
   const targetTok = icons.find(x => x.icon === 'add-target');
   if (targetTok && icons.length > 1) {
     icons = icons.filter(x => x !== targetTok);
     targetSmall = targetTok;
-    flags.push(['ok', `target ${targetTok.amount ?? ''}: small ring + number under a smaller, raised icon`]);
+    note('ok', `target ${targetTok.amount ?? ''}: small ring + number under a smaller, raised icon`);
   }
-  const layers = []; // [url, label]
+  const layers = [];
   let frame;
   let frameOk = true;
 
   if (!icons.length) {
     // Plain value card (plus3, plus4, plus1flip ...): own frame + centred number.
     frame = PLAIN_FRAME[card.value] || 'p0';
-    layers.push([`${BASE}/frames/${frame}.webp`, `frame ${frame}`]);
-    if (NUMBER_FILE_OK(card.value)) layers.push([`${BASE}/numbers/c-${PLAIN_NUMBER[card.value]}.webp`, `number ${card.value}`]);
-    flags.push(['ok', 'plain card']);
+    layers.push({ src: `${BASE}/frames/${frame}.webp`, label: `frame ${frame}` });
+    if (card.value in PLAIN_NUMBER) layers.push({ src: `${BASE}/numbers/c-${PLAIN_NUMBER[card.value]}.webp`, label: `number ${card.value}` });
+    note('ok', 'plain card');
   } else {
     const elems = icons.filter(x => x.cat === 'element');
     const first = icons[0];
@@ -179,7 +177,7 @@ export function compose(card) {
     if (elems.length > 1) {
       // Two-tone per-pair frame when the pair exists (either order), else the generic one.
       const [a, b] = elems.map(x => x.icon);
-      const pair = MIXED.has(`${a}-${b}`) ? `${a}-${b}` : MIXED.has(`${b}-${a}`) ? `${b}-${a}` : null;
+      const pair = mixedPair(a, b);
       fname = elems.length === 2 && pair ? `mixed-elements-${pair}` : elems.length === 3 ? 'mixed-elements-earth-wind' : 'mixed-elements';
     } else {
       fname = FRAME_ALIAS[first.icon] || first.icon;
@@ -187,18 +185,18 @@ export function compose(card) {
     if (NO_FRAME.has(first.icon) && elems.length < 2) {
       frameOk = false;
       frame = 'p0';
-      flags.push(['warn', `no frame for ${first.icon}`]);
+      note('warn', `no frame for ${first.icon}`);
     } else {
       frame = fname;
     }
     const rot = ROTATE_FRAME.has(card.art.ref) || (elems.length === 3 && icons.length === 3);   // triple: grey (wind) left, green (earth) right
-    layers.push([`${BASE}/frames/${frame}.webp${rot ? '#r180' : ''}`, `frame ${frame}${rot ? ' (rotated 180)' : ''}`]);
+    layers.push({ src: `${BASE}/frames/${frame}.webp`, label: `frame ${frame}${rot ? ' (rotated 180)' : ''}`, ...(rot && { transform: 'rotate(180deg)' }) });
 
     if (elems.length === 2 && icons.length === 2) {
       const [a, b] = elems.map(x => x.icon);
-      const m = MIXED.has(`${a}-${b}`) ? `${a}-${b}` : MIXED.has(`${b}-${a}`) ? `${b}-${a}` : null;
-      if (m) layers.push([`${BASE}/icons/center/mixed-elements-${m}.webp`, `icon mixed-elements-${m}`]);
-      else flags.push(['warn', `no mixed icon ${a}+${b}`]);
+      const m = mixedPair(a, b);
+      if (m) layers.push({ src: `${BASE}/icons/center/mixed-elements-${m}.webp`, label: `icon mixed-elements-${m}`, icon: true });
+      else note('warn', `no mixed icon ${a}+${b}`);
     } else {
       for (const ic of icons) {
         let file;
@@ -209,30 +207,31 @@ export function compose(card) {
         if (ic.icon === 'curse' && ic.amount === 2) {
           for (const [px, py] of CURSE2_POS) {
             const dx = (px - 303.5) / 600 * 100, dy = (py - 198.5) / 391 * 100;
-            layers.push([`${BASE}/icons/center/${file}.webp#xf:` + encodeURIComponent(`translate(${dx.toFixed(2)}%, ${dy.toFixed(2)}%) scale(${CURSE2_SCALE})`), `icon ${file} x2`]);
+            layers.push({ src: `${BASE}/icons/center/${file}.webp`, label: `icon ${file} x2`, icon: true, transform: `translate(${dx.toFixed(2)}%, ${dy.toFixed(2)}%) scale(${CURSE2_SCALE})`, origin: XF_ORIGIN });
           }
-          flags.push(['ok', 'curse 2: two icons']);
+          note('ok', 'curse 2: two icons');
           continue;
         }
-        let url = `${BASE}/icons/center/${file}.webp`;
+        const lay = { src: `${BASE}/icons/center/${file}.webp`, label: `icon ${file}`, icon: true };
         const tri = elems.length === 3 && icons.length === 3 && TRIPLE_POS[ic.icon];
         if (tri) {
           const dx = (tri[0] - 303) / 600 * 100, dy = (tri[1] - 198.5) / 391 * 100;
-          url += '#xf:' + encodeURIComponent(`translate(${dx.toFixed(2)}%, ${dy.toFixed(2)}%) scale(${TRIPLE_SCALE})`);
+          lay.transform = `translate(${dx.toFixed(2)}%, ${dy.toFixed(2)}%) scale(${TRIPLE_SCALE})`;
+          lay.origin = XF_ORIGIN;
         }
-        layers.push([url, `icon ${file}`]);
+        layers.push(lay);
       }
     }
-    if (elems.length === 3 && icons.length === 3) flags.push(['ok', '3 elements in a triangle']);
-    else if (icons.length > 1) flags.push(['warn', `${icons.length} icons stacked (layout unknown)`]);
+    if (elems.length === 3 && icons.length === 3) note('ok', '3 elements in a triangle');
+    else if (icons.length > 1) note('warn', `${icons.length} icons stacked (layout unknown)`);
   }
-  if (has('rolling')) layers.push([`${BASE}/icons/side/rolling.webp`, 'side rolling']);
-  if (t.some(x => x.amount !== undefined)) flags.push(['warn', 'amount: ' + t.filter(x => x.amount !== undefined).map(x => `${x.word}${x.amount}`).join(' ')]);
-  if (t.some(x => x.cat === 'range') && !icons.some(i => i.icon === 'ward')) flags.push(['warn', 'range token']);
-  if (has('convert-to-any')) flags.push(['warn', 'convert to any']);
-  if (has('ally')) flags.push(['', 'ally']);
-  if (has('rolling')) flags.push(['', 'rolling']);
-  if (frameOk && icons.length) flags.unshift(['ok', 'frame ok']);
+  if (has('rolling')) layers.push({ src: `${BASE}/icons/side/rolling.webp`, label: 'side rolling' });
+  if (t.some(x => x.amount !== undefined)) note('warn', 'amount: ' + t.filter(x => x.amount !== undefined).map(x => `${x.word}${x.amount}`).join(' '));
+  if (t.some(x => x.cat === 'range') && !icons.some(i => i.icon === 'ward')) note('warn', 'range token');
+  if (has('convert-to-any')) note('warn', 'convert to any');
+  if (has('ally')) note('', 'ally');
+  if (has('rolling')) note('', 'rolling');
+  if (diag && frameOk && icons.length) flags.unshift(['ok', 'frame ok']);
   // Small dark numbers on the push arrow (centre of the arrow shaft, measured off the push scans).
   const overlays = [];
   if (has('ally') && icons.length && !icons.some(i => SELF_ALLY.has(i.icon) || i.icon === 'retaliate')) overlays.push({ svg: allyLabelSvg() });
@@ -240,7 +239,7 @@ export function compose(card) {
     // Measured off the minus2blesstarget2 scan: main diamond 172 px wide (icon box is 235) and its
     // centre 29.5 px higher; ring glyph 40 px at (281,289), amount at (322,294).
     for (const l of layers) {
-      if (l[1].startsWith('icon ')) l[0] += '#xf:' + encodeURIComponent('translateY(-7.54%) scale(0.73)');
+      if (l.icon) { l.transform = 'translateY(-7.54%) scale(0.73)'; l.origin = XF_ORIGIN; }
     }
     overlays.push({ img: `${BASE}/icons/small/target-ring.webp`, x: 281, y: 289, w: 40 });
     if (targetSmall.amount !== undefined) overlays.push({ text: String(targetSmall.amount), x: 323, y: 294, cls: 'cb-digit-white' });
@@ -259,30 +258,27 @@ export function compose(card) {
     // placed by eye on the icon (centre of the shaft) and flagged as an estimate.
     if (x.icon === 'pull' && x.amount !== undefined) {
       overlays.push({ text: String(x.amount), x: 303, y: 168 });
-      flags.push(['warn', 'pull number position estimated (no scan)']);
+      note('warn', 'pull number position estimated (no scan)');
     }
   }
   return { layers, flags, frameOk, overlays, plain: !icons.length };
 }
 
-function NUMBER_FILE_OK(v) { return v in PLAIN_NUMBER; }
+// The icons of a face are scaled/moved around the centre of the 600x391 icon canvas.
+const XF_ORIGIN = '50.58% 50.77%';
 
-export function stack(extra, srcs) {
-  const d = document.createElement('div');
-  d.className = 'stack ' + extra;
-  for (const [i, src] of srcs.entries()) {
-    let s = src;
-    const im = document.createElement('img');
-    if (s.endsWith('#r180')) { s = s.slice(0, -5); im.style.transform = 'rotate(180deg)'; }
-    const xf = s.indexOf('#xf:');
-    if (xf >= 0) { im.style.transform = decodeURIComponent(s.slice(xf + 4)); im.style.transformOrigin = '50.58% 50.77%'; s = s.slice(0, xf); }
-    im.src = s;
-    im.alt = '';
-    im.loading = 'lazy';
+// Stacks layers (compose() layers, or plain urls) at 0,0 of one box. A missing file hides its layer.
+export function stack(extra, layers) {
+  const d = layer('stack ' + extra);
+  layers.forEach((l, i) => {
+    const { src, transform, origin } = typeof l === 'string' ? { src: l } : l;
+    const im = img(src, '', true);
+    if (transform) im.style.transform = transform;
+    if (origin) im.style.transformOrigin = origin;
     im.onerror = () => im.classList.add('missing');
-    if (extra === 'over' && i === srcs.length - 1) im.className = 'top';
+    if (extra === 'over' && i === layers.length - 1) im.className = 'top';
     d.appendChild(im);
-  }
+  });
   return d;
 }
 
@@ -291,21 +287,16 @@ export function addOverlays(el, overlays) {
   for (const o of overlays) {
     let d;
     if (o.svg) {
-      d = document.createElement('div');
-      d.className = 'cb-svg';
+      d = layer('cb-svg');
       d.innerHTML = o.svg;
       el.appendChild(d);
       continue;
     }
     if (o.img) {
-      d = document.createElement('img');
-      d.src = o.img;
-      d.alt = '';
-      d.className = 'cb-glyph';
+      d = img(o.img, 'cb-glyph');
       d.style.width = pct(o.w, CANVAS.w);
     } else {
-      d = document.createElement('div');
-      d.className = 'cb-digit ' + (o.cls || '');
+      d = layer('cb-digit ' + (o.cls || ''));
       d.textContent = o.text;
     }
     d.style.left = pct(o.x, CANVAS.w);
@@ -327,9 +318,8 @@ export function withBadges(stackEl, value, usedBy) {
 // Class is the owning class name (class badge); the value badge is drawn for non-plain faces.
 export function composedShared(card, className) {
   const c = compose(card);
-  const el = withOverlays(stack('', c.layers.map(l => l[0])), c.overlays);
-  const cls = className || null;
-  el.appendChild(badges(c.plain ? null : card.value, cls));
+  const el = withOverlays(stack('', c.layers), c.overlays);
+  el.appendChild(badges(c.plain ? null : card.value, className));
   return el;
 }
 

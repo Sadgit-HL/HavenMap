@@ -11,19 +11,19 @@
 // read and written and to its card catalog, so all logic below is the same for every deck.
 // Bless and curse cards live only in the deck: when drawn they leave the game instead of being discarded.
 
-import { state, patch } from './state.js';
+import { state, patch, withoutAm } from './state.js';
 import { MERCENARIES } from './data.js';
 import { heroCatalog, heroPerkClass, perkDelta, perkBoxes, perkLabel, groupPerks } from './amd/heroDeck.js';
 
 // Order = order of faces in the GeekRoller code. Standard cards first, then cards added by imbuement.
 export const AM_TYPES = [
-  { key: 'p0',   face: '+0',   count: 6, img: 'monster/plus0',  shuffle: false },
-  { key: 'p1',   face: '+1',   count: 5, img: 'monster/plus1',  shuffle: false },
-  { key: 'm1',   face: '-1',   count: 5, img: 'monster/minus1',  shuffle: false },
-  { key: 'p2',   face: '+2',   count: 1, img: 'monster/plus2',  shuffle: false },
-  { key: 'm2',   face: '-2',   count: 1, img: 'monster/minus2',  shuffle: false },
-  { key: 'x2',   face: 'x2',   count: 1, img: 'monster/x2',  shuffle: true  },
-  { key: 'miss', face: 'Miss', count: 1, img: 'monster/miss',  shuffle: true  },
+  { key: 'p0',   face: '+0',   count: 6, value: '+0', img: 'monster/plus0',  shuffle: false },
+  { key: 'p1',   face: '+1',   count: 5, value: '+1', img: 'monster/plus1',  shuffle: false },
+  { key: 'm1',   face: '-1',   count: 5, value: '-1', img: 'monster/minus1',  shuffle: false },
+  { key: 'p2',   face: '+2',   count: 1, value: '+2', img: 'monster/plus2',  shuffle: false },
+  { key: 'm2',   face: '-2',   count: 1, value: '-2', img: 'monster/minus2',  shuffle: false },
+  { key: 'x2',   face: 'x2',   count: 1, value: 'x2', img: 'monster/x2',  shuffle: true  },
+  { key: 'miss', face: 'Miss', count: 1, value: 'null', img: 'monster/miss',  shuffle: true  },
   // not in the standard deck (count 0); shown when present or in edit mode
   { key: 'i2m',  face: '+2 Muddle', count: 0, img: 'imbuement/plus2muddle', shuffle: false, extra: true },
   { key: 'i0p',  face: '+0 Poison', count: 0, img: 'imbuement/plus0poison', shuffle: false, extra: true },
@@ -52,6 +52,8 @@ export const AM_GROUPS = [
   { key: 'a', label: 'Allies' },
 ];
 const HERO_KEY = /^h(\d+)$/;
+// Index of the hero a deck key 'h<i>' refers to (position in state.mercenaries), else undefined.
+const heroIndex = g => { const m = HERO_KEY.exec(g); return m ? Number(m[1]) : undefined; };
 
 // Where a deck lives and what cards it can hold. Unknown keys (e.g. a hero that was removed) read as
 // the standard deck and ignore writes.
@@ -60,7 +62,7 @@ function deckOf(g) {
     const f = g === 'a' ? 'amA' : 'am';
     return { read: () => state[f], write: v => ({ [f]: v }), catalog: AM_TYPES, imbue: g === 'm' };
   }
-  const i = Number(HERO_KEY.exec(g)?.[1]);
+  const i = heroIndex(g);
   return {
     read: () => state.mercenaries?.[i]?.am,
     write: v => ({ mercenaries: withHeroAm(state.mercenaries, i, v) }),
@@ -79,9 +81,7 @@ function withHeroAm(mercs = [], i, am) {
   if (!mercs[i]) return mercs;
   return mercs.map((h, j) => {
     if (j !== i) return h;
-    if (am != null) return { ...h, am };
-    const { am: _drop, ...rest } = h;
-    return rest;
+    return am != null ? { ...h, am } : withoutAm(h);
   });
 }
 
@@ -90,7 +90,7 @@ export function amDecks() {
   const out = [...AM_GROUPS];
   const mercs = state.mercenaries || [];
   mercs.forEach((h, i) => {
-    const title = MERCENARIES.byId.get(Number(h.id))?.title;
+    const title = heroTitle(i);
     if (!title) return;   // unknown class: no deck (the key of the others stays their entry index)
     const same = mercs.filter(x => x.id === h.id).length > 1;
     out.push({ key: 'h' + i, label: same ? `${title} #${mercs.slice(0, i + 1).filter(x => x.id === h.id).length}` : title });
@@ -99,15 +99,22 @@ export function amDecks() {
 }
 
 // Hero decks (key 'h<i>') use the hero versions of bless/curse (no monster badge).
-export const amIsHero = g => HERO_KEY.test(g);
+export const amIsHero = g => heroIndex(g) !== undefined;
 
-export const amSupportsImbue = g => deckOf(g).imbue;
+// Only the monster deck is imbued.
+export const amSupportsImbue = g => g === 'm';
+
+// A hero's perk faces change only through its perks; its basic cards stay editable (scenario effects).
+export const amCardLocked = (g, entry) => amIsHero(g) && !!entry.extra;
+
+// Perk class (edition, name, perks) of a hero deck, null for other decks or a class without perk data.
+function heroClassOf(g) {
+  const i = heroIndex(g);
+  return i === undefined ? null : heroPerkClass(heroTitle(i));
+}
 
 // Class name of a hero deck (for the class badge on its cards), else null.
-export function amClassName(g) {
-  const d = deckOf(g);
-  return d.hero === undefined ? null : heroPerkClass(heroTitle(d.hero))?.name ?? null;
-}
+export const amClassName = g => heroClassOf(g)?.name ?? null;
 
 const isSpecial = key => AM_SPECIAL.some(s => s.key === key);
 const sum = o => Object.values(o).reduce((a, b) => a + b, 0);
@@ -183,7 +190,10 @@ export function amNeedsReshuffle(s = amState()) {
   return sum(s.deck) === 0 || shuffleDrawn;
 }
 
-export function amDeckTotal(g = 'm') { return sum(amState(g).deck); }
+// Card count and reshuffle flag of a deck from one state read (for the tab strip).
+export function amDeckInfo(g, st = amState(g)) {
+  return { total: sum(st.deck), pending: amNeedsReshuffle(st) };
+}
 
 // ─── Draw / discard ──────────────────────────────────────────────────────────
 
@@ -230,7 +240,8 @@ export function amEndRoundPatch() {
     const st = amState(key);
     if (!amNeedsReshuffle(st)) continue;
     const packed = pack({ ...st, deck: reshuffled(st), discard: {} });
-    if (HERO_KEY.test(key)) mercs = withHeroAm(mercs, Number(HERO_KEY.exec(key)[1]), packed);
+    const hero = heroIndex(key);
+    if (hero !== undefined) mercs = withHeroAm(mercs, hero, packed);
     else Object.assign(out, deckOf(key).write(packed));
   }
   if (mercs !== state.mercenaries) out.mercenaries = mercs;
@@ -262,9 +273,9 @@ function applyBase(st, key, delta) {
 // Manual edit: add (+1) or remove (-1) one card of this type, permanently.
 export function amEditCard(key, delta, g = 'm') {
   if (isSpecial(key)) return;
-  // A hero's perk faces change only through its perks; its basic cards stay editable (scenario effects).
-  if (amIsHero(g) && amState(g).catalog.find(c => c.key === key)?.extra) return;
   const st = amState(g);
+  const entry = st.catalog.find(c => c.key === key);
+  if (entry && amCardLocked(g, entry)) return;
   if (applyBase(st, key, delta)) save(g, st);
 }
 
@@ -272,15 +283,46 @@ export function amEditCard(key, delta, g = 'm') {
 
 // The perk list of a hero deck with the ticked ones marked, or null (not a hero, or no perk data).
 export function amHeroPerks(g) {
-  const d = deckOf(g);
-  if (d.hero === undefined) return null;
-  const cls = heroPerkClass(heroTitle(d.hero));
+  const cls = heroClassOf(g);
   if (!cls) return null;
   const { perks: taken, boxes } = amState(g);
+  const fixed = classPerkLayout(cls);
   // on = taken (all boxes ticked); boxes = number of checkboxes; mask = which of them are ticked
-  const perks = cls.perks.map(p => ({ ...p, on: taken.includes(p.index), boxes: perkBoxes(p), mask: boxes[p.index] || 0, label: perkLabel(p) }));
+  const perks = fixed.perks.map(p => ({ ...p, on: taken.includes(p.index), mask: boxes[p.index] || 0 }));
   // groups: repeated identical entries shown as one row with one box per entry
-  return { edition: cls.edition, name: cls.name, perks, groups: groupPerks(perks) };
+  const groups = fixed.groups.map(ix => perkGroup(ix.map(i => perks[i])));
+  return { edition: cls.edition, name: cls.name, perks, groups };
+}
+
+// One row of the perk list: the entries that make up one perk (several when it is repeated), how its
+// boxes are laid out and whether it is taken. kind: 'repeat' = one box per entry, each counts on its own;
+// 'linked' = one entry with several boxes that must all be ticked; 'single' = one box.
+function perkGroup(members) {
+  const perk = members[0];
+  const repeated = members.length > 1;
+  const boxes = repeated
+    ? members.map(m => ({ perk: m.index, box: 0, ticked: m.on }))
+    : Array.from({ length: perk.boxes }, (_, i) => ({ perk: perk.index, box: i, ticked: perk.on || !!(perk.mask & (1 << i)) }));
+  const done = repeated ? members.every(m => m.on) : perk.on;
+  const partial = !done && (repeated ? members.some(m => m.on) : perk.mask !== 0);
+  return { perk, members, kind: repeated ? 'repeat' : perk.boxes > 1 ? 'linked' : 'single', boxes, done, partial };
+}
+
+// The parts of a class's perk list that never change (box count, label without marker, which entries
+// form a repeated group), computed once per class. perks[i].index === i in perks.js.
+const perkLayouts = new Map();
+function classPerkLayout(cls) {
+  if (!perkLayouts.has(cls.name)) {
+    const perks = cls.perks.map(p => ({ ...p, boxes: perkBoxes(p), label: perkLabel(p) }));
+    perkLayouts.set(cls.name, { perks, groups: groupPerks(perks).map(g => g.members.map(m => m.index)) });
+  }
+  return perkLayouts.get(cls.name);
+}
+
+// Applies (sign +1) or reverts (-1) one perk entry on the composition and the list of taken perks.
+function applyPerk(st, perk, sign) {
+  for (const [k, n] of Object.entries(perkDelta(perk))) applyBase(st, k, sign * n);
+  st.perks = sign > 0 ? [...st.perks, perk.index].sort((a, b) => a - b) : st.perks.filter(i => i !== perk.index);
 }
 
 // Tick or untick one checkbox of a perk (box = 0..boxes-1). A multi-box perk is applied only when all
@@ -294,27 +336,10 @@ export function amToggleBox(index, box, g) {
   const was = perk.on || perk.mask === full;
   const mask = (perk.on ? full : perk.mask) ^ (1 << box);
   const now = mask === full;
-  if (was !== now) {
-    const sign = now ? 1 : -1;
-    for (const [k, n] of Object.entries(perkDelta(perk))) applyBase(st, k, sign * n);
-    st.perks = now ? [...st.perks, index].sort((a, b) => a - b) : st.perks.filter(i => i !== index);
-  }
+  if (was !== now) applyPerk(st, perk, now ? 1 : -1);
   const boxes = { ...st.boxes };
   if (mask && !now) boxes[index] = mask; else delete boxes[index];   // a taken perk needs no mask
   st.boxes = boxes;
-  save(g, st);
-}
-
-// Tick or untick one perk entry: applies (or reverts) its card changes to the base composition,
-// the same way imbuement does, so manual edits on top are kept.
-export function amTogglePerk(index, g) {
-  const info = amHeroPerks(g);
-  const perk = info?.perks.find(p => p.index === index);
-  if (!perk || perk.boxes > 1) return;   // multi-box perks go through amToggleBox
-  const st = amState(g);
-  const sign = perk.on ? -1 : 1;
-  for (const [k, n] of Object.entries(perkDelta(perk))) applyBase(st, k, sign * n);
-  st.perks = perk.on ? st.perks.filter(i => i !== index) : [...st.perks, index].sort((a, b) => a - b);
   save(g, st);
 }
 
