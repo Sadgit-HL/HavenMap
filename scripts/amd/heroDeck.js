@@ -71,6 +71,16 @@ export function heroCatalog(title, standard) {
   return out;
 }
 
+// A perk marked "[double]" / "[triple]" in its text has 2 / 3 checkboxes on the class sheet and only
+// counts once all of them are ticked.
+const BOX_MARK = /^\s*\[(double|triple)\]\s*/i;
+export function perkBoxes(perk) {
+  const m = BOX_MARK.exec(perk.text || '');
+  return !m ? 1 : m[1].toLowerCase() === 'double' ? 2 : 3;
+}
+// Perk text without the box marker.
+export function perkLabel(perk) { return (perk.text || '').replace(BOX_MARK, ''); }
+
 // What one perk does to the composition: { key: +n | -n }.
 export function perkDelta(perk) {
   const d = {};

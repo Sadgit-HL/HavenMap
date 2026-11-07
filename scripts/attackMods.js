@@ -13,7 +13,7 @@
 
 import { state, patch } from './state.js';
 import { MERCENARIES } from './data.js';
-import { heroCatalog, heroPerkClass, perkDelta } from './amd/heroDeck.js';
+import { heroCatalog, heroPerkClass, perkDelta, perkBoxes, perkLabel } from './amd/heroDeck.js';
 
 // Order = order of faces in the GeekRoller code. Standard cards first, then cards added by imbuement.
 export const AM_TYPES = [
@@ -90,7 +90,8 @@ export function amDecks() {
   const out = [...AM_GROUPS];
   const mercs = state.mercenaries || [];
   mercs.forEach((h, i) => {
-    const title = MERCENARIES.byId.get(Number(h.id))?.title || 'Hero';
+    const title = MERCENARIES.byId.get(Number(h.id))?.title;
+    if (!title) return;   // unknown class: no deck (the key of the others stays their entry index)
     const same = mercs.filter(x => x.id === h.id).length > 1;
     out.push({ key: 'h' + i, label: same ? `${title} #${mercs.slice(0, i + 1).filter(x => x.id === h.id).length}` : title });
   });
@@ -132,7 +133,8 @@ export function amState(g = 'm') {
     discard: { ...(s?.discard || {}) },
     base,
     lvl:     s?.lvl || 0,
-    perks:   s?.perks || [],   // ticked perk entries of a hero (index into its class's perk list)
+    perks:   s?.perks || [],   // taken perk entries of a hero (index into its class's perk list)
+    boxes:   s?.boxes || {},   // ticked boxes of multi-box perks not yet taken: { perkIndex: bitmask }
     catalog: d.catalog,
   };
 }
@@ -154,12 +156,14 @@ function pack(st) {
   const base = diff(st.base, defaultBase(st.catalog));
   const deck = diff(st.deck, deckFrom(st.base));
   const perks = st.perks || [];
-  if (!sum(discard) && !Object.keys(base).length && !Object.keys(deck).length && !st.lvl && !perks.length) return null;
+  const boxes = st.boxes || {};
+  if (!sum(discard) && !Object.keys(base).length && !Object.keys(deck).length && !st.lvl && !perks.length && !Object.keys(boxes).length) return null;
   const out = { discard };
   if (Object.keys(deck).length) out.deck = deck;
   if (Object.keys(base).length) out.base = base;
   if (st.lvl) out.lvl = st.lvl;
   if (perks.length) out.perks = perks;
+  if (Object.keys(boxes).length) out.boxes = boxes;
   return out;
 }
 
@@ -258,6 +262,8 @@ function applyBase(st, key, delta) {
 // Manual edit: add (+1) or remove (-1) one card of this type, permanently.
 export function amEditCard(key, delta, g = 'm') {
   if (isSpecial(key)) return;
+  // A hero's perk faces change only through its perks; its basic cards stay editable (scenario effects).
+  if (amIsHero(g) && amState(g).catalog.find(c => c.key === key)?.extra) return;
   const st = amState(g);
   if (applyBase(st, key, delta)) save(g, st);
 }
@@ -270,8 +276,34 @@ export function amHeroPerks(g) {
   if (d.hero === undefined) return null;
   const cls = heroPerkClass(heroTitle(d.hero));
   if (!cls) return null;
-  const { perks: ticked } = amState(g);
-  return { edition: cls.edition, name: cls.name, perks: cls.perks.map(p => ({ ...p, on: ticked.includes(p.index) })) };
+  const { perks: taken, boxes } = amState(g);
+  return {
+    edition: cls.edition, name: cls.name,
+    // on = taken (all boxes ticked); boxes = number of checkboxes; mask = which of them are ticked
+    perks: cls.perks.map(p => ({ ...p, on: taken.includes(p.index), boxes: perkBoxes(p), mask: boxes[p.index] || 0, label: perkLabel(p) })),
+  };
+}
+
+// Tick or untick one checkbox of a perk (box = 0..boxes-1). A multi-box perk is applied only when all
+// its boxes are ticked, and reverted as soon as one is unticked.
+export function amToggleBox(index, box, g) {
+  const info = amHeroPerks(g);
+  const perk = info?.perks.find(p => p.index === index);
+  if (!perk || !(box >= 0 && box < perk.boxes)) return;
+  const st = amState(g);
+  const full = (1 << perk.boxes) - 1;
+  const was = perk.on || perk.mask === full;
+  const mask = (perk.on ? full : perk.mask) ^ (1 << box);
+  const now = mask === full;
+  if (was !== now) {
+    const sign = now ? 1 : -1;
+    for (const [k, n] of Object.entries(perkDelta(perk))) applyBase(st, k, sign * n);
+    st.perks = now ? [...st.perks, index].sort((a, b) => a - b) : st.perks.filter(i => i !== index);
+  }
+  const boxes = { ...st.boxes };
+  if (mask && !now) boxes[index] = mask; else delete boxes[index];   // a taken perk needs no mask
+  st.boxes = boxes;
+  save(g, st);
 }
 
 // Tick or untick one perk entry: applies (or reverts) its card changes to the base composition,
@@ -279,7 +311,7 @@ export function amHeroPerks(g) {
 export function amTogglePerk(index, g) {
   const info = amHeroPerks(g);
   const perk = info?.perks.find(p => p.index === index);
-  if (!perk) return;
+  if (!perk || perk.boxes > 1) return;   // multi-box perks go through amToggleBox
   const st = amState(g);
   const sign = perk.on ? -1 : 1;
   for (const [k, n] of Object.entries(perkDelta(perk))) applyBase(st, k, sign * n);
@@ -311,7 +343,7 @@ export function amSetImbue(level, g = 'm') {
 export function amResetComposition(g = 'm') {
   const st = amState(g);
   const base = defaultBase(st.catalog);
-  save(g, { ...st, base, lvl: 0, perks: [], discard: {}, deck: reshuffled({ ...st, base }) });
+  save(g, { ...st, base, lvl: 0, perks: [], boxes: {}, discard: {}, deck: reshuffled({ ...st, base }) });
 }
 
 // ─── Roller ──────────────────────────────────────────────────────────────────
