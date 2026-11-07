@@ -54,7 +54,7 @@ main { padding: 16px 20px 60px; }
 
 .perk-cards { display: flex; gap: 6px; flex-wrap: wrap; flex: 0 0 auto; }
 .perk-cards .group { display: flex; gap: 4px; align-items: center; }
-.perk-cards .arrow { color: var(--muted); font-size: 18px; padding: 0 2px; }
+.perk-cards .arrow { color: var(--accent); font-size: 30px; font-weight: 700; line-height: 1; padding: 0 6px; }
 
 .perk-text { color: var(--muted); font-size: 13px; padding-top: 4px; }
 

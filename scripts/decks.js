@@ -10,6 +10,7 @@ import { DECKS, deckSlugFor, assetPath } from './data.js';
 import { uiState, subscribeUI } from './uiState.js';
 import { buildCard } from './amd/card.js?v=2';
 import { createHoverPreview, previewImage } from './hoverPreview.js';
+import { perkTextHtml } from './amd/perkText.js';
 import {
   AM_TYPES, AM_SPECIAL, amDecks, amSupportsImbue, amIsHero, amState, amClassName, amHeroPerks, amTogglePerk, amToggleBox, amNeedsReshuffle, amDeckTotal, amDraw, amReturn, amAdjust,
   amShuffleNow, amEndRoundPatch, amRollerCode, amEditCard, amSetImbue, amResetComposition, AM_MAX_PER_TYPE,
@@ -271,24 +272,39 @@ function previewNodeFor(el) {
 
 let amPerks = false; // show the perk list of a hero deck instead of its cards; view state only
 
-// Perk text from the data has %icon% markers; make it readable.
-const perkText = t => (t || '').replace(/%flip%/g, '(rolling)').replace(/%(\w+)%/g, '$1');
 
 // One perk row: ticks/unticks the perk. Cards are filled in by mountAmCards.
-function amPerkRowHtml(p, g) {
+function amPerkRowHtml(grp, g) {
+  const p = grp.perk, members = grp.members, repeated = members.length > 1;
   const group = (side, cards) => cards.map((_, i) => `<span class="am-pcard" data-am-pcard data-am-g="${g}" data-am-pi="${p.index}" data-am-side="${side}" data-am-ci="${i}"></span>`).join('');
-  const cards = (p.removes.length ? group('removes', p.removes) + '<span class="am-perk-arrow">&rarr;</span>' : '') + group('adds', p.adds);
-  // One checkbox per box on the class sheet; a [double]/[triple] perk is taken when all are ticked.
-  const boxes = Array.from({ length: p.boxes }, (_, i) => {
-    const ticked = p.on || !!(p.mask & (1 << i));
-    return `<button type="button" class="am-perk-check${ticked ? ' is-checked' : ''}" data-am-box="${i}" data-am-perk="${p.index}" data-am-g="${g}"
-        aria-pressed="${ticked}" title="${p.boxes > 1 ? `Box ${i + 1} of ${p.boxes}` : 'Take this perk'}">${ticked ? '&#10003;' : ''}</button>`;
-  }).join('');
+  // Replace perks read "old card(s) -> new card(s)"; a perk that only removes shows what is taken out.
+  const arrow = '<span class="am-perk-arrow" title="replaced by"><svg viewBox="0 0 32 16" width="32" height="16" aria-hidden="true"><path d="M1 8h26M20 2l8 6-8 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
+  const cards = p.removes.length
+    ? group('removes', p.removes) + arrow + (p.adds.length ? group('adds', p.adds) : '<span class="am-perk-gone">removed</span>')
+    : group('adds', p.adds);
+  const hasCards = p.removes.length > 0 || p.adds.length > 0;
+  // One checkbox per box on the class sheet. A repeated perk (N identical entries) has one box per
+  // entry and each applies on its own; a [double]/[triple] perk is one entry that is taken only when
+  // all its boxes are ticked.
+  const boxList = repeated
+    ? members.map((m, k) => ({ perk: m.index, box: 0, ticked: m.on, title: `Take this perk (${k + 1} of ${members.length})` }))
+    : Array.from({ length: p.boxes }, (_, i) => ({ perk: p.index, box: i, ticked: p.on || !!(p.mask & (1 << i)), title: p.boxes > 1 ? `Box ${i + 1} of ${p.boxes}` : 'Take this perk' }));
+  const boxes = boxList.map(b => `<button type="button" class="am-perk-check${b.ticked ? ' is-checked' : ''}" data-am-box="${b.box}" data-am-perk="${b.perk}" data-am-g="${g}"
+        aria-pressed="${b.ticked}" title="${b.title}">${b.ticked ? '&#10003;' : ''}</button>`).join('');
+  // kind: 'repeat' = separate boxes, each counts on its own; 'linked' = joined boxes, all needed for one perk
+  const kind = repeated ? 'repeat' : p.boxes > 1 ? 'linked' : 'single';
+  const tag = kind === 'repeat'
+    ? `<span class="am-perk-tag am-perk-tag--repeat" title="Can be taken up to ${members.length} times; every box counts on its own">&times;${members.length}</span>`
+    : kind === 'linked'
+      ? `<span class="am-perk-tag am-perk-tag--linked" title="Tick all ${p.boxes} boxes to take this perk once">all ${p.boxes}</span>` : '';
+  const done = repeated ? members.every(m => m.on) : p.on;
+  const partial = !done && (repeated ? members.some(m => m.on) : p.mask !== 0);
   // Single-box perks toggle from anywhere on the row; multi-box perks only from their boxes.
-  return `<div class="am-perk${p.on ? ' is-on' : ''}${p.boxes > 1 ? ' am-perk--multi' : ''}"${p.boxes === 1 ? ` data-am-single="${p.index}" data-am-g="${g}"` : ''}>
-    <span class="am-perk-boxes">${boxes}</span>
+  return `<div class="am-perk${done ? ' is-on' : ''}${partial ? ' is-partial' : ''}${boxList.length > 1 ? ' am-perk--multi' : ''}${hasCards ? '' : ' am-perk--text'}${p.removes.length + p.adds.length >= 4 ? ' am-perk--wide' : ''}"${boxList.length === 1 ? ` data-am-single="${p.index}" data-am-g="${g}"` : ''}>
+    <span class="am-perk-boxes am-perk-boxes--${kind}">${boxes}</span>
     <span class="am-perk-cards">${cards}</span>
-    ${p.label ? `<span class="am-perk-text">${perkText(p.label)}</span>` : ''}
+    ${p.label && !hasCards ? `<span class="am-perk-text">${perkTextHtml(p.label)}</span>` : ''}
+    ${tag}
   </div>`;
 }
 
@@ -336,7 +352,7 @@ function amHtml() {
   </div>
   ${showPerks ? '' : editBar}
   <div class="dk-deck" data-dk-slug="am">
-    ${showPerks ? `<div class="am-perks">${hp.perks.map(p => amPerkRowHtml(p, g)).join('')}</div>` : `<div class="am-grid">${tiles}</div>`}
+    ${showPerks ? `<div class="am-perks">${hp.groups.map(grp => amPerkRowHtml(grp, g)).join('')}</div>` : `<div class="am-grid">${tiles}</div>`}
   </div>`;
 }
 

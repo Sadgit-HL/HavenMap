@@ -81,6 +81,20 @@ export function perkBoxes(perk) {
 // Perk text without the box marker.
 export function perkLabel(perk) { return (perk.text || '').replace(BOX_MARK, ''); }
 
+// Perk entries that are identical (same text and cards) are the repeated boxes of one perk on the class
+// sheet: "take this perk up to N times". Groups them, keeping the order of first occurrence:
+// [{ perk: first entry, members: [entry, ...] }]. Each member is one box and applies on its own, unlike
+// a "[double]/[triple]" perk whose single entry needs all its boxes ticked.
+export function groupPerks(perks) {
+  const groups = new Map();
+  for (const p of perks) {
+    const key = JSON.stringify([p.text, p.removes, p.adds]);
+    if (!groups.has(key)) groups.set(key, { perk: p, members: [] });
+    groups.get(key).members.push(p);
+  }
+  return [...groups.values()];
+}
+
 // What one perk does to the composition: { key: +n | -n }.
 export function perkDelta(perk) {
   const d = {};

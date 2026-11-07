@@ -1,5 +1,6 @@
 import { PERKS } from '../scripts/games/perks.js?v=10';
 import { buildCard } from '../scripts/amd/card.js?v=2';
+import { perkTextHtml } from '../scripts/amd/perkText.js';
 
 const editionSelect = document.getElementById('edition');
 const classSelect = document.getElementById('class');
@@ -60,13 +61,14 @@ function renderClass(edition, className) {
       arrow.textContent = '→';
       cards.appendChild(arrow);
     }
-    cards.appendChild(cardsGroup(p.adds, className, true));
+    if (p.adds.length) cards.appendChild(cardsGroup(p.adds, className, true));
     row.appendChild(cards);
 
-    if (p.text) {
+    // The cards already show what a perk does; keep the text only for perks without cards.
+    if (p.text && !p.removes.length && !p.adds.length) {
       const text = document.createElement('div');
       text.className = 'perk-text';
-      text.textContent = p.text;
+      text.innerHTML = perkTextHtml(p.text);
       row.appendChild(text);
     }
 

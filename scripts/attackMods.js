@@ -13,7 +13,7 @@
 
 import { state, patch } from './state.js';
 import { MERCENARIES } from './data.js';
-import { heroCatalog, heroPerkClass, perkDelta, perkBoxes, perkLabel } from './amd/heroDeck.js';
+import { heroCatalog, heroPerkClass, perkDelta, perkBoxes, perkLabel, groupPerks } from './amd/heroDeck.js';
 
 // Order = order of faces in the GeekRoller code. Standard cards first, then cards added by imbuement.
 export const AM_TYPES = [
@@ -277,11 +277,10 @@ export function amHeroPerks(g) {
   const cls = heroPerkClass(heroTitle(d.hero));
   if (!cls) return null;
   const { perks: taken, boxes } = amState(g);
-  return {
-    edition: cls.edition, name: cls.name,
-    // on = taken (all boxes ticked); boxes = number of checkboxes; mask = which of them are ticked
-    perks: cls.perks.map(p => ({ ...p, on: taken.includes(p.index), boxes: perkBoxes(p), mask: boxes[p.index] || 0, label: perkLabel(p) })),
-  };
+  // on = taken (all boxes ticked); boxes = number of checkboxes; mask = which of them are ticked
+  const perks = cls.perks.map(p => ({ ...p, on: taken.includes(p.index), boxes: perkBoxes(p), mask: boxes[p.index] || 0, label: perkLabel(p) }));
+  // groups: repeated identical entries shown as one row with one box per entry
+  return { edition: cls.edition, name: cls.name, perks, groups: groupPerks(perks) };
 }
 
 // Tick or untick one checkbox of a perk (box = 0..boxes-1). A multi-box perk is applied only when all
