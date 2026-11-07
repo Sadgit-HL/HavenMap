@@ -58,8 +58,8 @@ BGG's GeekRoller caps an entire roll at 241 characters total across all faces, a
 | Plagueherald | GH2E | ph2 | Give the target or one enemy within range 2 of the target... | poison: target/e R2 > | Add three "Give the target or one enemy within %range% 2 of the target %poison%"%flip% cards |
 | Pyroclast | FH | py1 | Create one 1-hex hazardous terrain tile in a featureless ... | create 1-hex hazard terrain adj target | Replace one -1 card with one "Create one 1-hex hazardous terrain tile in a featureless hex adjacent to the target" card |
 | Quartermaster | GH2E | qm1 | Gain 10 Supplies | +0: gain 10 Supplies | Replace one +0 card with one +0 "Gain 10 Supplies" card |
-| Quartermaster | GH2E | qm2 | Gain the Barbed Strip or Iron Plate item | +0: gain BS/IP | Replace one +1 card with two +0 "Gain the Barbed Strip or Iron Plate item" cards |
-| Quartermaster | GH2E | qm3 | Gain the Scroll of Relocation or Sharpened Dirk item | +0: gain SoR/SD > | Add one +0"Gain the Scroll of Relocation or Sharpened Dirk item"%flip% card |
+| Quartermaster | GH2E | qm2 | Gain the Barbed Strip or Iron Plate item | BS/IP | Replace one +1 card with two +0 "Gain the Barbed Strip or Iron Plate item" cards |
+| Quartermaster | GH2E | qm3 | Gain the Scroll of Relocation or Sharpened Dirk item | SoR/SD | Add one +0"Gain the Scroll of Relocation or Sharpened Dirk item"%flip% card |
 | Satha | MP | sa1 | heal 1, target 1 ally and self | +1: H1 T1 ally+self | Replace two +0 cards with one +1 "%heal% 1, %target% 1 ally and self" card |
 | Satha | MP | sa2 | Grant one ally within range 3: attack 2 range 3 or attack 3 | +0: ally R3: A2 R3 or A3 | Add one +0 "Grant one ally within %range% 3: %attack% 2 %range% 3 or %attack% 3" card |
 | Satha | MP | sa3 | Grant one ally within range 3: move 2 | disarm > + +0 ally R3: M2 > | Add one %disarm%%flip% and one +0 "Grant one ally within %range% 3: %move% 2"%flip% card |
