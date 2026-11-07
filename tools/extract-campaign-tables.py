@@ -8,7 +8,7 @@ position (0-based, as openpyxl gives them):
     17 class code (abilities)  30 slug/name  34 display name (stickers)  36 class name / item kind
     39 copies (items)  46 source tag (gh2, mp, ...)  52 unlock links (stickers, "n - Name;next;next")
 
-Usage:  python -I tools/extract-campaign-tables.py [path/to/WHTracker.xlsx]
+Usage:  python -I tools/extract-campaign-tables.py [path/to/WHTracker.xlsx] [path/to/gh2e/scenarios]
 Needs openpyxl. The workbook is not in git.
 """
 import json
@@ -22,6 +22,7 @@ import openpyxl
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_XLSX = os.path.join(os.path.dirname(ROOT), 'asset-backups', 'WHTracker.xlsx')
 OUT = os.path.join(ROOT, 'scripts', 'games')
+DEFAULT_GHS = os.path.join('D:' + os.sep, 'github', 'gloomhavensecretariat', 'data', 'gh2e', 'scenarios')
 ABILITY_SOURCES = ('gh2', 'mp')          # editions whose class ability cards the campaign can use
 
 
@@ -41,6 +42,25 @@ def load_rows(path):
         r = tuple(r) + (None,) * (60 - len(r))
         if r[0]:
             out.append(r)
+    return out
+
+
+def load_ghs_links(directory):
+    """Unlock links per scenario index from Gloomhaven Secretariat's gh2e scenario files (AGPL-3.0 project):
+    {index: {'unl': [...], 'forced': [...], 'init': bool}}. Indexes are ints, or strings like '23A'.
+    Empty when the directory is missing."""
+    out = {}
+    if not os.path.isdir(directory):
+        return out
+    for fn in sorted(os.listdir(directory)):
+        if not fn.endswith('.json'):
+            continue
+        with open(os.path.join(directory, fn), encoding='utf-8') as f:
+            j = json.load(f)
+        key = lambda v: int(v) if str(v).isdigit() else str(v)
+        out[key(j['index'])] = {'unl': [key(v) for v in j.get('unlocks', [])],
+                                'forced': [key(v) for v in j.get('forcedLinks', [])],
+                                'init': bool(j.get('initial'))}
     return out
 
 
@@ -104,22 +124,28 @@ def main():
                                  '(coin/solo/qm), n = copies.', [('ITEMS', items)])
 
     # --- scenarios and campaign stickers --------------------------------------------------------------
+    ghs = load_ghs_links(sys.argv[2] if len(sys.argv) > 2 else DEFAULT_GHS)
     scn, stickers = [], []
     for r in rows:
         if r[0] == 'Stickers' and r[46] == 'gh2':
             if r[8] is not None:
-                parts = [p.strip() for p in str(r[52] or '').split(';') if p.strip()]
-                unl = []
-                for p in parts[1:]:
-                    m = re.match(r'\d+', p)
-                    if m:
-                        unl.append(int(m.group()))
-                scn.append({'n': num(r[8]), 'name': r[30], 'area': r[9], 'unl': unl})
+                n = num(r[8])
+                g = ghs.get(n, {})
+                row = {'n': n, 'name': r[30], 'area': r[9]}
+                if g.get('init'):
+                    row['init'] = 1
+                if g.get('unl'):
+                    row['unl'] = g['unl']
+                if g.get('forced'):
+                    row['forced'] = g['forced']
+                scn.append(row)
             else:
                 stickers.append({'slug': r[30], 'name': r[34], 'area': r[9]})
-    write_module('gh2_scenarios.js', 'Scenarios (number, name, area) and campaign stickers. unl is only the single follow-on '
-                                     'link in the Card DB link column, NOT the full unlock graph: that lives in the '
-                                     "sheet's GH2 Flow tab and is not extracted yet.",
+    write_module('gh2_scenarios.js', "Scenarios (number, name, area) and campaign stickers. init = available at the start, "
+                                     "unl = scenarios it unlocks, forced = the subset that is a forced link. The links come from "
+                                     "Gloomhaven Secretariat's gh2e data (AGPL-3.0) and are PARTIAL: about 60 scenarios are "
+                                     "unlocked by events, reputation, personal quests or choices that the data does not record. "
+                                     "Indexes may be strings ('23A') for split scenarios.",
                  [('SCENARIOS', scn), ('STICKERS', stickers)])
 
     # --- events --------------------------------------------------------------------------------------
