@@ -103,6 +103,11 @@ export const SCENARIOS = [
   {"n":98,"name":"Metamorphic Fault","area":"Events"},
   {"n":99,"name":"Sintering Forge","area":"Events"},
   {"n":100,"name":"Silence Falls","area":"Events"},
+  {"n":"23A","name":"Gloomhaven Square A (Demon Allies)","area":"demons"},
+  {"n":"23B","name":"Gloomhaven Square A (Military Allies)","area":"city-guards","unl":[25],"forced":[25]},
+  {"n":"25A","name":"Gloomhaven Battlements A (Merchant Allies)","area":"merchant-guild","unl":[27],"forced":[27]},
+  {"n":"25B","name":"Gloomhaven Battlements A (Military Allies)","area":"city-guards","unl":[27],"forced":[27]},
+  {"n":"S","name":"Challenger's Rift","area":null},
 ];
 
 export const STICKERS = [

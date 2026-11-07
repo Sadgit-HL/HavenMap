@@ -60,7 +60,7 @@ def load_ghs_links(directory):
         if j.get('solo'):
             continue          # solo scenarios reuse the indexes 85-100 and would overwrite the regular ones
         key = lambda v: int(v) if str(v).isdigit() else str(v)
-        out[key(j['index'])] = {'name': j.get('name'), 'unl': [key(v) for v in j.get('unlocks', [])],
+        out[key(j['index'])] = {'name': j.get('name'), 'group': j.get('flowChartGroup'), 'unl': [key(v) for v in j.get('unlocks', [])],
                                 'forced': [key(v) for v in j.get('forcedLinks', [])],
                                 'init': bool(j.get('initial'))}
     return out
@@ -143,6 +143,16 @@ def main():
                 scn.append(row)
             else:
                 stickers.append({'slug': r[30], 'name': r[34], 'area': r[9]})
+    # split / special scenarios that the sheet has no row for ('23A', '25B', 'S', ...): add from the Secretariat data
+    have = {x['n'] for x in scn}
+    for n, g in ghs.items():
+        if n not in have and isinstance(n, str):
+            row = {'n': n, 'name': g['name'], 'area': g.get('group')}
+            if g['unl']:
+                row['unl'] = g['unl']
+            if g['forced']:
+                row['forced'] = g['forced']
+            scn.append(row)
     write_module('gh2_scenarios.js', "Scenarios (number, name, area) and campaign stickers. init = available at the start, "
                                      "unl = scenarios it unlocks, forced = the subset that is a forced link. The links come from "
                                      "Gloomhaven Secretariat's gh2e data (AGPL-3.0) and are PARTIAL: about 60 scenarios are "
