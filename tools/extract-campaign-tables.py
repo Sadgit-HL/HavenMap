@@ -47,7 +47,7 @@ def load_rows(path):
 
 def load_ghs_links(directory):
     """Unlock links per scenario index from Gloomhaven Secretariat's gh2e scenario files (AGPL-3.0 project):
-    {index: {'unl': [...], 'forced': [...], 'init': bool}}. Indexes are ints, or strings like '23A'.
+    {index: {'name': str, 'unl': [...], 'forced': [...], 'init': bool}}. Indexes are ints, or strings like '23A'.
     Empty when the directory is missing."""
     out = {}
     if not os.path.isdir(directory):
@@ -57,8 +57,10 @@ def load_ghs_links(directory):
             continue
         with open(os.path.join(directory, fn), encoding='utf-8') as f:
             j = json.load(f)
+        if j.get('solo'):
+            continue          # solo scenarios reuse the indexes 85-100 and would overwrite the regular ones
         key = lambda v: int(v) if str(v).isdigit() else str(v)
-        out[key(j['index'])] = {'unl': [key(v) for v in j.get('unlocks', [])],
+        out[key(j['index'])] = {'name': j.get('name'), 'unl': [key(v) for v in j.get('unlocks', [])],
                                 'forced': [key(v) for v in j.get('forcedLinks', [])],
                                 'init': bool(j.get('initial'))}
     return out
@@ -131,7 +133,7 @@ def main():
             if r[8] is not None:
                 n = num(r[8])
                 g = ghs.get(n, {})
-                row = {'n': n, 'name': r[30], 'area': r[9]}
+                row = {'n': n, 'name': g.get('name') or r[30], 'area': r[9]}
                 if g.get('init'):
                     row['init'] = 1
                 if g.get('unl'):
