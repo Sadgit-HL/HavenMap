@@ -237,7 +237,8 @@ function amTileHtml(c, s, special, g, edit) {
   return `<div class="am-tile${!special && !base && !n && !disc ? ' am-tile--none' : ''}">
     <button class="am-card${n ? '' : ' is-empty'}" type="button" data-am-draw="${c.key}" data-am-g="${g}" ${n ? '' : 'disabled'}
         title="${special ? 'Draw (removes the card from the game)' : 'Draw one ' + label}">
-      <img src="${assetPath.attackMod(c.img)}" alt="${label}" draggable="false">
+      ${c.img ? `<img src="${assetPath.attackMod(c.img)}" alt="${label}" draggable="false">`
+               : `<span class="am-face-txt" style="display:grid;place-items:center;height:100%;padding:4px;font-size:11px;text-align:center">${label}</span>`}
       <span class="am-n">${n}${special ? '' : '/' + base}</span>
       ${c.shuffle ? '<span class="dk-mark">&#8635;</span>' : ''}
     </button>${foot}</div>`;
@@ -253,7 +254,7 @@ function amHtml() {
   const s = amState(g);
   const pending = amNeedsReshuffle(s);
   // Cards that are not in the standard deck show up when present, or in edit mode so they can be added.
-  const shown = AM_TYPES.filter(c => !c.extra || amEdit || (s.base[c.key] || 0) > 0 || (s.deck[c.key] || 0) > 0 || (s.discard[c.key] || 0) > 0);
+  const shown = s.catalog.filter(c => !c.extra || amEdit || (s.base[c.key] || 0) > 0 || (s.deck[c.key] || 0) > 0 || (s.discard[c.key] || 0) > 0);
   const tiles = [...shown.map(c => amTileHtml(c, s, false, g, amEdit)), ...AM_SPECIAL.map(c => amTileHtml(c, s, true, g, amEdit))].join('');
   const editBar = amEdit ? `<div class="am-edit-bar">
       ${amSupportsImbue(g) ? `<span class="am-edit-lbl">Imbuement</span>

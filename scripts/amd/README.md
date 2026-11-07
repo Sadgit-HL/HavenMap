@@ -7,6 +7,7 @@ perks viewer today; meant to be reused by HavenMap and the campaign app.
 |---|---|
 | `card.js` | **Public API.** `buildCard(card, className, isAdded)` -> DOM element (`.pc`). Handles the three card kinds in `scripts/games/perks.js`. |
 | `compose.js` | Layered composition of decorated (`shared`) faces: frame + icons + overlays + corner badges. Also exports the pieces `perks/compose.html` uses. |
+| `heroDeck.js` | **Hero deck model** (pure data, no DOM/state): mercenary title -> perk class, card keys (`p0..`, art slug, `u-<code>`), per-class card catalog, `perkDelta(perk)`. Used by `scripts/attackMods.js`. |
 | `paths.js` | `ASSET_BASE`: URL of `images/common/attack_mods/`, resolved from the module's own location (no per-page path fiddling). |
 | `amd.css` | Card structure (`.pc`, layers, badges, stack). Size with `--pc-width` (default 90px). Hosts add their own hover/layout. |
 | `fonts/` | Blackletter font used for amounts drawn on faces (referenced by `amd.css`). |

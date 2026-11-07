@@ -13,6 +13,7 @@
 
 import { state, patch } from './state.js';
 import { MERCENARIES } from './data.js';
+import { heroCatalog, heroPerkClass, perkDelta } from './amd/heroDeck.js';
 
 // Order = order of faces in the GeekRoller code. Standard cards first, then cards added by imbuement.
 export const AM_TYPES = [
@@ -63,9 +64,14 @@ function deckOf(g) {
   return {
     read: () => state.mercenaries?.[i]?.am,
     write: v => ({ mercenaries: withHeroAm(state.mercenaries, i, v) }),
-    catalog: AM_TYPES,
+    catalog: heroCatalog(heroTitle(i), AM_TYPES),
     imbue: false,
+    hero: i,
   };
+}
+
+function heroTitle(i) {
+  return MERCENARIES.byId.get(Number(state.mercenaries?.[i]?.id))?.title || '';
 }
 
 // mercenaries with the am of entry i replaced (removed when null); same array if there is no entry i.
@@ -117,21 +123,34 @@ export function amState(g = 'm') {
     discard: { ...(s?.discard || {}) },
     base,
     lvl:     s?.lvl || 0,
+    perks:   s?.perks || [],   // ticked perk entries of a hero (index into its class's perk list)
     catalog: d.catalog,
   };
 }
 
-// Compact value for state: null when it equals the standard deck.
+// Entries of obj that differ from ref (missing = 0). Reading merges them back over the defaults.
+function diff(obj, ref) {
+  const out = {};
+  for (const k of new Set([...Object.keys(obj), ...Object.keys(ref)])) {
+    if ((obj[k] || 0) !== (ref[k] || 0)) out[k] = obj[k] || 0;
+  }
+  return out;
+}
+
+// Compact value for state: only what differs from the standard deck; null when nothing does.
+// Keeps hero decks short in the map link (their catalogs hold dozens of cards).
 function pack(st) {
   const discard = {};
   for (const [k, v] of Object.entries(st.discard)) if (v > 0) discard[k] = v;
-  const def = defaultBase(st.catalog);
-  const baseDefault = st.catalog.every(c => (st.base[c.key] || 0) === (def[c.key] || 0));
-  const deckDefault = [...st.catalog, ...AM_SPECIAL].every(c => (st.deck[c.key] || 0) === (isSpecial(c.key) ? 0 : (st.base[c.key] || 0)));
-  if (!sum(discard) && baseDefault && deckDefault && !st.lvl) return null;
-  const out = { deck: st.deck, discard };
-  if (!baseDefault) out.base = st.base;
+  const base = diff(st.base, defaultBase(st.catalog));
+  const deck = diff(st.deck, deckFrom(st.base));
+  const perks = st.perks || [];
+  if (!sum(discard) && !Object.keys(base).length && !Object.keys(deck).length && !st.lvl && !perks.length) return null;
+  const out = { discard };
+  if (Object.keys(deck).length) out.deck = deck;
+  if (Object.keys(base).length) out.base = base;
   if (st.lvl) out.lvl = st.lvl;
+  if (perks.length) out.perks = perks;
   return out;
 }
 
@@ -234,6 +253,31 @@ export function amEditCard(key, delta, g = 'm') {
   if (applyBase(st, key, delta)) save(g, st);
 }
 
+// ─── Hero perks ──────────────────────────────────────────────────────────────
+
+// The perk list of a hero deck with the ticked ones marked, or null (not a hero, or no perk data).
+export function amHeroPerks(g) {
+  const d = deckOf(g);
+  if (d.hero === undefined) return null;
+  const cls = heroPerkClass(heroTitle(d.hero));
+  if (!cls) return null;
+  const { perks: ticked } = amState(g);
+  return { edition: cls.edition, name: cls.name, perks: cls.perks.map(p => ({ ...p, on: ticked.includes(p.index) })) };
+}
+
+// Tick or untick one perk entry: applies (or reverts) its card changes to the base composition,
+// the same way imbuement does, so manual edits on top are kept.
+export function amTogglePerk(index, g) {
+  const info = amHeroPerks(g);
+  const perk = info?.perks.find(p => p.index === index);
+  if (!perk) return;
+  const st = amState(g);
+  const sign = perk.on ? -1 : 1;
+  for (const [k, n] of Object.entries(perkDelta(perk))) applyBase(st, k, sign * n);
+  st.perks = perk.on ? st.perks.filter(i => i !== index) : [...st.perks, index].sort((a, b) => a - b);
+  save(g, st);
+}
+
 function imbueDelta(level) {
   const out = {};
   for (let l = 1; l <= level; l++) {
@@ -258,7 +302,7 @@ export function amSetImbue(level, g = 'm') {
 export function amResetComposition(g = 'm') {
   const st = amState(g);
   const base = defaultBase(st.catalog);
-  save(g, { ...st, base, lvl: 0, discard: {}, deck: reshuffled({ ...st, base }) });
+  save(g, { ...st, base, lvl: 0, perks: [], discard: {}, deck: reshuffled({ ...st, base }) });
 }
 
 // ─── Roller ──────────────────────────────────────────────────────────────────
