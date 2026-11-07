@@ -10,7 +10,7 @@ import { DECKS, deckSlugFor, assetPath } from './data.js';
 import { uiState, subscribeUI } from './uiState.js';
 import { buildCard } from './amd/card.js?v=2';
 import {
-  AM_TYPES, AM_SPECIAL, amDecks, amSupportsImbue, amState, amClassName, amHeroPerks, amTogglePerk, amNeedsReshuffle, amDeckTotal, amDraw, amReturn, amAdjust,
+  AM_TYPES, AM_SPECIAL, amDecks, amSupportsImbue, amIsHero, amState, amClassName, amHeroPerks, amTogglePerk, amNeedsReshuffle, amDeckTotal, amDraw, amReturn, amAdjust,
   amShuffleNow, amEndRoundPatch, amRollerCode, amEditCard, amSetImbue, amResetComposition, AM_MAX_PER_TYPE,
 } from './attackMods.js';
 
@@ -239,7 +239,7 @@ function amTileHtml(c, s, special, g, edit) {
     <button class="am-card${n ? '' : ' is-empty'}" type="button" data-am-draw="${c.key}" data-am-g="${g}" ${n ? '' : 'disabled'}
         title="${special ? 'Draw (removes the card from the game)' : 'Draw one ' + label}">
       ${c.card ? `<span class="am-slot" data-am-slot="${c.key}" data-am-g="${g}" title="${label}"></span>`
-               : `<img src="${assetPath.attackMod(c.img)}" alt="${label}" draggable="false">`}
+               : `<img src="${assetPath.attackMod(special && c.heroImg && amIsHero(g) ? c.heroImg : c.img)}" alt="${label}" draggable="false">`}
       <span class="am-n">${n}${special ? '' : '/' + base}</span>
       ${c.shuffle ? '<span class="dk-mark">&#8635;</span>' : ''}
     </button>${foot}</div>`;

@@ -35,8 +35,8 @@ export const AM_TYPES = [
 
 // Added and removed by hand, temporary. Face text is what goes into the roller code.
 export const AM_SPECIAL = [
-  { key: 'bless', face: 'Bless', img: 'monster/bless', label: 'Bless', max: 10 },
-  { key: 'curse', face: 'Curse', img: 'monster/curse', label: 'Curse', max: 10 },
+  { key: 'bless', face: 'Bless', img: 'monster/bless', heroImg: 'hero/bless', label: 'Bless', max: 10 },
+  { key: 'curse', face: 'Curse', img: 'monster/curse', heroImg: 'hero/curse', label: 'Curse', max: 10 },
 ];
 
 // Monster imbuement (level 2 includes level 1): changes to the base composition.
@@ -96,6 +96,9 @@ export function amDecks() {
   });
   return out;
 }
+
+// Hero decks (key 'h<i>') use the hero versions of bless/curse (no monster badge).
+export const amIsHero = g => HERO_KEY.test(g);
 
 export const amSupportsImbue = g => deckOf(g).imbue;
 
