@@ -9,12 +9,12 @@
 import { PERKS } from '../games/perks.js';
 
 // Mercenary title -> perk class name where the spelling differs.
-const CLASS_ALIAS = { 'HIVE': 'H.I.V.E.', 'Snow Dancer': 'Snowdancer' };
+const CLASS_ALIAS = { 'HIVE': 'H.I.V.E.' };
 
 const BASE_KEY = { '+0': 'p0', '+1': 'p1', '+2': 'p2', '+3': 'p3', '+4': 'p4', '-1': 'm1', '-2': 'm2', 'null': 'miss' };
 const STANDARD_CARD = { '+0': '+0', '+1': '+1', '+2': '+2', '-1': '-1', '-2': '-2', 'x2': 'x2', 'Miss': 'null' };
 
-// { edition, name, perks } for a mercenary title, or null when there is no perk data (e.g. Hollowpact).
+// { edition, name, perks } for a mercenary title, or null when there is no perk data.
 export function heroPerkClass(title) {
   const name = CLASS_ALIAS[title] || title;
   for (const [edition, classes] of Object.entries(PERKS)) {
