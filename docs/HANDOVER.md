@@ -230,6 +230,13 @@ Card keys: `p0 p1 p2 m1 m2 x2 miss` (standard), the art slug for decorated faces
 - Cache busting is by hand: `?v=` / `decks-N` strings in `index.html` (main.js, main.css, `amd.css`), in the imports of `scripts/amd/*` and `scripts/decks.js`, and in the `perks/*.html` pages. Bump them when editing the file they point at.
 - AI-assisted commits carry a `Co-Authored-By` line (owner's decision, 2026-11-07, see section 9).
 
+### 13.6a GeekRoller codes (2026-11-08)
+
+- BGG's GeekRoller rejects a roll longer than 255 characters ("The roll has a max size of 255 characters"), counted over the whole `1customN{...}` string. Bless/Curse faces are `B`/`C` (2 characters each with the `;`).
+- Face text lives in `scripts/amd/uniqueFaceText.js` (the 68 unique cards, hand-written) and `faceText()` in `scripts/amd/heroDeck.js` (shared cards, generated). The table in `docs/unique-geekroller-codes.md` mirrors the unique labels; keep both in step when editing.
+- Conventions set by the owner: no leading `+0:` on any face with an effect (unique and shared); `tr` for trap, `inf` for infusion, `Res` for Resonance; `AA:` prefix and `=` for cards placed in the active area (`bb1`, `br1`, `ca3`); `R` = Range, `Ret` = Retaliate; Quartermaster item gains are `BS/IP` and `SoR/SD >`.
+- Length check: sum the faces of a class's catalog with every perk applied (`heroCatalog` + `perkDelta`, count = standard count + summed deltas). Last measured with all perk entries active: Trapper about 393, Cassandra about 248, Crashing Tide 287, Soothsinger 282, Snowdancer 277, Sawbones 267, Satha 260, Shattersong 257 (the last measurement of each, before later edits to Cassandra, Nightshroud and Infuser); Infuser is 255 and Nightshroud about 193. Still over the limit: Trapper, Crashing Tide, Soothsinger, Snowdancer, Sawbones, Satha, Shattersong. There is no automatic fallback; a roll over 255 is rejected by BGG (a compact fallback was tried and reverted on request).
+
 ### 13.7 Open
 
 - Campaign tracking (sections 1 to 8) is not started.
