@@ -25,8 +25,11 @@
   // Second pass: the first run already produced frames, numbers, icons and spheres, so only the
   // parts it missed (Empower and Enfeeble) are on by default. Set the others to true to redo them.
   // Third pass: the remaining colored frames, Self/Ally labels on effect icons, and corner badge numbers.
+  // Full run for the FH template (its icons match the Frosthaven card scans). Badges stay off: the
+  // locked Number/Symbol layer could not be edited by script, those are made separately.
+  // plain: Curse and Bless frames WITHOUT the petals (the real cards have none); only this is on for now.
   var DO = { frames: false, numbers: false, icons: false, spheres: false, extras: false,
-             frames2: true, labels: true, badges: true };
+             frames2: false, labels: false, badges: false, plain: true };
 
   // Modifier types not exported by the first two passes. A type with Condition/Card sub-groups
   // (Empower and Enfeeble) is exported once per sub-group, other types once.
@@ -78,13 +81,74 @@
     if (layer.visible !== v) { changes.push([layer, layer.visible]); layer.visible = v; }
   }
   var textChanges = [];
+  // The template locks the text layer AND its parent groups (allLocked=true on "Numbered Deck" and
+  // "Bordered Sphere (Sides)"). A layer inside a locked group cannot be unlocked or edited, so lift
+  // the locks from the outermost group inwards, and put them back in restore().
+  function getLocks(l) {
+    if (isGroup(l)) return { all: l.allLocked };
+    return { all: l.allLocked, pixels: l.pixelsLocked, pos: l.positionLocked, trans: l.transparentPixelsLocked };
+  }
+  // Each lock is cleared on its own so the error says which property Photoshop refuses.
+  function clearLocks(l) {
+    var props = isGroup(l) ? ['allLocked'] : ['allLocked', 'pixelsLocked', 'positionLocked', 'transparentPixelsLocked'];
+    for (var i = 0; i < props.length; i++) {
+      try { l[props[i]] = false; }
+      catch (e) { throw new Error(l.name + '.' + props[i] + '=false: ' + String(e.message).replace(/\n/g, ' ')); }
+    }
+  }
+  function applyLocks(l, s) {
+    if (!isGroup(l)) { l.pixelsLocked = s.pixels; l.positionLocked = s.pos; l.transparentPixelsLocked = s.trans; }
+    l.allLocked = s.all;
+  }
+  function lockText(l) {
+    var s = getLocks(l);
+    return l.name + '[all=' + s.all + (isGroup(l) ? '' : ' px=' + s.pixels + ' pos=' + s.pos + ' tr=' + s.trans) + ']';
+  }
+  function chainText(l) {
+    var out = [], p = l;
+    while (p && p.typename !== 'Document') { out.push(lockText(p)); p = p.parent; }
+    return out.join(' < ');
+  }
+  // Layer plus ancestors up to (not including) the document, outermost first.
+  function chainOf(l) {
+    var out = [], p = l;
+    while (p && p.typename !== 'Document') { out.unshift(p); p = p.parent; }
+    return out;
+  }
+  // Records the lock states into `saved` first, so restore() can relock even if unlocking fails halfway.
+  function unlockChain(l, saved) {
+    var chain = chainOf(l);
+    for (var i = 0; i < chain.length; i++) saved.push([chain[i], getLocks(chain[i])]);
+    for (i = 0; i < chain.length; i++) {
+      if (!isGroup(chain[i])) doc.activeLayer = chain[i];   // layer properties need the layer to be active
+      clearLocks(chain[i]);
+    }
+  }
+  function relock(saved) {
+    for (var i = saved.length - 1; i >= 0; i--) applyLocks(saved[i][0], saved[i][1]);
+  }
   function setText(layer, value) {
-    textChanges.push([layer, layer.textItem.contents]);
-    layer.textItem.contents = value;
+    var step = 'read';
+    try {
+      var old = layer.textItem.contents;
+      step = 'unlock';
+      var saved = [];
+      textChanges.push([layer, old, saved]);
+      unlockChain(layer, saved);
+      step = 'set contents';
+      layer.textItem.contents = value;
+    } catch (e) {
+      throw new Error('setText failed at step "' + step + '" (' + e.message.replace(/\n/g, ' ') +
+                      ') chain: ' + chainText(layer) + ' kind=' + layer.kind + ' visible=' + layer.visible);
+    }
   }
   function restore() {
     while (changes.length) { var c = changes.pop(); c[0].visible = c[1]; }
-    while (textChanges.length) { var t = textChanges.pop(); t[0].textItem.contents = t[1]; }
+    while (textChanges.length) {
+      var t = textChanges.pop();
+      t[0].textItem.contents = t[1];   // chain is still unlocked here
+      relock(t[2]);
+    }
   }
 
   // Make exactly the layers named in `paths` visible, level by level. Every other sibling at each
@@ -171,6 +235,15 @@
       var paths = [['Background'], ['Card Texture Overlay'], ['Modifier Type', t]];
       if (PETAL_TYPES[t]) paths.push(['Petals (Bless/Curse/Etc.)', t]);
       doExport('frame-' + slug(t), paths);
+    }
+  }
+
+  // Curse and Bless without petals: the petal layer is simply not made visible.
+  function exportPlainFrames() {
+    var names = ['Curse', 'Bless'];
+    for (var i = 0; i < names.length; i++) {
+      doExport('frame-' + slug(names[i]) + '-plain',
+               [['Background'], ['Card Texture Overlay'], ['Modifier Type', names[i]]]);
     }
   }
 
@@ -342,7 +415,8 @@
   card = artboard ? child(artboard, 'Attack Modifier Card') : child(doc, 'Attack Modifier Card');
   if (!card) { alert('Layer tree not as expected (Attack Modifier Card not found). Aborting.'); return; }
 
-  outFolder = new Folder(doc.path.fsName + '/psd-export');
+  // The FH and GH templates have different icon art, so keep their exports apart.
+  outFolder = new Folder(doc.path.fsName + (doc.name.indexOf('FH') === 0 ? '/psd-export-fh' : '/psd-export'));
   if (!outFolder.exists) outFolder.create();
 
   if (!confirm('Export to:\n' + outFolder.fsName + '\n\nFrames: ' + DO.frames + ', numbers: ' + DO.numbers +
@@ -362,6 +436,7 @@
     if (DO.frames2) exportFrames2();
     if (DO.labels) exportLabels();
     if (DO.badges) exportBadges();
+    if (DO.plain) exportPlainFrames();
   } finally {
     restore();
     app.displayDialogs = oldDialogs;
@@ -369,7 +444,7 @@
 
   // A second pass must not overwrite the manifest of the first one.
   var firstPass = DO.frames || DO.numbers || DO.icons || DO.spheres;
-  var mf = new File(outFolder.fsName + '/' + (firstPass ? 'manifest.txt' : (DO.extras ? 'manifest-extras.txt' : 'manifest-pass3.txt')));
+  var mf = new File(outFolder.fsName + '/' + (firstPass ? 'manifest.txt' : (DO.extras ? 'manifest-extras.txt' : (DO.plain ? 'manifest-plain.txt' : ((DO.frames2 || DO.labels) ? 'manifest-pass3.txt' : 'manifest-badges.txt')))));
   mf.encoding = 'UTF-8';
   mf.open('w');
   mf.write(manifest.join('\n') + '\n');

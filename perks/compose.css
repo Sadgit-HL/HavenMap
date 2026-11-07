@@ -1,0 +1,73 @@
+@font-face { font-family: 'Pirata One Local'; src: url('fonts/PirataOne-Regular.ttf') format('truetype'); }
+.muted { color: var(--muted); font-size: 12px; }
+.controls label { display: flex; gap: 6px; align-items: center; font-size: 13px; }
+
+#main { display: flex; flex-direction: column; gap: 14px; }
+
+.face {
+  display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-start;
+  padding: 10px; background: var(--panel); border-radius: 6px;
+}
+.face-pics { display: flex; gap: 10px; flex-wrap: wrap; }
+.pic { width: 300px; max-width: 100%; }
+.pic .cap { font-size: 11px; color: var(--muted); margin-bottom: 3px; }
+.stack {
+  container-type: inline-size;
+  position: relative; width: 100%; aspect-ratio: 600 / 391;
+  background: #000; border-radius: 6px; overflow: hidden;
+}
+.stack img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; }
+.stack img.missing { display: none; }
+.diff .stack.over .top { mix-blend-mode: difference; }
+
+.face-info { flex: 1; min-width: 200px; }
+.face-info h3 { margin: 0 0 4px; font-size: 14px; color: var(--accent); font-family: ui-monospace, monospace; }
+.tags { display: flex; gap: 4px; flex-wrap: wrap; margin: 4px 0; }
+.tag { font-size: 11px; padding: 1px 6px; border-radius: 9px; background: #332b20; color: var(--text); }
+.tag.warn { background: #6b3a1f; }
+.tag.ok { background: #2f4a2a; }
+.used { font-size: 11px; color: var(--muted); max-height: 3.6em; overflow: hidden; }
+.layers { font-size: 11px; color: var(--muted); font-family: ui-monospace, monospace; }
+
+/* Corner badges drawn on the composed card (positions set inline as % of the 600x391 canvas). */
+.cb-value, .cb-class, .cb-num { position: absolute; }
+.cb-value {
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px #8a6a3c, 0 0 0 4.5px #2a1d0e;   /* bronze ring */
+}
+.cb-value.pos  { background: radial-gradient(circle at 40% 35%, #a6e05a, #4f9a26 70%, #2f6a14); }
+.cb-value.neg  { background: radial-gradient(circle at 40% 35%, #e66b5c, #b02a22 70%, #761510); }
+.cb-value.zero { background: radial-gradient(circle at 40% 35%, #b8a98c, #7d6e55 70%, #54483a); }
+.cb-num { background-repeat: no-repeat; }
+/* Full-canvas exported badge discs stack at 0,0 like the other layers; the class icon sits on the circle. */
+.cb .cb-full { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: fill; }
+.cb-classgroup { position: absolute; inset: 0; }
+.cb-class { border-radius: 50%; }
+.cb-class img { position: absolute; left: 20%; top: 20%; width: 60%; height: 60%; object-fit: contain; }
+.stack .cb-class img { position: absolute; }
+
+/* Small dark digit on the push arrow: centred on its point, sized from the stack width (cqw). */
+.cb-digit {
+  position: absolute; transform: translate(-50%, -50%);
+  font: 400 8.8cqw/1 "Pirata One Local", "Times New Roman", serif; color: #1d2022; -webkit-text-stroke: 0.03em #1d2022;
+  pointer-events: none;
+}
+
+/* Small white glyph + amount under a raised icon (target N). */
+.stack img.cb-glyph { position: absolute; height: auto; transform: translate(-50%, -50%); object-fit: contain; }
+.cb-digit.cb-digit-white {
+  color: #fff; -webkit-text-stroke: 0;
+  font: 700 7.4cqw/1 "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Large white amount beside an icon (retaliate N). */
+.cb-digit.cb-digit-big { color: #fff; -webkit-text-stroke: 0.04em #fff; font-size: 12.2cqw; text-shadow: 0 0 2px rgba(0,0,0,.45); }
+
+/* Amount on the pierce arrow: large white blackletter number (the scan's 3 is ~59 px tall). */
+.cb-digit.cb-digit-pierce { color: #fff; -webkit-text-stroke: 0.02em #fff; font-size: 14.4cqw; }
+
+.cb-svg { position: absolute; inset: 0; pointer-events: none; }
+
+/* "+N" on the left tip of the add-target diamond: white blackletter like the push/pierce numbers. */
+.cb-digit.cb-digit-plus { color: #fff; -webkit-text-stroke: 0.02em #fff; font-size: 8.2cqw; text-shadow: 0 0 2px rgba(0,0,0,.4); }

@@ -97,7 +97,8 @@ main { padding: 16px 20px 60px; }
    that measurement, same center, as margin: at this card's thumbnail size a sub-pixel rendering
    difference is enough to show a sliver of the original ring, so the box can't be tight -- see
    docs/hero-modifier-faces.md 3a. */
-.pc-class-badge { position: absolute; left: 4.1875%; top: 65.3195%; width: 17.875%; height: 28.431%; }
+/* Hand-measured in a 600x391 image: ring at x 37, y 268, 87x87 px. Box = that + 2px margin per side. */
+.pc-class-badge { position: absolute; left: 5.8333%; top: 68.0307%; width: 15.1667%; height: 23.2737%; }
 .pc-class-badge-bg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
 .pc-class-badge-icon {
   position: absolute; left: 25%; top: 25%; width: 50%; height: 50%;
