@@ -6,7 +6,7 @@ position (0-based, as openpyxl gives them):
 
     0 type   5 number/level  6 sub-number / letter  9 area (stickers)  16 code (class code, slot, ...)
     17 class code (abilities)  30 slug/name  34 display name (stickers)  36 class name / item kind
-    39 copies (items)  46 source tag (gh2, mp, ...)  52 unlock links (stickers, "n - Name;next;next")
+    39 copies (items; cols 8 = unlocked, 40 = copies left in shop and 41 = display marker are campaign state, not extracted)  46 source tag (gh2, mp, ...)  52 unlock links (stickers, "n - Name;next;next")
 
 Usage:  python -I tools/extract-campaign-tables.py [path/to/WHTracker.xlsx] [path/to/gh2e/scenarios]
 Needs openpyxl. The workbook is not in git.
