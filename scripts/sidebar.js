@@ -7,7 +7,7 @@ import {
   deselectObject, selectFromStack,
   selectHex, selectObject, showStack, showStackWithSelection, clearSelection,
 } from './uiState.js';
-import { state, patch, subscribe } from './state.js';
+import { state, patch, subscribe, withoutAm } from './state.js';
 import { getShareMode, setShareMode, SHARE_MODES } from './share.js';
 import { assetPath, TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES, SUMMONS, CONDITIONS, GAME_ID, GAME_REGISTRY, getMonsterStats, getMonsterCount, generateStandeeNum, generateTokenNum } from './data.js';
 import { colLabel, footprintHexes, hexCenter } from './hex.js';
@@ -618,6 +618,7 @@ function cloneForPlacement(kind, obj, hex) {
     const { standeeNum: _old, ...withoutStandee } = base;
     return { ...withoutStandee, standeeNum: generateTokenNum(obj.id, state.summons || []) };
   }
+  if (kind === 'mercenary') return withoutAm(base); // a copy gets its own (empty) modifier deck
   return base;
 }
 

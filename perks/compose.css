@@ -1,0 +1,23 @@
+.muted { color: var(--muted); font-size: 12px; }
+.controls label { display: flex; gap: 6px; align-items: center; font-size: 13px; }
+
+#main { display: flex; flex-direction: column; gap: 14px; }
+
+.face {
+  display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-start;
+  padding: 10px; background: var(--panel); border-radius: 6px;
+}
+.face-pics { display: flex; gap: 10px; flex-wrap: wrap; }
+.pic { width: 300px; max-width: 100%; }
+.pic .cap { font-size: 11px; color: var(--muted); margin-bottom: 3px; }
+.diff .stack.over .top { mix-blend-mode: difference; }
+
+.face-info { flex: 1; min-width: 200px; }
+.face-info h3 { margin: 0 0 4px; font-size: 14px; color: var(--accent); font-family: ui-monospace, monospace; }
+.tags { display: flex; gap: 4px; flex-wrap: wrap; margin: 4px 0; }
+.tag { font-size: 11px; padding: 1px 6px; border-radius: 9px; background: #332b20; color: var(--text); }
+.tag.warn { background: #6b3a1f; }
+.tag.ok { background: #2f4a2a; }
+.used { font-size: 11px; color: var(--muted); max-height: 3.6em; overflow: hidden; }
+.layers { font-size: 11px; color: var(--muted); font-family: ui-monospace, monospace; }
+

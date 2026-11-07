@@ -1,0 +1,78 @@
+:root {
+  --bg: #16130f;
+  --panel: #231d17;
+  --text: #ecdfc8;
+  --muted: #a89a82;
+  --accent: #c7a44a;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.4 system-ui, sans-serif;
+}
+
+header {
+  padding: 16px 20px;
+  background: var(--panel);
+  border-bottom: 1px solid #000;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+header h1 { margin: 0 0 8px; font-size: 18px; }
+
+.controls { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.controls select, .controls input {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 14px;
+}
+.controls input[type="search"] { flex: 1; min-width: 180px; }
+
+main { padding: 16px 20px 60px; }
+
+.class-section { margin-bottom: 32px; }
+.class-section h2 { font-size: 16px; margin: 0 0 4px; color: var(--accent); }
+.class-section .meta { color: var(--muted); font-size: 12px; margin-bottom: 10px; }
+
+.perk-row {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 10px 0;
+  border-top: 1px solid #332b20;
+}
+.perk-row:first-of-type { border-top: none; }
+
+.perk-cards { display: flex; gap: 6px; flex-wrap: wrap; flex: 0 0 auto; }
+.perk-cards .group { display: flex; gap: 4px; align-items: center; }
+.perk-cards .arrow { color: var(--accent); font-size: 30px; font-weight: 700; line-height: 1; padding: 0 6px; }
+
+.perk-text { color: var(--muted); font-size: 13px; padding-top: 4px; }
+
+/* ── Card hover zoom (card structure itself lives in scripts/amd/amd.css) ───────────── */
+
+.pc { width: 90px; transition: transform 0.12s ease, box-shadow 0.12s ease; }
+.pc:hover {
+  transform: scale(4);
+  transform-origin: left center;
+  z-index: 20;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+}
+
+.legend {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  font-size: 12px; color: var(--muted);
+  margin-top: 6px;
+}
+.legend b { color: var(--text); }
+
+.empty-state { color: var(--muted); padding: 40px; text-align: center; }

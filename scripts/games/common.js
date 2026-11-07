@@ -113,9 +113,8 @@ export const MERCENARY_ROWS = [
   { id: 30, title: 'Satha', source: 'Mercenary Pack' },
   { id: 31, title: 'Sawbones', source: 'Gloomhaven' },
   { id: 32, title: 'Pain Conduit', source: 'Frosthaven' },
-  { id: 33, title: 'Hollowpact', source: 'Frosthaven' },
   { id: 34, title: 'Silent Knife', source: 'Gloomhaven' },
-  { id: 35, title: 'Snow Dancer', source: 'Frosthaven' },
+  { id: 35, title: 'Snowdancer', source: 'Frosthaven' },
   { id: 36, title: 'Soothsinger', source: 'Gloomhaven' },
   { id: 37, title: 'Spellweaver', source: 'Gloomhaven' },
   { id: 38, title: 'Soultether', source: 'Gloomhaven' },
@@ -124,6 +123,7 @@ export const MERCENARY_ROWS = [
   { id: 41, title: 'Trapper', source: 'Frosthaven' },
   { id: 42, title: 'Voidwarden', source: 'Jaws of the Lion' },
   { id: 43, title: 'Wildfury', source: 'Gloomhaven' },
+  { id: 44, title: 'Shattersong', source: 'Frosthaven' },
 ].map(r => ({ ...r, left: 40, top: 35 }));
 
 export const MERCENARY_STATS = {
@@ -169,9 +169,10 @@ export const MERCENARY_STATS = {
   23: { 1: { maxHp: 8 }, 2: { maxHp: 9 }, 3: { maxHp: 11 }, 4: { maxHp: 12 }, 5: { maxHp: 14 }, 6: { maxHp: 15 }, 7: { maxHp: 17 }, 8: { maxHp: 18 }, 9: { maxHp: 20 } }, // Pyroclast
   27: { 1: { maxHp: 10 }, 2: { maxHp: 12 }, 3: { maxHp: 14 }, 4: { maxHp: 16 }, 5: { maxHp: 18 }, 6: { maxHp: 20 }, 7: { maxHp: 22 }, 8: { maxHp: 24 }, 9: { maxHp: 26 } }, // Metal Mosaic
   32: { 1: { maxHp: 8 }, 2: { maxHp: 9 }, 3: { maxHp: 11 }, 4: { maxHp: 12 }, 5: { maxHp: 14 }, 6: { maxHp: 15 }, 7: { maxHp: 17 }, 8: { maxHp: 18 }, 9: { maxHp: 20 } }, // Pain Conduit
-  35: { 1: { maxHp: 8 }, 2: { maxHp: 9 }, 3: { maxHp: 11 }, 4: { maxHp: 12 }, 5: { maxHp: 14 }, 6: { maxHp: 15 }, 7: { maxHp: 17 }, 8: { maxHp: 18 }, 9: { maxHp: 20 } }, // Snow Dancer
+  35: { 1: { maxHp: 8 }, 2: { maxHp: 9 }, 3: { maxHp: 11 }, 4: { maxHp: 12 }, 5: { maxHp: 14 }, 6: { maxHp: 15 }, 7: { maxHp: 17 }, 8: { maxHp: 18 }, 9: { maxHp: 20 } }, // Snowdancer
   41: { 1: { maxHp: 6 }, 2: { maxHp: 7 }, 3: { maxHp: 8 }, 4: { maxHp: 9 }, 5: { maxHp: 10 }, 6: { maxHp: 11 }, 7: { maxHp: 12 }, 8: { maxHp: 13 }, 9: { maxHp: 14 } }, // Trapper
   15: { 1: { maxHp: 7 }, 2: { maxHp: 9 }, 3: { maxHp: 11 }, 4: { maxHp: 12 }, 5: { maxHp: 14 }, 6: { maxHp: 15 }, 7: { maxHp: 17 }, 8: { maxHp: 18 }, 9: { maxHp: 20 } }, // H.I.V.E.
+  44: { 1: { maxHp: 8 }, 2: { maxHp: 9 }, 3: { maxHp: 11 }, 4: { maxHp: 12 }, 5: { maxHp: 14 }, 6: { maxHp: 15 }, 7: { maxHp: 17 }, 8: { maxHp: 18 }, 9: { maxHp: 20 } }, // Shattersong
 };
 
 export const SUMMON_ROWS = [
