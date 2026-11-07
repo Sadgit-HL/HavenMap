@@ -69,3 +69,7 @@
 
 /* Inside a perk-list card (.pc) the stack fills the card. */
 .pc > .stack { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 0; }
+
+/* Inline icon in a perk description (scripts/amd/perkText.js). */
+.pt-icon { height: 1.35em; width: auto; vertical-align: -0.35em; margin: 0 1px; }
+.pt-word { opacity: 0.8; }
