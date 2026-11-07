@@ -43,7 +43,7 @@ function faceText(card, perk) {
   if (card.kind === 'shared') {
     const parts = [card.value];
     for (const t of card.tokens || []) {
-      if (t.key === 'rolling') parts.push('Rolling');
+      if (t.key === 'rolling') parts.push('>');
       else parts.push(cap(t.word || t.key || '') + (t.amount !== undefined ? ' ' + t.amount : ''));
     }
     return parts.join(' ').replace(/\s+/g, ' ').trim();
