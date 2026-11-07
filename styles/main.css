@@ -2353,10 +2353,13 @@ body {
 .am-grid { display: grid; grid-template-columns: repeat(auto-fill, 112px); justify-content: start; gap: 8px; }
 .am-tile { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .am-card { position: relative; padding: 0; border: 0; background: none; cursor: pointer; color: inherit; font: inherit; }
-.am-card img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 4px; transition: opacity 0.12s, filter 0.12s; }
-.am-card:hover:not(:disabled) img { filter: brightness(1.15); }
+.am-card > img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 4px; transition: opacity 0.12s, filter 0.12s; }
+.am-card:hover:not(:disabled) > img, .am-card:hover:not(:disabled) .pc { filter: brightness(1.15); }
 .am-card.is-empty { cursor: default; }
-.am-card.is-empty img { opacity: 0.3; filter: grayscale(100%); }
+.am-card.is-empty > img, .am-card.is-empty .pc { opacity: 0.3; filter: grayscale(100%); }
+/* Hero tiles: a composed card (scripts/amd) fills the tile. */
+.am-slot { display: block; --pc-width: 100%; }
+.am-slot .pc { transition: opacity 0.12s, filter 0.12s; }
 .am-n {
   position: absolute; left: 4px; bottom: 4px; padding: 0 6px; border-radius: 9px;
   background: rgba(0 0 0 / 0.72); font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums;
@@ -2369,7 +2372,7 @@ body {
 .am-ret:hover:not(:disabled), .am-adj button:hover:not(:disabled) { background: rgba(138 216 255 / 0.18); color: #fff; }
 .am-ret:disabled, .am-adj button:disabled { opacity: 0.35; cursor: default; }
 .am-adj { display: flex; gap: 4px; }
-.am-tile--none .am-card img { opacity: 0.45; }
+.am-tile--none .am-card > img, .am-tile--none .am-card .pc { opacity: 0.45; }
 .dk-act.is-on { box-shadow: 0 0 0 2px rgba(240 180 40 / 0.85); color: #f0b428; }
 .am-edit-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 0 0 10px; max-width: 1100px; font-size: 12px; color: rgba(255 255 255 / 0.7); }
 .am-edit-lbl { font-weight: 600; color: #fff; }

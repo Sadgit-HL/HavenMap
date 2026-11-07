@@ -8,11 +8,11 @@ import { ASSET_BASE as BASE } from './paths.js?v=1';
 
 const FRAME_BY_VALUE = {
   '+0': 'p0', '+1': 'positive', '+2': 'positive', '+3': 'positive', '+4': 'positive',
-  '-1': 'negative', '-2': 'negative', 'null': 'null',
+  '-1': 'negative', '-2': 'negative', 'null': 'null', 'x2': 'x2',
 };
 
 const NUMBER_FILE = {
-  '+0': 'p0', '+1': 'p1', '+2': 'p2', '+3': 'p3', '+4': 'p4', '-1': 'm1', '-2': 'm2',
+  '+0': 'p0', '+1': 'p1', '+2': 'p2', '+3': 'p3', '+4': 'p4', '-1': 'm1', '-2': 'm2', 'x2': 'x2',
 };
 
 function img(src, cls) {
@@ -45,6 +45,8 @@ function buildBase(card, className, isAdded) {
   // Same class badge (circle + sized icon) as the composed shared cards.
   if (isAdded && className) root.appendChild(badges(null, className));
   if (card.value !== 'null') root.appendChild(img(`${BASE}/numbers/c-${NUMBER_FILE[card.value]}.webp`, 'pc-full'));
+  // x2 and null cards reshuffle the deck: shuffle mark in the bottom-right corner.
+  if (card.value === 'x2' || card.value === 'null') root.appendChild(img(`${BASE}/spheres/shuffle.webp`, 'pc-full'));
   return root;
 }
 

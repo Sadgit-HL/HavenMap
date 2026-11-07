@@ -99,6 +99,12 @@ export function amDecks() {
 
 export const amSupportsImbue = g => deckOf(g).imbue;
 
+// Class name of a hero deck (for the class badge on its cards), else null.
+export function amClassName(g) {
+  const d = deckOf(g);
+  return d.hero === undefined ? null : heroPerkClass(heroTitle(d.hero))?.name ?? null;
+}
+
 const isSpecial = key => AM_SPECIAL.some(s => s.key === key);
 const sum = o => Object.values(o).reduce((a, b) => a + b, 0);
 

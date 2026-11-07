@@ -8,8 +8,9 @@
 import { state, patch } from './state.js';
 import { DECKS, deckSlugFor, assetPath } from './data.js';
 import { uiState, subscribeUI } from './uiState.js';
+import { buildCard } from './amd/card.js?v=2';
 import {
-  AM_TYPES, AM_SPECIAL, amDecks, amSupportsImbue, amState, amNeedsReshuffle, amDeckTotal, amDraw, amReturn, amAdjust,
+  AM_TYPES, AM_SPECIAL, amDecks, amSupportsImbue, amState, amClassName, amNeedsReshuffle, amDeckTotal, amDraw, amReturn, amAdjust,
   amShuffleNow, amEndRoundPatch, amRollerCode, amEditCard, amSetImbue, amResetComposition, AM_MAX_PER_TYPE,
 } from './attackMods.js';
 
@@ -237,8 +238,8 @@ function amTileHtml(c, s, special, g, edit) {
   return `<div class="am-tile${!special && !base && !n && !disc ? ' am-tile--none' : ''}">
     <button class="am-card${n ? '' : ' is-empty'}" type="button" data-am-draw="${c.key}" data-am-g="${g}" ${n ? '' : 'disabled'}
         title="${special ? 'Draw (removes the card from the game)' : 'Draw one ' + label}">
-      ${c.img ? `<img src="${assetPath.attackMod(c.img)}" alt="${label}" draggable="false">`
-               : `<span class="am-face-txt" style="display:grid;place-items:center;height:100%;padding:4px;font-size:11px;text-align:center">${label}</span>`}
+      ${c.card ? `<span class="am-slot" data-am-slot="${c.key}" data-am-g="${g}" title="${label}"></span>`
+               : `<img src="${assetPath.attackMod(c.img)}" alt="${label}" draggable="false">`}
       <span class="am-n">${n}${special ? '' : '/' + base}</span>
       ${c.shuffle ? '<span class="dk-mark">&#8635;</span>' : ''}
     </button>${foot}</div>`;
@@ -295,6 +296,15 @@ export function toggleDeckView(v) { view = view === v ? null : v; renderDecks();
 export function isDeckPanelOpen() { return view !== null; }
 export function deckPanelView() { return view; }
 
+// Hero tiles are composed cards: fill each placeholder slot with its card (scripts/amd).
+function mountAmCards(panel) {
+  for (const slot of panel.querySelectorAll('[data-am-slot]')) {
+    const g = slot.dataset.amG;
+    const entry = amState(g).catalog.find(c => c.key === slot.dataset.amSlot);
+    if (entry?.card) slot.appendChild(buildCard(entry.card, amClassName(g), false));
+  }
+}
+
 export function renderDecks() {
   document.getElementById('deck-toggle')?.classList.toggle('is-active', view === 'abilities');
   document.getElementById('am-toggle')?.classList.toggle('is-active', view === 'am');
@@ -303,7 +313,7 @@ export function renderDecks() {
   panel.classList.toggle('open', view !== null);
   if (!view) return;
 
-  if (view === 'am') { panel.innerHTML = amHtml(); return; }
+  if (view === 'am') { panel.innerHTML = amHtml(); mountAmCards(panel); return; }
 
   const slugs = visibleSlugs();
   if (!slugs.length) {

@@ -1,5 +1,5 @@
 import { PERKS } from '../scripts/games/perks.js?v=10';
-import { buildCard } from '../scripts/amd/card.js?v=1';
+import { buildCard } from '../scripts/amd/card.js?v=2';
 
 const editionSelect = document.getElementById('edition');
 const classSelect = document.getElementById('class');
