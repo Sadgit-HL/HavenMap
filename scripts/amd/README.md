@@ -30,8 +30,13 @@ el.append(buildCard({ kind: 'base', value: '+1' }, 'Boneshaper', /* isAdded */ t
 
 ## Assets (runtime) — `images/common/attack_mods/`
 `frames/ numbers/ spheres/ class_icons/ icons/{center,side,small}/ unique/` — exactly what the
-perk lists load (traced in a browser across FH, GH2E, JotL, MP). Root `gh-am-*.webp` belong to the
+perk lists load (traced in a browser across FH, GH2E, JotL, MP). `monster/` and `imbuement/` belong to the
 live HavenMap deck (`scripts/attackMods.js`). Everything else was moved to
 `../asset-backups/attack-modifier-cards/` (see its README) and can be copied back.
 
 Generated data: `tools/extract-perks.mjs` -> `scripts/games/perks.js`. Asset converters: `tools/*.py`.
+
+## Live-deck card images (HavenMap `scripts/attackMods.js`)
+Named after the face, same slugs as the perk art:
+`monster/` — `plus0 plus1 plus2 minus1 minus2 x2 miss bless curse`;
+`imbuement/` — `plus0poison plus0wound plus1curse plus1heal1 plus2muddle plus3`.

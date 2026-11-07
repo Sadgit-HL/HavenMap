@@ -11,26 +11,26 @@ import { state, patch } from './state.js';
 
 // Order = order of faces in the GeekRoller code. Standard cards first, then cards added by imbuement.
 export const AM_TYPES = [
-  { key: 'p0',   face: '+0',   count: 6, img: 'gh-am-m-01',  shuffle: false },
-  { key: 'p1',   face: '+1',   count: 5, img: 'gh-am-m-07',  shuffle: false },
-  { key: 'm1',   face: '-1',   count: 5, img: 'gh-am-m-12',  shuffle: false },
-  { key: 'p2',   face: '+2',   count: 1, img: 'gh-am-m-18',  shuffle: false },
-  { key: 'm2',   face: '-2',   count: 1, img: 'gh-am-m-17',  shuffle: false },
-  { key: 'x2',   face: 'x2',   count: 1, img: 'gh-am-m-20',  shuffle: true  },
-  { key: 'miss', face: 'Miss', count: 1, img: 'gh-am-m-19',  shuffle: true  },
+  { key: 'p0',   face: '+0',   count: 6, img: 'monster/plus0',  shuffle: false },
+  { key: 'p1',   face: '+1',   count: 5, img: 'monster/plus1',  shuffle: false },
+  { key: 'm1',   face: '-1',   count: 5, img: 'monster/minus1',  shuffle: false },
+  { key: 'p2',   face: '+2',   count: 1, img: 'monster/plus2',  shuffle: false },
+  { key: 'm2',   face: '-2',   count: 1, img: 'monster/minus2',  shuffle: false },
+  { key: 'x2',   face: 'x2',   count: 1, img: 'monster/x2',  shuffle: true  },
+  { key: 'miss', face: 'Miss', count: 1, img: 'monster/miss',  shuffle: true  },
   // not in the standard deck (count 0); shown when present or in edit mode
-  { key: 'i2m',  face: '+2 Muddle', count: 0, img: 'gh-am-i-plus2muddle', shuffle: false, extra: true },
-  { key: 'i0p',  face: '+0 Poison', count: 0, img: 'gh-am-i-plus0poison', shuffle: false, extra: true },
-  { key: 'i3',   face: '+3',        count: 0, img: 'gh-am-i-plus3',       shuffle: false, extra: true },
-  { key: 'i1h',  face: '+1 Heal1',  count: 0, img: 'gh-am-i-plus1heal1',  shuffle: false, extra: true },
-  { key: 'i1c',  face: '+1 Curse',  count: 0, img: 'gh-am-i-plus1curse',  shuffle: false, extra: true },
-  { key: 'i0w',  face: '+0 Wound',  count: 0, img: 'gh-am-i-plus0wound',  shuffle: false, extra: true },
+  { key: 'i2m',  face: '+2 Muddle', count: 0, img: 'imbuement/plus2muddle', shuffle: false, extra: true },
+  { key: 'i0p',  face: '+0 Poison', count: 0, img: 'imbuement/plus0poison', shuffle: false, extra: true },
+  { key: 'i3',   face: '+3',        count: 0, img: 'imbuement/plus3',       shuffle: false, extra: true },
+  { key: 'i1h',  face: '+1 Heal1',  count: 0, img: 'imbuement/plus1heal1',  shuffle: false, extra: true },
+  { key: 'i1c',  face: '+1 Curse',  count: 0, img: 'imbuement/plus1curse',  shuffle: false, extra: true },
+  { key: 'i0w',  face: '+0 Wound',  count: 0, img: 'imbuement/plus0wound',  shuffle: false, extra: true },
 ];
 
 // Added and removed by hand, temporary. Face text is what goes into the roller code.
 export const AM_SPECIAL = [
-  { key: 'bless', face: 'Bless', img: 'gh-am-pm-15', label: 'Bless', max: 10 },
-  { key: 'curse', face: 'Curse', img: 'gh-am-mm-01', label: 'Curse', max: 10 },
+  { key: 'bless', face: 'Bless', img: 'monster/bless', label: 'Bless', max: 10 },
+  { key: 'curse', face: 'Curse', img: 'monster/curse', label: 'Curse', max: 10 },
 ];
 
 // Monster imbuement (level 2 includes level 1): changes to the base composition.

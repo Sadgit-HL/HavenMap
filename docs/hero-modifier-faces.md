@@ -29,7 +29,7 @@ Per-hero deck state stays counts per face key, as in `attackMods.js`.
 
 | kind | meaning |
 |---|---|
-| `existing` | image already in `images/common/attack_mods/gh-am-*.webp` |
+| `existing` | image already in `images/common/attack_mods/{monster,imbuement}/*.webp` |
 | `fa` | pre-rendered image from Frosthaven Assistant perks folder (400x267, baked-in number and corners) |
 | `psd` | built from the exported PSD layers: `frame` + `sphere` + `number` + `icons` |
 | `needs-art` | no source yet |
@@ -62,7 +62,7 @@ Verified against official FH and JotL card photos in `any2cards/worldhaven` (`im
 **Implementation note**: decorated cards are no longer composed from separate frame/icon/number layers. `tools/extract-perks.mjs`'s `art.ref` for a `shared`-kind card names a FrosthavenAssistant per-slug PNG (`assets/images/attack/perks/<ref>.png`) that turned out to be an actual Cephalofair card scan, pixel-for-pixel identical to the worldhaven photos (same frame tint, icon, number placement, rolling diamond, amount, all baked in) — confirmed by comparing `plus0poison.png`/`plus0curse.png` against the real Boneshaper cards. `perks/card.js` uses that image directly (copied into `images/common/attack_mods/shared/`, see section 7) and only overlays the class symbol badge on top, replacing whichever class's weapon icon that particular scan happened to carry (the same slug is reused across many classes). This sidesteps the per-icon tint/shape/amount approximations the layered approach needed. Plain (no-icon) cards still compose from our own frame+number layers, since the attack value is the only content and nothing there needs per-effect tinting.
 
 - The class symbol badge (from `P:\Guido\boardgames\Worldhaven\icons\all\<Class>.png`, white silhouette on a dark circle, box measured off `fh-am-df-14.png`, ~100x100px on the 600x391 canvas) sits below the corner-value badge on every card, matching the real cards' weapon-icon badge (the second "game logo" badge seen on JotL/MP cards is not reproduced).
-- Shuffle cards (x2, Miss) use a distinct lens/eye shape, not a circle or diamond — already covered by the existing `gh-am-m-19`/`gh-am-m-20` assets, no change needed.
+- Shuffle cards (x2, Miss) use a distinct lens/eye shape, not a circle or diamond — already covered by the existing `monster/miss` and `monster/x2` assets, no change needed.
 
 ## 4. Face catalog (heroes in the current campaign)
 
