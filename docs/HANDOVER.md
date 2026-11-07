@@ -171,3 +171,7 @@ All coordinates are on the 600x391 canvas. Implemented in `perks/compose.js`.
 - The class badge overlay on the old perks page (`.pc-class-badge`) was set to the owner's measurement (v=10) and never confirmed visually.
 - Backups of every replaced asset were kept only in `%TEMP%\bak`, which is not durable. The old versions of the 28 replaced files are in git history (`810c653`).
 - Campaign work (sections 1 to 8) is still not started.
+
+
+## Update 2026-11-07: shared AMD card code
+Card rendering moved to `scripts/amd/` (see its README); `perks/index.html` now draws all cards composed (base, shared; unique stay baked). `images/common/attack_mods/` trimmed to what the lists load; the rest is in `asset-backups/attack-modifier-cards/` (README there). `perks/compose.html` still runs but its scan column is empty (scans parked).

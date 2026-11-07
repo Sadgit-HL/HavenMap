@@ -58,51 +58,14 @@ main { padding: 16px 20px 60px; }
 
 .perk-text { color: var(--muted); font-size: 13px; padding-top: 4px; }
 
-/* ── Card compositor ────────────────────────────────────────────────────── */
+/* ── Card hover zoom (card structure itself lives in scripts/amd/amd.css) ───────────── */
 
-.pc {
-  position: relative;
-  width: 90px;
-  aspect-ratio: 600 / 391;
-  flex: 0 0 auto;
-  border-radius: 6px;
-  overflow: hidden;
-  background: #000;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
-}
+.pc { width: 90px; transition: transform 0.12s ease, box-shadow 0.12s ease; }
 .pc:hover {
   transform: scale(4);
   transform-origin: left center;
   z-index: 20;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
-}
-/* Base: every layer is absolutely positioned and non-interactive. Size/position for each
-   layer type is set explicitly below -- nothing here, to avoid specificity fights. */
-.pc img { position: absolute; object-fit: contain; pointer-events: none; }
-
-/* Full-canvas overlays: frame and number for plain cards. Already positioned correctly within
-   their own 600x391 canvas, so no cropping is needed -- just stack at 0,0,100%,100%. */
-.pc-frame, .pc-full { left: 0; top: 0; width: 100%; height: 100%; }
-
-/* A real baked card scan (decorated cards), shown edge-to-edge. */
-.pc-unique { left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; }
-
-/* Bottom-left class symbol badge: a dark circle (cropped from spheres/numbered.webp) with the
-   class's white silhouette icon on top, sized smaller than the circle to sit inside its rim.
-   Covers whichever class's icon the baked scan already carries.
-   Center measured by pixel-sampling the bronze ring color directly in three source PNGs
-   (plus0curse/plus0poison/plus1strengthenally, 400x267 native, ring consistently at x:25-80,
-   y:182-239) and converting through the object-fit:cover crop math (these images are natively
-   400x267, a slightly different aspect ratio than the 600x391 card canvas). Sized 30% larger than
-   that measurement, same center, as margin: at this card's thumbnail size a sub-pixel rendering
-   difference is enough to show a sliver of the original ring, so the box can't be tight -- see
-   docs/hero-modifier-faces.md 3a. */
-/* Hand-measured in a 600x391 image: ring at x 37, y 268, 87x87 px. Box = that + 2px margin per side. */
-.pc-class-badge { position: absolute; left: 5.8333%; top: 68.0307%; width: 15.1667%; height: 23.2737%; }
-.pc-class-badge-bg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
-.pc-class-badge-icon {
-  position: absolute; left: 25%; top: 25%; width: 50%; height: 50%;
-  object-fit: contain;
 }
 
 .legend {

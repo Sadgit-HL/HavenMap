@@ -1,5 +1,5 @@
 import { PERKS } from '../scripts/games/perks.js?v=10';
-import { buildCard } from './card.js?v=10';
+import { buildCard } from '../scripts/amd/card.js?v=1';
 
 const editionSelect = document.getElementById('edition');
 const classSelect = document.getElementById('class');
@@ -26,7 +26,7 @@ function populateClasses() {
   }
 }
 
-function cardsGroup(cards, className) {
+function cardsGroup(cards, className, isAdded) {
   const group = document.createElement('div');
   group.className = 'group';
   cards.forEach((c, i) => {
@@ -36,7 +36,7 @@ function cardsGroup(cards, className) {
       arrow.textContent = '+';
       group.appendChild(arrow);
     }
-    group.appendChild(buildCard(c, className));
+    group.appendChild(buildCard(c, className, isAdded));
   });
   return group;
 }
@@ -54,13 +54,13 @@ function renderClass(edition, className) {
     const cards = document.createElement('div');
     cards.className = 'perk-cards';
     if (p.removes.length) {
-      cards.appendChild(cardsGroup(p.removes, className));
+      cards.appendChild(cardsGroup(p.removes, className, false));
       const arrow = document.createElement('span');
       arrow.className = 'arrow';
       arrow.textContent = '→';
       cards.appendChild(arrow);
     }
-    cards.appendChild(cardsGroup(p.adds, className));
+    cards.appendChild(cardsGroup(p.adds, className, true));
     row.appendChild(cards);
 
     if (p.text) {
