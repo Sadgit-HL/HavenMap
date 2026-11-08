@@ -158,13 +158,14 @@ function scenarios(r) {
 }
 
 function benchList(c) {
+  const bench = [...c.bench].sort(byInitiative);
   if (imgMode === 'always') {
-    return `<div class="benchgrid">${c.bench.map(id => {
+    return `<div class="benchgrid">${bench.map(id => {
       const card = cardById.get(id);
       return `<figure class="benchcard">${cardPicture(card, id)}<figcaption>${iniTag(card)}${esc(pretty(card?.slug ?? id))}</figcaption></figure>`;
     }).join('')}</div>`;
   }
-  return `<div class="chips">${c.bench.map(id => {
+  return `<div class="chips">${bench.map(id => {
     const card = cardById.get(id), url = cardImageUrl(card);
     return `<span class="chip dim"${url ? ` data-img="${esc(url)}"` : ''}>${iniTag(card)}${esc(pretty(card?.slug ?? id))}</span>`;
   }).join('')}</div>`;
@@ -176,6 +177,10 @@ const AREA_TITLE = { hand: 'Hand', discard: 'Discard', lost: 'Lost' };
 
 // Initiative number shown in front of a card name; a dash when the number is not known for that class yet.
 const iniTag = card => `<span class="ini${card?.ini == null ? ' none' : ''}" title="Initiative">${card?.ini ?? '&ndash;'}</span>`;
+
+// Lowest initiative first; cards with no known initiative go last, keeping their deck order (Array.sort is stable).
+const iniOf = id => cardById.get(id)?.ini ?? Infinity;
+const byInitiative = (a, b) => (iniOf(a) === iniOf(b) ? 0 : iniOf(a) < iniOf(b) ? -1 : 1);
 
 // An <img> that falls back to the card name when the picture is missing (see the 'error' listener below).
 function cardPicture(card, id) {
@@ -200,9 +205,9 @@ function deckZones(c) {
   if (!c.deck.length) return '<div class="hint">no cards yet</div>';
   const out = { discard: new Set(c.disc), lost: new Set(c.lost) };
   const lists = {
-    hand: c.deck.filter(id => !out.discard.has(id) && !out.lost.has(id)),
-    discard: c.deck.filter(id => out.discard.has(id)),
-    lost: c.deck.filter(id => out.lost.has(id)),
+    hand: c.deck.filter(id => !out.discard.has(id) && !out.lost.has(id)).sort(byInitiative),
+    discard: c.deck.filter(id => out.discard.has(id)).sort(byInitiative),
+    lost: c.deck.filter(id => out.lost.has(id)).sort(byInitiative),
   };
   return `<div class="zones">${['hand', 'discard', 'lost'].map(area => `
     <div class="zone" data-zone="${area}" data-char="${esc(c.id)}">
