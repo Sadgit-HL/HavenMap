@@ -180,3 +180,37 @@ export function renameCharacter(r, cid, name) {
   if (!nm || !r.chars.some(c => c.id === cid)) return r;
   return edit(r, x => { x.chars.find(c => c.id === cid).name = nm; });
 }
+
+// --- ability card piles ----------------------------------------------------------------------------------------
+
+export const CARD_AREAS = ['hand', 'discard', 'lost'];
+
+// Move a card of the character's selected deck to an area. The hand is derived (deck minus discard, active and lost),
+// so moving to 'hand' removes the card from every pile; moving to 'discard' or 'lost' also clears its active mark.
+// Cards that are not in the deck are ignored.
+export function moveCard(r, cid, cardId, area) {
+  const c = r.chars.find(x => x.id === cid);
+  if (!c || !CARD_AREAS.includes(area) || !c.deck.includes(cardId)) return r;
+  const now = c.lost.includes(cardId) ? 'lost' : c.disc.includes(cardId) ? 'discard' : 'hand';
+  if (now === area) return r;                     // already there (a hand card marked active stays active)
+  return edit(r, x => {
+    const ch = x.chars.find(y => y.id === cid);
+    const without = list => (list || []).filter(v => v !== cardId);
+    ch.disc = without(ch.disc); ch.lost = without(ch.lost); ch.act = without(ch.act);
+    if (area === 'discard') ch.disc.push(cardId);
+    if (area === 'lost') ch.lost.push(cardId);
+  });
+}
+
+// Mark a card in the hand as active (played in front of the player, not in the discard yet) or clear the mark.
+export function setCardActive(r, cid, cardId, active) {
+  const c = r.chars.find(x => x.id === cid);
+  if (!c || !c.deck.includes(cardId)) return r;
+  const inPile = c.disc.includes(cardId) || c.lost.includes(cardId);
+  if (active && inPile) return r;                // active cards come from the hand
+  return edit(r, x => {
+    const ch = x.chars.find(y => y.id === cid);
+    ch.act = (ch.act || []).filter(v => v !== cardId);
+    if (active) ch.act.push(cardId);
+  });
+}

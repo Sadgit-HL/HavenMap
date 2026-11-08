@@ -155,13 +155,37 @@ function scenarios(r) {
   })) + (editing ? '<p class="hint">Completing a scenario also unlocks the scenarios it links to. Setting a scenario back to Locked clears its result.</p>' : '');
 }
 
+// --- ability card areas: hand, discard, lost (cards move by drag and drop or the row buttons) ---------------------
+
+const AREA_TITLE = { hand: 'Hand', discard: 'Discard', lost: 'Lost' };
+
+function cardRow(c, id, area) {
+  const card = cardById.get(id);
+  const active = area === 'hand' && c.act.includes(id);
+  const btn = (act, key, label, title) => `<button type="button" class="mini" data-act="${act}" data-char="${esc(c.id)}" data-id="${id}" data-key="${key}" title="${esc(title)}">${label}</button>`;
+  const moves = editing ? `<span class="row-actions">${area === 'hand' ? btn('cardActive', active ? 'off' : 'on', 'A', active ? 'Clear active' : 'Mark active') : ''}${
+    ['hand', 'discard', 'lost'].filter(a => a !== area).map(a => btn('cardMove', a, a[0].toUpperCase(), `Move to ${a}`)).join('')}</span>` : '';
+  return `<li class="cardrow${active ? ' is-active' : ''}" data-card="${id}" data-char="${esc(c.id)}"${editing ? ' draggable="true"' : ''}>
+    <span class="cname">${esc(pretty(card?.slug ?? id))}</span>${card?.lv != null ? `<span class="lv">${esc(card.lv)}</span>` : ''}${active ? '<span class="badge">active</span>' : ''}${moves}</li>`;
+}
+
+function deckZones(c) {
+  if (!c.deck.length) return '<div class="hint">no cards yet</div>';
+  const out = { discard: new Set(c.disc), lost: new Set(c.lost) };
+  const lists = {
+    hand: c.deck.filter(id => !out.discard.has(id) && !out.lost.has(id)),
+    discard: c.deck.filter(id => out.discard.has(id)),
+    lost: c.deck.filter(id => out.lost.has(id)),
+  };
+  return `<div class="zones">${['hand', 'discard', 'lost'].map(area => `
+    <div class="zone" data-zone="${area}" data-char="${esc(c.id)}">
+      <h4>${AREA_TITLE[area]} <span>${lists[area].length}</span></h4>
+      <ul>${lists[area].map(id => cardRow(c, id, area)).join('') || '<li class="empty-row">empty</li>'}</ul>
+    </div>`).join('')}</div>${editing ? '<p class="hint">Drag cards between the areas, or use the buttons on a card (H hand, D discard, L lost, A active).</p>' : ''}`;
+}
+
 function characterCard(c) {
   const cls = classByName(c.cls);
-  const cardChip = id => {
-    const state = c.lost.includes(id) ? 'lost' : c.act.includes(id) ? 'active' : c.disc.includes(id) ? 'discard' : 'hand';
-    const css = { lost: 'bad', active: 'info', discard: 'warn', hand: 'ok' }[state];
-    return `<span class="chip ${css}" title="${state}">${esc(pretty(cardById.get(id)?.slug ?? id))}</span>`;
-  };
   const faces = c.am?.faces || [];
   const inDeck = faces.filter(f => !f.out).length;
   const stat = (label, key, max, min = 0) => kv(label, val(true, c[key] ?? '', num('char', key, c[key], { min, max, id: c.id, width: 64 })));
@@ -172,8 +196,8 @@ function characterCard(c) {
     <h3>${nameCell} <span style="color:var(--muted)">${esc(c.cls)} (${cls ? esc(cls.src.toUpperCase()) : '?'})</span></h3>
     <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr))">${stat('Level', 'lv', 9, 1)}${stat('XP', 'xp', 9999)}${stat('Gold', 'gold', 9999)}${stat('Inherited', 'inh', 9999)}${stat('Hand size', 'hand', 20, 1)}</div>
     <div class="pile"><b>Traits</b>${(c.traits || []).map(t => chip(t)).join('') || '<span class="hint">none</span>'}${(c.extra || []).map(t => chip(t, 'dim')).join('')}</div>
-    <div class="pile"><b>Deck (${c.deck.length})</b> hand ${handOf(c).length}, discard ${c.disc.length}, active ${c.act.length}, lost ${c.lost.length}</div>
-    <div class="chips">${c.deck.map(cardChip).join('') || '<span class="hint">no cards yet</span>'}</div>
+    <div class="pile"><b>Deck (${c.deck.length} cards)</b>${c.hand ? `hand size ${esc(c.hand)}` : ''}</div>
+    ${deckZones(c)}
     <div class="pile"><b>Other owned cards (${c.bench.length})</b></div>
     <div class="chips">${c.bench.map(id => chip(pretty(cardById.get(id)?.slug ?? id), 'dim')).join('')}</div>
     <div class="pile"><b>Items (${c.items.length})</b></div>
@@ -275,6 +299,8 @@ function apply(el) {
     case 'scnRes': return commit(ed.setScenarioResult(record, id, { [key]: v }));
     case 'char': return commit(ed.setCharacter(record, id, key, v));
     case 'charName': return commit(ed.renameCharacter(record, id, v));
+    case 'cardMove': return commit(ed.moveCard(record, el.dataset.char, Number(id), key));
+    case 'cardActive': return commit(ed.setCardActive(record, el.dataset.char, Number(id), key === 'on'));
     case 'itemUnl': return commit(ed.setItemUnlocked(record, Number(id), v));
     case 'itemTaken': return commit(ed.setItemTaken(record, Number(id), v));
     case 'treasures': return commit(ed.setDeckList(record, 'tre', v));
@@ -289,6 +315,35 @@ main.addEventListener('click', e => {
   sub = t;
   render();
   try { localStorage.setItem('havenmap.campaign.sub', t); } catch { /* ignore */ }
+});
+// Drag and drop of ability cards between the hand, discard and lost areas (edit mode only).
+const dragPayload = e => { try { return JSON.parse(e.dataTransfer.getData('text/plain')); } catch { return null; } };
+main.addEventListener('dragstart', e => {
+  const row = e.target.closest?.('.cardrow');
+  if (!editing || !row) { e.preventDefault(); return; }
+  e.dataTransfer.setData('text/plain', JSON.stringify({ char: row.dataset.char, card: Number(row.dataset.card) }));
+  e.dataTransfer.effectAllowed = 'move';
+  row.classList.add('dragging');
+});
+main.addEventListener('dragend', () => {
+  main.querySelectorAll('.dragging, .over').forEach(el => el.classList.remove('dragging', 'over'));
+});
+main.addEventListener('dragover', e => {
+  const zone = e.target.closest?.('.zone');
+  if (!editing || !zone) return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  main.querySelectorAll('.zone.over').forEach(z => { if (z !== zone) z.classList.remove('over'); });
+  zone.classList.add('over');
+});
+main.addEventListener('drop', e => {
+  const zone = e.target.closest?.('.zone');
+  if (!editing || !zone) return;
+  e.preventDefault();
+  const d = dragPayload(e);
+  zone.classList.remove('over');
+  if (!d || d.char !== zone.dataset.char) return;
+  commit(ed.moveCard(record, d.char, d.card, zone.dataset.zone));
 });
 main.addEventListener('submit', e => {
   if (e.target.id !== 'addChar') return;
