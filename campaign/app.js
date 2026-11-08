@@ -13,13 +13,13 @@ import {
 } from '../scripts/campaign/record.js';
 import * as ed from '../scripts/campaign/edit.js';
 
-const TABS = ['Overview', 'Scenarios', 'Characters', 'Items', 'Events'];
+const PAGE_TABS = ['Overview', 'Scenarios', 'Items', 'Events'];     // fixed tabs; character tabs and '+' follow
 const main = document.getElementById('main');
 const tabsEl = document.getElementById('tabs');
 const editBtn = document.getElementById('edit');
 const undoBtn = document.getElementById('undo');
 let record = null;
-let tab = TABS[0];
+let tab = 'Overview';              // a fixed tab name, 'char:<id>' or 'add'
 let editing = false;
 const history = [];                                   // earlier records for undo, newest last
 const view = { scnStatus: '', scnSearch: '', itemSlot: '', itemShow: 'all' };
@@ -53,8 +53,20 @@ function undo() {
   render();
 }
 
+// All tabs in order: the fixed ones, one per character, and '+' while there is room for another character.
+function tabList() {
+  const list = PAGE_TABS.map(t => ({ id: t, label: t }));
+  const chars = record?.chars || [];
+  chars.forEach((c, i) => list.push({ id: `char:${c.id}`, label: c.name, sep: i === 0 }));
+  if (record && chars.length < ed.MAX_CHARACTERS) list.push({ id: 'add', label: '+', title: 'Add a character', sep: chars.length === 0 });
+  return list;
+}
+const tabExists = id => tabList().some(t => t.id === id);
+
 function renderTabs() {
-  tabsEl.innerHTML = TABS.map(t => `<button type="button" role="tab" aria-selected="${t === tab}" data-tab="${t}">${t}</button>`).join('');
+  if (!tabExists(tab)) tab = 'Overview';
+  tabsEl.innerHTML = tabList().map(t =>
+    `<button type="button" role="tab" aria-selected="${t.id === tab}" data-tab="${esc(t.id)}"${t.title ? ` title="${esc(t.title)}"` : ''}${t.sep ? ' class="sep"' : ''}>${esc(t.label)}</button>`).join('');
   document.getElementById('title').textContent = record?.name ? `Campaign: ${record.name}` : 'Campaign';
   editBtn.textContent = editing ? 'Done editing' : 'Edit';
   editBtn.setAttribute('aria-pressed', String(editing));
@@ -63,7 +75,7 @@ function renderTabs() {
 }
 tabsEl.addEventListener('click', e => {
   const t = e.target.closest('[data-tab]')?.dataset.tab;
-  if (!t) return;
+  if (!t || !tabExists(t)) return;
   tab = t;
   render();
   try { localStorage.setItem('havenmap.campaign.tab', t); } catch { /* ignore */ }
@@ -139,32 +151,55 @@ function scenarios(r) {
   })) + (editing ? '<p class="hint">Completing a scenario also unlocks the scenarios it links to. Setting a scenario back to Locked clears its result.</p>' : '');
 }
 
-function characters(r) {
-  if (!r.chars.length) return '<div class="empty">No characters in this campaign file.</div>';
-  return r.chars.map(c => {
-    const cls = classByName(c.cls);
-    const cardChip = id => {
-      const state = c.lost.includes(id) ? 'lost' : c.act.includes(id) ? 'active' : c.disc.includes(id) ? 'discard' : 'hand';
-      const css = { lost: 'bad', active: 'info', discard: 'warn', hand: 'ok' }[state];
-      return `<span class="chip ${css}" title="${state}">${esc(pretty(cardById.get(id)?.slug ?? id))}</span>`;
-    };
-    const faces = c.am?.faces || [];
-    const inDeck = faces.filter(f => !f.out).length;
-    const stat = (label, key, max) => kv(label, val(true, c[key] ?? '', num('char', key, c[key], { min: key === 'lv' ? 1 : 0, max, id: c.id, width: 64 })));
-    return `<div class="card" style="margin-bottom:12px">
-      <h3>${esc(c.name)} <span style="color:var(--muted)">${esc(c.cls)} (${cls ? esc(cls.src.toUpperCase()) : '?'})</span></h3>
-      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr))">${stat('Level', 'lv', 9)}${stat('XP', 'xp', 9999)}${stat('Gold', 'gold', 9999)}${stat('Inherited', 'inh', 9999)}${kv('Hand size', esc(c.hand ?? ''))}</div>
-      <div class="pile"><b>Traits</b>${(c.traits || []).map(t => chip(t)).join('')}${(c.extra || []).map(t => chip(t, 'dim')).join('')}</div>
-      <div class="pile"><b>Deck (${c.deck.length})</b> hand ${handOf(c).length}, discard ${c.disc.length}, active ${c.act.length}, lost ${c.lost.length}</div>
-      <div class="chips">${c.deck.map(cardChip).join('')}</div>
-      <div class="pile"><b>Other owned cards (${c.bench.length})</b></div>
-      <div class="chips">${c.bench.map(id => chip(pretty(cardById.get(id)?.slug ?? id), 'dim')).join('')}</div>
-      <div class="pile"><b>Items (${c.items.length})</b></div>
-      <div class="chips">${c.items.map(it => `<span class="chip ${(it.st || []).some(Boolean) ? 'warn' : ''}" title="tick states ${esc((it.st || []).join('/'))}">${esc(pretty(itemById.get(it.id)?.slug ?? it.id))}</span>`).join('')}</div>
-      <div class="pile"><b>Modifier deck</b> ${inDeck} of ${faces.length} cards in the deck${c.am?.n != null ? ` (sheet count ${esc(c.am.n)})` : ''}</div>
-      <div class="chips">${faces.map(f => `<span class="chip ${f.out ? 'dim' : ''}">${esc(f.f)}</span>`).join('')}</div>
-    </div>`;
-  }).join('') + (editing ? '<p class="hint">Cards, items and the modifier deck are not editable here yet.</p>' : '');
+function characterCard(c) {
+  const cls = classByName(c.cls);
+  const cardChip = id => {
+    const state = c.lost.includes(id) ? 'lost' : c.act.includes(id) ? 'active' : c.disc.includes(id) ? 'discard' : 'hand';
+    const css = { lost: 'bad', active: 'info', discard: 'warn', hand: 'ok' }[state];
+    return `<span class="chip ${css}" title="${state}">${esc(pretty(cardById.get(id)?.slug ?? id))}</span>`;
+  };
+  const faces = c.am?.faces || [];
+  const inDeck = faces.filter(f => !f.out).length;
+  const stat = (label, key, max, min = 0) => kv(label, val(true, c[key] ?? '', num('char', key, c[key], { min, max, id: c.id, width: 64 })));
+  const nameCell = editing
+    ? `<input type="text" class="txt" data-act="charName" data-id="${esc(c.id)}" value="${esc(c.name)}" maxlength="30" style="width:160px">`
+    : esc(c.name);
+  return `<div class="card">
+    <h3>${nameCell} <span style="color:var(--muted)">${esc(c.cls)} (${cls ? esc(cls.src.toUpperCase()) : '?'})</span></h3>
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr))">${stat('Level', 'lv', 9, 1)}${stat('XP', 'xp', 9999)}${stat('Gold', 'gold', 9999)}${stat('Inherited', 'inh', 9999)}${stat('Hand size', 'hand', 20, 1)}</div>
+    <div class="pile"><b>Traits</b>${(c.traits || []).map(t => chip(t)).join('') || '<span class="hint">none</span>'}${(c.extra || []).map(t => chip(t, 'dim')).join('')}</div>
+    <div class="pile"><b>Deck (${c.deck.length})</b> hand ${handOf(c).length}, discard ${c.disc.length}, active ${c.act.length}, lost ${c.lost.length}</div>
+    <div class="chips">${c.deck.map(cardChip).join('') || '<span class="hint">no cards yet</span>'}</div>
+    <div class="pile"><b>Other owned cards (${c.bench.length})</b></div>
+    <div class="chips">${c.bench.map(id => chip(pretty(cardById.get(id)?.slug ?? id), 'dim')).join('')}</div>
+    <div class="pile"><b>Items (${c.items.length})</b></div>
+    <div class="chips">${c.items.map(it => `<span class="chip ${(it.st || []).some(Boolean) ? 'warn' : ''}" title="tick states ${esc((it.st || []).join('/'))}">${esc(pretty(itemById.get(it.id)?.slug ?? it.id))}</span>`).join('')}</div>
+    <div class="pile"><b>Modifier deck</b> ${inDeck} of ${faces.length} cards in the deck${c.am?.n != null ? ` (sheet count ${esc(c.am.n)})` : ''}</div>
+    <div class="chips">${faces.map(f => `<span class="chip ${f.out ? 'dim' : ''}">${esc(f.f)}</span>`).join('')}</div>
+  </div>${editing ? '<p class="hint">Cards, items and the modifier deck are not editable here yet.</p>' : ''}`;
+}
+
+function characterTab(r, cid) {
+  const c = r.chars.find(x => x.id === cid);
+  return c ? characterCard(c) : '<div class="empty">Character not found.</div>';
+}
+
+// The "+" tab: add a character (up to ed.MAX_CHARACTERS) from the classes not yet in play.
+function addTab(r) {
+  const unlocked = new Set(r.cls.map(n => n.toLowerCase()));
+  const isOpen = c => unlocked.has(c.name.toLowerCase());
+  const opts = [...ed.availableClasses(r)]
+    .sort((a, b) => (isOpen(b) - isOpen(a)) || a.name.localeCompare(b.name))
+    .map(c => `<option value="${esc(c.name)}">${esc(c.name)}${isOpen(c) ? '' : ' (locked)'}</option>`).join('');
+  return `<div class="card" style="max-width:420px">
+    <h3>Add a character (${r.chars.length} of ${ed.MAX_CHARACTERS})</h3>
+    <form id="addChar">
+      <label class="field">Class <select name="cls" required>${opts}</select></label>
+      <label class="field">Name <input name="name" type="text" maxlength="30" required autocomplete="off"></label>
+      <button type="submit" class="primary">Add character</button>
+    </form>
+    <p class="hint">A new character starts at level 1 with no cards or items. Classes already in play are not listed; locked classes are listed last.</p>
+  </div>`;
 }
 
 function items(r) {
@@ -212,7 +247,9 @@ function render() {
     return;
   }
   const issues = validate(record);
-  const body = { Overview: overview, Scenarios: scenarios, Characters: characters, Items: items, Events: events }[tab](record);
+  const body = tab === 'add' ? addTab(record)
+    : tab.startsWith('char:') ? characterTab(record, tab.slice(5))
+    : { Overview: overview, Scenarios: scenarios, Items: items, Events: events }[tab](record);
   main.innerHTML = (issues.length ? `<div class="issues">${issues.length} issue(s): ${esc(issues.slice(0, 5).join('; '))}</div>` : '') + body;
 }
 
@@ -227,6 +264,7 @@ function apply(el) {
     case 'scnState': return commit(ed.setScenarioState(record, id, Number(v)));
     case 'scnRes': return commit(ed.setScenarioResult(record, id, { [key]: v }));
     case 'char': return commit(ed.setCharacter(record, id, key, v));
+    case 'charName': return commit(ed.renameCharacter(record, id, v));
     case 'itemUnl': return commit(ed.setItemUnlocked(record, Number(id), v));
     case 'itemTaken': return commit(ed.setItemTaken(record, Number(id), v));
     case 'treasures': return commit(ed.setDeckList(record, 'tre', v));
@@ -235,6 +273,15 @@ function apply(el) {
     default: return undefined;
   }
 }
+main.addEventListener('submit', e => {
+  if (e.target.id !== 'addChar') return;
+  e.preventDefault();
+  const f = new FormData(e.target);
+  const next = ed.addCharacter(record, { cls: f.get('cls'), name: f.get('name') });
+  if (next === record) { alert('That character could not be added.'); return; }
+  tab = `char:${next.chars.at(-1).id}`;
+  commit(next);
+});
 main.addEventListener('change', e => {
   const k = { scnStatus: 'scnStatus', itemSlot: 'itemSlot', itemShow: 'itemShow' }[e.target.id];
   if (k) { view[k] = e.target.value; render(); return; }
@@ -290,7 +337,7 @@ document.getElementById('clear').addEventListener('click', async () => {
 });
 
 (async () => {
-  try { const t = localStorage.getItem('havenmap.campaign.tab'); if (TABS.includes(t)) tab = t; } catch { /* ignore */ }
   record = await localStore.load();
+  try { const t = localStorage.getItem('havenmap.campaign.tab'); if (t && tabExists(t)) tab = t; } catch { /* ignore */ }
   render();
 })();

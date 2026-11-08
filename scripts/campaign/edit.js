@@ -3,6 +3,7 @@
 // optimistic locking. Invalid input is clamped or ignored, never thrown. Pure data logic, no DOM, no storage.
 import { SCENARIOS } from '../games/gh2_scenarios.js';
 import { ITEMS } from '../games/gh2_items.js';
+import { CLASSES } from '../games/gh2_classes.js';
 import { SCN_STATE } from './record.js';
 
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
@@ -137,9 +138,45 @@ export function setDeckList(r, list, value) {
 
 // --- characters ----------------------------------------------------------------------------------------------
 
-const CHAR_RANGE = { lv: [1, 9], xp: [0, 9999], gold: [0, 9999], inh: [0, 9999] };
+const CHAR_RANGE = { lv: [1, 9], xp: [0, 9999], gold: [0, 9999], inh: [0, 9999], hand: [1, 20] };
 export function setCharacter(r, cid, key, value) {
   const range = CHAR_RANGE[key], n = toInt(value);
   if (!range || n === null || !r.chars.some(c => c.id === cid)) return r;
   return edit(r, x => { x.chars.find(c => c.id === cid)[key] = clamp(n, ...range); });
+}
+
+// At most this many active characters (retired ones live in `retired`, not here).
+export const MAX_CHARACTERS = 4;
+
+// Next free character id: 'c1', 'c2', ...
+function nextCharId(chars) {
+  const used = new Set(chars.map(c => c.id));
+  let n = 1;
+  while (used.has('c' + n)) n++;
+  return 'c' + n;
+}
+
+// Classes that can still be added: known classes not already played by an active character.
+export function availableClasses(r) {
+  const taken = new Set(r.chars.map(c => String(c.cls).toLowerCase()));
+  return CLASSES.filter(c => !taken.has(c.name.toLowerCase()));
+}
+
+// Add a new level 1 character. Returns the same record when the class is unknown or already in play, the name is empty
+// or there are already MAX_CHARACTERS characters. Cards, items and the modifier deck start empty (level-up flow comes later).
+export function addCharacter(r, { cls, name }) {
+  const klass = CLASSES.find(c => c.name.toLowerCase() === String(cls || '').toLowerCase());
+  const nm = String(name || '').trim().slice(0, 30);
+  if (!klass || !nm || r.chars.length >= MAX_CHARACTERS) return r;
+  if (!availableClasses(r).some(c => c.i === klass.i)) return r;
+  return edit(r, x => {
+    x.chars.push({ id: nextCharId(x.chars), cls: klass.name, name: nm, lv: 1, xp: 0, gold: 0, inh: 0, traits: [],
+      deck: [], disc: [], act: [], lost: [], bench: [], items: [] });
+  });
+}
+
+export function renameCharacter(r, cid, name) {
+  const nm = String(name || '').trim().slice(0, 30);
+  if (!nm || !r.chars.some(c => c.id === cid)) return r;
+  return edit(r, x => { x.chars.find(c => c.id === cid).name = nm; });
 }

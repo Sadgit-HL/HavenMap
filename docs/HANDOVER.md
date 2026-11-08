@@ -303,3 +303,10 @@ Step 1: `scripts/campaign/classMap.js` (`mercenaryForClass`, `classForMercenary`
 Decisions (2026-11-08): ability card piles stay on the campaign side for now (the session only carries a link per hero), and chests and loot are skipped in the result for now.
 
 Step 2 done: `scripts/state.js` is `mapVersion` 5.0.0. `emptyState()` has `campaign: null`; `migrateToV5` adds it to 4.0.0 maps (3.0.0 and older reach it through the existing chain); `withoutAm` now also drops `cmp`, so a copied hero is not a campaign character. Per hero the link is `mercenaries[i].cmp = { c: '<campaign character id>' }`. Verified in headless Chrome against the real state module: 4.0.0 and 3.0.0 maps migrate, a 5.0.0 `campaign` block and the hero links survive an edit and reload, copies drop `am` and `cmp`.
+
+### 14.6 Campaign site, step 3 in progress (2026-11-08)
+
+- Characters are now one tab each, after Overview, Scenarios, Items and Events, followed by a **+** tab that adds a character while there are fewer than four (`ed.MAX_CHARACTERS`). The old combined Characters tab is gone.
+- `edit.js`: `addCharacter` (level 1, no cards or items, class not already in play, trimmed name, next free id `c1`..), `availableClasses`, `renameCharacter`, hand size is editable (1 to 20). The + form lists unlocked classes first and marks the others (locked); adding works outside edit mode, inline edits need Edit.
+- Not done: removing or retiring a character (undo reverses an add within the session), choosing starting cards, and the other items in `campaign-elements.md` section 10.
+- Checked: Node assertions for the new edit functions and a headless Chrome run (tab list with four and with no characters, adding up to four, plus tab disappearing, rename updating the tab, tabs and selected tab surviving a reload).
