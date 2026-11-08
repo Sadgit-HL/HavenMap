@@ -185,15 +185,12 @@ function cardRow(c, id, area) {
   const card = cardById.get(id);
   const url = cardImageUrl(card);
   const active = area === 'hand' && c.act.includes(id);
-  const btn = (act, key, label, title) => `<button type="button" class="mini" data-act="${act}" data-char="${esc(c.id)}" data-id="${id}" data-key="${key}" title="${esc(title)}">${label}</button>`;
-  const moves = `<span class="row-actions">${area === 'hand' ? btn('cardActive', active ? 'off' : 'on', 'A', active ? 'Clear active' : 'Mark active') : ''}${
-    ['hand', 'discard', 'lost'].filter(a => a !== area).map(a => btn('cardMove', a, a[0].toUpperCase(), `Move to ${a}`)).join('')}</span>`;
-  const label = `<span class="cname">${esc(pretty(card?.slug ?? id))}</span>${card?.lv != null ? `<span class="lv">${esc(card.lv)}</span>` : ''}${active ? '<span class="badge">active</span>' : ''}`;
+  const label = `<span class="cname">${esc(pretty(card?.slug ?? id))}</span>${active ? '<span class="badge">active</span>' : ''}`;
   if (imgMode === 'always') {
     return `<li class="cardrow tile${active ? ' is-active' : ''}" data-card="${id}" data-char="${esc(c.id)}" draggable="true">
-      ${cardPicture(card, id)}<div class="tilebar">${label}${moves}</div></li>`;
+      ${cardPicture(card, id)}<div class="tilebar">${label}</div></li>`;
   }
-  return `<li class="cardrow${active ? ' is-active' : ''}" data-card="${id}" data-char="${esc(c.id)}"${url ? ` data-img="${esc(url)}"` : ''} draggable="true">${label}${moves}</li>`;
+  return `<li class="cardrow${active ? ' is-active' : ''}" data-card="${id}" data-char="${esc(c.id)}"${url ? ` data-img="${esc(url)}"` : ''} draggable="true">${label}</li>`;
 }
 
 function deckZones(c) {
@@ -208,7 +205,7 @@ function deckZones(c) {
     <div class="zone" data-zone="${area}" data-char="${esc(c.id)}">
       <h4>${AREA_TITLE[area]} <span>${lists[area].length}</span></h4>
       <ul class="${imgMode === 'always' ? 'tiles' : ''}">${lists[area].map(id => cardRow(c, id, area)).join('') || '<li class="empty-row">empty</li>'}</ul>
-    </div>`).join('')}</div><p class="hint">Drag cards between the areas, or use the buttons on a card (H hand, D discard, L lost, A active). No need to switch on Edit.</p>`;
+    </div>`).join('')}</div><p class="hint">Drag cards between the areas. No need to switch on Edit.</p>`;
 }
 
 function characterCard(c) {
@@ -328,8 +325,6 @@ function apply(el) {
     case 'scnRes': return commit(ed.setScenarioResult(record, id, { [key]: v }));
     case 'char': return commit(ed.setCharacter(record, id, key, v));
     case 'charName': return commit(ed.renameCharacter(record, id, v));
-    case 'cardMove': return commit(ed.moveCard(record, el.dataset.char, Number(id), key));
-    case 'cardActive': return commit(ed.setCardActive(record, el.dataset.char, Number(id), key === 'on'));
     case 'itemUnl': return commit(ed.setItemUnlocked(record, Number(id), v));
     case 'itemTaken': return commit(ed.setItemTaken(record, Number(id), v));
     case 'treasures': return commit(ed.setDeckList(record, 'tre', v));
@@ -439,7 +434,7 @@ main.addEventListener('change', e => {
 });
 main.addEventListener('click', e => {
   const b = e.target.closest('button[data-act]');
-  if (b && (editing || b.dataset.act.startsWith('card'))) apply(b);
+  if (editing && b) apply(b);
 });
 main.addEventListener('input', e => {
   if (e.target.id !== 'scnSearch') return;

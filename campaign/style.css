@@ -65,10 +65,7 @@ button.primary { background:var(--accent); color:#1b150c; border:1px solid var(-
 .cardrow.dragging { opacity:.4; }
 .cardrow.is-active { border-color:var(--info); }
 .cardrow .cname { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.cardrow .lv { color:var(--muted); font-size:11px; }
 .badge { font-size:10px; color:var(--info); border:1px solid var(--info); border-radius:8px; padding:0 5px; }
-.row-actions { display:flex; gap:2px; }
-button.mini { background:#3a2f1f; color:var(--text); border:1px solid var(--line); border-radius:4px; font:inherit; font-size:11px; padding:0 5px; cursor:pointer; }
 .empty-row { color:var(--muted); font-size:12px; padding:4px 2px; }
 @media (max-width:640px) { .zones { grid-template-columns:1fr; } }
 
