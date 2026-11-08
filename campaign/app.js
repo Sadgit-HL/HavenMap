@@ -8,6 +8,7 @@ import { CITY_EVENTS, ROAD_EVENTS } from '../scripts/games/gh2_events.js';
 import { BATTLE_GOALS } from '../scripts/games/battle_goals.js';
 import { escapeHtml as esc } from '../scripts/escape.js';
 import { localStore } from '../scripts/campaign/store.js';
+import { cardImageUrl } from '../scripts/campaign/cardImages.js';
 import {
   validate, scenarioLevel, prosperityLevel, handOf, shopCopies, unlockedBy, classByName, SCN_STATE_NAME,
 } from '../scripts/campaign/record.js';
@@ -22,6 +23,7 @@ let record = null;
 let tab = 'Overview';              // top-level tab
 let sub = '';                      // sub-tab under Mercenaries: a character id or 'add'
 let editing = false;
+let imgMode = 'hover';                 // card images: 'hover' (preview under the pointer) or 'always' (shown in the lists)
 const history = [];                                   // earlier records for undo, newest last
 const view = { scnStatus: '', scnSearch: '', itemSlot: '', itemShow: 'all' };
 
@@ -155,18 +157,43 @@ function scenarios(r) {
   })) + (editing ? '<p class="hint">Completing a scenario also unlocks the scenarios it links to. Setting a scenario back to Locked clears its result.</p>' : '');
 }
 
+function benchList(c) {
+  if (imgMode === 'always') {
+    return `<div class="benchgrid">${c.bench.map(id => {
+      const card = cardById.get(id);
+      return `<figure class="benchcard">${cardPicture(card, id)}<figcaption>${esc(pretty(card?.slug ?? id))}</figcaption></figure>`;
+    }).join('')}</div>`;
+  }
+  return `<div class="chips">${c.bench.map(id => {
+    const card = cardById.get(id), url = cardImageUrl(card);
+    return `<span class="chip dim"${url ? ` data-img="${esc(url)}"` : ''}>${esc(pretty(card?.slug ?? id))}</span>`;
+  }).join('')}</div>`;
+}
+
 // --- ability card areas: hand, discard, lost (cards move by drag and drop or the row buttons) ---------------------
 
 const AREA_TITLE = { hand: 'Hand', discard: 'Discard', lost: 'Lost' };
 
+// An <img> that falls back to the card name when the picture is missing (see the 'error' listener below).
+function cardPicture(card, id) {
+  const url = cardImageUrl(card);
+  const name = pretty(card?.slug ?? id);
+  return url ? `<img class="cardpic" src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false">` : `<div class="noimg">${esc(name)}</div>`;
+}
+
 function cardRow(c, id, area) {
   const card = cardById.get(id);
+  const url = cardImageUrl(card);
   const active = area === 'hand' && c.act.includes(id);
   const btn = (act, key, label, title) => `<button type="button" class="mini" data-act="${act}" data-char="${esc(c.id)}" data-id="${id}" data-key="${key}" title="${esc(title)}">${label}</button>`;
   const moves = `<span class="row-actions">${area === 'hand' ? btn('cardActive', active ? 'off' : 'on', 'A', active ? 'Clear active' : 'Mark active') : ''}${
     ['hand', 'discard', 'lost'].filter(a => a !== area).map(a => btn('cardMove', a, a[0].toUpperCase(), `Move to ${a}`)).join('')}</span>`;
-  return `<li class="cardrow${active ? ' is-active' : ''}" data-card="${id}" data-char="${esc(c.id)}" draggable="true">
-    <span class="cname">${esc(pretty(card?.slug ?? id))}</span>${card?.lv != null ? `<span class="lv">${esc(card.lv)}</span>` : ''}${active ? '<span class="badge">active</span>' : ''}${moves}</li>`;
+  const label = `<span class="cname">${esc(pretty(card?.slug ?? id))}</span>${card?.lv != null ? `<span class="lv">${esc(card.lv)}</span>` : ''}${active ? '<span class="badge">active</span>' : ''}`;
+  if (imgMode === 'always') {
+    return `<li class="cardrow tile${active ? ' is-active' : ''}" data-card="${id}" data-char="${esc(c.id)}" draggable="true">
+      ${cardPicture(card, id)}<div class="tilebar">${label}${moves}</div></li>`;
+  }
+  return `<li class="cardrow${active ? ' is-active' : ''}" data-card="${id}" data-char="${esc(c.id)}"${url ? ` data-img="${esc(url)}"` : ''} draggable="true">${label}${moves}</li>`;
 }
 
 function deckZones(c) {
@@ -180,7 +207,7 @@ function deckZones(c) {
   return `<div class="zones">${['hand', 'discard', 'lost'].map(area => `
     <div class="zone" data-zone="${area}" data-char="${esc(c.id)}">
       <h4>${AREA_TITLE[area]} <span>${lists[area].length}</span></h4>
-      <ul>${lists[area].map(id => cardRow(c, id, area)).join('') || '<li class="empty-row">empty</li>'}</ul>
+      <ul class="${imgMode === 'always' ? 'tiles' : ''}">${lists[area].map(id => cardRow(c, id, area)).join('') || '<li class="empty-row">empty</li>'}</ul>
     </div>`).join('')}</div><p class="hint">Drag cards between the areas, or use the buttons on a card (H hand, D discard, L lost, A active). No need to switch on Edit.</p>`;
 }
 
@@ -199,7 +226,7 @@ function characterCard(c) {
     <div class="pile"><b>Deck (${c.deck.length} cards)</b>${c.hand ? `hand size ${esc(c.hand)}` : ''}</div>
     ${deckZones(c)}
     <div class="pile"><b>Other owned cards (${c.bench.length})</b></div>
-    <div class="chips">${c.bench.map(id => chip(pretty(cardById.get(id)?.slug ?? id), 'dim')).join('')}</div>
+    ${benchList(c)}
     <div class="pile"><b>Items (${c.items.length})</b></div>
     <div class="chips">${c.items.map(it => `<span class="chip ${(it.st || []).some(Boolean) ? 'warn' : ''}" title="tick states ${esc((it.st || []).join('/'))}">${esc(pretty(itemById.get(it.id)?.slug ?? it.id))}</span>`).join('')}</div>
     <div class="pile"><b>Modifier deck</b> ${inDeck} of ${faces.length} cards in the deck${c.am?.n != null ? ` (sheet count ${esc(c.am.n)})` : ''}</div>
@@ -212,7 +239,9 @@ function mercenaries(r) {
   const cur = currentSub();
   const bar = `<nav class="subtabs" role="tablist">${subTabList().map(t =>
     `<button type="button" role="tab" aria-selected="${t.id === cur}" data-sub="${esc(t.id)}"${t.title ? ` title="${esc(t.title)}"` : ''}>${esc(t.label)}</button>`).join('')}</nav>`;
-  return bar + (cur === 'add' ? addTab(r) : characterTab(r, cur));
+  const toggle = `<div class="imgmode" role="group" aria-label="Card images"><span>Card images</span>${
+    [['hover', 'Hover'], ['always', 'Always']].map(([m, l]) => `<button type="button" data-imgmode="${m}" aria-pressed="${imgMode === m}">${l}</button>`).join('')}</div>`;
+  return `<div class="subbar">${bar}${toggle}</div>` + (cur === 'add' ? addTab(r) : characterTab(r, cur));
 }
 
 function characterTab(r, cid) {
@@ -310,12 +339,61 @@ function apply(el) {
   }
 }
 main.addEventListener('click', e => {
+  const m = e.target.closest('[data-imgmode]')?.dataset.imgmode;
+  if (m) {
+    imgMode = m;
+    hidePreview();
+    render();
+    try { localStorage.setItem('havenmap.campaign.cardImages', m); } catch { /* ignore */ }
+    return;
+  }
   const t = e.target.closest('[data-sub]')?.dataset.sub;
   if (!t) return;
   sub = t;
   render();
   try { localStorage.setItem('havenmap.campaign.sub', t); } catch { /* ignore */ }
 });
+// --- card image preview (hover mode) ----------------------------------------------------------------------------
+const preview = document.createElement('img');
+preview.id = 'cardPreview';
+preview.alt = '';
+document.body.appendChild(preview);
+const coarse = matchMedia('(pointer: coarse)');                 // touch: no hover, so a tap shows the picture instead
+let previewUrl = '';
+
+function hidePreview() { preview.classList.remove('show'); previewUrl = ''; }
+function showPreview(url, x, y) {
+  if (url !== previewUrl) { preview.src = url; previewUrl = url; }
+  preview.classList.add('show');
+  const w = 300, h = preview.naturalHeight ? (preview.naturalHeight / preview.naturalWidth) * w : 420;
+  const left = x + 18 + w > innerWidth ? Math.max(8, x - 18 - w) : x + 18;
+  const top = Math.max(8, Math.min(y - 20, innerHeight - h - 8));
+  preview.style.left = `${left}px`;
+  preview.style.top = `${top}px`;
+}
+main.addEventListener('mousemove', e => {
+  if (imgMode !== 'hover' || coarse.matches || e.buttons) { if (e.buttons) hidePreview(); return; }
+  const el = e.target.closest?.('[data-img]');
+  if (el) showPreview(el.dataset.img, e.clientX, e.clientY); else hidePreview();
+});
+main.addEventListener('mouseleave', hidePreview);
+main.addEventListener('dragstart', hidePreview);
+main.addEventListener('click', e => {
+  if (imgMode !== 'hover' || !coarse.matches || e.target.closest('button')) return;
+  const el = e.target.closest('[data-img]');
+  if (el) { showPreview(el.dataset.img, innerWidth / 2 - 150, 40); e.stopPropagation(); } else hidePreview();
+});
+preview.addEventListener('click', hidePreview);
+// A picture that fails to load (the asset repository lacks a few cards) becomes the card name.
+main.addEventListener('error', e => {
+  const img = e.target;
+  if (img?.tagName !== 'IMG' || !img.classList.contains('cardpic')) return;
+  const d = document.createElement('div');
+  d.className = 'noimg';
+  d.textContent = img.alt;
+  img.replaceWith(d);
+}, true);
+
 // Drag and drop of ability cards between the hand, discard and lost areas (works without edit mode: it is play, not setup).
 const dragPayload = e => { try { return JSON.parse(e.dataTransfer.getData('text/plain')); } catch { return null; } };
 main.addEventListener('dragstart', e => {
@@ -414,6 +492,8 @@ document.getElementById('clear').addEventListener('click', async () => {
     const t = localStorage.getItem('havenmap.campaign.tab');
     if (PAGE_TABS.includes(t)) tab = t;
     sub = localStorage.getItem('havenmap.campaign.sub') || '';
+    const m = localStorage.getItem('havenmap.campaign.cardImages');
+    if (m === 'hover' || m === 'always') imgMode = m;
   } catch { /* ignore */ }
   render();
 })();

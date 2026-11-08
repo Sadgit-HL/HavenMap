@@ -50,7 +50,8 @@ button.chip { color:var(--text); font:inherit; font-size:12px; cursor:pointer; }
 .field select, .field input { display:block; width:100%; margin-top:2px; background:#2d2519; color:var(--text); border:1px solid var(--line); border-radius:6px; padding:5px 8px; font:inherit; }
 button.primary { background:var(--accent); color:#1b150c; border:1px solid var(--accent); border-radius:6px; padding:6px 14px; font:inherit; cursor:pointer; }
 
-.subtabs { display:flex; gap:4px; flex-wrap:wrap; margin:0 0 12px; padding-bottom:8px; border-bottom:1px solid var(--line); }
+.subbar { display:flex; flex-wrap:wrap; gap:8px 16px; align-items:center; justify-content:space-between; margin:0 0 12px; padding-bottom:8px; border-bottom:1px solid var(--line); }
+.subtabs { display:flex; gap:4px; flex-wrap:wrap; }
 .subtabs button { background:transparent; color:var(--muted); border:1px solid var(--line); border-radius:6px; padding:4px 12px; font:inherit; cursor:pointer; }
 .subtabs button[aria-selected="true"] { color:var(--text); border-color:var(--accent); background:#2d2519; }
 
@@ -70,3 +71,19 @@ button.primary { background:var(--accent); color:#1b150c; border:1px solid var(-
 button.mini { background:#3a2f1f; color:var(--text); border:1px solid var(--line); border-radius:4px; font:inherit; font-size:11px; padding:0 5px; cursor:pointer; }
 .empty-row { color:var(--muted); font-size:12px; padding:4px 2px; }
 @media (max-width:640px) { .zones { grid-template-columns:1fr; } }
+
+.imgmode { display:flex; align-items:center; gap:4px; color:var(--muted); font-size:12px; }
+.imgmode button { background:transparent; color:var(--muted); border:1px solid var(--line); border-radius:6px; padding:3px 10px; font:inherit; cursor:pointer; }
+.imgmode button[aria-pressed="true"] { color:var(--text); border-color:var(--accent); background:#2d2519; }
+#cardPreview { position:fixed; z-index:50; width:300px; border-radius:10px; box-shadow:0 8px 28px rgba(0,0,0,.7); pointer-events:none; display:none; background:#000; }
+#cardPreview.show { display:block; }
+@media (pointer:coarse) { #cardPreview { pointer-events:auto; } }
+.cardrow[data-img] .cname, .chip[data-img] { cursor:zoom-in; }
+.zone ul.tiles { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:6px; }
+.cardrow.tile { flex-direction:column; align-items:stretch; gap:4px; padding:4px; margin:0; }
+.cardrow.tile .tilebar { display:flex; align-items:center; gap:4px; flex-wrap:wrap; }
+.cardpic { width:100%; height:auto; display:block; border-radius:6px; background:#120f0b; min-height:60px; }
+.noimg { display:flex; align-items:center; justify-content:center; min-height:90px; padding:6px; text-align:center; border:1px dashed var(--line); border-radius:6px; color:var(--muted); font-size:12px; }
+.benchgrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:8px; }
+.benchcard { margin:0; } .benchcard figcaption { font-size:11px; color:var(--muted); margin-top:2px; }
+.cardrow.tile .cname { white-space:normal; overflow:visible; }
