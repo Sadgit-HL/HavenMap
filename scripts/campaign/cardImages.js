@@ -1,6 +1,7 @@
 // Image URLs of the ability card scans. They live in the group's asset repository (Sadgit-HL/Wordhaven_Assets) and are
-// loaded from there, not copied into this repo (about 160 MB). The path rule was checked against every URL in the
-// workbook's Card DB (see docs/HANDOVER.md section 14):
+// loaded from there, not copied into this repo (about 160 MB). The path rule reproduces every URL in the workbook's
+// Card DB except 8 rows the extractor corrects (CARD_FIX in tools/extract-campaign-tables.py: the DB lists those level 9
+// cards under the wrong class, so its own URLs give 404); every resulting file exists in the asset repository:
 //   GH2 cards:  wh_character_ability_cards/gh2/<CLASS CODE>/<slug>.jpeg          e.g. gh2/TI2/net-shooter.jpeg
 //   Mercenary Pack: wh_character_ability_cards/mp/<class code>/mp-<slug>.png     e.g. mp/an/mp-black-claws.png
 import { CLASSES } from '../games/gh2_classes.js';

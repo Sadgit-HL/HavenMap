@@ -84,3 +84,6 @@ button.primary { background:var(--accent); color:#1b150c; border:1px solid var(-
 .benchgrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:8px; }
 .benchcard { margin:0; } .benchcard figcaption { font-size:11px; color:var(--muted); margin-top:2px; }
 .cardrow.tile .cname { white-space:normal; overflow:visible; }
+
+.ini { display:inline-block; min-width:2ch; margin-right:6px; text-align:right; font-variant-numeric:tabular-nums; font-weight:600; color:var(--accent); }
+.ini.none { color:var(--muted); font-weight:400; }

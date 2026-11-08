@@ -161,18 +161,21 @@ function benchList(c) {
   if (imgMode === 'always') {
     return `<div class="benchgrid">${c.bench.map(id => {
       const card = cardById.get(id);
-      return `<figure class="benchcard">${cardPicture(card, id)}<figcaption>${esc(pretty(card?.slug ?? id))}</figcaption></figure>`;
+      return `<figure class="benchcard">${cardPicture(card, id)}<figcaption>${iniTag(card)}${esc(pretty(card?.slug ?? id))}</figcaption></figure>`;
     }).join('')}</div>`;
   }
   return `<div class="chips">${c.bench.map(id => {
     const card = cardById.get(id), url = cardImageUrl(card);
-    return `<span class="chip dim"${url ? ` data-img="${esc(url)}"` : ''}>${esc(pretty(card?.slug ?? id))}</span>`;
+    return `<span class="chip dim"${url ? ` data-img="${esc(url)}"` : ''}>${iniTag(card)}${esc(pretty(card?.slug ?? id))}</span>`;
   }).join('')}</div>`;
 }
 
 // --- ability card areas: hand, discard, lost (cards move by drag and drop or the row buttons) ---------------------
 
 const AREA_TITLE = { hand: 'Hand', discard: 'Discard', lost: 'Lost' };
+
+// Initiative number shown in front of a card name; a dash when the number is not known for that class yet.
+const iniTag = card => `<span class="ini${card?.ini == null ? ' none' : ''}" title="Initiative">${card?.ini ?? '&ndash;'}</span>`;
 
 // An <img> that falls back to the card name when the picture is missing (see the 'error' listener below).
 function cardPicture(card, id) {
@@ -185,7 +188,7 @@ function cardRow(c, id, area) {
   const card = cardById.get(id);
   const url = cardImageUrl(card);
   const active = area === 'hand' && c.act.includes(id);
-  const label = `<span class="cname">${esc(pretty(card?.slug ?? id))}</span>${active ? '<span class="badge">active</span>' : ''}`;
+  const label = `${iniTag(card)}<span class="cname">${esc(pretty(card?.slug ?? id))}</span>${active ? '<span class="badge">active</span>' : ''}`;
   if (imgMode === 'always') {
     return `<li class="cardrow tile${active ? ' is-active' : ''}" data-card="${id}" data-char="${esc(c.id)}" draggable="true">
       ${cardPicture(card, id)}<div class="tilebar">${label}</div></li>`;
