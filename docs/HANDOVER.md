@@ -306,7 +306,7 @@ Step 2 done: `scripts/state.js` is `mapVersion` 5.0.0. `emptyState()` has `campa
 
 ### 14.6 Campaign site, step 3 in progress (2026-11-08)
 
-- Characters are now one tab each, after Overview, Scenarios, Items and Events, followed by a **+** tab that adds a character while there are fewer than four (`ed.MAX_CHARACTERS`). The old combined Characters tab is gone.
+- The top-level tabs are Overview, Scenarios, Mercenaries, Items and Events. Each character is a sub-tab under **Mercenaries**, followed by a **+** sub-tab that adds a character while there are fewer than four (`ed.MAX_CHARACTERS`). The first character is selected by default, or the + form when there are none. The top tab and the sub-tab are remembered across reloads.
 - `edit.js`: `addCharacter` (level 1, no cards or items, class not already in play, trimmed name, next free id `c1`..), `availableClasses`, `renameCharacter`, hand size is editable (1 to 20). The + form lists unlocked classes first and marks the others (locked); adding works outside edit mode, inline edits need Edit.
 - Not done: removing or retiring a character (undo reverses an add within the session), choosing starting cards, and the other items in `campaign-elements.md` section 10.
 - Checked: Node assertions for the new edit functions and a headless Chrome run (tab list with four and with no characters, adding up to four, plus tab disappearing, rename updating the tab, tabs and selected tab surviving a reload).

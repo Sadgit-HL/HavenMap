@@ -13,13 +13,14 @@ import {
 } from '../scripts/campaign/record.js';
 import * as ed from '../scripts/campaign/edit.js';
 
-const PAGE_TABS = ['Overview', 'Scenarios', 'Items', 'Events'];     // fixed tabs; character tabs and '+' follow
+const PAGE_TABS = ['Overview', 'Scenarios', 'Mercenaries', 'Items', 'Events'];
 const main = document.getElementById('main');
 const tabsEl = document.getElementById('tabs');
 const editBtn = document.getElementById('edit');
 const undoBtn = document.getElementById('undo');
 let record = null;
-let tab = 'Overview';              // a fixed tab name, 'char:<id>' or 'add'
+let tab = 'Overview';              // top-level tab
+let sub = '';                      // sub-tab under Mercenaries: a character id or 'add'
 let editing = false;
 const history = [];                                   // earlier records for undo, newest last
 const view = { scnStatus: '', scnSearch: '', itemSlot: '', itemShow: 'all' };
@@ -53,20 +54,23 @@ function undo() {
   render();
 }
 
-// All tabs in order: the fixed ones, one per character, and '+' while there is room for another character.
-function tabList() {
-  const list = PAGE_TABS.map(t => ({ id: t, label: t }));
+// Sub-tabs under Mercenaries: one per character, then '+' while there is room for another.
+function subTabList() {
   const chars = record?.chars || [];
-  chars.forEach((c, i) => list.push({ id: `char:${c.id}`, label: c.name, sep: i === 0 }));
-  if (record && chars.length < ed.MAX_CHARACTERS) list.push({ id: 'add', label: '+', title: 'Add a character', sep: chars.length === 0 });
+  const list = chars.map(c => ({ id: c.id, label: c.name }));
+  if (chars.length < ed.MAX_CHARACTERS) list.push({ id: 'add', label: '+', title: 'Add a character' });
   return list;
 }
-const tabExists = id => tabList().some(t => t.id === id);
+// The selected sub-tab, falling back to the first character, or '+' when there are none.
+function currentSub() {
+  const list = subTabList();
+  return list.some(t => t.id === sub) ? sub : (list[0]?.id ?? 'add');
+}
 
 function renderTabs() {
-  if (!tabExists(tab)) tab = 'Overview';
-  tabsEl.innerHTML = tabList().map(t =>
-    `<button type="button" role="tab" aria-selected="${t.id === tab}" data-tab="${esc(t.id)}"${t.title ? ` title="${esc(t.title)}"` : ''}${t.sep ? ' class="sep"' : ''}>${esc(t.label)}</button>`).join('');
+  if (!PAGE_TABS.includes(tab)) tab = 'Overview';
+  tabsEl.innerHTML = PAGE_TABS.map(t =>
+    `<button type="button" role="tab" aria-selected="${t === tab}" data-tab="${esc(t)}">${esc(t)}</button>`).join('');
   document.getElementById('title').textContent = record?.name ? `Campaign: ${record.name}` : 'Campaign';
   editBtn.textContent = editing ? 'Done editing' : 'Edit';
   editBtn.setAttribute('aria-pressed', String(editing));
@@ -75,7 +79,7 @@ function renderTabs() {
 }
 tabsEl.addEventListener('click', e => {
   const t = e.target.closest('[data-tab]')?.dataset.tab;
-  if (!t || !tabExists(t)) return;
+  if (!t || !PAGE_TABS.includes(t)) return;
   tab = t;
   render();
   try { localStorage.setItem('havenmap.campaign.tab', t); } catch { /* ignore */ }
@@ -179,6 +183,14 @@ function characterCard(c) {
   </div>${editing ? '<p class="hint">Cards, items and the modifier deck are not editable here yet.</p>' : ''}`;
 }
 
+// The Mercenaries tab: a sub-tab bar (one per character and '+') above the selected character or the add form.
+function mercenaries(r) {
+  const cur = currentSub();
+  const bar = `<nav class="subtabs" role="tablist">${subTabList().map(t =>
+    `<button type="button" role="tab" aria-selected="${t.id === cur}" data-sub="${esc(t.id)}"${t.title ? ` title="${esc(t.title)}"` : ''}>${esc(t.label)}</button>`).join('')}</nav>`;
+  return bar + (cur === 'add' ? addTab(r) : characterTab(r, cur));
+}
+
 function characterTab(r, cid) {
   const c = r.chars.find(x => x.id === cid);
   return c ? characterCard(c) : '<div class="empty">Character not found.</div>';
@@ -247,9 +259,7 @@ function render() {
     return;
   }
   const issues = validate(record);
-  const body = tab === 'add' ? addTab(record)
-    : tab.startsWith('char:') ? characterTab(record, tab.slice(5))
-    : { Overview: overview, Scenarios: scenarios, Items: items, Events: events }[tab](record);
+  const body = { Overview: overview, Scenarios: scenarios, Mercenaries: mercenaries, Items: items, Events: events }[tab](record);
   main.innerHTML = (issues.length ? `<div class="issues">${issues.length} issue(s): ${esc(issues.slice(0, 5).join('; '))}</div>` : '') + body;
 }
 
@@ -273,13 +283,20 @@ function apply(el) {
     default: return undefined;
   }
 }
+main.addEventListener('click', e => {
+  const t = e.target.closest('[data-sub]')?.dataset.sub;
+  if (!t) return;
+  sub = t;
+  render();
+  try { localStorage.setItem('havenmap.campaign.sub', t); } catch { /* ignore */ }
+});
 main.addEventListener('submit', e => {
   if (e.target.id !== 'addChar') return;
   e.preventDefault();
   const f = new FormData(e.target);
   const next = ed.addCharacter(record, { cls: f.get('cls'), name: f.get('name') });
   if (next === record) { alert('That character could not be added.'); return; }
-  tab = `char:${next.chars.at(-1).id}`;
+  sub = next.chars.at(-1).id;
   commit(next);
 });
 main.addEventListener('change', e => {
@@ -338,6 +355,10 @@ document.getElementById('clear').addEventListener('click', async () => {
 
 (async () => {
   record = await localStore.load();
-  try { const t = localStorage.getItem('havenmap.campaign.tab'); if (t && tabExists(t)) tab = t; } catch { /* ignore */ }
+  try {
+    const t = localStorage.getItem('havenmap.campaign.tab');
+    if (PAGE_TABS.includes(t)) tab = t;
+    sub = localStorage.getItem('havenmap.campaign.sub') || '';
+  } catch { /* ignore */ }
   render();
 })();
