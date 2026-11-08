@@ -245,7 +245,7 @@ function mercenaries(r) {
   const bar = `<nav class="subtabs" role="tablist">${subTabList().map(t =>
     `<button type="button" role="tab" aria-selected="${t.id === cur}" data-sub="${esc(t.id)}"${t.title ? ` title="${esc(t.title)}"` : ''}>${esc(t.label)}</button>`).join('')}</nav>`;
   const toggle = `<div class="imgmode" role="group" aria-label="Card images"><span>Card images</span>${
-    [['hover', 'Hover'], ['always', 'Always']].map(([m, l]) => `<button type="button" data-imgmode="${m}" aria-pressed="${imgMode === m}">${l}</button>`).join('')}</div>`;
+    [['hover', 'Hover'], ['always', 'Always']].map(([m, l]) => `<button type="button" data-imgmode="${m}" aria-pressed="${imgMode === m}">${l}</button>`).join('')}${imgMode === 'hover' ? '<span class="ctrlhint">Hold Ctrl over a card</span>' : ''}</div>`;
   return `<div class="subbar">${bar}${toggle}</div>` + (cur === 'add' ? addTab(r) : characterTab(r, cur));
 }
 
@@ -374,11 +374,22 @@ function showPreview(url, x, y) {
   preview.style.left = `${left}px`;
   preview.style.top = `${top}px`;
 }
+// Hover mode: the picture shows under the pointer only while Ctrl is held (so it does not pop up while moving cards).
+let pointer = { x: 0, y: 0 };
+const showUnderPointer = () => {
+  const el = document.elementFromPoint(pointer.x, pointer.y)?.closest('[data-img]');
+  if (el && main.contains(el)) showPreview(el.dataset.img, pointer.x, pointer.y); else hidePreview();
+};
 main.addEventListener('mousemove', e => {
-  if (imgMode !== 'hover' || coarse.matches || e.buttons) { if (e.buttons) hidePreview(); return; }
+  pointer = { x: e.clientX, y: e.clientY };
+  if (imgMode !== 'hover' || coarse.matches) return;
+  if (e.buttons || !e.ctrlKey) { hidePreview(); return; }
   const el = e.target.closest?.('[data-img]');
   if (el) showPreview(el.dataset.img, e.clientX, e.clientY); else hidePreview();
 });
+document.addEventListener('keydown', e => { if (e.key === 'Control' && imgMode === 'hover' && !coarse.matches) showUnderPointer(); });
+document.addEventListener('keyup', e => { if (e.key === 'Control') hidePreview(); });
+window.addEventListener('blur', hidePreview);
 main.addEventListener('mouseleave', hidePreview);
 main.addEventListener('dragstart', hidePreview);
 main.addEventListener('click', e => {
