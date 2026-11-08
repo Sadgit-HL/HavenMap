@@ -4,19 +4,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HavenMap Campaign</title>
-<link rel="stylesheet" href="style.css?v=1">
+<link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
 <header>
   <h1 id="title">Campaign</h1>
   <nav id="tabs" role="tablist"></nav>
   <div class="actions">
+    <button id="edit" type="button" aria-pressed="false">Edit</button>
+    <button id="undo" type="button" title="Undo (Ctrl+Z)">Undo</button>
     <label class="btn">Load file <input id="file" type="file" accept="application/json,.json" hidden></label>
     <button id="export" type="button">Export</button>
     <button id="clear" type="button">Clear</button>
   </div>
 </header>
 <main id="main"></main>
-<script type="module" src="app.js?v=1"></script>
+<script type="module" src="app.js?v=2"></script>
 </body>
 </html>

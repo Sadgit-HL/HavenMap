@@ -36,3 +36,12 @@ th { color:var(--muted); font-weight:600; position:sticky; top:52px; background:
 .numgrid .out { background:#4a2f2a; text-decoration:line-through; color:var(--muted); }
 .issues { color:var(--warn); font-size:12px; margin:8px 0; }
 @media (max-width:640px) { header { position:static; } th { position:static; } main { padding:10px; } }
+
+button:disabled { opacity:.4; cursor:default; }
+#edit[aria-pressed="true"] { background:var(--accent); color:#1b150c; border-color:var(--accent); }
+input.num, input.txt, td select { background:#2d2519; color:var(--text); border:1px solid var(--accent); border-radius:4px; padding:2px 4px; font:inherit; }
+.hint { color:var(--muted); font-size:12px; margin:8px 0; }
+button.chip { color:var(--text); font:inherit; font-size:12px; cursor:pointer; }
+.numgrid button { min-width:30px; padding:2px 4px; border:1px solid var(--line); border-radius:4px; background:transparent; color:var(--text); font:inherit; font-size:12px; cursor:pointer; }
+.numgrid .out { background:#4a2f2a; text-decoration:line-through; color:var(--muted); }
+.numgrid .bottom { background:#2d3a4a; } .numgrid .top { background:#2f4a33; }

@@ -287,3 +287,9 @@ The owner does not want the current campaign state imported automatically; the s
 - `campaign/index.html` + `app.js` + `style.css`: read-only view with Overview, Scenarios (filter by state, search, unlock arrows both ways), Characters, Items (slot and shop filters) and Events tabs. Open it through a local server (`start.bat` serves `/HavenMap/campaign/`). Load a campaign JSON with **Load file**; it is kept in the browser's local storage only. Test data: `asset-backups/campaign-import.json` from the importer (not committed).
 - Checked with a headless Chrome run (Playwright): every tab renders, filters work, the saved copy survives a reload. No automated tests.
 - Not done: any editing, session start and commit, voting, the server, card images (names only), BBCode posts.
+
+### 14.4 Editing (2026-11-08)
+
+- `scripts/campaign/edit.js`: pure edit functions (record in, new record out, `ver` bumped, input clamped or ignored): party values, reputation, prosperity, scenario state (completing one unlocks the scenarios it links to) and result (level, party size, chests, date), items unlocked and in use, event piles (in deck, out, bottom, top), battle goal, treasure and medical pack lists, character level, XP and gold. All checked with a throwaway Node script (26 assertions, not committed) and a headless Chrome run of the page.
+- `campaign/app.js`: **Edit** toggle, **Undo** (button and Ctrl+Z, 50 steps), every change autosaved to the browser. Outside edit mode nothing is editable.
+- Not editable yet: stickers, unlocked classes, players, retirements, enhancements, a character's cards, items and modifier deck, the vote in progress. No server, so the browser copy is the only copy: use Export.
