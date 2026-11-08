@@ -45,19 +45,12 @@ mercenaries[i].am = { discard:{faceKey:n}, deck?:{faceKey:n}, base?:{faceKey:n},
     // personal modifier deck, same shape as the monster `am`.
     // Works in standalone mode. Absent = standard 20 cards.
 
-mercenaries[i].cmp = {
-  c:    "c1",              // campaign character ID
-  deck: [3,7,12,15,21],    // selected ability cards (card IDs), fixed at start
-  disc: [1,4],             // discard pile
-  lost: [9],               // lost pile
-  act:  [],                // active cards, omit if empty
-  it:   [449, 453],        // items as packed ints: itemId*4 + state
-                           //   0 ready, 1 spent, 2 consumed, 3 lost
-  new:  [112],             // items found this scenario, pending
-  bg:   14,                // battle goal kept this scenario (goal ID), optional
-  bgr:  1                  // battle goal result: 1 success, 0 failed, absent = open
-}
-```
+mercenaries[i].cmp = { c: "c1" }   // link to the campaign character (campaign character ID); omitted on standalone maps
+    // DECISION 2026-11-08: ability card piles (deck, discard, lost, active), items, battle goal and the other fields
+    // sketched earlier stay on the CAMPAIGN side for now; the session carries only the link. Position, level, hp, xp,
+    // gold and conditions remain on the existing mercenary fields. Chests and loot are not recorded in the session
+    // yet (skipped for now).
+    // The state version is 5.0.0 (scripts/state.js): `campaign: null` for a standalone map, and a copied hero loses `am` and `cmp`.
 
 At commit a successful `bgr` adds the goal's checkmark value to `chars[].chk` and the goal to `decks.bg`.
 

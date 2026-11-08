@@ -3,7 +3,8 @@
 //   null / '1.0.0' — original FrosthavenMap1 (titles, separate arrays)
 //   '2.0.0'        — FrosthavenMap2 pre-consolidation (9 kinds, numeric ids)
 //   '3.0.0'        — 4 kinds: tiles/mercenaries/monsters/overlays (consolidated)
-//   '4.0.0'        — current: new local image assets, simplified overlay IDs
+//   '4.0.0'        — new local image assets, simplified overlay IDs
+//   '5.0.0'        — current: optional `campaign` block (campaign session link) and per-hero `cmp` link
 
 import { TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES } from './data.js';
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from './lzString.js';
@@ -73,7 +74,7 @@ function b64decode(input) {
 
 function emptyState() {
   return {
-    mapVersion:      '4.0.0',
+    mapVersion:      '5.0.0',
     mapGame:         'FrostHaven',
     CurrentLevel:    0,
     tiles:           [],
@@ -84,6 +85,7 @@ function emptyState() {
     questObjectives: {},
     am:              null, // monster attack modifier deck: { deck:{key:n}, discard:{key:n} }; null = standard 20 cards
     amA:             null, // ally attack modifier deck, same shape as am
+    campaign:        null, // set when the session belongs to a campaign: { cid, sid, scn, base, res? }; null = standalone map
     decks:           {}, // monster ability decks: slug -> { deck:[n], discard:[n] }; absent = full deck
     elements:        [0, 0, 0, 0, 0, 0], // fire ice air earth light dark — 0=inert 1=waning 2=strong
     showGridLabels:  false,
@@ -225,6 +227,13 @@ function migrateToV4(raw) {
   return raw;
 }
 
+// 4.0.0 -> 5.0.0: additive. A map without a `campaign` block is a standalone map and stays one.
+function migrateToV5(raw) {
+  if (!('campaign' in raw)) raw.campaign = null;
+  raw.mapVersion = '5.0.0';
+  return raw;
+}
+
 function migrate(raw) {
   if (raw.mapVersion == null || raw.mapVersion === '1.0.0') {
     raw.heroes = [1,2,3,4].map(i => raw['hero' + i] || {id:0});
@@ -247,6 +256,10 @@ function migrate(raw) {
 
   if (raw.mapVersion === '3.0.0') {
     raw = migrateToV4(raw);
+  }
+
+  if (raw.mapVersion === '4.0.0') {
+    raw = migrateToV5(raw);
   }
 
   return raw;
@@ -314,9 +327,10 @@ function applyHash(hash) {
   setUrlHash(normalized);
 }
 
-// A mercenary entry without its attack modifier deck (for copies: a copy starts with a fresh deck).
+// A mercenary entry without its attack modifier deck and its campaign link (for copies: a copy starts with a fresh
+// deck and is not a campaign character).
 export function withoutAm(h) {
-  const { am: _am, ...rest } = h;
+  const { am: _am, cmp: _cmp, ...rest } = h;
   return rest;
 }
 
