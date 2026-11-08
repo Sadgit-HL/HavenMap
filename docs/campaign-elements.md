@@ -1,8 +1,8 @@
 # Campaign app: elements and mechanics inventory
 
-Written 2026-11-08 from the group's WHTracker.xlsx (GH2 tabs only). Scope decision: no automatic import of the current campaign state; the owner syncs it by hand once the mechanics exist. This list is what the campaign app has to cover. For the data shape see `campaign-schema.md`, for the generated ID tables `HANDOVER.md` section 14.
+Written 2026-11-08 from the group's WHTracker.xlsx (GH2 tabs only); statuses updated the same day after the first campaign page was built (`HANDOVER.md` section 14.7). Scope decision: no automatic import of the current campaign state; the owner syncs it by hand once the mechanics exist. This list is what the campaign app has to cover. For the data shape see `campaign-schema.md`, for the generated ID tables `HANDOVER.md` section 14.
 
-Legend: **Static** = generated table exists (`scripts/games/`), **App** = already in the map app, **Schema** = in `campaign-schema.md`, **New** = found in the workbook, not yet in the schema.
+Legend: **Static** = generated table exists (`scripts/games/`), **App** = already in the map app, **Page** = built on the campaign page (`campaign/`), **Schema** = in `campaign-schema.md`, **New** = found in the workbook, not yet in the schema.
 
 ## 1. Campaign level (tab "GH2 Campaign")
 
@@ -33,12 +33,12 @@ Legend: **Static** = generated table exists (`scripts/games/`), **App** = alread
 
 | Element | Mechanic | Status |
 |---|---|---|
-| Header | Class, name, level, XP, gold, inherited gold. | Schema (`chars`) |
-| Traits | Three per hero (class table), plus extra marks such as `Friend of Hero`. | Static (`TRAITS`); **New**: the extra marks |
-| Personal modifier deck | Composition from perks, cards out of the deck are ticked, Bless and Curse, GeekRoller code. | **App** (hero attack modifier decks) |
-| Ability cards | Hand size; a selected deck; other owned cards (bench); discard, active and lost piles; hand is derived. Cards are chosen at level-up. | Static (`CARDS`), Schema (`cmp`); **New**: the bench and hand size |
+| Header | Class, name, level, XP, gold, inherited gold. | Page (add up to four characters, edit values), Schema (`chars`) |
+| Traits | Three per hero (class table), plus extra marks such as `Friend of Hero`. | Static (`TRAITS`), Page (shown, not editable); **New**: the extra marks |
+| Personal modifier deck | Composition from perks, cards out of the deck are ticked, Bless and Curse, GeekRoller code. | **App** (hero attack modifier decks); Page shows the imported faces only |
+| Ability cards | Hand size; a selected deck; other owned cards (bench); discard, active and lost piles; hand is derived. Cards are chosen at level-up. | Static (`CARDS` with initiative where known), Page (Hand, Discard, Lost areas with drag and drop, sorted by initiative, pictures on hover with Ctrl or always, bench shown, hand size editable); choosing cards at level-up is **New** |
 | Card enhancements | A grid per card of enhancement slots (top and bottom actions, filled or empty) with prices. | **New** |
-| Items | A list with three tick states per item; a shop with limited copies. | Static (`ITEMS`), Schema (`it`); the three states are not yet named |
+| Items | A list with three tick states per item; a shop with limited copies. | Static (`ITEMS`), Page (shown, not editable per character); the three states are not yet named |
 | Personal quest | One per hero (number and progress). | Static (`PERSONAL_QUESTS`), Schema (`pq`) |
 | Battle goal | Drawn per scenario, kept or not, result success or failed. | Static (`battle_goals.js`), Schema (`bg`, `bgr`) |
 | Level up | Level, new ability card pick, perks, masteries. | Perks **App**; level-up flow **New** |
@@ -93,4 +93,6 @@ Legend: **Static** = generated table exists (`scripts/games/`), **App** = alread
 
 ## 10. Gaps against the schema
 
-Not yet modelled: card hand size and bench; per card enhancement slots and prices; the three item tick states; imbuement box labels and effects; reputation threshold text; random item and random scenario decks; treasure effect text; the inherited gold and extra trait marks; scenario days played; event front, decision and the marked option; the links panel; manual setting of non-arrow scenario unlocks.
+Done on the campaign page (2026-11-08): the overview values, scenario state and results, items unlocked and in use, event piles, battle goal, treasure and medical pack lists, adding characters, ability card areas with drag and drop, card pictures, initiative and hand size.
+
+Not yet modelled or built: choosing cards at level-up; per card enhancement slots and prices; the three item tick states; imbuement box labels and effects; reputation threshold text; random item and random scenario decks; treasure effect text; the extra trait marks; scenario days played; event front, decision and the marked option; the links panel; manual setting of non-arrow scenario unlocks; editing stickers, unlocked classes, players, retirements and enhancements; removing or retiring a character; marking a card active; touch support for moving cards; the server, tokens and voting; session start and commit; BBCode posts.

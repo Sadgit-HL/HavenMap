@@ -1,6 +1,6 @@
 # HavenMap campaign tracking: schema draft
 
-Status: draft, not implemented (the per-hero modifier deck it builds on is done, see `HANDOVER.md` section 13). Based on the current map state format (`mapVersion` 4.0.0), a measured late-game map URL, and the group's WHTracker.xlsx.
+Status: draft. Implemented so far: the per-hero modifier deck (`HANDOVER.md` section 13), the static tables, the session version `mapVersion` 5.0.0 with the `campaign` block and per-hero `cmp` link, and a campaign page that loads, shows and edits a record in the browser (`HANDOVER.md` section 14). Not implemented: the server, tokens, session start and commit, voting. Based on the map state format, a measured late-game map URL, and the group's WHTracker.xlsx.
 
 Items marked (unverified) are inferred and need confirming before they are built.
 
