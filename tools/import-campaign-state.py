@@ -1,5 +1,5 @@
 """Import the current campaign state from the group's WHTracker.xlsx into a campaign record (docs/campaign-schema.md
-section 4). Stage 1: campaign-level data. Characters are not imported yet.
+section 4). Stage 1: campaign-level data. Stage 2: the character sheets (Class: in cell R2C17).
 
 The output is the group's real campaign (player names, progress), so it is written OUTSIDE the repo by default
 (asset-backups/campaign-import.json) and must not be committed.
@@ -209,15 +209,91 @@ def read_items(wb):
     return {'unl': unl, 'taken': taken}
 
 
+# --- characters ----------------------------------------------------------------------------------------------
+
+def read_character(sh, sheet_name, cls_index, cards_by_cls, items_by_slug, cid):
+    """One character sheet. Layout (0-based row, col):
+      header     (1,18) class, (2,18) level, (3,18) name, (1,28) XP (27 on some sheets), (2,28) gold, (3,28) inherited,
+                 (1..3,40) the three traits, (1..2,45) extra marks (kept raw)
+      modifier   (6,0) card count, (6,2) GeekRoller code, labels on row 6 from col 4 (4..23 then every second column
+                 25..59), a tick on row 7 under each label. A tick means the card is OUT of the deck (drawn or unused:
+                 the count in (6,0) equals the unticked labels). Faces are kept as raw label text.
+      abilities  (11,4) hand size; rows 12.. column 0 = card slug, ticks in columns 7 / 9 / 11 = discard / active / lost
+                 (the sheet labels only 'active'; the order follows campaign-schema.md 2.2). The first block of named
+                 rows up to the first gap is the selected deck, a second block from row 32 the other owned cards.
+      items      from row 45 (header at 43): column 0 item name, ticks in columns 6 / 7 / 9 (meaning not confirmed,
+                 kept raw as `st`)."""
+    cls_name = sh(1, 18)
+    ci = cls_index.get(norm(cls_name))
+    out = {'id': cid, 'sheet': sheet_name, 'cls': cls_name, 'name': sh(3, 18), 'lv': num(sh(2, 18)),
+           'xp': next((num(sh(1, c)) for c in (28, 27) if isinstance(sh(1, c), (int, float))), None),
+           'gold': num(sh(2, 28)), 'inh': num(sh(3, 28)),
+           'traits': [sh(r, 40) for r in (1, 2, 3) if sh(r, 40)],
+           'extra': [sh(r, 45) for r in (1, 2) if sh(r, 45)]}
+    unmatched = []
+
+    faces = []
+    for c in list(range(4, 24)) + list(range(25, 60, 2)):
+        if sh(6, c) not in (None, ''):
+            faces.append({'f': str(sh(6, c)).strip(), 'out': sh(7, c) is True})
+    out['am'] = {'n': num(sh(6, 0)), 'code': sh(6, 2), 'faces': faces}
+
+    slugs = cards_by_cls.get(ci, {})
+    deck, disc, act, lost, bench = [], [], [], [], []
+    for r in range(12, 42):
+        slug = sh(r, 0)
+        if not slug:
+            continue
+        cid_ = slugs.get(norm(slug))
+        if cid_ is None:
+            unmatched.append(f'card {slug}')
+            continue
+        (deck if r < 32 else bench).append(cid_)
+        if r < 32:
+            if sh(r, 7) is True:
+                disc.append(cid_)
+            if sh(r, 9) is True:
+                act.append(cid_)
+            if sh(r, 11) is True:
+                lost.append(cid_)
+    out.update({'hand': num(sh(11, 4)), 'deck': deck, 'disc': disc, 'act': act, 'lost': lost, 'bench': bench})
+
+    items = []
+    for r in range(45, 61):
+        name = sh(r, 0)
+        if not name:
+            continue
+        iid = items_by_slug.get(norm(name))
+        if iid is None:
+            unmatched.append(f'item {name}')
+            continue
+        st = [sh(r, c) is True for c in (6, 7, 9)]
+        items.append({'id': iid, 'st': st})
+    out['items'] = items
+    return out, unmatched
+
+
 def main():
     path = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ASSETS, 'WHTracker.xlsx')
     dest = sys.argv[2] if len(sys.argv) > 2 else os.path.join(ASSETS, 'campaign-import.json')
     wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
+    cls_index = {norm(c['name']): c['i'] for c in static('gh2_classes.js', 'CLASSES')}
+    cards_by_cls = {}
+    for c in static('gh2_cards.js', 'CARDS'):
+        cards_by_cls.setdefault(c['cls'], {})[norm(c['slug'])] = c['id']
+    items_by_slug = {norm(i['slug']): i['id'] for i in static('gh2_items.js', 'ITEMS')}
+    chars, char_unmatched = [], []
+    for ws in wb.worksheets:
+        sh = Sheet(ws)
+        if sh(1, 16) == 'Class:':
+            ch, un = read_character(sh, ws.title, cls_index, cards_by_cls, items_by_slug, f'c{len(chars) + 1}')
+            chars.append(ch)
+            char_unmatched += [f'{ws.title}: {u}' for u in un]
     camp = read_campaign(Sheet(wb['GH2 Campaign']))
     decks, unmatched = read_decks(Sheet(wb['GH2 Decks']))
     rec = {'v': 1, 'ver': 1, 'name': '', 'players': [{'seat': i, 'name': n} for i, n in enumerate(SEATS)],
            'party': camp['party'], 'rep': camp['rep'], 'pros': camp['pros'], 'imb': camp['imb'], 'stk': camp['stk'],
-           'cls': camp['cls'], 'scn': read_scenarios(Sheet(wb['GH2 Flow'])), 'chars': [],
+           'cls': camp['cls'], 'scn': read_scenarios(Sheet(wb['GH2 Flow'])), 'chars': chars,
            'items': read_items(wb), 'events': read_events(Sheet(wb['GH2 Events'])), 'decks': decks,
            'enh': camp['enh'], 'retired': camp['retired']}
     with open(dest, 'w', encoding='utf-8') as f:
@@ -230,6 +306,11 @@ def main():
     print('classes', len(rec['cls']), 'enh', len(rec['enh']), 'retired', len(rec['retired']))
     print('items unlocked', len(rec['items']['unl']), 'with copies out', len(rec['items']['taken']))
     print('events', {k: {a: len(b) for a, b in v.items()} for k, v in rec['events'].items()})
+    for c in chars:
+        print(c['sheet'], c['cls'], 'lv', c['lv'], 'xp', c['xp'], 'gold', c['gold'], 'hand', c['hand'], 'deck', len(c['deck']),
+              'disc', len(c['disc']), 'act', len(c['act']), 'lost', len(c['lost']), 'bench', len(c['bench']),
+              'items', len(c['items']), 'faces', len(c['am']['faces']), 'traits', c['traits'])
+    print('unmatched', char_unmatched)
     print('decks', {k: len(v) for k, v in decks.items()}, 'unmatched battle goals', unmatched)
 
 
