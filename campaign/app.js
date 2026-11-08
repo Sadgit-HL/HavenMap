@@ -163,9 +163,9 @@ function cardRow(c, id, area) {
   const card = cardById.get(id);
   const active = area === 'hand' && c.act.includes(id);
   const btn = (act, key, label, title) => `<button type="button" class="mini" data-act="${act}" data-char="${esc(c.id)}" data-id="${id}" data-key="${key}" title="${esc(title)}">${label}</button>`;
-  const moves = editing ? `<span class="row-actions">${area === 'hand' ? btn('cardActive', active ? 'off' : 'on', 'A', active ? 'Clear active' : 'Mark active') : ''}${
-    ['hand', 'discard', 'lost'].filter(a => a !== area).map(a => btn('cardMove', a, a[0].toUpperCase(), `Move to ${a}`)).join('')}</span>` : '';
-  return `<li class="cardrow${active ? ' is-active' : ''}" data-card="${id}" data-char="${esc(c.id)}"${editing ? ' draggable="true"' : ''}>
+  const moves = `<span class="row-actions">${area === 'hand' ? btn('cardActive', active ? 'off' : 'on', 'A', active ? 'Clear active' : 'Mark active') : ''}${
+    ['hand', 'discard', 'lost'].filter(a => a !== area).map(a => btn('cardMove', a, a[0].toUpperCase(), `Move to ${a}`)).join('')}</span>`;
+  return `<li class="cardrow${active ? ' is-active' : ''}" data-card="${id}" data-char="${esc(c.id)}" draggable="true">
     <span class="cname">${esc(pretty(card?.slug ?? id))}</span>${card?.lv != null ? `<span class="lv">${esc(card.lv)}</span>` : ''}${active ? '<span class="badge">active</span>' : ''}${moves}</li>`;
 }
 
@@ -181,7 +181,7 @@ function deckZones(c) {
     <div class="zone" data-zone="${area}" data-char="${esc(c.id)}">
       <h4>${AREA_TITLE[area]} <span>${lists[area].length}</span></h4>
       <ul>${lists[area].map(id => cardRow(c, id, area)).join('') || '<li class="empty-row">empty</li>'}</ul>
-    </div>`).join('')}</div>${editing ? '<p class="hint">Drag cards between the areas, or use the buttons on a card (H hand, D discard, L lost, A active).</p>' : ''}`;
+    </div>`).join('')}</div><p class="hint">Drag cards between the areas, or use the buttons on a card (H hand, D discard, L lost, A active). No need to switch on Edit.</p>`;
 }
 
 function characterCard(c) {
@@ -316,11 +316,11 @@ main.addEventListener('click', e => {
   render();
   try { localStorage.setItem('havenmap.campaign.sub', t); } catch { /* ignore */ }
 });
-// Drag and drop of ability cards between the hand, discard and lost areas (edit mode only).
+// Drag and drop of ability cards between the hand, discard and lost areas (works without edit mode: it is play, not setup).
 const dragPayload = e => { try { return JSON.parse(e.dataTransfer.getData('text/plain')); } catch { return null; } };
 main.addEventListener('dragstart', e => {
   const row = e.target.closest?.('.cardrow');
-  if (!editing || !row) { e.preventDefault(); return; }
+  if (!row) { e.preventDefault(); return; }
   e.dataTransfer.setData('text/plain', JSON.stringify({ char: row.dataset.char, card: Number(row.dataset.card) }));
   e.dataTransfer.effectAllowed = 'move';
   row.classList.add('dragging');
@@ -330,7 +330,7 @@ main.addEventListener('dragend', () => {
 });
 main.addEventListener('dragover', e => {
   const zone = e.target.closest?.('.zone');
-  if (!editing || !zone) return;
+  if (!zone) return;
   e.preventDefault();
   e.dataTransfer.dropEffect = 'move';
   main.querySelectorAll('.zone.over').forEach(z => { if (z !== zone) z.classList.remove('over'); });
@@ -338,7 +338,7 @@ main.addEventListener('dragover', e => {
 });
 main.addEventListener('drop', e => {
   const zone = e.target.closest?.('.zone');
-  if (!editing || !zone) return;
+  if (!zone) return;
   e.preventDefault();
   const d = dragPayload(e);
   zone.classList.remove('over');
@@ -361,7 +361,7 @@ main.addEventListener('change', e => {
 });
 main.addEventListener('click', e => {
   const b = e.target.closest('button[data-act]');
-  if (editing && b) apply(b);
+  if (b && (editing || b.dataset.act.startsWith('card'))) apply(b);
 });
 main.addEventListener('input', e => {
   if (e.target.id !== 'scnSearch') return;
