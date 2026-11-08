@@ -279,3 +279,11 @@ Not done: the event vote in progress (`events.pend`), imbuement and sticker mapp
 ### 14.2 Direction change (2026-11-08)
 
 The owner does not want the current campaign state imported automatically; the state will be synced by hand once the mechanics exist. `tools/import-campaign-state.py` (stages 1 and 2) is therefore a reference and test-data generator only, not a roadmap item. The roadmap is now `docs/campaign-elements.md`, the inventory of every element and mechanic in the workbook that the campaign app must cover, with the gaps against `campaign-schema.md` in its section 10.
+
+### 14.3 Phase 3 started: record module and read-only view (2026-11-08)
+
+- `scripts/campaign/record.js`: record shape (documented in its header), `normalize`, `validate`, derived values (`scenarioLevel`, `prosperityLevel` with the sheet's level thresholds, `handOf`, `shopCopies`, `unlockedBy`). `scenarioLevel` uses the Gloomhaven rule (half the average level rounded up plus the difficulty value) and is unverified for GH2.
+- `scripts/campaign/store.js`: storage behind one interface (`load`, `save`, `clear`, `importFile`, `exportBlob`); only the browser-local implementation exists. The server comes later behind the same interface.
+- `campaign/index.html` + `app.js` + `style.css`: read-only view with Overview, Scenarios (filter by state, search, unlock arrows both ways), Characters, Items (slot and shop filters) and Events tabs. Open it through a local server (`start.bat` serves `/HavenMap/campaign/`). Load a campaign JSON with **Load file**; it is kept in the browser's local storage only. Test data: `asset-backups/campaign-import.json` from the importer (not committed).
+- Checked with a headless Chrome run (Playwright): every tab renders, filters work, the saved copy survives a reload. No automated tests.
+- Not done: any editing, session start and commit, voting, the server, card images (names only), BBCode posts.
