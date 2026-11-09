@@ -25,7 +25,7 @@ Record fields (all optional on load, defaults filled by normalize):
                     special = special traits gained through events (keys of scripts/campaign/traits.js)
   items             { unl: [itemId], taken: { itemId: copies in use } }
   events            { city, road: { top, bottom, out, locked }, pend? }   piles are ordered, see scripts/campaign/events.js
-                    pend = the open event { kind, id, votes: { seat: label }, closed?, rnd? }
+                    pend = the open events, one per deck: { city?: e, road?: e } with e = { kind, id, votes: { seat: label }, closed?, rnd? }
                     marks = { "road:4": [1] }   ticked box indexes of cards with boxes (the card keeps them in every pile)
                     notes = { "road:4": "text" }   free note on a card
   evlog             finished events [{ kind, id, opt, votes, rnd?, closed?, place }]
@@ -45,6 +45,16 @@ export function emptyRecord() {
 
 const REP_KEY = { 'Demons': 'demons', 'Merchants': 'merchants', 'City Guard': 'guard' };
 
+// The open events of a record: { city?, road? }. Records saved while only one event could be open hold that one event
+// ({ kind, id, votes }) and are converted.
+function migratePend(p) {
+  if (!p || typeof p !== 'object') return null;
+  if (typeof p.kind === 'string' && p.id !== undefined) return { [p.kind]: p };
+  const out = {};
+  for (const k of ['city', 'road']) if (p[k] && typeof p[k] === 'object') out[k] = p[k];
+  return Object.keys(out).length ? out : null;
+}
+
 // Fill defaults and accept the importer's slightly different spellings (tools/import-campaign-state.py).
 export function normalize(raw) {
   const base = emptyRecord();
@@ -55,7 +65,8 @@ export function normalize(raw) {
   r.rep = rep;
   r.items = { unl: [], taken: {}, ...(r.items || {}) };
   r.events = { city: { ...base.events.city, ...(r.events?.city || {}) }, road: { ...base.events.road, ...(r.events?.road || {}) } };
-  if (raw?.events?.pend) r.events.pend = raw.events.pend;
+  const pend = migratePend(raw?.events?.pend);
+  if (pend) r.events.pend = pend;
   r.events.marks = { ...(raw?.events?.marks || {}) };
   r.events.notes = { ...(raw?.events?.notes || {}) };
   r.evlog = Array.isArray(r.evlog) ? r.evlog : [];

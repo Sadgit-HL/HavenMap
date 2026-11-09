@@ -61,7 +61,7 @@ export const optionKeys = front => (front?.o || []).map((o, i) => o.l || String.
 export const seatList = r => (r.players?.length ? r.players.map(p => p.seat) : [0, 1, 2, 3]);
 
 /*
-Vote result for the open event `pend` ({ kind, id, votes: { seat: label }, closed?, rnd? }).
+Vote result for an open event `pend` (the entry of one deck: { kind, id, votes: { seat: label }, closed?, rnd? }).
   keys   the option keys of the card, seats the seat numbers that may vote
   state  'open'     not decided yet
          'decided'  one option wins: `opt` (by lead, by a click on the only option, by a closed vote, or by the random draw `rnd`)
@@ -91,9 +91,9 @@ export function tally(pend, keys, seats) {
   return { ...base, state: 'open' };
 }
 
-// Where a finished card goes by default: Bottom (the last position of the deck) when it returns to the deck, else Discarded.
-// It returns when the card, the chosen option or an outcome that applies says "return to deck" (the source data gives no top or
-// bottom: a returned card always goes to the end of the bottom pile). An outcome that applies and removes the card wins.
+// Where a finished card goes by default: Top when an outcome that applies says so (outcome field p), Bottom (the last position of the deck) when it returns to the deck, else Discarded.
+// It returns when the card, the chosen option or an outcome that applies says "return to deck" (the source data gives only one
+// case of "back on top of the deck", city 55 option C, flagged p=top: every other returned card goes to the end of the bottom pile). An outcome that applies and removes the card wins.
 // It also returns when every outcome that could apply returns it, even if the players still have to pick the outcome (an
 // option with a single outcome that needs a payment, for example).
 // `applicable` is the list from outcomes.js applicableOutcomes. Outcomes that are not met do not count.
@@ -101,6 +101,7 @@ export function defaultPlace(front, opt, applicable = []) {
   const o = (front?.o || []).find((x, i) => (x.l || String.fromCharCode(65 + i)) === opt);
   const sure = applicable.filter(a => a.state === 'always' || a.state === 'met' || a.state === 'otherwise');
   if (sure.some(a => a.o.x)) return 'out';
+  if (sure.some(a => a.o.r && a.o.p === 'top')) return 'top';        // "Place this card back on top of the deck"
   const possible = applicable.filter(a => a.state !== 'unmet');
   const always = possible.length > 0 && possible.every(a => a.o.r && !a.o.x);
   return front?.r || o?.r || sure.some(a => a.o.r) || always ? 'bottom' : 'out';

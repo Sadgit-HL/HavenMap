@@ -28,3 +28,26 @@ export function itemImageUrl(item) {
   const id = typeof item.id === 'number' ? String(item.id).padStart(3, '0') : encodeURIComponent(String(item.id));
   return `${ITEM_IMAGE_BASE}${id}.png`;
 }
+
+// Event card fronts: wh_events/gh2_events/<ce|re>/<C|R>-<number, 3 digits>.png (C-001.png). The outcome faces are C-001a.png,
+// C-001b.png ... (not used here: they show the outcome). Checked: every one of the 177 cards has a front.
+export const EVENT_IMAGE_BASE = CARD_IMAGE_BASE.replace('wh_character_ability_cards/', 'wh_events/gh2_events/');
+export function eventImageUrl(kind, id) {
+  if (kind !== 'city' && kind !== 'road') return null;
+  const code = kind === 'city' ? 'C' : 'R';
+  return `${EVENT_IMAGE_BASE}${kind === 'city' ? 'ce' : 're'}/${code}-${String(id).padStart(3, '0')}.png`;
+}
+
+// Character mats: wh_character_mats/<front|back>/<class>.png, the class name lower case with hyphens (silent-knife.png); the
+// one exception is Plague Herald (plagueherald.png). Checked: both sides exist for all 22 classes of the campaign.
+export const MAT_IMAGE_BASE = CARD_IMAGE_BASE.replace('wh_character_ability_cards/', 'wh_character_mats/');
+const MAT_SLUG = { 'plague herald': 'plagueherald' };
+export function matImageUrl(className, side = 'front') {
+  const n = String(className || '').toLowerCase();
+  if (!n || (side !== 'front' && side !== 'back')) return null;
+  return `${MAT_IMAGE_BASE}${side}/${MAT_SLUG[n] || n.replace(/\s+/g, '-')}.png`;
+}
+
+// Personal quest cards: wh_pq/gh2/PQ01.png ... PQ22.png (440x600). Checked: all 22 of gh2_quests.js exist.
+export const PQ_IMAGE_BASE = CARD_IMAGE_BASE.replace('wh_character_ability_cards/', 'wh_pq/gh2/');
+export const pqImageUrl = quest => (quest?.slug ? `${PQ_IMAGE_BASE}${encodeURIComponent(quest.slug)}.png` : null);

@@ -24,6 +24,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_XLSX = os.path.join(os.path.dirname(ROOT), 'asset-backups', 'WHTracker.xlsx')
 OUT = os.path.join(ROOT, 'scripts', 'games')
 DEFAULT_GHS_BG = os.path.join('D:' + os.sep, 'github', 'gloomhavensecretariat', 'data', 'fh', 'battle-goals.json')
+DEFAULT_GHS_BG_LABEL = os.path.join('D:' + os.sep, 'github', 'gloomhavensecretariat', 'data', 'fh', 'label', 'en.json')
 DEFAULT_GHS = os.path.join('D:' + os.sep, 'github', 'gloomhavensecretariat', 'data', 'gh2e', 'scenarios')
 DEFAULT_GHS_DECKS = os.path.join('D:' + os.sep, 'github', 'gloomhavensecretariat', 'data', 'gh2e', 'character', 'deck')
 INITIATIVE_OVERRIDES = os.path.join(ROOT, 'tools', 'card-initiative.json')
@@ -222,7 +223,7 @@ def main():
     for ci, code in enumerate(sorted(by_class), start=1):
         classes.append({'i': ci, 'code': code, 'name': names[code][0], 'src': names[code][1]})
         for n, r in enumerate(sorted(by_class[code], key=level_key), start=1):
-            cards.append({'id': ci * 100 + n, 'cls': ci, 'slug': r[30], 'lv': num(r[5]) if r[5] != 'M' else 'M'})
+            cards.append({'id': ci * 100 + n, 'cls': ci, 'slug': r[30], 'lv': 'M' if r[5] == 'M' else 'X' if num(r[5]) == 1.1 else num(r[5])})   # X = the level 1.1 cards, sorted between 1 and 2
     ini = load_initiative(sys.argv[3] if len(sys.argv) > 3 else DEFAULT_GHS_DECKS, classes, by_class)
     for c in cards:
         v = ini.get((classes[c['cls'] - 1]['code'], c['slug']))
@@ -288,16 +289,20 @@ def main():
         with open(DEFAULT_GHS_BG, encoding='utf-8') as f:
             for g in json.load(f):
                 checks[norm(g['name'])] = (int(g['cardId']), g.get('checks', 1))
+    texts = {}                                  # card id -> the card's text (Secretariat label file)
+    if os.path.isfile(DEFAULT_GHS_BG_LABEL):
+        with open(DEFAULT_GHS_BG_LABEL, encoding='utf-8') as f:
+            texts = {int(k): v.get('text', '') for k, v in json.load(f).get('battleGoals', {}).items()}
     SLUG_FIX = {'pincusion': 'pincushion'}     # typo in the Card DB
     goals = []
     for r in rows:
         if r[0] == 'Battle Goals' and r[46] == 'fh':
             slug = SLUG_FIX.get(r[30], r[30])
             cid, chk = checks.get(norm(slug), (None, 1))
-            goals.append({'id': cid, 'slug': slug, 'chk': chk})
+            goals.append({'id': cid, 'slug': slug, 'chk': chk, 't': texts.get(cid, '')})
     goals.sort(key=lambda g: (g['id'] is None, g['id'] or 0, g['slug']))
     write_module('battle_goals.js', 'Battle goal cards (the Frosthaven set, used for all editions): id = Gloomhaven '
-                                    'Secretariat card id (null if unmatched), slug, chk = checkmarks awarded.',
+                                    'Secretariat card id (null if unmatched), slug, chk = checkmarks awarded, t = the card text.',
                  [('BATTLE_GOALS', goals)])
 
     # --- personal quests and traits --------------------------------------------------------------------

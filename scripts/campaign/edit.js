@@ -175,54 +175,62 @@ export function moveEvent(r, kind, id, delta) {
 
 const eventIds = kind => new Set(EVENT_TABLE[kind].map(e => e.id));
 
-// Draw the next card of a deck and open it for voting. Does nothing while an event is open or the deck is empty.
+// The event open in a deck (one per deck can be open at the same time), and helpers to set and clear it.
+const openOf = (r, kind) => r.events.pend?.[kind];
+function setOpen(x, kind, entry) { x.events.pend = { ...(x.events.pend || {}), [kind]: entry }; }
+function clearOpen(x, kind) {
+  delete x.events.pend[kind];
+  if (!Object.keys(x.events.pend).length) delete x.events.pend;
+}
+
+// Draw the next card of a deck and open it for voting. Does nothing while this deck has an open event or is empty.
 export function drawEvent(r, kind, rand) {
-  if (!EVENT_KINDS_.includes(kind) || r.events.pend) return r;
+  if (!EVENT_KINDS_.includes(kind) || openOf(r, kind)) return r;
   const next = nextEvent(r, kind, rand);
   if (!next) return r;
-  return edit(r, x => { unplace(x, kind, next.id); x.events.pend = { kind, id: next.id, votes: {} }; });
+  return edit(r, x => { unplace(x, kind, next.id); setOpen(x, kind, { kind, id: next.id, votes: {} }); });
 }
 
 // Open a card by number (a card read from the table, for a card that was drawn without the app). Any pile except locked.
 export function openEvent(r, kind, id) {
-  if (!EVENT_KINDS_.includes(kind) || r.events.pend || !eventIds(kind).has(id) || eventPlace(r, kind, id) === 'locked') return r;
-  return edit(r, x => { unplace(x, kind, id); x.events.pend = { kind, id, votes: {} }; });
+  if (!EVENT_KINDS_.includes(kind) || openOf(r, kind) || !eventIds(kind).has(id) || eventPlace(r, kind, id) === 'locked') return r;
+  return edit(r, x => { unplace(x, kind, id); setOpen(x, kind, { kind, id, votes: {} }); });
 }
 
-// Put the open event back on top of its deck without resolving it (an accidental draw).
-export function cancelEvent(r) {
-  const p = r.events.pend;
+// Put the open event of a deck back on top without resolving it (an accidental draw).
+export function cancelEvent(r, kind) {
+  const p = openOf(r, kind);
   if (!p) return r;
-  return edit(r, x => { delete x.events.pend; place(x, p.kind, p.id, 'top'); });
+  return edit(r, x => { clearOpen(x, kind); place(x, kind, p.id, 'top'); });
 }
 
-// A seat votes for an option key (or null to withdraw). Seats can no longer vote once the event is decided.
-export function setVote(r, seat, key) {
-  const p = r.events.pend;
+// A seat votes for an option key (or null to withdraw) in the open event of a deck. Seats can no longer vote once it is decided.
+export function setVote(r, kind, seat, key) {
+  const p = openOf(r, kind);
   if (!p) return r;
-  const keys = optionKeys(frontOf(p.kind, p.id));
+  const keys = optionKeys(frontOf(kind, p.id));
   if (!seatList(r).includes(seat) || (key !== null && !keys.includes(key))) return r;
   if (tally(p, keys, seatList(r)).state !== 'open') return r;
   return edit(r, x => {
-    if (key === null) delete x.events.pend.votes[seat]; else x.events.pend.votes[seat] = key;
+    if (key === null) delete x.events.pend[kind].votes[seat]; else x.events.pend[kind].votes[seat] = key;
   });
 }
 
 // Count the missing votes as not voting. A tie that remains is settled by the random draw.
-export function closeVote(r) {
-  const p = r.events.pend;
-  return p && !p.closed ? edit(r, x => { x.events.pend.closed = true; }) : r;
+export function closeVote(r, kind) {
+  const p = openOf(r, kind);
+  return p && !p.closed ? edit(r, x => { x.events.pend[kind].closed = true; }) : r;
 }
 
 // Settle a tie by a random draw among the tied options. The result is stored, so it is the same for everybody.
-export function rollTie(r, rand = cryptoRandom) {
-  const p = r.events.pend;
+export function rollTie(r, kind, rand = cryptoRandom) {
+  const p = openOf(r, kind);
   if (!p) return r;
-  const keys = optionKeys(frontOf(p.kind, p.id));
+  const keys = optionKeys(frontOf(kind, p.id));
   const t = tally(p, keys, seatList(r));
   if (t.state !== 'tie' || !t.tied.length) return r;
   const pick = t.tied[Math.floor(rand() * t.tied.length)];
-  return edit(r, x => { x.events.pend.rnd = pick; });
+  return edit(r, x => { x.events.pend[kind].rnd = pick; });
 }
 
 // Tick or untick one box of a card (index into the card's boxes). The marks stay with the card in every pile.
@@ -245,20 +253,20 @@ export function setNote(r, kind, id, value) {
   return edit(r, x => { if (text) x.events.notes[key] = text; else delete x.events.notes[key]; });
 }
 
-// Finish the open event: place the card in a pile and log the result. The event must be decided.
-export function finishEvent(r, where) {
-  const p = r.events.pend;
+// Finish the open event of a deck: place the card in a pile and log the result. The event must be decided.
+export function finishEvent(r, kind, where) {
+  const p = openOf(r, kind);
   if (!p || !['top', 'bottom', 'out'].includes(where)) return r;
-  const keys = optionKeys(frontOf(p.kind, p.id));
+  const keys = optionKeys(frontOf(kind, p.id));
   const t = tally(p, keys, seatList(r));
   if (t.state !== 'decided') return r;
   return edit(r, x => {
-    const entry = { kind: p.kind, id: p.id, opt: t.opt, votes: { ...p.votes }, place: where };
+    const entry = { kind, id: p.id, opt: t.opt, votes: { ...p.votes }, place: where };
     if (t.random) entry.rnd = 1;
     if (p.closed) entry.closed = 1;
     x.evlog = [...(x.evlog || []), entry];
-    delete x.events.pend;
-    place(x, p.kind, p.id, where);
+    clearOpen(x, kind);
+    place(x, kind, p.id, where);
   });
 }
 

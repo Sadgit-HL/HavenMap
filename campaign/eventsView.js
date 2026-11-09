@@ -6,16 +6,15 @@ import * as ed from '../scripts/campaign/edit.js';
 import {
   EVENT_KINDS, EVENT_TABLE, eventPool, eventPlace, frontOf, optionKeys, seatList, tally, defaultPlace, boxState, noteOf,
 } from '../scripts/campaign/events.js';
-import { applicableOutcomes } from '../scripts/campaign/outcomes.js';
+import { applicableOutcomes, flatApplicable } from '../scripts/campaign/outcomes.js';
 
 const KIND_NAME = { city: 'City', road: 'Road' };
-const PILE_NAME = { top: 'Top', bottom: 'Bottom', out: 'Discarded', locked: 'Locked' };
+const PILE_NAME = { top: 'Top', bottom: 'Bottom', out: 'Discard', locked: 'Locked' };
 const STORE = 'havenmap.campaign.events';
 
 const NOTES = false;            // card notes are hidden for now; the record keeps them and edit.js can still set them
 const SHUFFLE = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const PENCIL = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2 2 0 0 1 3 0l0 0a2 2 0 0 1 0 3L8 19z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M14 7l3 3" stroke="currentColor" stroke-width="2"/></svg>';
-let lastPend = '';             // the open event the tab was last switched for
 const evState = { kind: 'city', seat: 0, filter: 'deck', view: null, peek: null, addMsg: '' };   // view: { kind, id } of the discarded card shown; filter: deck | out | locked | all
 let api = { render() {}, record: () => null, commit() {}, editing: () => false };
 let backData = null, backLoading = null;
@@ -41,6 +40,8 @@ function ensureBack() {
     .catch(() => { backLoading = null; });
 }
 
+const IMG_BASE = new URL('../images/events/', import.meta.url).href;
+const imgsHtml = list => (list || []).map(f => `<img class="evimg" src="${IMG_BASE}${esc(f)}" alt="Card artwork" loading="lazy">`).join('');
 const paras = t => String(t || '').split(/\n+/).filter(Boolean).map(p => `<p>${esc(p)}</p>`).join('');
 const seatName = (r, seat) => r.players?.find(p => p.seat === seat)?.name || `Seat ${seat + 1}`;
 
@@ -48,6 +49,17 @@ const effectsHtml = (o, hasBoxes) => {
   const list = (o.e || []).filter(x => !(hasBoxes && x === 'Tick a box'));      // the boxes are shown on the card
   return list.length ? `<ul class="evfx">${list.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '';
 };
+
+// Outcome list of an option of the open card, by its label: lets outcomes.js resolve "Apply outcome B".
+const lookupFor = (kind, id, keys) => label => backData?.[kind]?.[id]?.[keys.indexOf(label)];
+
+// One outcome of the card back (where the card goes is noted once, under all outcomes). A requirement that is not met shows only its line ("Requirement not met: ..."), not the outcome.
+function outcomeHtml({ o, state, who, textHidden, via }, hasBoxes) {
+  if (state === 'unmet' && textHidden) return `<div class="evoutcome evunmet">${reqLabel(o, state, who)}</div>`;
+  const redirect = (via || []).map(v => `<div class="evvia"><div class="evcond">Apply outcome ${esc(v.label)}</div>${
+    v.list ? v.list.map(x => outcomeHtml(x, hasBoxes)).join('') : '<p class="hint">Loading the outcome...</p>'}</div>`).join('');
+  return `<div class="evoutcome">${reqLabel(o, state, who)}${paras(o.n)}${imgsHtml(o.im)}${effectsHtml(o, hasBoxes)}${redirect}</div>`;
+}
 
 // Heading of an outcome that depends on a requirement: met (who meets it), otherwise, or left to the players.
 function reqLabel(o, state, who) {
@@ -81,8 +93,8 @@ function noteHtml(r, kind, id) {
 
 // --- the open event ------------------------------------------------------------------------------------------
 
-function openEventHtml(r) {
-  const p = r.events.pend, front = frontOf(p.kind, p.id), editing = api.editing();
+function openEventHtml(r, kind) {
+  const p = r.events.pend[kind], front = frontOf(p.kind, p.id), editing = api.editing();
   if (!front) return `<div class="evdraw">Event ${esc(KIND_NAME[p.kind])} ${esc(p.id)} has no text.</div>`;
   const keys = optionKeys(front), seats = seatList(r), t = tally(p, keys, seats);
   const voters = k => seats.filter(s => p.votes[s] === k).map(s => seatName(r, s));
@@ -93,7 +105,7 @@ function openEventHtml(r) {
     const click = t.state === 'open'
       ? ` role="button" tabindex="0" data-ev="vote" data-seat="${me}" data-key="${esc(k)}" aria-pressed="${mine}" title="Vote ${esc(k)} as ${esc(seatName(r, me))}"` : '';
     return `<div class="evopt${win ? ' win' : ''}${mine ? ' mine' : ''}${click ? ' clickable' : ''}"${click}><span class="evlabel">${esc(k)}</span>
-      <div class="evtext">${esc(o.t)}<div class="evvoters">${t.counts[k]} vote${t.counts[k] === 1 ? '' : 's'}${voters(k).length ? ': ' + esc(voters(k).join(', ')) : ''}${mine ? ' (your vote)' : ''}</div></div></div>`;
+      <div class="evtext">${esc(o.t)}${imgsHtml(o.im)}<div class="evvoters">${t.counts[k]} vote${t.counts[k] === 1 ? '' : 's'}${voters(k).length ? ': ' + esc(voters(k).join(', ')) : ''}${mine ? ' (your vote)' : ''}</div></div></div>`;
   }).join('');
 
   let status = '';                                   // while the vote is open the card itself shows the votes
@@ -102,23 +114,25 @@ function openEventHtml(r) {
 
   const adminBtns = editing ? `<div class="evadmin">${t.state === 'open' ? '<button type="button" data-ev="close">Close vote</button>' : ''}<button type="button" data-ev="cancel">Put back on top</button></div>` : '';
 
-  let back = '';
+  let back = '', place = '';
   if (t.state === 'decided') {
     ensureBack();
     const outs = backData?.[p.kind]?.[p.id]?.[keys.indexOf(t.opt)];
     const bs = boxState(r, p.kind, p.id);
-    const shown = outs ? applicableOutcomes(outs, r) : [];
-    const def = bs.boxes.length ? (bs.complete ? 'out' : 'bottom') : defaultPlace(front, t.opt, shown);
+    const shown = outs ? applicableOutcomes(outs, r, lookupFor(p.kind, p.id, keys), [t.opt]) : [];
+    const def = bs.boxes.length ? (bs.complete ? 'out' : 'bottom') : defaultPlace(front, t.opt, flatApplicable(shown));
     back = `<div class="evcard evback"><h3>${esc(t.opt)}</h3>${
-      !outs ? '<p class="hint">Loading the outcome...</p>' : shown.map(({ o, state, who }) => `<div class="evoutcome">${reqLabel(o, state, who)}${paras(o.n)}${
-        effectsHtml(o, bs.boxes.length > 0)}${o.x ? '<p class="evnote">Remove this card from the game.</p>' : o.r ? '<p class="evnote">This card returns to the bottom of the deck.</p>' : ''}</div>`).join('')}</div>
-      <div class="evplace">Place the card:
-        ${['out', 'bottom'].map(w => `<button type="button" class="${w === def ? 'primary' : ''}" data-ev="finish" data-place="${w}">${w === 'out' ? 'Discard' : 'Bottom'}</button>`).join('')}</div>`;
+      !outs ? '<p class="hint">Loading the outcome...</p>' : shown.map(x => outcomeHtml(x, bs.boxes.length > 0)).join('')}</div>`;
+    const NAME = { out: 'Discard', bottom: 'Bottom', top: 'Top' };
+    const where = def === 'top' ? ['out', 'bottom', 'top'] : ['out', 'bottom'];      // Top is offered only when the card says so
+    place = `${def === 'bottom' || def === 'top' ? `<p class="evnote">This card returns to the ${def} of the deck.</p>` : ''}<div class="evplace">Place the card:
+        ${where.map(w => `<button type="button" class="${w === def ? 'primary' : ''}" data-ev="finish" data-place="${w}">${NAME[w]}</button>`).join('')}</div>`;
   }
   // Right column: vote result, boxes, the outcome of the winning option and where the card goes. It takes the width the card leaves.
-  const side = `${status}${adminBtns}${boxesHtml(r, p.kind, p.id)}${noteHtml(r, p.kind, p.id)}${back}`;
+  // After the decision: the outcome, the boxes below its text, then where the card goes.
+  const side = `${status}${adminBtns}${noteHtml(r, p.kind, p.id)}${back}${t.state === 'decided' ? boxesHtml(r, p.kind, p.id) : ''}${place}`;
   return `<h2>Open event: ${esc(KIND_NAME[p.kind])} ${esc(p.id)}</h2>
-    <div class="evrow"><div class="evcard"><div class="evhead">${esc(KIND_NAME[p.kind])} event ${esc(p.id)}</div>${paras(front.n)}<div class="evopts">${options}</div></div>
+    <div class="evrow"><div class="evcard"><div class="evhead">${esc(KIND_NAME[p.kind])} event ${esc(p.id)}</div>${paras(front.n)}${imgsHtml(front.im)}<div class="evopts">${options}</div>${imgsHtml(front.fi)}</div>
     ${side ? `<div class="evside">${side}</div>` : ''}</div>`;
 }
 
@@ -128,16 +142,15 @@ function drawHtml(r, kind) {
   if (api.editing()) return '';                      // the edit view only reorders the deck; cards are drawn in the play view
   const st = r.events[kind], pool = eventPool(r, kind).length;
   const left = st.top.length + pool + st.bottom.length;
-  const open = r.events.pend;                      // an event of the other deck is still open: finish it first
-  const wait = open ? `<span class="hint">${esc(KIND_NAME[open.kind])} event ${esc(open.id)} is still open.</span><button type="button" data-ev="kind" data-v="${esc(open.kind)}">Go to it</button>` : '';
-  return `<div class="evdraw"><button type="button" class="primary" data-ev="draw" ${left && !open ? '' : 'disabled'}>Draw next ${esc(KIND_NAME[kind].toLowerCase())} event</button>${wait}</div>`;
+  return `<div class="evdraw"><button type="button" class="primary" data-ev="draw" ${left ? '' : 'disabled'}>Draw next ${esc(KIND_NAME[kind].toLowerCase())} event</button></div>`;
 }
 
 // The edit view: one table in draw order with a section per location. Cards are dragged between the sections and inside
 // Top and Bottom; the position in the table is the position in the deck. Only discarded cards show their text.
 const SECTIONS = [
-  ['top', 'Top'], ['', 'Deck'], ['bottom', 'Bottom'], ['out', 'Discarded'], ['locked', 'Locked'],
+  ['top', 'Top'], ['', 'Deck'], ['bottom', 'Bottom'], ['out', 'Discard'], ['locked', 'Locked'],
 ];
+const PILLS = [['top', 'Top'], ['', 'Deck'], ['bottom', 'Bottom'], ['out', 'Discard'], ['locked', 'Locked']];
 const COLS = 3;
 
 // A discarded card, opened by its number: the card as it was, the decision (from the log) and the outcome text. Read only.
@@ -154,21 +167,20 @@ function viewedHtml(r, kind) {
     const k = keys[i], names = seats.filter(s => votes[s] === k).map(s => seatName(r, s));
     const n = Object.values(votes).filter(x => x === k).length;
     return `<div class="evopt${entry?.opt === k ? ' win' : ''}"><span class="evlabel">${esc(k)}</span>
-      <div class="evtext">${esc(o.t)}${entry ? `<div class="evvoters">${n} vote${n === 1 ? '' : 's'}${names.length ? ': ' + esc(names.join(', ')) : ''}</div>` : ''}</div></div>`;
+      <div class="evtext">${esc(o.t)}${imgsHtml(o.im)}${entry ? `<div class="evvoters">${n} vote${n === 1 ? '' : 's'}${names.length ? ': ' + esc(names.join(', ')) : ''}</div>` : ''}</div></div>`;
   }).join('');
   let side = '';
   if (entry) {
     ensureBack();
     const outs = backData?.[kind]?.[v.id]?.[keys.indexOf(entry.opt)];
     const bs = boxState(r, kind, v.id);
-    side = `<div class="evstatus">Decided: <b>${esc(entry.opt)}</b>${entry.rnd ? ' (random draw)' : ''}${entry.closed ? ' (vote closed)' : ''}.</div>${boxesHtml(r, kind, v.id)}
-      <div class="evcard evback"><h3>${esc(entry.opt)}</h3>${!outs ? '<p class="hint">Loading the outcome...</p>' : applicableOutcomes(outs, r).map(({ o, state, who }) =>
-        `<div class="evoutcome">${reqLabel(o, state, who)}${paras(o.n)}${effectsHtml(o, bs.boxes.length > 0)}${o.x ? '<p class="evnote">Remove this card from the game.</p>' : ''}</div>`).join('')}</div>`;
+    side = `<div class="evstatus">Decided: <b>${esc(entry.opt)}</b>${entry.rnd ? ' (random draw)' : ''}${entry.closed ? ' (vote closed)' : ''}.</div>
+      <div class="evcard evback"><h3>${esc(entry.opt)}</h3>${!outs ? '<p class="hint">Loading the outcome...</p>' : applicableOutcomes(outs, r, lookupFor(kind, v.id, keys), [entry.opt]).map(x => outcomeHtml(x, bs.boxes.length > 0)).join('')}</div>${boxesHtml(r, kind, v.id)}`;
   } else {
     side = `<div class="evstatus">No decision recorded.</div>${boxesHtml(r, kind, v.id)}`;
   }
   return `<div class="evviewed"><div class="evviewhead"><h2>${esc(KIND_NAME[kind])} event ${esc(v.id)}</h2><button type="button" class="evmv" data-ev="view" data-id="${v.id}">Close</button></div>
-    <div class="evrow"><div class="evcard"><div class="evhead">${esc(KIND_NAME[kind])} event ${esc(v.id)}</div>${paras(front.n)}<div class="evopts">${options}</div></div>
+    <div class="evrow"><div class="evcard"><div class="evhead">${esc(KIND_NAME[kind])} event ${esc(v.id)}</div>${paras(front.n)}${imgsHtml(front.im)}<div class="evopts">${options}</div>${imgsHtml(front.fi)}</div>
     <div class="evside">${side}</div></div></div>`;
 }
 
@@ -176,7 +188,7 @@ function viewedHtml(r, kind) {
 // cards are is not shown. Boxes are ticked on the open event or on the opened discarded card.
 function playHtml(r, kind) {
   const out = r.events[kind].out;
-  return `<h2>Discarded cards (${out.length})</h2><div class="evchips">${out.map(id => `<button type="button" class="evchip evchipbtn" data-ev="view" data-id="${id}" aria-pressed="${evState.view?.kind === kind && evState.view.id === id}" title="Show card ${id} and its decision">${id}</button>`).join('') || '<span class="hint">none</span>'}</div>${viewedHtml(r, kind)}`;
+  return `<h2>Discard (${out.length})</h2><div class="evchips">${out.map(id => `<button type="button" class="evchip evchipbtn" data-ev="view" data-id="${id}" aria-pressed="${evState.view?.kind === kind && evState.view.id === id}" title="Show card ${id} and its decision">${id}</button>`).join('') || '<span class="hint">none</span>'}</div>${viewedHtml(r, kind)}`;
 }
 
 // A card looked at from the edit view: its front and its boxes (they can be ticked); nothing is drawn.
@@ -184,8 +196,8 @@ function peekRow(r, kind, id) {
   const front = frontOf(kind, id);
   if (!front) return '';
   const keys = optionKeys(front);
-  return `<tr class="evpeek"><td colspan="${COLS}"><div class="evcard"><div class="evhead">${esc(KIND_NAME[kind])} event ${esc(id)}</div>${paras(front.n)}<div class="evopts">${
-    front.o.map((o, i) => `<div class="evopt"><span class="evlabel">${esc(keys[i])}</span><div class="evtext">${esc(o.t)}</div></div>`).join('')}</div></div>${boxesHtml(r, kind, id)}</td></tr>`;
+  return `<tr class="evpeek"><td colspan="${COLS}"><div class="evcard"><div class="evhead">${esc(KIND_NAME[kind])} event ${esc(id)}</div>${paras(front.n)}${imgsHtml(front.im)}<div class="evopts">${
+    front.o.map((o, i) => `<div class="evopt"><span class="evlabel">${esc(keys[i])}</span><div class="evtext">${esc(o.t)}${imgsHtml(o.im)}</div></div>`).join('')}</div>${imgsHtml(front.fi)}</div>${boxesHtml(r, kind, id)}</td></tr>`;
 }
 
 function pilesHtml(r, kind) {
@@ -206,11 +218,14 @@ function pilesHtml(r, kind) {
       ? `<button type="button" class="evmv" data-ev="move" data-id="${id}" data-v="-1" title="Earlier" ${i === 0 ? 'disabled' : ''}>&#9650;</button><button type="button" class="evmv" data-ev="move" data-id="${id}" data-v="1" title="Later" ${i === n - 1 ? 'disabled' : ''}>&#9660;</button>` : '';
     // On touch screens, where dragging is awkward, a list moves the card to another section.
     const touch = `<select class="evtouch" data-evrowplace="${id}" aria-label="Move card ${id} to">${SECTIONS.map(([w, l]) => `<option value="${w}" ${w === where ? 'selected' : ''}>${l}</option>`).join('')}</select>`;
+    // Pills: move the card to the top, the deck, the bottom or the discard pile (the current place is marked and does nothing).
+    const pills = `<span class="evpills" role="group" aria-label="Move card ${id} to">${PILLS.map(([w, l]) =>
+      `<button type="button" class="chip evpill" data-ev="place" data-id="${id}" data-v="${w}" aria-pressed="${w === where}" title="Move card ${id} to ${l.toLowerCase()}">${l}</button>`).join('')}</span>`;
     // Every card can be dragged to every section (a drop inside Top or Bottom sets its position; discarded cards keep their order).
     const peeked = evState.peek === id;
     return `<tr class="evrow-${where || 'deck'}" draggable="true" data-evdrag="${id}" data-evzone="${where}" data-evidx="${i}">
       <td><span class="evgrip" title="Drag to move">&#10303;</span><button type="button" class="evnum" data-ev="peek" data-id="${id}" aria-pressed="${peeked}" title="Look at card ${id} (it is not drawn)">${id}</button></td>
-      <td class="evpos">${pos}${arrows}</td><td>${touch}</td></tr>${peeked ? peekRow(r, kind, id) : ''}`;
+      <td class="evpos">${pos}${arrows}</td><td>${pills}${touch}</td></tr>${peeked ? peekRow(r, kind, id) : ''}`;
   };
   const body = SECTIONS.map(([w, label]) => {
     if (!SHOW[filter].includes(w)) return '';
@@ -220,7 +235,7 @@ function pilesHtml(r, kind) {
   }).join('');
   const addForm = `<form id="evAddForm" class="evaddform" autocomplete="off"><input type="text" id="evAddInput" inputmode="numeric" placeholder="Card numbers, comma separated" aria-label="Card numbers to add to the deck"><button type="submit" class="evicon" aria-label="Add the locked cards to the deck" title="Add to deck">+</button><button type="button" class="evicon" data-ev="shuffle" aria-label="Shuffle: put the top and bottom cards back into the deck" title="Shuffle: top and bottom cards go back into the deck">${SHUFFLE}</button></form>${evState.addMsg ? `<span class="evaddmsg">${esc(evState.addMsg)}</span>` : ''}`;
   return `<h2>Cards</h2><div class="filters">${filterSel}${addForm}</div>
-    <div class="evtablewrap"><table class="evtable"><tr><th>#</th><th>Pos.</th><th></th></tr>${body}</table></div>`;
+    <div class="evtablewrap"><table class="evtable"><tr><th>#</th><th>Pos.</th><th>Move to</th></tr>${body}</table></div>`;
 }
 
 // --- drag and drop (edit view) -------------------------------------------------------------------------------
@@ -272,10 +287,8 @@ export function evDrop(e) {
 export function evDragEnd() { drag = null; clearMarks(); }
 
 export function eventsHtml(r) {
-  // The tabs always switch. A newly opened event brings its own tab to the front; the other tab shows a note and waits
-  // (one event is open at a time).
-  const p = r.events.pend, pendKey = p ? `${p.kind}:${p.id}` : '';
-  if (pendKey !== lastPend) { lastPend = pendKey; if (p) evState.kind = p.kind; }
+  // Each deck can have its own open event; the tabs always switch and a tab with an open event is marked.
+  const open = r.events.pend || {};
   const kind = evState.kind;
   if (!api.editing()) { evState.peek = null; evState.addMsg = ''; }           // looking at a card and the add message are temporary
   const seats = seatList(r), me = evState.seat;
@@ -283,8 +296,8 @@ export function eventsHtml(r) {
     `<button type="button" class="seatpill" data-ev="seat" data-seat="${s}" aria-pressed="${s === me}" title="Vote as ${esc(seatName(r, s))}">${esc(seatName(r, s))}</button>`).join('')}</div>`;
   const edit = `<button type="button" class="editbtn editicon" data-pageedit aria-pressed="${api.editing()}" aria-label="${api.editing() ? 'Stop editing events' : 'Edit events'}" title="${api.editing() ? 'Stop editing events' : 'Edit events'}">${PENCIL}</button>`;
   const tabs = `<div class="subbar"><div class="subtabs" role="tablist">${EVENT_KINDS.map(k =>
-    `<button type="button" role="tab" aria-selected="${k === kind}" data-ev="kind" data-v="${k}"${p?.kind === k ? ' class="has-open" title="An event is open"' : ''}>${KIND_NAME[k]} (${EVENT_TABLE[k].length - r.events[k].out.length - r.events[k].locked.length} in the deck)${p?.kind === k ? ' &#9679;' : ''}</button>`).join('')}</div><div class="evtools">${pills}${edit}</div></div>`;
-  return tabs + (p && p.kind === kind ? openEventHtml(r) : drawHtml(r, kind)) + pilesHtml(r, kind);
+    `<button type="button" role="tab" aria-selected="${k === kind}" data-ev="kind" data-v="${k}"${open[k] ? ' class="has-open" title="An event is open"' : ''}>${KIND_NAME[k]} (${EVENT_TABLE[k].length - r.events[k].out.length - r.events[k].locked.length} in the deck)${open[k] ? ' &#9679;' : ''}</button>`).join('')}</div><div class="evtools">${pills}${edit}</div></div>`;
+  return tabs + (open[kind] ? openEventHtml(r, kind) : drawHtml(r, kind)) + pilesHtml(r, kind);
 }
 
 // --- clicks and changes --------------------------------------------------------------------------------------
@@ -320,14 +333,15 @@ export function evClick(e) {
     case 'draw': api.commit(ed.drawEvent(r, evState.kind)); break;
     case 'vote': {
       const seat = Number(el.dataset.seat), key = el.dataset.key;
-      api.commit(ed.setVote(r, seat, r.events.pend?.votes?.[seat] === key ? null : key));
+      api.commit(ed.setVote(r, kind, seat, r.events.pend?.[kind]?.votes?.[seat] === key ? null : key));
       break;
     }
-    case 'roll': api.commit(ed.rollTie(r)); break;
+    case 'roll': api.commit(ed.rollTie(r, kind)); break;
     case 'mark': api.commit(ed.toggleMark(r, el.dataset.kind, Number(el.dataset.id), Number(el.dataset.i))); break;
-    case 'finish': api.commit(ed.finishEvent(r, el.dataset.place)); break;
-    case 'close': if (editing) api.commit(ed.closeVote(r)); break;
-    case 'cancel': if (editing) api.commit(ed.cancelEvent(r)); break;
+    case 'finish': api.commit(ed.finishEvent(r, kind, el.dataset.place)); break;
+    case 'close': if (editing) api.commit(ed.closeVote(r, kind)); break;
+    case 'cancel': if (editing) api.commit(ed.cancelEvent(r, kind)); break;
+    case 'place': if (editing) api.commit(ed.setEventPlace(r, kind, Number(el.dataset.id), el.dataset.v)); break;
     case 'move': if (editing) api.commit(ed.moveEvent(r, kind, Number(el.dataset.id), Number(el.dataset.v))); break;
     case 'open': if (editing) api.commit(ed.openEvent(r, kind, Number(el.dataset.id))); break;
     default: return false;

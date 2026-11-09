@@ -1,15 +1,19 @@
 """Generate the GH2 event card text from the Gloomhaven Secretariat data (data/gh2e/events.json).
 
 Writes two ES modules into scripts/games/ (generated, do not hand-edit; re-run and diff):
-  gh2_event_front.js  EVENT_FRONT[kind][id] = { n: narrative, o: [{ l: label, t: text, r?: 1 }], f?: 1 }
+  gh2_event_front.js  EVENT_FRONT[kind][id] = { n: narrative, o: [{ l: label, t: text, r?: 1, im?: [images] }], f?: 1, im?: [images], fi?: [footer images] }
+                      im = artwork files in images/events/ (copied from the Secretariat data by this script)
                       The front of the card: what the players read before they vote. Option labels are A, B, C ...;
                       a card with one unlabelled option gets "A". r = the option says "return to deck".
-  gh2_event_back.js   EVENT_BACK[kind][id] = [ per option: [ { c?, t?, ta?, rp?, o?, n?, e?: [effect lines] } ] ]
+  gh2_event_back.js   EVENT_BACK[kind][id] = [ per option: [ { c?, t?, ta?, rp?, g?, o?, n?, e?: [effect lines] } ] ]
                       The back of the card: the outcome text of an option. Loaded only when an option is revealed.
                       An option has several outcomes; some only apply when a requirement is met:
                         t  [traits]   a character in the party has one of these traits (species and class traits count)
                         ta [traits]   every character has the trait(s)
                         rp [faction, n]  reputation with the faction is above n
+                        p  'top'      a returning card goes on top of the deck, not to the bottom (r is set too)
+                        im [files]    artwork shown with the outcome
+                        g  [labels]   "Apply/Read outcome B": the outcomes of the card's option B apply as well (resolved in outcomes.js)
                         o  1          "otherwise": applies when no requirement before it was met
                         c  text       the requirement as text (also the only form of requirements that cannot be checked
                                       automatically: choices, payments, earlier answers, scenario results)
@@ -29,6 +33,7 @@ Usage:  python -I tools/extract-event-text.py [path/to/gh2e/events.json]
 import json
 import os
 import re
+import shutil
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -63,6 +68,22 @@ def text(s):
     s = re.sub(r'%data\.[^%]*%', '', s)
     s = re.sub(r'%([^%]+)%', lambda m: m.group(1).split('.')[-1], s)
     return re.sub(r'[ \t]+', ' ', s).strip()
+
+
+IMG_SRC = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(DEFAULT))), 'src', 'assets', 'artwork', 'events')
+IMG_OUT = os.path.join(ROOT, 'images', 'events')
+IMG_RE = re.compile(r'<img[^>]*src="[^"]*/([^"/]+\.png)"')
+
+
+def imgs(x):
+    """File names of the <img> tags in any string of x (text, list or dict), in order. text() drops the tags themselves."""
+    if isinstance(x, str):
+        return IMG_RE.findall(x)
+    if isinstance(x, dict):
+        return [f for v in x.values() for f in imgs(v)]
+    if isinstance(x, list):
+        return [f for v in x for f in imgs(v)]
+    return []
 
 
 def item(v):
@@ -164,13 +185,20 @@ def outcome(o):
         d['c'] = c
     if o.get('narrative'):
         d['n'] = text(o['narrative'])
-    effs = [e for e in (effect(x) for x in o.get('effects', [])) if e]
+    refs = [str(v) for x in o.get('effects', []) if isinstance(x, dict) and x.get('type') == 'outcome' for v in x.get('values', [])]
+    if refs:
+        d['g'] = refs                                      # "Apply outcome B": the outcomes of option B also apply
+    effs = [e for e in (effect(x) for x in o.get('effects', []) if not (isinstance(x, dict) and x.get('type') == 'outcome')) if e]
     if effs:
         d['e'] = effs
+    if imgs(o):
+        d['im'] = imgs(o)                                  # artwork of the outcome (puzzle cards)
     if o.get('removeFromDeck'):
         d['x'] = 1
     if o.get('returnToDeck'):
         d['r'] = 1
+        if re.search(r'back on top of the', json.dumps(o.get('effects', []))):
+            d['p'] = 'top'                                 # "Place this card back on top of the city deck" (C-55 option C)
     return d
 
 
@@ -264,6 +292,14 @@ def class_traits():
     print('gh2_class_traits.js', len(out), 'classes')
 
 
+def copy_images(cards):
+    names = sorted(set(imgs(cards)))
+    os.makedirs(IMG_OUT, exist_ok=True)
+    for n in names:
+        shutil.copyfile(os.path.join(IMG_SRC, n), os.path.join(IMG_OUT, n))
+    print('images/events', len(names), 'images')
+
+
 def main():
     path = sys.argv[1] if len(sys.argv) > 1 else DEFAULT
     with open(path, encoding='utf-8') as f:
@@ -283,6 +319,8 @@ def main():
             d = {'l': label, 't': text(o.get('narrative', ''))}
             if o.get('returnToDeck'):
                 d['r'] = 1
+            if imgs(o.get('narrative')):
+                d['im'] = imgs(o.get('narrative'))
             opts.append(d)
             outs.append([outcome(x) for x in o.get('outcomes', [])])
         bx = boxes_for(c)
@@ -291,6 +329,10 @@ def main():
         card = {'n': text(c.get('narrative', '')), 'o': opts}
         if c.get('returnToDeck'):
             card['r'] = 1
+        if imgs(c.get('narrative')):
+            card['im'] = imgs(c.get('narrative'))
+        if imgs(c.get('footer')):
+            card['fi'] = imgs(c.get('footer'))             # printed below the options (the invitation of C-41, C-42)
         front[kind][n] = card
         back[kind][n] = outs
 
@@ -307,6 +349,7 @@ def main():
             f.write('\n'.join(lines) + '\n')
         print(name, sum(len(data[k]) for k in data), 'cards', round(os.path.getsize(os.path.join(OUT, name)) / 1000), 'KB')
 
+    copy_images(cards)
     class_traits()
     write('gh2_event_boxes.js', 'Boxes per card: b = [{ l label, s section }], rule = what happens when all are ticked.', 'EVENT_BOXES', boxes)
     write('gh2_event_front.js', 'Event card fronts: n narrative, o options [{l label, t text, r returns to deck}], r card returns to deck.', 'EVENT_FRONT', front)

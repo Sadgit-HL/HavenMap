@@ -331,10 +331,52 @@ Open `http://localhost:8080/HavenMap/campaign/` (run `start.bat`). **Load file**
 | Scenarios | State, result (level, party size, chests, date) and the unlock links both ways; completing a scenario unlocks its follow-ons. |
 | Mercenaries | One sub-tab per character (up to four) and a **+** sub-tab to add one. Hand, Discard and Lost areas with drag and drop, cards sorted by initiative, card pictures (Hover with Ctrl held, or Always), traits, other owned cards, items and the personal modifier deck. |
 | Items | All GH2 items, unlocked state, copies in use and in the shop, which character holds them. |
-| Events | City and road decks; click a number to move it between in the deck, out, bottom and top. |
+| Events | City and road decks with voting, outcomes and an edit view (see section 16). |
 
 Code: `campaign/` (page), `scripts/campaign/` (`record.js` shape and derived values, `edit.js` pure edit functions, `store.js` storage, `classMap.js` class to map mercenary, `cardImages.js` picture URLs), `scripts/games/gh2_*.js` and `battle_goals.js` (generated tables), `tools/extract-campaign-tables.py` and `tools/import-campaign-state.py`. Map side: `scripts/state.js` is `mapVersion` 5.0.0 (section 14.5).
 
 Testing: no automated tests are committed. During development every step was checked with throwaway Node assertions for the edit functions and headless Chrome runs (Playwright, image requests intercepted); those scripts lived in a temporary folder. Worth committing as `tools/` tests before the next large change.
 
 Known limits and open points: the browser copy is the only copy (no server yet); ability card drag and drop does not work on touch screens (no touch fallback after the buttons were removed); nothing marks a card active; initiative is missing for 10 classes (`tools/card-initiative.json`); the three item tick states are unnamed; the Secretariat data used for unlock links, `init`, `forced` and initiative is AGPL-3.0 (licence still open, section 8); the Card DB has class errors for eight cards (corrected by `CARD_FIX`, worth fixing in the workbook too); `scenarioLevel` is unverified for GH2.
+
+## 15. Asset hosting (decision 2026-11-09: leave as is)
+
+Where the images are today:
+- In this repo: the map art, the attack modifier card parts and the perk icons (`images/`, 73 MB; the whole `.git` folder is 89 MB).
+- Fetched from the web: the campaign page loads ability card scans, item cards and class banners from the group's separate repo `Sadgit-HL/Wordhaven_Assets` (about 160 MB of ability cards alone), through `raw.githubusercontent.com` links. The URL rules are in `scripts/campaign/cardImages.js`.
+
+Decision: nothing moves. Leave the split as it is.
+
+Reasons, so the question does not have to be argued again:
+- Moving the card art into this repo would add hundreds of MB to every clone, branch and Pages build, git history would keep every image forever, and the art is copyrighted. Keeping it in its own repo keeps a takedown or licence problem away from the app.
+- The map and UI assets in this repo are small (73 MB), so there is no pressure to move them out.
+- Weak point of the current setup: `raw.githubusercontent.com` is not meant as an image host (short caching, possible rate limits, no offline use, the app depends on that repo staying public and unchanged). If it ever becomes a problem, the cheap fix is to serve `Wordhaven_Assets` through GitHub Pages or a CDN such as jsDelivr and change the base URL in `cardImages.js` (the item images use the same base). Alternative if a frozen or offline copy is needed: copy the assets into the Pages site in a deploy step. Neither has been checked or tried yet.
+- The images are public in every case. A locked card or item can be found by its URL, whatever the hosting.
+
+## 16. Campaign site: Items and Events rework (2026-11-09)
+
+State: on `main`, three local commits not pushed (063d15f, 8b0641f, 23eda5e) plus uncommitted work (boxes after the decision, unmet-requirement lines, one open event per deck, this note). Section 14.7's Events row and "click a number to move it" are outdated: see below.
+
+Page structure: edit is per page (pencil icon in each page's filter row), not a global toggle. Browser checks were done by the owner in this stretch; only Node checks of the logic were run by me.
+
+Items tab: Table or Cards view, three card sizes, search by name, sortable columns, Ctrl-hover preview in Table view, locked items hidden (names of unlocked ones hidden in edit mode so images do not spoil), "in use" is calculated from the character tabs (not editable), the kind column is "Type" and QM items show "QM"; filters and view are saved to localStorage. Quartermaster ids (`QM1`..) are separate from the numeric items.
+
+Events tab (`campaign/eventsView.js`, logic in `scripts/campaign/events.js`, `outcomes.js`, `edit.js`):
+- Piles per deck (`events[kind] = {top, bottom, out, locked}`; the rest is "deck", drawn at random). Draw order: top, random deck, bottom. Cards not listed in the workbook are locked by the importer.
+- One open event per deck (`events.pend = {city?, road?}`, old single-event records are converted by `migratePend`). Tabs always switch; a tab with an open event shows a marker.
+- Voting: choose a seat with the pills, click an option on the card. Decided when the lead cannot be caught (lead greater than seats not yet voted); a tie is settled by a stored random draw; a single-option card is decided only after a click. Per-deck "close vote" and "roll" exist in edit mode.
+- Outcomes (card back): requirements are checked from traits (sheet traits, class traits and species, special traits) and reputation. Met outcome is shown, otherwise the "otherwise" outcome; an unmet requirement shows only its requirement line. If an option has an outcome the app cannot check (payments, average level, items, earlier answers), all outcomes are listed and the players decide. Boxes are shown below the outcome text and only after the decision.
+- Redirects: an outcome that says "Apply/Read outcome B" (field `g` in the card back, 20 outcomes) also applies the outcomes of the card's option B. `outcomes.js applicableOutcomes(outs, r, lookup, [opt])` resolves them recursively (`via`), the view nests them under the redirecting outcome, and `flatApplicable` feeds the placement rule.
+- Placement follows the outcome (a single note "returns to the bottom|top of the deck" is shown under the outcomes when the default is Bottom or Top, Discard has no note; Top is only offered and preselected for an outcome with p=top, which is city 55 option C: "one card deeper per trait" is left to the players, drag in the edit view): cards that return go to the bottom, others to the discard (buttons: Discard, Bottom). Box cards: complete goes out, incomplete to the bottom.
+- Edit view: one table in draw order (Top, Deck, Bottom, Discarded, Locked), drag and drop of every row between all sections, Pos. column, filter Deck/Discard/Locked/All, peek on a number (front and boxes, closes on outside click), "+" adds locked cards by comma separated numbers, shuffle puts top and bottom cards into the deck. Discarded cards can be viewed with their decision by clicking the pill. Notes exist in the data and code but are hidden (`NOTES = false`).
+- Special traits (Hero, Friend of the Hero, Indebted, ...): list in `scripts/campaign/traits.js`, set per character with the pencil in the Traits row on the Mercenaries tab (modal). Species are shown as traits.
+
+Generated data (never hand-edit): `tools/extract-event-text.py` from Gloomhaven Secretariat gh2e events and class folders writes `scripts/games/gh2_event_front.js`, `gh2_event_back.js` (lazy loaded), `gh2_event_boxes.js`, `gh2_class_traits.js`. `tools/import-campaign-state.py` reads notes and marks and locks unlisted cards. Same AGPL question as section 8.
+
+Open points:
+- Effect lines on the card back are generated English wording, unchecked against the printed cards.
+- "Gain trait" effects do not set special traits automatically.
+- Not auto-checked (left to the players): payments, average level, trait counts, item possession, earlier answers. Offered, undecided: auto-check the computable ones and/or a "this one applies" button.
+- Character sheet marks beyond special traits are not built.
+- No automated tests are committed; the Node checks (piles, tally, outcomes, placement, boxes, shuffle, add-to-deck, per-deck pend, migration) lived in a temp folder and are worth committing under `tools/`.
+- Still from the earlier roadmap: campaign server and token auth, session commit, BBCode composer.

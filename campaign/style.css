@@ -41,6 +41,8 @@ button:disabled { opacity:.4; cursor:default; }
 .editbtn[aria-pressed="true"] { background:var(--accent); color:#1b150c; border-color:var(--accent); }
 input.num, input.txt, td select { background:#2d2519; color:var(--text); border:1px solid var(--accent); border-radius:4px; padding:2px 4px; font:inherit; }
 .hint { color:var(--muted); font-size:12px; margin:8px 0; }
+a.chip { display:inline-block; color:var(--accent); text-decoration:none; font-weight:600; }
+a.chip:hover, a.chip:focus-visible { background:var(--accent); color:#1b150c; border-color:var(--accent); }
 button.chip { color:var(--text); font:inherit; font-size:12px; cursor:pointer; }
 .numgrid button { min-width:30px; padding:2px 4px; border:1px solid var(--line); border-radius:4px; background:transparent; color:var(--text); font:inherit; font-size:12px; cursor:pointer; }
 .numgrid .out { background:#4a2f2a; text-decoration:line-through; color:var(--muted); }
@@ -91,6 +93,11 @@ button.primary { background:var(--accent); color:#1b150c; border:1px solid var(-
 .viewmode { margin:0 0 8px; }
 .itemgrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(var(--tile-min,188px),1fr)); gap:10px; }
 .itemtile { margin:0; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:4px; display:flex; flex-direction:column; gap:4px; }
+.amtile .pc { --pc-width:100%; }
+.bgtile { padding:8px 10px; }
+.bgtile h4 { margin:0 0 4px; font-size:14px; }
+.bgtile p { margin:0 0 6px; font-size:13px; line-height:1.4; flex:1; }
+.bgtile .badge { align-self:flex-start; }
 .itemtile.locked .cardpic { opacity:.4; filter:grayscale(1); }
 .itemtile figcaption { display:flex; align-items:center; justify-content:space-between; gap:4px; font-size:12px; }
 .itemtile .cname { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
@@ -131,6 +138,8 @@ button.primary:disabled { opacity:.4; cursor:default; }
 .evback h3 { margin:0 0 6px; color:var(--ok); }
 .evcond { color:var(--info); font-weight:600; margin-bottom:2px; }
 .evoutcome { margin-bottom:8px; }
+.evimg { display:block; max-width:100%; max-height:360px; margin:8px auto; border-radius:6px; }
+.evvia { margin:6px 0 0 10px; padding-left:8px; border-left:2px solid var(--info); }
 .evfx { margin:0 0 .5em; padding-left:20px; } .evfx li { margin:1px 0; }
 .evnote { color:var(--warn); }
 .evplace { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:10px 0; }
@@ -186,6 +195,8 @@ button.evchip { cursor:pointer; }
 .evdrop-after td { box-shadow:inset 0 -3px 0 var(--accent); }
 .evdrop-in td { background:#3d3220; outline:1px solid var(--accent); }
 .evtouch { display:none; }
+.evpills { display:inline-flex; gap:4px; flex-wrap:wrap; }
+.evpill[aria-pressed="true"] { background:var(--accent); color:#1b1409; border-color:var(--accent); cursor:default; }
 @media (pointer:coarse) { .evtouch { display:inline-block; } .evgrip { display:none; } }
 .evopt.clickable { cursor:pointer; border:1px solid transparent; }
 .evopt.clickable:hover, .evopt.clickable:focus-visible { background:rgba(199,164,74,.14); border-color:var(--accent); outline:none; }
@@ -230,3 +241,21 @@ button.evchip { cursor:pointer; }
 .modalfoot { display:flex; justify-content:flex-end; margin-top:12px; }
 .evaddform .evicon { display:inline-flex; align-items:center; justify-content:center; min-width:32px; padding:4px 8px; font-size:18px; line-height:1; }
 .evcond.unmet { color:var(--muted); }
+.evunmet { margin-bottom:4px; }
+
+/* scenario flowchart */
+.flowwrap { overflow:auto; max-height:72vh; border:1px solid var(--line); border-radius:8px; background:#120f0b; }
+.flowsvg { display:block; }
+.flane { fill:#1b160f; } .flane.alt { fill:#201a12; }
+.flabel { fill:var(--muted); font-size:13px; font-weight:600; }
+.fedge { fill:none; stroke:#5a4c3a; stroke-width:1.5; } .fedge.on { stroke:var(--ok); }
+.farrowhead { fill:#8a7860; }
+.fnode { cursor:pointer; outline:none; }
+.fnode rect { fill:var(--panel); stroke:var(--line); stroke-width:1.5; }
+.fnode.s1 rect { stroke:var(--info); } .fnode.s2 rect { stroke:var(--ok); fill:#22301f; } .fnode.s3 rect { stroke:var(--bad); fill:#2e1d19; }
+.fnode.mask rect { stroke-dasharray:4 3; } .fnode:hover rect, .fnode:focus-visible rect, .fnode.sel rect { stroke:var(--accent); stroke-width:2.5; }
+.fnum { fill:var(--muted); font-size:10px; } .fname { fill:var(--text); font-size:12px; } .fq { fill:var(--muted); font-size:18px; }
+.flowlegend { display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin:6px 0 8px; font-size:12px; }
+.fk { display:inline-block; width:12px; height:12px; border-radius:3px; margin-right:5px; vertical-align:-1px; border:2px solid var(--muted); }
+.fk.s1 { border-color:var(--info); } .fk.s2 { border-color:var(--ok); } .fk.s3 { border-color:var(--bad); }
+.flowdetail { margin-top:10px; max-width:520px; }

@@ -45,16 +45,17 @@ export function checkRequirement(o, r) {
 Outcomes of an option that apply, in card order: [{ o: outcome, state, who }].
   state 'always'     no requirement
         'met'        a requirement that is met (who = characters meeting it)
-        'unmet'      a requirement that is not met (only listed for options the players have to decide, see below)
+        'unmet'      a requirement that is not met: listed with its requirement only (`textHidden`), the outcome text stays hidden;
+                     in options the players have to decide (see below) the whole outcome is shown
         'otherwise'  the "otherwise" outcome: no requirement before it was met
         'manual'     a requirement the app cannot check (a choice, a payment, an earlier answer): the players decide
-Outcomes whose checked requirement is not met are left out. An "otherwise" after an unchecked requirement is 'manual' too.
+An "otherwise" after an unchecked requirement is 'manual' too.
 An option with an outcome the app cannot check is left to the players as a whole: every outcome is listed, the checked
 requirements marked met or not met, and the "otherwise" outcome as 'manual', so the players can pick the one that applies.
 */
 const isManual = o => !o.o && !o.t && !o.ta && !(o.rp && FACTION[o.rp[0]]) && Boolean(o.c);
 
-export function applicableOutcomes(outcomes, r) {
+function applicableOwn(outcomes, r) {
   if ((outcomes || []).some(isManual)) {
     return outcomes.map(o => {
       if (o.o) return { o, state: 'manual', who: [] };
@@ -74,12 +75,44 @@ export function applicableOutcomes(outcomes, r) {
     } else if (o.t || o.ta || (o.rp && FACTION[o.rp[0]])) {
       const res = checkRequirement(o, r);
       if (res.ok) { matched = true; out.push({ o, state: 'met', who: res.who }); }
+      else out.push({ o, state: 'unmet', who: [], textHidden: true });       // only the requirement is shown, not the outcome
     } else if (o.c) {
       manualSeen = true;
       out.push({ o, state: 'manual', who: [] });
     } else {
       out.push({ o, state: 'always', who: [] });
     }
+  }
+  return out;
+}
+
+/*
+Outcomes that apply, with the redirects resolved. An outcome with `g` ("Apply outcome B") also applies the outcomes of the
+card's option B: `lookup(label)` returns the outcome list of that option (undefined when it is not loaded). Each entry that
+applies (not 'unmet') gets `via: [{ label, list }]`, `list` being the applicable outcomes of the target, resolved the same way.
+A redirect back to an option that is being resolved is ignored (no loops).
+*/
+export function applicableOutcomes(outcomes, r, lookup = () => undefined, seen = []) {
+  return applicableOwn(outcomes, r).map(x => {
+    if (!x.o.g || x.state === 'unmet') return x;
+    const via = x.o.g.filter(l => !seen.includes(l)).map(label => {
+      const target = lookup(label);
+      return { label, list: target ? applicableOutcomes(target, r, lookup, [...seen, label]) : null };
+    });
+    return { ...x, via };
+  });
+}
+
+// The flat list of a resolved tree, for the placement rule (events.js defaultPlace). An outcome that only redirects is replaced
+// by the outcomes it redirects to. Below an outcome the players still have to decide ('manual'), nothing is sure.
+export function flatApplicable(list, sure = true) {
+  const out = [];
+  for (const x of list) {
+    if (x.state === 'unmet') { out.push(x); continue; }
+    const here = sure || x.state === 'manual' ? x : { ...x, state: 'manual' };
+    if (!x.via || x.o.r || x.o.x) out.push(here);
+    const below = sure && x.state !== 'manual';
+    for (const v of x.via || []) if (v.list) out.push(...flatApplicable(v.list, below));
   }
   return out;
 }
