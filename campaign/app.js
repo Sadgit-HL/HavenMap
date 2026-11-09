@@ -3,6 +3,7 @@
 // server come later (docs/campaign-schema.md section 10).
 import { CARDS } from '../scripts/games/gh2_cards.js';
 import { ITEMS } from '../scripts/games/gh2_items.js';
+import { TREASURES } from '../scripts/games/gh2_treasures.js';
 import { SCENARIOS, STICKERS } from '../scripts/games/gh2_scenarios.js';
 import { BATTLE_GOALS } from '../scripts/games/battle_goals.js';
 import { escapeHtml as esc } from '../scripts/escape.js';
@@ -19,7 +20,7 @@ import { heroCatalog, heroPerkClass } from '../scripts/amd/heroDeck.js';
 import { PERSONAL_QUESTS } from '../scripts/games/gh2_quests.js';
 import ghConfig from '../scripts/games/gh.js';
 import { GH_DECKS } from '../scripts/games/gh_decks.js';
-import { buildFlow, LANES, laneOf } from '../scripts/campaign/flow.js';
+import { buildFlow, LANES, laneOf } from '../scripts/campaign/flow.js?v=2';
 import { RESOURCES, RESOURCE_GAMES } from '../scripts/games/resources.js';
 import { characterTraits } from '../scripts/campaign/outcomes.js';
 import { SPECIAL_TRAITS, specialName } from '../scripts/campaign/traits.js';
@@ -43,6 +44,8 @@ const lvRank = lv => (lv === 'X' ? 1.5 : lv === 'M' ? 99 : Number(lv));
 const lvLabel = lv => (lv === 'M' ? 'Pack' : String(lv));      // the Sawbones medical pack cards
 const cardById = new Map(CARDS.map(c => [c.id, c]));
 const PENCIL = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2 2 0 0 1 3 0l0 0a2 2 0 0 1 0 3L8 19z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M14 7l3 3" stroke="currentColor" stroke-width="2"/></svg>';
+const ICON_DICE = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg>';
+const ICON_CHECK = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
 const ITEM_SIZES = { s: 150, m: 188, l: 250 };      // minimum tile width in px for the item grid
 // Filter and view settings are kept in this browser (not the search texts: a stale search would hide rows after a reload).
 const VIEW_KEY = 'havenmap.campaign.view';
@@ -143,19 +146,10 @@ function table(head, rows) {
 }
 
 function overview(r) {
-  const counts = [0, 0, 0, 0];
-  for (const s of Object.values(r.scn)) counts[s.s] = (counts[s.s] || 0) + 1;
+  const { counts, days, avgDays } = scenarioCounts(r);
   const repBar = v => `<div class="bar"><i style="left:${((20 - Math.max(-10, Math.min(20, v))) / 30) * 97}%"></i></div>`;
   const rep = (label, key) => kv(label, val(true, r.rep[key], num('rep', key, r.rep[key], { min: -10, max: 20 }))) + repBar(r.rep[key]);
   const known = new Set(STICKERS.map(s => s.name.toLowerCase()));
-  const goalBtn = g => `<button type="button" class="chip ${r.decks.bg.includes(g.id) ? 'ok' : 'dim'}" data-act="deck" data-key="bg" data-id="${g.id}">${esc(pretty(g.slug))}</button>`;
-  const bgBody = editing ? BATTLE_GOALS.map(goalBtn).join('')
-    : r.decks.bg.map(id => chip(pretty(BATTLE_GOALS.find(g => g.id === id)?.slug ?? id))).join('');
-  const medBtn = n => `<button type="button" class="chip ${r.decks.mp.includes(n) ? 'ok' : 'dim'}" data-act="deck" data-key="mp" data-id="${n}">${n}</button>`;
-  const medBody = editing ? [1, 2, 3, 4, 5, 6].map(medBtn).join('') : r.decks.mp.map(n => chip(n)).join('');
-  const treBody = editing
-    ? `<input type="text" class="txt" data-act="treasures" value="${esc(r.decks.tre.join(', '))}" placeholder="numbers, comma separated" style="width:100%">`
-    : r.decks.tre.map(n => chip(n)).join('');
   return `
   <div class="grid">
     <div class="card"><h3>Party</h3>${kv('Average level', val(true, r.party.avg, num('party', 'avg', r.party.avg, { min: 1, max: 9 })))}
@@ -163,7 +157,8 @@ function overview(r) {
       ${kv('Scenario level', esc(scenarioLevel(r.party)))}${kv('Inspiration', val(true, r.party.insp, num('party', 'insp', r.party.insp, { min: 0, max: 99 })))}</div>
     <div class="card"><h3>Prosperity</h3>${kv('Checkmarks', val(true, r.pros, num('pros', 'pros', r.pros, { min: 0, max: 90 })))}${kv('Level', esc(prosperityLevel(r.pros)))}</div>
     <div class="card"><h3>Reputation</h3>${rep('Demons', 'demons')}${rep('Merchants', 'merchants')}${rep('City Guard', 'guard')}</div>
-    <div class="card"><h3>Scenarios</h3>${SCN_STATE_NAME.map((n, i) => kv(n, esc(counts[i] || 0))).join('')}${kv('Total', esc(SCENARIOS.length))}</div>
+    <div class="card"><h3>Scenarios</h3>${SCN_STATE_NAME.map((n, i) => kv(n, esc(counts[i] || 0))).join('')}${kv('Total', esc(SCENARIOS.length))}
+      ${kv('Days played', esc(days))}${kv('Avg days/scenario', esc(avgDays))}</div>
   </div>
   <h2>Stickers</h2>${r.stk.length ? `<div class="chips">${r.stk.map(s => chip(s, known.has(String(s).toLowerCase()) ? 'ok' : 'warn')).join('')}</div>` : none}
   <h2>Unlocked classes (${r.cls.length})</h2><div class="chips">${r.cls.map(c => chip(c, classByName(c) ? '' : 'warn')).join('')}</div>
@@ -172,10 +167,6 @@ function overview(r) {
     r.retired.map(x => `<tr><td>${esc(x.cls)}</td><td>${esc(x.player ?? '')}</td><td>${esc(x.name ?? '')}</td><td>${esc(x.lv ?? '')}</td><td>${esc(x.perks ?? '')}</td><td>${esc(x.masteries ?? '')}</td></tr>`)) : none}
   <h2>Enhancements (${r.enh.length})</h2>${r.enh.length ? table(['Class', 'Card', 'Top', 'Bottom'],
     r.enh.map(x => `<tr><td>${esc(x.cls)}</td><td>${esc(x.card)}</td><td>${esc(x.top ?? '')}</td><td>${esc(x.bottom ?? '')}</td></tr>`)) : none}
-  <h2>Decks</h2><div class="grid">
-    <div class="card"><h3>Battle goals drawn (${r.decks.bg.length}/${BATTLE_GOALS.length})</h3><div class="chips">${bgBody}</div></div>
-    <div class="card"><h3>Treasures claimed (${r.decks.tre.length})</h3><div class="chips">${treBody}</div></div>
-    <div class="card"><h3>Medical packs (${r.decks.mp.length})</h3><div class="chips">${medBody}</div></div></div>
   ${editing ? '<p class="hint">Stickers, classes, players, retirements and enhancements are not editable yet.</p>' : ''}`;
 }
 
@@ -184,6 +175,54 @@ function overview(r) {
 // locked ones they lead to; locked scenarios are drawn as "?" (name and number only in edit mode), as locked items are.
 const FLOW_ZOOM = { s: 0.6, m: 0.85, l: 1.2 };
 const scnViewToggle = () => `<div class="imgmode viewmode" role="group" aria-label="Scenario view">${[['table', 'Table'], ['flow', 'Flowchart']].map(([v, l]) => `<button type="button" data-scnview="${v}" aria-pressed="${view.scnView === v}">${l}</button>`).join('')}</div>`;
+// GeekRoller code builder/button/copy, shared by every "random X" roller (scenario, item, ...): one face per
+// candidate, e.g. 1custom5{1;9;10;13;17}. The roll itself happens on BGG, same as the attack-modifier decks'
+// "Copy GeekRoller code" button (scripts/decks.js) -- this just builds and copies the code, it never picks itself.
+function rollerCodeOf(faces) {
+  return faces.length ? `1custom${faces.length}{${faces.join(';')}}` : '';
+}
+function rollerBtn(attr, noun, code, emptyTitle) {
+  const title = code ? `Roll a random ${noun}` : emptyTitle;
+  return `<button type="button" class="editbtn editicon" ${attr} ${code ? '' : 'disabled'} title="${esc(title)}" aria-label="${esc(title)}">${ICON_DICE}</button>`;
+}
+async function copyRollerCode(btn, code) {
+  const orig = btn.innerHTML, origTitle = btn.title;
+  try {
+    await navigator.clipboard.writeText(code);
+    btn.innerHTML = ICON_CHECK;
+    btn.title = 'Copied the GeekRoller code';
+  } catch {
+    btn.title = 'Copy failed';
+  }
+  setTimeout(() => { btn.innerHTML = orig; btn.title = origTitle; }, 1500);
+}
+
+function scenarioRollerCode(r) {
+  return rollerCodeOf(SCENARIOS.filter(s => (r.scn[String(s.n)]?.s ?? 0) === 1).map(s => s.n));
+}
+const scenarioRollerBtn = r => rollerBtn('data-scnroll', 'Side Scenario', scenarioRollerCode(r), 'No unlocked scenarios');
+
+// The 16 GH2E items flagged "random" in the Gloomhaven Secretariat data (never sold in the shop, only gained
+// from a "random item design"/"random item" reward): ids 81-96. "Gain a random item design" draws one of these
+// that isn't already unlocked -- it is not a draw from the full item catalog.
+const RANDOM_ITEM_IDS = [81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96];
+function itemRollerCode(r) {
+  return rollerCodeOf(ITEMS.filter(i => RANDOM_ITEM_IDS.includes(i.id) && !r.items.unl.includes(i.id)).map(i => i.id));
+}
+const itemRollerBtn = r => rollerBtn('data-itemroll', 'Item Design', itemRollerCode(r), 'No item designs left to gain');
+
+// Scenario state counts and pacing, shown on Overview. A scenario missing from r.scn is Locked (setScenarioState
+// deletes the key when a scenario is set back to Locked), so the Locked count is the total minus the other three, not
+// a tally of explicit entries. Days played = calendar days from the campaign start to today; average is that span per
+// completed scenario.
+const CAMPAIGN_START = '2026-05-21';
+function scenarioCounts(r) {
+  const counts = [0, 0, 0, 0];
+  for (const s of SCENARIOS) counts[r.scn[String(s.n)]?.s ?? 0]++;
+  const days = Math.round((new Date() - new Date(CAMPAIGN_START)) / 86400000);
+  const avgDays = counts[2] ? (days / counts[2]).toFixed(1) : 'n/a';
+  return { counts, days, avgDays };
+}
 
 function flowPage(r) {
   const st = n => r.scn[String(n)]?.s ?? 0;
@@ -201,21 +240,22 @@ function flowPage(r) {
   const filters = `<div class="filters">${scnViewToggle()}
     <select id="flowShow">${[['progress', 'Progress and next steps'], ['all', 'All scenarios']].map(([v, l]) => `<option value="${v}" ${view.flowShow === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
     <select id="flowLane"><option value="">All storylines</option>${LANES.map(l => `<option ${view.flowLane === l ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>
-    <div class="imgmode viewmode" role="group" aria-label="Chart size">${[['s', 'S'], ['m', 'M'], ['l', 'L']].map(([k, l]) => `<button type="button" data-flowzoom="${k}" aria-pressed="${view.flowZoom === k}" title="Chart size ${l}">${l}</button>`).join('')}</div></div>`;
+    <div class="imgmode viewmode" role="group" aria-label="Chart size">${[['s', 'S'], ['m', 'M'], ['l', 'L']].map(([k, l]) => `<button type="button" data-flowzoom="${k}" aria-pressed="${view.flowZoom === k}" title="Chart size ${l}">${l}</button>`).join('')}</div>
+    ${scenarioRollerBtn(r)}</div>`;
   if (!g.nodes.length) return filters + '<div class="empty">No scenarios to show yet.</div>';
-  const legend = `<div class="flowlegend">${SCN_STATE_NAME.map((n, i) => `<span><i class="fk s${i}"></i>${esc(n)}</span>`).join('')}<span class="hint">Click a scenario for details. Locked scenarios are shown as ?.</span></div>`;
   const lanes = g.lanes.map((l, i) => `<rect class="flane${i % 2 ? ' alt' : ''}" x="0" y="${l.y}" width="${g.width}" height="${l.h}"/><text class="flabel" x="8" y="${l.y + 18}">${esc(l.name)}</text>`).join('');
   const edges = g.edges.map(e => `<path class="fedge${st(e.from) === 2 ? ' on' : ''}" d="${e.d}" marker-end="url(#farrow)"/>`).join('');
   const nodes = g.nodes.map(n => {
     const s = byN.get(n.n), hide = masked(n.n), name = String(s.name || '');
-    const label = hide ? '?' : name.length > 21 ? name.slice(0, 20) + '…' : name;
+    const label = hide ? '?' : name.length > 17 ? name.slice(0, 16) + '…' : name;
+    const midY = n.h / 2 + 4;
     return `<g class="fnode s${st(n.n)}${hide ? ' mask' : ''}${view.scnSel === n.n ? ' sel' : ''}" data-flow="${n.n}" tabindex="0" role="button" transform="translate(${n.x},${n.y})"><title>${hide ? 'Locked' : esc(`${s.n} ${name}`)}</title>
-      <rect width="${n.w}" height="${n.h}" rx="8"/>${hide ? `<text class="fq" x="${n.w / 2}" y="${n.h / 2 + 6}" text-anchor="middle">?</text>`
-        : `<text class="fnum" x="8" y="14">${esc(s.n)}</text><text class="fname" x="8" y="31">${esc(label)}</text>`}</g>`;
+      <rect width="${n.w}" height="${n.h}" rx="6"/>${hide ? `<text class="fq" x="${n.w / 2}" y="${n.h / 2 + 6}" text-anchor="middle">?</text>`
+        : `<text class="fname" x="6" y="${midY}"><tspan class="fnum">${esc(s.n)}</tspan> ${esc(label)}</text>`}</g>`;
   }).join('');
   const svg = `<svg class="flowsvg" width="${Math.round(g.width * z)}" height="${Math.round(g.height * z)}" viewBox="0 0 ${g.width} ${g.height}" role="img" aria-label="Scenario flowchart">
     <defs><marker id="farrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="farrowhead"/></marker></defs>${lanes}${edges}${nodes}</svg>`;
-  return filters + legend + `<div class="flowwrap">${svg}</div>`;
+  return filters + `<div class="flowwrap">${svg}</div>`;
 }
 
 // Details of the selected scenario, shown in a modal (scnModalRoot below) so it's reachable regardless of scroll
@@ -224,7 +264,7 @@ function flowDetail(r) {
   const n = view.scnSel, s = SCENARIOS.find(x => x.n === n);
   if (!s) return '';
   const x = r.scn[String(n)] || { s: 0 };
-  if (x.s === 0) return '<h3 id="scnModalTitle">Locked scenario</h3><p class="hint">This scenario is not unlocked yet.</p>';
+  if (x.s === 0) return '<h3 id="scnModalTitle">Locked scenario</h3>';
   const cls = k => { const v = r.scn[String(k)]?.s ?? 0; return v === 2 ? 'ok' : v === 1 ? 'info' : 'dim'; };
   const nm = k => (r.scn[String(k)]?.s ? `${k} ${SCENARIOS.find(y => y.n === k)?.name ?? ''}` : '?');
   const stateRow = editing
@@ -246,8 +286,7 @@ function flowDetail(r) {
     ${resultRows}
     ${treRow}
     ${kv('Unlocks', (s.unl || []).length ? `<span class="chips">${s.unl.map(k => chip(nm(k), cls(k))).join('')}</span>` : '<span class="hint">no scenario</span>')}
-    ${kv('Unlocked by', unlockedBy(s.n).length ? `<span class="chips">${unlockedBy(s.n).map(k => chip(nm(k), cls(k))).join('')}</span>` : '<span class="hint">no scenario (event, reputation or quest)</span>')}
-    ${editing ? '<p class="hint">Completing a scenario also unlocks the scenarios it links to. Setting it back to Locked clears its result.</p>' : ''}`;
+    ${kv('Unlocked by', unlockedBy(s.n).length ? `<span class="chips">${unlockedBy(s.n).map(k => chip(nm(k), cls(k))).join('')}</span>` : '<span class="hint">no scenario (event, reputation or quest)</span>')}`;
 }
 
 function scenarios(r) {
@@ -277,7 +316,8 @@ function scenarios(r) {
     sortTh('p', '# Mercenaries'), sortTh('ch', 'Chests'), sortTh('d', 'Date (completed)'), 'Unlocks', 'Unlocked by'];
   const filters = `<div class="filters">${scnViewToggle()}
     <select id="scnStatus"><option value="">All states</option>${SCN_STATE_NAME.map((n, i) => `<option value="${i}" ${view.scnStatus === String(i) ? 'selected' : ''}>${n}</option>`).join('')}</select>
-    <input id="scnSearch" type="search" placeholder="Search number, name, area" value="${esc(view.scnSearch)}"></div>`;
+    <input id="scnSearch" type="search" placeholder="Search number, name, area" value="${esc(view.scnSearch)}">
+    ${scenarioRollerBtn(r)}</div>`;
   return filters + table(head, rows.map(s => {
     const x = r.scn[String(s.n)] || { s: 0 };
     return `<tr class="rowlink" data-flow="${s.n}" tabindex="0"><td>${esc(s.n)}</td><td>${esc(s.name)}</td><td>${esc(s.area ?? '')}</td><td class="s${x.s}">${SCN_STATE_NAME[x.s]}</td>
@@ -286,7 +326,7 @@ function scenarios(r) {
       <td>${esc((x.ch || []).join(', '))}</td>
       <td>${esc(x.d ?? '')}</td>
       <td>${(s.unl || []).map(n => chip(n, stateClass(n))).join('')}</td><td>${unlockedBy(s.n).map(n => chip(n, stateClass(n))).join('')}</td></tr>`;
-  })) + '<p class="hint">Click a scenario row to view and edit its details.</p>';
+  }));
 }
 
 function benchList(c) {
@@ -427,6 +467,7 @@ function items(r) {
   const filters = `<div class="filters"><select id="itemSlot"><option value="">All slots</option>${slots.map(s => `<option ${view.itemSlot === s ? 'selected' : ''}>${esc(s)}</option>`).join('')}</select>
     <select id="itemShow">${[['all', 'All items'], ['unlocked', 'Unlocked'], ['shop', 'In the shop']].map(([v, l]) => `<option value="${v}" ${view.itemShow === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
     <input id="itemSearch" type="search" placeholder="Search item name" value="${esc(view.itemSearch)}">
+    ${itemRollerBtn(r)}
     <button type="button" class="editbtn editicon" data-pageedit aria-pressed="${editing}" aria-label="${editing ? 'Stop editing items' : 'Edit items'}" title="${editing ? 'Stop editing items' : 'Edit items'}">${PENCIL}</button></div>`;
   const viewToggle = `<div class="imgmode viewmode" role="group" aria-label="Items view">${
     [['list', 'Table'], ['grid', 'Cards']].map(([m, l]) => `<button type="button" data-itemview="${m}" aria-pressed="${view.itemView === m}">${l}</button>`).join('')}${view.itemView === 'grid' ? `<span class="sizesel">${[['s', 'S'], ['m', 'M'], ['l', 'L']].map(([k, l]) => `<button type="button" data-itemsize="${k}" aria-pressed="${view.itemSize === k}" title="Tile size ${l}">${l}</button>`).join('')}</span>` : ''}<span class="ctrlhint">${rows.length} items${view.itemView === 'list' ? ' · hold Ctrl over a row for the card' : ''}</span></div>`;
@@ -658,11 +699,57 @@ function cardsPage(r) {
   }).join('')}</div>` : none);
 }
 
+// Treasure Index effect codes (scripts/games/gh2_treasures.js) to plain text; item:N resolves against gh2_items.js.
+function treasureEffectText(effect) {
+  const segs = effect.split('|').map(seg => {
+    const i = seg.indexOf(':');
+    const key = i === -1 ? seg : seg.slice(0, i), val = i === -1 ? '' : seg.slice(i + 1);
+    switch (key) {
+      case 'item': { const it = itemById.get(Number(val)); return it ? `Gain ${pretty(it.slug)}` : `Gain item ${val}`; }
+      case 'damage': return `Suffer ${val} damage`;
+      case 'condition': return `gain ${val.split('+').join(' and ')}`;
+      case 'experience': return `Gain ${val} XP`;
+      case 'gold': return `Gain ${val} gold`;
+      case 'battleGoal': return `Gain ${val} battle goal checkmark${val === '1' ? '' : 's'}`;
+      case 'recover': return `recover ${val}`;
+      case 'randomScenario': return 'Unlock a random side scenario';
+      case 'randomItemDesign': return 'Gain a random item design';
+      default: return seg;
+    }
+  });
+  return segs.reduce((text, seg, i) => {
+    if (i === 0) return seg.charAt(0).toUpperCase() + seg.slice(1);
+    const bothGain = /^Gain /.test(segs[i - 1]) && /^Gain /.test(seg);
+    return text + (bothGain ? ` and ${seg.slice(5)}` : `, then ${seg}`);
+  }, '');
+}
+
+// Treasure Index: all 79 treasures with their effect (revealed once claimed) and a claim pill shared with
+// Overview's "Treasures claimed" card (same r.decks.tre list). Always clickable -- claiming is a live play action,
+// not a structural edit, so it does not need the page's edit mode. A dense grid, not a table: one row per
+// treasure would be 79 lines tall for very little content per row.
+function treasureList(r) {
+  const claimed = n => r.decks.tre.includes(n);
+  const cells = TREASURES.map(t => {
+    const got = claimed(t.n);
+    const pill = `<button type="button" class="pill ${got ? 'ok' : 'dim'}" data-trclaim="${t.n}" title="${got ? 'Claimed -- click to undo' : 'Mark claimed'}">${got ? '✓ Claimed' : 'Claim'}</button>`;
+    const effect = got ? esc(treasureEffectText(t.effect)) : '<span class="hint">?</span>';
+    return `<div class="trcell"><b>${esc(t.n)}</b><span class="treffect">${effect}</span>${pill}</div>`;
+  }).join('');
+  return `<h2>Treasure Index (${r.decks.tre.length}/${TREASURES.length} claimed)</h2><div class="treasuregrid">${cells}</div>`;
+}
+
 // Links of the group's workbook "Resources" sheet (scripts/games/resources.js): one row per document, one column per game.
-function resources() {
-  const link = u => u ? `<a class="chip" href="${esc(u)}" target="_blank" rel="noopener noreferrer">Open</a>` : '';
-  return `<h2>Resources</h2>` + table(['', ...RESOURCE_GAMES.map(([, l]) => esc(l))], RESOURCES.map(x =>
-    `<tr><td>${esc(x.title)}${x.note ? ` <span class="hint" title="${esc(x.note)}">(note)</span>` : ''}</td>${RESOURCE_GAMES.map(([k]) => `<td>${link(x[k])}</td>`).join('')}</tr>`));
+function resources(r) {
+  const url = (x, game) => r.resLinks[`${x.title}|${game}`] ?? x[game];
+  const cell = (x, game) => {
+    const u = url(x, game);
+    if (editing) return `<input type="text" class="txt" style="width:100%" placeholder="(none)" data-act="resLink" data-key="${esc(game)}" data-id="${esc(x.title)}" value="${esc(u ?? '')}">`;
+    return u ? `<a class="chip" href="${esc(u)}" target="_blank" rel="noopener noreferrer">Open</a>` : '';
+  };
+  const heading = `<div class="pagebar" style="justify-content:space-between;align-items:center"><h2 style="margin:0">Resources</h2><button type="button" class="editbtn editicon" data-pageedit aria-pressed="${editing}" aria-label="${editing ? 'Stop editing resource links' : 'Edit resource links'}" title="${editing ? 'Stop editing resource links' : 'Edit resource links'}">${PENCIL}</button></div>`;
+  return treasureList(r) + heading + table(['', ...RESOURCE_GAMES.map(([, l]) => esc(l))], RESOURCES.map(x =>
+    `<tr><td>${esc(x.title)}${x.note ? ` <span class="hint" title="${esc(x.note)}">(note)</span>` : ''}</td>${RESOURCE_GAMES.map(([k]) => `<td>${cell(x, k)}</td>`).join('')}</tr>`));
 }
 
 // --- render and events ------------------------------------------------------------------------------------
@@ -740,7 +827,7 @@ function render() {
   const issues = validate(record);
   // The Items and Events pages carry their own pencil button (in the filter row / tab row). Scenarios has no page-wide
   // edit mode at all: every row (table or flowchart) opens the scenario modal, which carries its own pencil button.
-  const noPagebar = tab === 'Items' || tab === 'Events' || tab === 'Cards' || tab === 'Resources' || tab === 'Scenarios';
+  const noPagebar = tab === 'Items' || tab === 'Events' || tab === 'Cards' || tab === 'Scenarios' || tab === 'Resources';
   const pagebar = noPagebar ? '' : `<div class="pagebar"><button type="button" class="editbtn editicon" data-pageedit aria-pressed="${editing}" aria-label="${editing ? 'Stop editing this page' : `Edit ${esc(tab.toLowerCase())}`}" title="${editing ? 'Stop editing this page' : `Edit ${esc(tab.toLowerCase())}`}">${PENCIL}</button></div>`;
   const body = { Overview: overview, Scenarios: scenarios, Mercenaries: mercenaries, Items: items, Events: events, Cards: cardsPage, Resources: resources }[tab](record);
   renderModal();
@@ -765,6 +852,7 @@ function apply(el) {
     case 'itemToggle': return commit(ed.setItemUnlocked(record, id, !record.items.unl.some(u => String(u) === id)));
     case 'treasures': return commit(ed.setDeckList(record, 'tre', v));
     case 'deck': return commit(ed.toggleDeckEntry(record, key, Number(id)));
+    case 'resLink': return commit(ed.setResourceLink(record, id, key, v));
     default: return undefined;
   }
 }
@@ -789,6 +877,12 @@ main.addEventListener('click', e => {
   if (fz) { view.flowZoom = fz; render(); return; }
   const fn = e.target.closest('[data-flow]')?.dataset.flow;
   if (fn) { view.scnSel = Number(fn); render(); return; }
+  const scnRollBtn = e.target.closest('[data-scnroll]');
+  if (scnRollBtn) { copyRollerCode(scnRollBtn, scenarioRollerCode(record)); return; }
+  const itemRollBtn = e.target.closest('[data-itemroll]');
+  if (itemRollBtn) { copyRollerCode(itemRollBtn, itemRollerCode(record)); return; }
+  const trClaim = e.target.closest('[data-trclaim]')?.dataset.trclaim;
+  if (trClaim) { commit(ed.toggleDeckEntry(record, 'tre', Number(trClaim))); return; }
   const csz = e.target.closest('[data-cardsize]')?.dataset.cardsize;
   if (csz in ITEM_SIZES) {
     view.cardSize = csz;
@@ -961,6 +1055,15 @@ document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName)) { e.preventDefault(); undo(); }
 });
 
+// --- campaign file modal (import/export/clear) -------------------------------------------------------------
+const settingsModal = document.getElementById('settingsModal');
+const openSettings = () => { settingsModal.hidden = false; };
+const closeSettings = () => { settingsModal.hidden = true; };
+document.getElementById('settingsOpen').addEventListener('click', openSettings);
+document.getElementById('settingsClose').addEventListener('click', closeSettings);
+settingsModal.addEventListener('click', e => { if (e.target === settingsModal) closeSettings(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !settingsModal.hidden) closeSettings(); });
+
 document.getElementById('file').addEventListener('change', async e => {
   const f = e.target.files[0];
   if (!f) return;
@@ -972,6 +1075,7 @@ document.getElementById('file').addEventListener('change', async e => {
   } catch (err) { alert('Could not read the file: ' + err.message); }
   e.target.value = '';
   render();
+  closeSettings();
 });
 document.getElementById('export').addEventListener('click', () => {
   if (!record) return;
@@ -980,6 +1084,7 @@ document.getElementById('export').addEventListener('click', () => {
   a.download = 'campaign.json';
   a.click();
   URL.revokeObjectURL(a.href);
+  closeSettings();
 });
 document.getElementById('clear').addEventListener('click', async () => {
   if (!record || !confirm('Remove the campaign from this browser? Export it first if you need it.')) return;
@@ -988,6 +1093,7 @@ document.getElementById('clear').addEventListener('click', async () => {
   history.length = 0;
   editPages.clear();
   render();
+  closeSettings();
 });
 
 (async () => {

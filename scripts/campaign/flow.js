@@ -13,7 +13,7 @@ export function laneOf(s) {
   return LANES.includes(p) ? p : 'Other';
 }
 
-export const BOX = { w: 132, h: 40, colGap: 44, rowGap: 10, laneGap: 14, labelW: 118, pad: 10, gridCols: 6 };
+export const BOX = { w: 128, h: 26, colGap: 32, rowGap: 6, laneGap: 10, labelW: 100, pad: 8, gridCols: 6 };
 
 /*
 buildFlow(scenarios, visible)

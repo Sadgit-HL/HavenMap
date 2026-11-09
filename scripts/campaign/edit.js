@@ -286,6 +286,20 @@ export function setDeckList(r, list, value) {
   return edit(r, x => { x.decks[list] = ids.sort((a, b) => a - b); });
 }
 
+// --- resources -------------------------------------------------------------------------------------------------
+
+// Override one resource link cell (scripts/games/resources.js' own RESOURCES[].{game}). An empty value clears the
+// override, reverting to the shipped link. Only http(s) URLs are accepted (the value becomes an href).
+export function setResourceLink(r, title, game, value) {
+  const key = `${title}|${game}`;
+  const v = String(value ?? '').trim();
+  if (v && !/^https?:\/\//i.test(v)) return r;
+  return edit(r, x => {
+    if (v) x.resLinks[key] = v;
+    else delete x.resLinks[key];
+  });
+}
+
 // --- characters ----------------------------------------------------------------------------------------------
 
 const CHAR_RANGE = { lv: [1, 9], xp: [0, 9999], gold: [0, 9999], inh: [0, 9999], hand: [1, 20] };

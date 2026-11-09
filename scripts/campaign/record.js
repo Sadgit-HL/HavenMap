@@ -31,6 +31,7 @@ Record fields (all optional on load, defaults filled by normalize):
   evlog             finished events [{ kind, id, opt, votes, rnd?, closed?, place }]
   decks             { bg, tre, mp }                 battle goals drawn, treasures claimed, med packs
   enh, retired      enhancement log, retired characters
+  resLinks          { "<resource title>|<game>": url }   overrides scripts/games/resources.js's own link for that cell
 */
 export function emptyRecord() {
   return {
@@ -39,7 +40,7 @@ export function emptyRecord() {
     rep: { demons: 0, merchants: 0, guard: 0 }, pros: 0, imb: [], stk: [], cls: [],
     scn: {}, chars: [], items: { unl: [], taken: {} },
     events: { city: { top: [], bottom: [], out: [], locked: [] }, road: { top: [], bottom: [], out: [], locked: [] }, marks: {}, notes: {} }, evlog: [],
-    decks: { bg: [], tre: [], mp: [] }, enh: [], retired: [],
+    decks: { bg: [], tre: [], mp: [] }, enh: [], retired: [], resLinks: {},
   };
 }
 
@@ -71,6 +72,7 @@ export function normalize(raw) {
   r.events.notes = { ...(raw?.events?.notes || {}) };
   r.evlog = Array.isArray(r.evlog) ? r.evlog : [];
   r.decks = { ...base.decks, ...(r.decks || {}) };
+  r.resLinks = { ...(r.resLinks || {}) };
   r.scn = r.scn || {};
   r.chars = (r.chars || []).map(c => ({ traits: [], special: [], deck: [], disc: [], act: [], lost: [], bench: [], items: [], ...c }));
   return r;
