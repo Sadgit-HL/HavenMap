@@ -67,7 +67,7 @@ export function setScenarioResult(r, n, patch) {
   if (r.scn[key]?.s !== SCN_STATE.COMPLETED) return r;
   return edit(r, x => {
     const cur = x.scn[key];
-    if ('l' in patch) { const v = toInt(patch.l); if (v !== null) cur.l = clamp(v, 0, 7); }
+    if ('l' in patch) { const v = toInt(patch.l); if (v !== null) cur.l = clamp(v, -2, 3); }
     if ('p' in patch) { const v = toInt(patch.p); if (v !== null) cur.p = clamp(v, 1, 4); }
     if ('d' in patch) { if (patch.d) cur.d = String(patch.d).slice(0, 10); else delete cur.d; }
     if ('ch' in patch) {

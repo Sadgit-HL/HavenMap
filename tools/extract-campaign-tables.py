@@ -253,6 +253,8 @@ def main():
                 n = num(r[8])
                 g = ghs.get(n, {})
                 row = {'n': n, 'name': g.get('name') or re.sub(r'^GH ', 'Gloomhaven ', r[30]), 'area': r[9]}
+                if r[47]:
+                    row['img'] = r[47]
                 if g.get('init'):
                     row['init'] = 1
                 if flow.get(n):
@@ -262,12 +264,17 @@ def main():
                     row['forced'] = forced
                 scn.append(row)
             else:
-                stickers.append({'slug': r[30], 'name': r[34], 'area': r[9]})
-    write_module('gh2_scenarios.js', "Scenarios (number, name, area) and campaign stickers. unl = scenarios it unlocks, read from the "
+                sticker = {'slug': r[30], 'name': r[34], 'area': r[9]}
+                if r[47]:
+                    sticker['img'] = r[47]
+                stickers.append(sticker)
+    write_module('gh2_scenarios.js', "Scenarios (number, name, area, img = sticker artwork URL) and campaign stickers (same "
+                                     "fields, keyed by slug instead of number). unl = scenarios it unlocks, read from the "
                                      "arrows of the group's own GH2 Flow chart in the workbook (the source of truth); init = "
                                      "available at the start and forced = forced links, both from Gloomhaven Secretariat's gh2e "
                                      "data (AGPL-3.0). Scenarios unlocked by events, reputation or personal quests may have no "
-                                     "incoming link.",
+                                     "incoming link. A pair of scenarios that share one physical sticker (23/24, 25/26) share "
+                                     "the same img URL.",
                  [('SCENARIOS', scn), ('STICKERS', stickers)])
 
     # --- events --------------------------------------------------------------------------------------

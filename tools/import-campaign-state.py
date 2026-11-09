@@ -4,8 +4,9 @@ section 4). Stage 1: campaign-level data. Stage 2: the character sheets (Class: 
 The output is the group's real campaign (player names, progress), so it is written OUTSIDE the repo by default
 (asset-backups/campaign-import.json) and must not be committed.
 
-Sheets read ("GH2 Campaign", "GH2 Flow", "GH2 Events", "GH2 Decks", "Card DB"); layouts were worked out from the sheet
-and are documented next to each reader. Cell coordinates are 0-based (row, column) as openpyxl gives them minus 1.
+Sheets read ("GH2 Campaign", "GH2 Events", "GH2 Decks", "Card DB"); layouts were worked out from the sheet and are
+documented next to each reader. Cell coordinates are 0-based (row, column) as openpyxl gives them minus 1.
+Scenario unlock/completion state is not imported here: it is tracked and edited directly in the campaign app.
 
 Usage:  python -I tools/import-campaign-state.py [WHTracker.xlsx] [output.json]
 """
@@ -115,39 +116,6 @@ def read_campaign(sh):
     out['enh'] = enh
     out['retired'] = ret
     return out
-
-
-# --- scenario flow -------------------------------------------------------------------------------------------
-
-STATUS = {'Locked': 0, 'Unlocked': 1, 'Completed': 2, 'Locked Out': 3}
-
-
-def read_scenarios(sh):
-    """Per scenario box (9 columns x 13 rows from (3, 0)): number at the top-left cell, status 8 rows down, then
-    'L:' level and 'P:' party size, 'Chests:' numbers and 'Date:'."""
-    scn = {}
-    width = (max(len(r) for r in sh.rows) + 8) // 9
-    for br in range(12):
-        for bc in range(width):
-            r0, c0 = 3 + 13 * br, 9 * bc
-            n = sh(r0, c0)
-            if n in (None, ''):
-                continue
-            st = STATUS.get(sh(r0 + 8, c0))
-            if st is None:
-                continue
-            row = {'s': st}
-            lv, party = num(sh(r0 + 9, c0 + 1)), num(sh(r0 + 9, c0 + 5))
-            if st == 2:
-                row['l'], row['p'] = lv, party
-                ch = [num(sh(r0 + 10, c)) for c in range(c0 + 1, c0 + 9) if isinstance(sh(r0 + 10, c), (int, float))]
-                if ch:
-                    row['ch'] = ch
-                d = next((sh(r0 + 11, c) for c in range(c0 + 1, c0 + 9) if sh(r0 + 11, c)), None)
-                if d:
-                    row['d'] = d.date().isoformat() if hasattr(d, 'date') else str(d)
-            scn[str(num(n))] = row
-    return scn
 
 
 # --- events --------------------------------------------------------------------------------------------------
@@ -309,15 +277,13 @@ def main():
     decks, unmatched = read_decks(Sheet(wb['GH2 Decks']))
     rec = {'v': 1, 'ver': 1, 'name': '', 'players': [{'seat': i, 'name': n} for i, n in enumerate(SEATS)],
            'party': camp['party'], 'rep': camp['rep'], 'pros': camp['pros'], 'imb': camp['imb'], 'stk': camp['stk'],
-           'cls': camp['cls'], 'scn': read_scenarios(Sheet(wb['GH2 Flow'])), 'chars': chars,
+           'cls': camp['cls'], 'chars': chars,
            'items': read_items(wb), 'events': read_events(Sheet(wb['GH2 Events'])), 'decks': decks,
            'enh': camp['enh'], 'retired': camp['retired']}
     with open(dest, 'w', encoding='utf-8') as f:
         json.dump(rec, f, ensure_ascii=False, indent=1)
-    s = rec['scn']
     print('written', dest)
     print('party', rec['party'], 'rep', rec['rep'], 'pros', rec['pros'], 'imb ticks', len(rec['imb']))
-    print('scenarios', len(s), {k: sum(1 for v in s.values() if v['s'] == i) for k, i in STATUS.items()})
     print('stickers', rec['stk'])
     print('classes', len(rec['cls']), 'enh', len(rec['enh']), 'retired', len(rec['retired']))
     print('items unlocked', len(rec['items']['unl']), 'with copies out', len(rec['items']['taken']))

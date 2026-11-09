@@ -36,7 +36,7 @@ const editPages = new Set();        // pages (top-level tabs) currently in edit 
 let editing = false;               // derived in render(): is the visible page being edited
 let imgMode = 'hover';                 // card images: 'hover' (preview under the pointer) or 'always' (shown in the lists)
 const history = [];                                   // earlier records for undo, newest last
-const view = { scnView: 'table', flowShow: 'progress', flowLane: '', flowZoom: 'm', scnSel: null, scnStatus: '', scnSearch: '', itemSlot: '', itemSearch: '', itemShow: 'unlocked', itemView: 'list', itemSize: 'm', itemSort: { col: '', dir: 1 }, cardType: 'abilities', cardSlot: '', cardChk: '', cardKind: 'city', cardSide: 'front', cardDeck: '', cardMon: '', cardMLv: '', cardShow: 'unlocked', cardCls: '', cardLv: '', cardSearch: '', cardSize: 's' };   // itemView: 'list' | 'grid'
+const view = { scnView: 'table', flowShow: 'progress', flowLane: '', flowZoom: 'm', scnSel: null, scnStatus: '', scnSearch: '', scnSort: { col: '', dir: 1 }, itemSlot: '', itemSearch: '', itemShow: 'unlocked', itemView: 'list', itemSize: 'm', itemSort: { col: '', dir: 1 }, cardType: 'abilities', cardSlot: '', cardChk: '', cardKind: 'city', cardSide: 'front', cardDeck: '', cardMon: '', cardMLv: '', cardShow: 'unlocked', cardCls: '', cardLv: '', cardSearch: '', cardSize: 's' };   // itemView: 'list' | 'grid'
 
 // Level order of ability cards: 1, X (the level 1.1 cards), 2 ... 9, then M (mastery).
 const lvRank = lv => (lv === 'X' ? 1.5 : lv === 'M' ? 99 : Number(lv));
@@ -46,7 +46,7 @@ const PENCIL = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="tru
 const ITEM_SIZES = { s: 150, m: 188, l: 250 };      // minimum tile width in px for the item grid
 // Filter and view settings are kept in this browser (not the search texts: a stale search would hide rows after a reload).
 const VIEW_KEY = 'havenmap.campaign.view';
-const VIEW_SAVED = ['scnView', 'flowShow', 'flowLane', 'flowZoom', 'scnStatus', 'itemSlot', 'itemShow', 'itemView', 'itemSize', 'itemSort', 'cardType', 'cardSlot', 'cardKind', 'cardSide', 'cardDeck', 'cardMon', 'cardMLv', 'cardShow', 'cardCls', 'cardLv', 'cardSize'];
+const VIEW_SAVED = ['scnView', 'flowShow', 'flowLane', 'flowZoom', 'scnStatus', 'scnSort', 'itemSlot', 'itemShow', 'itemView', 'itemSize', 'itemSort', 'cardType', 'cardSlot', 'cardKind', 'cardSide', 'cardDeck', 'cardMon', 'cardMLv', 'cardShow', 'cardCls', 'cardLv', 'cardSize'];
 function saveView() {
   try { localStorage.setItem(VIEW_KEY, JSON.stringify(Object.fromEntries(VIEW_SAVED.map(k => [k, view[k]])))); } catch { /* ignore */ }
 }
@@ -75,6 +75,7 @@ function loadView() {
     if (typeof v.cardLv === 'string') view.cardLv = v.cardLv;
     if (v.cardSize in ITEM_SIZES) view.cardSize = v.cardSize;
     if (v.itemSort && typeof v.itemSort.col === 'string' && (v.itemSort.dir === 1 || v.itemSort.dir === -1)) view.itemSort = { col: v.itemSort.col, dir: v.itemSort.dir };
+    if (v.scnSort && typeof v.scnSort.col === 'string' && (v.scnSort.dir === 1 || v.scnSort.dir === -1)) view.scnSort = { col: v.scnSort.col, dir: v.scnSort.dir };
   } catch { /* ignore */ }
 }
 const itemById = new Map(ITEMS.map(i => [i.id, i]));
@@ -82,6 +83,8 @@ const pretty = slug => String(slug ?? '').replace(/-/g, ' ').replace(/\b\w/g, c 
 const chip = (text, cls = '') => `<span class="chip ${cls}">${esc(text)}</span>`;
 const kv = (k, v) => `<div class="kv"><span>${esc(k)}</span><span>${v}</span></div>`;
 const none = '<div class="empty">none</div>';
+// Scenario level is a signed adjustment (-2..+3 on top of the suggested level): always show its sign.
+const signed = n => (n == null ? null : n >= 0 ? `+${n}` : String(n));
 
 // Number input that reports through data attributes: <input data-act="party" data-key="avg">.
 const num = (act, key, value, { min, max, id = '', width = 56 } = {}) =>
@@ -194,7 +197,7 @@ function flowPage(r) {
   if (view.flowLane) vis = new Set([...vis].filter(n => laneOf(byN.get(n)) === view.flowLane));
   const g = buildFlow(SCENARIOS, vis);
   const z = FLOW_ZOOM[view.flowZoom];
-  const masked = n => st(n) === 0 && !editing;
+  const masked = n => st(n) === 0;
   const filters = `<div class="filters">${scnViewToggle()}
     <select id="flowShow">${[['progress', 'Progress and next steps'], ['all', 'All scenarios']].map(([v, l]) => `<option value="${v}" ${view.flowShow === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
     <select id="flowLane"><option value="">All storylines</option>${LANES.map(l => `<option ${view.flowLane === l ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>
@@ -212,50 +215,78 @@ function flowPage(r) {
   }).join('');
   const svg = `<svg class="flowsvg" width="${Math.round(g.width * z)}" height="${Math.round(g.height * z)}" viewBox="0 0 ${g.width} ${g.height}" role="img" aria-label="Scenario flowchart">
     <defs><marker id="farrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="farrowhead"/></marker></defs>${lanes}${edges}${nodes}</svg>`;
-  return filters + legend + `<div class="flowwrap">${svg}</div>` + flowDetail(r);
+  return filters + legend + `<div class="flowwrap">${svg}</div>`;
 }
 
-// Details of the selected scenario under the chart.
+// Details of the selected scenario, shown in a modal (scnModalRoot below) so it's reachable regardless of scroll
+// position or chart height.
 function flowDetail(r) {
   const n = view.scnSel, s = SCENARIOS.find(x => x.n === n);
   if (!s) return '';
   const x = r.scn[String(n)] || { s: 0 };
-  if (x.s === 0 && !editing) return '<div class="card flowdetail"><h3>Locked scenario</h3><p class="hint">This scenario is not unlocked yet.</p></div>';
+  if (x.s === 0) return '<h3 id="scnModalTitle">Locked scenario</h3><p class="hint">This scenario is not unlocked yet.</p>';
   const cls = k => { const v = r.scn[String(k)]?.s ?? 0; return v === 2 ? 'ok' : v === 1 ? 'info' : 'dim'; };
-  const nm = k => (r.scn[String(k)]?.s || editing ? `${k} ${SCENARIOS.find(y => y.n === k)?.name ?? ''}` : '?');
-  return `<div class="card flowdetail"><h3>${esc(s.n)} ${esc(s.name)}</h3>
-    ${kv('Storyline', esc(laneOf(s)))}${kv('State', `<span class="s${x.s}">${esc(SCN_STATE_NAME[x.s])}</span>`)}
-    ${x.s === 2 ? kv('Level / party', esc(`${x.l ?? '?'} / ${x.p ?? '?'}`)) + kv('Date', esc(x.d ?? '')) : ''}
-    ${kv('Unlocks', (s.unl || []).map(k => chip(nm(k), cls(k))).join('') || '<span class="hint">no scenario</span>')}
-    ${kv('Unlocked by', unlockedBy(s.n).map(k => chip(nm(k), cls(k))).join('') || '<span class="hint">no scenario (event, reputation or quest)</span>')}</div>`;
+  const nm = k => (r.scn[String(k)]?.s ? `${k} ${SCENARIOS.find(y => y.n === k)?.name ?? ''}` : '?');
+  const stateRow = editing
+    ? kv('State', `<select data-act="scnState" data-id="${esc(s.n)}">${SCN_STATE_NAME.map((name, i) => `<option value="${i}" ${x.s === i ? 'selected' : ''}>${esc(name)}</option>`).join('')}</select>`)
+    : kv('State', `<span class="s${x.s}">${esc(SCN_STATE_NAME[x.s])}</span>`);
+  const resultRows = x.s !== 2 ? '' : editing
+    ? kv('Level', num('scnRes', 'l', x.l, { min: -2, max: 3, id: s.n, width: 56 }))
+      + kv('# Mercenaries', num('scnRes', 'p', x.p, { min: 1, max: 4, id: s.n, width: 56 }))
+      + kv('Chests', `<input type="text" class="txt" style="width:120px" data-act="scnRes" data-key="ch" data-id="${esc(s.n)}" value="${esc((x.ch || []).join(', '))}">`)
+      + kv('Date (completed)', `<input type="date" class="txt" data-act="scnRes" data-key="d" data-id="${esc(s.n)}" value="${esc(x.d ?? '')}">`)
+    : kv('Level', esc(signed(x.l) ?? '?')) + kv('# Mercenaries', esc(x.p ?? '?')) + kv('Date (completed)', esc(x.d ?? ''));
+  const treNums = x.ch || [];
+  const treRow = !treNums.length ? '' : kv('Treasure', `<span class="chips">${treNums.map(tn => editing
+    ? `<button type="button" class="chip ${r.decks.tre.includes(tn) ? 'ok' : 'dim'}" data-act="deck" data-key="tre" data-id="${tn}">${tn}</button>`
+    : chip(tn, r.decks.tre.includes(tn) ? 'ok' : 'dim')).join('')}</span>`);
+  return `<h3 id="scnModalTitle">${esc(s.n)} ${esc(s.name)}</h3>
+    ${s.img ? `<img class="flowsticker" src="${esc(s.img)}" alt="">` : ''}
+    ${kv('Storyline', esc(laneOf(s)))}${stateRow}
+    ${resultRows}
+    ${treRow}
+    ${kv('Unlocks', (s.unl || []).length ? `<span class="chips">${s.unl.map(k => chip(nm(k), cls(k))).join('')}</span>` : '<span class="hint">no scenario</span>')}
+    ${kv('Unlocked by', unlockedBy(s.n).length ? `<span class="chips">${unlockedBy(s.n).map(k => chip(nm(k), cls(k))).join('')}</span>` : '<span class="hint">no scenario (event, reputation or quest)</span>')}
+    ${editing ? '<p class="hint">Completing a scenario also unlocks the scenarios it links to. Setting it back to Locked clears its result.</p>' : ''}`;
 }
 
 function scenarios(r) {
   if (view.scnView === 'flow') return flowPage(r);
   const q = view.scnSearch.toLowerCase();
-  const rows = SCENARIOS.filter(s => {
+  let rows = SCENARIOS.filter(s => {
     const st = r.scn[String(s.n)]?.s ?? 0;
     if (view.scnStatus !== '' && String(st) !== view.scnStatus) return false;
     return !q || `${s.n} ${s.name} ${s.area || ''}`.toLowerCase().includes(q);
   });
   const stateClass = n => { const s = r.scn[String(n)]?.s ?? 0; return s === 2 ? 'ok' : s === 1 ? 'info' : 'dim'; };
+  const SORT = {
+    n: s => s.n,
+    name: s => s.name.toLowerCase(),
+    area: s => (s.area || '').toLowerCase(),
+    state: s => r.scn[String(s.n)]?.s ?? 0,
+    l: s => r.scn[String(s.n)]?.l ?? -99,
+    p: s => r.scn[String(s.n)]?.p ?? -1,
+    ch: s => (r.scn[String(s.n)]?.ch || []).length,
+    d: s => r.scn[String(s.n)]?.d || '',
+  };
+  const cmp = (a, b) => (typeof a === 'number' ? a - b : String(a).localeCompare(String(b)));
+  const { col, dir } = view.scnSort;
+  if (SORT[col]) rows = [...rows].sort((x, y) => dir * cmp(SORT[col](x), SORT[col](y)) || SORT.n(x) - SORT.n(y));
+  const sortTh = (k, l) => `<button type="button" class="sortbtn" data-scnsort="${k}" title="Sort by ${esc(l.toLowerCase())}">${esc(l)}${col === k ? (dir > 0 ? ' &#9650;' : ' &#9660;') : ''}</button>`;
+  const head = [sortTh('n', '#'), sortTh('name', 'Name'), sortTh('area', 'Area'), sortTh('state', 'State'), sortTh('l', 'Lv'),
+    sortTh('p', '# Mercenaries'), sortTh('ch', 'Chests'), sortTh('d', 'Date (completed)'), 'Unlocks', 'Unlocked by'];
   const filters = `<div class="filters">${scnViewToggle()}
     <select id="scnStatus"><option value="">All states</option>${SCN_STATE_NAME.map((n, i) => `<option value="${i}" ${view.scnStatus === String(i) ? 'selected' : ''}>${n}</option>`).join('')}</select>
     <input id="scnSearch" type="search" placeholder="Search number, name, area" value="${esc(view.scnSearch)}"></div>`;
-  return filters + table(['#', 'Name', 'Area', 'State', 'Lv', 'Party', 'Chests', 'Date', 'Unlocks', 'Unlocked by'], rows.map(s => {
+  return filters + table(head, rows.map(s => {
     const x = r.scn[String(s.n)] || { s: 0 };
-    const done = x.s === 2;
-    const stateCell = editing
-      ? `<select data-act="scnState" data-id="${esc(s.n)}">${SCN_STATE_NAME.map((n, i) => `<option value="${i}" ${x.s === i ? 'selected' : ''}>${n}</option>`).join('')}</select>`
-      : SCN_STATE_NAME[x.s];
-    const field = (key, shown, input) => (editing && done ? input : esc(shown ?? ''));
-    return `<tr><td>${esc(s.n)}</td><td>${esc(s.name)}</td><td>${esc(s.area ?? '')}</td><td class="s${x.s}">${stateCell}</td>
-      <td>${field('l', x.l, num('scnRes', 'l', x.l, { min: 0, max: 7, id: s.n, width: 44 }))}</td>
-      <td>${field('p', x.p, num('scnRes', 'p', x.p, { min: 1, max: 4, id: s.n, width: 44 }))}</td>
-      <td>${field('ch', (x.ch || []).join(', '), `<input type="text" class="txt" style="width:80px" data-act="scnRes" data-key="ch" data-id="${esc(s.n)}" value="${esc((x.ch || []).join(', '))}">`)}</td>
-      <td>${field('d', x.d, `<input type="date" class="txt" data-act="scnRes" data-key="d" data-id="${esc(s.n)}" value="${esc(x.d ?? '')}">`)}</td>
+    return `<tr class="rowlink" data-flow="${s.n}" tabindex="0"><td>${esc(s.n)}</td><td>${esc(s.name)}</td><td>${esc(s.area ?? '')}</td><td class="s${x.s}">${SCN_STATE_NAME[x.s]}</td>
+      <td>${esc(signed(x.l) ?? '')}</td>
+      <td>${esc(x.p ?? '')}</td>
+      <td>${esc((x.ch || []).join(', '))}</td>
+      <td>${esc(x.d ?? '')}</td>
       <td>${(s.unl || []).map(n => chip(n, stateClass(n))).join('')}</td><td>${unlockedBy(s.n).map(n => chip(n, stateClass(n))).join('')}</td></tr>`;
-  })) + (editing ? '<p class="hint">Completing a scenario also unlocks the scenarios it links to. Setting a scenario back to Locked clears its result.</p>' : '');
+  })) + '<p class="hint">Click a scenario row to view and edit its details.</p>';
 }
 
 function benchList(c) {
@@ -661,13 +692,41 @@ modalRoot.addEventListener('change', e => {
   modalFocus = key;
   commit(ed.setSpecialTrait(record, traitModal, key, e.target.checked));
 });
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && traitModal) closeModal(); });
 main.addEventListener('click', e => {
   const id = e.target.closest('[data-trait-edit]')?.dataset.traitEdit;
   if (!id) return;
   traitModal = id;
   modalFocus = '';
   renderModal();
+});
+
+// --- scenario detail modal (flowchart): shown on top regardless of scroll position or chart height ---------
+const scnModalRoot = document.createElement('div');
+document.body.appendChild(scnModalRoot);
+
+function renderScnModal() {
+  if (!record || view.scnSel == null || !SCENARIOS.some(s => s.n === view.scnSel)) { scnModalRoot.innerHTML = ''; return; }
+  scnModalRoot.innerHTML = `<div class="modal" id="scnModal" role="dialog" aria-modal="true" aria-labelledby="scnModalTitle"><div class="modalbox wide">
+    <button type="button" class="modalx" data-scn-close aria-label="Close">&times;</button>
+    <button type="button" class="editbtn editicon modaledit" data-pageedit aria-pressed="${editing}" aria-label="${editing ? 'Stop editing scenarios' : 'Edit scenarios'}" title="${editing ? 'Stop editing scenarios' : 'Edit scenarios'}">${PENCIL}</button>
+    ${flowDetail(record)}</div></div>`;
+}
+function closeScnModal() { view.scnSel = null; render(); }
+scnModalRoot.addEventListener('click', e => {
+  if (e.target.id === 'scnModal' || e.target.closest('[data-scn-close]')) { closeScnModal(); return; }
+  if (e.target.closest('[data-pageedit]')) {
+    if (editPages.has(tab)) editPages.delete(tab); else editPages.add(tab);
+    render();
+    return;
+  }
+  const b = e.target.closest('button[data-act]');
+  if (editing && b) apply(b);
+});
+scnModalRoot.addEventListener('change', e => { if (editing && e.target.dataset.act && e.target.tagName !== 'BUTTON') apply(e.target); });
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (traitModal) closeModal();
+  else if (view.scnSel != null) closeScnModal();
 });
 
 function render() {
@@ -679,10 +738,13 @@ function render() {
   editing = editPages.has(tab);
   saveView();
   const issues = validate(record);
-  // The Items and Events pages carry their own pencil button (in the filter row / tab row); every other page gets a bar above its content.
-  const pagebar = tab === 'Items' || tab === 'Events' || tab === 'Cards' || tab === 'Resources' ? '' : `<div class="pagebar"><button type="button" class="editbtn" data-pageedit aria-pressed="${editing}" title="${editing ? 'Stop editing this page' : 'Edit this page'}">${editing ? 'Done editing' : `Edit ${esc(tab.toLowerCase())}`}</button></div>`;
+  // The Items and Events pages carry their own pencil button (in the filter row / tab row). Scenarios has no page-wide
+  // edit mode at all: every row (table or flowchart) opens the scenario modal, which carries its own pencil button.
+  const noPagebar = tab === 'Items' || tab === 'Events' || tab === 'Cards' || tab === 'Resources' || tab === 'Scenarios';
+  const pagebar = noPagebar ? '' : `<div class="pagebar"><button type="button" class="editbtn editicon" data-pageedit aria-pressed="${editing}" aria-label="${editing ? 'Stop editing this page' : `Edit ${esc(tab.toLowerCase())}`}" title="${editing ? 'Stop editing this page' : `Edit ${esc(tab.toLowerCase())}`}">${PENCIL}</button></div>`;
   const body = { Overview: overview, Scenarios: scenarios, Mercenaries: mercenaries, Items: items, Events: events, Cards: cardsPage, Resources: resources }[tab](record);
   renderModal();
+  renderScnModal();
   main.innerHTML = pagebar + (issues.length ? `<div class="issues">${issues.length} issue(s): ${esc(issues.slice(0, 5).join('; '))}</div>` : '') + body;
   if (tab === 'Cards' && view.cardType === 'am') hydrateAm();
 }
@@ -737,6 +799,13 @@ main.addEventListener('click', e => {
   if (srt) {
     const s = view.itemSort;
     view.itemSort = s.col !== srt ? { col: srt, dir: 1 } : s.dir > 0 ? { col: srt, dir: -1 } : { col: '', dir: 1 };
+    render();
+    return;
+  }
+  const scnSrt = e.target.closest('[data-scnsort]')?.dataset.scnsort;
+  if (scnSrt) {
+    const s = view.scnSort;
+    view.scnSort = s.col !== scnSrt ? { col: scnSrt, dir: 1 } : s.dir > 0 ? { col: scnSrt, dir: -1 } : { col: '', dir: 1 };
     render();
     return;
   }
@@ -880,7 +949,7 @@ main.addEventListener('click', evClick);
 document.addEventListener('click', evOutside);                 // a click outside the peeked card closes it
 main.addEventListener('keydown', e => {                      // an option of the open event is a button for the keyboard
   if ((e.key === 'Enter' || e.key === ' ') && e.target.matches?.('.evopt[data-ev]')) { e.preventDefault(); e.target.click(); }
-  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches?.('.fnode[data-flow]')) { e.preventDefault(); view.scnSel = Number(e.target.dataset.flow); render(); }
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches?.('[data-flow]')) { e.preventDefault(); view.scnSel = Number(e.target.dataset.flow); render(); }
 });
 main.addEventListener('click', e => {
   if (!e.target.closest('[data-pageedit]')) return;
