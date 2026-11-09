@@ -10,7 +10,7 @@ import { DECKS, deckSlugFor, assetPath } from './data.js';
 import { uiState, subscribeUI } from './uiState.js';
 import { buildCard } from './amd/card.js?v=4';
 import { createHoverPreview, previewImage } from './hoverPreview.js';
-import { perkTextHtml } from './amd/perkText.js';
+import { perkTextHtml, perkRuleNote } from './amd/perkText.js';
 import { escapeHtml as esc } from './escape.js';
 import {
   AM_SPECIAL, amDecks, amSupportsImbue, amIsPartySpecial, amSpecialCap, amCardLocked, amState, amClassName, amHeroPerks, amToggleBox, amDeckInfo, amDraw, amReturn, amAdjust,
@@ -310,7 +310,8 @@ function amPerkRowHtml(grp, g) {
   return `<div class="am-perk${grp.done ? ' is-on' : ''}${grp.partial ? ' is-partial' : ''}${grp.boxes.length > 1 ? ' am-perk--multi' : ''}${nCards ? '' : ' am-perk--text'}${nCards >= 4 ? ' am-perk--wide' : ''}"${grp.boxes.length === 1 ? ` data-am-single="${p.index}" data-am-g="${g}"` : ''}>
     <span class="am-perk-boxes am-perk-boxes--${grp.kind}">${boxes}</span>
     <span class="am-perk-cards">${cards}</span>
-    ${p.label && !nCards ? `<span class="am-perk-text">${perkTextHtml(p.label)}</span>` : ''}
+    ${p.label && !nCards ? `<span class="am-perk-text">${perkTextHtml(p.label)}</span>`
+      : perkRuleNote(p.label) ? `<span class="am-perk-text am-perk-note">${perkTextHtml(perkRuleNote(p.label))}</span>` : ''}
     ${tag}
   </div>`;
 }

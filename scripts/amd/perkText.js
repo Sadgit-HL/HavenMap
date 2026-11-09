@@ -27,3 +27,12 @@ export function perkTextHtml(text) {
       : `<em class="pt-word">${esc(word)}</em>`;
   });
 }
+
+// A perk that adds or removes cards shows those cards, so its description is redundant -- except for a
+// leading "Ignore ... effects" clause ("Ignore scenario effects and add one +1 card"), which no card shows.
+// Returns that clause for a perk with cards, '' otherwise.
+const IGNORE_CLAUSE = /^\s*(ignore (?:negative )?(?:scenario|item\s*-\s*1) effects)(?=\s*,?\s*and\s+(?:add|remove)\b)/i;
+export function perkRuleNote(text) {
+  const m = IGNORE_CLAUSE.exec(text || '');
+  return m ? m[1].charAt(0).toUpperCase() + m[1].slice(1) : '';
+}

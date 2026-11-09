@@ -1,6 +1,6 @@
 import { PERKS } from '../scripts/games/perks.js?v=10';
 import { buildCard } from '../scripts/amd/card.js?v=4';
-import { perkTextHtml } from '../scripts/amd/perkText.js';
+import { perkTextHtml, perkRuleNote } from '../scripts/amd/perkText.js';
 
 const editionSelect = document.getElementById('edition');
 const classSelect = document.getElementById('class');
@@ -64,11 +64,14 @@ function renderClass(edition, className) {
     if (p.adds.length) cards.appendChild(cardsGroup(p.adds, className, true));
     row.appendChild(cards);
 
-    // The cards already show what a perk does; keep the text only for perks without cards.
-    if (p.text && !p.removes.length && !p.adds.length) {
+    // The cards already show what a perk does; keep the text only for perks without cards, plus the
+    // "Ignore ... effects" clause of perks with cards.
+    const hasCards = p.removes.length || p.adds.length;
+    const shown = hasCards ? perkRuleNote(p.text) : p.text;
+    if (shown) {
       const text = document.createElement('div');
       text.className = 'perk-text';
-      text.innerHTML = perkTextHtml(p.text);
+      text.innerHTML = perkTextHtml(shown);
       row.appendChild(text);
     }
 
