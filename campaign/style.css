@@ -17,6 +17,9 @@ h2 { font-size:16px; margin:20px 0 8px; color:var(--accent); }
 .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:10px 12px; }
 .card h3 { margin:0 0 6px; font-size:14px; }
 .kv { display:flex; justify-content:space-between; gap:8px; padding:2px 0; }
+.stepper { display:inline-flex; align-items:center; gap:6px; }
+.stepper b { min-width:1.2em; text-align:center; }
+.stepper .chip { cursor:pointer; padding:0 7px; line-height:1.4; }
 .kv span:first-child { color:var(--muted); }
 .bar { height:8px; border-radius:4px; background:#33291d; position:relative; margin:4px 0 8px; }
 .bar i { position:absolute; top:-2px; width:3px; height:12px; background:var(--accent); border-radius:2px; }

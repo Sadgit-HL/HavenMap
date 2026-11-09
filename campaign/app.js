@@ -145,16 +145,31 @@ function table(head, rows) {
   return `<table><tr>${head.map(h => `<th>${h}</th>`).join('')}</tr>${rows.join('')}</table>`;
 }
 
+// A value with click-to-step +/- buttons, always active (no edit mode needed): clicking adjusts r.party[key] by
+// +-1 (clamped by PARTY_RANGE in scripts/campaign/edit.js), shown is the label (the raw value, or a derived one
+// such as scenario level).
+function stepper(key, shown, cur, min, max) {
+  return `<span class="stepper">
+    <button type="button" class="chip" data-partystep="${esc(key)}" data-dir="-1" title="Lower" ${cur <= min ? 'disabled' : ''}>&minus;</button>
+    <b>${esc(shown)}</b>
+    <button type="button" class="chip" data-partystep="${esc(key)}" data-dir="1" title="Raise" ${cur >= max ? 'disabled' : ''}>+</button></span>`;
+}
+
 function overview(r) {
   const { counts, days, avgDays } = scenarioCounts(r);
   const repBar = v => `<div class="bar"><i style="left:${((20 - Math.max(-10, Math.min(20, v))) / 30) * 97}%"></i></div>`;
   const rep = (label, key) => kv(label, val(true, r.rep[key], num('rep', key, r.rep[key], { min: -10, max: 20 }))) + repBar(r.rep[key]);
   const known = new Set(STICKERS.map(s => s.name.toLowerCase()));
+  // Average level is derived from the mercenaries' own levels (not entered by hand); Normal difficulty is that
+  // average level halved and rounded up (scenarioLevel adds the diff modifier on top, clamped 0..7).
+  const avg = r.chars.length ? r.chars.reduce((s, c) => s + (c.lv || 0), 0) / r.chars.length : r.party.avg;
+  const schedLevel = scenarioLevel({ ...r.party, avg });
   return `
   <div class="grid">
-    <div class="card"><h3>Party</h3>${kv('Average level', val(true, r.party.avg, num('party', 'avg', r.party.avg, { min: 1, max: 9 })))}
+    <div class="card"><h3>Party</h3>${kv('Average level', esc(Number.isInteger(avg) ? avg : avg.toFixed(2)))}
       ${kv('Difficulty', `${esc(r.party.diffName || '')} ` + val(true, r.party.diff, num('party', 'diff', r.party.diff, { min: -3, max: 5 })))}
-      ${kv('Scenario level', esc(scenarioLevel(r.party)))}${kv('Inspiration', val(true, r.party.insp, num('party', 'insp', r.party.insp, { min: 0, max: 99 })))}</div>
+      ${kv('Scenario level', stepper('diff', schedLevel, r.party.diff, -3, 5))}
+      ${kv('Inspiration', stepper('insp', r.party.insp, r.party.insp, 0, 99))}</div>
     <div class="card"><h3>Prosperity</h3>${kv('Checkmarks', val(true, r.pros, num('pros', 'pros', r.pros, { min: 0, max: 90 })))}${kv('Level', esc(prosperityLevel(r.pros)))}</div>
     <div class="card"><h3>Reputation</h3>${rep('Demons', 'demons')}${rep('Merchants', 'merchants')}${rep('City Guard', 'guard')}</div>
     <div class="card"><h3>Scenarios</h3>${SCN_STATE_NAME.map((n, i) => kv(n, esc(counts[i] || 0))).join('')}${kv('Total', esc(SCENARIOS.length))}
@@ -165,9 +180,8 @@ function overview(r) {
   <h2>Players</h2>${r.players.length ? `<div class="chips">${r.players.map(p => chip(p.name)).join('')}</div>` : none}
   <h2>Retired</h2>${r.retired.length ? table(['Class', 'Player', 'Name', 'Lv', 'Perks', 'Masteries'],
     r.retired.map(x => `<tr><td>${esc(x.cls)}</td><td>${esc(x.player ?? '')}</td><td>${esc(x.name ?? '')}</td><td>${esc(x.lv ?? '')}</td><td>${esc(x.perks ?? '')}</td><td>${esc(x.masteries ?? '')}</td></tr>`)) : none}
-  <h2>Enhancements (${r.enh.length})</h2>${r.enh.length ? table(['Class', 'Card', 'Top', 'Bottom'],
-    r.enh.map(x => `<tr><td>${esc(x.cls)}</td><td>${esc(x.card)}</td><td>${esc(x.top ?? '')}</td><td>${esc(x.bottom ?? '')}</td></tr>`)) : none}
-  ${editing ? '<p class="hint">Stickers, classes, players, retirements and enhancements are not editable yet.</p>' : ''}`;
+  <h2>Enhancements</h2><p>${esc(r.enh.length)} total (see each mercenary's own tab for their cards)</p>
+  ${editing ? '<p class="hint">Stickers, classes, players and retirements are not editable yet.</p>' : ''}`;
 }
 
 // --- the scenario flowchart -------------------------------------------------------------------------------------------------
@@ -396,8 +410,9 @@ function classTraits(c) {
   return [...characterTraits(c)].filter(t => !own.has(t) && !special.has(t)).map(pretty);
 }
 
-function characterCard(c) {
+function characterCard(c, r) {
   const cls = classByName(c.cls);
+  const enh = r.enh.filter(x => x.cls === c.cls);
   const faces = c.am?.faces || [];
   const inDeck = faces.filter(f => !f.out).length;
   const stat = (label, key, max, min = 0) => kv(label, val(true, c[key] ?? '', num('char', key, c[key], { min, max, id: c.id, width: 64 })));
@@ -417,6 +432,8 @@ function characterCard(c) {
     <div class="chips">${c.items.map(it => `<span class="chip ${(it.st || []).some(Boolean) ? 'warn' : ''}" title="tick states ${esc((it.st || []).join('/'))}">${esc(pretty(itemById.get(it.id)?.slug ?? it.id))}</span>`).join('')}</div>
     <div class="pile"><b>Modifier deck</b> ${inDeck} of ${faces.length} cards in the deck${c.am?.n != null ? ` (sheet count ${esc(c.am.n)})` : ''}</div>
     <div class="chips">${faces.map(f => `<span class="chip ${f.out ? 'dim' : ''}">${esc(f.f)}</span>`).join('')}</div>
+    <div class="pile"><b>Enhancements (${enh.length})</b></div>
+    ${enh.length ? table(['Card', 'Top', 'Bottom'], enh.map(x => `<tr><td>${esc(x.card)}</td><td>${esc(x.top ?? '')}</td><td>${esc(x.bottom ?? '')}</td></tr>`)) : none}
   </div>${editing ? '<p class="hint">Cards, items and the modifier deck are not editable here yet.</p>' : ''}`;
 }
 
@@ -432,7 +449,7 @@ function mercenaries(r) {
 
 function characterTab(r, cid) {
   const c = r.chars.find(x => x.id === cid);
-  return c ? characterCard(c) : '<div class="empty">Character not found.</div>';
+  return c ? characterCard(c, r) : '<div class="empty">Character not found.</div>';
 }
 
 // The "+" tab: add a character (up to ed.MAX_CHARACTERS) from the classes not yet in play.
@@ -883,6 +900,12 @@ main.addEventListener('click', e => {
   if (itemRollBtn) { copyRollerCode(itemRollBtn, itemRollerCode(record)); return; }
   const trClaim = e.target.closest('[data-trclaim]')?.dataset.trclaim;
   if (trClaim) { commit(ed.toggleDeckEntry(record, 'tre', Number(trClaim))); return; }
+  const stepBtn = e.target.closest('[data-partystep]');
+  if (stepBtn) {
+    const { partystep: key, dir } = stepBtn.dataset;
+    commit(ed.setParty(record, key, (record.party[key] || 0) + Number(dir)));
+    return;
+  }
   const csz = e.target.closest('[data-cardsize]')?.dataset.cardsize;
   if (csz in ITEM_SIZES) {
     view.cardSize = csz;
