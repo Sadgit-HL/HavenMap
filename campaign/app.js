@@ -12,7 +12,7 @@ import {
   validate, scenarioLevel, prosperityLevel, handOf, shopCopies, itemsInUse, unlockedBy, classByName, SCN_STATE_NAME,
 } from '../scripts/campaign/record.js';
 import * as ed from '../scripts/campaign/edit.js';
-import { eventsHtml, evInit, evClick, evChange } from './eventsView.js?v=3';
+import { eventsHtml, evInit, evClick, evChange, evDragStart, evDragOver, evDrop, evDragEnd } from './eventsView.js?v=17';
 
 const PAGE_TABS = ['Overview', 'Scenarios', 'Mercenaries', 'Items', 'Events'];
 const main = document.getElementById('main');
@@ -362,8 +362,8 @@ function render() {
   editing = editPages.has(tab);
   saveView();
   const issues = validate(record);
-  // The Items page carries its own pencil button in the filter row; every other page gets a bar above its content.
-  const pagebar = tab === 'Items' ? '' : `<div class="pagebar"><button type="button" class="editbtn" data-pageedit aria-pressed="${editing}" title="${editing ? 'Stop editing this page' : 'Edit this page'}">${editing ? 'Done editing' : `Edit ${esc(tab.toLowerCase())}`}</button></div>`;
+  // The Items and Events pages carry their own pencil button (in the filter row / tab row); every other page gets a bar above its content.
+  const pagebar = tab === 'Items' || tab === 'Events' ? '' : `<div class="pagebar"><button type="button" class="editbtn" data-pageedit aria-pressed="${editing}" title="${editing ? 'Stop editing this page' : 'Edit this page'}">${editing ? 'Done editing' : `Edit ${esc(tab.toLowerCase())}`}</button></div>`;
   const body = { Overview: overview, Scenarios: scenarios, Mercenaries: mercenaries, Items: items, Events: events }[tab](record);
   main.innerHTML = pagebar + (issues.length ? `<div class="issues">${issues.length} issue(s): ${esc(issues.slice(0, 5).join('; '))}</div>` : '') + body;
 }
@@ -477,6 +477,7 @@ main.addEventListener('error', e => {
 // Drag and drop of ability cards between the hand, discard and lost areas (works without edit mode: it is play, not setup).
 const dragPayload = e => { try { return JSON.parse(e.dataTransfer.getData('text/plain')); } catch { return null; } };
 main.addEventListener('dragstart', e => {
+  if (evDragStart(e)) return;                    // a card row of the Events tab
   const row = e.target.closest?.('.cardrow');
   if (!row) { e.preventDefault(); return; }
   e.dataTransfer.setData('text/plain', JSON.stringify({ char: row.dataset.char, card: Number(row.dataset.card) }));
@@ -484,9 +485,11 @@ main.addEventListener('dragstart', e => {
   row.classList.add('dragging');
 });
 main.addEventListener('dragend', () => {
+  evDragEnd();
   main.querySelectorAll('.dragging, .over').forEach(el => el.classList.remove('dragging', 'over'));
 });
 main.addEventListener('dragover', e => {
+  if (evDragOver(e)) return;
   const zone = e.target.closest?.('.zone');
   if (!zone) return;
   e.preventDefault();
@@ -495,6 +498,7 @@ main.addEventListener('dragover', e => {
   zone.classList.add('over');
 });
 main.addEventListener('drop', e => {
+  if (evDrop(e)) return;
   const zone = e.target.closest?.('.zone');
   if (!zone) return;
   e.preventDefault();
@@ -534,6 +538,9 @@ main.addEventListener('input', e => {
 });
 
 main.addEventListener('click', evClick);
+main.addEventListener('keydown', e => {                      // an option of the open event is a button for the keyboard
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches?.('.evopt[data-ev]')) { e.preventDefault(); e.target.click(); }
+});
 main.addEventListener('click', e => {
   if (!e.target.closest('[data-pageedit]')) return;
   if (editPages.has(tab)) editPages.delete(tab); else editPages.add(tab);

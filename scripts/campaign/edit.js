@@ -125,6 +125,27 @@ export function setEventPlace(r, kind, id, where) {
   return edit(r, x => { unplace(x, kind, id); if (where) place(x, kind, id, where); });
 }
 
+// Drop a card at a place: where is top, bottom, '' (deck), out or locked. For top and bottom `index` is the position in
+// that pile (0 = first drawn); a card dropped into the deck, discarded or locked pile has no position (discarded and locked
+// cards are appended, the deck is unordered). Dropping a card inside its own pile moves it to the index.
+export function moveEventTo(r, kind, id, where, index = 0) {
+  if (!EVENT_KINDS_.includes(kind) || !EVENT_PLACES.includes(where) || !eventIds(kind).has(id)) return r;
+  const from = eventPlace(r, kind, id);
+  const ordered = where === 'top' || where === 'bottom';
+  if (from === where && !ordered) return r;
+  return edit(r, x => {
+    let i = Math.max(0, Math.trunc(Number(index)) || 0);
+    if (from === where) {
+      const old = x.events[kind][where].indexOf(id);
+      if (old < i) i--;                              // the card itself no longer takes a place in front of the drop point
+    }
+    unplace(x, kind, id);
+    if (!where) return;
+    const list = x.events[kind][where];
+    if (ordered) list.splice(Math.min(i, list.length), 0, id); else list.push(id);
+  });
+}
+
 // Move a card up (-1) or down (+1) inside its pile (top, bottom or out).
 export function moveEvent(r, kind, id, delta) {
   const where = eventPlace(r, kind, id);

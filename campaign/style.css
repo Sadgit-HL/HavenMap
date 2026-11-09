@@ -109,10 +109,10 @@ button.primary { background:var(--accent); color:#1b150c; border:1px solid var(-
 .filters .editicon { margin-left:auto; display:inline-flex; align-items:center; justify-content:center; padding:5px 9px; }
 
 /* Events tab */
-.evbox { display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px; margin:8px 0 12px; }
+.evdraw { display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px; margin:8px 0 12px; }
 button.primary { background:var(--accent); color:#1b150c; border:1px solid var(--accent); border-radius:6px; padding:6px 14px; font:inherit; cursor:pointer; }
 button.primary:disabled { opacity:.4; cursor:default; }
-.evbox button:not(.primary), .evplace button:not(.primary), .evadmin button, .evtool button { background:#2d2519; color:var(--text); border:1px solid var(--line); border-radius:6px; padding:5px 10px; font:inherit; cursor:pointer; }
+.evdraw button:not(.primary), .evplace button:not(.primary), .evadmin button, .evtool button { background:#2d2519; color:var(--text); border:1px solid var(--line); border-radius:6px; padding:5px 10px; font:inherit; cursor:pointer; }
 .evrow { display:flex; flex-wrap:wrap; gap:16px; align-items:flex-start; }
 .evcard { flex:1 1 360px; max-width:520px; background:#2b2216; border:1px solid var(--accent); border-radius:10px; padding:12px 16px; line-height:1.45; }
 .evcard p { margin:0 0 .7em; white-space:pre-line; }
@@ -125,13 +125,6 @@ button.primary:disabled { opacity:.4; cursor:default; }
 .evvoters { font-size:12px; color:var(--muted); margin-top:2px; }
 .evside { flex:1 1 260px; display:flex; flex-direction:column; gap:10px; }
 .evme { color:var(--muted); } .evme select { margin-left:6px; background:#2d2519; color:var(--text); border:1px solid var(--line); border-radius:6px; padding:3px 8px; font:inherit; }
-.evvotes { border-collapse:collapse; width:auto; }
-.evvotes th, .evvotes td { padding:3px 10px; text-align:center; border-bottom:1px solid var(--line); position:static; background:none; }
-.evvotes td:first-child, .evvotes th:first-child { text-align:left; }
-.evvotes tr.me td:first-child { color:var(--accent); font-weight:600; }
-.evvote { min-width:34px; background:transparent; color:var(--text); border:1px solid var(--line); border-radius:6px; padding:3px 0; font:inherit; cursor:pointer; }
-.evvote[aria-pressed="true"] { background:var(--accent); color:#1b150c; border-color:var(--accent); }
-.evvote:disabled { opacity:.35; cursor:default; }
 .evstatus { padding:6px 10px; border:1px dashed var(--line); border-radius:8px; }
 .evadmin { display:flex; gap:6px; flex-wrap:wrap; }
 .evback { margin-top:12px; border-color:var(--ok); }
@@ -164,3 +157,53 @@ button.evchip { cursor:pointer; }
 .evprog { font-style:normal; font-size:10px; color:var(--info); } .evprog.done { color:var(--ok); }
 .evnoteicon { color:var(--warn); font-size:11px; }
 .evtoolx { flex:1 1 100%; }
+.evfilter { color:var(--muted); } .evfilter select { margin-left:6px; background:#2d2519; color:var(--text); border:1px solid var(--line); border-radius:6px; padding:3px 8px; font:inherit; }
+.evtable td { vertical-align:middle; }
+.evtable td select, .evrownote { background:#2d2519; color:var(--text); border:1px solid var(--line); border-radius:5px; padding:2px 6px; font:inherit; }
+.evrownote { width:100%; min-width:140px; }
+.evtable .evboxrow { margin:0; gap:3px; } .evtable .evbox { width:20px; height:20px; font-size:14px; }
+.evpos { white-space:nowrap; } .evmv { background:#2d2519; color:var(--text); border:1px solid var(--line); border-radius:5px; padding:1px 6px; margin-left:3px; font:inherit; font-size:11px; cursor:pointer; }
+.evmv:disabled { opacity:.3; cursor:default; }
+.evsnip { color:var(--muted); font-size:12px; max-width:340px; }
+.evrow-locked td { color:var(--muted); } .evrow-out td:first-child { color:var(--muted); }
+.evrow-top td:first-child, .evrow-bottom td:first-child { color:var(--accent); font-weight:600; }
+.evtablewrap { overflow-x:auto; max-width:100%; }
+.evtable th { position:static; white-space:nowrap; }
+@media (max-width:700px) {
+  .evhide-sm { display:none; }
+  .evrownote { min-width:60px; }
+  .evtable td select { max-width:92px; font-size:12px; }
+  .evmv { padding:1px 4px; margin-left:2px; }
+  .evtable td, .evtable th { padding:4px 5px; }
+  .evcard, .evside, .evboxes, .evback { flex-basis:100%; max-width:100%; }
+}
+.evsec td { background:#241d14; border-top:1px solid var(--line); padding-top:6px; padding-bottom:6px; }
+.evsec .hint { margin-left:8px; font-weight:400; }
+.evempty td { text-align:center; padding:10px; border:1px dashed var(--line); }
+.evtable tr[draggable="true"] { cursor:grab; }
+.evgrip { color:var(--muted); margin-right:6px; user-select:none; }
+.evdragging { opacity:.4; }
+.evdrop-before td { box-shadow:inset 0 3px 0 var(--accent); }
+.evdrop-after td { box-shadow:inset 0 -3px 0 var(--accent); }
+.evdrop-in td { background:#3d3220; outline:1px solid var(--accent); }
+.evtouch { display:none; }
+@media (pointer:coarse) { .evtouch { display:inline-block; } .evgrip { display:none; } }
+.evopt.clickable { cursor:pointer; border:1px solid transparent; }
+.evopt.clickable:hover, .evopt.clickable:focus-visible { background:rgba(199,164,74,.14); border-color:var(--accent); outline:none; }
+.evopt.mine { background:rgba(199,164,74,.2); border:1px solid var(--accent); }
+.subbar .editicon { display:inline-flex; align-items:center; justify-content:center; padding:5px 9px; }
+.evtools { display:flex; align-items:center; gap:10px; margin-left:auto; flex-wrap:wrap; }
+.seatpills { display:inline-flex; gap:4px; flex-wrap:wrap; }
+.seatpill { background:transparent; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:3px 12px; font:inherit; cursor:pointer; }
+.seatpill:hover { color:var(--text); border-color:var(--accent); }
+.seatpill[aria-pressed="true"] { background:var(--accent); color:#1b150c; border-color:var(--accent); font-weight:600; }
+.evside { flex:1 1 380px; min-width:0; }
+.evside .evcard, .evside .evback { max-width:none; flex-basis:auto; }
+.evside .evboxes { margin:0; }
+.evside .evback { margin-top:0; }
+.evchipbtn { cursor:pointer; font:inherit; font-size:12px; }
+.evchipbtn:hover { border-color:var(--accent); }
+.evchipbtn[aria-pressed="true"] { background:var(--accent); color:#1b150c; border-color:var(--accent); font-weight:600; }
+.evviewed { margin:12px 0; padding:8px 0; border-top:1px solid var(--line); }
+.evviewhead { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.evviewhead h2 { margin:6px 0; }
