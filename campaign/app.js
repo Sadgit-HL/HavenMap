@@ -12,7 +12,9 @@ import {
   validate, scenarioLevel, prosperityLevel, handOf, shopCopies, itemsInUse, unlockedBy, classByName, SCN_STATE_NAME,
 } from '../scripts/campaign/record.js';
 import * as ed from '../scripts/campaign/edit.js';
-import { eventsHtml, evInit, evClick, evChange, evDragStart, evDragOver, evDrop, evDragEnd } from './eventsView.js?v=17';
+import { characterTraits } from '../scripts/campaign/outcomes.js';
+import { SPECIAL_TRAITS, specialName } from '../scripts/campaign/traits.js';
+import { eventsHtml, evInit, evClick, evChange, evSubmit, evOutside, evDragStart, evDragOver, evDrop, evDragEnd } from './eventsView.js?v=34';
 
 const PAGE_TABS = ['Overview', 'Scenarios', 'Mercenaries', 'Items', 'Events'];
 const main = document.getElementById('main');
@@ -233,6 +235,14 @@ function deckZones(c) {
     </div>`).join('')}</div><p class="hint">Drag cards between the areas. No need to switch on Edit.</p>`;
 }
 
+// Traits the class brings that are not on the sheet's list yet, the species (Vermling, Quatryl, ...) among them. Events check
+// them like traits.
+function classTraits(c) {
+  const own = new Set((c.traits || []).map(t => String(t).toLowerCase()));
+  const special = new Set((c.special || []).map(t => String(t).toLowerCase()));
+  return [...characterTraits(c)].filter(t => !own.has(t) && !special.has(t)).map(pretty);
+}
+
 function characterCard(c) {
   const cls = classByName(c.cls);
   const faces = c.am?.faces || [];
@@ -244,7 +254,8 @@ function characterCard(c) {
   return `<div class="card">
     <h3>${nameCell} <span style="color:var(--muted)">${esc(c.cls)} (${cls ? esc(cls.src.toUpperCase()) : '?'})</span></h3>
     <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr))">${stat('Level', 'lv', 9, 1)}${stat('XP', 'xp', 9999)}${stat('Gold', 'gold', 9999)}${stat('Inherited', 'inh', 9999)}${stat('Hand size', 'hand', 20, 1)}</div>
-    <div class="pile"><b>Traits</b>${(c.traits || []).map(t => chip(t)).join('') || '<span class="hint">none</span>'}${(c.extra || []).map(t => chip(t, 'dim')).join('')}</div>
+    <div class="pile"><b>Traits</b>${(c.traits || []).map(t => chip(t)).join('') || '<span class="hint">none</span>'}${classTraits(c).map(t => chip(t)).join('')}${(c.special || []).map(t => chip(specialName(t), 'info')).join('')}${(c.extra || []).map(t => chip(t, 'dim')).join('')}
+      <button type="button" class="editbtn editicon traitedit" data-trait-edit="${esc(c.id)}" aria-label="Special traits of ${esc(c.name)}" title="Special traits (Hero, Indebted, ...)">${PENCIL}</button></div>
     <div class="pile"><b>Deck (${c.deck.length} cards)</b>${c.hand ? `hand size ${esc(c.hand)}` : ''}</div>
     ${deckZones(c)}
     <div class="pile"><b>Other owned cards (${c.bench.length})</b></div>
@@ -353,6 +364,40 @@ function events(r) { return eventsHtml(r); }
 
 // --- render and events ------------------------------------------------------------------------------------
 
+// --- special traits modal ----------------------------------------------------------------------------------
+let traitModal = null;                                   // id of the character whose special traits are being edited
+const modalRoot = document.createElement('div');
+document.body.appendChild(modalRoot);
+let modalFocus = '';
+
+function renderModal() {
+  const c = traitModal && record?.chars.find(x => x.id === traitModal);
+  if (!c) { traitModal = null; modalRoot.innerHTML = ''; return; }
+  const on = new Set(c.special || []);
+  modalRoot.innerHTML = `<div class="modal" id="traitModal" role="dialog" aria-modal="true" aria-labelledby="tmTitle"><div class="modalbox">
+    <h3 id="tmTitle">Special traits: ${esc(c.name)}</h3>
+    <div class="modalrows">${SPECIAL_TRAITS.map(t => `<label class="modalrow"><input type="checkbox" data-sp="${esc(t.key)}" ${on.has(t.key) ? 'checked' : ''}> ${esc(t.name)}</label>`).join('')}</div>
+    <div class="modalfoot"><button type="button" class="primary" data-tm-close>Close</button></div></div></div>`;
+  const f = modalFocus && [...modalRoot.querySelectorAll('[data-sp]')].find(x => x.dataset.sp === modalFocus);
+  (f || modalRoot.querySelector('[data-sp]'))?.focus();
+}
+function closeModal() { traitModal = null; modalFocus = ''; renderModal(); }
+modalRoot.addEventListener('click', e => { if (e.target.id === 'traitModal' || e.target.closest('[data-tm-close]')) closeModal(); });
+modalRoot.addEventListener('change', e => {
+  const key = e.target.dataset?.sp;
+  if (!key || !traitModal) return;
+  modalFocus = key;
+  commit(ed.setSpecialTrait(record, traitModal, key, e.target.checked));
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && traitModal) closeModal(); });
+main.addEventListener('click', e => {
+  const id = e.target.closest('[data-trait-edit]')?.dataset.traitEdit;
+  if (!id) return;
+  traitModal = id;
+  modalFocus = '';
+  renderModal();
+});
+
 function render() {
   renderTabs();
   if (!record) {
@@ -365,6 +410,7 @@ function render() {
   // The Items and Events pages carry their own pencil button (in the filter row / tab row); every other page gets a bar above its content.
   const pagebar = tab === 'Items' || tab === 'Events' ? '' : `<div class="pagebar"><button type="button" class="editbtn" data-pageedit aria-pressed="${editing}" title="${editing ? 'Stop editing this page' : 'Edit this page'}">${editing ? 'Done editing' : `Edit ${esc(tab.toLowerCase())}`}</button></div>`;
   const body = { Overview: overview, Scenarios: scenarios, Mercenaries: mercenaries, Items: items, Events: events }[tab](record);
+  renderModal();
   main.innerHTML = pagebar + (issues.length ? `<div class="issues">${issues.length} issue(s): ${esc(issues.slice(0, 5).join('; '))}</div>` : '') + body;
 }
 
@@ -508,6 +554,7 @@ main.addEventListener('drop', e => {
   commit(ed.moveCard(record, d.char, d.card, zone.dataset.zone));
 });
 main.addEventListener('submit', e => {
+  if (evSubmit(e)) return;
   if (e.target.id !== 'addChar') return;
   e.preventDefault();
   const f = new FormData(e.target);
@@ -538,6 +585,7 @@ main.addEventListener('input', e => {
 });
 
 main.addEventListener('click', evClick);
+document.addEventListener('click', evOutside);                 // a click outside the peeked card closes it
 main.addEventListener('keydown', e => {                      // an option of the open event is a button for the keyboard
   if ((e.key === 'Enter' || e.key === ' ') && e.target.matches?.('.evopt[data-ev]')) { e.preventDefault(); e.target.click(); }
 });

@@ -64,7 +64,7 @@ export const seatList = r => (r.players?.length ? r.players.map(p => p.seat) : [
 Vote result for the open event `pend` ({ kind, id, votes: { seat: label }, closed?, rnd? }).
   keys   the option keys of the card, seats the seat numbers that may vote
   state  'open'     not decided yet
-         'decided'  one option wins: `opt` (by lead, by the only option, by a closed vote, or by the random draw `rnd`)
+         'decided'  one option wins: `opt` (by lead, by a click on the only option, by a closed vote, or by the random draw `rnd`)
          'tie'      everyone voted (or the vote was closed) and several options share the lead: `tied`
   A vote is decided as soon as the leader cannot be caught up: lead > seats that have not voted yet.
   Closing a vote counts the missing seats as not voting.
@@ -81,7 +81,8 @@ export function tally(pend, keys, seats) {
   const top = counts[sorted[0]] ?? 0, second = counts[sorted[1]] ?? 0;
   const leaders = keys.filter(k => counts[k] === top);
   const base = { counts, voted, remaining, tied: [] };
-  if (keys.length === 1) return { ...base, state: 'decided', opt: keys[0] };
+  // A card with a single option has nothing to choose: the outcome shows once somebody clicks the option (or the vote is closed).
+  if (keys.length === 1) return voted > 0 || pend?.closed ? { ...base, state: 'decided', opt: keys[0] } : { ...base, state: 'open' };
   if (pend?.rnd && keys.includes(pend.rnd)) return { ...base, state: 'decided', opt: pend.rnd, random: true };
   if (top > 0 && leaders.length === 1 && top - second > remaining) return { ...base, state: 'decided', opt: leaders[0] };
   if (remaining === 0) return leaders.length === 1 && top > 0
@@ -90,9 +91,17 @@ export function tally(pend, keys, seats) {
   return { ...base, state: 'open' };
 }
 
-// Default pile for a finished card: the card's own "return to deck" mark means it goes to the bottom, else it is discarded.
-// (Assumption: the source data only says "returnToDeck"; the placement can always be changed before confirming.)
-export function defaultPlace(front, opt) {
+// Where a finished card goes by default: Bottom (the last position of the deck) when it returns to the deck, else Discarded.
+// It returns when the card, the chosen option or an outcome that applies says "return to deck" (the source data gives no top or
+// bottom: a returned card always goes to the end of the bottom pile). An outcome that applies and removes the card wins.
+// It also returns when every outcome that could apply returns it, even if the players still have to pick the outcome (an
+// option with a single outcome that needs a payment, for example).
+// `applicable` is the list from outcomes.js applicableOutcomes. Outcomes that are not met do not count.
+export function defaultPlace(front, opt, applicable = []) {
   const o = (front?.o || []).find((x, i) => (x.l || String.fromCharCode(65 + i)) === opt);
-  return front?.r || o?.r ? 'bottom' : 'out';
+  const sure = applicable.filter(a => a.state === 'always' || a.state === 'met' || a.state === 'otherwise');
+  if (sure.some(a => a.o.x)) return 'out';
+  const possible = applicable.filter(a => a.state !== 'unmet');
+  const always = possible.length > 0 && possible.every(a => a.o.r && !a.o.x);
+  return front?.r || o?.r || sure.some(a => a.o.r) || always ? 'bottom' : 'out';
 }

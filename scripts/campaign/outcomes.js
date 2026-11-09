@@ -10,10 +10,12 @@ const lc = v => String(v).toLowerCase();
 // Reputation factions of the card data -> record keys.
 const FACTION = { demons: 'demons', 'merchant-guild': 'merchants', military: 'guard' };
 
-// Traits of one character: the traits on the sheet, plus the class's own traits and species (orchid, vermling, ...).
+// Traits of one character: the traits on the sheet, plus the class's own traits and species (orchid, vermling, ...) and the
+// special traits gained through events (hero, indebted, ...).
 export function characterTraits(c) {
   const set = new Set((c.traits || []).map(lc));
   for (const t of CLASS_TRAITS[lc(c.cls || '')] || []) set.add(t);
+  for (const t of c.special || []) set.add(lc(t));
   return set;
 }
 
@@ -43,11 +45,26 @@ export function checkRequirement(o, r) {
 Outcomes of an option that apply, in card order: [{ o: outcome, state, who }].
   state 'always'     no requirement
         'met'        a requirement that is met (who = characters meeting it)
+        'unmet'      a requirement that is not met (only listed for options the players have to decide, see below)
         'otherwise'  the "otherwise" outcome: no requirement before it was met
         'manual'     a requirement the app cannot check (a choice, a payment, an earlier answer): the players decide
 Outcomes whose checked requirement is not met are left out. An "otherwise" after an unchecked requirement is 'manual' too.
+An option with an outcome the app cannot check is left to the players as a whole: every outcome is listed, the checked
+requirements marked met or not met, and the "otherwise" outcome as 'manual', so the players can pick the one that applies.
 */
+const isManual = o => !o.o && !o.t && !o.ta && !(o.rp && FACTION[o.rp[0]]) && Boolean(o.c);
+
 export function applicableOutcomes(outcomes, r) {
+  if ((outcomes || []).some(isManual)) {
+    return outcomes.map(o => {
+      if (o.o) return { o, state: 'manual', who: [] };
+      if (o.t || o.ta || (o.rp && FACTION[o.rp[0]])) {
+        const res = checkRequirement(o, r);
+        return { o, state: res.ok ? 'met' : 'unmet', who: res.who };
+      }
+      return { o, state: o.c ? 'manual' : 'always', who: [] };
+    });
+  }
   const out = [];
   let matched = false, manualSeen = false;
   for (const o of outcomes || []) {

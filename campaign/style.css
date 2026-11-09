@@ -143,7 +143,6 @@ button.primary:disabled { opacity:.4; cursor:default; }
 button.evchip { cursor:pointer; }
 .evchip.sel { border-color:var(--accent); background:#3d3220; box-shadow:0 0 0 1px var(--accent); }
 .evtool { display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin:8px 0; padding:6px 10px; border:1px solid var(--accent); border-radius:8px; }
-.evlog { margin:0; padding-left:18px; color:var(--muted); font-size:13px; } .evlog b { color:var(--text); }
 .evcond.met { color:var(--ok); } .evcond.manual { color:var(--warn); }
 .evboxes { margin:10px 0; padding:8px 12px; border:1px solid var(--line); border-radius:8px; background:#1c1711; }
 .evboxrow { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
@@ -207,3 +206,27 @@ button.evchip { cursor:pointer; }
 .evviewed { margin:12px 0; padding:8px 0; border-top:1px solid var(--line); }
 .evviewhead { display:flex; align-items:center; justify-content:space-between; gap:10px; }
 .evviewhead h2 { margin:6px 0; }
+.subtabs button.has-open { border-color:var(--ok); }
+.subtabs button.has-open[aria-selected="true"] { border-color:var(--ok); }
+.evgrip.off { visibility:hidden; }
+.evnum { background:transparent; color:inherit; border:0; padding:0; font:inherit; cursor:pointer; text-decoration:underline dotted var(--muted); text-underline-offset:3px; }
+.evnum:hover, .evnum[aria-pressed="true"] { color:var(--accent); }
+.evpeek td { background:#1c1711; padding:8px 12px; }
+.evpeek .evcard { max-width:620px; margin:0; }
+.evempty td { height:34px; }
+.evaddform { display:inline-flex; gap:6px; margin-left:auto; }
+.evaddform input { width:230px; max-width:100%; background:#2d2519; color:var(--text); border:1px solid var(--line); border-radius:6px; padding:4px 8px; font:inherit; }
+.evaddform button { background:#2d2519; color:var(--text); border:1px solid var(--line); border-radius:6px; padding:4px 10px; font:inherit; cursor:pointer; }
+.evaddmsg { flex:1 1 100%; color:var(--muted); font-size:12px; }
+.evpeek .evboxes { max-width:620px; margin:8px 0 0; }
+.traitedit { margin-left:8px; padding:2px 7px; vertical-align:middle; }
+.modal { position:fixed; inset:0; z-index:60; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(0,0,0,.6); }
+.modalbox { width:min(380px,100%); max-height:100%; overflow:auto; background:var(--panel); border:1px solid var(--accent); border-radius:10px; padding:14px 16px; box-shadow:0 12px 40px rgba(0,0,0,.7); }
+.modalbox h3 { margin:0 0 10px; color:var(--accent); }
+.modalrows { display:flex; flex-direction:column; gap:2px; }
+.modalrow { display:flex; align-items:center; gap:10px; padding:6px 4px; border-radius:6px; cursor:pointer; }
+.modalrow:hover { background:rgba(199,164,74,.12); }
+.modalrow input { width:18px; height:18px; accent-color:var(--accent); }
+.modalfoot { display:flex; justify-content:flex-end; margin-top:12px; }
+.evaddform .evicon { display:inline-flex; align-items:center; justify-content:center; min-width:32px; padding:4px 8px; font-size:18px; line-height:1; }
+.evcond.unmet { color:var(--muted); }

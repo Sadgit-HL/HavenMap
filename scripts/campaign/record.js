@@ -21,7 +21,8 @@ Record fields (all optional on load, defaults filled by normalize):
   pros              prosperity checkmarks
   imb, stk, cls     imbuement ticks, sticker labels, unlocked class names
   scn               { "<number>": { s, l?, p?, ch?, d? } }   state, level, party size, chests, date
-  chars             [{ id, cls, name, lv, xp, gold, inh, traits, hand, deck, disc, act, lost, bench, items:[{id, st}], am }]
+  chars             [{ id, cls, name, lv, xp, gold, inh, traits, special, hand, deck, disc, act, lost, bench, items:[{id, st}], am }]
+                    special = special traits gained through events (keys of scripts/campaign/traits.js)
   items             { unl: [itemId], taken: { itemId: copies in use } }
   events            { city, road: { top, bottom, out, locked }, pend? }   piles are ordered, see scripts/campaign/events.js
                     pend = the open event { kind, id, votes: { seat: label }, closed?, rnd? }
@@ -60,7 +61,7 @@ export function normalize(raw) {
   r.evlog = Array.isArray(r.evlog) ? r.evlog : [];
   r.decks = { ...base.decks, ...(r.decks || {}) };
   r.scn = r.scn || {};
-  r.chars = (r.chars || []).map(c => ({ traits: [], deck: [], disc: [], act: [], lost: [], bench: [], items: [], ...c }));
+  r.chars = (r.chars || []).map(c => ({ traits: [], special: [], deck: [], disc: [], act: [], lost: [], bench: [], items: [], ...c }));
   return r;
 }
 

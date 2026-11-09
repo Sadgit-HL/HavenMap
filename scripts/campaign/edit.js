@@ -5,6 +5,7 @@ import { SCENARIOS } from '../games/gh2_scenarios.js';
 import { ITEMS } from '../games/gh2_items.js';
 import { CLASSES } from '../games/gh2_classes.js';
 import { SCN_STATE } from './record.js';
+import { SPECIAL_TRAITS } from './traits.js';
 import { EVENT_TABLE, PILES, frontOf, boxState, markKey, eventPlace, nextEvent, optionKeys, seatList, tally, cryptoRandom } from './events.js';
 
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
@@ -144,6 +145,23 @@ export function moveEventTo(r, kind, id, where, index = 0) {
     const list = x.events[kind][where];
     if (ordered) list.splice(Math.min(i, list.length), 0, id); else list.push(id);
   });
+}
+
+// Shuffle: the cards on top and on the bottom go back into the deck (the part with no known position, drawn at random).
+// Discarded and locked cards stay where they are.
+export function shuffleDeck(r, kind) {
+  if (!EVENT_KINDS_.includes(kind) || !(r.events[kind].top.length || r.events[kind].bottom.length)) return r;
+  return edit(r, x => { x.events[kind].top = []; x.events[kind].bottom = []; });
+}
+
+// Add locked cards to the deck (the part with no known position). Only locked cards are added: cards that are not in the
+// card table of this deck, or are not locked, are skipped. Returns the new record.
+export function addEventsToDeck(r, kind, ids) {
+  if (!EVENT_KINDS_.includes(kind)) return r;
+  const valid = eventIds(kind);
+  const todo = [...new Set(ids)].filter(id => valid.has(id) && eventPlace(r, kind, id) === 'locked');
+  if (!todo.length) return r;
+  return edit(r, x => { for (const id of todo) unplace(x, kind, id); });
 }
 
 // Move a card up (-1) or down (+1) inside its pile (top, bottom or out).
@@ -288,6 +306,20 @@ export function availableClasses(r) {
 
 // Add a new level 1 character. Returns the same record when the class is unknown or already in play, the name is empty
 // or there are already MAX_CHARACTERS characters. Cards, items and the modifier deck start empty (level-up flow comes later).
+// Switch one special trait of a character on or off. Unknown characters or traits are ignored.
+export function setSpecialTrait(r, charId, key, on) {
+  if (!SPECIAL_TRAITS.some(t => t.key === key)) return r;
+  const c = r.chars.find(x => x.id === charId);
+  if (!c) return r;
+  const has = (c.special || []).includes(key);
+  if (Boolean(on) === has) return r;
+  return edit(r, x => {
+    const ch = x.chars.find(y => y.id === charId);
+    const cur = ch.special || [];
+    ch.special = on ? SPECIAL_TRAITS.map(t => t.key).filter(k => k === key || cur.includes(k)) : cur.filter(k => k !== key);
+  });
+}
+
 export function addCharacter(r, { cls, name }) {
   const klass = CLASSES.find(c => c.name.toLowerCase() === String(cls || '').toLowerCase());
   const nm = String(name || '').trim().slice(0, 30);
