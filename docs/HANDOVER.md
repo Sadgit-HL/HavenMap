@@ -328,10 +328,12 @@ Open `http://localhost:8080/HavenMap/campaign/` (run `start.bat`). **Load file**
 | Tab | What it does |
 |---|---|
 | Overview | Party, prosperity, reputation, scenario counts, stickers, classes, retirements, enhancements, battle goal, treasure and medical pack decks. |
-| Scenarios | State, result (level, party size, chests, date) and the unlock links both ways; completing a scenario unlocks its follow-ons. |
+| Scenarios | State, result (level, party size, chests, date) and the unlock links both ways; completing a scenario unlocks its follow-ons. Table or Flowchart view (section 17.2). |
 | Mercenaries | One sub-tab per character (up to four) and a **+** sub-tab to add one. Hand, Discard and Lost areas with drag and drop, cards sorted by initiative, card pictures (Hover with Ctrl held, or Always), traits, other owned cards, items and the personal modifier deck. |
 | Items | All GH2 items, unlocked state, copies in use and in the shop, which character holds them. |
 | Events | City and road decks with voting, outcomes and an edit view (see section 16). |
+| Cards | Card browser: ability cards, attack modifiers, battle goals, character mats, events, items, monster abilities and stat cards, personal quests (section 17.1). |
+| Resources | Links of the workbook's Resources sheet (section 17.3). |
 
 Code: `campaign/` (page), `scripts/campaign/` (`record.js` shape and derived values, `edit.js` pure edit functions, `store.js` storage, `classMap.js` class to map mercenary, `cardImages.js` picture URLs), `scripts/games/gh2_*.js` and `battle_goals.js` (generated tables), `tools/extract-campaign-tables.py` and `tools/import-campaign-state.py`. Map side: `scripts/state.js` is `mapVersion` 5.0.0 (section 14.5).
 
@@ -355,7 +357,7 @@ Reasons, so the question does not have to be argued again:
 
 ## 16. Campaign site: Items and Events rework (2026-11-09)
 
-State: on `main`, three local commits not pushed (063d15f, 8b0641f, 23eda5e) plus uncommitted work (boxes after the decision, unmet-requirement lines, one open event per deck, this note). Section 14.7's Events row and "click a number to move it" are outdated: see below.
+State: on `main` and pushed (the later work is in section 17). Section 14.7's Events row and "click a number to move it" are outdated: see below.
 
 Page structure: edit is per page (pencil icon in each page's filter row), not a global toggle. Browser checks were done by the owner in this stretch; only Node checks of the logic were run by me.
 
@@ -380,3 +382,55 @@ Open points:
 - Character sheet marks beyond special traits are not built.
 - No automated tests are committed; the Node checks (piles, tally, outcomes, placement, boxes, shuffle, add-to-deck, per-deck pend, migration) lived in a temp folder and are worth committing under `tools/`.
 - Still from the earlier roadmap: campaign server and token auth, session commit, BBCode composer.
+
+## 17. Campaign site: card browser, scenario flowchart, resources, event additions (2026-11-09)
+
+State: on `main`, pushed as a4874e0. Everything in this section was checked only with Node runs of the pure logic and `node --check` on the modules. Nothing was opened in a browser by me; the owner should check the pages. Cache busting: `campaign/index.html` loads `app.js?v=57` and `style.css?v=47` (and `../scripts/amd/amd.css`); bump the number when the files change.
+
+### 17.1 Cards tab (`cardsPage` in `campaign/app.js`)
+
+One browser over card types, chosen with the first dropdown (alphabetical). Shared controls: Show (unlocked or all), class or type filters, search, S/M/L sizes, Ctrl+hover (tap on touch) to enlarge via `data-img` and `data-imgw` (preview width, default 300). Settings are saved in localStorage (`VIEW_SAVED`), search texts are not.
+
+| Type | Source | Notes |
+|---|---|---|
+| Ability cards | `gh2_cards.js`, `gh2_classes.js`, `cardImageUrl` | Show: unlocked classes (`r.cls`) or all. Level order 1, X, 2 to 9, M. X is the old level 1.1 (67 cards, renamed in the data and the extractor). M is shown as "Pack": the six Sawbones medical pack cards (ids 1530 to 1535), offered in the level list only for All classes or Sawbones. The search box takes a level range such as `1-3` (1, X, 2, 3) and combines it with a name. |
+| Attack modifiers | `scripts/amd/card.js`, `heroDeck.js` | Standard deck plus, per class with perk data, the faces its perks add or remove (once per class). Cards are DOM elements: the page leaves slots (`data-am`) and `hydrateAm()` fills them after `main.innerHTML` is set. Captions are the compact face codes of `heroDeck.js`. No enlarge. |
+| Battle goals | `battle_goals.js` | No pictures: a text card each. Text field `t` was added from the Secretariat label file `data/fh/label/en.json`. Show means drawn goals (`r.decks.bg`) or all; filter by checkmarks. |
+| Character mats | asset repo `wh_character_mats/<front\|back>/<class>.png` | 22 campaign classes, 600 px wide, Front/Back selector, fixed widths S 300, M 450, L 600, click opens the image, enlarge shows 600 px. Plague Herald is `plagueherald.png`, other names are lower case with hyphens. |
+| Events | asset repo `wh_events/gh2_events/ce\|re/C-001.png` | Fronts only (the outcome faces `C-001a.png` are not shown, they give away outcomes). Show means discarded cards (`events[kind].out`) or all. City or Road switch, search by number or narrative. |
+| Items | `gh2_items.js`, `itemImageUrl` | Show: unlocked or all, slot filter, search by name or exact number. "All items" shows the real pictures of locked items. |
+| Monster abilities | `gh_decks.js` (31 decks, 248 cards), local `images/gh2/monsters/monster-abilities/*.webp` (600x400) | No Show filter (no unlocked state for monsters). Badge: initiative and shuffle mark. |
+| Monster stat cards | `gh.js` config monsters with `game === 'gh2'` (50), local `images/gh2/monsters/stats/<title>_<0..7>.png` (300x162) | No Show filter. Fixed widths S 200, M 300, L 420; enlarge 450. |
+| Personal quests | asset repo `wh_pq/gh2/PQ01.png` to `PQ22.png` (440x600), `gh2_quests.js` | No Show filter: the record holds no quest assignments, so all 22 are listed (a quest is secret to its player in the game). |
+
+Picture URLs are in `scripts/campaign/cardImages.js` (`eventImageUrl`, `matImageUrl`, `pqImageUrl` added). The asset repo pictures load from `Sadgit-HL/Wordhaven_Assets` on GitHub; existence was checked in a local clone at `D:\github\Wordhaven_Assets`, not on the remote.
+
+Known issues and gaps:
+- The grid stretches tiles to fill the row, so S, M and L can look the same for the types that still use `--tile-min` (abilities, items, events, monster abilities, personal quests). Mats and stat cards use fixed widths instead. Same fix would apply to the others.
+- Not built: perk sheets (`wh_perks`, one image per class), campaign stickers (`wh_stickers` has about 119 images named by number, the app knows 19 named stickers, the mapping is unknown), banners and masteries (`wh_banners`, `wh_masteries`, unclear if GH2 material), treasure cards (the record tracks claimed numbers, no images found).
+- Locked content: "All classes" and "All items" show real pictures to anyone. Restrict to edit mode if players use the page.
+
+### 17.2 Scenario flowchart (`flowPage` in `campaign/app.js`, layout in `scripts/campaign/flow.js`)
+
+Scenarios tab has a Table or Flowchart switch. The layout module is pure (no DOM): columns are the longest unlock path from scenarios nobody unlocks (19 columns at most), rows are grouped in lanes by storyline (first part of `area`; "Intro/Voice and Drake" and the typo "Into/Hail" take the second part; none gives "Other"), rows inside a column are ordered by the mean row of their predecessors, scenarios without a link in the shown set sit in a grid under the linked ones of their lane. Arrows are cubic curves. Checked in Node: 101 nodes, 65 edges, no overlaps.
+- Spoilers: "Progress and next steps" (default) draws scenarios with state above Locked plus the locked ones they lead to; locked ones are drawn as "?" (name and number only in edit mode). "All scenarios" draws everything, locked still masked. Layout is recomputed for the shown set.
+- Controls: storyline filter, S/M/L chart size, legend. Click or Enter on a node shows a detail panel (storyline, state, level and party for completed ones, what it unlocks and what unlocks it). Editing a scenario stays in the table view.
+- Scenarios unlocked by events, reputation or quests have no incoming arrow ("no scenario" in the panel).
+
+### 17.3 Resources tab (`resources()` in `campaign/app.js`, data in `scripts/games/resources.js`)
+
+Links of the workbook's "Resources" sheet in `WHTracker.xlsx` as a table: 8 rows, columns Gloomhaven 2nd Edition, Frosthaven, Mercenary Pack. Google Drive links had the account parameters (`authuser`, `usp=drive_fs`) removed. pCloud links are personal shares and may expire: edit them in the data file. The sheet gives the same pCloud link for the GH2 scenario book and section book (copied as is, probably one is wrong). The GH2 enhancement calculator cell links to an `fh-enhancer` page. "Icons and stuff" at A16 of the sheet has nothing under it.
+
+### 17.4 Events tab additions
+
+- Artwork: the Secretariat data has six images (city 33 front and back, city 41 and 42 invitations as footer, road 10 and 24). `tools/extract-event-text.py` copies them to `images/events/` and writes `im` (card narrative, option or outcome) and `fi` (footer, shown below the options). Shown in the open card, discarded view and peek.
+- Placement note: the per-outcome notes were replaced by one note above the Place buttons: "This card returns to the bottom|top of the deck" when the default is Bottom or Top, nothing for Discard. Discard and "removed from the game" are the same pile. Removal (`x`) occurs on only 4 outcomes of 3 cards and never together with a return.
+- Top: only city 55 option C says "back on top of the city deck" (outcome field `p: 'top'`, `defaultPlace` returns `top`, a Top button is offered only then). "Place it one card deeper for each trait" is left to the players (reposition in the edit view).
+- Edit view: each row has pills (Top, Deck, Bottom, Discard, Locked) in a "Move to" column; the old touch dropdown remains on touch screens. The section and pile name "Discarded" is now "Discard".
+- Cards that need a click: a card with a single option shows its outcome (and back artwork) only after a click or a closed vote.
+
+### 17.5 Other changes
+
+- Items tab, Cards view: locked items show no picture in edit mode either (a "#id" placeholder; players see "?").
+- Generated data: `tools/extract-campaign-tables.py` now writes level X and the battle goal text. `gh2_cards.js` and `battle_goals.js` were patched in place to match, not regenerated; regenerate and diff before relying on the extractor (card ids depend on the Card DB rows).
+- `tools/extract-event-text.py` now needs the Secretariat repo's `src/assets/artwork/events` next to its `data` folder.
