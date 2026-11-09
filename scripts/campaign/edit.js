@@ -5,6 +5,7 @@ import { SCENARIOS } from '../games/gh2_scenarios.js';
 import { ITEMS } from '../games/gh2_items.js';
 import { CLASSES } from '../games/gh2_classes.js';
 import { SCN_STATE } from './record.js';
+import { EVENT_TABLE, PILES, frontOf, boxState, markKey, eventPlace, nextEvent, optionKeys, seatList, tally, cryptoRandom } from './events.js';
 
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 const toInt = v => { const n = Math.trunc(Number(v)); return Number.isFinite(n) ? n : null; };
@@ -104,20 +105,122 @@ export function setItemTaken(r, id, value) {
 
 // --- events and decks ----------------------------------------------------------------------------------------
 
-export const EVENT_PLACES = ['', 'out', 'bottom', 'top'];      // '' = in the deck
+export const EVENT_PLACES = ['', 'top', 'bottom', 'out', 'locked'];      // '' = the undefined part of the deck
+const EVENT_KINDS_ = ['city', 'road'];
 
-export function setEventPlace(r, kind, id, place) {
-  if (!['city', 'road'].includes(kind) || !EVENT_PLACES.includes(place)) return r;
+// Remove a card from every pile.
+function unplace(x, kind, id) {
+  for (const p of PILES) x.events[kind][p] = x.events[kind][p].filter(v => v !== id);
+}
+// Put a card into a pile. top: to the front (drawn first). bottom, out, locked: to the end.
+function place(x, kind, id, where) {
+  const list = x.events[kind][where];
+  if (where === 'top') list.unshift(id); else if (list) list.push(id);
+}
+
+// Move a card to a pile (it leaves the pile it was in). Placing it where it already is changes nothing.
+export function setEventPlace(r, kind, id, where) {
+  if (!EVENT_KINDS_.includes(kind) || !EVENT_PLACES.includes(where) || !eventIds(kind).has(id)) return r;
+  if (eventPlace(r, kind, id) === where) return r;
+  return edit(r, x => { unplace(x, kind, id); if (where) place(x, kind, id, where); });
+}
+
+// Move a card up (-1) or down (+1) inside its pile (top, bottom or out).
+export function moveEvent(r, kind, id, delta) {
+  const where = eventPlace(r, kind, id);
+  if (!['top', 'bottom', 'out'].includes(where)) return r;
+  const i = r.events[kind][where].indexOf(id), j = i + (delta < 0 ? -1 : 1);
+  if (j < 0 || j >= r.events[kind][where].length) return r;
+  return edit(r, x => { const l = x.events[kind][where]; [l[i], l[j]] = [l[j], l[i]]; });
+}
+
+const eventIds = kind => new Set(EVENT_TABLE[kind].map(e => e.id));
+
+// Draw the next card of a deck and open it for voting. Does nothing while an event is open or the deck is empty.
+export function drawEvent(r, kind, rand) {
+  if (!EVENT_KINDS_.includes(kind) || r.events.pend) return r;
+  const next = nextEvent(r, kind, rand);
+  if (!next) return r;
+  return edit(r, x => { unplace(x, kind, next.id); x.events.pend = { kind, id: next.id, votes: {} }; });
+}
+
+// Open a card by number (a card read from the table, for a card that was drawn without the app). Any pile except locked.
+export function openEvent(r, kind, id) {
+  if (!EVENT_KINDS_.includes(kind) || r.events.pend || !eventIds(kind).has(id) || eventPlace(r, kind, id) === 'locked') return r;
+  return edit(r, x => { unplace(x, kind, id); x.events.pend = { kind, id, votes: {} }; });
+}
+
+// Put the open event back on top of its deck without resolving it (an accidental draw).
+export function cancelEvent(r) {
+  const p = r.events.pend;
+  if (!p) return r;
+  return edit(r, x => { delete x.events.pend; place(x, p.kind, p.id, 'top'); });
+}
+
+// A seat votes for an option key (or null to withdraw). Seats can no longer vote once the event is decided.
+export function setVote(r, seat, key) {
+  const p = r.events.pend;
+  if (!p) return r;
+  const keys = optionKeys(frontOf(p.kind, p.id));
+  if (!seatList(r).includes(seat) || (key !== null && !keys.includes(key))) return r;
+  if (tally(p, keys, seatList(r)).state !== 'open') return r;
   return edit(r, x => {
-    for (const p of EVENT_PLACES.slice(1)) x.events[kind][p] = x.events[kind][p].filter(v => v !== id);
-    if (place) x.events[kind][place].push(id);
+    if (key === null) delete x.events.pend.votes[seat]; else x.events.pend.votes[seat] = key;
   });
 }
 
-// Next place in the cycle in deck > out > bottom > top > in deck, for a click on an event number.
-export function nextEventPlace(r, kind, id) {
-  const cur = EVENT_PLACES.slice(1).find(p => r.events[kind][p].includes(id)) || '';
-  return EVENT_PLACES[(EVENT_PLACES.indexOf(cur) + 1) % EVENT_PLACES.length];
+// Count the missing votes as not voting. A tie that remains is settled by the random draw.
+export function closeVote(r) {
+  const p = r.events.pend;
+  return p && !p.closed ? edit(r, x => { x.events.pend.closed = true; }) : r;
+}
+
+// Settle a tie by a random draw among the tied options. The result is stored, so it is the same for everybody.
+export function rollTie(r, rand = cryptoRandom) {
+  const p = r.events.pend;
+  if (!p) return r;
+  const keys = optionKeys(frontOf(p.kind, p.id));
+  const t = tally(p, keys, seatList(r));
+  if (t.state !== 'tie' || !t.tied.length) return r;
+  const pick = t.tied[Math.floor(rand() * t.tied.length)];
+  return edit(r, x => { x.events.pend.rnd = pick; });
+}
+
+// Tick or untick one box of a card (index into the card's boxes). The marks stay with the card in every pile.
+export function toggleMark(r, kind, id, index) {
+  if (!EVENT_KINDS_.includes(kind) || !Number.isInteger(index)) return r;
+  const { boxes, ticked } = boxState(r, kind, id);
+  if (index < 0 || index >= boxes.length) return r;
+  return edit(r, x => {
+    const key = markKey(kind, id);
+    const next = ticked.includes(index) ? ticked.filter(i => i !== index) : [...ticked, index].sort((a, b) => a - b);
+    if (next.length) x.events.marks[key] = next; else delete x.events.marks[key];
+  });
+}
+
+// Free note on a card (empty text removes it). Limited to 500 characters.
+export function setNote(r, kind, id, value) {
+  if (!EVENT_KINDS_.includes(kind) || !eventIds(kind).has(id)) return r;
+  const text = String(value ?? '').trim().slice(0, 500), key = markKey(kind, id);
+  if ((r.events.notes?.[key] || '') === text) return r;
+  return edit(r, x => { if (text) x.events.notes[key] = text; else delete x.events.notes[key]; });
+}
+
+// Finish the open event: place the card in a pile and log the result. The event must be decided.
+export function finishEvent(r, where) {
+  const p = r.events.pend;
+  if (!p || !['top', 'bottom', 'out'].includes(where)) return r;
+  const keys = optionKeys(frontOf(p.kind, p.id));
+  const t = tally(p, keys, seatList(r));
+  if (t.state !== 'decided') return r;
+  return edit(r, x => {
+    const entry = { kind: p.kind, id: p.id, opt: t.opt, votes: { ...p.votes }, place: where };
+    if (t.random) entry.rnd = 1;
+    if (p.closed) entry.closed = 1;
+    x.evlog = [...(x.evlog || []), entry];
+    delete x.events.pend;
+    place(x, p.kind, p.id, where);
+  });
 }
 
 export const DECK_LISTS = ['bg', 'tre', 'mp'];

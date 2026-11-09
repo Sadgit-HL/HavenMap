@@ -23,7 +23,11 @@ Record fields (all optional on load, defaults filled by normalize):
   scn               { "<number>": { s, l?, p?, ch?, d? } }   state, level, party size, chests, date
   chars             [{ id, cls, name, lv, xp, gold, inh, traits, hand, deck, disc, act, lost, bench, items:[{id, st}], am }]
   items             { unl: [itemId], taken: { itemId: copies in use } }
-  events            { city, road: { out, bottom, top } , pend? }
+  events            { city, road: { top, bottom, out, locked }, pend? }   piles are ordered, see scripts/campaign/events.js
+                    pend = the open event { kind, id, votes: { seat: label }, closed?, rnd? }
+                    marks = { "road:4": [1] }   ticked box indexes of cards with boxes (the card keeps them in every pile)
+                    notes = { "road:4": "text" }   free note on a card
+  evlog             finished events [{ kind, id, opt, votes, rnd?, closed?, place }]
   decks             { bg, tre, mp }                 battle goals drawn, treasures claimed, med packs
   enh, retired      enhancement log, retired characters
 */
@@ -33,7 +37,7 @@ export function emptyRecord() {
     party: { insp: 0, avg: 1, diff: 0, diffName: 'Normal' },
     rep: { demons: 0, merchants: 0, guard: 0 }, pros: 0, imb: [], stk: [], cls: [],
     scn: {}, chars: [], items: { unl: [], taken: {} },
-    events: { city: { out: [], bottom: [], top: [] }, road: { out: [], bottom: [], top: [] } },
+    events: { city: { top: [], bottom: [], out: [], locked: [] }, road: { top: [], bottom: [], out: [], locked: [] }, marks: {}, notes: {} }, evlog: [],
     decks: { bg: [], tre: [], mp: [] }, enh: [], retired: [],
   };
 }
@@ -50,6 +54,10 @@ export function normalize(raw) {
   r.rep = rep;
   r.items = { unl: [], taken: {}, ...(r.items || {}) };
   r.events = { city: { ...base.events.city, ...(r.events?.city || {}) }, road: { ...base.events.road, ...(r.events?.road || {}) } };
+  if (raw?.events?.pend) r.events.pend = raw.events.pend;
+  r.events.marks = { ...(raw?.events?.marks || {}) };
+  r.events.notes = { ...(raw?.events?.notes || {}) };
+  r.evlog = Array.isArray(r.evlog) ? r.evlog : [];
   r.decks = { ...base.decks, ...(r.decks || {}) };
   r.scn = r.scn || {};
   r.chars = (r.chars || []).map(c => ({ traits: [], deck: [], disc: [], act: [], lost: [], bench: [], items: [], ...c }));
@@ -98,10 +106,18 @@ export function handOf(c) {
   return (c.deck || []).filter(id => !out.has(id));
 }
 
+// Copies of an item in use: the number of characters holding it (calculated from the character sheets,
+// not stored; `items.taken` of an imported record is ignored).
+export function itemsInUse(r, item) {
+  let n = 0;
+  for (const c of r.chars) for (const it of c.items || []) if (String(it.id) === String(item.id)) n++;
+  return n;
+}
+
 // Copies of an item still in the shop (total copies minus copies in use); 0 when locked.
 export function shopCopies(r, item) {
   if (!r.items.unl.includes(item.id)) return 0;
-  return Math.max(0, (item.n || 0) - (r.items.taken[String(item.id)] || 0));
+  return Math.max(0, (item.n || 0) - itemsInUse(r, item));
 }
 
 // Scenarios that unlock this one (reverse arrows of the flow chart).

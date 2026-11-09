@@ -19,3 +19,12 @@ export function cardImageUrl(card) {
     ? `${CARD_IMAGE_BASE}mp/${cls.code.toLowerCase()}/mp-${slug}.png`
     : `${CARD_IMAGE_BASE}gh2/${cls.code.toUpperCase()}/${slug}.jpeg`;
 }
+
+// Item card fronts: wh_items/gh2/<id>.png, the id zero-padded to three digits (001.png) and the quartermaster
+// items as QM1.png. The back is <id>b.png (not used). Checked against all 179 URLs in the workbook's Card DB.
+export const ITEM_IMAGE_BASE = CARD_IMAGE_BASE.replace('wh_character_ability_cards/', 'wh_items/gh2/');
+export function itemImageUrl(item) {
+  if (!item) return null;
+  const id = typeof item.id === 'number' ? String(item.id).padStart(3, '0') : encodeURIComponent(String(item.id));
+  return `${ITEM_IMAGE_BASE}${id}.png`;
+}

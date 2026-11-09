@@ -154,22 +154,38 @@ def read_scenarios(sh):
 
 def read_events(sh):
     """Two list blocks from row 13: city (# col 27, Out 29, Bottom 30, Top 32) and road (# col 34, Out 36, Bottom 37,
-    Top 39). A box ticked under Out/Bottom/Top places the card there."""
-    def block(cn, cout, cbot, ctop):
-        out, bottom, top = [], [], []
+    Top 39). A box ticked under Out/Bottom/Top places the card there.
+
+    The sheet lists only the cards that are in play (city 1 to 20 and the ones added later, road 1 to 20 and added ones).
+    Every card of the game that is NOT listed has not been added to the deck yet: it is imported as locked. A listed card
+    that is in no pile is part of the deck with no known position (the sheet keeps no order)."""
+    notes, marks = {}, {}
+
+    def block(cn, cout, cbot, ctop, table, kind):
+        out, bottom, top, listed = [], [], [], set()
         for r in range(13, len(sh.rows)):
             n = sh(r, cn)
             if not isinstance(n, (int, float)):
                 continue
             n = num(n)
+            listed.add(n)
             if sh(r, cout) is True:
                 out.append(n)
             if sh(r, cbot) is True:
                 bottom.append(n)
             if sh(r, ctop) is True:
                 top.append(n)
-        return {'out': out, 'bottom': bottom, 'top': top}
-    return {'city': block(27, 29, 30, 32), 'road': block(34, 36, 37, 39)}
+            for c in (cout, cbot, ctop):                      # a text typed into a tick box is a note on the card
+                v = sh(r, c)
+                if isinstance(v, str) and v.strip():
+                    notes[f'{kind}:{n}'] = v.strip()
+                    m = re.search(r'option\s*(\d+)\s*marked', v, re.I)
+                    if m:                                     # "option 2 marked" = the second box of the card is ticked
+                        marks.setdefault(f'{kind}:{n}', []).append(int(m.group(1)) - 1)
+        locked = [e['id'] for e in static('gh2_events.js', table) if e['id'] not in listed]
+        return {'top': top, 'bottom': bottom, 'out': out, 'locked': locked}
+    city, road = block(27, 29, 30, 32, 'CITY_EVENTS', 'city'), block(34, 36, 37, 39, 'ROAD_EVENTS', 'road')
+    return {'city': city, 'road': road, 'marks': marks, 'notes': notes}
 
 
 # --- decks ---------------------------------------------------------------------------------------------------
@@ -305,7 +321,8 @@ def main():
     print('stickers', rec['stk'])
     print('classes', len(rec['cls']), 'enh', len(rec['enh']), 'retired', len(rec['retired']))
     print('items unlocked', len(rec['items']['unl']), 'with copies out', len(rec['items']['taken']))
-    print('events', {k: {a: len(b) for a, b in v.items()} for k, v in rec['events'].items()})
+    print('events', {k: {a: len(b) for a, b in v.items()} for k, v in rec['events'].items() if k in ('city', 'road')},
+          'marks', rec['events']['marks'], 'notes', rec['events']['notes'])
     for c in chars:
         print(c['sheet'], c['cls'], 'lv', c['lv'], 'xp', c['xp'], 'gold', c['gold'], 'hand', c['hand'], 'deck', len(c['deck']),
               'disc', len(c['disc']), 'act', len(c['act']), 'lost', len(c['lost']), 'bench', len(c['bench']),

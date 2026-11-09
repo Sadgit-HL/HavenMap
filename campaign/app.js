@@ -4,30 +4,50 @@
 import { CARDS } from '../scripts/games/gh2_cards.js';
 import { ITEMS } from '../scripts/games/gh2_items.js';
 import { SCENARIOS, STICKERS } from '../scripts/games/gh2_scenarios.js';
-import { CITY_EVENTS, ROAD_EVENTS } from '../scripts/games/gh2_events.js';
 import { BATTLE_GOALS } from '../scripts/games/battle_goals.js';
 import { escapeHtml as esc } from '../scripts/escape.js';
 import { localStore } from '../scripts/campaign/store.js';
-import { cardImageUrl } from '../scripts/campaign/cardImages.js';
+import { cardImageUrl, itemImageUrl } from '../scripts/campaign/cardImages.js';
 import {
-  validate, scenarioLevel, prosperityLevel, handOf, shopCopies, unlockedBy, classByName, SCN_STATE_NAME,
+  validate, scenarioLevel, prosperityLevel, handOf, shopCopies, itemsInUse, unlockedBy, classByName, SCN_STATE_NAME,
 } from '../scripts/campaign/record.js';
 import * as ed from '../scripts/campaign/edit.js';
+import { eventsHtml, evInit, evClick, evChange } from './eventsView.js?v=3';
 
 const PAGE_TABS = ['Overview', 'Scenarios', 'Mercenaries', 'Items', 'Events'];
 const main = document.getElementById('main');
 const tabsEl = document.getElementById('tabs');
-const editBtn = document.getElementById('edit');
 const undoBtn = document.getElementById('undo');
 let record = null;
 let tab = 'Overview';              // top-level tab
 let sub = '';                      // sub-tab under Mercenaries: a character id or 'add'
-let editing = false;
+const editPages = new Set();        // pages (top-level tabs) currently in edit mode; each page has its own Edit button
+let editing = false;               // derived in render(): is the visible page being edited
 let imgMode = 'hover';                 // card images: 'hover' (preview under the pointer) or 'always' (shown in the lists)
 const history = [];                                   // earlier records for undo, newest last
-const view = { scnStatus: '', scnSearch: '', itemSlot: '', itemShow: 'all' };
+const view = { scnStatus: '', scnSearch: '', itemSlot: '', itemSearch: '', itemShow: 'unlocked', itemView: 'list', itemSize: 'm', itemSort: { col: '', dir: 1 } };   // itemView: 'list' | 'grid'
 
 const cardById = new Map(CARDS.map(c => [c.id, c]));
+const PENCIL = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2 2 0 0 1 3 0l0 0a2 2 0 0 1 0 3L8 19z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M14 7l3 3" stroke="currentColor" stroke-width="2"/></svg>';
+const ITEM_SIZES = { s: 150, m: 188, l: 250 };      // minimum tile width in px for the item grid
+// Filter and view settings are kept in this browser (not the search texts: a stale search would hide rows after a reload).
+const VIEW_KEY = 'havenmap.campaign.view';
+const VIEW_SAVED = ['scnStatus', 'itemSlot', 'itemShow', 'itemView', 'itemSize', 'itemSort'];
+function saveView() {
+  try { localStorage.setItem(VIEW_KEY, JSON.stringify(Object.fromEntries(VIEW_SAVED.map(k => [k, view[k]])))); } catch { /* ignore */ }
+}
+function loadView() {
+  try {
+    const v = JSON.parse(localStorage.getItem(VIEW_KEY) || 'null');
+    if (!v || typeof v !== 'object') return;
+    if (typeof v.scnStatus === 'string') view.scnStatus = v.scnStatus;
+    if (typeof v.itemSlot === 'string') view.itemSlot = v.itemSlot;
+    if (['all', 'unlocked', 'shop'].includes(v.itemShow)) view.itemShow = v.itemShow;
+    if (v.itemView === 'list' || v.itemView === 'grid') view.itemView = v.itemView;
+    if (v.itemSize in ITEM_SIZES) view.itemSize = v.itemSize;
+    if (v.itemSort && typeof v.itemSort.col === 'string' && (v.itemSort.dir === 1 || v.itemSort.dir === -1)) view.itemSort = { col: v.itemSort.col, dir: v.itemSort.dir };
+  } catch { /* ignore */ }
+}
 const itemById = new Map(ITEMS.map(i => [i.id, i]));
 const pretty = slug => String(slug ?? '').replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 const chip = (text, cls = '') => `<span class="chip ${cls}">${esc(text)}</span>`;
@@ -74,9 +94,6 @@ function renderTabs() {
   tabsEl.innerHTML = PAGE_TABS.map(t =>
     `<button type="button" role="tab" aria-selected="${t === tab}" data-tab="${esc(t)}">${esc(t)}</button>`).join('');
   document.getElementById('title').textContent = record?.name ? `Campaign: ${record.name}` : 'Campaign';
-  editBtn.textContent = editing ? 'Done editing' : 'Edit';
-  editBtn.setAttribute('aria-pressed', String(editing));
-  editBtn.disabled = !record;
   undoBtn.disabled = !history.length;
 }
 tabsEl.addEventListener('click', e => {
@@ -278,35 +295,61 @@ function items(r) {
     if (view.itemSlot && i.slot !== view.itemSlot) return false;
     if (view.itemShow === 'unlocked' && !r.items.unl.includes(i.id)) return false;
     if (view.itemShow === 'shop' && shopCopies(r, i) === 0) return false;
+    // Search the item name. Locked items are never matched by name, so a search cannot reveal them.
+    const q = view.itemSearch.trim().toLowerCase();
+    if (q && !(r.items.unl.includes(i.id) && pretty(i.slug).toLowerCase().includes(q) || String(i.id).toLowerCase() === q)) return false;
     return true;
   });
   const filters = `<div class="filters"><select id="itemSlot"><option value="">All slots</option>${slots.map(s => `<option ${view.itemSlot === s ? 'selected' : ''}>${esc(s)}</option>`).join('')}</select>
-    <select id="itemShow">${[['all', 'All items'], ['unlocked', 'Unlocked'], ['shop', 'In the shop']].map(([v, l]) => `<option value="${v}" ${view.itemShow === v ? 'selected' : ''}>${l}</option>`).join('')}</select></div>`;
+    <select id="itemShow">${[['all', 'All items'], ['unlocked', 'Unlocked'], ['shop', 'In the shop']].map(([v, l]) => `<option value="${v}" ${view.itemShow === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
+    <input id="itemSearch" type="search" placeholder="Search item name" value="${esc(view.itemSearch)}">
+    <button type="button" class="editbtn editicon" data-pageedit aria-pressed="${editing}" aria-label="${editing ? 'Stop editing items' : 'Edit items'}" title="${editing ? 'Stop editing items' : 'Edit items'}">${PENCIL}</button></div>`;
+  const viewToggle = `<div class="imgmode viewmode" role="group" aria-label="Items view">${
+    [['list', 'Table'], ['grid', 'Cards']].map(([m, l]) => `<button type="button" data-itemview="${m}" aria-pressed="${view.itemView === m}">${l}</button>`).join('')}${view.itemView === 'grid' ? `<span class="sizesel">${[['s', 'S'], ['m', 'M'], ['l', 'L']].map(([k, l]) => `<button type="button" data-itemsize="${k}" aria-pressed="${view.itemSize === k}" title="Tile size ${l}">${l}</button>`).join('')}</span>` : ''}<span class="ctrlhint">${rows.length} items${view.itemView === 'list' ? ' · hold Ctrl over a row for the card' : ''}</span></div>`;
   const holders = id => r.chars.filter(c => c.items.some(i => i.id === id)).map(c => c.name).join(', ');
-  return filters + table(['#', 'Item', 'Slot', 'Kind', 'Unlocked', 'Copies', 'In use', 'In shop', 'With'], rows.map(i => {
+  if (view.itemView === 'grid') {
+    // Pictures of the filtered items. Locked items are dimmed; the badge shows copies in the shop / total.
+    return filters + viewToggle + (rows.length ? `<div class="itemgrid" style="--tile-min:${ITEM_SIZES[view.itemSize]}px">${rows.map(i => {
+      const unl = r.items.unl.includes(i.id);
+      const secret = !unl && !editing;              // players must not see locked items: no picture, no name
+      const name = unl ? pretty(i.slug) : 'Locked item', url = secret ? null : itemImageUrl(i);   // the name of a locked item is hidden in edit mode too
+      const pic = url ? `<img class="cardpic" src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false">` : `<div class="noimg secretpic">${secret ? '?' : esc(name)}</div>`;
+      const w = holders(i.id);
+      const tog = editing ? `<button type="button" class="chip" data-act="itemToggle" data-id="${esc(i.id)}" title="${unl ? 'Lock this item' : 'Unlock this item'}">${unl ? 'Lock' : 'Unlock'}</button>` : '';
+      return `<figure class="itemtile${unl ? '' : ' locked'}" title="${unl ? esc(`${i.id} ${name}`) : esc(String(i.id))}">${pic}
+        <figcaption><span class="cname">${esc(name)}</span>${tog || `<span class="badge">${unl ? `${esc(shopCopies(r, i))}/${esc(i.n)}` : 'locked'}</span>`}</figcaption>${w && !secret ? `<div class="itemwith">${esc(w)}</div>` : ''}</figure>`;
+    }).join('')}</div>` : none);
+  }
+  // Sortable columns: click a header to sort ascending, again for descending, a third time for the default order.
+  // A locked item sorts by what the viewer sees ("Locked item"), so sorting cannot reveal its identity.
+  const shownName = i => r.items.unl.includes(i.id) ? pretty(i.slug) : 'Locked item';
+  const SORT = {
+    id: i => (typeof i.id === 'number' ? [0, i.id] : [1, String(i.id)]),
+    name: i => shownName(i).toLowerCase(),
+    slot: i => i.slot ?? '',
+    kind: i => i.kind ?? '',
+    unl: i => (r.items.unl.includes(i.id) ? 1 : 0),
+    n: i => i.n || 0,
+    used: i => (r.items.unl.includes(i.id) ? itemsInUse(r, i) : -1),
+    shop: i => (r.items.unl.includes(i.id) ? shopCopies(r, i) : -1),
+    with: i => holders(i.id).toLowerCase(),
+  };
+  const cmp = (a, b) => (Array.isArray(a) ? (a[0] - b[0] || (typeof a[1] === 'number' ? a[1] - b[1] : String(a[1]).localeCompare(String(b[1])))) : typeof a === 'number' ? a - b : String(a).localeCompare(String(b)));
+  const { col, dir } = view.itemSort;
+  if (SORT[col]) rows.sort((x, y) => dir * cmp(SORT[col](x), SORT[col](y)) || cmp(SORT.id(x), SORT.id(y)));
+  const head = [['id', '#'], ['name', 'Item'], ['slot', 'Slot'], ['kind', 'Type'], ['unl', 'Unlocked'], ['n', 'Copies'], ['used', 'In use'], ['shop', 'In shop'], ['with', 'With']]
+    .map(([k, l]) => `<button type="button" class="sortbtn" data-itemsort="${k}" title="Sort by ${esc(l.toLowerCase())}">${l}${col === k ? (dir > 0 ? ' &#9650;' : ' &#9660;') : ''}</button>`);
+  return filters + viewToggle + table(head, rows.map(i => {
     const unl = r.items.unl.includes(i.id);
-    const unlCell = editing ? `<input type="checkbox" data-act="itemUnl" data-id="${esc(i.id)}" ${unl ? 'checked' : ''}>` : (unl ? 'yes' : '');
-    const used = r.items.taken[String(i.id)] || 0;
-    const usedCell = unl ? val(true, used, num('itemTaken', 'taken', used, { min: 0, max: i.n, id: i.id, width: 44 })) : '';
-    return `<tr class="${unl ? '' : 's0'}"><td>${esc(i.id)}</td><td>${esc(pretty(i.slug))}</td><td>${esc(i.slot ?? '')}</td><td>${esc(i.kind)}</td>
+    const unlCell = editing ? `<input type="checkbox" data-act="itemUnl" data-id="${esc(i.id)}" ${unl ? 'checked' : ''}>` : `<input type="checkbox" disabled ${unl ? 'checked' : ''} aria-label="${unl ? 'unlocked' : 'locked'}">`;
+    const usedCell = unl ? esc(itemsInUse(r, i)) : '';   // calculated from the character tabs, not editable
+    const pic = (unl || editing) && itemImageUrl(i);   // locked items stay hidden for players
+    return `<tr class="${unl ? '' : 's0'}"${pic ? ` data-img="${esc(pic)}"` : ''}><td>${esc(i.id)}</td><td>${unl ? esc(pretty(i.slug)) : 'Locked item'}</td><td>${esc(i.slot ?? '')}</td><td>${esc(i.kind === 'qm' ? 'QM' : i.kind)}</td>
       <td>${unlCell}</td><td>${esc(i.n)}</td><td>${usedCell}</td><td>${unl ? esc(shopCopies(r, i)) : ''}</td><td>${esc(holders(i.id))}</td></tr>`;
   }));
 }
 
-function events(r) {
-  const deck = (label, kind, all, st) => {
-    const out = new Set(st.out), bottom = new Set(st.bottom), top = new Set(st.top);
-    const where = id => out.has(id) ? 'out' : bottom.has(id) ? 'bottom' : top.has(id) ? 'top' : 'in deck';
-    const cls = id => ({ out: 'out', bottom: 'bottom', top: 'top' }[where(id)] || '');
-    return `<h2>${label} events (${all.length - out.size} in the deck, ${out.size} out, ${bottom.size} bottom, ${top.size} top)</h2>
-      <div class="numgrid">${all.map(e => editing
-        ? `<button type="button" class="${cls(e.id)}" data-act="event" data-key="${kind}" data-id="${e.id}" title="${where(e.id)}">${e.id}</button>`
-        : `<span class="${cls(e.id)}" title="${where(e.id)}">${e.id}</span>`).join('')}</div>`;
-  };
-  return (editing ? '<p class="hint">Click an event number to move it: in the deck, out, bottom, top.</p>' : '') +
-    deck('City', 'city', CITY_EVENTS, r.events.city) + deck('Road', 'road', ROAD_EVENTS, r.events.road) +
-    (r.events.pend ? `<h2>Open event</h2><div class="card">${esc(JSON.stringify(r.events.pend))}</div>` : '');
-}
+function events(r) { return eventsHtml(r); }
 
 // --- render and events ------------------------------------------------------------------------------------
 
@@ -316,9 +359,13 @@ function render() {
     main.innerHTML = '<div class="empty">No campaign loaded.<br>Use <b>Load file</b> to open a campaign JSON file. It is kept in this browser only.</div>';
     return;
   }
+  editing = editPages.has(tab);
+  saveView();
   const issues = validate(record);
+  // The Items page carries its own pencil button in the filter row; every other page gets a bar above its content.
+  const pagebar = tab === 'Items' ? '' : `<div class="pagebar"><button type="button" class="editbtn" data-pageedit aria-pressed="${editing}" title="${editing ? 'Stop editing this page' : 'Edit this page'}">${editing ? 'Done editing' : `Edit ${esc(tab.toLowerCase())}`}</button></div>`;
   const body = { Overview: overview, Scenarios: scenarios, Mercenaries: mercenaries, Items: items, Events: events }[tab](record);
-  main.innerHTML = (issues.length ? `<div class="issues">${issues.length} issue(s): ${esc(issues.slice(0, 5).join('; '))}</div>` : '') + body;
+  main.innerHTML = pagebar + (issues.length ? `<div class="issues">${issues.length} issue(s): ${esc(issues.slice(0, 5).join('; '))}</div>` : '') + body;
 }
 
 // Edits: inputs and selects report on `change`, buttons on `click`; each maps to one pure function in edit.js.
@@ -333,11 +380,10 @@ function apply(el) {
     case 'scnRes': return commit(ed.setScenarioResult(record, id, { [key]: v }));
     case 'char': return commit(ed.setCharacter(record, id, key, v));
     case 'charName': return commit(ed.renameCharacter(record, id, v));
-    case 'itemUnl': return commit(ed.setItemUnlocked(record, Number(id), v));
-    case 'itemTaken': return commit(ed.setItemTaken(record, Number(id), v));
+    case 'itemUnl': return commit(ed.setItemUnlocked(record, id, v));
+    case 'itemToggle': return commit(ed.setItemUnlocked(record, id, !record.items.unl.some(u => String(u) === id)));
     case 'treasures': return commit(ed.setDeckList(record, 'tre', v));
     case 'deck': return commit(ed.toggleDeckEntry(record, key, Number(id)));
-    case 'event': return commit(ed.setEventPlace(record, key, Number(id), ed.nextEventPlace(record, key, Number(id))));
     default: return undefined;
   }
 }
@@ -348,6 +394,25 @@ main.addEventListener('click', e => {
     hidePreview();
     render();
     try { localStorage.setItem('havenmap.campaign.cardImages', m); } catch { /* ignore */ }
+    return;
+  }
+  const isz = e.target.closest('[data-itemsize]')?.dataset.itemsize;
+  if (isz in ITEM_SIZES) {
+    view.itemSize = isz;
+    render();
+    return;
+  }
+  const srt = e.target.closest('[data-itemsort]')?.dataset.itemsort;
+  if (srt) {
+    const s = view.itemSort;
+    view.itemSort = s.col !== srt ? { col: srt, dir: 1 } : s.dir > 0 ? { col: srt, dir: -1 } : { col: '', dir: 1 };
+    render();
+    return;
+  }
+  const iv = e.target.closest('[data-itemview]')?.dataset.itemview;
+  if (iv) {
+    view.itemView = iv;
+    render();
     return;
   }
   const t = e.target.closest('[data-sub]')?.dataset.sub;
@@ -361,6 +426,7 @@ const preview = document.createElement('img');
 preview.id = 'cardPreview';
 preview.alt = '';
 document.body.appendChild(preview);
+const hoverOn = () => imgMode === 'hover' || tab === 'Items';   // the item list always previews on Ctrl+hover
 const coarse = matchMedia('(pointer: coarse)');                 // touch: no hover, so a tap shows the picture instead
 let previewUrl = '';
 
@@ -382,18 +448,18 @@ const showUnderPointer = () => {
 };
 main.addEventListener('mousemove', e => {
   pointer = { x: e.clientX, y: e.clientY };
-  if (imgMode !== 'hover' || coarse.matches) return;
+  if (!hoverOn() || coarse.matches) return;
   if (e.buttons || !e.ctrlKey) { hidePreview(); return; }
   const el = e.target.closest?.('[data-img]');
   if (el) showPreview(el.dataset.img, e.clientX, e.clientY); else hidePreview();
 });
-document.addEventListener('keydown', e => { if (e.key === 'Control' && imgMode === 'hover' && !coarse.matches) showUnderPointer(); });
+document.addEventListener('keydown', e => { if (e.key === 'Control' && hoverOn() && !coarse.matches) showUnderPointer(); });
 document.addEventListener('keyup', e => { if (e.key === 'Control') hidePreview(); });
 window.addEventListener('blur', hidePreview);
 main.addEventListener('mouseleave', hidePreview);
 main.addEventListener('dragstart', hidePreview);
 main.addEventListener('click', e => {
-  if (imgMode !== 'hover' || !coarse.matches || e.target.closest('button')) return;
+  if (!hoverOn() || !coarse.matches || e.target.closest('button')) return;
   const el = e.target.closest('[data-img]');
   if (el) { showPreview(el.dataset.img, innerWidth / 2 - 150, 40); e.stopPropagation(); } else hidePreview();
 });
@@ -447,6 +513,7 @@ main.addEventListener('submit', e => {
   commit(next);
 });
 main.addEventListener('change', e => {
+  if (evChange(e)) return;
   const k = { scnStatus: 'scnStatus', itemSlot: 'itemSlot', itemShow: 'itemShow' }[e.target.id];
   if (k) { view[k] = e.target.value; render(); return; }
   if (editing && e.target.dataset.act && e.target.tagName !== 'BUTTON') apply(e.target);
@@ -456,16 +523,22 @@ main.addEventListener('click', e => {
   if (editing && b) apply(b);
 });
 main.addEventListener('input', e => {
-  if (e.target.id !== 'scnSearch') return;
-  view.scnSearch = e.target.value;
+  const sk = { scnSearch: 'scnSearch', itemSearch: 'itemSearch' }[e.target.id];
+  if (!sk) return;
+  view[sk] = e.target.value;
   const pos = e.target.selectionStart;
   render();
-  const box = main.querySelector('#scnSearch');
+  const box = main.querySelector('#' + sk);
   box?.focus();
   box?.setSelectionRange(pos, pos);
 });
 
-editBtn.addEventListener('click', () => { editing = !editing; render(); });
+main.addEventListener('click', evClick);
+main.addEventListener('click', e => {
+  if (!e.target.closest('[data-pageedit]')) return;
+  if (editPages.has(tab)) editPages.delete(tab); else editPages.add(tab);
+  render();
+});
 undoBtn.addEventListener('click', undo);
 document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName)) { e.preventDefault(); undo(); }
@@ -496,11 +569,12 @@ document.getElementById('clear').addEventListener('click', async () => {
   await localStore.clear();
   record = null;
   history.length = 0;
-  editing = false;
+  editPages.clear();
   render();
 });
 
 (async () => {
+  evInit({ render, record: () => record, commit, editing: () => editing });
   record = await localStore.load();
   try {
     const t = localStorage.getItem('havenmap.campaign.tab');
@@ -508,6 +582,7 @@ document.getElementById('clear').addEventListener('click', async () => {
     sub = localStorage.getItem('havenmap.campaign.sub') || '';
     const m = localStorage.getItem('havenmap.campaign.cardImages');
     if (m === 'hover' || m === 'always') imgMode = m;
+    loadView();
   } catch { /* ignore */ }
   render();
 })();
