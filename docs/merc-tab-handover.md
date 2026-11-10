@@ -1,7 +1,8 @@
 # Mercenary tab redesign: handover
 
-Written 2026-11-10 at the end of a long session. Purpose: let a fresh session continue the design of the Mercenaries tab of the
-campaign page (`campaign/`) without asking the user to repeat anything. Read this first, then `merc_tab.md`, then the mockups.
+Written 2026-11-10, cleaned up the same day. Purpose: let a fresh session continue the design of the Mercenaries tab of the campaign
+page (`campaign/`) without asking the user to repeat anything. Read this first, then `merc_tab.md`, then the mockups. The project log is
+`docs/HANDOVER.md` (section 18 describes the rest of the campaign page).
 
 ## 1. Where things are
 
@@ -14,11 +15,10 @@ campaign page (`campaign/`) without asking the user to repeat anything. Read thi
 | The live Mercenaries tab | `campaign/app.js`: `mercenaries()`, `characterTab()`, `characterCard()`, `deckZones()`, `cardRow()`, `benchList()` |
 | Edit functions | `scripts/campaign/edit.js` (`moveCard`, `setCardActive`, `setCharacter`, `setCharacterPlayer`, `addCharacter`, `renameCharacter`, `setSpecialTrait`) |
 | Record shape | `scripts/campaign/record.js` header comment, `docs/campaign-schema.md` |
-| Project handover (older) | `docs/HANDOVER.md` |
+| Project log | `docs/HANDOVER.md` |
 
-State of git at the time of writing: everything up to the Overview rework is committed and pushed (`main`, commit `10f07c6`).
-**Not committed:** `campaign/mockups/` (including 22 card thumbnails, about 650 KB, copies of the group's card scans), `tools/merc-mockups/`
-and this file. Ask before committing the thumbnails.
+Git: all of this is committed and pushed to `main` (mockups in `9703c39`, including the 22 card thumbnails, about 650 KB of copies of the
+group's card scans).
 
 The generator hard-codes absolute paths (`C:/Users/hansen/ai/games/HavenMap/HavenMap/...`) and imports `scripts/games/gh2_cards.js` for
 initiative values. Thumbnails were made with:
@@ -28,10 +28,8 @@ then `magick in.jpeg -resize 300x -strip -quality 82 img/cards/<slug>.jpg` (orig
 ## 2. The user and how to work with them
 
 - PD Dr. Guido Hansen (guido.hansen@uni-luebeck.de), biochemist, plays a Gloomhaven 2e play-by-forum campaign with 3 other players.
-- Global rules (`~/.claude/CLAUDE.md`): terse and direct, lead with the answer, under about 100 words by default, minimal markdown, no emoji,
-  never the em dash, no filler, double-check facts and say when unverified, ask before destructive or high blast-radius actions, state a
-  plan before large changes, **never add a co-author line to commits** (this overrides any attribution reminder), never hand-edit
-  generated files or changelogs.
+- Rules: `~/.claude/CLAUDE.md` and `docs/HANDOVER.md` section 9 (terse, no emoji, no em dash, confirm destructive actions, never hand-edit
+  generated files, no co-author line in commits unless the owner says otherwise; section 9 lists that open conflict).
 - Working style seen in this session: implement in small steps, show a screenshot or test result, accept quick renames and layout tweaks
   without discussion, no help text in modals or pages ("remove help text" came up three times), uses `+`/pencil buttons that open modals.
   The user often gives short imperatives ("commit and push"). Commit only when asked.
@@ -61,7 +59,7 @@ visual feel of a card game; polished GUI.
 ## 4. Mockups
 
 All use the app's colours (`--bg #16130f`, `--panel #231d17`, `--line #3a3026`, `--text #ecdfc8`, `--muted #a89a82`, `--accent #c7a44a`)
-and real data: Simon, Tinkerer, level 5, played by Guido (from the imported campaign; the file the data came from, `campaign-import.local.json` of the deleted `HavenMap-campaign` worktree, is gone, `import/campaign-import.json` is the tracked equivalent).
+and real data: Simon, Tinkerer, level 5, played by Guido (from the imported campaign, `import/campaign-import.json`).
 Each page has a top nav, a legend ("small corner mark = opens a modal"), and a notes box with pros and cons. Modal buttons only show their
 position (class `mbtn` with a corner mark `mmark`); modal contents are not designed yet.
 
@@ -192,8 +190,7 @@ thresholds (210 and 275: **from memory of the rulebook, unverified**, the app ha
 - Edit large files by writing a small Python patch script with the Write tool and running it; very large bash heredocs failed to parse in this
   environment. Files have CRLF line endings: read with `newline=''`, normalise to LF, write back with the original line ending.
   `node --check file.js` for a quick syntax check of ES modules.
-- Git: single working tree `HavenMap\HavenMap` (branch `main`). The second worktree `HavenMap-campaign` was deleted by the user on 2026-11-10 and
-  pruned (`git worktree prune`); its untracked files (`docs/face-compare/`, the older `WHTracker.xlsx`, `campaign-import.local.json`) were not kept.
+- Git: one working tree, `HavenMap\HavenMap`, branch `main`.
 - The scratchpad folder of a session is temporary: anything worth keeping (generator, scripts) must be in the repo (done for the mockups).
 
 ## 9. Suggested next steps

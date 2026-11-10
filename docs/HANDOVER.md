@@ -1,14 +1,26 @@
 # Handover: HavenMap campaign tracking and hero modifier decks
 
-Written 2026-11-06, updated 2026-11-08. Read this first, then `campaign-schema.md` and `hero-modifier-faces.md` in this folder.
+Written 2026-11-06, cleaned up 2026-11-10. This is the project log and the entry point. Read it first, then the document for the area you work on:
 
-**Status:** the hero attack modifier decks are done and live on `main` (section 13, merged 2026-11-07, branch `feature/hero-amd` deleted). Campaign tracking (sections 1 to 8) is designed; its static tables are generated and a campaign page (`campaign/`, load a JSON file, view and edit, no server) exists (section 14). Session start and commit, the server, voting and BBCode posts are not built. Sections 11 and 12 are the working log of the card-art groundwork and are partly superseded by section 13.
+| Document | Area |
+|---|---|
+| `campaign-schema.md` | session and campaign record schema, API sketch, phasing |
+| `campaign-elements.md` | inventory of the workbook's elements and mechanics, gaps |
+| `hero-modifier-faces.md` | attack modifier faces, catalog, deck compositions |
+| `unique-geekroller-codes.md` | BGG GeekRoller codes of the 68 unique faces |
+| `merc-tab-handover.md` | Mercenaries tab redesign (mockups, decisions, next steps), in progress |
+
+**Status (2026-11-10):**
+- Map app: hero attack modifier decks are done and on `main` (section 13).
+- Campaign page (`campaign/`, no server, one JSON file kept in the browser): Overview, Scenarios (table and flowchart), Mercenaries, Items, Events, Cards, Resources and History tabs exist and are editable (sections 14 to 18). Section 18 is the newest state.
+- Not built: session start and commit, the campaign server, token auth and the BBCode post composer (sections 2 and 14.5). The Mercenaries tab is being redesigned (`merc-tab-handover.md`).
+- Sections 4, 5, 11 and 12 are the working log of the attack modifier art groundwork; section 13 supersedes parts of them.
 
 Items marked (unverified) were inferred and not confirmed.
 
 ## 1. Goal
 
-Extend HavenMap (browser map helper for the group's play-by-forum Gloomhaven 2e campaign, 4 players) to track the full campaign: characters and modifier decks, ability card piles, items, scenarios, events with voting, and BGG post generation. The per-hero modifier deck (section 13) is the first part and is done; the rest is not started.
+Extend HavenMap (browser map helper for the group's play-by-forum Gloomhaven 2e campaign, 4 players) to track the full campaign: characters and modifier decks, ability card piles, items, scenarios, events with voting, and BGG post generation. The per-hero modifier deck (section 13) and the campaign page (sections 14 to 18) are done in their first form; the server, session start and commit, and the BBCode composer are not started.
 
 ## 2. Decisions made
 
@@ -25,12 +37,12 @@ Full detail: `campaign-schema.md` (session schema, campaign record, API sketch, 
 
 ## 3. Repo and environment state
 
-- Repo: `C:\Users\guido\ai\games\HavenMap\HavenMap` (earlier sessions ran as `hansen`), branch `main`, remote `origin` = `Sadgit-HL/HavenMap`, GitHub Pages site `https://sadgit-hl.github.io/HavenMap/` (presumably deploys from `main`, unverified). `main` contains the hero deck work (merge commit `4f11ab3`, 2026-11-07). The separate worktree `HavenMap-campaign` is no longer used.
-- `start.bat` (one level above the repo, not in git) serves the folder on port 8080: `http://localhost:8080/HavenMap/`.
-- The Photoshop template and the group workbook live in `C:\Users\hansen\ai\games\HavenMap\campaign_assets\` and must not be committed: `GH Attack Modifier Template.psd` (233 MB), `WHTracker.xlsx` (11 MB), and `psd-export\` (raw 874x591 PNG exports).
-- The app is vanilla ES modules, no build step. State is JSON in the URL hash, versioned by `mapVersion` (currently 4.0.0) with a migration chain in `scripts/state.js`.
+- Repo: `C:\Users\hansen\ai\games\HavenMap\HavenMap` (earlier sessions also ran on other machines, as `guido` and `user`), branch `main`, remote `origin` = `Sadgit-HL/HavenMap`, GitHub Pages site `https://sadgit-hl.github.io/HavenMap/` (presumably deploys from `main`, unverified). One working tree; the second worktree `HavenMap-campaign` was deleted on 2026-11-10 and pruned.
+- `start.bat` (one level above the repo, not in git) serves that folder on port 8080: `http://localhost:8080/HavenMap/`, campaign page `/HavenMap/campaign/`. For tests, any static server rooted one level above the repo works (`python -m http.server 8099`).
+- Outside the repo, next to it: `campaign_assets\` (the Photoshop template `GH Attack Modifier Template.psd`, 233 MB, `WHTracker.xlsx`, 11 MB, `psd-export\` raw PNG exports) and `asset-backups\`. They must not be committed.
+- The app is vanilla ES modules, no build step. Map state is JSON in the URL hash, versioned by `mapVersion` (5.0.0) with a migration chain in `scripts/state.js`. Cache busting is by hand (`?v=` strings), see sections 13.6 and 17.
 
-## 4. Assets produced (in this branch)
+## 4. Assets produced (attack modifier card parts)
 
 All under `images/common/attack_mods/`, WebP, 600x391 (the 815x531 card area of the PSD scaled), all overlays share the same canvas so they stack at 0,0.
 
@@ -48,7 +60,7 @@ Layer composition notes: the PSD's text layers use `PirataOne-Regular` (open fon
 
 ## 5. Tools (`tools/`)
 
-- `export-am-layers.jsx`: Photoshop ExtendScript. Passes: 1 frames, numbers, icons, spheres (done); 2 Empower/Enfeeble (done); 3 remaining 30 frame types, Self/Ally labels on Heal/Shield/Retaliate icons, corner badge numbers +0..+3, -1..-3 (**written, not yet run**). Each pass writes its own manifest into `psd-export\`.
+- `export-am-layers.jsx`: Photoshop ExtendScript. Passes: 1 frames, numbers, icons, spheres (done); 2 Empower/Enfeeble (done); 3 remaining 30 frame types, Self/Ally labels on Heal/Shield/Retaliate icons, corner badge numbers +0..+3, -1..-3 (run later, see section 12; the badge export still fails). Each pass writes its own manifest into `psd-export\`.
 - `convert-psd-export.py`: crops `psd-export` PNGs to the card box (30,30,845,561), resizes to 600x391, writes WebP into the folders above, with renaming and skip rules. Run with Python and Pillow. Paths are hard-coded at the top.
 - Photoshop gotchas: the document must be **ungrouped from its artboard** (the artboard has an opaque white background that ruins transparency). Never save the PSD. The script's second and third pass are untested in Photoshop beyond what the user ran.
 - A throwaway venv with `psd-tools[composite]` was used for inspecting the PSD. It lives in a temp scratchpad and is not part of the repo; recreate it with `pip install "psd-tools[composite]"` if needed.
@@ -58,43 +70,41 @@ Layer composition notes: the PSD's text layers use `PirataOne-Regular` (open fon
 - The group's workbook holds per hero: class, level, XP, gold, a modifier deck row with a checkbox per card and a GeekRoller code, the full class ability card list with three columns for discard, active and lost (columns H, J, L), items, enhancements (card, slot, price), plus campaign sheets (reputation, prosperity, imbuement, stickers, unlocked classes, retirements, scenario flow, city and road event decks with out, bottom and top states, voting, battle goals, personal quests, treasure index).
 - Measured map URL (late game): 2030 chars, 4111 raw JSON chars, overlays are 58% of the raw size. Omitting default keys (`locked:false`, `angle:0` and so on) is a cheap saving (code dependency unverified).
 - Sources of art: Worldhaven (`any2cards/worldhaven`) has Gloomhaven 1e, JotL, Frosthaven, Crimson Scales and others but no GH2 folder and no blank frames. The Frosthaven Assistant repo `Tarmslitaren/FrosthavenAssistant`, folder `frosthaven_assistant/assets/images/attack/perks`, has about 199 effect-named perk faces (400x267, baked-in numbers and corners). `flip` in those file names means rolling (checked visually). Gloomhaven Secretariat (`D:\github\gloomhavensecretariat`) has `imbue.svg` and `advancedImbue.svg`, the likely sources of the imbuement demon head.
-- The imbuement face art in `images/common/attack_mods/imbuement/*.webp` (formerly `gh-am-i-*`) was made in an earlier session (Nov 4). Its scratchpad (scripts, demon discs) may still exist at `C:\Users\hansen\AppData\Local\Temp\claude\56dd7208bf07e1b8\17407d27-507e-4d66-98ec-46f032128a11\scratchpad\imbue\`, but it is temporary storage.
+- The imbuement face art in `images/common/attack_mods/imbuement/*.webp` (formerly `gh-am-i-*`) was made in an earlier session (Nov 4).
 - The per-hero deck refactor planned here (descriptor instead of the `'m'`/`'a'` group string, tabs built per hero) was done; see section 13. The `am` field on a mercenary entry survives drag, removal, undo and load (verified).
 
-## 7. Next steps, in order
+## 7. Next steps
 
-1. Run pass 3 of the Photoshop script, then verify the files (alpha, no FAILED lines in `manifest-pass3.txt`), run `tools/convert-psd-export.py`, and rebuild the comparison page.
-2. Resolve the open face questions (section 8) and finalise the face data (`hero-modifier-faces.md`) as a data file in `scripts/games/`. Static ID tables for classes, cards, items, scenarios, events and quests are done, see section 14.
-3. ~~Implement the per-hero modifier deck~~ done, see section 13.
-4. ~~Build the static ID tables~~ first cut done (section 14); next the campaign server and token auth, then session start and commit, then events, items and flow views.
-5. Extend the BGG button into the post composer (turn post and aftermath post).
+1. Mercenaries tab redesign: follow `merc-tab-handover.md` (answer its open questions, mock up the modals, implement in stages).
+2. Campaign page gaps (sections 14.6, 16, 17, 18): perk and mastery state and XP table, personal quest and battle goal per character, custom counters, notes, touch fallback for drag and drop, automated tests under `tools/`.
+3. Campaign server and token auth, then session start and commit (plan in section 14.5, steps 4 to 8), then the BBCode composer (turn post and aftermath post) in the map app.
+4. Art pipeline leftovers (sections 12.8 and 13.7): frames for shield and retaliate, the 68 unique and 26 multi-icon faces, the 14 unprocessed exports.
+5. Fix card data gaps: initiative values missing or wrong in `scripts/games/gh2_cards.js` (`tools/card-initiative.json`, section 14.6 and 18.5).
 
 ## 8. Open questions
 
-- Colored frames: which Modifier Type gives the red Heal card (the template has no Heal type)? Strengthen with an Ally label is not in the PSD.
-- How the "wound or immobilize" face (`+0,w/i)`) looks on the real card, and the missing control icon for `+0 control move1`.
-- Value of `Invis ->` (assumed +0) and whether `plus1any` is the "wild" face.
-- Scabs' class (not read from the sheet).
-- Licence: text data of the Card DB, the Frosthaven Assistant images, the GHS imbue SVGs, and the PSD template (author unknown). Images are cleared for this non-profit use by the owner, the rest has not been checked.
-- Backend choice and hosting for the campaign server.
+- Licence: text data of the Card DB, the Frosthaven Assistant images, the Gloomhaven Secretariat data (AGPL-3.0: unlock links, initiative, event text, prosperity, reputation), the GHS imbue SVGs and the PSD template (author unknown). Images are cleared for this non-profit use by the owner, the rest has not been checked.
+- Backend choice and hosting for the campaign server (section 14.1, 14.5).
+- Face questions from the art work (section 12.8 and `hero-modifier-faces.md`): the Heal frame colour, the "wound or immobilize" face, the value of `Invis ->`, whether `plus1any` is the "wild" face.
+- Prosperity track, imbuement and Great Oak sanctuary rules in section 18 that were taken from data or sheet labels and not checked against the books.
 
 ## 9. Working rules from the owner
 
-- Terse, direct answers, no emoji, no em dashes.
-- Confirm before destructive or high blast-radius actions.
-- Commits made with an AI assistant carry a `Co-Authored-By` line (owner's decision, 2026-11-07; this replaces the earlier rule against it). Never hand-edit generated files or changelogs.
-- Develop on a feature branch and merge to `main` when ready (`feature/hero-amd` was merged on 2026-11-07 and deleted).
+- Terse, direct answers, no emoji, no em dashes; no help text in pages or modals unless asked.
+- Confirm before destructive or high blast-radius actions. Commit and push only when asked. Never hand-edit generated files or changelogs: fix the generator in `tools/` and regenerate.
+- **Conflict to resolve with the owner:** an earlier decision (2026-11-07) says AI-assisted commits carry a `Co-Authored-By` line (this replaced an even earlier rule against it); the owner's global instructions (`~/.claude/CLAUDE.md`) say never to add the assistant as co-author. Commits up to 2026-11-09 carry the line, the commits of 2026-11-10 (`01a5263` onward) do not. Ask the owner which rule applies and follow the global instructions until then.
+- Develop on a feature branch and merge to `main` when ready, or commit to `main` directly when the owner asks for it (done for the campaign page work).
 
 ## 10. Not committed (local only)
 
-- `docs/face-compare/` (side-by-side HTML, contains copies of Frosthaven Assistant images with an unchecked licence).
-- The workbook, the PSD and the raw exports (in `campaign_assets`).
+- The workbook, the PSD and the raw exports (in `campaign_assets`), `asset-backups`.
+- `docs/face-compare/` (side-by-side HTML with copies of Frosthaven Assistant images, unchecked licence) existed only in the deleted worktree and is gone.
 
 ## 11. Update 2026-11-07: perks listing page (separate from sections 1-10 above)
 
 > Superseded in part by section 13: the baked scans described below are no longer used. Cards are composed from layers (`scripts/amd/`), `perks/card.js` moved to `scripts/amd/card.js`, the `shared/` scans were moved to `asset-backups/attack-modifier-cards/`, and the class badge is now the composed one (the open badge issue at the end of this section is gone).
 
-A second, independent task was done on this branch, on a different machine (`C:\Users\user\...`, not `C:\Users\hansen\...`): a standalone page listing every attack-modifier perk for every class across FH, GH2E, JotL and MP, with the perk's card art composited/shown. This is unrelated to the campaign-tracking goal in sections 1-9 above (which is still open and un-started) but lives on the same branch since it's the same card-art groundwork.
+A second, independent task was done on this branch, on a different machine: a standalone page listing every attack-modifier perk for every class across FH, GH2E, JotL and MP, with the perk's card art composited/shown. This is unrelated to the campaign-tracking goal in sections 1-9 above (which is still open and un-started) but lives on the same branch since it's the same card-art groundwork.
 
 **What's there:**
 - `tools/perks-decode.mjs` + `tools/extract-perks.mjs` → generate `scripts/games/perks.js`: all 43 classes (17 FH, 18 GH2E, 4 JotL, 4 MP), 711 perk entries, from `Tarmslitaren/FrosthavenAssistant`'s edition JSON (local clone, not committed: `asset-backups/amd/FrosthavenAssistant`, sibling to this repo one level up). Re-run `node tools/extract-perks.mjs` after updating that clone.
@@ -103,9 +113,7 @@ A second, independent task was done on this branch, on a different machine (`C:\
 - `images/common/attack_mods/class_icons/` (43 files): one white-silhouette-on-transparent webp per class, converted from `P:\Guido\boardgames\Worldhaven\icons\all\<Class>.png` (a local asset the owner provided directly, trimmed to content + recolored to white). Overlaid on every card to show which class a perk belongs to, replacing whichever class's own weapon icon the baked scan happened to carry (the same slug image is reused across many classes).
 - `docs/hero-modifier-faces.md` section 3a/7 documents the layout rule and this pipeline in more detail.
 
-**Open issue, not resolved**: the class-icon badge overlay's position/size (`.pc-class-badge` in `perks/style.css`) still doesn't perfectly cover the baked-in badge on every card — confirmed still wrong on Frozen Fist's cards as of the last check. Several rounds of re-measuring (via worldhaven's 600x391 photos, then FHA's own 400x267 source grid, then automated pixel-color sampling) each fixed some cards but left others showing a sliver of the original badge ring. The automated color-sampling approach turned out unreliable (false-positive matches against each card's own center icon color). **Next step**: get a precise pixel bounding box of the badge ring by having a person look directly at `images/common/attack_mods/shared/plus0disarm.webp` (586x391) in an image viewer/editor that shows pixel coordinates, rather than more automated guessing — the ring position should be identical across all shared-image cards (confirmed on 3 clean samples: curse/poison/strengthenally all gave the exact same bbox before Frozen Fist's cards showed otherwise, so something is still off). The CSS box is percentage-based off the 600x391 canvas with a cover-crop correction for the images' actual 586x391 (≈400x267 native) aspect ratio; the math is in a comment above `.pc-class-badge`.
-
-**Not carried by git**: the `start.bat` fix (replacing `timeout` with `ping`-based delays, since `timeout` fails outright without an attached console) lives in `C:\Users\user\ai\games\HavenMap\start.bat`, **one level above this repo** — it is not part of this git repository and will not transfer via clone/pull. Redo it manually on a new machine if `start.bat` errors with "input redirection is not supported".
+**Not carried by git**: the `start.bat` fix (replacing `timeout` with `ping`-based delays, since `timeout` fails outright without an attached console) lives in `start.bat` **one level above this repo** — it is not part of this git repository and will not transfer via clone/pull. Redo it manually on a new machine if `start.bat` errors with "input redirection is not supported".
 
 **Cache busting**: `perks/index.html` and `perks/app.js` use `?v=N` query strings on their own asset imports to defeat browser caching during iteration (currently `v=9`). Bump the number on both files when editing `perks/*.css`/`*.js` so a plain refresh picks up changes.
 
@@ -113,7 +121,7 @@ A second, independent task was done on this branch, on a different machine (`C:\
 
 > Still accurate for the layer assets, tools and layout rules. Since then the composition code moved to `scripts/amd/compose.js` (layers are objects now, not URLs with `#xf:`/`#r180` suffixes), and the compare page's scan column is empty because the scans were moved to `asset-backups/attack-modifier-cards/reference-scans/`.
 
-Commits `718ea29` (assets) and `c0077cc` (code), pushed to `origin/feature/hero-amd`. Supersedes step 1 of section 7 and the asset counts in section 4. Machine: `C:\Users\guido\...` (not `hansen`).
+Commits `718ea29` (assets) and `c0077cc` (code), pushed to `origin/feature/hero-amd`. Supersedes step 1 of section 7 and the asset counts in section 4.
 
 ### 12.1 Direction
 
@@ -123,9 +131,7 @@ The perks page with baked scans was a test. The cards are meant for the campaign
 
 The first export came from the GH template and its glyphs do not match the Frosthaven scans (push, pull, wound, bless and the dual elements all differ). The FH template (`FH Attack Modifier Template.psd`) has the right art. `tools/export-am-layers.jsx` now writes to `psd-export-fh` when the document name starts with `FH`. The `DO` flags in the script currently have only `plain: true` on (petal-less Curse and Bless frames); set the others back to `true` for a full FH run. A full FH export has not been done. What exists was assembled from hand-exported files (below).
 
-Source files live outside the repo:
-- `C:\Users\guido\ai\games\HavenMap\asset-backups\amd\assets`: dual-element frames `E_D.png` ... `W_D.png` (15), `bless.png`, `Bless_icon.png`, `curse.png`, `class_circle.png`, `side_-1/0/+1/+2/+3.png`, `retaliate.png`.
-- `P:\tmp\HavenMap\asset-backups\psd-export`: pass 3 exports (30 frames, 12 Self/Ally icons), `push.png`, `pull.png`, `Wound.png`, the 15 `FH Dual Elements` pill PNGs (`fire or ice.png` ...), and 14 files from 02:05 (`Earth_Dark.png`, `Fire_Ice.png`, `Light_Wind.png` ...) that have **not** been looked at or converted.
+Source files live outside the repo and are not durable: `asset-backups\amd\assets` (dual-element frames `E_D.png` ... `W_D.png`, `bless.png`, `Bless_icon.png`, `curse.png`, `class_circle.png`, `side_-1/0/+1/+2/+3.png`, `retaliate.png`) and a temporary `psd-export` folder (pass 3 exports, `push.png`, `pull.png`, `Wound.png`, the dual-element pills, and 14 files from 02:05 that were never looked at or converted). The converted results are in `images/common/attack_mods/`.
 
 ### 12.3 Assets now in `images/common/attack_mods/`
 
@@ -173,7 +179,6 @@ All coordinates are on the 600x391 canvas. Implemented in `perks/compose.js`.
 - Frames still missing: shield (3 faces) and retaliate (1) use the placeholder `p0`. The retaliate scan has a steel grey-blue frame.
 - The 68 `unique` faces and 26 multi-icon faces have not been rebuilt; only the handful above were matched. Rolling and the other side icons are still the old GH-style art.
 - The 14 unprocessed `psd-export` files from 02:05, and the `+4` badge (CSS placeholder on the page; no shared face uses it).
-- The class badge overlay on the old perks page (`.pc-class-badge`) was set to the owner's measurement (v=10) and never confirmed visually.
 - Backups of every replaced asset were kept only in `%TEMP%\bak`, which is not durable. The old versions of the 28 replaced files are in git history (`810c653`).
 - Campaign work (sections 1 to 8): only the static tables exist so far (section 14).
 
@@ -228,7 +233,7 @@ Card keys: `p0 p1 p2 m1 m2 x2 miss` (standard), the art slug for decorated faces
 
 - No test suite. Checks used: syntax check of every script, `node tools/check-perk-icons.mjs`, and browser runs (Playwright with Chrome against `python -m http.server`) of the panel flows. For rendering changes, compare the output of the compare page (all 101 faces) and the perk rows of a few heroes before and after.
 - Cache busting is by hand: `?v=` / `decks-N` strings in `index.html` (main.js, main.css, `amd.css`), in the imports of `scripts/amd/*` and `scripts/decks.js`, and in the `perks/*.html` pages. Bump them when editing the file they point at.
-- AI-assisted commits carry a `Co-Authored-By` line (owner's decision, 2026-11-07, see section 9).
+- Commit rules: section 9.
 
 ### 13.6a GeekRoller codes (2026-11-08)
 
@@ -268,7 +273,7 @@ Phase 2 of `campaign-schema.md` section 10, first cut. Generated by `tools/extra
 
 ### 14.1 Workbook state import (stage 1, 2026-11-08)
 
-`tools/import-campaign-state.py [xlsx] [out.json]` reads the campaign-level state into a campaign record (`campaign-schema.md` section 4) and writes `asset-backups/campaign-import.json`. That file is the group's real campaign (player names, progress) and stays OUTSIDE the repo: do not commit it. Imported: difficulty, inspiration, average level, reputation per faction, prosperity checkmarks, imbuement ticks (raw `row:col`), campaign stickers (labels), unlocked classes, enhancements, retirements, scenario state from the Flow tab (status, level, party size, chests, date), items (`unl`, `taken`), city and road event piles, battle goals drawn, treasures claimed, med packs.
+`tools/import-campaign-state.py [xlsx] [out.json]` reads the campaign-level state into a campaign record (`campaign-schema.md` section 4) and writes `asset-backups/campaign-import.json`. That file is the group's real campaign (player names, progress). A copy is tracked in the repo as `import/campaign-import.json` (checked in by the owner); the importer's raw imbuement list in it is converted by `normalize` on load (section 18). Imported: difficulty, inspiration, average level, reputation per faction, prosperity checkmarks, imbuement ticks (raw `row:col`), campaign stickers (labels), unlocked classes, enhancements, retirements, scenario state from the Flow tab (status, level, party size, chests, date), items (`unl`, `taken`), city and road event piles, battle goals drawn, treasures claimed, med packs.
 
 Checked against the sheet on 2026-11-08: 9 completed, 12 unlocked, 80 locked scenarios (matches the Flow header), prosperity 10, reputation Demons 2 / Merchants 0 / City Guard 8, 11 classes unlocked, 8 city and 6 road events out.
 
@@ -284,7 +289,7 @@ The owner does not want the current campaign state imported automatically; the s
 
 - `scripts/campaign/record.js`: record shape (documented in its header), `normalize`, `validate`, derived values (`scenarioLevel`, `prosperityLevel` with the sheet's level thresholds, `handOf`, `shopCopies`, `unlockedBy`). `scenarioLevel` uses the Gloomhaven rule (half the average level rounded up plus the difficulty value) and is unverified for GH2.
 - `scripts/campaign/store.js`: storage behind one interface (`load`, `save`, `clear`, `importFile`, `exportBlob`); only the browser-local implementation exists. The server comes later behind the same interface.
-- `campaign/index.html` + `app.js` + `style.css`: read-only view with Overview, Scenarios (filter by state, search, unlock arrows both ways), Characters, Items (slot and shop filters) and Events tabs. Open it through a local server (`start.bat` serves `/HavenMap/campaign/`). Load a campaign JSON with **Load file**; it is kept in the browser's local storage only. Test data: `asset-backups/campaign-import.json` from the importer (not committed).
+- `campaign/index.html` + `app.js` + `style.css`: read-only view with Overview, Scenarios (filter by state, search, unlock arrows both ways), Characters, Items (slot and shop filters) and Events tabs. Open it through a local server (`start.bat` serves `/HavenMap/campaign/`). Load a campaign JSON with **Load file**; it is kept in the browser's local storage only. Test data: `import/campaign-import.json` (from the importer).
 - Checked with a headless Chrome run (Playwright): every tab renders, filters work, the saved copy survives a reload. No automated tests.
 - Not done: any editing, session start and commit, voting, the server, card images (names only), BBCode posts.
 
@@ -292,13 +297,13 @@ The owner does not want the current campaign state imported automatically; the s
 
 - `scripts/campaign/edit.js`: pure edit functions (record in, new record out, `ver` bumped, input clamped or ignored): party values, reputation, prosperity, scenario state (completing one unlocks the scenarios it links to) and result (level, party size, chests, date), items unlocked and in use, event piles (in deck, out, bottom, top), battle goal, treasure and medical pack lists, character level, XP and gold. All checked with a throwaway Node script (26 assertions, not committed) and a headless Chrome run of the page.
 - `campaign/app.js`: **Edit** toggle, **Undo** (button and Ctrl+Z, 50 steps), every change autosaved to the browser. Outside edit mode nothing is editable.
-- Not editable yet: stickers, unlocked classes, players, retirements, enhancements, a character's cards, items and modifier deck, the vote in progress. No server, so the browser copy is the only copy: use Export.
+- Not editable yet (at that time; since then stickers, unlocked classes, players and retirements are editable, section 18): enhancements, a character's cards, items and modifier deck, the vote in progress. No server, so the browser copy is the only copy: use Export.
 
 ### 14.5 Session start and commit: plan and step 1 (2026-11-08)
 
 Plan (renumbered 2026-11-08, the owner wants to work on the campaign site first; steps 1 and 2 done, step 3 in progress, 4 to 8 not started): 1) class to map mercenary mapping (done), 2) session schema `mapVersion` 5.0.0 with a `campaign` block and per-hero `cmp` plus a migration (done), 3) campaign site work (scope to be defined by the owner, see `campaign-elements.md` section 10 for the known gaps), 4) start a session from the campaign page (scenario level, one hero per character, fresh `sid`, open the map), 5) map-side panel for result, battle goals and items found, 6) commit from the campaign page (validate `cid`, unused `sid`, `base` version; merge XP, gold, new items, scenario result and unlocks; preview first), 7) idempotence and undo, 8) tests and docs. Open questions: whether ability card piles live in the session (`cmp`, as the schema says) or stay on the campaign side, and how chests and loot map to the result.
 
-Step 1: `scripts/campaign/classMap.js` (`mercenaryForClass`, `classForMercenary`, `maxHpFor`, `checkClassMap`). All 22 campaign classes map to a map mercenary by normalised name (only `Plague Herald` vs `Plagueherald` differs in spelling), every class has max HP for levels 1 to 9 in the map's table, and every class has a perk table for its personal modifier deck. The map's max HP tables equal Frosthaven Assistant's GH2 and Mercenary Pack class data for all 22. Findings about the map app: the session is the whole `state` object in the URL hash (`compressedStateHash` in `scripts/state.js`); extra top-level keys should survive load and save (not yet tested); loading drops heroes whose mercenary id is not in the map table.
+Step 1: `scripts/campaign/classMap.js` (`mercenaryForClass`, `classForMercenary`, `maxHpFor`, `checkClassMap`). All 22 campaign classes map to a map mercenary by normalised name (`Plague Herald` vs `Plagueherald` differed in spelling; the class is `Plagueherald` everywhere since 2026-11-10), every class has max HP for levels 1 to 9 in the map's table, and every class has a perk table for its personal modifier deck. The map's max HP tables equal Frosthaven Assistant's GH2 and Mercenary Pack class data for all 22. Findings about the map app: the session is the whole `state` object in the URL hash (`compressedStateHash` in `scripts/state.js`); extra top-level keys should survive load and save (not yet tested); loading drops heroes whose mercenary id is not in the map table.
 
 Decisions (2026-11-08): ability card piles stay on the campaign side for now (the session only carries a link per hero), and chests and loot are skipped in the result for now.
 
@@ -323,17 +328,18 @@ Step 2 done: `scripts/state.js` is `mapVersion` 5.0.0. `emptyState()` has `campa
 
 ### 14.7 Campaign page: how to use it, where things are (2026-11-08)
 
-Open `http://localhost:8080/HavenMap/campaign/` (run `start.bat`). **Load file** reads a campaign JSON (shape in `scripts/campaign/record.js`; test data from `tools/import-campaign-state.py`, kept outside the repo as `asset-backups/campaign-import.json`). It is stored in the browser's local storage only: use **Export** to keep a copy. **Edit** switches on editing of values, **Undo** (Ctrl+Z) steps back 50 edits; moving ability cards does not need Edit.
+Open `http://localhost:8080/HavenMap/campaign/` (run `start.bat`). **Load file** reads a campaign JSON (shape in `scripts/campaign/record.js`; test data `import/campaign-import.json`, made by `tools/import-campaign-state.py`). It is stored in the browser's local storage only: use **Export** to keep a copy. Editing is per page or per section (pencil buttons; the early **Edit** toggle was replaced), **Undo** (Ctrl+Z) steps back 50 edits; moving ability cards does not need Edit.
 
 | Tab | What it does |
 |---|---|
-| Overview | Party, prosperity, reputation, scenario counts, stickers, classes, retirements, enhancements, battle goal, treasure and medical pack decks. |
+| Overview | Party, prosperity (with donations and imbuement), reputation, scenario counts, campaign stickers, unlocked classes, players, retired characters (section 18). |
 | Scenarios | State, result (level, party size, chests, date) and the unlock links both ways; completing a scenario unlocks its follow-ons. Table or Flowchart view (section 17.2). |
 | Mercenaries | One sub-tab per character (up to four) and a **+** sub-tab to add one. Hand, Discard and Lost areas with drag and drop, cards sorted by initiative, card pictures (Hover with Ctrl held, or Always), traits, other owned cards, items and the personal modifier deck. |
 | Items | All GH2 items, unlocked state, copies in use and in the shop, which character holds them. |
 | Events | City and road decks with voting, outcomes and an edit view (see section 16). |
 | Cards | Card browser: ability cards, attack modifiers, battle goals, character mats, events, items, monster abilities and stat cards, personal quests (section 17.1). |
 | Resources | Links of the workbook's Resources sheet (section 17.3). |
+| History | Recorded edits by page, with user and time (section 18). |
 
 Code: `campaign/` (page), `scripts/campaign/` (`record.js` shape and derived values, `edit.js` pure edit functions, `store.js` storage, `classMap.js` class to map mercenary, `cardImages.js` picture URLs), `scripts/games/gh2_*.js` and `battle_goals.js` (generated tables), `tools/extract-campaign-tables.py` and `tools/import-campaign-state.py`. Map side: `scripts/state.js` is `mapVersion` 5.0.0 (section 14.5).
 
@@ -434,3 +440,37 @@ Links of the workbook's "Resources" sheet in `WHTracker.xlsx` as a table: 8 rows
 - Items tab, Cards view: locked items show no picture in edit mode either (a "#id" placeholder; players see "?").
 - Generated data: `tools/extract-campaign-tables.py` now writes level X and the battle goal text. `gh2_cards.js` and `battle_goals.js` were patched in place to match, not regenerated; regenerate and diff before relying on the extractor (card ids depend on the Card DB rows).
 - `tools/extract-event-text.py` now needs the Secretariat repo's `src/assets/artwork/events` next to its `data` folder.
+
+## 18. Campaign page after 2026-11-10: Overview rework, history, flowchart, data fixes
+
+State: on `main` (commits `10f07c6`, `9703c39`, `493231d`). Checked with a headless browser (Playwright) and node checks per step; there is still no committed test suite. Cache busting: `campaign/index.html` loads `app.js?v=99`.
+
+### 18.1 Overview (`overview()` in `campaign/app.js`)
+
+- **Edit model:** no page-wide edit. Party has a toggle pencil (`secBtn`, `editSections`); everything else opens a modal from a pencil (`modalBtn`). Cards: Party (derived Ø Character level, Normal difficulty = ceil(average / 2), Difficulty modifier -2..+4 in `party.diff`, Inspiration, Enhancements count), Prosperity, Reputation, Scenarios (counts in the order Completed, Unlocked, Locked, Locked out, total, days played, Ø days per scenario).
+- **Prosperity card:** Prosperity level, then `Prosperity checks`, `Great Oak sanctuary` and `Imbuement` as counts, each with a pencil that opens its own modal (`prosModal` modes `pros`, `don`, `imb`). Level thresholds come from the sheet (`PROSPERITY_START` in `record.js`: level N is reached on the box under its label). The track modal shows 9 levels, the items each level unlocks as number ranges (`Items #1-16`, from `scripts/games/gh2_prosperity.js`), and the section to read at the **first box of levels 3, 4, 5, 6** (48.2, 54.2, 16.5, 62.3). Donations (100 boxes, record `don`) and imbuement (80 boxes, record `imb`) are rows of 10 with the +1P mark on every 5th box (the sheet's labels; the Gloomhaven Secretariat code gives imbuement +1 at 5, 15, 25 ..., unverified which is right), imbuement sections 133.2 at 10 ... 128.5 at 80 on the right of their rows. A tick does not change the prosperity count by itself.
+- **Reputation modal:** three tracks 20 down to -10 as on the sheet; sections at 6 and 12 with the scenarios that must be completed (the sheet's rows 12 to 14), at 9, 16, 20, and the city event C-57 at 13 with one faction (`scripts/games/gh2_reputation.js`). Pills turn green when reputation and scenarios are met (whether a section was read is not recorded).
+- **Campaign Stickers** and **Unlocked Classes (n/available)**: checkbox modals (`checkModal`). Classes: 43 across GH2E 18, Mercenary Pack 4, FH 17, JotL 4 (`scripts/campaign/classList.js`), two checkboxes per class (Available, Unlocked) with per-edition header checkboxes; `record.avail` (absent = all available). Active classes (played by a character) show the player: `Tinkerer: Guido`, or `Cragheart (Shale)` when no player is set.
+- **Players** modal (add, rename, remove; seats) and **Retired Characters** modal (class, player, name, level, perks, masteries); characters have an optional `seat` (player dropdown on the Mercenaries card).
+
+### 18.2 Record changes (`scripts/campaign/record.js`)
+
+`imb` and `don` are counts (the importer's raw `row:col` lists are converted on load: left grid imbuement, right grid donations), `avail` (optional list of class names), `log` (edit history), `chars[].seat`. Edit functions for all of them are in `scripts/campaign/edit.js` (`setImbuement`, `setDonations`, `addUnlockedClass`, `setClassAvailable`, `setEditionClasses`, `addSticker`, `addPlayer`, `addRetired`, `setCharacterPlayer`, ...).
+
+### 18.3 History tab (`scripts/campaign/changelog.js`)
+
+`commit()` compares the old and the new record (`describeChange`) and appends `{t, u, tab, kind, d}` entries to `record.log` (last 1000 kept); undo restores the record and logs "Undo: ...". The user is the name entered under Settings ("Your name", `localStorage` `havenmap.campaign.user`). The tab lists the latest 20 entries per page. Scenario and item names are not logged (numbers only).
+
+### 18.4 Flowchart and cards
+
+Scenario flowchart: wide page (the 1100 px cap is lifted), chart sizes S, M, L, XL, XXL and Fit (as wide as the window, recomputed on resize), and a fullscreen overlay (Esc leaves). Items tab: every card picture has the same box (`.itemgrid.itemcards`, 208 x 300 aspect; the Card DB images are 300 px tall and 192 to 208 px wide). Character mats in the Cards tab keep their natural landscape size.
+
+### 18.5 Data fixes and generated modules
+
+- `scripts/games/gh2_prosperity.js` and `gh2_reputation.js` are generated by `tools/extract-prosperity.py` and `tools/extract-reputation.py` from Gloomhaven Secretariat gh2e data (item 116 is excluded from prosperity level 1 on the owner's request; the Secretariat's section keys are tick counts, mapped to levels).
+- `CLASS_NAME_FIX` (`Plagueherald`) and `ITEM_SLOT_FIX` (items 169 and 170 were swapped in the Card DB) in `tools/extract-campaign-tables.py`. Regenerating with the older workbook changes unrelated files (cards, scenarios, events, quests): restore everything except the intended file with `git checkout --`.
+- Known data errors: `gh2_cards.js` has initiative 73 for Potent Potables (the card shows 46) and none for Disorienting Flash (the card shows 73). Fix in `tools/card-initiative.json`.
+
+### 18.6 Mercenaries tab redesign
+
+Mockups are in `campaign/mockups/` (generator `tools/merc-mockups/`), decisions and next steps in `merc-tab-handover.md`.
