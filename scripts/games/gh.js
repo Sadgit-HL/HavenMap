@@ -107,6 +107,7 @@ const OVERLAY_ROWS = [
   // ── Obstacles ─────────────────────────────────────────────────────
   { id: 11, title: 'bookcase',     img: 'bookcase',    ...BKH, defaultRole: 'obstacle' },
   { id: 12, title: 'boulder',      img: 'boulder',     ...SH,  defaultRole: 'obstacle' },
+  { id: 68, title: 'boulder 2h',   img: 'boulder-2h',   ...TH, hexes: ['S'], defaultRole: 'obstacle' },
   { id: 13, title: 'boulder 3h',   img: 'boulder-3h',   ...XH, defaultRole: 'obstacle' },
   { id: 14, title: 'bush',         img: 'bush',         ...SH, defaultRole: 'obstacle' },
   { id: 15, title: 'cabinet',      img: 'cabinet',      left: 33, top: 28, w: 65, h: 56, defaultRole: 'obstacle' },
