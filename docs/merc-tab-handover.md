@@ -61,7 +61,7 @@ visual feel of a card game; polished GUI.
 ## 4. Mockups
 
 All use the app's colours (`--bg #16130f`, `--panel #231d17`, `--line #3a3026`, `--text #ecdfc8`, `--muted #a89a82`, `--accent #c7a44a`)
-and real data: Simon, Tinkerer, level 5, played by Guido (the imported campaign `HavenMap-campaign/import/campaign-import.local.json`).
+and real data: Simon, Tinkerer, level 5, played by Guido (from the imported campaign; the file the data came from, `campaign-import.local.json` of the deleted `HavenMap-campaign` worktree, is gone, `import/campaign-import.json` is the tracked equivalent).
 Each page has a top nav, a legend ("small corner mark = opens a modal"), and a notes box with pros and cons. Modal buttons only show their
 position (class `mbtn` with a corner mark `mmark`); modal contents are not designed yet.
 
@@ -188,13 +188,12 @@ thresholds (210 and 275: **from memory of the rulebook, unverified**, the app ha
   (check before starting another). The campaign page is `/HavenMap/campaign/index.html`, mockups `/HavenMap/campaign/mockups/index.html`.
 - Playwright is installed globally; scripts load it with
   `createRequire('C:/Users/hansen/AppData/Roaming/npm/node_modules/playwright/')`. Seed a record with
-  `page.addInitScript(r => localStorage.setItem('havenmap.campaign.v1', JSON.stringify(r)), rec)` (the old import file
-  `HavenMap-campaign/import/campaign-import.local.json` is the realistic test record; `import/campaign-import.json` on main is the tracked one).
+  `page.addInitScript(r => localStorage.setItem('havenmap.campaign.v1', JSON.stringify(r)), rec)` (`import/campaign-import.json` in the repo is the realistic test record; it holds raw imbuement lists that `normalize` converts on load).
 - Edit large files by writing a small Python patch script with the Write tool and running it; very large bash heredocs failed to parse in this
   environment. Files have CRLF line endings: read with `newline=''`, normalise to LF, write back with the original line ending.
   `node --check file.js` for a quick syntax check of ES modules.
-- Git: two worktrees of the same repo: `HavenMap\HavenMap` (branch `main`) and `HavenMap\HavenMap-campaign` (detached at `origin/main`, has
-  untracked `docs/face-compare/`, `import/WHTracker.xlsx`, `import/campaign-import.local.json`). Work and commit in `HavenMap\HavenMap`.
+- Git: single working tree `HavenMap\HavenMap` (branch `main`). The second worktree `HavenMap-campaign` was deleted by the user on 2026-11-10 and
+  pruned (`git worktree prune`); its untracked files (`docs/face-compare/`, the older `WHTracker.xlsx`, `campaign-import.local.json`) were not kept.
 - The scratchpad folder of a session is temporary: anything worth keeping (generator, scripts) must be in the repo (done for the mockups).
 
 ## 9. Suggested next steps
