@@ -1,0 +1,30 @@
+import { createRequire } from 'module';
+const require = createRequire('C:/Users/hansen/AppData/Roaming/npm/node_modules/playwright/');
+const { chromium } = require('playwright');
+const browser = await chromium.launch();
+const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+const errs = [];
+page.on('pageerror', e => errs.push(String(e)));
+await page.goto('http://localhost:8099/HavenMap/campaign/mockups/merc-6-playmat-v2.html');
+await page.waitForLoadState('networkidle').catch(() => {});
+await page.waitForTimeout(1000);
+const info = await page.evaluate(() => {
+  const z = document.querySelector('.zone.play').getBoundingClientRect(), a = document.querySelector('.zone:not(.play)').getBoundingClientRect();
+  const cards = [...document.querySelectorAll('.zone.play .flipcard')].map(c => Math.round(c.getBoundingClientRect().width));
+  return { play: [Math.round(z.left), Math.round(z.width)], active: [Math.round(a.left), Math.round(a.width)], cards };
+});
+console.log(info);
+await page.hover('.fan6 .ac >> nth=2');
+await page.waitForTimeout(400);
+const top = await page.evaluate(() => {
+  const c = document.querySelectorAll('.fan6 .ac')[2], r = c.getBoundingClientRect();
+  const el = document.elementFromPoint(r.left + r.width / 2, r.top + 20);
+  return { rect: [Math.round(r.left), Math.round(r.top), Math.round(r.width), Math.round(r.height)], topIsCard: !!el.closest('.fan6 .ac') };
+});
+console.log('hover top-row card:', top);
+await page.screenshot({ path: process.argv[2] });
+await page.hover('.fan6 .ac >> nth=10');
+await page.waitForTimeout(400);
+await page.screenshot({ path: process.argv[2].replace('.png', '2.png') });
+console.log(errs);
+await browser.close();
