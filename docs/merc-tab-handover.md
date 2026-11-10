@@ -107,8 +107,7 @@ Page grid (`.stage6`, height `100vh - 34px`, min 700): columns `150px | 1fr | 11
     `transform: scale(1.85)` with `transform-origin: 50% 100%` so the card grows upward over the play and active areas. Drag onto another
     card to reorder (HTML5 drag and drop, inserts before the target).
 - **Piles (column 3)**: Discard (drop target, highlighted, top card shown with a stacked-shadow effect) and Lost (greyed), counts in the headers.
-- **Dock (column 4)**: 8 modal buttons: Attack modifiers, Perks and masteries, Personal quest, Battle goal, Character mat, BGG codes, Notes,
-  Enhancements.
+- **Dock (column 4)**: 6 modal buttons (see 4.3): Attack modifiers, Perks and masteries, Journal, Character mat, BGG codes, Enhancements.
 
 Verified in a headless browser: sort, drag reorder, flip, layer order (zoomed card is the top element over the play area), no console errors.
 
@@ -131,6 +130,31 @@ thresholds (210 and 275: **from memory of the rulebook, unverified**, the app ha
 Generator note: `OUT` now reads `process.env.MERC_MOCKUP_OUT` (falls back to the `hansen` path) and the `gh2_cards.js` import is a relative
 path instead of a hardcoded absolute one, so the script runs unmodified on either machine
 (`MERC_MOCKUP_OUT="<repo>/campaign/mockups/" node tools/merc-mockups/gen-merc-mockups.mjs`).
+
+### 4.4 AMD and Perks modals: wired to real data (2026-11-11)
+
+Both modals' content used to be hand-faked arrays (`AMD_FACES`/`amdTile`, `PERKS6`/`perkRow`) in the generator. They now render from the
+real HavenMap data/card model, client-side, in a `<script type="module">` block appended after page 6's main inline script:
+
+- Imports `heroCatalog`, `heroPerkClass`, `groupPerks`, `perkBoxes`, `perkLabel`, `perkDelta` from `scripts/amd/heroDeck.js` and `buildCard`
+  from `scripts/amd/card.js` (both pure, no map-tool state coupling, so they import unmodified into a static page).
+- AMD modal (`#amdreal`): builds Tinkerer's deck with `heroCatalog(className, AM_STANDARD)` (`AM_STANDARD` is a local 7-entry copy of the
+  standard deck -- `scripts/attackMods.js`'s `AM_TYPES` isn't imported directly because that module pulls in `state.js`/`data.js`, the map
+  tool's own URL-state machinery). Renders one real composited card (`buildCard`) per face with a count badge, and computes a live
+  GeekRoller code from the current composition.
+- Perks modal (`#perksreal`): renders one row per perk group with real card art for adds/removes and checkbox(es), using a condensed,
+  **local** re-implementation of `scripts/attackMods.js`'s `classPerkLayout`/`perkGroup`/`applyPerk`/`amToggleBox` against a plain
+  `{perks: [], boxes: {}}` object (the real versions are keyed by the map tool's deck-slot id `g` and can't be called with just a class
+  name). Logic mirrors the original closely enough to port back directly once a character record field exists for perk/box state.
+- `scripts/amd/amd.css` (the `.pc`/`.pc-frame`/`.pc-full`/`.pc-unique` card-layer CSS) is pulled in via `@import url(...)` at the top of
+  page 6's `<style>` block, not a `<link>` in the shared `page()` header (that function is shared by all six mockup pages).
+- **Gotcha**: this only works when the page is served over HTTP, not opened as a `file://` URL -- browsers refuse to load ES modules from
+  disk (no MIME type / CORS), which silently aborts the whole script and leaves both modals showing their "Loading..." placeholder forever.
+  Always view page 6 through the project's usual static server (section 8), never by double-clicking the HTML file.
+- Verified so far: the real logic (`heroCatalog`/`heroPerkClass`/`buildCard`) runs clean against Tinkerer's full catalog and perk list in a
+  headless Node + stub-DOM check (every catalog entry and every perk's add/remove cards build without throwing). Not yet verified in an
+  actual browser (no browser testing was done this session, per instruction) -- if the loading placeholders persist after serving the page
+  over HTTP, check the devtools console for the real error first.
 
 ## 5. How the live Mercenaries tab works today (so changes fit)
 
@@ -206,7 +230,8 @@ path instead of a hardcoded absolute one, so the script runs unmodified on eithe
    "6 Playmat v2", run `MERC_MOCKUP_OUT="<repo>/campaign/mockups/" node tools/merc-mockups/gen-merc-mockups.mjs`, then screenshot with
    Playwright for review).
 3. Design the modals one by one, in the order of use at the table: Attack modifier deck, Perks and masteries, Journal, Enhancements,
-   Character mat, BGG codes. Each as a static mockup first, same style. None designed yet (dock buttons only show the corner mark so far).
+   Character mat, BGG codes. Attack modifier deck and Perks now render from real data (4.4) -- confirm it actually works once served over
+   HTTP and viewed in a browser, then style/iterate. Journal, Enhancements, Character mat and BGG codes are still placeholder content.
 4. Implement in stages in `campaign/app.js`: (a) new zone layout and data model (`play`, `hord`), with History logging; (b) hand with sort
    and manual order; (c) flip and play area; (d) stats strip and counters; (e) modals; (f) responsive and touch behaviour.
 5. Add a test pass in a headless browser per stage (see section 8) and commit per stage when the user asks.
