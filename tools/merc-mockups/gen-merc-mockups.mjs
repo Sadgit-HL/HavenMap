@@ -1,6 +1,6 @@
 // Generates the five mercenary-tab mockups (static HTML) into HavenMap/campaign/mockups/.
 import fs from 'fs';
-const OUT = 'C:/Users/hansen/ai/games/HavenMap/HavenMap/campaign/mockups/';
+const OUT = process.env.MERC_MOCKUP_OUT || 'C:/Users/hansen/ai/games/HavenMap/HavenMap/campaign/mockups/';
 fs.mkdirSync(OUT, { recursive: true });
 
 const CDN = 'https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/';
@@ -26,19 +26,18 @@ const ic = p => `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" str
 const ICON = {
   amd: ic('<rect x="3" y="6" width="12" height="15" rx="2"/><path d="M8 3h10a2 2 0 0 1 2 2v13"/>'),
   perks: ic('<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>'),
-  quest: ic('<path d="M6 3h11a2 2 0 0 1 2 2v14H8a2 2 0 0 1-2-2z"/><path d="M6 17a2 2 0 0 0 2 2M10 8h6M10 12h6"/>'),
-  goal: ic('<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>'),
+  journal: ic('<path d="M6 3h11a2 2 0 0 1 2 2v14H8a2 2 0 0 1-2-2z"/><path d="M6 17a2 2 0 0 0 2 2M10 8h6M10 12h6"/>'),
   mat: ic('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M9 5v14"/>'),
   codes: ic('<rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2"/>'),
-  notes: ic('<path d="M4 20l1-4L16.5 4.5a2 2 0 0 1 3 0 2 2 0 0 1 0 3L8 19z"/><path d="M14 7l3 3"/>'),
   enh: ic('<path d="M4 18h16M6 18v-3h12v3M8 15c0-3 1-5 4-6V6h5v3H12"/>'),
   more: ic('<circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/>'),
   drag: ic('<path d="M9 5h.01M15 5h.01M9 12h.01M15 12h.01M9 19h.01M15 19h.01"/>'),
 };
 const MODALS = [
-  ['amd', 'Attack modifiers', 'Attack modifier deck'], ['perks', 'Perks & masteries', 'Perk selection and masteries'], ['quest', 'Personal quest', 'Draw and show the personal quest'],
-  ['goal', 'Battle goal', 'Draw and show a battle goal'], ['mat', 'Character mat', 'Character mat, front and back'], ['codes', 'BGG codes', 'Copy a forum post code'],
-  ['notes', 'Notes', 'Notes'], ['enh', 'Enhancements', 'Enhancement table (editable)'],
+  ['amd', 'Attack modifiers', 'Attack modifier deck'], ['perks', 'Perks & masteries', 'Perk selection and masteries'],
+  ['journal', 'Journal', 'Personal quest, battle goal and notes (tabs in one modal)'],
+  ['mat', 'Character mat', 'Character mat, front and back'], ['codes', 'BGG codes', 'Copy a forum post code'],
+  ['enh', 'Enhancements', 'Enhancement table (editable)'],
 ];
 // A button that opens a modal: the small corner mark says so.
 const mbtn = (k, { label = true, cls = '' } = {}) => {
@@ -101,7 +100,7 @@ const p1 = page('merc-1-playmat', '1 Playmat', p1css, `
   <section class="piles"><div class="pilebox target"><h4>Discard <b>${D.discard.length}</b></h4>${cardEl(D.discard[2])}<span class="hint">drop here</span></div><div class="pilebox lost"><h4>Lost <b>${D.lost.length}</b></h4>${cardEl(D.lost[0])}</div></section>
   <aside class="dock" aria-label="Modals">${MODALS.map(m => mbtn(m[0])).join('')}</aside>
 </div>`, notes(
-  'A card table. Stats sit in one strip on top, items on a left shelf, the table in the middle (active cards above, the hand fanned below) and the discard and lost piles on the right as drop targets. Eight modal buttons in a dock on the far right.',
+  'A card table. Stats sit in one strip on top, items on a left shelf, the table in the middle (active cards above, the hand fanned below) and the discard and lost piles on the right as drop targets. Six modal buttons in a dock on the far right.',
   ['Closest to a real card game; the hand is the star', 'Piles are big, obvious drop targets', 'Everything is visible without scrolling on a desktop'],
   ['Items are squeezed into a narrow shelf', 'Needs a wide window; the fan hides the lower half of cards']));
 
@@ -129,7 +128,7 @@ const p2 = page('merc-2-sheet', '2 Sheet', p2css, `
     <div class="chips">${chips(D.traits)}${chips(D.special, 'info')}</div>
     <div class="statgrid"><div><b>${D.lv}</b>level</div><div><b>${D.gold}</b>gold</div><div><b>${D.inherited}</b>inherited</div></div>${xpBar()}
     <div class="group"><h5>Counters</h5>${counters()}</div>
-    ${grp('Deck', ['amd', 'perks'])}${grp('Story', ['quest', 'goal', 'notes'])}${grp('Reference', ['mat', 'codes', 'enh'])}
+    ${grp('Deck', ['amd', 'perks'])}${grp('Story', ['journal'])}${grp('Reference', ['mat', 'codes', 'enh'])}
   </aside>
   <main class="main">
     <h2>Active <span>${D.active.length}</span></h2><div class="zonewrap"><div class="cardgrid">${D.active.map(c => cardEl(c)).join('')}</div></div>
@@ -182,7 +181,7 @@ const p3 = page('merc-3-tray', '3 Hand tray', p3css, `
   <div class="tray">
     <div class="left"><button type="button" class="itemsbtn" title="Item area: opens as a drawer (shown open above)"><span class="mini">${D.items.slice(0, 4).map(i => `<img src="${i.img}" alt="">`).join('')}</span><span>Items <b>${D.items.length}</b></span></button></div>
     ${D.hand.map((c, i) => cardEl(c, i === 2 ? 'drag' : '')).join('')}
-    <div class="right">${MODALS.slice(0, 4).map(m => mbtn(m[0])).join('')}${mbtn('more', { cls: 'moremenu' }).replace('<span>Menu</span>', '<span>More (4)</span>')}</div>
+    <div class="right">${MODALS.slice(0, 4).map(m => mbtn(m[0])).join('')}${mbtn('more', { cls: 'moremenu' }).replace('<span>Menu</span>', `<span>More (${MODALS.length - 4})</span>`)}</div>
   </div>
 </div>`, notes(
   'Immersive and full-viewport. The hand lies in a tray along the bottom edge (cards peek out and rise on hover or while dragged), discard and lost flank the active cards. Stats shrink to a slim bar on top. Items live in a drawer behind the button bottom-left, the four most used modals sit bottom-right and the rest hide in a "more" menu.',
@@ -220,7 +219,7 @@ const p4 = page('merc-4-mat', '4 Mat board', p4css, `
   <aside class="side4">
     <div class="panel"><h2>Progress</h2>${xpBar()}<div class="chips" style="margin-top:8px">${chips(D.traits)}${chips(D.special, 'info')}</div><div style="margin-top:8px">${counters()}</div></div>
     <div class="panel"><h2>Items <span class="hint">${D.items.length}</span></h2><div class="itgrid">${D.items.map(itemEl).join('')}</div></div>
-    <div class="panel"><h2>Modals</h2><div class="row">${['perks', 'quest', 'goal', 'codes', 'notes', 'enh'].map(k => mbtn(k)).join('')}</div></div>
+    <div class="panel"><h2>Modals</h2><div class="row">${['perks', 'journal', 'codes', 'enh'].map(k => mbtn(k)).join('')}</div></div>
   </aside>
 </div>`, notes(
   'The character mat itself is the board: the real mat art, with the class portrait coming from the mat, the stats pinned on it, and drop slots (active, discard, lost) drawn on top. The slots follow the zones printed on the mat (discard strip on the left, lost strip on the right, active area on top). The attack modifier button sits on the gear at the bottom right; flipping to the back is in place from the top right. The hand lies below; items and the other modals in a side column.',
@@ -264,12 +263,12 @@ const p5 = page('merc-5-phone', '5 Phone first', p5css, `
   <div class="phone"><span class="cap">Info tab</span>${top5}
     <div class="ph-body info5 scroll"><div class="panel"><h4>Traits</h4><div class="chips">${chips(D.traits)}${chips(D.special, 'info')}</div></div>
       <div class="panel"><h4>Counters</h4>${counters()}</div><div class="panel"><h4>Perks ${D.perks} &middot; masteries ${D.masteries}</h4><div class="row">${mbtn('perks')}${mbtn('enh')}</div></div>
-      <div class="panel"><h4>Story</h4><div class="row">${mbtn('quest')}${mbtn('goal')}${mbtn('notes')}</div></div></div>${nav5('Info')}</div>
+      <div class="panel"><h4>Story</h4><div class="row">${mbtn('journal')}</div></div></div>${nav5('Info')}</div>
   <div class="phone"><span class="cap">Modal menu (opened from the button bottom-right)</span>${top5}
     <div class="ph-body"><h4>Active <span>${D.active.length}</span></h4><div class="strip">${D.active.map(c => cardEl(c)).join('')}</div></div>
     <div class="sheetmenu"><h4>Open</h4><div class="row">${MODALS.map(m => mbtn(m[0])).join('')}</div></div></div>
 </div>`, notes(
-  'Phone first, since players use this at the table during a scenario. A sticky header keeps the essentials (portrait, name, level, XP, gold). Three tabs: Cards (active strip, swipeable hand, discard and lost drop targets), Items and Info. All modals open from one menu button at the bottom-right, which slides up a sheet with the eight entries.',
+  'Phone first, since players use this at the table during a scenario. A sticky header keeps the essentials (portrait, name, level, XP, gold). Three tabs: Cards (active strip, swipeable hand, discard and lost drop targets), Items and Info. All modals open from one menu button at the bottom-right, which slides up a sheet with the six entries.',
   ['Built for the device used at the table; thumb reachable', 'Scales up to a tablet or desktop column', 'One consistent place for every modal'],
   ['Dragging between zones on a small screen is harder (needs auto-scroll and big targets)', 'Cards are small; each tap-and-hold may need an enlarge preview']));
 
@@ -286,7 +285,7 @@ fs.writeFileSync(OUT + 'merc-4-mat.html', p4);
 fs.writeFileSync(OUT + 'merc-5-phone.html', p5);
 
 // ---------------------------------------------------------------- 6 Playmat v2
-const { CARDS: ALLCARDS } = await import('file:///C:/Users/hansen/ai/games/HavenMap/HavenMap/scripts/games/gh2_cards.js');
+const { CARDS: ALLCARDS } = await import('../../scripts/games/gh2_cards.js');
 const INI_FIX = { 'disorienting-flash': 73, 'potent-potables': 46 };   // read from the card images (gh2_cards.js has no value for the first and 73 for the second)
 const th = slug => ({ ini: INI_FIX[slug] ?? ALLCARDS.find(c => c.cls === 21 && c.slug === slug)?.ini, slug, name: slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()), img: `img/cards/${slug}.jpg`, thumb: true });
 const H6 = ['disorienting-flash', 'enhancement-field', 'flamethrower', 'harmless-contraption', 'ink-bomb', 'net-shooter', 'potent-potables', 'reinvigorating-elixir', 'stun-shot', 'toxic-bolt', 'crank-bow', 'hook-gun', 'gas-canister', 'repulsor-gun']

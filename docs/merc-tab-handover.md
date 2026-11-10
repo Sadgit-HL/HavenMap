@@ -116,16 +116,21 @@ Data in the mockup that is a placeholder: counters (Time tokens 2, Resolve 1), p
 thresholds (210 and 275: **from memory of the rulebook, unverified**, the app has no XP table yet), the portrait (a crop of the mat art:
 `background-size: 330% auto; background-position: 10% 44%`; no real portrait asset exists).
 
-### 4.3 Open questions for the user (not yet answered)
+### 4.3 Open questions (answered 2026-11-10)
 
-- "Inherited perks" in `merc_tab.md` versus the app's **inherited gold** field (`c.inh`): which is meant? The mockups show the gold.
-- Should quest, battle goal and notes be one "Journal" modal with tabs (eight buttons would become six)? Should BGG codes be a copy popover
-  instead of a modal?
-- Is the first play slot the only difference between the two slots? What happens to the two cards at the end of the round (the user said
-  played cards go to discard "more often": drag one by one, or an "end round" action that sends both)?
-- Where does the "rest" or "lose a card" flow live? Not designed.
-- Phone behaviour of the playmat (page 5 is a separate phone concept): decide whether the final page is responsive or desktop-first.
-- Touch drag and drop (HTML5 drag events do not fire on touch).
+- **"Inherited perks" vs inherited gold (`c.inh`)**: the user meant **inherited perks** literally -- a genuinely different thing from gold,
+  not yet in the record. Needs a new field and perk-carryover UI (not designed yet; mockups still show gold, to update).
+- **Journal modal**: **yes**, merge quest, battle goal and notes into one "Journal" modal with tabs. Dock is now 6 buttons (done in the
+  generator and all six mockups: `['amd', 'perks', 'journal', 'mat', 'codes', 'enh']` in `MODALS`, `tools/merc-mockups/gen-merc-mockups.mjs`).
+- **BGG codes**: **full modal** (not a copy popover), same pattern as the rest of the dock.
+- **End of round**: drag each play-area card to discard **individually** for now (no new "End round" control; reuses the existing
+  drag-to-discard interaction).
+- Still open, not yet asked: is the first play slot the only difference between the two slots; where the "rest"/"lose a card" flow lives;
+  phone/responsive behaviour of the playmat; touch drag and drop (HTML5 drag events do not fire on touch).
+
+Generator note: `OUT` now reads `process.env.MERC_MOCKUP_OUT` (falls back to the `hansen` path) and the `gh2_cards.js` import is a relative
+path instead of a hardcoded absolute one, so the script runs unmodified on either machine
+(`MERC_MOCKUP_OUT="<repo>/campaign/mockups/" node tools/merc-mockups/gen-merc-mockups.mjs`).
 
 ## 5. How the live Mercenaries tab works today (so changes fit)
 
@@ -195,11 +200,13 @@ thresholds (210 and 275: **from memory of the rulebook, unverified**, the app ha
 
 ## 9. Suggested next steps
 
-1. Get the answers to section 4.3 (short list, offer defaults).
+1. ~~Get the answers to section 4.3~~ Done 2026-11-10; the dock is now 6 buttons (`journal` replaces `quest`/`goal`/`notes`) in all six
+   mockups and `index.html`.
 2. Optional: one more mockup iteration of page 6 if the user wants changes (edit `tools/merc-mockups/gen-merc-mockups.mjs`, section
-   "6 Playmat v2", run `node tools/merc-mockups/gen-merc-mockups.mjs`, then `shot-v2.mjs` for screenshots).
-3. Design the modals one by one, in the order of use at the table: Attack modifier deck, Perks and masteries, Enhancements, Character mat,
-   Notes/Quest/Battle goal, BGG codes. Each as a static mockup first, same style.
+   "6 Playmat v2", run `MERC_MOCKUP_OUT="<repo>/campaign/mockups/" node tools/merc-mockups/gen-merc-mockups.mjs`, then screenshot with
+   Playwright for review).
+3. Design the modals one by one, in the order of use at the table: Attack modifier deck, Perks and masteries, Journal, Enhancements,
+   Character mat, BGG codes. Each as a static mockup first, same style. None designed yet (dock buttons only show the corner mark so far).
 4. Implement in stages in `campaign/app.js`: (a) new zone layout and data model (`play`, `hord`), with History logging; (b) hand with sort
    and manual order; (c) flip and play area; (d) stats strip and counters; (e) modals; (f) responsive and touch behaviour.
 5. Add a test pass in a headless browser per stage (see section 8) and commit per stage when the user asks.
