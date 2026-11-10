@@ -20,7 +20,9 @@
 <div class="modal" id="settingsModal" hidden>
   <div class="modalbox">
     <button type="button" class="modalx" id="settingsClose" aria-label="Close">&times;</button>
-    <h3>Campaign file</h3>
+    <h3>Your name</h3>
+    <div class="modalrows"><input id="userName" type="text" class="txt" maxlength="40" placeholder="Shown in the History tab" aria-label="Your name"></div>
+    <h3 style="margin-top:14px">Campaign file</h3>
     <div class="modalrows" style="flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px">
       <label class="btn">Load file <input id="file" type="file" accept="application/json,.json" hidden></label>
       <button id="export" type="button" class="btn">Export</button>
@@ -28,6 +30,6 @@
     </div>
   </div>
 </div>
-<script type="module" src="app.js?v=98"></script>
+<script type="module" src="app.js?v=99"></script>
 </body>
 </html>

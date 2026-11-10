@@ -10,10 +10,15 @@ import { escapeHtml as esc } from '../scripts/escape.js';
 import { localStore } from '../scripts/campaign/store.js';
 import { cardImageUrl, itemImageUrl, eventImageUrl, matImageUrl, pqImageUrl } from '../scripts/campaign/cardImages.js';
 import {
-  validate, scenarioLevel, prosperityLevel, handOf, shopCopies, itemsInUse, unlockedBy, classByName, SCN_STATE_NAME,
+  validate, prosperityLevel, handOf, shopCopies, itemsInUse, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE,
 } from '../scripts/campaign/record.js';
 import * as ed from '../scripts/campaign/edit.js';
+import { describeChange, LOG_TABS, LOG_MAX } from '../scripts/campaign/changelog.js';
 import { CLASSES } from '../scripts/games/gh2_classes.js';
+import { ALL_CLASSES, classKnown } from '../scripts/campaign/classList.js';
+import { availableSet, PROSPERITY_START } from '../scripts/campaign/record.js';
+import { REPUTATION_SECTIONS } from '../scripts/games/gh2_reputation.js';
+import { PROSPERITY_SECTIONS, PROSPERITY_ITEMS, IMBUEMENT_SECTIONS } from '../scripts/games/gh2_prosperity.js';
 import { frontOf as eventFront, EVENT_TABLE } from '../scripts/campaign/events.js';
 import { buildCard } from '../scripts/amd/card.js';
 import { heroCatalog, heroPerkClass } from '../scripts/amd/heroDeck.js';
@@ -26,7 +31,7 @@ import { characterTraits } from '../scripts/campaign/outcomes.js';
 import { SPECIAL_TRAITS, specialName } from '../scripts/campaign/traits.js';
 import { eventsHtml, evInit, evClick, evChange, evSubmit, evOutside, evDragStart, evDragOver, evDrop, evDragEnd } from './eventsView.js?v=38';
 
-const PAGE_TABS = ['Overview', 'Scenarios', 'Mercenaries', 'Items', 'Events', 'Cards', 'Resources'];
+const PAGE_TABS = ['Overview', 'Scenarios', 'Mercenaries', 'Items', 'Events', 'Cards', 'Resources', 'History'];
 const main = document.getElementById('main');
 const tabsEl = document.getElementById('tabs');
 const undoBtn = document.getElementById('undo');
@@ -34,15 +39,17 @@ let record = null;
 let tab = 'Overview';              // top-level tab
 let sub = '';                      // sub-tab under Mercenaries: a character id or 'add'
 const editPages = new Set();        // pages (top-level tabs) currently in edit mode; each page has its own Edit button
+const editSections = new Set();     // Overview sections in edit mode (party); Overview has no page-wide edit. Stickers and classes open a modal instead
 let editing = false;               // derived in render(): is the visible page being edited
 let imgMode = 'hover';                 // card images: 'hover' (preview under the pointer) or 'always' (shown in the lists)
 const history = [];                                   // earlier records for undo, newest last
-const view = { scnView: 'table', flowShow: 'progress', flowLane: '', flowZoom: 'm', scnSel: null, scnStatus: '', scnSearch: '', scnSort: { col: '', dir: 1 }, itemSlot: '', itemSearch: '', itemShow: 'unlocked', itemView: 'list', itemSize: 'm', itemSort: { col: '', dir: 1 }, cardType: 'abilities', cardSlot: '', cardChk: '', cardKind: 'city', cardSide: 'front', cardDeck: '', cardMon: '', cardMLv: '', cardShow: 'unlocked', cardCls: '', cardLv: '', cardSearch: '', cardSize: 's' };   // itemView: 'list' | 'grid'
+const view = { flowFull: false, scnView: 'table', flowShow: 'progress', flowLane: '', flowZoom: 'm', scnSel: null, scnStatus: '', scnSearch: '', scnSort: { col: '', dir: 1 }, itemSlot: '', itemSearch: '', itemShow: 'unlocked', itemView: 'list', itemSize: 'm', itemSort: { col: '', dir: 1 }, cardType: 'abilities', cardSlot: '', cardChk: '', cardKind: 'city', cardSide: 'front', cardDeck: '', cardMon: '', cardMLv: '', cardShow: 'unlocked', cardCls: '', cardLv: '', cardSearch: '', cardSize: 's' };   // itemView: 'list' | 'grid'
 
 // Level order of ability cards: 1, X (the level 1.1 cards), 2 ... 9, then M (mastery).
 const lvRank = lv => (lv === 'X' ? 1.5 : lv === 'M' ? 99 : Number(lv));
 const lvLabel = lv => (lv === 'M' ? 'Pack' : String(lv));      // the Sawbones medical pack cards
 const cardById = new Map(CARDS.map(c => [c.id, c]));
+const FULLSCREEN_ICON = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const PENCIL = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2 2 0 0 1 3 0l0 0a2 2 0 0 1 0 3L8 19z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M14 7l3 3" stroke="currentColor" stroke-width="2"/></svg>';
 const ICON_DICE = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg>';
 const ICON_CHECK = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
@@ -60,7 +67,7 @@ function loadView() {
     if (v.scnView === 'table' || v.scnView === 'flow') view.scnView = v.scnView;
     if (v.flowShow === 'progress' || v.flowShow === 'all') view.flowShow = v.flowShow;
     if (typeof v.flowLane === 'string') view.flowLane = v.flowLane;
-    if (['s', 'm', 'l'].includes(v.flowZoom)) view.flowZoom = v.flowZoom;
+    if (['s', 'm', 'l', 'xl', 'xxl', 'fit'].includes(v.flowZoom)) view.flowZoom = v.flowZoom;
     if (typeof v.scnStatus === 'string') view.scnStatus = v.scnStatus;
     if (typeof v.itemSlot === 'string') view.itemSlot = v.itemSlot;
     if (['all', 'unlocked', 'shop'].includes(v.itemShow)) view.itemShow = v.itemShow;
@@ -93,20 +100,37 @@ const signed = n => (n == null ? null : n >= 0 ? `+${n}` : String(n));
 const num = (act, key, value, { min, max, id = '', width = 56 } = {}) =>
   `<input type="number" class="num" style="width:${width}px" data-act="${act}" data-key="${esc(key)}" data-id="${esc(id)}" value="${esc(value ?? '')}"${min !== undefined ? ` min="${min}"` : ''}${max !== undefined ? ` max="${max}"` : ''}>`;
 const val = (editable, shown, input) => (editing && editable ? input : esc(shown));
+// Overview: each section has its own pencil; sval shows the input only while that section is being edited.
+const secBtn = (key, label) => `<button type="button" class="editbtn editicon secedit" data-secedit="${key}" aria-pressed="${editSections.has(key)}" aria-label="${editSections.has(key) ? 'Stop editing' : 'Edit'} ${esc(label)}" title="${editSections.has(key) ? 'Stop editing' : 'Edit'} ${esc(label)}">${PENCIL}</button>`;
+const modalBtn = (attr, label) => `<button type="button" class="editbtn editicon secedit" ${attr} aria-label="Edit ${esc(label)}" title="Edit ${esc(label)}">${PENCIL}</button>`;
+const sval = (key, shown, input) => (editSections.has(key) ? input : esc(shown));
 
 // --- shell: history, save, tabs --------------------------------------------------------------------------
 
+// The edit history (record.log) is stamped here, so every edit is logged whichever page or modal made it. The user is the
+// name set in the settings (this browser only: the campaign has no accounts yet).
+const USER_KEY = 'havenmap.campaign.user';
+function userName() {
+  try { return (localStorage.getItem(USER_KEY) || '').trim() || 'Unknown'; } catch { return 'Unknown'; }
+}
+function withLog(from, to, kindPrefix = '') {
+  const t = Date.now(), u = userName();
+  const entries = describeChange(from, to).map(e => ({ t, u, tab: e.tab, kind: kindPrefix + e.kind, d: e.d }));
+  return entries.length ? { ...to, log: [...(from.log || []), ...entries].slice(-LOG_MAX) } : { ...to, log: from.log || [] };
+}
 function commit(next) {
   if (next === record) return;
   history.push(record);
   if (history.length > 50) history.shift();
-  record = next;
+  record = withLog(record, next);
   localStore.save(record);
   render();
 }
+// Undo restores the earlier record but keeps the log, adding what was undone as new entries.
 function undo() {
   if (!history.length) return;
-  record = history.pop();
+  const prev = history.pop();
+  record = withLog(record, prev, 'Undo: ');
   localStore.save(record);
   render();
 }
@@ -145,49 +169,72 @@ function table(head, rows) {
   return `<table><tr>${head.map(h => `<th>${h}</th>`).join('')}</tr>${rows.join('')}</table>`;
 }
 
-// A value with click-to-step +/- buttons, always active (no edit mode needed): clicking adjusts r.party[key] by
-// +-1 (clamped by PARTY_RANGE in scripts/campaign/edit.js), shown is the label (the raw value, or a derived one
-// such as scenario level).
-function stepper(key, shown, cur, min, max) {
-  return `<span class="stepper">
-    <button type="button" class="chip" data-partystep="${esc(key)}" data-dir="-1" title="Lower" ${cur <= min ? 'disabled' : ''}>&minus;</button>
-    <b>${esc(shown)}</b>
-    <button type="button" class="chip" data-partystep="${esc(key)}" data-dir="1" title="Raise" ${cur >= max ? 'disabled' : ''}>+</button></span>`;
+// A card value with a round pencil button to its right that opens the modal for it.
+const editPill = (attr, label, v) => `<span class="stepper"><b>${esc(v)}</b><button type="button" class="editbtn editicon secedit" ${attr} title="Edit ${esc(label.toLowerCase())}" aria-label="Edit ${esc(label.toLowerCase())}">${PENCIL}</button></span>`;
+
+// A class chip for the Overview. A class a character plays is highlighted and shows its player ("Tinkerer: Guido"), or the
+// character's name in brackets when no player is set ("Cragheart (Shale)").
+function classChip(r, name) {
+  const lower = String(name).toLowerCase();
+  const played = r.chars.filter(c => String(c.cls).toLowerCase() === lower);
+  if (!played.length) return chip(name, classKnown(name) ? '' : 'warn');
+  const who = played.map(c => r.players.find(p => p.seat === c.seat)?.name).filter(Boolean);
+  const label = who.length ? `${name}: ${who.join(', ')}` : `${name} (${played.map(c => c.name).join(', ')})`;
+  return `<span class="chip ok" title="${esc(`Active: ${played.map(c => c.name).join(', ')}`)}">${esc(label)}</span>`;
 }
 
 function overview(r) {
   const { counts, days, avgDays } = scenarioCounts(r);
   const repBar = v => `<div class="bar"><i style="left:${((20 - Math.max(-10, Math.min(20, v))) / 30) * 97}%"></i></div>`;
-  const rep = (label, key) => kv(label, val(true, r.rep[key], num('rep', key, r.rep[key], { min: -10, max: 20 }))) + repBar(r.rep[key]);
-  const known = new Set(STICKERS.map(s => s.name.toLowerCase()));
+  const rep = (label, key) => kv(label, esc(r.rep[key])) + repBar(r.rep[key]);
   // Average level is derived from the mercenaries' own levels (not entered by hand); Normal difficulty is that
   // average level halved and rounded up (scenarioLevel adds the diff modifier on top, clamped 0..7).
   const avg = r.chars.length ? r.chars.reduce((s, c) => s + (c.lv || 0), 0) / r.chars.length : r.party.avg;
-  const schedLevel = scenarioLevel({ ...r.party, avg });
   return `
+  <div class="overview">
   <div class="grid">
-    <div class="card"><h3>Party</h3>${kv('Average level', esc(Number.isInteger(avg) ? avg : avg.toFixed(2)))}
-      ${kv('Difficulty', `${esc(r.party.diffName || '')} ` + val(true, r.party.diff, num('party', 'diff', r.party.diff, { min: -3, max: 5 })))}
-      ${kv('Scenario level', stepper('diff', schedLevel, r.party.diff, -3, 5))}
-      ${kv('Inspiration', stepper('insp', r.party.insp, r.party.insp, 0, 99))}</div>
-    <div class="card"><h3>Prosperity</h3>${kv('Checkmarks', val(true, r.pros, num('pros', 'pros', r.pros, { min: 0, max: 90 })))}${kv('Level', esc(prosperityLevel(r.pros)))}</div>
-    <div class="card"><h3>Reputation</h3>${rep('Demons', 'demons')}${rep('Merchants', 'merchants')}${rep('City Guard', 'guard')}</div>
-    <div class="card"><h3>Scenarios</h3>${SCN_STATE_NAME.map((n, i) => kv(n, esc(counts[i] || 0))).join('')}${kv('Total', esc(SCENARIOS.length))}
-      ${kv('Days played', esc(days))}${kv('Avg days/scenario', esc(avgDays))}</div>
+    <div class="card"><h3>Party${secBtn('party', 'party')}</h3>${kv('Ø Character level', esc(Number.isInteger(avg) ? avg : avg.toFixed(2)))}
+      ${kv('Normal difficulty', esc(Math.ceil(avg / 2)))}
+      ${kv('Difficulty', sval('party', r.party.diff > 0 ? `+${r.party.diff}` : String(r.party.diff), num('party', 'diff', r.party.diff, { min: -2, max: 4 })))}
+      ${kv('Inspiration', sval('party', r.party.insp, num('party', 'insp', r.party.insp, { min: 0, max: 99 })))}
+      ${kv('Enhancements', esc(r.enh.length))}</div>
+    <div class="card"><h3>Prosperity</h3>${kv('Prosperity level', esc(prosperityLevel(r.pros)))}${kv('Prosperity checks', editPill('data-pros-open', 'Prosperity checks', r.pros))}${kv('Great Oak sanctuary', editPill('data-don-open', 'Great Oak sanctuary', r.don))}${kv('Imbuement', editPill('data-imb-open', 'Imbuement', r.imb))}</div>
+    <div class="card"><h3>Reputation${modalBtn('data-rep-open', 'reputation')}</h3>${rep('Demons', 'demons')}${rep('Merchants', 'merchants')}${rep('City Guard', 'guard')}</div>
+    <div class="card"><h3>Scenarios</h3>${[2, 1, 0, 3].map(i => kv(SCN_STATE_NAME[i], esc(counts[i] || 0))).join('')}${kv('Total', esc(SCENARIOS.length))}
+      ${kv('Days played', esc(days))}${kv('Ø Days/scenario', esc(avgDays))}</div>
   </div>
-  <h2>Stickers</h2>${r.stk.length ? `<div class="chips">${r.stk.map(s => chip(s, known.has(String(s).toLowerCase()) ? 'ok' : 'warn')).join('')}</div>` : none}
-  <h2>Unlocked classes (${r.cls.length})</h2><div class="chips">${r.cls.map(c => chip(c, classByName(c) ? '' : 'warn')).join('')}</div>
-  <h2>Players</h2>${r.players.length ? `<div class="chips">${r.players.map(p => chip(p.name)).join('')}</div>` : none}
-  <h2>Retired</h2>${r.retired.length ? table(['Class', 'Player', 'Name', 'Lv', 'Perks', 'Masteries'],
+  <h2>Campaign Stickers${modalBtn('data-stk-open', 'campaign stickers')}</h2>${r.stk.length ? `<div class="stickers">${r.stk.map(s => {
+    const st = STICKERS.find(x => x.name.toLowerCase() === String(s).toLowerCase());
+    return st ? `<figure class="sticker"><img src="${esc(st.img)}" alt="" loading="lazy"><figcaption>${esc(st.name)}</figcaption></figure>` : chip(s, 'warn');
+  }).join('')}</div>` : none}
+  <h2>Unlocked Classes (${r.cls.length}/${availableSet(r).size})${modalBtn('data-cls-open', 'unlocked classes')}</h2><div class="chips">${r.cls.map(c => classChip(r, c)).join('')}</div>
+  <h2>Retired Characters${modalBtn('data-ret-open', 'retired characters')}</h2>${r.retired.length ? table(['Class', 'Player', 'Name', 'Lv', 'Perks', 'Masteries'],
     r.retired.map(x => `<tr><td>${esc(x.cls)}</td><td>${esc(x.player ?? '')}</td><td>${esc(x.name ?? '')}</td><td>${esc(x.lv ?? '')}</td><td>${esc(x.perks ?? '')}</td><td>${esc(x.masteries ?? '')}</td></tr>`)) : none}
-  <h2>Enhancements</h2><p>${esc(r.enh.length)} total (see each mercenary's own tab for their cards)</p>
-  ${editing ? '<p class="hint">Stickers, classes, players and retirements are not editable yet.</p>' : ''}`;
+  <h2>Players${modalBtn('data-pl-open', 'players')}</h2>${r.players.length ? `<div class="chips">${r.players.map(p => chip(p.name)).join('')}</div>` : none}
+  </div>`;
+}
+
+// --- History tab: the recorded edits, grouped by the page they were made on, newest first ----------------------------------
+const HISTORY_SHOWN = 20;                           // entries listed per page
+const when = t => new Date(t).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+function historyPage(r) {
+  const log = r.log || [];
+  if (!log.length) return '<h2>History</h2><div class="empty">No edits recorded yet. Edits made from now on are listed here, by page.</div>';
+  const groups = LOG_TABS.map(tabName => {
+    const list = log.filter(e => e.tab === tabName).reverse();
+    if (!list.length) return '';
+    const rows = list.slice(0, HISTORY_SHOWN).map(e => `<tr><td class="nowrap">${esc(when(e.t))}</td><td>${esc(e.u)}</td><td>${esc(e.kind)}</td><td>${esc(e.d)}</td></tr>`);
+    return `<h2>${esc(tabName)} <span class="hint">(${list.length})</span></h2>${table(['Time', 'User', 'Type', 'Change'], rows)}${list.length > HISTORY_SHOWN ? `<p class="hint">The latest ${HISTORY_SHOWN} of ${list.length} edits are shown.</p>` : ''}`;
+  }).join('');
+  return groups;
 }
 
 // --- the scenario flowchart -------------------------------------------------------------------------------------------------
 // Layout in scripts/campaign/flow.js. Spoilers: "Progress" draws the scenarios that are unlocked, completed or locked out, plus the
 // locked ones they lead to; locked scenarios are drawn as "?" (name and number only in edit mode), as locked items are.
-const FLOW_ZOOM = { s: 0.6, m: 0.85, l: 1.2 };
+// Chart sizes: fixed scales, and 'fit' = as wide as the box (computed in flowchart()). Fullscreen (view.flowFull) shows the chart over the whole window.
+const FLOW_ZOOM = { s: 0.6, m: 0.85, l: 1.2, xl: 1.6, xxl: 2, fit: 0 };
+const FLOW_ZOOM_LABEL = { s: 'S', m: 'M', l: 'L', xl: 'XL', xxl: 'XXL', fit: 'Fit' };
 const scnViewToggle = () => `<div class="imgmode viewmode" role="group" aria-label="Scenario view">${[['table', 'Table'], ['flow', 'Flowchart']].map(([v, l]) => `<button type="button" data-scnview="${v}" aria-pressed="${view.scnView === v}">${l}</button>`).join('')}</div>`;
 // GeekRoller code builder/button/copy, shared by every "random X" roller (scenario, item, ...): one face per
 // candidate, e.g. 1custom5{1;9;10;13;17}. The roll itself happens on BGG, same as the attack-modifier decks'
@@ -249,12 +296,15 @@ function flowPage(r) {
   }
   if (view.flowLane) vis = new Set([...vis].filter(n => laneOf(byN.get(n)) === view.flowLane));
   const g = buildFlow(SCENARIOS, vis);
-  const z = FLOW_ZOOM[view.flowZoom];
+  const full = view.flowFull;
+  const z = view.flowZoom === 'fit' ? Math.min(3, Math.max(0.3, ((full ? window.innerWidth : main.clientWidth - 32) - 4) / g.width)) : FLOW_ZOOM[view.flowZoom];
   const masked = n => st(n) === 0;
+  const zoomBtns = `<div class="imgmode viewmode" role="group" aria-label="Chart size">${Object.entries(FLOW_ZOOM_LABEL).map(([k, l]) => `<button type="button" data-flowzoom="${k}" aria-pressed="${view.flowZoom === k}" title="Chart size ${l}${k === 'fit' ? ' (as wide as the window)' : ''}">${l}</button>`).join('')}</div>`;
+  const fsBtn = `<button type="button" class="editbtn editicon" data-flowfull aria-pressed="${!!full}" title="${full ? 'Exit fullscreen' : 'Fullscreen'}" aria-label="${full ? 'Exit fullscreen' : 'Fullscreen'}">${FULLSCREEN_ICON}</button>`;
   const filters = `<div class="filters">${scnViewToggle()}
     <select id="flowShow">${[['progress', 'Progress and next steps'], ['all', 'All scenarios']].map(([v, l]) => `<option value="${v}" ${view.flowShow === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
     <select id="flowLane"><option value="">All storylines</option>${LANES.map(l => `<option ${view.flowLane === l ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>
-    <div class="imgmode viewmode" role="group" aria-label="Chart size">${[['s', 'S'], ['m', 'M'], ['l', 'L']].map(([k, l]) => `<button type="button" data-flowzoom="${k}" aria-pressed="${view.flowZoom === k}" title="Chart size ${l}">${l}</button>`).join('')}</div>
+    ${zoomBtns}${fsBtn}
     ${scenarioRollerBtn(r)}</div>`;
   if (!g.nodes.length) return filters + '<div class="empty">No scenarios to show yet.</div>';
   const lanes = g.lanes.map((l, i) => `<rect class="flane${i % 2 ? ' alt' : ''}" x="0" y="${l.y}" width="${g.width}" height="${l.h}"/><text class="flabel" x="8" y="${l.y + 18}">${esc(l.name)}</text>`).join('');
@@ -269,6 +319,7 @@ function flowPage(r) {
   }).join('');
   const svg = `<svg class="flowsvg" width="${Math.round(g.width * z)}" height="${Math.round(g.height * z)}" viewBox="0 0 ${g.width} ${g.height}" role="img" aria-label="Scenario flowchart">
     <defs><marker id="farrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="farrowhead"/></marker></defs>${lanes}${edges}${nodes}</svg>`;
+  if (full) return `<div class="flowwrap full"><div class="flowfsbar">${zoomBtns}${fsBtn}${scenarioRollerBtn(r)}</div>${svg}</div>`;
   return filters + `<div class="flowwrap">${svg}</div>`;
 }
 
@@ -416,12 +467,14 @@ function characterCard(c, r) {
   const faces = c.am?.faces || [];
   const inDeck = faces.filter(f => !f.out).length;
   const stat = (label, key, max, min = 0) => kv(label, val(true, c[key] ?? '', num('char', key, c[key], { min, max, id: c.id, width: 64 })));
+  const playerName = r.players.find(p => p.seat === c.seat)?.name ?? '';
+  const playerSel = `<select data-act="charPlayer" data-id="${esc(c.id)}" aria-label="Player"><option value="">(nobody)</option>${r.players.map(p => `<option value="${esc(p.seat)}"${p.seat === c.seat ? ' selected' : ''}>${esc(p.name)}</option>`).join('')}</select>`;
   const nameCell = editing
     ? `<input type="text" class="txt" data-act="charName" data-id="${esc(c.id)}" value="${esc(c.name)}" maxlength="30" style="width:160px">`
     : esc(c.name);
   return `<div class="card">
     <h3>${nameCell} <span style="color:var(--muted)">${esc(c.cls)} (${cls ? esc(cls.src.toUpperCase()) : '?'})</span></h3>
-    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr))">${stat('Level', 'lv', 9, 1)}${stat('XP', 'xp', 9999)}${stat('Gold', 'gold', 9999)}${stat('Inherited', 'inh', 9999)}${stat('Hand size', 'hand', 20, 1)}</div>
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr))">${kv('Player', val(true, playerName || '-', playerSel))}${stat('Level', 'lv', 9, 1)}${stat('XP', 'xp', 9999)}${stat('Gold', 'gold', 9999)}${stat('Inherited', 'inh', 9999)}${stat('Hand size', 'hand', 20, 1)}</div>
     <div class="pile"><b>Traits</b>${(c.traits || []).map(t => chip(t)).join('') || '<span class="hint">none</span>'}${classTraits(c).map(t => chip(t)).join('')}${(c.special || []).map(t => chip(specialName(t), 'info')).join('')}${(c.extra || []).map(t => chip(t, 'dim')).join('')}
       <button type="button" class="editbtn editicon traitedit" data-trait-edit="${esc(c.id)}" aria-label="Special traits of ${esc(c.name)}" title="Special traits (Hero, Indebted, ...)">${PENCIL}</button></div>
     <div class="pile"><b>Deck (${c.deck.length} cards)</b>${c.hand ? `hand size ${esc(c.hand)}` : ''}</div>
@@ -491,7 +544,7 @@ function items(r) {
   const holders = id => r.chars.filter(c => c.items.some(i => i.id === id)).map(c => c.name).join(', ');
   if (view.itemView === 'grid') {
     // Pictures of the filtered items. Locked items have no picture (a placeholder, with the number in edit mode) and are dimmed; the badge shows copies in the shop / total.
-    return filters + viewToggle + (rows.length ? `<div class="itemgrid" style="--tile-min:${ITEM_SIZES[view.itemSize]}px">${rows.map(i => {
+    return filters + viewToggle + (rows.length ? `<div class="itemgrid itemcards" style="--tile-min:${ITEM_SIZES[view.itemSize]}px">${rows.map(i => {
       const unl = r.items.unl.includes(i.id);
       const secret = !unl && !editing;              // players must not see locked items: no picture, no name
       const name = unl ? pretty(i.slug) : 'Locked item', url = unl ? itemImageUrl(i) : null;   // no picture and no name for a locked item, in edit mode too
@@ -804,6 +857,297 @@ main.addEventListener('click', e => {
   renderModal();
 });
 
+// --- checkbox-list modals (campaign stickers, unlocked classes) -------------------------------------------------
+// items() lists { name, group, on: { <col key>: bool } }. cols = [{ key, label }]: one checkbox per column.
+// set(record, name, key, checked) returns the new record. With setGroup(record, group, key, checked) the items are shown
+// as one column per group, each with its own header checkboxes that switch the whole group (indeterminate when mixed).
+const checkModals = [];
+function checkModal({ id, title, openAttr, cols, items, set, setGroup }) {
+  const root = document.createElement('div');
+  document.body.appendChild(root);
+  const m = { open: false, focus: '' };
+  const multi = cols.length > 1;
+  const box = (t, c) => `<input type="checkbox" data-ck="${esc(t.name)}" data-col="${esc(c.key)}" aria-label="${esc(multi ? `${t.name}: ${c.label}` : t.name)}" ${t.on[c.key] ? 'checked' : ''}>`;
+  const row = t => `<label class="modalrow"><span>${esc(t.name)}</span>${cols.map(c => box(t, c)).join('')}</label>`;
+  // Section header: group name and count; with setGroup, a labelled checkbox per column that switches the whole group.
+  const head = (g, mine) => `<div class="modalhead"><h4>${esc(g)} (${mine.length})</h4>${setGroup ? cols.map(c => `<label class="modalhc"><small>${esc(c.label)}</small><input type="checkbox" data-gk="${esc(g)}" data-col="${esc(c.key)}" data-all="${mine.every(t => t.on[c.key]) ? 1 : 0}" data-some="${mine.some(t => t.on[c.key]) ? 1 : 0}" aria-label="${esc(`${g}: all ${c.label}`)}"></label>`).join('') : ''}</div>`;
+  m.render = () => {
+    if (!m.open || !record) { m.open = false; root.innerHTML = ''; return; }
+    const list = items();
+    const groups = [...new Set(list.map(t => t.group ?? title))];
+    const secs = groups.map(g => {
+      const mine = list.filter(t => (t.group ?? title) === g);
+      return `<section class="modalsec">${head(g, mine)}<div class="modalrows">${mine.map(row).join('')}</div></section>`;
+    }).join('');
+    root.innerHTML = `<div class="modal" id="${id}" role="dialog" aria-modal="true" aria-labelledby="${id}Title"><div class="modalbox${groups.length > 1 ? ' modalwide' : ''}" style="--nc:${cols.length}">
+      <button type="button" class="modalx" data-ck-close aria-label="Close">&times;</button>
+      <h3 id="${id}Title">${esc(title)}</h3><div class="modalgrid">${secs}</div></div></div>`;
+    for (const h of root.querySelectorAll('[data-gk]')) {
+      h.checked = h.dataset.all === '1';
+      h.indeterminate = h.dataset.all !== '1' && h.dataset.some === '1';
+    }
+    const f = m.focus && [...root.querySelectorAll('[data-ck],[data-gk]')].find(x => `${x.dataset.ck ?? x.dataset.gk}|${x.dataset.col}` === m.focus);
+    (f || root.querySelector('[data-ck]'))?.focus();
+  };
+  m.close = () => { m.open = false; m.focus = ''; m.render(); };
+  root.addEventListener('click', e => { if (e.target.id === id || e.target.closest('[data-ck-close]')) m.close(); });
+  root.addEventListener('change', e => {
+    const { ck, gk, col } = e.target.dataset || {};
+    if (!m.open || !(ck || gk)) return;
+    m.focus = `${ck ?? gk}|${col}`;
+    commit(gk ? setGroup(record, gk, col, e.target.checked) : set(record, ck, col, e.target.checked));
+  });
+  main.addEventListener('click', e => {
+    if (!e.target.closest(`[${openAttr}]`)) return;
+    m.open = true;
+    m.focus = '';
+    m.render();
+  });
+  checkModals.push(m);
+  return m;
+}
+const lower = list => new Set(list.map(v => String(v).toLowerCase()));
+checkModal({
+  id: 'stkModal', title: 'Campaign Stickers', openAttr: 'data-stk-open', cols: [{ key: 'on', label: '' }],
+  items: () => {
+    const have = lower(record.stk), known = new Set(STICKERS.map(t => t.name.toLowerCase()));
+    const extra = record.stk.filter(n => !known.has(String(n).toLowerCase()));
+    return [...STICKERS.map(t => t.name), ...extra].map(name => ({ name, on: { on: have.has(String(name).toLowerCase()) } }));
+  },
+  set: (r, n, _k, on) => (on ? ed.addSticker(r, n) : ed.removeSticker(r, n)),
+});
+checkModal({
+  id: 'clsModal', title: 'Classes', openAttr: 'data-cls-open', cols: [{ key: 'avail', label: 'Available' }, { key: 'unl', label: 'Unlocked' }],
+  items: () => {
+    const have = lower(record.cls), avail = availableSet(record);
+    return ALL_CLASSES.map(c => ({ name: c.name, group: c.edition, on: { avail: avail.has(c.name.toLowerCase()), unl: have.has(c.name.toLowerCase()) } }));
+  },
+  set: (r, n, key, on) => (key === 'avail' ? ed.setClassAvailable(r, n, on) : on ? ed.addUnlockedClass(r, n) : ed.removeUnlockedClass(r, n)),
+  setGroup: (r, g, key, on) => ed.setEditionClasses(r, g, key, on),
+});
+
+// --- players modal: rename, remove and add players ---------------------------------------------------------------
+let plModal = false;
+const plRoot = document.createElement('div');
+document.body.appendChild(plRoot);
+function renderPlModal() {
+  if (!plModal || !record) { plModal = false; plRoot.innerHTML = ''; return; }
+  const keep = plRoot.querySelector('[data-pl-new]');
+  const draft = keep ? keep.value : '';
+  const hadFocus = keep && document.activeElement === keep;
+  plRoot.innerHTML = `<div class="modal" id="plModal" role="dialog" aria-modal="true" aria-labelledby="plTitle"><div class="modalbox">
+    <button type="button" class="modalx" data-pl-close aria-label="Close">&times;</button>
+    <h3 id="plTitle">Players</h3>
+    <div class="modalrows">${record.players.map(p => `<div class="plrow"><input type="text" class="txt" maxlength="40" data-pl-seat="${esc(p.seat)}" value="${esc(p.name)}" aria-label="Player name, seat ${esc(p.seat + 1)}"><button type="button" class="chip" data-pl-del="${esc(p.seat)}" title="Remove this player">Remove</button></div>`).join('') || '<div class="empty">no players yet</div>'}</div>
+    <div class="plrow pladd"><input type="text" class="txt" maxlength="40" placeholder="New player" data-pl-new value="${esc(draft)}" aria-label="New player name"><button type="button" class="chip" data-pl-add>Add</button></div></div></div>`;
+  if (hadFocus || !keep) plRoot.querySelector('[data-pl-new]').focus();
+}
+function closePlModal() { plModal = false; renderPlModal(); }
+function addPlayerFromModal() {
+  const inp = plRoot.querySelector('[data-pl-new]');
+  const next = ed.addPlayer(record, inp.value);
+  inp.value = '';
+  commit(next);
+  plRoot.querySelector('[data-pl-new]')?.focus();
+}
+plRoot.addEventListener('click', e => {
+  if (e.target.id === 'plModal' || e.target.closest('[data-pl-close]')) { closePlModal(); return; }
+  if (e.target.closest('[data-pl-add]')) { addPlayerFromModal(); return; }
+  const del = e.target.closest('[data-pl-del]');
+  if (del) commit(ed.removePlayer(record, Number(del.dataset.plDel)));
+});
+plRoot.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.matches('[data-pl-new]')) { e.preventDefault(); addPlayerFromModal(); }
+});
+plRoot.addEventListener('change', e => {
+  const seat = e.target.dataset?.plSeat;
+  if (seat === undefined) return;
+  const next = ed.renamePlayer(record, Number(seat), e.target.value);
+  if (next === record) e.target.value = record.players.find(p => p.seat === Number(seat))?.name ?? '';   // empty or duplicate: restore
+  else commit(next);
+});
+main.addEventListener('click', e => {
+  if (!e.target.closest('[data-pl-open]')) return;
+  plModal = true;
+  renderPlModal();
+});
+
+// --- prosperity track modal: the 90 checkmarks by level, with the sections to read and the items each level unlocks -----
+// Items are shown by number only, as ranges. Clicking a box sets the checkmark count.
+// Consecutive item numbers grouped into runs: [1,2,3,5] -> [[1,2,3],[5]].
+const itemRanges = ids => ids.reduce((runs, id) => {
+  const last = runs[runs.length - 1];
+  if (last && id === last[last.length - 1] + 1) last.push(id); else runs.push([id]);
+  return runs;
+}, []);
+// Imbuement (80 boxes) and Great Oak sanctuary donations (100 boxes): rows of 10, +1P above every 5th box (the sheet's labels)
+// = the box that also fills a prosperity checkbox; imbuement boxes 10, 20 .. 80 carry a section to read.
+function trackSection({ title, count, size, attr, sections, unit }) {
+  const plus = Math.floor(count / 5), rows = [];
+  for (let from = 1; from <= size; from += 10) {
+    const boxes = [];
+    for (let n = from; n < from + 10; n++) {
+      const on = n <= count, p = n % 5 === 0, sec = sections?.[n];
+      const tip = `${unit} ${n}${p ? ': +1 prosperity checkmark' : ''}${sec ? `, read section ${sec}` : ''}`;
+      boxes.push(`<button type="button" class="ptbox${on ? ' on' : ''}${p ? ' ptplus' : ''}${sec ? ' ptmark' : ''}" ${attr}="${n}" title="${esc(tip)}" aria-label="${esc(tip)}" aria-pressed="${on}">${n}</button>`);
+    }
+    // the section pill goes to the right of the row that holds its box (imbuement boxes 10, 20 .. 80 end a row)
+    const pill = sections ? Object.entries(sections).filter(([n]) => Number(n) >= from && Number(n) < from + 10).map(([n, sec]) => `<span class="ptpill ${count >= Number(n) ? 'done' : ''}" title="Read when box ${esc(n)} is ticked">Section ${esc(sec)}${count >= Number(n) ? ' &check;' : ''}</span>`).join('') : '';
+    rows.push(`<div class="ptrow${sections ? ' ptrows' : ''}">${boxes.join('')}${sections ? `<span class="ptside">${pill}</span>` : ''}</div>`);
+  }
+  return `<section class="ptlevel ${count ? 'reached' : ''}"><div class="pthead"><b>${esc(title)}</b><span class="hint">${count} of ${size} &middot; <span class="ptplustag">+1P</span> &times; ${plus}</span></div>
+    <div class="ptgrid">${rows.join('')}</div></section>`;
+}
+let prosModal = false;                             // 'pros' | 'don' | 'imb': which track the modal shows
+const prosRoot = document.createElement('div');
+document.body.appendChild(prosRoot);
+function renderProsModal() {
+  if (!prosModal || !record) { prosModal = false; prosRoot.innerHTML = ''; return; }
+  const keep = prosRoot.querySelector('.modalbox')?.scrollTop || 0;
+  const pros = record.pros, lvNow = prosperityLevel(pros);
+  const unl = new Set(record.items.unl);
+  const starts = PROSPERITY_START, last = 90;
+  const levels = starts.map((s, k) => {
+    const lv = k + 1, from = s + 1, to = k + 1 < starts.length ? starts[k + 1] : last;
+    const reached = lvNow >= lv;
+    const boxes = [];
+    for (let n = from; n <= to; n++) {
+      const sec = n === from ? PROSPERITY_SECTIONS[lv] : '', on = n <= pros, mark = sec ? ' ptmark' : '';
+      const tip = `Checkmark ${n}${sec ? `, read section ${sec}` : ''}`;
+      boxes.push(`<button type="button" class="ptbox${on ? ' on' : ''}${mark}" data-pbox="${n}" title="${esc(tip)}" aria-label="${esc(tip)}" aria-pressed="${on}">${n}</button>`);
+    }
+    const secs = PROSPERITY_SECTIONS[lv] ? `<span class="ptpill ${pros >= from ? 'done' : ''}" title="Read when checkmark ${from} (the first box of level ${lv}) is ticked${pros >= from ? ' (read)' : ''}">Section ${esc(PROSPERITY_SECTIONS[lv])}${pros >= from ? ' &check;' : ''}</span>` : '';
+    const ids = PROSPERITY_ITEMS[lv] || [];
+    const items = itemRanges(ids).map(g => {
+      const got = g.filter(id => unl.has(id)).length, label = g.length > 1 ? `Items #${g[0]}–${g[g.length - 1]}` : `Item #${g[0]}`;
+      return `<span class="chip ${got === g.length ? 'ok' : 'dim'}" title="${got} of ${g.length} unlocked in the Items tab">${got === g.length ? '&check; ' : ''}${label}</span>`;
+    }).join('');
+    const state = lvNow === lv ? ' current' : reached ? ' reached' : '';
+    return `<section class="ptlevel${state}"><div class="pthead"><b>Level ${lv}</b>${lvNow === lv ? '<span class="badge">current</span>' : ''}<span class="chips ptitems">${items}</span></div>
+      <div class="ptboxes">${boxes.join('')}${secs}</div></section>`;
+  }).join('');
+  const don = trackSection({ title: 'Great Oak sanctuary', count: record.don, size: 100, attr: 'data-donbox', unit: 'Gold' });
+  const imb = trackSection({ title: 'Imbuements', count: record.imb, size: 80, attr: 'data-imbox', sections: IMBUEMENT_SECTIONS, unit: 'Imbuement' });
+  const mode = prosModal;
+  const title = { pros: 'Prosperity track', don: 'Great Oak sanctuary', imb: 'Imbuements' }[mode];
+  const body = mode === 'don' ? don : mode === 'imb' ? imb : `<p class="ptsum">Level <b>${lvNow}</b> &middot; <b>${pros}</b> of ${last} checkmarks</p>${levels}`;
+  prosRoot.innerHTML = `<div class="modal" id="prosModal" role="dialog" aria-modal="true" aria-labelledby="prosTitle"><div class="modalbox modalwide ptmodal">
+    <button type="button" class="modalx" data-pros-close aria-label="Close">&times;</button>
+    <h3 id="prosTitle">${esc(title)}</h3>
+    ${body}</div></div>`;
+  prosRoot.querySelector('.modalbox').scrollTop = keep;
+}
+function closeProsModal() { prosModal = false; renderProsModal(); }
+prosRoot.addEventListener('click', e => {
+  if (e.target.id === 'prosModal' || e.target.closest('[data-pros-close]')) { closeProsModal(); return; }
+  const n = Number(e.target.closest('[data-pbox]')?.dataset.pbox);
+  if (n) commit(ed.setProsperity(record, n === record.pros ? n - 1 : n));
+  const don = Number(e.target.closest('[data-donbox]')?.dataset.donbox);
+  if (don) commit(ed.setDonations(record, don === record.don ? don - 1 : don));
+  const imb = Number(e.target.closest('[data-imbox]')?.dataset.imbox);
+  if (imb) commit(ed.setImbuement(record, imb === record.imb ? imb - 1 : imb));
+});
+main.addEventListener('click', e => {
+  const open = e.target.closest('[data-pros-open],[data-don-open],[data-imb-open]');
+  if (!open) return;
+  prosModal = open.hasAttribute('data-don-open') ? 'don' : open.hasAttribute('data-imb-open') ? 'imb' : 'pros';
+  renderProsModal();
+});
+
+// --- reputation modal: the three reputation tracks (20 .. -10, as on the sheet) and the sections each value unlocks ---------
+// A section is ready once the faction's reputation is at least its value and the scenarios it requires are completed.
+// Whether it was already read is not recorded.
+const REP_FACTIONS = [['demons', 'Demons'], ['merchants', 'Merchants'], ['guard', 'City Guard']];
+let repModal = false;
+const repRoot = document.createElement('div');
+document.body.appendChild(repRoot);
+function renderRepModal() {
+  if (!repModal || !record) { repModal = false; repRoot.innerHTML = ''; return; }
+  const keep = repRoot.querySelector('.modalbox')?.scrollTop || 0;
+  const done = n => record.scn[String(n)]?.s === SCN_STATE.COMPLETED;
+  const need = e => (e.requires || []).map(n => `Scenario ${n}${done(n) ? ' &check;' : ''}`).join(' &amp; ');
+  const status = (rep, e) => (rep < e.value ? '' : (e.requires || []).every(done) ? 'ready' : 'wait');
+  const secs = REP_FACTIONS.map(([key, name]) => {
+    const rep = record.rep[key], mine = REPUTATION_SECTIONS.filter(e => e.faction === key);
+    const at = new Map(mine.map(e => [e.value, e]));
+    const boxes = [];
+    for (let v = 20; v >= -10; v--) {
+      const e = at.get(v), st = e ? status(rep, e) : '';
+      const tip = `${name} reputation ${v}${e ? `, section ${e.section}${e.requires ? `, needs scenario ${e.requires.join(' & ')}` : ''}` : ''}`;
+      boxes.push(`<button type="button" class="ptbox repbox${v === rep ? ' on' : ''}${e ? ' ptmark' : ''}${st ? ` rep-${st}` : ''}" data-repbox="${key}:${v}" title="${esc(tip)}" aria-label="${esc(tip)}" aria-pressed="${v === rep}">${v}</button>`);
+    }
+    const pills = mine.map(e => {
+      const st = status(rep, e);
+      return `<span class="ptpill rep-${st || 'off'}" title="${st === 'ready' ? 'Ready to read' : st === 'wait' ? 'Reputation reached, scenarios still to complete' : 'Reputation not reached yet'}">Section ${esc(e.section)} <small>at ${e.value}${e.requires ? ` &middot; ${need(e)}` : ''}</small>${st === 'ready' ? ' &check;' : ''}</span>`;
+    }).join('');
+    return `<section class="ptlevel reached"><div class="pthead"><b>${name}</b><span class="hint">reputation <b>${rep}</b></span></div>
+      <div class="ptgrid"><div class="ptrow">${boxes.join('')}</div><div class="ptnotes">${pills}</div></div></section>`;
+  }).join('');
+  const top = Math.max(...REP_FACTIONS.map(([k]) => record.rep[k]));
+  const any = REPUTATION_SECTIONS.filter(e => e.faction === 'any').map(e => `<span class="ptpill rep-${top >= e.value ? 'ready' : 'off'}">City event C-${esc(String(e.section).split(':')[1])} added to the city deck <small>at ${e.value} with one faction</small>${top >= e.value ? ' &check;' : ''}</span>`).join('');
+  repRoot.innerHTML = `<div class="modal" id="repModal" role="dialog" aria-modal="true" aria-labelledby="repTitle"><div class="modalbox modalwide ptmodal repmodal">
+    <button type="button" class="modalx" data-rep-close aria-label="Close">&times;</button>
+    <h3 id="repTitle">Reputation</h3>
+    ${secs}${any ? `<div class="ptnotes repany">${any}</div>` : ''}</div></div>`;
+  repRoot.querySelector('.modalbox').scrollTop = keep;
+}
+function closeRepModal() { repModal = false; renderRepModal(); }
+repRoot.addEventListener('click', e => {
+  if (e.target.id === 'repModal' || e.target.closest('[data-rep-close]')) { closeRepModal(); return; }
+  const box = e.target.closest('[data-repbox]')?.dataset.repbox;
+  if (!box) return;
+  const [key, v] = box.split(':');
+  commit(ed.setReputation(record, key, Number(v)));
+});
+main.addEventListener('click', e => {
+  if (!e.target.closest('[data-rep-open]')) return;
+  repModal = true;
+  renderRepModal();
+});
+
+// --- retired characters modal: add, edit and remove the retirements -------------------------------------------------------
+let retModal = false;
+const retRoot = document.createElement('div');
+document.body.appendChild(retRoot);
+function renderRetModal() {
+  if (!retModal || !record) { retModal = false; retRoot.innerHTML = ''; return; }
+  const keep = retRoot.querySelector('.modalbox')?.scrollTop || 0;
+  const num = (i, k, min, max, v) => `<input type="number" class="num" min="${min}" max="${max}" data-ret-i="${i}" data-ret-k="${k}" value="${esc(v ?? '')}" aria-label="${esc(k)}">`;
+  const rows = record.retired.map((x, i) => `<div class="retrow">
+    <select data-ret-i="${i}" data-ret-k="cls" aria-label="Class"><option value="">Class...</option>${ALL_CLASSES.map(c => `<option${c.name.toLowerCase() === String(x.cls).toLowerCase() ? ' selected' : ''}>${esc(c.name)}</option>`).join('')}</select>
+    <input type="text" class="txt" list="retPlayers" maxlength="40" placeholder="Player" data-ret-i="${i}" data-ret-k="player" value="${esc(x.player ?? '')}" aria-label="Player">
+    <input type="text" class="txt" maxlength="40" placeholder="Name" data-ret-i="${i}" data-ret-k="name" value="${esc(x.name ?? '')}" aria-label="Name">
+    ${num(i, 'lv', 1, 9, x.lv)}${num(i, 'perks', 0, 99, x.perks)}${num(i, 'masteries', 0, 99, x.masteries)}
+    <button type="button" class="chip" data-ret-del="${i}" title="Remove this retirement">Remove</button></div>`).join('');
+  retRoot.innerHTML = `<div class="modal" id="retModal" role="dialog" aria-modal="true" aria-labelledby="retTitle"><div class="modalbox modalwide retmodal">
+    <button type="button" class="modalx" data-ret-close aria-label="Close">&times;</button>
+    <h3 id="retTitle">Retired Characters</h3>
+    <datalist id="retPlayers">${record.players.map(p => `<option value="${esc(p.name)}">`).join('')}</datalist>
+    ${record.retired.length ? '<div class="retrow rethead"><span>Class</span><span>Player</span><span>Name</span><span>Lv</span><span>Perks</span><span>Masteries</span><span></span></div>' : ''}
+    <div class="modalrows">${rows || '<div class="empty">no retired characters yet</div>'}</div>
+    <div class="modalfoot" style="justify-content:flex-start"><button type="button" class="chip" data-ret-add>+ Add retired character</button></div></div></div>`;
+  retRoot.querySelector('.modalbox').scrollTop = keep;
+}
+function closeRetModal() { retModal = false; renderRetModal(); }
+retRoot.addEventListener('click', e => {
+  if (e.target.id === 'retModal' || e.target.closest('[data-ret-close]')) { closeRetModal(); return; }
+  if (e.target.closest('[data-ret-add]')) { commit(ed.addRetired(record)); return; }
+  const del = e.target.closest('[data-ret-del]');
+  if (del) commit(ed.removeRetired(record, Number(del.dataset.retDel)));
+});
+retRoot.addEventListener('change', e => {
+  const { retI, retK } = e.target.dataset || {};
+  if (retI === undefined) return;
+  const next = ed.setRetired(record, Number(retI), retK, e.target.value);
+  if (next === record) renderRetModal();                 // ignored (empty number, ...): show the stored value again
+  else commit(next);
+});
+main.addEventListener('click', e => {
+  if (!e.target.closest('[data-ret-open]')) return;
+  retModal = true;
+  renderRetModal();
+});
+
 // --- scenario detail modal (flowchart): shown on top regardless of scroll position or chart height ---------
 const scnModalRoot = document.createElement('div');
 document.body.appendChild(scnModalRoot);
@@ -830,7 +1174,13 @@ scnModalRoot.addEventListener('change', e => { if (editing && e.target.dataset.a
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
   if (traitModal) closeModal();
+  else if (checkModals.some(m => m.open)) checkModals.find(m => m.open).close();
+  else if (plModal) closePlModal();
+  else if (prosModal) closeProsModal();
+  else if (repModal) closeRepModal();
+  else if (retModal) closeRetModal();
   else if (view.scnSel != null) closeScnModal();
+  else if (view.flowFull) { view.flowFull = false; render(); }
 });
 
 function render() {
@@ -839,15 +1189,24 @@ function render() {
     main.innerHTML = '<div class="empty">No campaign loaded.<br>Use <b>Load file</b> to open a campaign JSON file. It is kept in this browser only.</div>';
     return;
   }
-  editing = editPages.has(tab);
+  const flowPage = tab === 'Scenarios' && view.scnView === 'flow';
+  if (!flowPage) view.flowFull = false;
+  main.classList.toggle('wide', flowPage);                // the flowchart may use the whole window width
+  document.body.classList.toggle('noscroll', !!view.flowFull);
+  editing = tab === 'Overview' ? editSections.size > 0 : editPages.has(tab);
   saveView();
   const issues = validate(record);
   // The Items and Events pages carry their own pencil button (in the filter row / tab row). Scenarios has no page-wide
   // edit mode at all: every row (table or flowchart) opens the scenario modal, which carries its own pencil button.
-  const noPagebar = tab === 'Items' || tab === 'Events' || tab === 'Cards' || tab === 'Scenarios' || tab === 'Resources';
+  const noPagebar = tab === 'Overview' || tab === 'Items' || tab === 'Events' || tab === 'Cards' || tab === 'Scenarios' || tab === 'Resources' || tab === 'History';
   const pagebar = noPagebar ? '' : `<div class="pagebar"><button type="button" class="editbtn editicon" data-pageedit aria-pressed="${editing}" aria-label="${editing ? 'Stop editing this page' : `Edit ${esc(tab.toLowerCase())}`}" title="${editing ? 'Stop editing this page' : `Edit ${esc(tab.toLowerCase())}`}">${PENCIL}</button></div>`;
-  const body = { Overview: overview, Scenarios: scenarios, Mercenaries: mercenaries, Items: items, Events: events, Cards: cardsPage, Resources: resources }[tab](record);
+  const body = { Overview: overview, Scenarios: scenarios, Mercenaries: mercenaries, Items: items, Events: events, Cards: cardsPage, Resources: resources, History: historyPage }[tab](record);
   renderModal();
+  checkModals.forEach(m => m.render());
+  renderPlModal();
+  renderProsModal();
+  renderRepModal();
+  renderRetModal();
   renderScnModal();
   main.innerHTML = pagebar + (issues.length ? `<div class="issues">${issues.length} issue(s): ${esc(issues.slice(0, 5).join('; '))}</div>` : '') + body;
   if (tab === 'Cards' && view.cardType === 'am') hydrateAm();
@@ -864,6 +1223,7 @@ function apply(el) {
     case 'scnState': return commit(ed.setScenarioState(record, id, Number(v)));
     case 'scnRes': return commit(ed.setScenarioResult(record, id, { [key]: v }));
     case 'char': return commit(ed.setCharacter(record, id, key, v));
+    case 'charPlayer': return commit(ed.setCharacterPlayer(record, id, v));
     case 'charName': return commit(ed.renameCharacter(record, id, v));
     case 'itemUnl': return commit(ed.setItemUnlocked(record, id, v));
     case 'itemToggle': return commit(ed.setItemUnlocked(record, id, !record.items.unl.some(u => String(u) === id)));
@@ -890,6 +1250,7 @@ main.addEventListener('click', e => {
   }
   const sv = e.target.closest('[data-scnview]')?.dataset.scnview;
   if (sv) { view.scnView = sv; render(); return; }
+  if (e.target.closest('[data-flowfull]')) { view.flowFull = !view.flowFull; render(); return; }
   const fz = e.target.closest('[data-flowzoom]')?.dataset.flowzoom;
   if (fz) { view.flowZoom = fz; render(); return; }
   const fn = e.target.closest('[data-flow]')?.dataset.flow;
@@ -900,12 +1261,6 @@ main.addEventListener('click', e => {
   if (itemRollBtn) { copyRollerCode(itemRollBtn, itemRollerCode(record)); return; }
   const trClaim = e.target.closest('[data-trclaim]')?.dataset.trclaim;
   if (trClaim) { commit(ed.toggleDeckEntry(record, 'tre', Number(trClaim))); return; }
-  const stepBtn = e.target.closest('[data-partystep]');
-  if (stepBtn) {
-    const { partystep: key, dir } = stepBtn.dataset;
-    commit(ed.setParty(record, key, (record.party[key] || 0) + Number(dir)));
-    return;
-  }
   const csz = e.target.closest('[data-cardsize]')?.dataset.cardsize;
   if (csz in ITEM_SIZES) {
     view.cardSize = csz;
@@ -1069,9 +1424,21 @@ main.addEventListener('keydown', e => {                      // an option of the
   if ((e.key === 'Enter' || e.key === ' ') && e.target.matches?.('[data-flow]')) { e.preventDefault(); view.scnSel = Number(e.target.dataset.flow); render(); }
 });
 main.addEventListener('click', e => {
+  const sec = e.target.closest('[data-secedit]')?.dataset.secedit;
+  if (sec) {
+    if (editSections.has(sec)) editSections.delete(sec); else editSections.add(sec);
+    render();
+    return;
+  }
   if (!e.target.closest('[data-pageedit]')) return;
   if (editPages.has(tab)) editPages.delete(tab); else editPages.add(tab);
   render();
+});
+let fitTimer = 0;
+window.addEventListener('resize', () => {
+  if (view.flowZoom !== 'fit' || tab !== 'Scenarios' || view.scnView !== 'flow' || !record) return;
+  clearTimeout(fitTimer);
+  fitTimer = setTimeout(render, 150);
 });
 undoBtn.addEventListener('click', undo);
 document.addEventListener('keydown', e => {
@@ -1079,6 +1446,9 @@ document.addEventListener('keydown', e => {
 });
 
 // --- campaign file modal (import/export/clear) -------------------------------------------------------------
+const userInput = document.getElementById('userName');
+try { userInput.value = localStorage.getItem(USER_KEY) || ''; } catch { /* ignore */ }
+userInput.addEventListener('change', () => { try { localStorage.setItem(USER_KEY, userInput.value.trim()); } catch { /* ignore */ } });
 const settingsModal = document.getElementById('settingsModal');
 const openSettings = () => { settingsModal.hidden = false; };
 const closeSettings = () => { settingsModal.hidden = true; };
@@ -1115,6 +1485,7 @@ document.getElementById('clear').addEventListener('click', async () => {
   record = null;
   history.length = 0;
   editPages.clear();
+  editSections.clear();
   render();
   closeSettings();
 });

@@ -2,6 +2,7 @@
 // view, the future server and the session commit can share it. Draft schema: docs/campaign-schema.md section 4.
 // Ids refer to the generated tables in scripts/games/gh2_*.js and battle_goals.js.
 import { CLASSES } from '../games/gh2_classes.js';
+import { ALL_CLASSES } from './classList.js';
 import { CARDS } from '../games/gh2_cards.js';
 import { ITEMS } from '../games/gh2_items.js';
 import { SCENARIOS } from '../games/gh2_scenarios.js';
@@ -19,9 +20,12 @@ Record fields (all optional on load, defaults filled by normalize):
   party             { insp, avg, diff, diffName }   inspiration, average level, difficulty modifier
   rep               { demons, merchants, guard }    reputation, -10..20
   pros              prosperity checkmarks
-  imb, stk, cls     imbuement ticks, sticker labels, unlocked class names
+  imb, don          imbuement boxes ticked (0..80) and gold donated to the Sanctuary of the Oak (0..100); counts. Older
+                    records hold imb as the importer's raw "row:col" list of both box grids: normalize converts it
+  stk, cls          sticker labels, unlocked class names
+  avail             class names available in this campaign (optional; absent = every class in scripts/campaign/classList.js)
   scn               { "<number>": { s, l?, p?, ch?, d? } }   state, level, party size, chests, date
-  chars             [{ id, cls, name, lv, xp, gold, inh, traits, special, hand, deck, disc, act, lost, bench, items:[{id, st}], am }]
+  chars             [{ id, cls, name, seat?, lv, xp, gold, inh, traits, special, hand, deck, disc, act, lost, bench, items:[{id, st}], am }]
                     special = special traits gained through events (keys of scripts/campaign/traits.js)
   items             { unl: [itemId], taken: { itemId: copies in use } }
   events            { city, road: { top, bottom, out, locked }, pend? }   piles are ordered, see scripts/campaign/events.js
@@ -31,16 +35,23 @@ Record fields (all optional on load, defaults filled by normalize):
   evlog             finished events [{ kind, id, opt, votes, rnd?, closed?, place }]
   decks             { bg, tre, mp }                 battle goals drawn, treasures claimed, med packs
   enh, retired      enhancement log, retired characters
+  log               edit history, oldest first: [{ t: epoch ms, u: user, tab, kind, d }] (scripts/campaign/changelog.js), the last 1000 kept
   resLinks          { "<resource title>|<game>": url }   overrides scripts/games/resources.js's own link for that cell
 */
+// The class names available in the campaign: r.avail when set, otherwise every class. Unlocked classes are always available.
+export function availableSet(r) {
+  const names = r.avail ? [...r.avail, ...(r.cls || [])] : ALL_CLASSES.map(c => c.name);
+  return new Set(names.map(n => String(n).toLowerCase()));
+}
+
 export function emptyRecord() {
   return {
     v: RECORD_VERSION, ver: 1, name: '', players: [],
     party: { insp: 0, avg: 1, diff: 0, diffName: 'Normal' },
-    rep: { demons: 0, merchants: 0, guard: 0 }, pros: 0, imb: [], stk: [], cls: [],
+    rep: { demons: 0, merchants: 0, guard: 0 }, pros: 0, imb: 0, don: 0, stk: [], cls: [],
     scn: {}, chars: [], items: { unl: [], taken: {} },
     events: { city: { top: [], bottom: [], out: [], locked: [] }, road: { top: [], bottom: [], out: [], locked: [] }, marks: {}, notes: {} }, evlog: [],
-    decks: { bg: [], tre: [], mp: [] }, enh: [], retired: [], resLinks: {},
+    decks: { bg: [], tre: [], mp: [] }, enh: [], retired: [], resLinks: {}, log: [],
   };
 }
 
@@ -73,6 +84,16 @@ export function normalize(raw) {
   r.evlog = Array.isArray(r.evlog) ? r.evlog : [];
   r.decks = { ...base.decks, ...(r.decks || {}) };
   r.resLinks = { ...(r.resLinks || {}) };
+  r.log = Array.isArray(r.log) ? r.log : [];
+  // Imbuement is the sheet's left box grid (importer columns 4..13), the Sanctuary of the Oak donations the right one (21..30).
+  if (Array.isArray(r.imb)) {
+    const col = k => Number(String(k).split(':')[1]);
+    const left = r.imb.filter(k => col(k) >= 4 && col(k) <= 13).length;
+    r.don = r.imb.length - left;
+    r.imb = left;
+  }
+  r.imb = Math.max(0, Math.min(80, Math.trunc(Number(r.imb)) || 0));
+  r.don = Math.max(0, Math.min(100, Math.trunc(Number(r.don)) || 0));
   r.scn = r.scn || {};
   r.chars = (r.chars || []).map(c => ({ traits: [], special: [], deck: [], disc: [], act: [], lost: [], bench: [], items: [], ...c }));
   return r;

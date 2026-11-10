@@ -29,6 +29,12 @@ DEFAULT_GHS = os.path.join('D:' + os.sep, 'github', 'gloomhavensecretariat', 'da
 DEFAULT_GHS_DECKS = os.path.join('D:' + os.sep, 'github', 'gloomhavensecretariat', 'data', 'gh2e', 'character', 'deck')
 INITIATIVE_OVERRIDES = os.path.join(ROOT, 'tools', 'card-initiative.json')
 
+# Class names as the game spells them (the Card DB has 'Plague Herald'); keeps names identical across the campaign data.
+CLASS_NAME_FIX = {'Plague Herald': 'Plagueherald'}
+
+# Item slots the Card DB has wrong: item id -> slot (169 Staff of Command is a two-hander, 170 Crawling Carapace a body item; swapped in the Card DB).
+ITEM_SLOT_FIX = {169: '2H', 170: 'body'}
+
 # Corrections to the Card DB's ability cards: DB slug -> (class code, corrected slug or None). Found 2026-11-08 by comparing
 # with the Secretariat data and the asset repository: these level 9 cards sit under the NEXT class's rows in the Card DB
 # (their picture URLs give 404; the files are in the folders named here), and one slug has a typo.
@@ -221,7 +227,7 @@ def main():
         names.setdefault(code, (r[36], r[46]))
     classes, cards = [], []
     for ci, code in enumerate(sorted(by_class), start=1):
-        classes.append({'i': ci, 'code': code, 'name': names[code][0], 'src': names[code][1]})
+        classes.append({'i': ci, 'code': code, 'name': CLASS_NAME_FIX.get(names[code][0], names[code][0]), 'src': names[code][1]})
         for n, r in enumerate(sorted(by_class[code], key=level_key), start=1):
             cards.append({'id': ci * 100 + n, 'cls': ci, 'slug': r[30], 'lv': 'M' if r[5] == 'M' else 'X' if num(r[5]) == 1.1 else num(r[5])})   # X = the level 1.1 cards, sorted between 1 and 2
     ini = load_initiative(sys.argv[3] if len(sys.argv) > 3 else DEFAULT_GHS_DECKS, classes, by_class)
@@ -239,7 +245,7 @@ def main():
     items = []
     for r in rows:
         if r[0] == 'Items' and r[46] == 'gh2' and r[13] == 'gloomhaven2':
-            items.append({'id': num(r[5]), 'slug': r[30], 'slot': r[16], 'kind': r[36], 'n': num(r[39])})
+            items.append({'id': num(r[5]), 'slug': r[30], 'slot': ITEM_SLOT_FIX.get(num(r[5]), r[16]), 'kind': r[36], 'n': num(r[39])})
     write_module('gh2_items.js', 'Items: id (number, or "QM5" style for quartermaster items), slug, slot, kind '
                                  '(coin/solo/qm), n = copies.', [('ITEMS', items)])
 

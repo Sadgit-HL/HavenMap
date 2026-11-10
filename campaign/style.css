@@ -17,9 +17,6 @@ h2 { font-size:16px; margin:20px 0 8px; color:var(--accent); }
 .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:10px 12px; }
 .card h3 { margin:0 0 6px; font-size:14px; }
 .kv { display:flex; justify-content:space-between; gap:8px; padding:2px 0; }
-.stepper { display:inline-flex; align-items:center; gap:6px; }
-.stepper b { min-width:1.2em; text-align:center; }
-.stepper .chip { cursor:pointer; padding:0 7px; line-height:1.4; }
 .kv span:first-child { color:var(--muted); }
 .bar { height:8px; border-radius:4px; background:#33291d; position:relative; margin:4px 0 8px; }
 .bar i { position:absolute; top:-2px; width:3px; height:12px; background:var(--accent); border-radius:2px; }
@@ -79,7 +76,7 @@ button.primary { background:var(--accent); color:#1b150c; border:1px solid var(-
 .cardrow[draggable="true"] { cursor:grab; }
 .cardrow.dragging { opacity:.4; }
 .cardrow.is-active { border-color:var(--info); }
-.cardrow .cname { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.cardrow .cname { flex:1; min-width:0; line-height:1.15; }
 .badge { font-size:10px; color:var(--info); border:1px solid var(--info); border-radius:8px; padding:0 5px; }
 .empty-row { color:var(--muted); font-size:12px; padding:4px 2px; }
 @media (max-width:640px) { .zones { grid-template-columns:1fr; } }
@@ -113,7 +110,7 @@ button.primary { background:var(--accent); color:#1b150c; border:1px solid var(-
 .bgtile .badge { align-self:flex-start; }
 .itemtile.locked .cardpic { opacity:.4; filter:grayscale(1); }
 .itemtile figcaption { display:flex; align-items:center; justify-content:space-between; gap:4px; font-size:12px; }
-.itemtile .cname { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.itemtile .cname { flex:1; min-width:0; line-height:1.15; }
 .itemtile .cname input { margin-right:4px; }
 .itemwith { font-size:11px; color:var(--info); }
 
@@ -266,7 +263,7 @@ button.evchip { cursor:pointer; }
 .evunmet { margin-bottom:4px; }
 
 /* scenario flowchart */
-.flowwrap { overflow:auto; max-height:72vh; border:1px solid var(--line); border-radius:8px; background:#120f0b; }
+.flowwrap { overflow:auto; border:1px solid var(--line); border-radius:8px; background:#120f0b; }
 .flowsvg { display:block; }
 .flane { fill:#1b160f; } .flane.alt { fill:#201a12; }
 .flabel { fill:var(--muted); font-size:13px; font-weight:600; }
@@ -277,3 +274,93 @@ button.evchip { cursor:pointer; }
 .fnode.s1 rect { stroke:var(--info); } .fnode.s2 rect { stroke:var(--ok); fill:#22301f; } .fnode.s3 rect { stroke:var(--bad); fill:#2e1d19; }
 .fnode.mask rect { stroke-dasharray:4 3; } .fnode:hover rect, .fnode:focus-visible rect, .fnode.sel rect { stroke:var(--accent); stroke-width:2.5; }
 .fnum { fill:var(--muted); font-size:10px; } .fname { fill:var(--text); font-size:12px; } .fq { fill:var(--muted); font-size:18px; }
+.stickers { display:flex; flex-wrap:wrap; gap:10px; align-items:flex-start; }
+.sticker { margin:0; width:110px; text-align:center; font-size:12px; }
+.sticker img { display:block; width:100%; max-height:110px; object-fit:contain; margin:0 auto 4px; border-radius:6px; border:1px solid var(--line); }
+.stickers .chip { align-self:center; }
+.secedit { display:inline-flex; align-items:center; justify-content:center; padding:2px 6px; margin-left:8px; vertical-align:middle; }
+/* checkbox-list modals (stickers, classes): compact rows, one section per group */
+.modalbox.modalwide { width:min(1000px,100%); }
+.modalgrid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:8px 16px; align-items:start; }
+.modalbox:has(.modalgrid) { padding:10px 12px; }
+.modalbox:has(.modalgrid) h3 { margin-bottom:6px; }
+.modalhead, .modalsec .modalrow { display:grid; grid-template-columns:minmax(0,1fr) repeat(var(--nc, 1), 54px); align-items:center; }
+.modalhead { border-bottom:1px solid var(--accent); padding:0 4px 2px; margin-bottom:2px; }
+.modalhead h4 { margin:0; font-size:13px; color:var(--accent); min-width:0; line-height:1.15; }
+.modalhc { display:flex; flex-direction:column; align-items:center; gap:1px; cursor:pointer; width:54px; min-width:0; }
+.modalhc small { font-size:10px; color:var(--muted); line-height:1; }
+.modalsec .modalrows { gap:0; }
+.modalsec .modalrow { gap:0; padding:1px 4px; font-size:13px; line-height:1.25; }
+.modalsec .modalrow input, .modalhc input { justify-self:center; width:16px; height:16px; margin:0; accent-color:var(--accent); }
+.plrow { display:flex; gap:8px; align-items:center; margin:3px 0; }
+.plrow .txt { flex:1; min-width:0; }
+.pladd { margin-top:10px; padding-top:8px; border-top:1px solid var(--line); }
+/* Overview dividers: card headers and rows, and a rule above every section heading */
+.overview .card h3 { padding-bottom:5px; margin-bottom:5px; border-bottom:1px solid var(--accent); }
+.overview .card .kv + .kv { border-top:1px solid var(--line); padding-top:3px; margin-top:1px; }
+.overview .card .kv + .bar { margin-bottom:4px; }
+.overview > h2 { margin:22px 0 10px; padding-top:14px; border-top:1px solid var(--line); }
+.overview > .grid + h2 { margin-top:18px; }
+
+/* prosperity track modal */
+.modalbox.ptmodal { width:min(760px,100%); padding:10px 12px; }
+.ptsum { margin:0 0 6px; color:var(--muted); font-size:13px; }
+.ptlevel { display:grid; grid-template-columns:118px 1fr; gap:4px 10px; align-items:center; border-top:1px solid var(--line); padding:4px 2px; opacity:.72; }
+.ptlevel.reached, .ptlevel.current { opacity:1; }
+.ptlevel.current { background:rgba(199,164,74,.1); border-radius:6px; }
+.pthead { display:flex; flex-wrap:wrap; align-items:center; gap:2px 6px; }
+.pthead b { color:var(--accent); font-size:13px; }
+.ptitems { flex-basis:100%; }
+.ptitems .chip { font-size:11px; padding:0 6px; }
+.ptboxes { display:flex; flex-wrap:wrap; gap:2px; align-items:center; }
+.ptbox { width:22px; height:22px; display:inline-flex; align-items:center; justify-content:center; box-sizing:border-box; padding:0; font:inherit; font-size:10px; color:var(--muted); background:transparent; border:1px solid var(--line); border-radius:4px; }
+button.ptbox { cursor:pointer; }
+.ptbox.on { background:var(--accent); border-color:var(--accent); color:#1b150c; font-weight:700; }
+.ptbox.ptmark { box-shadow:0 0 0 2px var(--panel), 0 0 0 3px var(--info, #6aa9d8); margin-right:2px; }
+.ptpill { border:1px solid var(--info, #6aa9d8); border-radius:10px; padding:0 8px; margin-left:6px; font-size:12px; white-space:nowrap; }
+.ptpill.done { background:rgba(106,169,216,.18); }
+.cardfoot { margin-top:8px; padding-top:6px; border-top:1px solid var(--line); }
+.cardfoot .chip { cursor:pointer; color:var(--text); font:inherit; font-size:12px; }
+.ptgrid { display:flex; flex-direction:column; gap:2px; }
+.ptrow { display:flex; gap:2px; }
+.ptbox.ptplus { border-color:#7fb069; }
+.ptplustag { color:#7fb069; font-weight:600; }
+.ptgrid .ptnotes { display:flex; flex-wrap:wrap; gap:4px 6px; margin-top:2px; }
+.ptgrid .ptpill { margin-left:0; }
+.ptgrid .ptpill small { color:var(--muted); }
+.ptrow.ptrows { display:grid; grid-template-columns:repeat(10, 22px) auto; gap:2px; align-items:center; }
+.ptside { justify-self:start; padding-left:6px; }
+.ptrows .ptpill { margin-left:0; }
+/* reputation modal */
+.modalbox.repmodal { width:min(780px,100%); }
+.repbox { width:21px; font-size:10px; }
+.repbox.ptmark { margin-right:0; }
+.repbox.rep-ready:not(.on) { background:rgba(127,176,105,.28); }
+.repbox.rep-wait:not(.on) { background:rgba(214,160,60,.22); }
+.ptpill.rep-ready { border-color:#7fb069; background:rgba(127,176,105,.18); }
+.ptpill.rep-wait { border-color:#d6a03c; background:rgba(214,160,60,.14); }
+.ptpill.rep-off { border-color:var(--line); color:var(--muted); }
+.repany { margin-top:6px; }
+.repmodal .ptlevel { grid-template-columns:1fr; }
+.repmodal .pthead { flex-wrap:nowrap; gap:10px; align-items:baseline; }
+/* the blue frame is a 3px shadow wider than the 2px gap: lift it above the next box so it is not painted over */
+.ptbox.ptmark { position:relative; z-index:1; }
+.nowrap { white-space:nowrap; }
+.stepper { display:inline-flex; align-items:center; gap:2px; }
+.stepper b { min-width:1.6em; text-align:center; }
+.stepper .chip { cursor:pointer; padding:0 7px; line-height:1.4; color:var(--text); font:inherit; font-size:12px; }
+.stepper .chip:disabled { opacity:.35; cursor:default; }
+.modalbox.retmodal { width:min(860px,100%); }
+.retrow { display:grid; grid-template-columns:150px minmax(90px,1fr) minmax(90px,1fr) 56px 56px 80px 70px; gap:6px 8px; align-items:center; padding:5px 0; border-top:1px solid var(--line); }
+.retrow.rethead { border-top:0; border-bottom:1px solid var(--accent); padding:0 0 3px; font-size:12px; font-weight:600; color:var(--accent); }
+.retrow select, .retrow .txt { width:100%; box-sizing:border-box; background:#2d2519; color:var(--text); border:1px solid var(--line); border-radius:6px; padding:4px 8px; font:inherit; }
+.retrow .num { width:100%; box-sizing:border-box; }
+/* Items tab cards only (not the mats, ability cards, ...): every picture box has the same shape (the Card DB images are 300px tall but 192-208px wide, solo items the narrower ones) */
+.itemgrid.itemcards .cardpic { aspect-ratio:208 / 300; height:auto; object-fit:contain; min-height:0; }
+.itemgrid.itemcards .noimg { aspect-ratio:208 / 300; min-height:0; }
+/* wide flowchart page and fullscreen */
+main.wide { max-width:none; }
+.flowwrap { max-height:calc(100vh - 170px); min-height:320px; }
+.flowwrap.full { position:fixed; inset:0; z-index:55; max-height:none; min-height:0; border:0; border-radius:0; }
+.flowfsbar { position:sticky; top:0; left:0; z-index:2; display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:8px 12px; background:rgba(18,15,11,.92); border-bottom:1px solid var(--line); width:max-content; max-width:100vw; box-sizing:border-box; }
+body.noscroll { overflow:hidden; }

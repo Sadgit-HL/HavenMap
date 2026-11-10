@@ -1,10 +1,11 @@
 // Campaign record edits. Every function takes a record and returns a NEW record with `ver` bumped (the record
 // passed in is never changed), so callers can keep history for undo and the server can later use `ver` for
 // optimistic locking. Invalid input is clamped or ignored, never thrown. Pure data logic, no DOM, no storage.
-import { SCENARIOS } from '../games/gh2_scenarios.js';
+import { SCENARIOS, STICKERS } from '../games/gh2_scenarios.js';
 import { ITEMS } from '../games/gh2_items.js';
 import { CLASSES } from '../games/gh2_classes.js';
-import { SCN_STATE } from './record.js';
+import { ALL_CLASSES } from './classList.js';
+import { SCN_STATE, availableSet } from './record.js';
 import { SPECIAL_TRAITS } from './traits.js';
 import { EVENT_TABLE, PILES, frontOf, boxState, markKey, eventPlace, nextEvent, optionKeys, seatList, tally, cryptoRandom } from './events.js';
 
@@ -20,7 +21,7 @@ function edit(r, fn) {
 
 // --- party and campaign values -------------------------------------------------------------------------------
 
-const PARTY_RANGE = { avg: [1, 9], diff: [-3, 5], insp: [0, 99] };
+const PARTY_RANGE = { avg: [1, 9], diff: [-2, 4], insp: [0, 99] };
 export function setParty(r, key, value) {
   const range = PARTY_RANGE[key], n = toInt(value);
   if (!range || n === null) return r;
@@ -37,6 +38,16 @@ export function setReputation(r, faction, value) {
 export function setProsperity(r, value) {
   const n = toInt(value);
   return n === null ? r : edit(r, x => { x.pros = clamp(n, 0, 90); });
+}
+
+export function setImbuement(r, value) {
+  const n = toInt(value);
+  return n === null ? r : edit(r, x => { x.imb = clamp(n, 0, 80); });
+}
+
+export function setDonations(r, value) {
+  const n = toInt(value);
+  return n === null ? r : edit(r, x => { x.don = clamp(n, 0, 100); });
 }
 
 // --- scenarios -----------------------------------------------------------------------------------------------
@@ -270,6 +281,136 @@ export function finishEvent(r, kind, where) {
   });
 }
 
+// --- campaign stickers ------------------------------------------------------------------------------------------
+
+// Add a campaign sticker (record.stk holds the sticker names). Only known stickers, each at most once.
+export function addSticker(r, name) {
+  const st = STICKERS.find(s => s.name.toLowerCase() === String(name ?? '').trim().toLowerCase());
+  if (!st || r.stk.some(v => String(v).toLowerCase() === st.name.toLowerCase())) return r;
+  return edit(r, x => { x.stk = [...x.stk, st.name]; });
+}
+
+export function removeSticker(r, name) {
+  const key = String(name ?? '').toLowerCase();
+  if (!r.stk.some(v => String(v).toLowerCase() === key)) return r;
+  return edit(r, x => { x.stk = x.stk.filter(v => String(v).toLowerCase() !== key); });
+}
+
+// --- unlocked classes ------------------------------------------------------------------------------------------
+
+// record.cls holds the names of the classes unlocked in the campaign, record.avail (optional) the ones available.
+// Unlocking a class makes it available; making a class unavailable locks it again.
+const classOf = name => ALL_CLASSES.find(x => x.name.toLowerCase() === String(name ?? '').trim().toLowerCase());
+const hasName = (list, name) => list.some(v => String(v).toLowerCase() === name.toLowerCase());
+const without = (list, name) => list.filter(v => String(v).toLowerCase() !== name.toLowerCase());
+
+export function addUnlockedClass(r, name) {
+  const c = classOf(name);
+  if (!c || hasName(r.cls, c.name)) return r;
+  return edit(r, x => {
+    x.cls = [...x.cls, c.name];
+    if (x.avail && !hasName(x.avail, c.name)) x.avail = [...x.avail, c.name];
+  });
+}
+
+export function removeUnlockedClass(r, name) {
+  if (!hasName(r.cls, String(name ?? ''))) return r;
+  return edit(r, x => { x.cls = without(x.cls, String(name)); });
+}
+
+export function setClassAvailable(r, name, on) {
+  const c = classOf(name);
+  if (!c) return r;
+  const cur = availableSet(r).has(c.name.toLowerCase());
+  if (cur === !!on) return r;
+  return edit(r, x => {
+    const list = ALL_CLASSES.map(k => k.name).filter(n => availableSet(r).has(n.toLowerCase()));
+    x.avail = on ? [...list, c.name] : without(list, c.name);
+    if (!on) x.cls = without(x.cls, c.name);
+  });
+}
+
+// Whole editions at once (edition = a ClassList edition name). key 'avail' makes every class of the edition available
+// (off: unavailable and locked), key 'unl' unlocks them (off: locks them).
+export function setEditionClasses(r, edition, key, on) {
+  const names = ALL_CLASSES.filter(c => c.edition === edition).map(c => c.name);
+  if (!names.length || (key !== 'avail' && key !== 'unl')) return r;
+  const lowered = new Set(names.map(n => n.toLowerCase()));
+  const avail = availableSet(r);
+  const unl = new Set(r.cls.map(n => String(n).toLowerCase()));
+  const changed = names.some(n => (key === 'avail' ? avail.has(n.toLowerCase()) : unl.has(n.toLowerCase())) !== !!on);
+  if (!changed) return r;
+  return edit(r, x => {
+    if (key === 'avail') {
+      const keep = ALL_CLASSES.map(c => c.name).filter(n => avail.has(n.toLowerCase()) && !lowered.has(n.toLowerCase()));
+      x.avail = on ? [...keep, ...names] : keep;
+      if (!on) x.cls = x.cls.filter(n => !lowered.has(String(n).toLowerCase()));
+    } else if (on) {
+      x.cls = [...x.cls, ...names.filter(n => !unl.has(n.toLowerCase()))];
+      if (x.avail) x.avail = [...x.avail, ...names.filter(n => !hasName(x.avail, n))];
+    } else {
+      x.cls = x.cls.filter(n => !lowered.has(String(n).toLowerCase()));
+    }
+  });
+}
+
+// --- retired characters ----------------------------------------------------------------------------------------
+
+// record.retired = [{ cls, player, name, lv, perks, masteries, note }], entered by hand when a character retires.
+const RETIRED_NUM = { lv: [1, 9], perks: [0, 99], masteries: [0, 99] };
+export function addRetired(r) {
+  return edit(r, x => { x.retired = [...x.retired, { cls: '', player: '', name: '', lv: 1, perks: 0, masteries: 0, note: null }]; });
+}
+
+export function setRetired(r, index, key, value) {
+  const cur = r.retired[index];
+  if (!cur) return r;
+  let v;
+  if (RETIRED_NUM[key]) {
+    const n = toInt(value);
+    if (n === null) return r;
+    v = clamp(n, ...RETIRED_NUM[key]);
+  } else if (key === 'cls') {
+    const c = ALL_CLASSES.find(k => k.name.toLowerCase() === String(value ?? '').trim().toLowerCase());
+    v = c ? c.name : '';
+  } else if (key === 'player' || key === 'name') v = cleanName(value);
+  else return r;
+  if (cur[key] === v) return r;
+  return edit(r, x => { x.retired[index] = { ...cur, [key]: v }; });
+}
+
+export function removeRetired(r, index) {
+  if (!r.retired[index]) return r;
+  return edit(r, x => { x.retired = x.retired.filter((_, i) => i !== index); });
+}
+
+// --- players --------------------------------------------------------------------------------------------------
+
+// record.players = [{ seat, name }]; a seat number is how a player votes on events (see events.js seatList).
+const cleanName = v => String(v ?? '').trim().slice(0, 40);
+const nameTaken = (r, name, except) => r.players.some(p => p.seat !== except && p.name.toLowerCase() === name.toLowerCase());
+
+export function addPlayer(r, name) {
+  const n = cleanName(name);
+  if (!n || nameTaken(r, n, -1)) return r;
+  const used = new Set(r.players.map(p => p.seat));
+  let seat = 0;
+  while (used.has(seat)) seat++;
+  return edit(r, x => { x.players = [...x.players, { seat, name: n }].sort((a, b) => a.seat - b.seat); });
+}
+
+export function renamePlayer(r, seat, name) {
+  const n = cleanName(name);
+  const p = r.players.find(q => q.seat === seat);
+  if (!p || !n || p.name === n || nameTaken(r, n, seat)) return r;
+  return edit(r, x => { x.players = x.players.map(q => (q.seat === seat ? { ...q, name: n } : q)); });
+}
+
+export function removePlayer(r, seat) {
+  if (!r.players.some(p => p.seat === seat)) return r;
+  return edit(r, x => { x.players = x.players.filter(p => p.seat !== seat); });
+}
+
 export const DECK_LISTS = ['bg', 'tre', 'mp'];
 export function toggleDeckEntry(r, list, id) {
   if (!DECK_LISTS.includes(list)) return r;
@@ -307,6 +448,19 @@ export function setCharacter(r, cid, key, value) {
   const range = CHAR_RANGE[key], n = toInt(value);
   if (!range || n === null || !r.chars.some(c => c.id === cid)) return r;
   return edit(r, x => { x.chars.find(c => c.id === cid)[key] = clamp(n, ...range); });
+}
+
+// The player who plays a character: seat = a seat number from record.players, or null for nobody.
+export function setCharacterPlayer(r, cid, seat) {
+  const c = r.chars.find(x => x.id === cid);
+  if (!c) return r;
+  const n = seat === null || seat === '' || seat === undefined ? null : toInt(seat);
+  if (n !== null && !r.players.some(p => p.seat === n)) return r;
+  if ((c.seat ?? null) === n) return r;
+  return edit(r, x => {
+    const t = x.chars.find(k => k.id === cid);
+    if (n === null) delete t.seat; else t.seat = n;
+  });
 }
 
 // At most this many active characters (retired ones live in `retired`, not here).

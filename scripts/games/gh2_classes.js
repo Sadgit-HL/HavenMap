@@ -13,7 +13,7 @@ export const CLASSES = [
   {"i":9,"code":"hl","name":"Hail","src":"mp"},
   {"i":10,"code":"mt2","name":"Mindthief","src":"gh2"},
   {"i":11,"code":"ns2","name":"Nightshroud","src":"gh2"},
-  {"i":12,"code":"ph2","name":"Plague Herald","src":"gh2"},
+  {"i":12,"code":"ph2","name":"Plagueherald","src":"gh2"},
   {"i":13,"code":"qm2","name":"Quartermaster","src":"gh2"},
   {"i":14,"code":"sa","name":"Satha","src":"mp"},
   {"i":15,"code":"sb2","name":"Sawbones","src":"gh2"},

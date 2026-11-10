@@ -82,7 +82,8 @@ One JSON document per campaign. Integer fields and ID lists. Bitsets as sorted I
   party: { diff: 2, insp: 0 },                  // difficulty, inspiration
   rep:   { demons: n, merchants: n, guard: n }, // reputation per faction
   pros:  n,                                     // prosperity checkmarks (level derived)
-  imb:   [ ... ],                               // imbuement boxes ticked
+  imb:   n,                                     // imbuement boxes ticked (0..80); don: gold donated to the Sanctuary of the Oak (0..100)
+  don:   n,
   stk:   [ ... ],                               // campaign sticker IDs
   cls:   [ ... ],                               // unlocked class IDs
 
