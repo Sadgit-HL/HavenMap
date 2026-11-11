@@ -430,6 +430,10 @@ const p6css = `
 .am-perk-check.is-checked{background:var(--accent);color:#1b150c;border-color:var(--accent)}
 .am-perk-cards{display:flex;align-items:center;gap:4px;flex-shrink:0}
 .am-perk-cards .pc{--pc-width:46px;border:1px solid var(--line)}
+#amdreal .pc,.am-perk-cards .pc{cursor:zoom-in}
+.pcbig[hidden]{display:none}
+.pcbig{position:fixed;inset:0;z-index:400;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.72);cursor:zoom-out}
+.pcbig .pc{--pc-width:min(86vw,560px);border:1px solid var(--line);border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.8)}
 .am-perk-arrow{color:var(--muted);display:flex}.am-perk-gone{color:var(--muted);font-size:11px;font-style:italic}
 .am-perk-text{font-size:12px;color:var(--muted);flex:1}
 .am-perk-tag{margin-left:auto;font-size:11px;color:var(--accent);flex-shrink:0}
@@ -684,6 +688,23 @@ function composition() {
   for (const i of perkState.perks) for (const [k, n] of Object.entries(perkDelta(perks[i]))) counts[k] = (counts[k] || 0) + n;
   return counts;
 }
+
+// Click-to-enlarge for any card in the deck / perk modals: clone the card layers into a lightbox.
+const pcBig = document.createElement('div');
+pcBig.className = 'pcbig';
+pcBig.hidden = true;
+document.body.appendChild(pcBig);
+const closePcBig = () => { pcBig.hidden = true; pcBig.innerHTML = ''; };
+pcBig.addEventListener('click', closePcBig);
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !pcBig.hidden) { e.stopPropagation(); closePcBig(); } }, true);
+document.addEventListener('click', e => {
+  const pc = e.target.closest && e.target.closest('#amdreal .pc, .am-perk-cards .pc');
+  if (!pc) return;
+  e.stopPropagation();
+  pcBig.innerHTML = '';
+  pcBig.appendChild(pc.cloneNode(true));
+  pcBig.hidden = false;
+}, true);
 
 function renderAmd() {
   const counts = composition();

@@ -10,27 +10,98 @@
 .lvl{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--accent);color:#1b150c;font-weight:800;font-size:20px}
 .hud .xp{width:240px}.hud .stat{display:flex;flex-direction:column;align-items:center;font-size:12px;color:var(--muted)}.hud .stat b{font-size:18px;color:var(--text)}.hud .counters{margin-left:auto}
 .shelf6{display:grid;grid-template-columns:1fr 1fr;gap:6px;align-content:start;min-height:0}.shelf6 h4{grid-column:1/-1;margin:0;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between}
-.shelf6 .it{transition:.15s;cursor:pointer}.shelf6 .it:hover{transform:scale(2.2);z-index:9;transform-origin:0 50%;box-shadow:0 10px 30px rgba(0,0,0,.7)}.shelf6 .it:nth-of-type(even):hover{transform-origin:100% 50%}
-.shelf6 .it.spent img{filter:grayscale(.5) brightness(.75)}.shelf6 .it.consumed img{filter:grayscale(1) brightness(.55)}
+.itbar{display:flex;align-items:center;gap:6px}.itbar .btn6{padding:1px 4px;line-height:1}
+.pcbig img.nat{aspect-ratio:auto;height:auto;object-fit:contain}
+.slotlim{display:flex;gap:14px;flex-wrap:wrap}.slotlim b{color:var(--text)}.slotlim .full b{color:var(--accent)}
+.shelf6 .it{ .14s,box-shadow .14s;cursor:default;position:relative;transform-origin:0 50%}
+.shelf6 .it:nth-of-type(-n+2){transform-origin:0 0}.shelf6 .it:nth-of-type(n+3):nth-of-type(-n+4){transform-origin:0 15%}.shelf6 .it:nth-of-type(n+7){transform-origin:0 100%}
+body[data-zitems=hover] .shelf6 .it:hover,.shelf6 .it.zoomed{transform:scale(var(--hz,2.2));z-index:20;box-shadow:0 14px 34px rgba(0,0,0,.75)}
+.lvl{cursor:pointer}
+.mbtn{position:relative}
+.pooldot{position:absolute;left:4px;top:4px;min-width:14px;height:14px;padding:0 3px;border-radius:7px;background:var(--accent);color:#120f0b;font:700 10px/14px inherit;text-align:center}
+.pooldot[hidden]{display:none}
+.namerow{display:flex;align-items:center;gap:8px}.namerow .btn6{padding:1px 4px;line-height:1}
+.edv{cursor:text;border-bottom:1px dashed transparent}.edv:hover,.edv:focus{border-bottom-color:var(--accent);outline:none}
+.edin{width:64px;background:#2d2519;color:var(--text);border:1px solid var(--accent);border-radius:5px;font:inherit;font-size:inherit;font-weight:inherit;padding:0 4px;text-align:center}
+.chform{display:flex;flex-direction:column;gap:12px}.chform label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted)}
+.chform input,.chform select{background:#2d2519;color:var(--text);border:1px solid var(--line);border-radius:6px;font:inherit;font-size:13px;padding:5px 8px}
+.chform .chnote{font-size:12px;color:var(--accent)}.chform .chnote[hidden]{display:none}
+.chform .chips{display:flex;flex-wrap:wrap;gap:6px}.chip .chx{background:none;border:0;color:inherit;cursor:pointer;padding:0 0 0 6px;font-size:13px}
+.chfoot{display:flex;justify-content:flex-end;gap:8px;margin-top:6px}
+.deckrow{display:block;margin:0 0 12px}.deckrow h2{margin:0 28px 12px 0}
+.poolbar{display:flex;align-items:center;gap:14px;margin:0 0 10px;font-size:13px;color:var(--muted)}
+.poolbar b{color:var(--text)}.poolbar .grow{flex:1}
+.poolbanner{background:rgba(255,200,80,.12);border:1px solid var(--accent);border-radius:8px;padding:8px 12px;margin-bottom:10px;color:var(--accent);font-size:13px}
+.poolbanner[hidden]{display:none}
+.lvrow{display:flex;flex-wrap:wrap;gap:0 24px;align-items:flex-start}.lvrow .pgrp{flex:0 0 auto}.lvrow .pgrp h3{gap:12px}.pgrp h3 span{color:var(--muted);font-size:11px}
+.pgrp{margin-bottom:12px}.pgrp h3{margin:0 0 6px}
+.pgrid{display:flex;flex-wrap:wrap;gap:8px}
+.pcard{position:relative;width:104px;aspect-ratio:5/7;border-radius:8px;overflow:hidden;border:2px solid transparent;background:#241c13;flex-shrink:0;box-sizing:border-box}
+.pcard > img{width:100%;height:100%;display:block;object-fit:cover}
+.pcard:not(:has(img))::before{content:attr(data-name);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:6px;font-size:12px;color:var(--muted)}
+.pcard.locked{filter:grayscale(.8) brightness(.38)}
+.pcard.avail{border-color:var(--line);filter:grayscale(.8) brightness(.38)}
+.pcard.avail.can{cursor:pointer;border-color:var(--accent)}.pcard.avail.can:hover{filter:grayscale(.3) brightness(.75)}
+.pcard.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+.pcard.dis{filter:grayscale(.6) brightness(.5);cursor:not-allowed}
+.pcbig img.port{aspect-ratio:5/7}
+.pcbig .tk img,.pilezoomtk .tk img{width:100%;height:100%;aspect-ratio:auto;object-fit:contain;border-radius:0;box-shadow:none}
+.pcard .psel{position:absolute;right:4px;top:4px;width:20px;height:20px;border-radius:50%;border:2px solid var(--accent);background:rgba(18,15,11,.85);color:#120f0b;font-size:13px;font-weight:800;line-height:1;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.pcard .psel[aria-pressed=true]{background:var(--accent)}.pcard .psel[aria-pressed=true]::after{content:'';width:9px;height:5px;border-left:2.5px solid #120f0b;border-bottom:2.5px solid #120f0b;transform:rotate(-45deg) translate(1px,-1px)}
+.pcard .psel:disabled{opacity:.35;cursor:not-allowed}
+.pcard .pck{display:none;position:absolute;right:4px;top:4px;width:18px;height:18px;border-radius:50%;background:var(--accent);color:#120f0b;font-size:12px;font-weight:800;align-items:center;justify-content:center}
+.pcard .plv{position:absolute;left:4px;bottom:4px;min-width:16px;height:16px;border-radius:8px;background:rgba(18,15,11,.88);border:1px solid var(--accent);color:var(--accent);font-size:10px;font-weight:700;text-align:center;line-height:14px;padding:0 3px}
+.poolfoot{display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-top:8px;font-size:12px;color:var(--muted);position:sticky;bottom:-18px;background:var(--panel);padding:10px 0 4px;border-top:1px solid var(--line)}
+.itmodal{display:flex;gap:18px;align-items:flex-start}
+.itcard{position:relative;flex-shrink:0;width:300px;line-height:0;user-select:none}
+.itcard>img{width:100%;display:block;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.6)}
+.itcard.pick{cursor:crosshair}
+.itpanel{display:flex;flex-direction:column;gap:12px;min-width:150px;font-size:12px;color:var(--muted)}
+.itpanel .seg{display:flex;flex-direction:column;gap:4px}.itpanel .seg button{text-align:left}
+.itpanel .row{display:flex;flex-direction:column;gap:5px}.itpanel .row[hidden]{display:none}
+.tkpick{display:flex;flex-wrap:wrap;gap:6px;max-width:170px}
+.tkpick button{cursor:grab;touch-action:none;width:max(calc(var(--sz,44px) + 8px),32px);height:max(calc(var(--sz,44px) + 8px),32px);padding:2px;border-radius:50%;background:transparent;border:2px solid var(--line);display:flex;align-items:center;justify-content:center}
+.tkpick button[aria-pressed=true]{border-color:var(--accent);background:rgba(255,200,80,.15)}
+.tkpick{max-width:230px}#stkpick button{border-radius:8px}.tkpick img{width:var(--sz,44px);height:var(--sz,44px);display:block;object-fit:contain}
+.tk{position:absolute;width:var(--tkw,14.6%);aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;z-index:6}
+.tk>img{width:100%;height:100%;display:block;object-fit:contain;filter:drop-shadow(0 1px 3px rgba(0,0,0,.9))}
+.itcard .tk{pointer-events:auto;cursor:grab;touch-action:none}.itcard .tk:active,.tkpick button:active{cursor:grabbing}
+.itcard .tk:hover{filter:brightness(1.15)}
+.tk .mkx{position:absolute;right:-4px;top:-4px;width:14px;height:14px;border-radius:50%;background:#c98a8a;color:#120f0b;font-size:11px;line-height:14px;cursor:pointer;padding:0;border:0}
+.tkh{position:absolute;left:3px;bottom:3px;width:20px;height:20px;padding:1px;border-radius:50%;background:rgba(18,15,11,.85);border:1.5px solid var(--accent);cursor:pointer;z-index:8;opacity:.75}
+.tkh:hover{opacity:1}.tkh svg{display:block;pointer-events:none}
+.flipcard:not(.is-front)>.tkh,.flipcard:not(.is-front)>.tk{display:none}
+.it .tk{--tkw:17.8%}
+.shelf6 .it{container-type:inline-size}.shelf6 .it>.itbadge{height:35.7cqw;left:50%;top:29%;right:auto;transform:translate(-50%,-50%);filter:drop-shadow(0 2px 5px rgba(0,0,0,.7));pointer-events:none}.shelf6 .it>.itbadge svg{width:62%;height:62%}
+.shelf6 .it>.tkh{width:14cqw;height:14cqw;left:2cqw;bottom:2cqw;border-width:1px;padding:0}
+.shelf6 .it.spent>img,.shelf6 .it.consumed>img{filter:grayscale(1) brightness(.35)}   /* the card only, not the badge or tokens */
 .itbadge{position:absolute;right:2px;top:2px;width:17px;height:17px;border-radius:50%;background:rgba(18,15,11,.92);border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent)}
+.itbadge{background:none!important;border:0!important;border-radius:0!important;width:auto!important}.itbadge img{height:100%;width:auto;display:block}
 .itbadge svg{width:10px;height:10px}.it.consumed .itbadge{border-color:#c98a8a;color:#c98a8a}
 .board6{display:grid;grid-template-rows:minmax(0,32%) minmax(0,1fr);gap:12px;min-width:0;min-height:0;container-type:size}
 .toprow{--ch:calc(32cqh - 36px);display:grid;grid-template-columns:minmax(0,1fr) calc(var(--ch) * 10 / 7 + 46px);gap:12px;min-height:0}
 .zone{position:relative;border:2px dashed rgba(236,223,200,.28);border-radius:14px;background:rgba(0,0,0,.2);padding:26px 12px 10px;display:flex;gap:14px;justify-content:center;align-items:stretch;min-height:0}
 .activelist{display:flex;gap:14px;justify-content:center;align-items:stretch;flex:1;min-width:0}
 .activelist .ac{cursor:grab;transition:transform .14s,box-shadow .14s}.activelist .ac:active{cursor:grabbing}.activelist .ac.over{outline:2px solid var(--accent)}.activelist .ac.dragging{opacity:.35;pointer-events:none}
-.activelist .ac:hover{transform:scale(var(--hz,1.35));z-index:20;box-shadow:0 14px 34px rgba(0,0,0,.75)}
+body[data-zactive=hover] .activelist .ac:hover,.activelist .ac.zoomed{transform:scale(var(--hz,1.35));z-index:20;box-shadow:0 14px 34px rgba(0,0,0,.75)}
 .zone .zlabel{position:absolute;left:14px;top:6px}.zone .zlabel b{color:var(--text)}
 .zone.play{border-color:rgba(199,164,74,.55);background:rgba(199,164,74,.07)}
-.slot6{position:relative;display:flex;flex-direction:column;align-items:center;min-height:0;height:100%;border-radius:8px;transition:box-shadow .12s}.slot6 .num{position:absolute;left:-4px;top:-4px;z-index:3;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#1b150c;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center}
+.slot6{position:relative;display:flex;flex-direction:column;align-items:center;min-height:0;height:100%;border-radius:8px;transition:box-shadow .12s}
 .slot6.over{box-shadow:0 0 0 2px var(--accent) inset}
 .slotcard{height:100%;display:flex;min-height:0}
+.slot6 .slotempty{font-size:30px;font-weight:700;letter-spacing:0;opacity:.55}
 .slotempty{height:100%;aspect-ratio:5/7;width:auto;border:2px dashed rgba(236,223,200,.25);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.1em}
 .flipcard.dragging{opacity:.35;pointer-events:none}
 .zone .ac,.flipcard{height:100%;aspect-ratio:5/7;width:auto}
 .flipcard{perspective:900px;cursor:pointer;position:relative;transition:transform .14s,box-shadow .14s}.flipinner{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .5s}.flipcard.is-front .flipinner{transform:rotateY(180deg)}
-.flipcard.is-front:hover{transform:scale(var(--hz,1.3));z-index:20;box-shadow:0 14px 34px rgba(0,0,0,.75)}
+body[data-zplay=hover] .flipcard.is-front.settled:hover,.flipcard.is-front.zoomed{transform:scale(var(--hz,1.3));z-index:20;box-shadow:0 14px 34px rgba(0,0,0,.75)}
+.flipcard.is-front.settled{perspective:none}
+.flipcard.is-front.settled .flipinner{transition:none;transform:none;transform-style:flat}
+.flipcard.is-front.settled .face.front{transform:none;backface-visibility:visible}
+.flipcard.is-front.settled .face.back{display:none}
+.flipcard.rev .flipinner{transition:none;transform:rotateY(180deg)}
 .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:8px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.6)}.face.front{transform:rotateY(180deg)}.face img{width:100%;height:100%;object-fit:cover;display:block}
+.face.back .realback{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .cardback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--accent);background:radial-gradient(circle at 50% 40%,#4a3a22 0%,#2a2014 70%);border:3px solid #1b150c;outline:2px solid var(--accent);outline-offset:-9px;border-radius:8px;text-transform:uppercase;letter-spacing:.18em;font-size:12px}
 .cardback::before{content:'';position:absolute;inset:14px;border:1px solid rgba(199,164,74,.5);border-radius:5px}
 .fliphint{display:none}
@@ -41,27 +112,35 @@
 .btn6{background:#2d2519;color:var(--text);border:1px solid var(--line);border-radius:7px;padding:3px 10px;font:inherit;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}.btn6:hover{border-color:var(--accent);color:var(--accent)}
 .fan6{position:absolute;left:12px;right:12px;top:32px;bottom:8px;display:grid;grid-template-columns:repeat(7,max-content);grid-auto-rows:calc(34cqh - 28px);gap:4px;justify-content:center}
 .fan6 .ac{height:100%;width:auto;aspect-ratio:5/7;cursor:grab;transition:transform .14s,box-shadow .14s}.fan6 .ac:active{cursor:grabbing}
-.fan6 .ac{transform-origin:50% 100%}.fan6 .ac:hover{transform:scale(var(--hz,1.85));z-index:35;box-shadow:0 16px 40px rgba(0,0,0,.8)}
+.fan6 .ac{transform-origin:50% 100%}body[data-zhand=hover] .fan6 .ac:hover,.fan6 .ac.zoomed{transform:scale(var(--hz,1.85));z-index:35;box-shadow:0 16px 40px rgba(0,0,0,.8)}
 .fan6 .ac.over{outline:2px solid var(--accent);transform:translateX(10px)}.fan6 .ac.dragging{opacity:.35;pointer-events:none}
-.inib{position:absolute;left:5px;top:5px;z-index:2;min-width:22px;height:22px;padding:0 4px;border-radius:11px;background:rgba(18,15,11,.88);border:1.5px solid var(--accent);color:var(--accent);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
-.hand6[data-layout=spread] .inib{display:none}
-.hand6[data-layout=fan] .fan6{display:flex;justify-content:center;align-items:flex-end;left:0;right:0;top:30px;bottom:0;padding:0 10px}
-.hand6[data-layout=fan] .fan6 .ac{height:auto;width:min(180px,12.4vw);margin:0 calc(min(180px,12.4vw) * -.35);transform-origin:50% 160%;transform:rotate(calc((var(--i) - 6.5) * 1.5deg)) translateY(8%)}
-.hand6[data-layout=fan] .fan6 .ac:hover{transform:translateY(-30%) scale(var(--hz,1.45));z-index:35}
-.inivalue{gap:4px;position:absolute;right:-4px;top:-4px;z-index:3;min-width:26px;height:22px;padding:0 6px;border-radius:11px;background:#1b150c;border:1.5px solid var(--accent);color:var(--accent);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;white-space:nowrap}
-.slot6.first .inivalue::after{content:'?'}.slot6.first:has(.is-front) .inivalue::after{content:attr(data-ini)}
-.piles6{display:grid;grid-template-rows:1fr 1fr;gap:12px;min-height:0}
+.inib{position:absolute;left:calc(17% - 3px);top:5px;z-index:2;min-width:22px;height:22px;padding:0 4px;border-radius:11px;background:rgba(18,15,11,.88);border:1.5px solid var(--accent);color:var(--accent);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.fan6 .ac,.activelist .ac,.pile6 .ac{position:relative}.pini{font-size:11px;color:var(--accent);border:1px solid var(--accent);border-radius:9px;padding:0 6px}
+.hand6[data-layout=fan] .fan6{display:flex;justify-content:center;align-items:center;left:0;right:0;top:30px;bottom:0;padding:16px 10px 0}
+/* Fan: each card shows at least 45% of its width. Card size is the smaller of 90% of the hand height and what 14 cards need
+   at that overlap (13 slices + the card + the swing of the outer cards); any width left over spreads the cards further apart. */
+.hand6[data-layout=fan] .fan6{container-type:size;--fw:min(calc(90cqh * 5 / 7),calc((100cqw - 24px) / 7.35));--adv:max(calc(var(--fw) * .45),calc((100cqw - 24px - 1.5 * var(--fw)) / 13))}
+.hand6[data-layout=fan] .fan6 .ac{height:auto;width:var(--fw);margin:0 calc((var(--adv) - var(--fw)) / 2);transform-origin:50% 160%;transform:rotate(calc((var(--i) - 6.5) * 1deg))}
+body[data-zhand=hover] .hand6[data-layout=fan] .fan6 .ac:hover,.hand6[data-layout=fan] .fan6 .ac.zoomed{transform:translateY(-30%) scale(var(--hz,1.45));z-index:35}
+/* piles: stacked in the top row, the same height as the Active / Play row; the hand spans under them */
+.board6{grid-column:2 / span 2;grid-row:2}
+.piles6{grid-column:3;grid-row:2;align-self:start;height:32%;z-index:3;display:grid;grid-template-rows:1fr 1fr;gap:8px;min-height:0}
+.board6 .toprow{margin-right:124px}
+.piles6 .pile6{justify-content:flex-start;gap:3px;padding:4px 4px 6px}.piles6 .pilecard{flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center}.piles6 .pile6 .ac{height:100%;aspect-ratio:5/7;box-shadow:3px 3px 0 -1px #2b2318,6px 6px 0 -2px #241c13}.piles6 .hint{display:none}.piles6 .pile6 .slotempty{height:100%;font-size:12px}
 .pile6{border:2px dashed rgba(236,223,200,.28);border-radius:12px;background:rgba(0,0,0,.2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:0;overflow:hidden;padding:6px}
 .pile6.target{border-color:var(--accent);background:rgba(199,164,74,.14)}.pile6 h4{margin:0;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}.pile6 h4 b{color:var(--text);font-size:13px}
 .pile6.over{box-shadow:0 0 0 2px var(--accent) inset}
 .pile6{cursor:pointer}.pile6 .ac{cursor:grab}.pile6 .ac:active{cursor:grabbing}.pile6 .ac.dragging{opacity:.35;pointer-events:none}
-.pilelist{display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow:auto}
-.pilerow6{display:flex;align-items:center;gap:10px;background:#2d2519;border:1px solid var(--line);border-radius:8px;padding:6px 10px}
-.pilerow6 img{width:34px;height:48px;object-fit:cover;border-radius:4px;cursor:pointer}.pilerow6 span{flex:1;font-size:13px}
-.pilezoom{position:fixed;left:max(18px,calc(50vw - 370px));top:50%;transform:translateY(-50%);height:280px;width:auto;aspect-ratio:5/7;object-fit:cover;border-radius:10px;box-shadow:0 20px 50px rgba(0,0,0,.8);pointer-events:none;z-index:210}
+.pilelist{display:flex;flex-wrap:wrap;gap:22px 10px;max-height:62vh;overflow:auto;padding:22px 4px 4px}
+.pcell{position:relative;width:var(--hcw,150px);aspect-ratio:5/7;flex:none;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.6)}.pcell > img{width:100%;height:100%;display:block;object-fit:cover;border-radius:8px}
+.pcell .rec{position:absolute;left:8px;top:-15px;height:16px;padding:0 8px;border-radius:8px 8px 0 0;background:rgba(18,15,11,.88);border:1.5px solid var(--accent);border-bottom:0;color:var(--accent);font-size:10px;font-weight:800;line-height:1;cursor:pointer;z-index:2}.pcell .rec:hover{background:var(--accent);color:#120f0b}.pilelist .mrow{margin:6px 0}
+.pilerow6{position:relative;display:flex;align-items:center;gap:10px;background:#2d2519;border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+.pthumbtk{position:absolute;left:11px;top:7px;width:34px;height:48px;pointer-events:none;flex:none!important}.pilerow6 > img{width:34px;height:48px;object-fit:cover;border-radius:4px;cursor:pointer}.pilerow6 span{flex:1;font-size:13px}
+.pilezoom{position:fixed;left:max(18px,calc(50vw - 370px));top:50%;transform:translateY(-50%);height:230px;width:auto;aspect-ratio:5/7;object-fit:cover;border-radius:10px;box-shadow:0 20px 50px rgba(0,0,0,.8);pointer-events:none;z-index:210}
 .pilezoom[hidden]{display:none}
+.pilezoomtk{position:fixed;z-index:211;pointer-events:none}.pilezoomtk[hidden]{display:none}
 .pile6 .ac{height:56%;width:auto;box-shadow:4px 4px 0 -1px #2b2318,8px 8px 0 -2px #241c13}.pile6.lost .ac{filter:grayscale(.8) brightness(.7)}
-.dock{display:flex;flex-direction:column;gap:8px;align-items:stretch}.dock .mbtn{flex-direction:column;height:56px;font-size:10px;gap:2px;padding:4px 2px}.dock .mbtn svg{width:20px;height:20px}
+.dock{display:flex;flex-direction:column;gap:8px;align-items:stretch}.dock .mbtn{flex-direction:column;height:56px;font-size:10px;gap:2px;padding:4px 2px}.dock .mbtn svg{width:20px;height:20px}.dock .mbtn[data-modal=enh] span{font-size:8.5px;letter-spacing:-.2px}   /* the longest single word on the bar */
 .mmodal{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.65)}
 .mmodal[hidden]{display:none}
 .mmodalbox{position:relative;width:min(560px,100%);max-height:86vh;overflow:auto;background:var(--panel);border:1px solid var(--accent);border-radius:12px;padding:18px 22px;box-shadow:0 20px 60px rgba(0,0,0,.7)}
@@ -72,56 +151,97 @@
 .mmodalbox h3:first-of-type{margin-top:0}.mmodalbox h3 span{color:var(--text);text-transform:none;letter-spacing:0;font-size:12px}
 .mmodalx{position:absolute;top:10px;right:10px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:none;border:none;border-radius:7px;color:var(--muted);font-size:20px;line-height:1;cursor:pointer}
 .mmodalx:hover{background:rgba(199,164,74,.15);color:var(--accent)}
-.amdgrid{display:flex;flex-wrap:wrap;gap:10px}
+.amdgrid{display:flex;flex-wrap:wrap;gap:8px 6px}.mmodalbox.amdbox{width:min(720px,100%);padding:14px 18px}.mmodalbox.amdbox h2{margin-bottom:8px}
 .amdtile.real{display:flex;flex-direction:column;align-items:center;gap:4px}
-.amdtile.real .pc{--pc-width:72px;border:1px solid var(--line)}
+.amdtile.real .pc{--pc-width:88px;border:1px solid var(--line)}
 .amdtile.real b{font-size:13px;color:var(--text);background:#2d2519;border:1px solid var(--line);border-radius:999px;min-width:20px;padding:0 5px;text-align:center}
+.amdtile.real .amcard{position:relative;padding:0;border:0;background:none;cursor:pointer;color:inherit;font:inherit}
+
+.amdtile.real .amcard{cursor:zoom-in}.amdtile.real.none .pc,.amdtile.real.none img{opacity:.3;filter:grayscale(1)}
+.amdtile.real .amcard img{display:block;width:88px;aspect-ratio:3/2;object-fit:cover;border-radius:4px;border:1px solid var(--line)}
+.amdtile.real .amcard b{position:absolute;right:3px;bottom:3px}
+.amdtile.real .amfoot{display:flex;gap:4px}
+.amdtile.real .amfoot button{min-width:30px;padding:1px 6px;font-size:12px;background:#2d2519;border:1px solid var(--line);border-radius:6px;color:var(--text);cursor:pointer}
+.amdtile.real .amfoot button:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.amdtile.real .amfoot button:disabled{opacity:.35;cursor:default}
+
+.amdbtns{display:flex;gap:6px}.amdbar{display:flex;justify-content:space-between;align-items:center;margin-top:0;gap:8px}
 .mrow{color:var(--muted);font-size:12px;margin:8px 0}
 .perklist{display:flex;flex-direction:column;gap:1px}
 .perkrow{display:flex;align-items:center;gap:10px;padding:5px 4px;border-radius:6px;cursor:pointer;font-size:13px}
 .perkrow:hover{background:rgba(199,164,74,.1)}.perkrow input{width:16px;height:16px;accent-color:var(--accent)}.perkrow.on span{color:var(--text)}.perkrow span{color:var(--muted)}
 /* Real perk rows (am-perk*): same data/shape as scripts/decks.js's amPerkRowHtml, rendered client-side. */
-.am-perklist{gap:4px}
-.am-perk{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:8px;background:#2d2519;border:1px solid var(--line);cursor:pointer}
+.am-perklist{gap:2px}
+.am-perk{display:flex;align-items:center;gap:8px;padding:2px 6px;border-radius:8px;background:#2d2519;border:1px solid var(--line);cursor:pointer}
 .am-perk.is-on{border-color:var(--accent);background:rgba(199,164,74,.12)}.am-perk.is-partial{border-style:dashed}
 .am-perk-boxes{display:flex;gap:3px;flex-shrink:0}
 .am-perk-check{width:20px;height:20px;border-radius:5px;border:1px solid var(--line);background:#120f0b;color:var(--accent);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center}
 .am-perk-check.is-checked{background:var(--accent);color:#1b150c;border-color:var(--accent)}
 .am-perk-cards{display:flex;align-items:center;gap:4px;flex-shrink:0}
 .am-perk-cards .pc{--pc-width:46px;border:1px solid var(--line)}
+.am-perk-cards .pc{cursor:zoom-in}
+.pcbig[hidden]{display:none}
+.pcbig{position:fixed;top:50%;transform:translateY(-50%);z-index:410;pointer-events:none}
+.pcbig img{display:block;width:var(--zw,420px);aspect-ratio:3/2;object-fit:cover;border-radius:10px;box-shadow:0 20px 50px rgba(0,0,0,.8)}
+.pcbig .pc{--pc-width:var(--zw,420px);border:1px solid var(--line);border-radius:10px;box-shadow:0 20px 50px rgba(0,0,0,.8)}
 .am-perk-arrow{color:var(--muted);display:flex}.am-perk-gone{color:var(--muted);font-size:11px;font-style:italic}
 .am-perk-text{font-size:12px;color:var(--muted);flex:1}
 .am-perk-tag{margin-left:auto;font-size:11px;color:var(--accent);flex-shrink:0}
 .jtabs{margin-bottom:12px}.jtab h4{margin:0 0 4px;color:var(--text)}
 .notesarea{width:100%;min-height:140px;background:#120f0b;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px;font:inherit;resize:vertical}
 .matflip{display:flex;justify-content:center}.matflip img{width:100%;border-radius:8px;border:1px solid var(--line);cursor:pointer}
+.pilezoom{height:var(--pzh,280px)}
+body[data-dock=right] .pilezoom{left:auto;right:max(18px,calc(50vw - 370px))}
+body[data-zactive=hover] .activelist .ac:hover,body[data-zplay=hover] .flipcard.is-front.settled:hover,body[data-zhand=hover] .fan6 .ac:hover,body[data-zitems=hover] .shelf6 .it:hover{transition-delay:var(--hdelay,0s)}
+body[data-inib=off] .inib{display:none!important}
+.activelist .inib,.pile6 .inib,.hand6:not([data-layout=fan]) .inib{display:none!important}
+.fan6 .ac{overflow:visible}.fan6 .ac>img{border-radius:inherit}
+.fan6 .inib{left:8px;top:-15px;height:16px;min-width:28px;padding:0 6px;border-radius:8px 8px 0 0;border-bottom:0;font-size:11px;line-height:1}
+body[data-motion=reduce] *,body[data-motion=reduce] *::before,body[data-motion=reduce] *::after{transition:none!important;animation:none!important}
+.setpop label.chk{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted);cursor:pointer}.setpop label.chk input{accent-color:var(--accent);width:15px;height:15px}
+.setpop hr{border:0;border-top:1px solid var(--line);margin:0;width:100%}
+.sortgrp{display:inline-flex;gap:4px}.setwrap{position:relative;flex-shrink:0}
+.setpop{position:absolute;right:0;top:calc(100% + 8px);z-index:150;width:280px;background:var(--panel);border:1px solid var(--accent);border-radius:10px;padding:12px 14px;box-shadow:0 14px 40px rgba(0,0,0,.7);display:flex;flex-direction:column;gap:10px}
+.setpop[hidden]{display:none}
+.setrow{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted)}
+.setpop details summary{font-size:12px;color:var(--muted);cursor:pointer}.setpop details .setrow{margin-top:8px}
+.setpop select{background:#2d2519;color:var(--text);border:1px solid var(--line);border-radius:6px;font:inherit;font-size:12px;padding:2px 6px}
+.setpop .btn6{align-self:flex-end}
+.bgg-icons{display:flex;flex-direction:column;gap:10px}.bgg-row{display:flex;flex-wrap:wrap;gap:6px}
+.bgg-ic{min-width:40px;height:40px;padding:4px;display:flex;align-items:center;justify-content:center;background:#2d2519;border:1px solid var(--line);border-radius:8px;cursor:pointer;color:var(--text)}
+.bgg-ic img.inv{filter:brightness(0) invert(1)}.bgg-ic:hover{border-color:var(--accent)}.bgg-ic img{max-height:30px;max-width:34px}
 .codelist{display:flex;flex-direction:column;gap:8px}
 .coderow{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#2d2519;border:1px solid var(--line);border-radius:8px;padding:8px 10px}
 .coderow b{display:block;font-size:12px;color:var(--muted);margin-bottom:3px}.coderow code{font-size:11px;word-break:break-all;color:var(--text)}
 .enhtable{width:100%;border-collapse:collapse;margin-bottom:12px}.enhtable th,.enhtable td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);font-size:13px}
+.enhprice{width:70px;background:#2d2519;color:var(--text);border:1px solid var(--line);border-radius:6px;font:inherit;font-size:12px;padding:2px 6px}.enhempty{color:var(--muted)}
 .enhtable th{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
 </style></head>
-<body class="m-playmat"><nav class="mocknav"><b>Mercenary tab mockups</b><a href="index.html">Overview</a><a href="merc-1-playmat.html">1 Playmat</a><a href="merc-2-sheet.html">2 Sheet</a><a href="merc-3-tray.html">3 Hand tray</a><a href="merc-4-mat.html">4 Mat board</a><a href="merc-5-phone.html">5 Phone first</a><a href="merc-6-playmat-v2.html" aria-current="page">6 Playmat v2</a></nav>
+<body class="m-playmat" data-zactive="hover" data-zplay="hover" data-zhand="hover" data-zpiles="hover"><nav class="mocknav"><b>Mercenary tab mockups</b><a href="index.html">Overview</a><a href="merc-1-playmat.html">1 Playmat</a><a href="merc-2-sheet.html">2 Sheet</a><a href="merc-3-tray.html">3 Hand tray</a><a href="merc-4-mat.html">4 Mat board</a><a href="merc-5-phone.html">5 Phone first</a><a href="merc-6-playmat-v2.html" aria-current="page">6 Playmat v2</a></nav>
 <div class="stage6">
-  <header class="hud"><div class="portrait " style="background-image:url(https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_mats/front/tinkerer.png)" role="img" aria-label="Class portrait (cropped from the character mat)"></div><div><h1>Simon</h1><div class="sub">Tinkerer &middot; played by Guido</div><div class="chips"><span class="chip ">Educated</span><span class="chip ">Nimble</span><span class="chip ">Resourceful</span><span class="chip info">Friend of Hero</span></div></div>
-    <div class="lvl" title="Level">5</div><div class="xp " title="Level 5: 210 XP. Next level (6) at 275 XP."><div class="xpbar"><b style="width:83%"></b></div><div class="xpnum"><span>264 XP</span><em>210</em><em>275</em></div></div><div class="stat"><b>42</b>gold</div><div class="stat"><b>0</b>inherited</div><div class="counters"><span class="ctr"><label>Time tokens</label><button type="button" aria-label="Decrease Time tokens">&minus;</button><b>2</b><button type="button" aria-label="Increase Time tokens">+</button></span><span class="ctr"><label>Resolve</label><button type="button" aria-label="Decrease Resolve">&minus;</button><b>1</b><button type="button" aria-label="Increase Resolve">+</button></span><button type="button" class="ctr add" title="Name and track a custom counter">+ counter</button></div></header>
-  <section class="shelf6" aria-label="Items"><h4>Items <span>8</span></h4><div class="it" data-itemstate data-id="1" title="Weathered Boots (legs) — Available, click to change"><img src="https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_items/gh2/001.png" alt="Weathered Boots" loading="lazy"></div><div class="it spent" data-itemstate data-id="9" title="Focusing Rod (1H) — Spent, click to change"><img src="https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_items/gh2/009.png" alt="Focusing Rod" loading="lazy"><span class="itbadge"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span></div><div class="it consumed" data-itemstate data-id="149" title="Aesther Spyglass (head) — Consumed, click to change"><img src="https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_items/gh2/149.png" alt="Aesther Spyglass" loading="lazy"><span class="itbadge"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></span></div><div class="it" data-itemstate data-id="12" title="Stamina Potion (small) — Available, click to change"><img src="https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_items/gh2/012.png" alt="Stamina Potion" loading="lazy"></div><div class="it" data-itemstate data-id="21" title="Power Potion (small) — Available, click to change"><img src="https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_items/gh2/021.png" alt="Power Potion" loading="lazy"></div><div class="it" data-itemstate data-id="14" title="Studded Leather (body) — Available, click to change"><img src="https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_items/gh2/014.png" alt="Studded Leather" loading="lazy"></div><div class="it" data-itemstate data-id="8" title="Heater Shield (1H) — Available, click to change"><img src="https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_items/gh2/008.png" alt="Heater Shield" loading="lazy"></div><div class="it" data-itemstate data-id="5" title="Scouting Lens (head) — Available, click to change"><img src="https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_items/gh2/005.png" alt="Scouting Lens" loading="lazy"></div></section>
+  <header class="hud"><div class="portrait " id="chport" style="background-image:url(https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_mats/front/tinkerer.png)" role="img" aria-label="Class portrait (cropped from the character mat)"></div><div><div class="namerow"><h1 id="chname">Simon</h1><button type="button" class="btn6" id="editchar" title="Edit character" aria-label="Edit character"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1-4 11-11a2 2 0 0 1 3 3L8 19z"/><path d="M14 7l3 3"/></svg></button></div><div class="sub" id="chsub">Tinkerer &middot; played by Guido</div><div class="chips" id="chchips"><span class="chip ">Educated</span><span class="chip ">Nimble</span><span class="chip ">Resourceful</span><span class="chip info">Friend of the Hero</span></div></div>
+    <div class="lvl" title="Level">5</div><div class="xp " title="Level 5: 210 XP. Next level (6) at 275 XP."><div class="xpbar"><b style="width:83%"></b></div><div class="xpnum"><span id="chxp" class="edv" tabindex="0" title="Click to edit. Type a total, or +N / -N to add or subtract">264 XP</span><em>210</em><em>275</em></div></div><div class="stat"><b id="chgold" class="edv" tabindex="0" title="Click to edit. Type a number, or +N / -N to add or subtract">42</b>gold</div><div class="stat"><b id="chinh" class="edv" tabindex="0" title="Click to edit. Type a number, or +N / -N to add or subtract">0</b>inherited</div><div class="counters"><span class="ctr"><label>Time tokens</label><button type="button" aria-label="Decrease Time tokens">&minus;</button><b>2</b><button type="button" aria-label="Increase Time tokens">+</button></span><span class="ctr"><label>Resolve</label><button type="button" aria-label="Decrease Resolve">&minus;</button><b>1</b><button type="button" aria-label="Increase Resolve">+</button></span><button type="button" class="ctr add" title="Name and track a custom counter">+ counter</button></div><span class="setwrap"><button type="button" class="btn6" id="setbtn" title="Display settings" aria-label="Display settings" aria-expanded="false"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M19.14 12.94a7.07 7.07 0 0 0 .06-.94c0-.32-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96a.5.5 0 0 0-.61.22L2.65 8.84a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.07.63-.07.94s.02.63.06.94l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.12.22.37.29.61.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.26.42.5.42h3.84c.24 0 .45-.18.5-.42l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.49 0 .61-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg></button><div class="setpop" id="setpop" hidden>
+<div class="setrow"><label>Hand layout</label><span class="seg" data-set="layout"><button type="button" data-v="spread">Spread</button><button type="button" data-v="fan">Fan</button></span></div>
+<div class="setrow"><label>Card zoom</label><span class="seg" data-set="zoom"><button type="button" data-v="hover">Hover</button><button type="button" data-v="click">Click</button></span></div>
+<details><summary>Zoom per zone</summary><div class="setrow"><label for="setz-active">Active</label><select id="setz-active" data-zone="active"><option value="">Default</option><option value="hover">Hover</option><option value="click">Click</option></select></div><div class="setrow"><label for="setz-play">Play area</label><select id="setz-play" data-zone="play"><option value="">Default</option><option value="hover">Hover</option><option value="click">Click</option></select></div><div class="setrow"><label for="setz-hand">Hand</label><select id="setz-hand" data-zone="hand"><option value="">Default</option><option value="hover">Hover</option><option value="click">Click</option></select></div><div class="setrow"><label for="setz-items">Items</label><select id="setz-items" data-zone="items"><option value="">Default</option><option value="hover">Hover</option><option value="click">Click</option></select></div><div class="setrow"><label for="setz-piles">Discard &amp; lost</label><select id="setz-piles" data-zone="piles"><option value="">Default</option><option value="hover">Hover</option><option value="click">Click</option></select></div></details>
+<div class="setrow"><label>Zoom size</label><span class="seg" data-set="size"><button type="button" data-v="s">S</button><button type="button" data-v="m">M</button><button type="button" data-v="l">L</button></span></div><div class="setrow"><label>Hover delay</label><span class="seg" data-set="delay"><button type="button" data-v="off">Off</button><button type="button" data-v="short">Short</button><button type="button" data-v="long">Long</button></span></div><div class="setrow"><label>Docked preview</label><span class="seg" data-set="dock"><button type="button" data-v="left">Left</button><button type="button" data-v="right">Right</button></span></div><div class="setrow"><label>Deck card click</label><span class="seg" data-set="amd"><button type="button" data-v="enlarge">Enlarge</button><button type="button" data-v="draw">Draw</button></span></div><hr><label class="chk"><span>Initiative badge on cards</span><input type="checkbox" data-flag="inib"></label><label class="chk"><span>Auto-sort hand by initiative</span><input type="checkbox" data-flag="autosort"></label><label class="chk"><span>Reduce motion</span><input type="checkbox" data-flag="reduce"></label><button type="button" class="btn6" id="setreset">Reset</button></div></span></header>
+  <section class="shelf6" aria-label="Items"><h4>Items <span class="itbar"><span id="itemcount">8</span><button type="button" class="btn6" id="sortitems" title="Sort by slot" aria-label="Sort by slot">Slot</button><button type="button" class="btn6" id="edititems" title="Equip items" aria-label="Equip items"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1-4 11-11a2 2 0 0 1 3 3L8 19z"/><path d="M14 7l3 3"/></svg></button></span></h4><div class="it" data-itemstate data-id="1" title="Weathered Boots (legs) — Available, click to change"><img src="https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_items/gh2/001.png" alt="Weathered Boots" loading="lazy"></div><div class="it spent" data-itemstate data-id="9" title="Focusing Rod (1H) — Spent, click to change"><img src="https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_items/gh2/009.png" alt="Focusing Rod" loading="lazy"><span class="itbadge"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span></div><div class="it consumed" data-itemstate data-id="149" title="Aesther Spyglass (head) — Consumed, click to change"><img src="https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_items/gh2/149.png" alt="Aesther Spyglass" loading="lazy"><span class="itbadge"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></span></div><div class="it" data-itemstate data-id="12" title="Stamina Potion (small) — Available, click to change"><img src="https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_items/gh2/012.png" alt="Stamina Potion" loading="lazy"></div><div class="it" data-itemstate data-id="21" title="Power Potion (small) — Available, click to change"><img src="https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_items/gh2/021.png" alt="Power Potion" loading="lazy"></div><div class="it" data-itemstate data-id="14" title="Studded Leather (body) — Available, click to change"><img src="https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_items/gh2/014.png" alt="Studded Leather" loading="lazy"></div><div class="it" data-itemstate data-id="8" title="Heater Shield (1H) — Available, click to change"><img src="https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_items/gh2/008.png" alt="Heater Shield" loading="lazy"></div><div class="it" data-itemstate data-id="5" title="Scouting Lens (head) — Available, click to change"><img src="https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_items/gh2/005.png" alt="Scouting Lens" loading="lazy"></div></section>
   <section class="board6">
     <div class="toprow">
-      <div class="zone"><span class="zlabel">Active &middot; <b id="activecount">2</b></span><div class="activelist"><div draggable="true" data-ini="62" class="ac " title="Teleportation Pad (level undefined)"><img src="img/cards/teleportation-pad.jpg" alt="Teleportation Pad" loading="lazy"></div><div draggable="true" data-ini="10" class="ac " title="Dangerous Contraption (level undefined)"><img src="img/cards/dangerous-contraption.jpg" alt="Dangerous Contraption" loading="lazy"></div></div></div>
-      <div class="zone play"><span class="zlabel">Play area &middot; <b>2</b> cards</span>
-        <div class="slot6 first" data-slot="1"><span class="num">1</span><span class="inivalue" data-ini="34" title="The first card sets your initiative">ini </span><div class="slotcard"><div class="flipcard" draggable="true" data-name="Jet Propulsion" data-img="img/cards/jet-propulsion.jpg" data-ini="34" role="button" tabindex="0" title="Click to flip: Jet Propulsion"><div class="flipinner"><div class="face back"><div class="cardback"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 2.6h3.4l.5 2.4 1.7.7 2.1-1.3 2.4 2.4-1.3 2.1.7 1.7 2.4.5v3.4l-2.4.5-.7 1.7 1.3 2.1-2.4 2.4-2.1-1.3-1.7.7-.5 2.4h-3.4l-.5-2.4-1.7-.7-2.1 1.3-2.4-2.4 1.3-2.1-.7-1.7-2.4-.5v-3.4l2.4-.5.7-1.7-1.3-2.1 2.4-2.4 2.1 1.3 1.7-.7z"/><circle cx="12" cy="12" r="3.4"/></svg><b>Tinkerer</b></div></div><div class="face front"><img src="img/cards/jet-propulsion.jpg" alt="Jet Propulsion"></div></div></div></div></div>
-        <div class="slot6" data-slot="2"><span class="num">2</span><div class="slotcard"><div class="flipcard is-front" draggable="true" data-name="Restorative Mist" data-img="img/cards/restorative-mist.jpg" data-ini="17" role="button" tabindex="0" title="Click to flip: Restorative Mist"><div class="flipinner"><div class="face back"><div class="cardback"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 2.6h3.4l.5 2.4 1.7.7 2.1-1.3 2.4 2.4-1.3 2.1.7 1.7 2.4.5v3.4l-2.4.5-.7 1.7 1.3 2.1-2.4 2.4-2.1-1.3-1.7.7-.5 2.4h-3.4l-.5-2.4-1.7-.7-2.1 1.3-2.4-2.4 1.3-2.1-.7-1.7-2.4-.5v-3.4l2.4-.5.7-1.7-1.3-2.1 2.4-2.4 2.1 1.3 1.7-.7z"/><circle cx="12" cy="12" r="3.4"/></svg><b>Tinkerer</b></div></div><div class="face front"><img src="img/cards/restorative-mist.jpg" alt="Restorative Mist"></div></div></div></div></div></div>
+      <div class="zone"><span class="zlabel">Active &middot; <b id="activecount">2</b></span><div class="activelist"><div draggable="true" data-ini="62" class="ac " title="Teleportation Pad (level 3)"><img src="img/cards/teleportation-pad.jpg" alt="Teleportation Pad" loading="lazy"></div><div draggable="true" data-ini="10" class="ac " title="Dangerous Contraption (level 4)"><img src="img/cards/dangerous-contraption.jpg" alt="Dangerous Contraption" loading="lazy"></div></div></div>
+      <div class="zone play"><span class="zlabel">Play area &middot; Initiative <b id="playini">?</b></span>
+        <div class="slot6 first" data-slot="1"><div class="slotcard"><div class="flipcard" draggable="true" data-name="Jet Propulsion" data-img="img/cards/jet-propulsion.jpg" data-ini="34" role="button" tabindex="0" title="Click to flip: Jet Propulsion"><div class="flipinner"><div class="face back"><div class="cardback"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 2.6h3.4l.5 2.4 1.7.7 2.1-1.3 2.4 2.4-1.3 2.1.7 1.7 2.4.5v3.4l-2.4.5-.7 1.7 1.3 2.1-2.4 2.4-2.1-1.3-1.7.7-.5 2.4h-3.4l-.5-2.4-1.7-.7-2.1 1.3-2.4-2.4 1.3-2.1-.7-1.7-2.4-.5v-3.4l2.4-.5.7-1.7-1.3-2.1 2.4-2.4 2.1 1.3 1.7-.7z"/><circle cx="12" cy="12" r="3.4"/></svg><b>Tinkerer</b></div></div><div class="face front"><img src="img/cards/jet-propulsion.jpg" alt="Jet Propulsion"></div></div></div></div></div>
+        <div class="slot6" data-slot="2"><div class="slotcard"><div class="flipcard is-front" draggable="true" data-name="Restorative Mist" data-img="img/cards/restorative-mist.jpg" data-ini="17" role="button" tabindex="0" title="Click to flip: Restorative Mist"><div class="flipinner"><div class="face back"><div class="cardback"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 2.6h3.4l.5 2.4 1.7.7 2.1-1.3 2.4 2.4-1.3 2.1.7 1.7 2.4.5v3.4l-2.4.5-.7 1.7 1.3 2.1-2.4 2.4-2.1-1.3-1.7.7-.5 2.4h-3.4l-.5-2.4-1.7-.7-2.1 1.3-2.4-2.4 1.3-2.1-.7-1.7-2.4-.5v-3.4l2.4-.5.7-1.7-1.3-2.1 2.4-2.4 2.1 1.3 1.7-.7z"/><circle cx="12" cy="12" r="3.4"/></svg><b>Tinkerer</b></div></div><div class="face front"><img src="img/cards/restorative-mist.jpg" alt="Restorative Mist"></div></div></div></div></div></div>
     </div>
-    <div class="hand6" data-layout="spread"><div class="hbar"><span class="zlabel">Hand &middot; <b id="handcount">14</b> of 14</span><span class="hctl"><span class="seg" role="group" aria-label="Hand layout"><button type="button" data-layout="spread" aria-pressed="true">Spread</button><button type="button" data-layout="fan" aria-pressed="false">Fan</button></span><button type="button" class="btn6" id="sortbtn" title="Sort the hand by initiative"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5h.01M15 5h.01M9 12h.01M15 12h.01M9 19h.01M15 19h.01"/></svg> Sort by initiative</button></span></div><div class="fan6"><div style="--i:0" draggable="true" data-ini="73" class="ac" title="Disorienting Flash (level undefined)"><img src="img/cards/disorienting-flash.jpg" alt="Disorienting Flash" loading="lazy"><span class="inib" title="Initiative 73">73</span></div><div style="--i:1" draggable="true" data-ini="61" class="ac" title="Enhancement Field (level undefined)"><img src="img/cards/enhancement-field.jpg" alt="Enhancement Field" loading="lazy"><span class="inib" title="Initiative 61">61</span></div><div style="--i:2" draggable="true" data-ini="16" class="ac" title="Flamethrower (level undefined)"><img src="img/cards/flamethrower.jpg" alt="Flamethrower" loading="lazy"><span class="inib" title="Initiative 16">16</span></div><div style="--i:3" draggable="true" data-ini="74" class="ac" title="Harmless Contraption (level undefined)"><img src="img/cards/harmless-contraption.jpg" alt="Harmless Contraption" loading="lazy"><span class="inib" title="Initiative 74">74</span></div><div style="--i:4" draggable="true" data-ini="80" class="ac" title="Ink Bomb (level undefined)"><img src="img/cards/ink-bomb.jpg" alt="Ink Bomb" loading="lazy"><span class="inib" title="Initiative 80">80</span></div><div style="--i:5" draggable="true" data-ini="19" class="ac" title="Net Shooter (level undefined)"><img src="img/cards/net-shooter.jpg" alt="Net Shooter" loading="lazy"><span class="enh top" title="Enhancement: Attack +1 (top)">+1</span><span class="inib" title="Initiative 19">19</span></div><div style="--i:6" draggable="true" data-ini="46" class="ac" title="Potent Potables (level undefined)"><img src="img/cards/potent-potables.jpg" alt="Potent Potables" loading="lazy"><span class="inib" title="Initiative 46">46</span></div><div style="--i:7" draggable="true" data-ini="37" class="ac" title="Reinvigorating Elixir (level undefined)"><img src="img/cards/reinvigorating-elixir.jpg" alt="Reinvigorating Elixir" loading="lazy"><span class="inib" title="Initiative 37">37</span></div><div style="--i:8" draggable="true" data-ini="20" class="ac" title="Stun Shot (level undefined)"><img src="img/cards/stun-shot.jpg" alt="Stun Shot" loading="lazy"><span class="inib" title="Initiative 20">20</span></div><div style="--i:9" draggable="true" data-ini="76" class="ac" title="Toxic Bolt (level undefined)"><img src="img/cards/toxic-bolt.jpg" alt="Toxic Bolt" loading="lazy"><span class="inib" title="Initiative 76">76</span></div><div style="--i:10" draggable="true" data-ini="23" class="ac" title="Crank Bow (level undefined)"><img src="img/cards/crank-bow.jpg" alt="Crank Bow" loading="lazy"><span class="inib" title="Initiative 23">23</span></div><div style="--i:11" draggable="true" data-ini="72" class="ac" title="Hook Gun (level undefined)"><img src="img/cards/hook-gun.jpg" alt="Hook Gun" loading="lazy"><span class="inib" title="Initiative 72">72</span></div><div style="--i:12" draggable="true" data-ini="22" class="ac" title="Gas Canister (level undefined)"><img src="img/cards/gas-canister.jpg" alt="Gas Canister" loading="lazy"><span class="inib" title="Initiative 22">22</span></div><div style="--i:13" draggable="true" data-ini="35" class="ac" title="Repulsor Gun (level undefined)"><img src="img/cards/repulsor-gun.jpg" alt="Repulsor Gun" loading="lazy"><span class="inib" title="Initiative 35">35</span></div></div></div>
+    <div class="hand6" data-layout="spread"><div class="hbar"><span class="zlabel">Hand &middot; <b id="handcount">14</b> of <span id="handlimit">12</span></span><span class="hctl"><span class="sortgrp"><button type="button" class="btn6" id="sortbtn" title="Sort by initiative" aria-label="Sort by initiative">Ini</button><button type="button" class="btn6" id="sortlvl" title="Sort by level" aria-label="Sort by level">Lvl</button></span></span></div><div class="fan6"><div style="--i:0" draggable="true" data-ini="73" class="ac" title="Disorienting Flash (level 1)"><img src="img/cards/disorienting-flash.jpg" alt="Disorienting Flash" loading="lazy"><span class="inib" title="Initiative 73">73</span></div><div style="--i:1" draggable="true" data-ini="61" class="ac" title="Enhancement Field (level 1)"><img src="img/cards/enhancement-field.jpg" alt="Enhancement Field" loading="lazy"><span class="inib" title="Initiative 61">61</span></div><div style="--i:2" draggable="true" data-ini="16" class="ac" title="Flamethrower (level 1)"><img src="img/cards/flamethrower.jpg" alt="Flamethrower" loading="lazy"><span class="inib" title="Initiative 16">16</span></div><div style="--i:3" draggable="true" data-ini="74" class="ac" title="Harmless Contraption (level 1)"><img src="img/cards/harmless-contraption.jpg" alt="Harmless Contraption" loading="lazy"><span class="inib" title="Initiative 74">74</span></div><div style="--i:4" draggable="true" data-ini="80" class="ac" title="Ink Bomb (level 1)"><img src="img/cards/ink-bomb.jpg" alt="Ink Bomb" loading="lazy"><span class="inib" title="Initiative 80">80</span></div><div style="--i:5" draggable="true" data-ini="19" class="ac" title="Net Shooter (level 1)"><img src="img/cards/net-shooter.jpg" alt="Net Shooter" loading="lazy"><span class="inib" title="Initiative 19">19</span></div><div style="--i:6" draggable="true" data-ini="46" class="ac" title="Potent Potables (level 1)"><img src="img/cards/potent-potables.jpg" alt="Potent Potables" loading="lazy"><span class="inib" title="Initiative 46">46</span></div><div style="--i:7" draggable="true" data-ini="37" class="ac" title="Reinvigorating Elixir (level 1)"><img src="img/cards/reinvigorating-elixir.jpg" alt="Reinvigorating Elixir" loading="lazy"><span class="inib" title="Initiative 37">37</span></div><div style="--i:8" draggable="true" data-ini="20" class="ac" title="Stun Shot (level 1)"><img src="img/cards/stun-shot.jpg" alt="Stun Shot" loading="lazy"><span class="inib" title="Initiative 20">20</span></div><div style="--i:9" draggable="true" data-ini="76" class="ac" title="Toxic Bolt (level 1)"><img src="img/cards/toxic-bolt.jpg" alt="Toxic Bolt" loading="lazy"><span class="inib" title="Initiative 76">76</span></div><div style="--i:10" draggable="true" data-ini="23" class="ac" title="Crank Bow (level 2)"><img src="img/cards/crank-bow.jpg" alt="Crank Bow" loading="lazy"><span class="inib" title="Initiative 23">23</span></div><div style="--i:11" draggable="true" data-ini="72" class="ac" title="Hook Gun (level X)"><img src="img/cards/hook-gun.jpg" alt="Hook Gun" loading="lazy"><span class="inib" title="Initiative 72">72</span></div><div style="--i:12" draggable="true" data-ini="22" class="ac" title="Gas Canister (level X)"><img src="img/cards/gas-canister.jpg" alt="Gas Canister" loading="lazy"><span class="inib" title="Initiative 22">22</span></div><div style="--i:13" draggable="true" data-ini="35" class="ac" title="Repulsor Gun (level 2)"><img src="img/cards/repulsor-gun.jpg" alt="Repulsor Gun" loading="lazy"><span class="inib" title="Initiative 35">35</span></div></div></div>
   </section>
-  <section class="piles6"><div class="pile6 target" data-pile="discard"><h4>Discard <b id="discardcount">3</b></h4><div class="pilecard"><div draggable="true" class="ac " title="Proximity Mine (level undefined)"><img src="img/cards/proximity-mine.jpg" alt="Proximity Mine" loading="lazy"></div></div><span class="hint">drop</span></div><div class="pile6 lost target" data-pile="lost"><h4>Lost <b id="lostcount">1</b></h4><div class="pilecard"><div draggable="true" class="ac " title="Disintegration Beam (level undefined)"><img src="img/cards/disintegration-beam.jpg" alt="Disintegration Beam" loading="lazy"></div></div></div></section>
-  <aside class="dock" aria-label="Modals"><button type="button" class="mbtn " data-modal="amd" title="Opens modal: Attack modifier deck"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="12" height="15" rx="2"/><path d="M8 3h10a2 2 0 0 1 2 2v13"/></svg><span>Attack modifiers</span><i class="mmark" aria-hidden="true"></i></button><button type="button" class="mbtn " data-modal="perks" title="Opens modal: Perk selection and masteries"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg><span>Perks & masteries</span><i class="mmark" aria-hidden="true"></i></button><button type="button" class="mbtn " data-modal="journal" title="Opens modal: Personal quest, battle goal and notes (tabs in one modal)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h11a2 2 0 0 1 2 2v14H8a2 2 0 0 1-2-2z"/><path d="M6 17a2 2 0 0 0 2 2M10 8h6M10 12h6"/></svg><span>Journal</span><i class="mmark" aria-hidden="true"></i></button><button type="button" class="mbtn " data-modal="mat" title="Opens modal: Character mat, front and back"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M9 5v14"/></svg><span>Character mat</span><i class="mmark" aria-hidden="true"></i></button><button type="button" class="mbtn " data-modal="codes" title="Opens modal: Copy a forum post code"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2"/></svg><span>BGG codes</span><i class="mmark" aria-hidden="true"></i></button><button type="button" class="mbtn " data-modal="enh" title="Opens modal: Enhancement table (editable)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18h16M6 18v-3h12v3M8 15c0-3 1-5 4-6V6h5v3H12"/></svg><span>Enhancements</span><i class="mmark" aria-hidden="true"></i></button></aside>
+  <section class="piles6"><div class="pile6 target" data-pile="discard"><h4>Discard <b id="discardcount">3</b></h4><div class="pilecard"><div draggable="true" class="ac " title="Proximity Mine (level 4)"><img src="img/cards/proximity-mine.jpg" alt="Proximity Mine" loading="lazy"></div></div><span class="hint">drop</span></div><div class="pile6 lost target" data-pile="lost"><h4>Lost <b id="lostcount">1</b></h4><div class="pilecard"><div draggable="true" class="ac " title="Disintegration Beam (level 5)"><img src="img/cards/disintegration-beam.jpg" alt="Disintegration Beam" loading="lazy"></div></div></div></section>
+  <aside class="dock" aria-label="Modals"><button type="button" class="mbtn " data-modal="mat" title="Opens modal: Character mat, front and back"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M9 5v14"/></svg><span>Character mat</span></button><button type="button" class="mbtn " data-modal="deck" title="Opens modal: Deck (card pool and hand)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="3" width="13" height="16" rx="2"/><path d="M4 7v14h13"/><path d="M13.5 8v6M10.5 11h6"/></svg><span>Deck</span><span class="pooldot" id="pooldot" hidden></span></button><button type="button" class="mbtn " data-modal="perks" title="Opens modal: Perk selection and masteries"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg><span>Perks & masteries</span></button><button type="button" class="mbtn " data-modal="amd" title="Opens modal: Attack modifier deck"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="12" height="15" rx="2"/><path d="M8 3h10a2 2 0 0 1 2 2v13"/></svg><span>Attack modifiers</span></button><button type="button" class="mbtn " data-modal="journal" title="Opens modal: Personal quest, battle goal and notes (tabs in one modal)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h11a2 2 0 0 1 2 2v14H8a2 2 0 0 1-2-2z"/><path d="M6 17a2 2 0 0 0 2 2M10 8h6M10 12h6"/></svg><span>Journal</span></button><button type="button" class="mbtn " data-modal="enh" title="Opens modal: Enhancement table (editable)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18h16M6 18v-3h12v3M8 15c0-3 1-5 4-6V6h5v3H12"/></svg><span>Enhancements</span></button><button type="button" class="mbtn " data-modal="codes" title="Opens modal: Copy a forum post code"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2"/></svg><span>BGG codes</span></button></aside>
 </div>
 <div class="mmodal" id="modal-amd" hidden role="dialog" aria-modal="true" aria-label="Attack modifier deck">
-  <div class="mmodalbox "><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2 id="modaltitle-amd">Attack modifier deck</h2><div class="amdgrid" id="amdreal"><p class="mrow">Loading the real Tinkerer deck&hellip;</p></div>
-    <p class="mrow">Composition reflects taken perks below &middot; faces and card art are the real HavenMap attack-modifier assets</p>
-    <div class="coderow" id="amdcoderow"><div><b>GeekRoller code</b><code id="amdcode">1custom20{+0;+0;+0;+0;+0;+0;+1;+1;+1;+1;+1;-1;-1;-1;-1;-1;+2;-2;x2;Miss}</code></div><button type="button" class="btn6" data-copy="amdcode"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2"/></svg> Copy</button></div></div></div><div class="mmodal" id="modal-perks" hidden role="dialog" aria-modal="true" aria-label="Perks &amp; masteries">
+  <div class="mmodalbox amdbox"><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2 id="modaltitle-amd">Attack modifier deck</h2><div class="amdbar"><span class="mrow" id="amdcount" style="margin:0"></span><span class="amdbtns"><button type="button" class="btn6" id="amdcopy" title="Copy GeekRoller code" aria-label="Copy GeekRoller code"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg></button><button type="button" class="btn6" id="amdshuffle" title="Shuffle deck now" aria-label="Shuffle deck now"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M10.59 9.17 5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg></button></span></div><div class="amdgrid" id="amdreal" style="margin-top:8px"><p class="mrow">Loading the real Tinkerer deck&hellip;</p></div>
+    
+    </div></div><div class="mmodal" id="modal-perks" hidden role="dialog" aria-modal="true" aria-label="Perks &amp; masteries">
   <div class="mmodalbox big"><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2 id="modaltitle-perks">Perks &amp; masteries</h2><h3>Perks <span id="perkcount">&nbsp;</span></h3><div class="perklist am-perklist" id="perksreal"><p class="mrow">Loading the real Tinkerer perk list&hellip;</p></div>
     <h3>Masteries <span>0 of 3</span></h3><div class="perklist"><label class="perkrow"><input type="checkbox" ><span>Kill an enemy with Fire damage 10 times</span></label><label class="perkrow"><input type="checkbox" ><span>Fully heal an ally 5 times</span></label><label class="perkrow"><input type="checkbox" ><span>Long rest 15 times</span></label></div></div></div><div class="mmodal" id="modal-journal" hidden role="dialog" aria-modal="true" aria-label="Journal">
   <div class="mmodalbox "><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2 id="modaltitle-journal">Journal</h2><div class="seg jtabs" role="tablist" aria-label="Journal section">
@@ -132,12 +252,41 @@
     <div class="jtab" data-jpane="goal" hidden><h4>Battle goal</h4><p class="mrow">No goal drawn for this scenario yet.</p><button type="button" class="btn6">Draw a goal</button></div>
     <div class="jtab" data-jpane="notes" hidden><textarea class="notesarea" placeholder="Notes for this character"></textarea></div></div></div><div class="mmodal" id="modal-mat" hidden role="dialog" aria-modal="true" aria-label="Character mat">
   <div class="mmodalbox big"><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2 id="modaltitle-mat">Character mat</h2><div class="matflip"><img src="https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_mats/front/tinkerer.png" alt="Tinkerer mat, front" id="matimg" data-front="https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_mats/front/tinkerer.png" data-back="https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_mats/back/tinkerer.png" role="button" tabindex="0" title="Click to flip"></div></div></div><div class="mmodal" id="modal-codes" hidden role="dialog" aria-modal="true" aria-label="BGG forum codes">
-  <div class="mmodalbox "><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2 id="modaltitle-codes">BGG forum codes</h2><div class="codelist"><div class="coderow"><div><b>Attack modifier deck</b><code>1custom20{+0;+0;+0;+0;+0;+0;+1;+1;+1;+1;+1;-1;-1;-1;-1;-1;+2;-2;x2;Miss}</code></div><button type="button" class="btn6"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2"/></svg> Copy</button></div><div class="coderow"><div><b>Random side scenario</b><code>1custom5{1;9;10;13;17}</code></div><button type="button" class="btn6"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2"/></svg> Copy</button></div><div class="coderow"><div><b>Random item design</b><code>1custom9{81;83;87;88;91;92;94;95;96}</code></div><button type="button" class="btn6"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2"/></svg> Copy</button></div><div class="coderow"><div><b>Battle goal draw</b><code>2custom2{1;2}</code></div><button type="button" class="btn6"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2"/></svg> Copy</button></div></div></div></div><div class="mmodal" id="modal-enh" hidden role="dialog" aria-modal="true" aria-label="Enhancements">
-  <div class="mmodalbox "><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2 id="modaltitle-enh">Enhancements</h2><table class="enhtable"><tr><th>Card</th><th>Top</th><th>Bottom</th><th>Price</th></tr>
-      <tr><td>Net Shooter</td><td>Attack +1</td><td>&ndash;</td><td>150g</td></tr></table>
-    <button type="button" class="btn6">+ Add enhancement</button></div></div><div class="mmodal" id="modal-pilecards" hidden role="dialog" aria-modal="true" aria-label="Pile">
-    <div class="mmodalbox narrow"><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2 id="modaltitle-pilecards">Pile</h2><div class="pilelist" id="pilemodallist"></div></div>
-    <img class="pilezoom" id="pilezoomimg" alt="" hidden>
+  <div class="mmodalbox "><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2 id="modaltitle-codes">BGG forum codes</h2><div class="codelist"><div class="coderow"><div><b style="margin:0">Attack modifier deck</b></div><button type="button" class="btn6" data-code="1custom20{+0;+0;+0;+0;+0;+0;+1;+1;+1;+1;+1;-1;-1;-1;-1;-1;+2;-2;x2;Miss}" title="Copy GeekRoller code" aria-label="Copy GeekRoller code: Attack modifier deck"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg></button></div><div class="coderow"><div><b style="margin:0">Random side scenario</b></div><button type="button" class="btn6" data-code="1custom5{1;9;10;13;17}" title="Copy GeekRoller code" aria-label="Copy GeekRoller code: Random side scenario"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg></button></div><div class="coderow"><div><b style="margin:0">Random item design</b></div><button type="button" class="btn6" data-code="1custom9{81;83;87;88;91;92;94;95;96}" title="Copy GeekRoller code" aria-label="Copy GeekRoller code: Random item design"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg></button></div><div class="coderow"><div><b style="margin:0">Battle goal draw</b></div><button type="button" class="btn6" data-code="2custom2{1;2}" title="Copy GeekRoller code" aria-label="Copy GeekRoller code: Battle goal draw"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg></button></div><h3 style="margin-top:16px">Icons <span>click to copy</span></h3><div class="bgg-icons"><div class="bgg-row"><button type="button" class="bgg-ic" data-code="[ImageID=7494755 inline]" title="air: copy [ImageID=7494755 inline]" aria-label="Copy air icon code"><img src="../../images/common/perk-icons/air.png" alt="air"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494743 inline]" title="dark: copy [ImageID=7494743 inline]" aria-label="Copy dark icon code"><img src="../../images/common/perk-icons/dark.png" alt="dark"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494745 inline]" title="earth: copy [ImageID=7494745 inline]" aria-label="Copy earth icon code"><img src="../../images/common/perk-icons/earth.png" alt="earth"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494747 inline]" title="fire: copy [ImageID=7494747 inline]" aria-label="Copy fire icon code"><img src="../../images/common/perk-icons/fire.png" alt="fire"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494749 inline]" title="ice: copy [ImageID=7494749 inline]" aria-label="Copy ice icon code"><img src="../../images/common/perk-icons/ice.png" alt="ice"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494751 inline]" title="light: copy [ImageID=7494751 inline]" aria-label="Copy light icon code"><img src="../../images/common/perk-icons/light.png" alt="light"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494753 inline]" title="wild: copy [ImageID=7494753 inline]" aria-label="Copy wild icon code"><img src="../../images/common/icons/wild.png" alt="wild"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494742 inline]" title="air_x: copy [ImageID=7494742 inline]" aria-label="Copy air_x icon code"><img src="../../images/common/icons/air_x.png" alt="air_x"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494744 inline]" title="dark_x: copy [ImageID=7494744 inline]" aria-label="Copy dark_x icon code"><img src="../../images/common/icons/dark_x.png" alt="dark_x"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494746 inline]" title="earth_x: copy [ImageID=7494746 inline]" aria-label="Copy earth_x icon code"><img src="../../images/common/icons/earth_x.png" alt="earth_x"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494748 inline]" title="fire_x: copy [ImageID=7494748 inline]" aria-label="Copy fire_x icon code"><img src="../../images/common/icons/fire_x.png" alt="fire_x"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494750 inline]" title="ice_x: copy [ImageID=7494750 inline]" aria-label="Copy ice_x icon code"><img src="../../images/common/icons/ice_x.png" alt="ice_x"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494752 inline]" title="light_x: copy [ImageID=7494752 inline]" aria-label="Copy light_x icon code"><img src="../../images/common/icons/light_x.png" alt="light_x"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494754 inline]" title="wild_x: copy [ImageID=7494754 inline]" aria-label="Copy wild_x icon code"><img src="../../images/common/icons/wild_x.png" alt="wild_x"></button></div><div class="bgg-row"><button type="button" class="bgg-ic" data-code="[ImageID=7410416 inline]" title="coin: copy [ImageID=7410416 inline]" aria-label="Copy coin icon code"><img class="inv" src="../../images/common/icons/coin.png" alt="coin"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410468 inline]" title="loot: copy [ImageID=7410468 inline]" aria-label="Copy loot icon code"><img src="../../images/common/perk-icons/loot.png" alt="loot"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410418 inline]" title="arrowvine: copy [ImageID=7410418 inline]" aria-label="Copy arrowvine icon code"><img class="inv" src="../../images/common/icons/arrowvine.png" alt="arrowvine"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410419 inline]" title="axenut: copy [ImageID=7410419 inline]" aria-label="Copy axenut icon code"><img class="inv" src="../../images/common/icons/axenut.png" alt="axenut"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410420 inline]" title="corpsecap: copy [ImageID=7410420 inline]" aria-label="Copy corpsecap icon code"><img class="inv" src="../../images/common/icons/corpsecap.png" alt="corpsecap"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410421 inline]" title="flamefruit: copy [ImageID=7410421 inline]" aria-label="Copy flamefruit icon code"><img class="inv" src="../../images/common/icons/flamefruit.png" alt="flamefruit"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410422 inline]" title="hide: copy [ImageID=7410422 inline]" aria-label="Copy hide icon code"><img class="inv" src="../../images/common/icons/hide.png" alt="hide"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410437 inline]" title="lumber: copy [ImageID=7410437 inline]" aria-label="Copy lumber icon code"><img class="inv" src="../../images/common/icons/lumber.png" alt="lumber"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410438 inline]" title="metal: copy [ImageID=7410438 inline]" aria-label="Copy metal icon code"><img class="inv" src="../../images/common/icons/metal.png" alt="metal"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410425 inline]" title="rockroot: copy [ImageID=7410425 inline]" aria-label="Copy rockroot icon code"><img class="inv" src="../../images/common/icons/rockroot.png" alt="rockroot"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410426 inline]" title="snowthistle: copy [ImageID=7410426 inline]" aria-label="Copy snowthistle icon code"><img class="inv" src="../../images/common/icons/snowthistle.png" alt="snowthistle"></button></div><div class="bgg-row"><button type="button" class="bgg-ic" data-code="[ImageID=4113436 inline]" title="bless: copy [ImageID=4113436 inline]" aria-label="Copy bless icon code"><img src="../../images/common/perk-icons/bless.png" alt="bless"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113437 inline]" title="curse: copy [ImageID=4113437 inline]" aria-label="Copy curse icon code"><img src="../../images/common/perk-icons/curse.png" alt="curse"></button><button type="button" class="bgg-ic" data-code="[ImageID=7268961 inline]" title="bane: copy [ImageID=7268961 inline]" aria-label="Copy bane icon code"><img src="../../images/common/conditions/bane.png" alt="bane"></button><button type="button" class="bgg-ic" data-code="[ImageID=7268962 inline]" title="brittle: copy [ImageID=7268962 inline]" aria-label="Copy brittle icon code"><img src="../../images/common/perk-icons/brittle.png" alt="brittle"></button><button type="button" class="bgg-ic" data-code="[ImageID=7268963 inline]" title="chill: copy [ImageID=7268963 inline]" aria-label="Copy chill icon code"><img src="../../images/common/icons/chill.png" alt="chill"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113438 inline]" title="disarm: copy [ImageID=4113438 inline]" aria-label="Copy disarm icon code"><img src="../../images/common/perk-icons/disarm.png" alt="disarm"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113440 inline]" title="immobilize: copy [ImageID=4113440 inline]" aria-label="Copy immobilize icon code"><img src="../../images/common/perk-icons/immobilize.png" alt="immobilize"></button><button type="button" class="bgg-ic" data-code="[ImageID=7415909 inline]" title="impair: copy [ImageID=7415909 inline]" aria-label="Copy impair icon code"><img src="../../images/common/perk-icons/impair.png" alt="impair"></button><button type="button" class="bgg-ic" data-code="[ImageID=7268970 inline]" title="infect: copy [ImageID=7268970 inline]" aria-label="Copy infect icon code"><img src="../../images/common/icons/infect.png" alt="infect"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113441 inline]" title="invisible: copy [ImageID=4113441 inline]" aria-label="Copy invisible icon code"><img src="../../images/common/perk-icons/invisible.png" alt="invisible"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113442 inline]" title="muddle: copy [ImageID=4113442 inline]" aria-label="Copy muddle icon code"><img src="../../images/common/perk-icons/muddle.png" alt="muddle"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113443 inline]" title="poison: copy [ImageID=4113443 inline]" aria-label="Copy poison icon code"><img src="../../images/common/perk-icons/poison.png" alt="poison"></button><button type="button" class="bgg-ic" data-code="[ImageID=5697614 inline]" title="regenerate: copy [ImageID=5697614 inline]" aria-label="Copy regenerate icon code"><img src="../../images/common/perk-icons/regenerate.png" alt="regenerate"></button><button type="button" class="bgg-ic" data-code="[ImageID=9001386 inline]" title="safeguard: copy [ImageID=9001386 inline]" aria-label="Copy safeguard icon code"><img src="../../images/common/perk-icons/safeguard.png" alt="safeguard"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113444 inline]" title="strengthen: copy [ImageID=4113444 inline]" aria-label="Copy strengthen icon code"><img src="../../images/common/perk-icons/strengthen.png" alt="strengthen"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113445 inline]" title="stun: copy [ImageID=4113445 inline]" aria-label="Copy stun icon code"><img src="../../images/common/perk-icons/stun.png" alt="stun"></button><button type="button" class="bgg-ic" data-code="[ImageID=7396243 inline]" title="ward: copy [ImageID=7396243 inline]" aria-label="Copy ward icon code"><img src="../../images/common/perk-icons/ward.png" alt="ward"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113446 inline]" title="wound: copy [ImageID=4113446 inline]" aria-label="Copy wound icon code"><img src="../../images/common/perk-icons/wound.png" alt="wound"></button></div><div class="bgg-row"><button type="button" class="bgg-ic" data-code="[ImageID=4113461 inline]" title="damage: copy [ImageID=4113461 inline]" aria-label="Copy damage icon code"><img src="../../images/common/perk-icons/damage.png" alt="damage"></button><button type="button" class="bgg-ic" data-code="[ImageID=4123143 inline]" title="pierce: copy [ImageID=4123143 inline]" aria-label="Copy pierce icon code"><img src="../../images/common/perk-icons/pierce.png" alt="pierce"></button><button type="button" class="bgg-ic" data-code="[ImageID=4123145 inline]" title="target: copy [ImageID=4123145 inline]" aria-label="Copy target icon code"><img src="../../images/common/perk-icons/target.png" alt="target"></button><button type="button" class="bgg-ic" data-code="[ImageID=4184470 inline]" title="xp: copy [ImageID=4184470 inline]" aria-label="Copy xp icon code"><img class="inv" src="../../images/common/icons/xp.png" alt="xp"></button><button type="button" class="bgg-ic" data-code="[ImageID=5238116 inline]" title="rolling: copy [ImageID=5238116 inline]" aria-label="Copy rolling icon code"><img src="../../images/common/perk-icons/flip.png" alt="rolling"></button><button type="button" class="bgg-ic" data-code="[ImageID=7268969 inline]" title="hatchet: copy [ImageID=7268969 inline]" aria-label="Copy hatchet icon code"><img src="../../images/common/conditions/hatchet.png" alt="hatchet"></button><button type="button" class="bgg-ic" data-code="[ImageID=7396351 inline]" title="pull: copy [ImageID=7396351 inline]" aria-label="Copy pull icon code"><img src="../../images/common/perk-icons/pull.png" alt="pull"></button><button type="button" class="bgg-ic" data-code="[ImageID=7396352 inline]" title="push: copy [ImageID=7396352 inline]" aria-label="Copy push icon code"><img src="../../images/common/perk-icons/push.png" alt="push"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410414 inline]" title="melee geminate: copy [ImageID=7410414 inline]" aria-label="Copy melee geminate icon code"><img src="../../images/common/conditions/geminate_melee.png" alt="melee geminate"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410415 inline]" title="ranged geminate: copy [ImageID=7410415 inline]" aria-label="Copy ranged geminate icon code"><img src="../../images/common/conditions/geminate_range.png" alt="ranged geminate"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410417 inline]" title="shield: copy [ImageID=7410417 inline]" aria-label="Copy shield icon code"><img src="../../images/common/perk-icons/shield.png" alt="shield"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410435 inline]" title="item: copy [ImageID=7410435 inline]" aria-label="Copy item icon code"><img class="inv" src="../../images/common/icons/item.png" alt="item"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410466 inline]" title="attack: copy [ImageID=7410466 inline]" aria-label="Copy attack icon code"><img src="../../images/common/perk-icons/attack.png" alt="attack"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410467 inline]" title="heal: copy [ImageID=7410467 inline]" aria-label="Copy heal icon code"><img src="../../images/common/perk-icons/heal.png" alt="heal"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410469 inline]" title="move: copy [ImageID=7410469 inline]" aria-label="Copy move icon code"><img src="../../images/common/perk-icons/move.png" alt="move"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410470 inline]" title="range: copy [ImageID=7410470 inline]" aria-label="Copy range icon code"><img src="../../images/common/perk-icons/range.png" alt="range"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410471 inline]" title="retaliate: copy [ImageID=7410471 inline]" aria-label="Copy retaliate icon code"><img src="../../images/common/perk-icons/retaliate.png" alt="retaliate"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410473 inline]" title="teleport: copy [ImageID=7410473 inline]" aria-label="Copy teleport icon code"><img src="../../images/common/perk-icons/teleport.png" alt="teleport"></button><button type="button" class="bgg-ic" data-code="[ImageID=7415846 inline]" title="jump: copy [ImageID=7415846 inline]" aria-label="Copy jump icon code"><img class="inv" src="../../images/common/icons/jump.png" alt="jump"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494808 inline]" title="flying: copy [ImageID=7494808 inline]" aria-label="Copy flying icon code"><img class="inv" src="../../images/common/icons/flying.png" alt="flying"></button><button type="button" class="bgg-ic" data-code="[ImageID=7496358 inline]" title="recover: copy [ImageID=7496358 inline]" aria-label="Copy recover icon code"><img class="inv" src="../../images/common/icons/recover.png" alt="recover"></button><button type="button" class="bgg-ic" data-code="[ImageID=8221149 inline]" title="difficult: copy [ImageID=8221149 inline]" aria-label="Copy difficult icon code"><img src="../../images/common/icons/difficult.png" alt="difficult"></button><button type="button" class="bgg-ic" data-code="[ImageID=8221150 inline]" title="hazardous: copy [ImageID=8221150 inline]" aria-label="Copy hazardous icon code"><img src="../../images/common/icons/hazardous.png" alt="hazardous"></button><button type="button" class="bgg-ic" data-code="[ImageID=8221151 inline]" title="icy: copy [ImageID=8221151 inline]" aria-label="Copy icy icon code"><img src="../../images/common/icons/icy.png" alt="icy"></button><button type="button" class="bgg-ic" data-code="[ImageID=8221152 inline]" title="obstacle: copy [ImageID=8221152 inline]" aria-label="Copy obstacle icon code"><img src="../../images/common/icons/obstacle.png" alt="obstacle"></button><button type="button" class="bgg-ic" data-code="[ImageID=8221153 inline]" title="trap: copy [ImageID=8221153 inline]" aria-label="Copy trap icon code"><img src="../../images/common/icons/trap.png" alt="trap"></button><button type="button" class="bgg-ic" data-code="[ImageID=9595578 inline]" title="divination: copy [ImageID=9595578 inline]" aria-label="Copy divination icon code"><img class="inv" src="../../images/common/icons/divination.png" alt="divination"></button><button type="button" class="bgg-ic" data-code="[ImageID=9595579 inline]" title="irritation: copy [ImageID=9595579 inline]" aria-label="Copy irritation icon code"><img class="inv" src="../../images/common/icons/irritation.png" alt="irritation"></button><button type="button" class="bgg-ic" data-code="[ImageID=9595580 inline]" title="resolve: copy [ImageID=9595580 inline]" aria-label="Copy resolve icon code"><img class="inv" src="../../images/common/icons/resolve.png" alt="resolve"></button><button type="button" class="bgg-ic" data-code="[ImageID=9595581 inline]" title="rift: copy [ImageID=9595581 inline]" aria-label="Copy rift icon code"><img class="inv" src="../../images/common/icons/rift.png" alt="rift"></button></div></div></div></div></div><div class="mmodal" id="modal-enh" hidden role="dialog" aria-modal="true" aria-label="Enhancements">
+  <div class="mmodalbox "><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2 id="modaltitle-enh">Enhancements</h2><table class="enhtable"><thead><tr><th>Card</th><th>Top</th><th>Bottom</th><th>Price</th></tr></thead><tbody id="enhrows"></tbody></table></div></div><div class="mmodal" id="modal-item" hidden role="dialog" aria-modal="true" aria-label="Item">
+  <div class="mmodalbox"><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2 id="itname">Item</h2>
+  <div class="itmodal"><div class="itcard pick" id="itcard"><img id="itimg" alt=""></div>
+  <div class="itpanel"><div class="row" id="itstaterow"><span>State</span><span class="seg" id="itstate"><button type="button" class="btn6" data-st="0">Available</button><button type="button" class="btn6" data-st="1">Spent</button><button type="button" class="btn6" data-st="2">Consumed</button></span></div>
+  <div class="row"><span>Tokens</span><span class="tkpick" id="tkpick"></span></div><div class="row" id="stkrow"><span>Stickers</span><span class="tkpick" id="stkpick"></span></div><div class="row"><button type="button" class="btn6" id="itclear">Clear all</button></div></div></div></div></div><div class="mmodal" id="modal-deck" hidden role="dialog" aria-modal="true" aria-label="Deck">
+  <div class="mmodalbox big"><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><div class="deckrow"><h2>Deck</h2><span class="seg" id="decktabs"><button type="button" data-tab="hand" aria-pressed="true">Hand</button><button type="button" data-tab="pool" aria-pressed="false">Card pool</button></span></div>
+  <section id="tab-pool" hidden>
+    <div class="poolbar"><span>Level <button type="button" class="btn6" id="lvdn" aria-label="Level down">&minus;</button> <b id="lvnum">5</b> <button type="button" class="btn6" id="lvup" aria-label="Level up">+</button></span><span id="poolcount"></span><span class="grow"></span><button type="button" class="btn6" id="poolundo">Undo last pick</button></div>
+    <div class="poolbanner" id="poolbanner" hidden></div><div id="poolbody"></div>
+  </section>
+  <section id="tab-hand">
+    <div class="poolbar"><span>Selected <b id="handsel">0 / 12</b></span><span class="grow"></span><button type="button" class="btn6" id="handclear">Clear</button></div>
+    <div id="handbody"></div>
+    <div class="poolfoot"><span id="handwarn"></span><button type="button" class="btn6" id="handok">Confirm hand</button></div>
+  </section></div></div>
+<div class="mmodal" id="modal-char" hidden role="dialog" aria-modal="true" aria-label="Edit character">
+  <div class="mmodalbox"><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2>Edit character</h2>
+  <div class="chform">
+    <label>Name<input id="cf-name" autocomplete="off"></label>
+    <label>Player<input id="cf-player" autocomplete="off"></label>
+    <label>Class<select id="cf-class"></select></label>
+    <div class="chnote" id="cf-note" hidden>Changing the class replaces the deck, the card pool and the tokens. In this mockup only the name, portrait and traits change.</div>
+    <label>Class traits<span class="chips" id="cf-ctraits"></span></label>
+    <label>Event traits<span class="chips" id="cf-xtraits"></span><select id="cf-addtrait"></select></label>
+  </div>
+  <div class="chfoot"><button type="button" class="btn6" data-modalclose>Cancel</button><button type="button" class="btn6" id="cf-save">Save</button></div></div></div>
+<div class="mmodal" id="modal-items" hidden role="dialog" aria-modal="true" aria-label="Equip items">
+  <div class="mmodalbox big"><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2>Equip items</h2>
+  <div class="poolbar"><span class="slotlim" id="itemlim"></span><span class="grow"></span><button type="button" class="btn6" id="itemclear">Clear</button></div>
+  <div id="itemsbody"></div>
+  <div class="poolfoot"><span></span><button type="button" class="btn6" id="itemok">Confirm items</button></div></div></div>
+<div class="mmodal" id="modal-pilecards" hidden role="dialog" aria-modal="true" aria-label="Pile">
+    <div class="mmodalbox big"><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2 id="modaltitle-pilecards">Pile</h2><div class="poolbar"><span id="pilecount"></span><span class="grow"></span><button type="button" class="btn6" id="pilerecover">Recover all</button></div><div class="pilelist" id="pilemodallist"></div></div>
+    <img class="pilezoom" id="pilezoomimg" alt="" hidden><div class="pilezoomtk" id="pilezoomtk" hidden></div>
   </div>
 <script>
 // Flip is delegated (not bound per-element) because a slot's card is replaced when a new one is dragged in.
@@ -146,15 +295,27 @@ document.querySelector('.board6').addEventListener('keydown',e=>{const f=e.targe
 const hand=document.querySelector('.fan6'), wrap=document.querySelector('.hand6'), handCount=document.getElementById('handcount');
 const active=document.querySelector('.activelist'), activeCount=document.getElementById('activecount');
 const sortHand=()=>{[...hand.children].sort((a,b)=>a.dataset.ini-b.dataset.ini).forEach(c=>hand.appendChild(c));[...hand.children].forEach((c,i)=>c.style.setProperty('--i',i))};
-document.getElementById('sortbtn').addEventListener('click',sortHand);sortHand();
-document.querySelectorAll('.hctl .seg button').forEach(b=>b.addEventListener('click',()=>{wrap.dataset.layout=b.dataset.layout;document.querySelectorAll('.hctl .seg button').forEach(x=>x.setAttribute('aria-pressed',x===b))}));
-const reindexHand=()=>{[...hand.children].forEach((c,i)=>c.style.setProperty('--i',i));handCount.textContent=hand.children.length};
+const CARD_LV={"crank-bow": "2", "dangerous-contraption": "4", "disintegration-beam": "5", "disorienting-flash": "1", "enhancement-field": "1", "flamethrower": "1", "gas-canister": "X", "harmless-contraption": "1", "hook-gun": "X", "ink-bomb": "1", "jet-propulsion": "1", "net-shooter": "1", "potent-potables": "1", "proximity-mine": "4", "reinvigorating-elixir": "1", "repulsor-gun": "2", "restorative-mist": "1", "stamina-booster": "3", "stun-shot": "1", "teleportation-pad": "3", "toxic-bolt": "1", "volatile-concoction": "X"};
+// Level X cards sort before level 1; unknown cards go last.
+const lvOf=c=>{const slug=((c.querySelector('img')||{}).src||'').split('/').pop().replace(/\.[a-z]+$/,'');const v=CARD_LV[slug];return v===undefined?99:v==='X'?0:Number(v)};
+const sortHandByLevel=()=>{[...hand.children].sort((a,b)=>lvOf(a)-lvOf(b)||a.dataset.ini-b.dataset.ini).forEach(c=>hand.appendChild(c));[...hand.children].forEach((c,i)=>c.style.setProperty('--i',i))};
+document.getElementById('sortbtn').addEventListener('click',sortHand);
+document.getElementById('sortlvl').addEventListener('click',sortHandByLevel);sortHand();
+/* hand layout is driven by the settings popover below */
+const reindexHand=()=>{if(window.HMS&&window.HMS.autosort)sortHand();[...hand.children].forEach((c,i)=>c.style.setProperty('--i',i));handCount.textContent=hand.children.length};
 // ---- unified drag/drop: hand, active area and play slots can all give and take cards, one shared dragData ----
 const gearSVG='<svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 2.6h3.4l.5 2.4 1.7.7 2.1-1.3 2.4 2.4-1.3 2.1.7 1.7 2.4.5v3.4l-2.4.5-.7 1.7 1.3 2.1-2.4 2.4-2.1-1.3-1.7.7-.5 2.4h-3.4l-.5-2.4-1.7-.7-2.1 1.3-2.4-2.4 1.3-2.1-.7-1.7-2.4-.5v-3.4l2.4-.5.7-1.7-1.3-2.1 2.4-2.4 2.1 1.3 1.7-.7z"/><circle cx="12" cy="12" r="3.4"/></svg>';
-function flipHTML(data,front){return '<div class="flipcard'+(front?' is-front':'')+'" draggable="true" data-name="'+data.name+'" data-img="'+data.img+'" data-ini="'+data.ini+'" role="button" tabindex="0" title="Click to flip: '+data.name+'"><div class="flipinner"><div class="face back"><div class="cardback">'+gearSVG+'<b>Tinkerer</b></div></div><div class="face front"><img src="'+data.img+'" alt="'+data.name+'"></div></div></div>'}
+// card back of the character's class: the real GH2 back where one exists, otherwise the drawn back
+const REAL_BACKS=['berserker','bladeswarm','elementalist','plagueherald','quartermaster','sawbones','soothsinger','soultether','sunkeeper','wildfury'];
+function cardBackHTML(){
+  const cls=(window.charClass?window.charClass():'Tinkerer');
+  const key=cls.toLowerCase().replace(/ /g,'-');
+  return REAL_BACKS.includes(key)?'<img class="realback" src="../../images/common/card_backs/gh2-'+key+'-back.jpeg" alt="'+cls+' card back" draggable="false">':'<div class="cardback">'+gearSVG+'<b>'+cls+'</b></div>';
+}
+function flipHTML(data,front){return '<div class="flipcard'+(front?' is-front':'')+'" draggable="true" data-name="'+data.name+'" data-img="'+data.img+'" data-ini="'+data.ini+'" role="button" tabindex="0" title="Click to flip: '+data.name+'"><div class="flipinner"><div class="face back">'+cardBackHTML()+'</div><div class="face front"><img src="'+data.img+'" alt="'+data.name+'"></div></div></div>'}
 function toCardEl(data){const el=document.createElement('div');el.className='ac';el.title=data.name;el.draggable=true;if(data.ini)el.dataset.ini=data.ini;el.innerHTML='<img src="'+data.img+'" alt="'+data.name+'" loading="lazy">'+(data.ini?'<span class="inib" title="Initiative '+data.ini+'">'+data.ini+'</span>':'');return el}
-function placeInSlot(slot,data){slot.querySelector('.slotcard').innerHTML=flipHTML(data,false);if(slot.classList.contains('first'))slot.querySelector('.inivalue').dataset.ini=data.ini}
-function takeFromSlot(slot){const f=slot.querySelector('.flipcard');const data=f?{name:f.dataset.name,img:f.dataset.img,ini:f.dataset.ini}:null;slot.querySelector('.slotcard').innerHTML='<div class="slotempty">Empty</div>';if(slot.classList.contains('first')){const iv=slot.querySelector('.inivalue');if(iv)iv.dataset.ini=''}return data}
+function placeInSlot(slot,data){slot.querySelector('.slotcard').innerHTML=flipHTML(data,false);}
+function takeFromSlot(slot){const f=slot.querySelector('.flipcard');const data=f?{name:f.dataset.name,img:f.dataset.img,ini:f.dataset.ini}:null;slot.querySelector('.slotcard').innerHTML='<div class="slotempty">'+slot.dataset.slot+'</div>';return data}
 let dragData=null;
 // Removes whatever is being dragged from wherever it came from (hand/active list, a play slot, or a pile).
 function sourceRemove(d){
@@ -196,31 +357,218 @@ function wireList(container,onDrop){
 // ---- hover zoom to the same size everywhere: hand, active and play cards all start at different rest sizes, so a
 // fixed scale factor would zoom them to different absolute sizes. Measure the real rest height on hover and set a
 // per-element --hz scale that lands every one of them at the same HOVER_H target, whatever its own resting size is.
-const HOVER_H=320;
+let HOVER_H=320;
 document.addEventListener('mouseover',e=>{
-  const el=e.target.closest('.fan6 .ac, .activelist .ac, .flipcard');
+  const el=e.target.closest('.fan6 .ac, .activelist .ac, .flipcard, .shelf6 .it');
   if(!el)return;
   if(el.classList.contains('flipcard')&&!el.classList.contains('is-front'))return;
-  const h=el.getBoundingClientRect().height;
-  if(h>0)el.style.setProperty('--hz',HOVER_H/h);
+  if(e.relatedTarget&&el.contains(e.relatedTarget))return;   // moving between children of an already zoomed card: keep --hz
+  measureZoom(el);
 });
-// ---- item state: click cycles Available -> Spent -> Consumed -> Available; no pips, the tile shows it ----
-const ITEM_ICONS=[null,'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>','<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>'];
+function measureZoom(el){const h=el.getBoundingClientRect().height;if(h>0)el.style.setProperty('--hz',HOVER_H/h)}
+// flip cards: after the flip animation, flatten to plain 2D (3D transforms make the browser scale a low-res bitmap when zoomed)
+const settleTimers=new WeakMap();
+function flipWatch(f){
+  clearTimeout(settleTimers.get(f));
+  if(f.classList.contains('is-front')&&!f.classList.contains('settled'))f.dataset.flipping='1';
+  if(f.classList.contains('is-front')){
+    if(!f.classList.contains('settled'))settleTimers.set(f,setTimeout(()=>{if(f.classList.contains('is-front'))f.classList.add('settled')},800));   // fallback; normally the flip's transitionend settles it
+  }else if(f.classList.contains('settled')){
+    f.classList.remove('settled');f.classList.add('rev');void f.offsetWidth;f.classList.remove('rev');
+  }
+}
+const flipObs=new MutationObserver(ms=>{const seen=new Set();ms.forEach(m=>{const f=m.target;if(f.classList&&f.classList.contains('flipcard')&&!seen.has(f)){seen.add(f);flipWatch(f)}})});
+document.querySelectorAll('.slot6').forEach(sl=>flipObs.observe(sl,{subtree:true,attributes:true,attributeFilter:['class']}));
+// a card that is inserted already face up (or present at load) is not animating: settle at once
+new MutationObserver(()=>document.querySelectorAll('.flipcard.is-front:not(.settled)').forEach(f=>{if(!f.dataset.flipping)f.classList.add('settled')})).observe(document.querySelector('.zone.play'),{subtree:true,childList:true});
+document.querySelectorAll('.flipcard.is-front').forEach(f=>f.classList.add('settled'));
+// settle exactly when the flip animation ends
+document.querySelector('.zone.play').addEventListener('transitionend',e=>{
+  if(!e.target.classList.contains('flipinner')||e.propertyName!=='transform')return;
+  const f=e.target.parentElement;
+  if(f.classList.contains('is-front')){clearTimeout(settleTimers.get(f));delete f.dataset.flipping;f.classList.add('settled')}
+});
+// ---- items and ability cards: a modal with the enlarged card, class tokens placed by click, always editable ----
+const ITEM_ICONS=[null,'<img src="../../images/common/icons/spent.png" alt="" draggable="false">','<img src="../../images/common/icons/consumed.png" alt="" draggable="false">'];   // Frosthaven spent and lost icons
 const ITEM_NAMES=["Available","Spent","Consumed"];
+const TOK_DIR='../../images/common/mercenary_tokens/';
+const CUR_CLASS='tinkerer';
+const CLASS_TOKENS={tinkerer:['tinkerer'],berserker:['berserker'],bruiser:['bruiser'],bladeswarm:['bladeswarm'],wildfury:['wildfury'],cragheart:['cragheart'],demolitionist:['demolitionist'],doomstalker:['doomstalker'],elementalist:['elementalist'],hatchet:['hatchet'],mindthief:['mindthief'],nightshroud:['nightshroud'],plagueherald:['plagueherald'],quartermaster:['quartermaster'],red_guard:['red_guard'],sawbones:['sawbones'],silent_knife:['silent_knife'],sunkeeper:['sunkeeper'],soothsinger:['soothsinger'],soultether:['soultether'],spellweaver:['spellweaver'],voidwarden:['voidwarden'],boneshaper:[1,2,3,4,5,6].map(n=>'boneshaper_skeleton_'+n),deepwraith:['deepwraith_trophy'],geminate:['geminate_character','geminate_melee'],hive:['hive_mode'],shattersong:['shattersong_resonance'],anaphi:['anaphi'],cassandra:['cassandra'],hail:['hail','hail_resolve'],satha:['satha']};
+const MY_TOKENS=CLASS_TOKENS[CUR_CLASS]||[];
+const STK_DIR='../../images/common/enhancement_stickers/';
+const STICKERS=['plus_one','hex_attack','air','earth','fire','ice','light','dark','wild','bless','curse','poison','wound','muddle','immobilize','stun','disarm','safeguard','jump','strengthen','regenerate','ward'];
+const MK_KEY='hm-item-markers';
+let MK={};try{MK=JSON.parse(localStorage.getItem(MK_KEY)||'{}')||{}}catch(e){}
+for(const k in MK){MK[k]=(MK[k]||[]).filter(m=>m&&m.k&&(m.s?STICKERS.includes(m.k):MY_TOKENS.includes(m.k)));if(!MK[k].length)delete MK[k]}
+const saveMK=()=>{try{localStorage.setItem(MK_KEY,JSON.stringify(MK))}catch(e){}renderEnh()};
+// enhancement table: one row per card carrying stickers (top = upper half of the card, bottom = lower half); the price is typed in by hand
+const ENH_KEY='hm-enh-prices';
+let ENH_PRICE={};try{ENH_PRICE=JSON.parse(localStorage.getItem(ENH_KEY)||'{}')||{}}catch(e){}
+const stickerLabel=k=>k==='plus_one'?'+1':k==='hex_attack'?'Hex attack':k.replace(/_/g,' ').replace(/^./,c=>c.toUpperCase());
+function renderEnh(){
+  const body=document.getElementById('enhrows');if(!body)return;
+  const rows=[];
+  for(const key in MK){
+    if(key.slice(0,2)!=='c:')continue;
+    const st=(MK[key]||[]).filter(m=>m.s);if(!st.length)continue;
+    const part=half=>{const c={};st.filter(m=>(m.y<50)===(half==='top')).forEach(m=>c[m.k]=(c[m.k]||0)+1);return Object.keys(c).map(k=>stickerLabel(k)+(c[k]>1?' ×'+c[k]:'')).join(', ')||'–'};
+    rows.push({card:key.slice(2),top:part('top'),bottom:part('bottom')});
+  }
+  rows.sort((a,b)=>a.card.localeCompare(b.card));
+  const esc=t=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+  body.innerHTML=rows.length?rows.map(r=>'<tr><td>'+esc(r.card)+'</td><td>'+esc(r.top)+'</td><td>'+esc(r.bottom)+'</td><td><input class="enhprice" data-card="'+esc(r.card)+'" value="'+esc(ENH_PRICE[r.card]||'')+'" placeholder="gold" aria-label="Price for '+esc(r.card)+'"></td></tr>').join(''):'<tr><td colspan="4" class="enhempty">No enhancements yet</td></tr>';
+}
+document.addEventListener('input',e=>{
+  const i=e.target.closest&&e.target.closest('.enhprice');if(!i)return;
+  ENH_PRICE[i.dataset.card]=i.value;try{localStorage.setItem(ENH_KEY,JSON.stringify(ENH_PRICE))}catch(err){}
+});
+const itModal=document.getElementById('modal-item'),itCard=document.getElementById('itcard'),itImg=document.getElementById('itimg');
+let itTile=null,itKey=null,itSel={k:MY_TOKENS[0],s:false};
+const itState=t=>t.classList.contains('spent')?1:t.classList.contains('consumed')?2:0;
+function setItemState(tile,st){
+  tile.classList.remove('spent','consumed');
+  if(st===1)tile.classList.add('spent');else if(st===2)tile.classList.add('consumed');
+  const old=tile.querySelector('.itbadge');if(old)old.remove();
+  if(ITEM_ICONS[st])tile.insertAdjacentHTML('beforeend','<span class="itbadge">'+ITEM_ICONS[st]+'</span>');
+  tile.title=tile.title.split(' \u2014 ')[0]+' \u2014 '+ITEM_NAMES[st]+', click to open';
+}
+function fillTokens(host,key,interactive){
+  host.querySelectorAll(':scope > .tk').forEach(x=>x.remove());
+  (MK[key]||[]).forEach((m,i)=>{
+    const el=document.createElement('div');el.className='tk';el.style.left=m.x+'%';el.style.top=m.y+'%';el.dataset.i=i;
+    if(m.s)el.style.setProperty('--tkw',m.k==='hex_attack'?'12%':'9%');
+    el.innerHTML='<img src="'+(m.s?STK_DIR:TOK_DIR)+m.k+'.png" alt="'+m.k+'" draggable="false">';
+    host.appendChild(el);
+  });
+}
+function refreshKey(key){
+  if(itKey===key)fillTokens(itCard,key,true);
+  document.querySelectorAll('[data-itemstate]').forEach(t=>{if('i:'+t.dataset.id===key)fillTokens(t,key,false)});
+  syncCards();
+}
+// ability cards: a corner handle opens the modal, tokens render on the card
+const CARD_SEL='.fan6 .ac, .activelist .ac, .flipcard';
+const cardName=el=>el.classList.contains('flipcard')?el.dataset.name:((el.querySelector('img')||{}).alt||el.title);
+const cardKey=el=>'c:'+cardName(el);
+const HANDLE_SVG='<svg viewBox="0 0 24 24" width="100%" height="100%" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8.5 15.5l.7-2.6 5.6-5.6a1 1 0 0 1 1.4 0l.5.5a1 1 0 0 1 0 1.4l-5.6 5.6z"/><path d="M13.6 8.6l1.8 1.8"/></svg>';
+function addHandle(el){
+  if(el.querySelector(':scope > .tkh'))return;
+  const h=document.createElement('button');h.type='button';h.className='tkh';h.title='Tokens';h.setAttribute('aria-label','Place tokens');h.draggable=false;
+  h.innerHTML=HANDLE_SVG;el.appendChild(h);
+}
+function syncCards(){
+  document.querySelectorAll('[data-itemstate]').forEach(addHandle);
+  document.querySelectorAll(CARD_SEL+', .pile6 .ac').forEach(el=>{
+    if(!el.closest('.pile6'))addHandle(el);
+    const key=cardKey(el),sig=JSON.stringify(MK[key]||[]);
+    if(el.dataset.tkey!==key||el.dataset.tsig!==sig){el.dataset.tkey=key;el.dataset.tsig=sig;fillTokens(el,key,false)}
+  });
+}
+let syncQ=0;
+new MutationObserver(()=>{cancelAnimationFrame(syncQ);syncQ=requestAnimationFrame(syncCards)}).observe(document.body,{childList:true,subtree:true});
+function openModal(key,title,src,alt,tile){
+  itKey=key;itTile=tile;
+  itImg.src=src;itImg.alt=alt;document.getElementById('itname').textContent=title;
+  document.getElementById('itstaterow').hidden=!tile;document.getElementById('stkrow').hidden=!!tile;
+  if(tile&&itSel.s)selectPick(MY_TOKENS[0],false);
+  if(tile)syncStateUI();
+  fillTokens(itCard,key,true);itModal.hidden=false;
+}
+function syncStateUI(){document.querySelectorAll('#itstate button').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.st===itState(itTile))))}
 document.querySelectorAll('[data-itemstate]').forEach(tile=>{
-  let state=tile.classList.contains('spent')?1:tile.classList.contains('consumed')?2:0;
-  const base=tile.title.split(' — ')[0];
-  tile.addEventListener('click',()=>{
-    state=(state+1)%3;
-    tile.classList.remove('spent','consumed');
-    if(state===1)tile.classList.add('spent');else if(state===2)tile.classList.add('consumed');
-    const old=tile.querySelector('.itbadge');if(old)old.remove();
-    if(ITEM_ICONS[state])tile.insertAdjacentHTML('beforeend','<span class="itbadge">'+ITEM_ICONS[state]+'</span>');
-    tile.title=base+' — '+ITEM_NAMES[state]+', click to change';
+  setItemState(tile,itState(tile));fillTokens(tile,'i:'+tile.dataset.id,false);
+});
+document.addEventListener('click',e=>{
+  const h=e.target.closest('.tkh');if(!h)return;
+  e.stopImmediatePropagation();e.preventDefault();
+  const el=h.parentElement;
+  if(el.matches('[data-itemstate]')){const im=el.querySelector('img');openModal('i:'+el.dataset.id,el.title.split(' — ')[0],im.src,im.alt,el);return}
+  const name=cardName(el);
+  openModal(cardKey(el),name,el.classList.contains('flipcard')?el.dataset.img:el.querySelector('img').src,name,null);
+},true);
+document.getElementById('itstate').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b||!itTile)return;
+  setItemState(itTile,+b.dataset.st);syncStateUI();
+});
+const tkPick=document.getElementById('tkpick'),stkPick=document.getElementById('stkpick');
+const pickSize=(k,sticker)=>sticker?(k==='hex_attack'?36:27):44;   // same size as placed on the 300px card (tokens 14.6%, stickers 9%, hex 12%)
+const pickBtn=(k,sticker)=>'<button type="button" style="--sz:'+pickSize(k,sticker)+'px" data-k="'+k+'" data-s="'+(sticker?1:0)+'" aria-pressed="false" title="'+k.replace(/_/g,' ')+'"><img src="'+(sticker?STK_DIR:TOK_DIR)+k+'.png" alt="'+k+'" draggable="false"></button>';
+tkPick.innerHTML=MY_TOKENS.map(k=>pickBtn(k,false)).join('');
+stkPick.innerHTML=STICKERS.map(k=>pickBtn(k,true)).join('');
+function selectPick(k,sticker){
+  itSel={k,s:sticker};
+  document.querySelectorAll('#tkpick button,#stkpick button').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.k===k&&(x.dataset.s==='1')===sticker)));
+}
+[tkPick,stkPick].forEach(box=>box.addEventListener('click',e=>{if(pickClickBlock)return;const b=e.target.closest('button');if(b)selectPick(b.dataset.k,b.dataset.s==='1')}));
+selectPick(itSel.k,false);
+document.getElementById('itclear').addEventListener('click',()=>{delete MK[itKey];saveMK();refreshKey(itKey)});
+const pctOf=e=>{const r=itCard.getBoundingClientRect();return{x:Math.round(Math.min(100,Math.max(0,(e.clientX-r.left)/r.width*100))*10)/10,y:Math.round(Math.min(100,Math.max(0,(e.clientY-r.top)/r.height*100))*10)/10}};
+const overCard=e=>{const r=itCard.getBoundingClientRect();return e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom};
+// dragging a token or sticker from the picker onto the card adds it there (a plain click still just selects it)
+let pickDrag=null,pickClickBlock=false;
+[tkPick,stkPick].forEach(box=>{
+  box.addEventListener('pointerdown',e=>{
+    const b=e.target.closest('button');if(!b)return;
+    pickDrag={b,x:e.clientX,y:e.clientY,ghost:null};b.setPointerCapture(e.pointerId);
+  });
+  box.addEventListener('pointermove',e=>{
+    if(!pickDrag)return;
+    if(!pickDrag.ghost){
+      if(Math.hypot(e.clientX-pickDrag.x,e.clientY-pickDrag.y)<5)return;
+      const g=document.createElement('img');g.src=pickDrag.b.querySelector('img').src;
+      g.style.cssText='position:fixed;z-index:999;width:'+pickSize(pickDrag.b.dataset.k,pickDrag.b.dataset.s==='1')+'px;pointer-events:none;transform:translate(-50%,-50%);filter:drop-shadow(0 4px 8px #000)';
+      document.body.appendChild(g);pickDrag.ghost=g;document.body.style.cursor='grabbing';
+    }
+    pickDrag.ghost.style.left=e.clientX+'px';pickDrag.ghost.style.top=e.clientY+'px';
+  });
+  box.addEventListener('pointerup',e=>{
+    if(!pickDrag)return;
+    const d=pickDrag;pickDrag=null;
+    if(!d.ghost)return;
+    d.ghost.remove();document.body.style.cursor='';pickClickBlock=true;setTimeout(()=>{pickClickBlock=false},0);
+    if(overCard(e)){
+      selectPick(d.b.dataset.k,d.b.dataset.s==='1');
+      (MK[itKey]=MK[itKey]||[]).push({k:d.b.dataset.k,...(d.b.dataset.s==='1'?{s:1}:{}),...pctOf(e)});saveMK();refreshKey(itKey);
+    }
   });
 });
+let tkDrag=null;
+itCard.addEventListener('pointerdown',e=>{
+  const el=e.target.closest('.tk');
+  if(!el||e.target.closest('.mkx'))return;
+  tkDrag={el,moved:false};el.setPointerCapture(e.pointerId);e.preventDefault();document.body.style.cursor='grabbing';
+});
+itCard.addEventListener('pointermove',e=>{
+  if(!tkDrag)return;tkDrag.moved=true;
+  const q=pctOf(e);tkDrag.el.style.left=q.x+'%';tkDrag.el.style.top=q.y+'%';
+  tkDrag.el.style.opacity=overCard(e)?'':'.3';   // faded while outside the card: releasing there removes it
+});
+itCard.addEventListener('pointerup',e=>{
+  if(!tkDrag)return;
+  document.body.style.cursor='';
+  if(tkDrag.moved){
+    const i=+tkDrag.el.dataset.i;
+    if(overCard(e)){const q=pctOf(e),m=MK[itKey][i];m.x=q.x;m.y=q.y}
+    else{MK[itKey].splice(i,1);if(!MK[itKey].length)delete MK[itKey]}
+    saveMK();refreshKey(itKey);
+  }
+  tkDrag=null;
+});
+itCard.addEventListener('click',e=>{
+  const el=e.target.closest('.tk');
+  if(el){
+    if(e.target.closest('.mkx')){MK[itKey].splice(+el.dataset.i,1);if(!MK[itKey].length)delete MK[itKey];saveMK();refreshKey(itKey)}
+    return;
+  }
+  if(!itSel.k)return;
+  (MK[itKey]=MK[itKey]||[]).push({k:itSel.k,...(itSel.s?{s:1}:{}),...pctOf(e)});saveMK();refreshKey(itKey);
+});
+syncCards();renderEnh();
 wireList(hand,reindexHand);
 wireList(active,()=>{activeCount.textContent=active.children.length});
+// counts follow the zone contents, whichever way a card got in or out
+new MutationObserver(()=>{handCount.textContent=hand.children.length}).observe(hand,{childList:true});
+new MutationObserver(()=>{activeCount.textContent=active.children.length}).observe(active,{childList:true});
 document.querySelector('.board6').addEventListener('dragstart',e=>{
   const f=e.target.closest('.flipcard');if(!f)return;
   dragData={kind:'slot',slot:f.closest('.slot6'),name:f.dataset.name,img:f.dataset.img,ini:f.dataset.ini};
@@ -258,41 +606,42 @@ function pileEls(key){const el=document.querySelector('[data-pile="'+key+'"]');r
 function renderPileTop(key){
   const{cardWrap,countEl}=pileEls(key),arr=PILES[key],top=arr[arr.length-1];
   countEl.textContent=arr.length;
-  cardWrap.innerHTML=top?'<div class="ac" draggable="true" title="'+top.name+'"><img src="'+top.img+'" alt="'+top.name+'" loading="lazy"></div>':'<div class="slotempty">Empty</div>';
+  cardWrap.innerHTML=top?'<div class="ac" draggable="true" title="'+top.name+'"><img src="'+top.img+'" alt="'+top.name+'" loading="lazy">'+'</div>':'<div class="slotempty">Empty</div>';
 }
 function addToPile(key,data){PILES[key].push(data);renderPileTop(key)}
 function removeFromPile(key){PILES[key].pop();renderPileTop(key)}
 const pileModal=document.getElementById('modal-pilecards'),pileModalTitle=document.getElementById('modaltitle-pilecards'),pileModalList=document.getElementById('pilemodallist');
 const pileZoomImg=document.getElementById('pilezoomimg');
-let pileModalKey=null;
-// The row list scrolls (overflow:auto), so an in-place CSS zoom would just get clipped -- show the full-size image
-// in a separate overlay instead, positioned over the modal rather than inside the scrolling list.
-pileModalList.addEventListener('mouseover',e=>{
-  const img=e.target.closest('.pilerow6')?.querySelector('img');
-  if(!img)return;
-  pileZoomImg.src=img.src;pileZoomImg.alt=img.alt;pileZoomImg.hidden=false;
-});
-pileModalList.addEventListener('mouseout',e=>{
-  if(!e.relatedTarget||!pileModalList.contains(e.relatedTarget))pileZoomImg.hidden=true;
-});
+let pileModalKey=null,pileTimer=0;
+// the pile modal shows the cards side by side at the size of a hand card; zoom is the docked preview (see POOL_IMG in the module)
 function renderPileModalList(){
   const arr=PILES[pileModalKey];
-  pileModalList.innerHTML=arr.length?arr.map((c,i)=>'<div class="pilerow6"><img src="'+c.img+'" alt="'+c.name+'"><span>'+c.name+'</span><button type="button" class="btn6" data-recover="'+i+'">Recover</button></div>').reverse().join(''):'<p class="mrow">Nothing here yet</p>';
+  pileModalList.innerHTML=arr.length?arr.map((c,i)=>'<div class="pcell" data-name="'+c.name+'" title="'+c.name+'"><button type="button" class="rec" data-i="'+i+'" title="Recover '+c.name+'">Recover</button><img src="'+c.img+'" alt="'+c.name+'" draggable="false"></div>').join(''):'<p class="mrow">Nothing here.</p>';
+  document.getElementById('pilecount').textContent=arr.length+(arr.length===1?' card':' cards');
+  document.getElementById('pilerecover').disabled=!arr.length;
 }
-function openPileModal(key){pileModalKey=key;pileModalTitle.textContent=key==='discard'?'Discard':'Lost';renderPileModalList();pileZoomImg.hidden=true;pileModal.hidden=false}
-pileModalList.addEventListener('click',e=>{
-  const b=e.target.closest('[data-recover]');if(!b||!pileModalKey)return;
-  const idx=Number(b.dataset.recover),arr=PILES[pileModalKey];
-  const[card]=arr.splice(idx,1);
-  renderPileTop(pileModalKey);
-  hand.appendChild(toCardEl(card));reindexHand();
-  renderPileModalList();
+function decoratePileRows(){pileModalList.querySelectorAll('.pcell').forEach(el=>fillTokens(el,'c:'+el.dataset.name,false))}
+function openPileModal(key){
+  pileModalKey=key;pileModalTitle.textContent=key==='discard'?'Discard':'Lost';
+  const c=hand.querySelector('.ac');pileModal.style.setProperty('--hcw',(c&&c.offsetWidth?c.offsetWidth:150)+'px');   // same width as a card in the hand
+  renderPileModalList();decoratePileRows();pileZoomImg.hidden=true;pileModal.hidden=false;
+}
+pileModalList.addEventListener('click',e=>{   // the badge above a card recovers just that card
+  const b=e.target.closest('.rec');if(!b||!pileModalKey)return;
+  const [card]=PILES[pileModalKey].splice(+b.dataset.i,1);if(!card)return;
+  hand.appendChild(toCardEl(card));renderPileTop(pileModalKey);reindexHand();
+  renderPileModalList();decoratePileRows();
+});
+document.getElementById('pilerecover').addEventListener('click',()=>{
+  const arr=PILES[pileModalKey];if(!arr||!arr.length)return;
+  arr.splice(0).forEach(c=>hand.appendChild(toCardEl(c)));
+  renderPileTop(pileModalKey);reindexHand();pileModal.hidden=true;
 });
 document.querySelectorAll('.pile6').forEach(pile=>{
   const key=pile.dataset.pile;
   pile.addEventListener('dragstart',e=>{
     const el=e.target.closest('.ac');if(!el)return;
-    dragData={kind:'pile',pile:key,name:el.querySelector('img').alt,img:el.querySelector('img').src};
+    dragData={kind:'pile',pile:key,name:el.querySelector('img').alt,img:el.querySelector('img').src,ini:(PILES[key][PILES[key].length-1]||{}).ini||''};
     el.classList.add('dragging');e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain','card');
   });
   pile.addEventListener('dragend',e=>{const el=e.target.closest('.ac');if(el)el.classList.remove('dragging');pile.classList.remove('over');dragData=null});
@@ -302,7 +651,7 @@ document.querySelectorAll('.pile6').forEach(pile=>{
     e.preventDefault();pile.classList.remove('over');
     if(!dragData)return;
     if(dragData.kind==='pile'&&dragData.pile===key){dragData=null;return}
-    addToPile(key,{name:dragData.name,img:dragData.img});
+    addToPile(key,{name:dragData.name,img:dragData.img,ini:dragData.ini||''});
     sourceRemove(dragData);
     dragData=null;
   });
@@ -310,7 +659,7 @@ document.querySelectorAll('.pile6').forEach(pile=>{
 });
 // ---- modals: open/close, journal tabs, mat flip ----
 document.querySelectorAll('[data-modal]').forEach(b=>b.addEventListener('click',()=>{const m=document.getElementById('modal-'+b.dataset.modal);if(m)m.hidden=false}));
-function closeModals(){document.querySelectorAll('.mmodal').forEach(m=>{m.hidden=true})}
+function closeModals(){document.querySelectorAll('.mmodal').forEach(m=>{m.hidden=true});pileZoomImg.hidden=true}
 document.querySelectorAll('.mmodal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeModals()}));
 document.querySelectorAll('[data-modalclose]').forEach(b=>b.addEventListener('click',closeModals));
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModals()});
@@ -337,6 +686,7 @@ if(matImg){
 // URL-keyed deck state, since this mockup has no map-tool "g" slot to key off of.
 import { heroCatalog, heroPerkClass, groupPerks, perkBoxes, perkLabel, perkDelta } from '../../scripts/amd/heroDeck.js';
 import { buildCard } from '../../scripts/amd/card.js';
+import { perkTextHtml, perkRuleNote } from '../../scripts/amd/perkText.js';
 
 const CLASS_NAME = "Tinkerer";
 // The standard 20-card deck (scripts/attackMods.js's AM_TYPES, trimmed to the 7 non-imbuement faces --
@@ -364,26 +714,148 @@ function composition() {
   return counts;
 }
 
+// Click-to-enlarge for any card in the deck / perk modals: clone the card layers into a lightbox.
+const pcBig = document.createElement('div');
+pcBig.className = 'pcbig';
+pcBig.hidden = true;
+document.body.appendChild(pcBig);
+const closePcBig = () => { pcBig.hidden = true; pcBig.innerHTML = ''; };
+// Enlarged card docked to the left of the open modal (like the discard list), shown on click.
+// Any other click or Escape hides it.
+const POOL_IMG = '#handbody .pcard > img, #poolbody .pcard > img, #itemsbody .pcard > img, #pilemodallist .pcell > img';
+const zoomModeFor = img => (img.closest('#pilemodallist') && window.HMS?.zones?.piles) || window.HMS?.zoom;   // piles follow their own zone setting
+let pcTimer = 0;
+document.addEventListener('mouseover', e => {
+  const img = e.target.closest && e.target.closest(POOL_IMG);
+  if (!img || zoomModeFor(img) !== 'hover' || (e.relatedTarget && img.contains(e.relatedTarget))) return;
+  clearTimeout(pcTimer);
+  pcTimer = setTimeout(() => showPcBig(img), window.hoverDelayMs ? window.hoverDelayMs() : 0);
+});
+document.addEventListener('mouseout', e => {
+  const img = e.target.closest && e.target.closest(POOL_IMG);
+  if (!img || (e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest(POOL_IMG) === img)) return;
+  clearTimeout(pcTimer);
+  if (zoomModeFor(img) === 'hover') closePcBig();
+});
+function showPcBig(pc) {
+  const box = pc.closest('.mmodalbox');
+  const rect = box ? box.getBoundingClientRect() : { left: 0, right: 0 };
+  const max = ({ s: 270, m: 340, l: 420 })[window.HMS?.size] || 420;
+  const roomL = rect.left - 36, roomR = innerWidth - rect.right - 36;
+  let right = window.HMS?.dock === 'right';
+  if ((right ? roomR : roomL) < 140 && (right ? roomL : roomR) > (right ? roomR : roomL)) right = !right;   // not enough room on the chosen side: use the other
+  const room = right ? roomR : roomL;
+  const port = pc.matches(POOL_IMG);   // ability cards are portrait
+  const w = Math.max(120, Math.min((port ? Math.min(max, (innerHeight - 40) * 5 / 7) : max) * (pc.closest('#itemsbody') ? 0.75 : 1), room));   // item previews a bit smaller
+  pcBig.style.setProperty('--zw', w + 'px');
+  pcBig.style.left = room < 120   // no room on either side: overlay the modal
+    ? Math.max(18, rect.left + 18) + 'px'
+    : right ? Math.min(innerWidth - w - 18, rect.right + 18) + 'px' : Math.max(18, rect.left - w - 18) + 'px';
+  pcBig.innerHTML = '';
+  const clone = pc.cloneNode(true);
+  if (port) clone.classList.add(pc.closest('#itemsbody') ? 'nat' : 'port');
+  if (port) {   // card pool / edit hand: carry the tokens and stickers over
+    const wrap = document.createElement('div');
+    wrap.style.position = 'relative';
+    wrap.appendChild(clone);
+    pc.parentElement.querySelectorAll(':scope > .tk').forEach(t => wrap.appendChild(t.cloneNode(true)));
+    pcBig.appendChild(wrap);
+  } else pcBig.appendChild(clone);
+  pcBig.hidden = false;
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePcBig(); }, true);
+document.addEventListener('contextmenu', e => {
+  if (window.HMS?.amd !== 'draw') return;
+  const pc = e.target.closest && e.target.closest('#amdreal .amcard > .pc, #amdreal .amcard > img');
+  if (!pc) return;
+  e.preventDefault();
+  showPcBig(pc);
+}, true);
+document.addEventListener('click', e => {
+  const pc = e.target.closest && e.target.closest('.am-perk-cards .pc, #amdreal .amcard > .pc, #amdreal .amcard > img, ' + POOL_IMG);
+  if (!pc) { closePcBig(); return; }
+  if (pc.matches(POOL_IMG) && zoomModeFor(pc) === 'hover') return;   // card pool / edit hand follow the zoom setting: hover mode previews on hover
+  if (window.HMS?.amd === 'draw' && pc.closest('#amdreal')) return;   // draw mode: the card click draws, right-click enlarges
+  e.stopPropagation();
+  showPcBig(pc);
+}, true);
+
+// Draw state (not saved): discard counts per standard key, bless/curse cards in the deck.
+// Same rules as scripts/attackMods.js: drawn standard cards go to the discard, bless/curse leave the game;
+// bless and curse are added by hand, max 10 each.
+const discard = {};
+const special = { bless: 0, curse: 0 };
+const SPECIAL = [
+  { key: 'bless', label: 'Bless', img: '../../images/common/attack_mods/hero/bless.webp', face: 'B', max: 10 },
+  { key: 'curse', label: 'Curse', img: '../../images/common/attack_mods/hero/curse.webp', face: 'C', max: 10 },
+];
+
+let amdCode = '';
 function renderAmd() {
   const counts = composition();
   const grid = document.getElementById('amdreal');
   grid.innerHTML = '';
   const faces = [];
+  let total = 0, disc = 0;
   for (const c of catalog) {
-    const n = counts[c.key] || 0;
+    const base = counts[c.key] || 0;
+    const d = Math.min(discard[c.key] || 0, base);
+    const n = base - d;
     for (let i = 0; i < n; i++) faces.push(c.face);
-    if (n <= 0) continue;
+    total += n; disc += d;
+    if (base <= 0) continue;
     const tile = document.createElement('div');
-    tile.className = 'amdtile real';
+    tile.className = 'amdtile real' + (n ? '' : ' none');
     tile.title = c.face + (c.rolling ? ' (reshuffles the deck)' : '');
-    tile.appendChild(buildCard(c.card, CLASS_NAME, !!c.extra));
+    const btn = document.createElement('div');
+    btn.className = 'amcard';
+    btn.appendChild(buildCard(c.card, CLASS_NAME, !!c.extra));
     const badge = document.createElement('b');
-    badge.textContent = n;
-    tile.appendChild(badge);
+    badge.textContent = n + '/' + base;
+    btn.appendChild(badge);
+    tile.appendChild(btn);
+    const foot = document.createElement('div');
+    foot.className = 'amfoot';
+    foot.innerHTML = `<button type="button" data-draw="${c.key}" ${n ? '' : 'disabled'} title="Draw one ${c.face}"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg></button><button type="button" data-ret="${c.key}" ${d ? '' : 'disabled'} title="Return one ${c.face} from the discard to the deck">&#8630; ${d}</button>`;
+    tile.appendChild(foot);
     grid.appendChild(tile);
   }
-  document.getElementById('amdcode').textContent = `1custom${faces.length}{${faces.join(';')}}`;
+  for (const sp of SPECIAL) {
+    const n = special[sp.key];
+    for (let i = 0; i < n; i++) faces.push(sp.face);
+    total += n;
+    const tile = document.createElement('div');
+    tile.className = 'amdtile real' + (n ? '' : ' none');
+    tile.innerHTML = `<div class="amcard"><img src="${sp.img}" alt="${sp.label}" draggable="false"><b>${n}</b></div>
+      <div class="amfoot"><button type="button" data-draw="${sp.key}" ${n ? '' : 'disabled'} title="Draw (removes the card from the game)"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg></button><button type="button" data-adj="${sp.key}" data-d="-1" ${n ? '' : 'disabled'} title="Remove one ${sp.label} card">&minus;</button><button type="button" data-adj="${sp.key}" data-d="1" ${n >= sp.max ? 'disabled' : ''} title="Add one ${sp.label} card">+</button></div>`;
+    grid.appendChild(tile);
+  }
+  amdCode = faces.length ? `1custom${faces.length}{${faces.join(';')}}` : '';
+  const cnt = document.getElementById('amdcount');
+  if (cnt) cnt.textContent = `${total} in deck · ${disc} in discard`;
 }
+
+document.getElementById('amdreal').addEventListener('click', e => {
+  if (window.HMS?.amd === 'draw') {
+    const card = e.target.closest('.amcard');
+    const b = card && card.parentElement.querySelector('[data-draw]');
+    if (b) { if (!b.disabled) b.click(); return; }
+  }
+  const t = e.target.closest('button');
+  if (!t || t.disabled) return;
+  if (t.dataset.draw) {
+    const k = t.dataset.draw;
+    if (k in special) special[k] = Math.max(0, special[k] - 1);
+    else discard[k] = (discard[k] || 0) + 1;
+  } else if (t.dataset.ret) {
+    discard[t.dataset.ret] = Math.max(0, (discard[t.dataset.ret] || 0) - 1);
+  } else if (t.dataset.adj) {
+    const sp = SPECIAL.find(x => x.key === t.dataset.adj);
+    special[sp.key] = Math.max(0, Math.min(sp.max, special[sp.key] + Number(t.dataset.d)));
+  } else return;
+  renderAmd();
+});
+document.getElementById('amdshuffle')?.addEventListener('click', () => { for (const k in discard) delete discard[k]; renderAmd(); });
 
 // Mirrors scripts/attackMods.js's perkGroup(): one row per group of identical perk entries.
 function perkGroupRow(members) {
@@ -441,10 +913,12 @@ function perkRowEl(grp) {
     else { const g = document.createElement('span'); g.className = 'am-perk-gone'; g.textContent = 'removed'; cardsEl.appendChild(g); }
   } else addCards('adds', p.adds);
   row.appendChild(cardsEl);
-  if (p.label && !p.removes.length && !p.adds.length) {
+  const nCards = p.removes.length + p.adds.length;
+  const txt = !nCards ? p.label : perkRuleNote(p.label);
+  if (txt) {
     const t = document.createElement('span');
-    t.className = 'am-perk-text';
-    t.textContent = p.label;
+    t.className = 'am-perk-text' + (nCards ? ' am-perk-note' : '');
+    t.innerHTML = perkTextHtml(txt);
     row.appendChild(t);
   }
   if (grp.kind !== 'single') {
@@ -468,8 +942,360 @@ function renderPerks() {
 function renderAll() { renderAmd(); renderPerks(); }
 renderAll();
 
-document.getElementById('amdcoderow')?.querySelector('[data-copy]')?.addEventListener('click', e => {
-  const code = document.getElementById(e.currentTarget.dataset.copy)?.textContent;
-  if (code) navigator.clipboard?.writeText(code).catch(() => {});
+function copyCode(btn, code) {
+  if (!code) return;
+  navigator.clipboard?.writeText(code).catch(() => {});
+  const old = btn.innerHTML;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
+  setTimeout(() => { btn.innerHTML = old; }, 900);
+}
+document.getElementById('amdcopy').addEventListener('click', e => copyCode(e.currentTarget, amdCode));
+document.querySelectorAll('[data-code]').forEach(b => b.addEventListener('click', () => copyCode(b, b.dataset.code)));
+
+// ---- display settings (cogwheel): hand layout and card zoom (hover or click, globally or per zone) ----
+// The deck and perk modals always use click-to-enlarge (docked), independent of these.
+const SET_KEY='hm-playmat-settings';
+const SET_DEFAULT={layout:'spread',zoom:'hover',zones:{active:'',play:'',hand:'',piles:'',items:''},size:'m',delay:'off',dock:'left',amd:'enlarge',inib:true,autosort:false,reduce:false};
+const SET_ENUM={layout:['spread','fan'],zoom:['hover','click'],size:['s','m','l'],delay:['off','short','long'],dock:['left','right'],amd:['enlarge','draw']};
+let SET=JSON.parse(JSON.stringify(SET_DEFAULT));
+try{const o=JSON.parse(localStorage.getItem(SET_KEY)||'null');if(o){SET.layout=o.layout==='fan'?'fan':'spread';SET.zoom=o.zoom==='click'?'click':'hover';for(const k in SET.zones)if(o.zones&&['hover','click'].includes(o.zones[k]))SET.zones[k]=o.zones[k];for(const k in SET_ENUM)if(SET_ENUM[k].includes(o[k]))SET[k]=o[k];for(const k of ['inib','autosort','reduce'])if(typeof o[k]==='boolean')SET[k]=o[k]}}catch(e){}
+window.HMS=SET;
+window.hoverDelayMs=()=>({off:0,short:150,long:400})[SET.delay]||0;
+const zoomMode=z=>SET.zones[z]||SET.zoom;
+window.pileMode=()=>zoomMode('piles');  // also read by the classic script's pile hover handlers
+const clearZoomed=()=>document.querySelectorAll('.zoomed').forEach(x=>x.classList.remove('zoomed'));
+function applySettings(){
+  wrap.dataset.layout=SET.layout;
+  for(const z of ['active','play','hand','piles','items'])document.body.dataset['z'+z]=zoomMode(z);
+  document.querySelectorAll('#setpop .seg').forEach(g=>g.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(SET[g.dataset.set]===b.dataset.v))));
+  document.querySelectorAll('#setpop select').forEach(sel=>{sel.value=SET.zones[sel.dataset.zone]});
+  HOVER_H=({s:260,m:320,l:400})[SET.size];
+  document.body.style.setProperty('--pzh',({s:195,m:230,l:280})[SET.size]+'px');
+  document.body.style.setProperty('--hdelay',window.hoverDelayMs()+'ms');
+  const bd=document.body.dataset;bd.dock=SET.dock;bd.inib=SET.inib?'on':'off';bd.motion=SET.reduce?'reduce':'full';
+  document.querySelectorAll('#setpop [data-flag]').forEach(c=>{c.checked=!!SET[c.dataset.flag]});
+  if(SET.autosort)sortHand();
+  clearZoomed();pileZoomImg.hidden=true;
+  try{localStorage.setItem(SET_KEY,JSON.stringify(SET))}catch(e){}
+}
+const setPop=document.getElementById('setpop'),setBtn=document.getElementById('setbtn');
+const togglePop=open=>{setPop.hidden=!open;setBtn.setAttribute('aria-expanded',String(open))};
+setBtn.addEventListener('click',e=>{e.stopPropagation();togglePop(setPop.hidden)});
+document.addEventListener('click',e=>{if(!setPop.hidden&&!e.target.closest('.setwrap'))togglePop(false)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){togglePop(false);clearZoomed()}});
+setPop.querySelectorAll('.seg button').forEach(b=>b.addEventListener('click',()=>{SET[b.parentElement.dataset.set]=b.dataset.v;applySettings()}));
+setPop.querySelectorAll('[data-flag]').forEach(c=>c.addEventListener('change',()=>{SET[c.dataset.flag]=c.checked;applySettings()}));
+setPop.querySelectorAll('select').forEach(sel=>sel.addEventListener('change',()=>{SET.zones[sel.dataset.zone]=sel.value;applySettings()}));
+document.getElementById('setreset').addEventListener('click',()=>{SET=JSON.parse(JSON.stringify(SET_DEFAULT));window.HMS=SET;applySettings()});
+applySettings();
+
+// ---- card pool: level-up picks (official rule: any card of the new level or lower) and hand selection at scenario start ----
+const DECK=[{"s":"disorienting-flash","lv":"1","ini":null,"img":true},{"s":"enhancement-field","lv":"1","ini":61,"img":true},{"s":"flamethrower","lv":"1","ini":16,"img":true},{"s":"harmless-contraption","lv":"1","ini":74,"img":true},{"s":"ink-bomb","lv":"1","ini":80,"img":true},{"s":"jet-propulsion","lv":"1","ini":34,"img":true},{"s":"net-shooter","lv":"1","ini":19,"img":true},{"s":"potent-potables","lv":"1","ini":73,"img":true},{"s":"reinvigorating-elixir","lv":"1","ini":37,"img":true},{"s":"restorative-mist","lv":"1","ini":17,"img":true},{"s":"stun-shot","lv":"1","ini":20,"img":true},{"s":"toxic-bolt","lv":"1","ini":76,"img":true},{"s":"gas-canister","lv":"X","ini":22,"img":true},{"s":"hook-gun","lv":"X","ini":72,"img":true},{"s":"volatile-concoction","lv":"X","ini":18,"img":true},{"s":"crank-bow","lv":"2","ini":23,"img":true},{"s":"repulsor-gun","lv":"2","ini":35,"img":true},{"s":"stamina-booster","lv":"3","ini":48,"img":true},{"s":"teleportation-pad","lv":"3","ini":62,"img":true},{"s":"dangerous-contraption","lv":"4","ini":10,"img":true},{"s":"proximity-mine","lv":"4","ini":14,"img":true},{"s":"disintegration-beam","lv":"5","ini":36,"img":true},{"s":"noxious-vials","lv":"5","ini":75,"img":false},{"s":"auto-turret","lv":"6","ini":32,"img":false},{"s":"invigorating-aerosol","lv":"6","ini":21,"img":false},{"s":"murderous-contraption","lv":"7","ini":84,"img":false},{"s":"pernicious-fogger","lv":"7","ini":71,"img":false},{"s":"cryonic-snare","lv":"8","ini":15,"img":false},{"s":"harsh-stimulants","lv":"8","ini":27,"img":false},{"s":"chimeric-formula","lv":"9","ini":33,"img":false},{"s":"gravity-bomb","lv":"9","ini":85,"img":false}];
+const HAND_LIMIT=12;   // class hand limit, never changes (placeholder value, to be read from class data)
+const REMOTE_CARDS='https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_ability_cards/gh2/TI2/';
+const imgUrl=c=>c.img?'img/cards/'+c.s+'.jpg':REMOTE_CARDS+c.s+'.jpeg';   // local scan when the mockup has it, asset repository otherwise
+const nameOf=slug=>slug.split('-').map(w=>w[0].toUpperCase()+w.slice(1)).join(' ');
+const lvNum=c=>c.lv==='X'?0:Number(c.lv);
+const POOL_KEY='hm-card-pool',HANDSEL_KEY='hm-hand-selection';
+let PL={level:5,picks:['repulsor-gun','teleportation-pad','proximity-mine']};
+try{const o=JSON.parse(localStorage.getItem(POOL_KEY)||'null');if(o&&Number.isInteger(o.level)&&Array.isArray(o.picks)){PL.level=Math.min(10,Math.max(1,o.level));PL.picks=o.picks.filter(x=>DECK.some(c=>c.s===x))}}catch(e){}
+const basePool=()=>DECK.filter(c=>c.lv==='1'||c.lv==='X').map(c=>c.s);
+const poolSet=()=>new Set([...basePool(),...PL.picks]);
+const pending=()=>Math.max(0,PL.level-1-PL.picks.length);
+const savePool=()=>{try{localStorage.setItem(POOL_KEY,JSON.stringify(PL))}catch(e){}};
+const cardTile=(c,cls,extra)=>'<div class="pcard '+cls+'" data-s="'+c.s+'" data-name="'+nameOf(c.s)+'" title="'+nameOf(c.s)+' (level '+c.lv+')">'+'<img src="'+imgUrl(c)+'" alt="'+nameOf(c.s)+'" loading="lazy" draggable="false" onerror="this.remove()">'+'<span class="plv">'+c.lv+'</span>'+(extra||'')+'</div>';
+const joinGroups=a=>a[0]+'<div class="lvrow">'+a.slice(1).join('')+'</div>';   // level 1 & X full width, levels 2+ side by side
+const decoratePcards=root=>root.querySelectorAll('.pcard').forEach(el=>fillTokens(el,'c:'+el.dataset.name,false));
+const lvLabel=k=>k==='1'?'Level 1 & X':'Level '+k;
+const lvGroups=()=>{const g={};DECK.forEach(c=>(g[c.lv==='X'?'1':c.lv]=g[c.lv==='X'?'1':c.lv]||[]).push(c));return Object.keys(g).sort((a,b)=>(a==='X'?0:+a)-(b==='X'?0:+b)).map(k=>[k,g[k]])};
+function refreshPoolDot(){
+  const d=document.getElementById('pooldot'),n=pending();
+  d.hidden=!n;d.textContent=n;
+  const lv=document.querySelector('.lvl');if(lv){lv.textContent=PL.level;lv.title='Level '+PL.level+(n?', '+n+' card pick pending':'')+' (click for card pool)'}
+}
+function renderPool(){
+  const set=poolSet(),n=pending();
+  document.getElementById('lvnum').textContent=PL.level;
+  document.getElementById('poolcount').textContent=set.size+' cards in pool';
+  const ban=document.getElementById('poolbanner');
+  ban.hidden=!n;ban.textContent=n?'Level up: choose '+n+' new card'+(n>1?'s':'')+' of level '+PL.level+' or lower.':'';
+  document.getElementById('poolundo').disabled=!PL.picks.length;
+  document.getElementById('poolbody').innerHTML=joinGroups(lvGroups().map(([k,cards])=>{
+    const locked=k!=='X'&&+k>PL.level;
+    return '<div class="pgrp"><h3>'+lvLabel(k)+'<span>'+(locked?'locked until level '+k:'')+'</span></h3><div class="pgrid">'+
+      cards.map(c=>cardTile(c,set.has(c.s)?'':locked?'locked':'avail'+(n?' can':''))).join('')+'</div></div>';
+  }));
+  decoratePcards(document.getElementById('poolbody'));
+  refreshPoolDot();
+}
+function showTab(t){
+  document.getElementById('tab-pool').hidden=t!=='pool';document.getElementById('tab-hand').hidden=t!=='hand';
+  document.querySelectorAll('#decktabs button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tab===t)));
+}
+function openPool(){showTab('pool');renderPool();document.getElementById('modal-deck').hidden=false}
+document.getElementById('decktabs').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.tab==='hand')openHandSel();else{showTab('pool');renderPool()}
 });
+document.getElementById('poolbody').addEventListener('click',e=>{
+  const t=e.target.closest('.pcard.avail.can');if(!t||!pending())return;
+  PL.picks.push(t.dataset.s);savePool();renderPool();
+});
+document.getElementById('poolundo').addEventListener('click',()=>{PL.picks.pop();savePool();renderPool()});
+const setLevel=v=>{PL.level=Math.min(9,Math.max(1,v));while(PL.picks.length>PL.level-1)PL.picks.pop();savePool();renderPool();syncXpToLevel()};
+document.getElementById('lvup').addEventListener('click',()=>setLevel(PL.level+1));
+document.getElementById('lvdn').addEventListener('click',()=>setLevel(PL.level-1));
+document.querySelector('[data-modal=deck]').addEventListener('click',()=>openHandSel());   // the Deck button opens on the Hand tab
+document.querySelector('.lvl').addEventListener('click',openPool);
+refreshPoolDot();
+
+// play area heading: the initiative of the card in position 1 ("?" while it is face down, a dash while empty)
+const playIni=document.getElementById('playini');
+function updatePlayIni(){
+  const f=document.querySelector('.slot6.first .flipcard');
+  const v=!f?'–':f.classList.contains('is-front')?(f.dataset.ini||'?'):'?';
+  if(playIni.textContent!==v)playIni.textContent=v;   // only on change: the heading sits inside the observed zone
+}
+new MutationObserver(updatePlayIni).observe(document.querySelector('.zone.play'),{subtree:true,childList:true,attributes:true,attributeFilter:['class']});
+updatePlayIni();
+
+// pile preview: tokens and stickers over the enlarged card
+const pzTk=document.getElementById('pilezoomtk');
+new MutationObserver(()=>{
+  if(pileZoomImg.hidden){pzTk.hidden=true;return}
+  const rc=pileZoomImg.getBoundingClientRect();
+  Object.assign(pzTk.style,{left:rc.left+'px',top:rc.top+'px',width:rc.width+'px',height:rc.height+'px'});
+  fillTokens(pzTk,'c:'+pileZoomImg.alt,false);pzTk.hidden=false;
+}).observe(pileZoomImg,{attributes:true,attributeFilter:['hidden','src','alt']});
+
+// ---- equipped items: select from the item pool within the slot limits (head 1, body 1, legs 1, hands 2, small items half the level rounded up)
+const ITEM_POOL=[{"id":1,"s":"weathered-boots","slot":"legs"},{"id":5,"s":"scouting-lens","slot":"head"},{"id":8,"s":"heater-shield","slot":"1H"},{"id":9,"s":"focusing-rod","slot":"1H"},{"id":12,"s":"stamina-potion","slot":"small"},{"id":14,"s":"studded-leather","slot":"body"},{"id":21,"s":"power-potion","slot":"small"},{"id":149,"s":"aesther-spyglass","slot":"small"}];   // demo: the 8 items the character owns (shop and treasures will add to it)
+const ITEM_URL=id=>'https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_items/gh2/'+String(id).padStart(3,'0')+'.png';
+const SLOT_ORDER=['head','body','legs','1H','2H','small'];
+const SLOT_LABEL={head:'Head',body:'Body',legs:'Legs','1H':'One hand','2H':'Two hands',small:'Small items'};
+const ITEMS_KEY='hm-items-equipped';
+// shelf order: head, body, hands (1H and 2H together), legs, small items
+const SHELF_RANK={head:0,body:1,'1H':2,'2H':2,legs:3,small:4};
+const shelfRank=i=>SHELF_RANK[i.slot]??9;
+function sortShelf(){
+  const shelf=document.querySelector('.shelf6');
+  [...shelf.querySelectorAll('.it')].map(t=>({t,i:ITEM_POOL.find(x=>x.id===+t.dataset.id)||{slot:(t.title.match(/\(([^)]+)\)/)||[])[1],id:+t.dataset.id}}))
+    .sort((a,b)=>shelfRank(a.i)-shelfRank(b.i)||a.i.id-b.i.id).forEach(x=>shelf.appendChild(x.t));
+}
+document.getElementById('sortitems').addEventListener('click',sortShelf);
+const slotLimits=()=>({head:1,body:1,legs:1,hands:2,small:Math.ceil(PL.level/2)});
+const slotUse=ids=>{const u={head:0,body:0,legs:0,hands:0,small:0};ITEM_POOL.filter(i=>ids.has(i.id)).forEach(i=>{if(i.slot==='1H')u.hands+=1;else if(i.slot==='2H')u.hands+=2;else u[i.slot]+=1});return u};
+const fitsSlot=(ids,it)=>{const u=slotUse(ids),l=slotLimits();return it.slot==='1H'?u.hands+1<=l.hands:it.slot==='2H'?u.hands+2<=l.hands:u[it.slot]+1<=l[it.slot]};
+const itemName=i=>nameOf(i.s);
+let IS=new Set();
+function renderItemSel(){
+  const u=slotUse(IS),l=slotLimits();
+  document.getElementById('itemlim').innerHTML=[['Head',u.head,l.head],['Body',u.body,l.body],['Legs',u.legs,l.legs],['Hands',u.hands,l.hands],['Small',u.small,l.small]].map(([n,a,b])=>'<span class="'+(a>=b?'full':'')+'">'+n+' <b>'+a+' / '+b+'</b></span>').join('');
+  document.getElementById('itemsbody').innerHTML=SLOT_ORDER.map(sl=>{
+    const list=ITEM_POOL.filter(i=>i.slot===sl);if(!list.length)return '';
+    return '<div class="pgrp"><h3>'+SLOT_LABEL[sl]+'</h3><div class="pgrid">'+list.map(i=>{
+      const on=IS.has(i.id),off=!on&&!fitsSlot(IS,i);
+      return '<div class="pcard '+(on?'sel':off?'dis':'')+'" data-s="'+i.id+'" data-name="'+itemName(i)+'" title="'+itemName(i)+' ('+sl+')"><img src="'+ITEM_URL(i.id)+'" alt="'+itemName(i)+'" loading="lazy" draggable="false" onerror="this.remove()"><button type="button" class="psel" data-s="'+i.id+'" aria-pressed="'+on+'" aria-label="Equip '+itemName(i)+'"'+(off?' disabled':'')+'></button></div>';
+    }).join('')+'</div></div>';
+  }).join('');
+  document.querySelectorAll('#itemsbody .pcard').forEach(el=>fillTokens(el,'i:'+el.dataset.s,false));
+}
+function openItemSel(){
+  let saved=null;try{saved=JSON.parse(localStorage.getItem(ITEMS_KEY)||'null')}catch(e){}
+  const pool=new Set(ITEM_POOL.map(i=>i.id));
+  const cur=Array.isArray(saved)?saved:[...document.querySelectorAll('.shelf6 .it')].map(t=>+t.dataset.id);
+  IS=new Set();
+  cur.filter(id=>pool.has(id)).forEach(id=>{const it=ITEM_POOL.find(i=>i.id===id);if(fitsSlot(IS,it))IS.add(id)});
+  renderItemSel();document.getElementById('modal-items').hidden=false;
+}
+document.getElementById('edititems').addEventListener('click',openItemSel);
+document.getElementById('itemsbody').addEventListener('click',e=>{
+  const b=e.target.closest('.psel');if(!b||b.disabled)return;
+  const id=+b.dataset.s;IS.has(id)?IS.delete(id):IS.add(id);renderItemSel();
+});
+document.getElementById('itemclear').addEventListener('click',()=>{IS.clear();renderItemSel()});
+document.getElementById('itemok').addEventListener('click',()=>{
+  const shelf=document.querySelector('.shelf6');
+  const have=new Map([...shelf.querySelectorAll('.it')].map(t=>[+t.dataset.id,t]));
+  have.forEach((t,id)=>{if(!IS.has(id))t.remove()});
+  ITEM_POOL.filter(i=>IS.has(i.id)).sort((a,b)=>shelfRank(a)-shelfRank(b)||a.id-b.id).forEach(i=>{
+    let t=have.get(i.id);
+    if(!t){
+      t=document.createElement('div');t.className='it';t.setAttribute('data-itemstate','');t.dataset.id=i.id;
+      t.title=itemName(i)+' ('+i.slot+')';
+      t.innerHTML='<img src="'+ITEM_URL(i.id)+'" alt="'+itemName(i)+'" loading="lazy">';
+      setItemState(t,0);fillTokens(t,'i:'+i.id,false);
+    }
+    shelf.appendChild(t);
+  });
+  document.getElementById('itemcount').textContent=IS.size;
+  syncCards();
+  try{localStorage.setItem(ITEMS_KEY,JSON.stringify([...IS]))}catch(e){}
+  document.getElementById('modal-items').hidden=true;
+});
+
+// ---- character stats: gold, inherited gold and XP are edited in place; name, player, class and traits in a dialog
+// special traits gained or lost through events (scripts/campaign/traits.js)
+const SPECIAL_TRAITS=['Hero','Friend of the Hero','Friend of the Silent Knife','Indebted','Blackmailer','Carapace Combatant','Memory of Serenity','Immunity','Herald of Xorn'];
+const CHAR_CLASSES=[["Anaphi",["nimble","resourceful","outcast"]],["Berserker",["chaotic","intimidating","nimble"]],["Bruiser",["intimidating","strong","armored"]],["Bladeswarm",["armored","outcast","strong"]],["Cassandra",["arcane","outcast","resourceful"]],["Cragheart",["arcane","outcast","strong"]],["Doomstalker",["armored","chaotic","outcast"]],["Elementalist",["arcane","chaotic","resourceful"]],["Hail",["chaotic","educated","resourceful"]],["Mindthief",["nimble","outcast","persuasive"]],["Nightshroud",["chaotic","intimidating","nimble"]],["Plagueherald",["arcane","intimidating","outcast"]],["Quartermaster",["arcane","educated","intimidating"]],["Satha",["armored","intimidating","persuasive"]],["Sawbones",["educated","persuasive","resourceful"]],["Silent Knife",["chaotic","nimble","resourceful"]],["Sunkeeper",["armored","educated","persuasive"]],["Soothsinger",["educated","nimble","persuasive"]],["Soultether",["armored","resourceful","strong"]],["Spellweaver",["arcane","educated","resourceful"]],["Tinkerer",["educated","nimble","resourceful"]],["Wildfury",["chaotic","intimidating","strong"]]];
+const XP_STEPS=[0,45,95,150,210,275,350,440,540];   // XP needed for level 1..9
+const levelOfXp=xp=>XP_STEPS.reduce((l,t,i)=>xp>=t?i+1:l,1);
+const cap=w=>w.replace(/^./,c=>c.toUpperCase());
+const CH_KEY='hm-character';
+let CH={name:'Simon',player:'Guido',cls:'Tinkerer',extra:['Friend of the Hero'],xp:264,gold:42,inh:0};
+try{const o=JSON.parse(localStorage.getItem(CH_KEY)||'null');if(o&&typeof o==='object')CH={...CH,...o,extra:Array.isArray(o.extra)?o.extra.map(t=>t==='Friend of Hero'?'Friend of the Hero':t):CH.extra}}catch(e){}
+const classTraits=n=>(CHAR_CLASSES.find(c=>c[0]===n)||[n,[]])[1];
+const saveCh=()=>{try{localStorage.setItem(CH_KEY,JSON.stringify(CH))}catch(e){}};
+window.charClass=()=>CH.cls;
+function refreshBacks(){document.querySelectorAll('.flipcard .face.back').forEach(b=>{b.innerHTML=cardBackHTML()})}
+function renderHud(){
+  refreshBacks();
+  document.getElementById('chname').textContent=CH.name;
+  document.getElementById('chsub').textContent=CH.cls+' \u00b7 played by '+CH.player;
+  document.getElementById('chchips').innerHTML=classTraits(CH.cls).map(t=>'<span class="chip ">'+cap(t)+'</span>').join('')+CH.extra.map(t=>'<span class="chip info">'+t.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</span>').join('');
+  document.getElementById('chport').style.backgroundImage='url(https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_mats/front/'+CH.cls.toLowerCase().replace(/ /g,'-')+'.png)';
+  document.getElementById('chgold').textContent=CH.gold;document.getElementById('chinh').textContent=CH.inh;
+  const lv=levelOfXp(CH.xp),lo=XP_STEPS[lv-1],hi=XP_STEPS[lv]??null;
+  document.getElementById('chxp').textContent=CH.xp+' XP';
+  const xpEl=document.querySelector('.hud .xp'),ems=xpEl.querySelectorAll('.xpnum em');
+  ems[0].textContent=lo;ems[1].textContent=hi??'max';
+  xpEl.querySelector('.xpbar b').style.width=(hi?Math.min(100,(CH.xp-lo)/(hi-lo)*100):100)+'%';
+  xpEl.title='Level '+lv+': '+lo+' XP.'+(hi?' Next level ('+(lv+1)+') at '+hi+' XP.':' Maximum level.');
+}
+function applyXp(){
+  const lv=levelOfXp(CH.xp);
+  if(PL.level!==lv)setLevel(lv);
+  renderHud();saveCh();
+}
+// in-place editing: Enter or leaving the field commits, Escape cancels; "+N" and "-N" add or subtract
+function editInPlace(el,get,set){
+  const start=()=>{
+    if(el.querySelector('input'))return;
+    const prev=el.textContent;
+    const inp=document.createElement('input');inp.className='edin';inp.value=get();inp.inputMode='numeric';
+    el.textContent='';el.appendChild(inp);inp.focus();inp.select();
+    let done=false;
+    const finish=ok=>{
+      if(done)return;done=true;
+      const v=inp.value.trim();
+      if(ok&&/^[+-]\d+$/.test(v))set(Math.max(0,get()+parseInt(v,10)));
+      else if(ok&&/^\d+$/.test(v))set(parseInt(v,10));
+      else el.textContent=prev;
+      renderHud();
+    };
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.stopPropagation();finish(true)}else if(e.key==='Escape'){e.stopPropagation();finish(false)}});   // stop the key reaching the field itself, which would reopen the editor
+    inp.addEventListener('blur',()=>finish(true));
+  };
+  el.addEventListener('click',start);
+  el.addEventListener('keydown',e=>{if(e.key==='Enter'&&!el.querySelector('input'))start()});
+}
+editInPlace(document.getElementById('chgold'),()=>CH.gold,v=>{CH.gold=v;saveCh()});
+editInPlace(document.getElementById('chinh'),()=>CH.inh,v=>{CH.inh=v;saveCh()});
+editInPlace(document.getElementById('chxp'),()=>CH.xp,v=>{CH.xp=v;applyXp()});
+// the level stepper in the Card pool tab (mockup stand-in for levelling) moves the XP to that level's threshold
+function syncXpToLevel(){if(levelOfXp(CH.xp)!==PL.level){CH.xp=XP_STEPS[PL.level-1];renderHud();saveCh()}}   // called by setLevel
+// dialog
+const cfName=document.getElementById('cf-name'),cfPlayer=document.getElementById('cf-player'),cfClass=document.getElementById('cf-class'),cfNote=document.getElementById('cf-note');
+cfClass.innerHTML=CHAR_CLASSES.map(c=>'<option>'+c[0]+'</option>').join('');
+let cfExtra=[];
+function renderCfTraits(){
+  const add=document.getElementById('cf-addtrait');
+  add.innerHTML='<option value="">Add an event trait...</option>'+SPECIAL_TRAITS.filter(t=>!cfExtra.includes(t)).map(t=>'<option>'+t+'</option>').join('');
+  document.getElementById('cf-ctraits').innerHTML=classTraits(cfClass.value).map(t=>'<span class="chip ">'+cap(t)+'</span>').join('')||'<span class="chip ">none</span>';
+  document.getElementById('cf-xtraits').innerHTML=cfExtra.map((t,i)=>'<span class="chip info">'+t.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'<button type="button" class="chx" data-i="'+i+'" aria-label="Remove trait">&times;</button></span>').join('');
+}
+function openCharEdit(){
+  cfName.value=CH.name;cfPlayer.value=CH.player;cfClass.value=CH.cls;cfExtra=[...CH.extra];cfNote.hidden=true;
+  document.getElementById('cf-save').textContent='Save';renderCfTraits();document.getElementById('modal-char').hidden=false;cfName.focus();
+}
+document.getElementById('editchar').addEventListener('click',openCharEdit);
+cfClass.addEventListener('change',()=>{cfNote.hidden=cfClass.value===CH.cls;document.getElementById('cf-save').textContent=cfClass.value===CH.cls?'Save':'Confirm class change';renderCfTraits()});
+document.getElementById('cf-xtraits').addEventListener('click',e=>{const b=e.target.closest('.chx');if(!b)return;cfExtra.splice(+b.dataset.i,1);renderCfTraits()});
+document.getElementById('cf-addtrait').addEventListener('change',e=>{
+  const v=e.target.value;if(v&&!cfExtra.includes(v))cfExtra.push(v);renderCfTraits();
+});
+document.getElementById('cf-save').addEventListener('click',()=>{
+  CH.name=cfName.value.trim()||CH.name;CH.player=cfPlayer.value.trim()||CH.player;CH.cls=cfClass.value;CH.extra=cfExtra;
+  saveCh();renderHud();document.getElementById('modal-char').hidden=true;
+});
+if(PL.level!==levelOfXp(CH.xp))setLevel(levelOfXp(CH.xp));   // XP is the source of truth for the level
+renderHud();
+
+// hand selection
+const slugOf=src=>(src||'').split('/').pop().replace(/\.[a-z]+$/i,'');
+const zoneSlugs=()=>{
+  const out=[];
+  hand.querySelectorAll('img').forEach(i=>out.push(slugOf(i.src)));
+  active.querySelectorAll('img').forEach(i=>out.push(slugOf(i.src)));
+  document.querySelectorAll('.flipcard').forEach(f=>out.push(slugOf(f.dataset.img)));
+  PILES.discard.concat(PILES.lost).forEach(c=>out.push(slugOf(c.img)));
+  return out;
+};
+let HS=new Set(),hsArmed=0;
+function renderHandSel(){
+  const set=poolSet(),full=HS.size>=HAND_LIMIT;
+  document.getElementById('handsel').textContent=HS.size+' / '+HAND_LIMIT;
+  document.getElementById('handwarn').textContent=HS.size&&HS.size<HAND_LIMIT?'Fewer cards than the hand limit':'';
+  document.getElementById('handok').disabled=!HS.size;
+  document.getElementById('handbody').innerHTML=joinGroups(lvGroups().map(([k,cards])=>{
+    const mine=cards.filter(c=>set.has(c.s));   // only cards in the pool can go into the hand
+    if(!mine.length)return '';
+    return '<div class="pgrp"><h3>'+lvLabel(k)+'</h3><div class="pgrid">'+
+      mine.map(c=>{
+        const on=HS.has(c.s),off=!on&&full;
+        return cardTile(c,on?'sel':off?'dis':'','<button type="button" class="psel" data-s="'+c.s+'" aria-pressed="'+on+'" aria-label="Select '+nameOf(c.s)+'"'+(off?' disabled':'')+'></button>');
+      }).join('')+'</div></div>';
+  }));
+  decoratePcards(document.getElementById('handbody'));
+}
+function openHandSel(){
+  const set=poolSet();let saved=null;
+  try{saved=JSON.parse(localStorage.getItem(HANDSEL_KEY)||'null')}catch(e){}
+  const start=(Array.isArray(saved)&&saved.every(x=>set.has(x))?saved:zoneSlugs()).filter(x=>set.has(x));
+  HS=new Set(start.slice(0,HAND_LIMIT));hsArmed=0;
+  document.getElementById('handok').textContent='Confirm hand';
+  showTab('hand');renderHandSel();document.getElementById('modal-deck').hidden=false;
+}
+document.getElementById('handbody').addEventListener('click',e=>{
+  const t=e.target.closest('.psel');if(!t||t.disabled)return;
+  const s=t.dataset.s;HS.has(s)?HS.delete(s):HS.add(s);renderHandSel();
+});
+document.getElementById('handclear').addEventListener('click',()=>{HS.clear();renderHandSel()});
+document.getElementById('handok').addEventListener('click',()=>{
+  const inPlay=active.children.length||document.querySelector('.flipcard')||PILES.discard.length||PILES.lost.length;
+  const ok=document.getElementById('handok');
+  if(inPlay&&!hsArmed){hsArmed=1;ok.textContent='Reset scenario cards and apply';setTimeout(()=>{hsArmed=0;ok.textContent='Confirm hand'},4000);return}
+  const cards=DECK.filter(c=>HS.has(c.s)).sort((a,b)=>(a.ini||99)-(b.ini||99));
+  hand.innerHTML='';active.innerHTML='';
+  document.querySelectorAll('.slot6').forEach(takeFromSlot);
+  PILES.discard.length=0;PILES.lost.length=0;renderPileTop('discard');renderPileTop('lost');
+  cards.forEach(c=>{const el=toCardEl({name:nameOf(c.s),img:imgUrl(c),ini:c.ini});el.title=nameOf(c.s)+' (level '+c.lv+')';hand.appendChild(el)});
+  reindexHand();activeCount.textContent=0;
+  updatePlayIni();
+  try{localStorage.setItem(HANDSEL_KEY,JSON.stringify([...HS]))}catch(e){}
+  hsArmed=0;document.getElementById('modal-deck').hidden=true;
+});
+document.getElementById('handlimit').textContent=HAND_LIMIT;
+
+// Click zoom: the card stays enlarged until the next click elsewhere, Escape or a drag.
+// Play area: a face-down card flips up on click, a face-up card toggles zoom, double-click flips it back down.
+const ZOOM_SEL='.fan6 .ac, .activelist .ac, .flipcard, .shelf6 .it';
+const zoneOfCard=el=>el.classList.contains('it')?'items':el.classList.contains('flipcard')?'play':el.closest('.activelist')?'active':'hand';
+document.addEventListener('click',e=>{
+  const el=e.target.closest(ZOOM_SEL);
+  const cur=document.querySelector('.zoomed');
+  if(!el){if(cur)cur.classList.remove('zoomed');return}
+  const z=zoneOfCard(el);
+  if(zoomMode(z)!=='click'){if(cur)cur.classList.remove('zoomed');return}
+  if(z==='play'&&!el.classList.contains('is-front')){if(cur)cur.classList.remove('zoomed');return}
+  e.stopPropagation();
+  if(cur)cur.classList.remove('zoomed');
+  if(cur!==el){measureZoom(el);el.classList.add('zoomed')}
+},true);
+document.addEventListener('dblclick',e=>{
+  const f=e.target.closest('.flipcard');
+  if(!f||zoomMode('play')!=='click')return;
+  clearZoomed();f.classList.toggle('is-front');
+});
+document.addEventListener('dragstart',clearZoomed,true);
 </script></body></html>
