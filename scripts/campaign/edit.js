@@ -560,6 +560,13 @@ export function moveCard(r, cid, cardId, dest, opts = {}) {
   });
 }
 
+// Turn the card in a play slot (0 = slot 1, 1 = slot 2) face up or down.
+export function flipPlayCard(r, cid, slot) {
+  const c = r.chars.find(x => x.id === cid), i = Number(slot);
+  if (!c || !(i === 0 || i === 1) || !c.play?.[i]) return r;
+  return edit(r, x => { const p = x.chars.find(y => y.id === cid).play[i]; p.up = !p.up; });
+}
+
 // Sort the hand: 'ini' = automatic mode, always lowest initiative first (clears the manual order); 'lvl' = a one-time order by card level,
 // then initiative, which stays until the hand is reordered or 'ini' is chosen.
 export function sortHand(r, cid, mode) {
