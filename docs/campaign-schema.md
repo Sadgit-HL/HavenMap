@@ -55,7 +55,7 @@ mercenaries[i].cmp = { c: "c1" }   // link to the campaign character (campaign c
 At commit a successful `bgr` adds the goal's checkmark value to `chars[].chk` and the goal to `decks.bg`.
 
 Rules:
-1. Hand is derived: `deck` minus `disc`, `lost`, `act`. Not stored.
+1. Hand is derived: `deck` minus `disc`, `lost`, `act` and the cards in `play`. Not stored. Every deck card is in exactly one place; `play` is `[slot 1, slot 2]`, each `null` or `{ id, up }`, and only hand cards enter a slot (slot 1 sets the initiative); `hord` is the manual hand order or `null` (see `scripts/campaign/record.js`, `normalizeChar`).
 2. Omit defaults: empty piles, standard modifier deck, all-ready items.
 3. `cmp.c` must match the hero class on commit, else the commit is rejected.
 4. Per-hero modifier deck faces come from a per-deck catalog (standard cards plus class extras), not the global `AM_TYPES` constant. Implemented: `heroCatalog` in `scripts/amd/heroDeck.js`.

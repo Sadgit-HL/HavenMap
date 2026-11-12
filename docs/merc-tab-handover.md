@@ -174,11 +174,13 @@ real HavenMap data/card model, client-side, in a `<script type="module">` block 
 - Cards tab (`cardsPage`) has attack modifier, mat and ability card views; the hero modifier deck logic is in `scripts/amd/heroDeck.js`
   (`heroPerkClass`, faces from perks), perks data `scripts/games/perks.js`.
 
-## 6. What the redesign still needs in the data model (proposal, nothing implemented)
+## 6. What the redesign still needs in the data model
 
-- Play area: `c.play = [cardId, cardId]` with face-up flags, e.g. `[{id, up: false}, ...]`, max 2, slot order matters (slot 1 = initiative).
-  `moveCard` needs a `play` area and `act` handling to match the new active zone.
-- Manual hand order: `c.hord = [cardIds]` (absent or null = sorted by initiative).
+Stage (a) is implemented (2026-11-12): `c.play` and `c.hord` exist (`scripts/campaign/record.js`: `normalizeChar`, `zoneOf`, `CARD_ZONES`, `handOf`), `moveCard(r, cid, cardId, dest)` in `edit.js` moves between hand, active, play1, play2, discard and lost with the rules below, `changelog.js` logs card moves and flips ("Sam: Flamethrower (level 1, initiative 16): hand to play slot 1") and a changed `hord`, and the Mercenaries tab shows the playmat layout (`deckZones` in `campaign/app.js`, `.board` in `style.css`); the old three column view is gone. Rules decided by the owner: a card in the active area is not in the hand; play slots take hand cards only (the two slots can swap); a card entering an occupied slot sends the old card back to the hand. The context menu mockup still offers every zone for every card and should follow the play slot rule. Items below that are not struck out are still open.
+
+
+- ~~Play area: `c.play = [{id, up}|null, {id, up}|null]`, slot order matters (slot 1 = initiative)~~ done in stage (a); flipping (`up`) is stage (c).
+- ~~Manual hand order: `c.hord = [cardIds]` (absent or null = sorted by initiative)~~ field and display done in stage (a); editing the order is stage (b).
 - Custom counters: `c.cnt = [{n: 'Time tokens', v: 2}]`.
 - Notes: `c.notes` (string); personal quest and battle goal: `c.quest`, `c.goal` (the app has no quest or battle-goal draw per character yet;
   `r.decks.bg` is the drawn battle goals list; `scripts/games/gh2_quests.js` has personal quests).
