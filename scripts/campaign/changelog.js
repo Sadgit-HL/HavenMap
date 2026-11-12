@@ -4,6 +4,7 @@
 // locked ones are hidden from the players, so the log uses numbers only.
 import { SCN_STATE_NAME, availableSet, zoneOf } from './record.js';
 import { CARDS } from '../games/gh2_cards.js';
+import { tokenDefs } from './classTokens.js';
 import { ALL_CLASSES } from './classList.js';
 
 export const LOG_TABS = ['Overview', 'Scenarios', 'Mercenaries', 'Items', 'Events', 'Cards', 'Resources'];
@@ -114,6 +115,13 @@ export function describeChange(a, b) {
     for (const k of keys(o, c)) {
       if (same(o[k], c[k])) continue;
       if (['disc', 'act', 'lost', 'play', 'hord'].includes(k)) continue;                  // described above
+      if (k === 'tok') {
+        for (const t of tokenDefs(c.cls)) {
+          const a = o.tok?.[t.k] || 0, b = c.tok?.[t.k] || 0, show = v => (t.states ? t.states[v] ?? v : v);
+          if (a !== b) add('Mercenaries', 'Class token', `${c.name}: ${t.l} ${show(a)} to ${show(b)}`);
+        }
+        continue;
+      }
       if (k === 'seat') add('Mercenaries', 'Character player', `${c.name}: ${(b.players || []).find(p => p.seat === c.seat)?.name ?? 'nobody'} (was ${(a.players || []).find(p => p.seat === o.seat)?.name ?? 'nobody'})`);
       else if (k === 'am') add('Cards', 'Modifier deck', `${c.name}: modifier deck changed`);
       else if (k === 'items') {

@@ -25,10 +25,11 @@ Record fields (all optional on load, defaults filled by normalize):
   stk, cls          sticker labels, unlocked class names
   avail             class names available in this campaign (optional; absent = every class in scripts/campaign/classList.js)
   scn               { "<number>": { s, l?, p?, ch?, d? } }   state, level, party size, chests, date
-  chars             [{ id, cls, name, seat?, lv, xp, gold, inh, traits, special, hand, deck, disc, act, lost, play, hord, bench, items:[{id, st}], am }]
+  chars             [{ id, cls, name, seat?, lv, xp, gold, inh, traits, special, hand, deck, disc, act, lost, play, hord, tok, bench, items:[{id, st}], am }]
                     Every ability card of `deck` is in exactly one place: lost, disc (discard pile, last = top), play, act (active area) or the hand
                     (all the rest). play = [slot 1, slot 2], each null or { id, up } (up = face up); only hand cards enter a slot, slot 1 sets the
-                    initiative. hord = manual hand order [cardId] or null (null = sorted by initiative)
+                    initiative. hord = manual hand order [cardId] or null (null = sorted by initiative),
+                    tok = class special tokens { key: count or state index } (scripts/campaign/classTokens.js)
                     special = special traits gained through events (keys of scripts/campaign/traits.js)
   items             { unl: [itemId], taken: { itemId: copies in use } }
   events            { city, road: { top, bottom, out, locked }, pend? }   piles are ordered, see scripts/campaign/events.js
@@ -105,7 +106,7 @@ export function normalize(raw) {
 // A character with every field present. Each ability card is in one place only: a record that lists a card twice keeps it in
 // the first of lost, discard, a play slot, active; play slots keep { id, up } or null; hord keeps hand cards only.
 function normalizeChar(c) {
-  const ch = { traits: [], special: [], deck: [], disc: [], act: [], lost: [], bench: [], items: [], play: [null, null], hord: null, ...c };
+  const ch = { traits: [], special: [], deck: [], disc: [], act: [], lost: [], bench: [], items: [], play: [null, null], hord: null, tok: {}, ...c };
   const seen = new Set();
   const take = list => (Array.isArray(list) ? list : []).filter(id => !seen.has(id) && seen.add(id));
   ch.lost = take(ch.lost);
@@ -113,6 +114,7 @@ function normalizeChar(c) {
   const play = Array.isArray(ch.play) ? ch.play : [];
   ch.play = [0, 1].map(i => { const p = play[i]; return p && ch.deck.includes(p.id) && !seen.has(p.id) && seen.add(p.id) ? { id: p.id, up: !!p.up } : null; });
   ch.act = take(ch.act);
+  ch.tok = ch.tok && typeof ch.tok === 'object' && !Array.isArray(ch.tok) ? Object.fromEntries(Object.entries(ch.tok).map(([k, v]) => [k, Math.max(0, Math.min(99, Math.trunc(Number(v)) || 0))])) : {};
   if (Array.isArray(ch.hord)) { const own = new Set(); ch.hord = ch.hord.filter(id => ch.deck.includes(id) && !seen.has(id) && !own.has(id) && own.add(id)); } else ch.hord = null;
   return ch;
 }

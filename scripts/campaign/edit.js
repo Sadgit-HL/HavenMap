@@ -7,6 +7,7 @@ import { CLASSES } from '../games/gh2_classes.js';
 import { ALL_CLASSES } from './classList.js';
 import { SCN_STATE, availableSet, CARD_ZONES, zoneOf, handList, cardLevel } from './record.js';
 import { SPECIAL_TRAITS } from './traits.js';
+import { tokenDefs } from './classTokens.js';
 import { EVENT_TABLE, PILES, frontOf, boxState, markKey, eventPlace, nextEvent, optionKeys, seatList, tally, cryptoRandom } from './events.js';
 
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
@@ -503,7 +504,7 @@ export function addCharacter(r, { cls, name }) {
   if (!availableClasses(r).some(c => c.i === klass.i)) return r;
   return edit(r, x => {
     x.chars.push({ id: nextCharId(x.chars), cls: klass.name, name: nm, lv: 1, xp: 0, gold: 0, inh: 0, traits: [],
-      deck: [], disc: [], act: [], lost: [], play: [null, null], hord: null, bench: [], items: [] });
+      deck: [], disc: [], act: [], lost: [], play: [null, null], hord: null, tok: {}, bench: [], items: [] });
   });
 }
 
@@ -558,6 +559,16 @@ export function moveCard(r, cid, cardId, dest, opts = {}) {
       ch.play[i] = { id: cardId, up: false };
     }
   });
+}
+
+// A class token of a character: a count (0 to 99) or, for a token with states, the state index. Keys the class does not have are ignored.
+export function setToken(r, cid, key, value) {
+  const c = r.chars.find(x => x.id === cid);
+  const d = c && tokenDefs(c.cls).find(t => t.k === key), n = toInt(value);
+  if (!d || n === null) return r;
+  const v = d.states ? clamp(n, 0, d.states.length - 1) : clamp(n, 0, 99);
+  if ((c.tok?.[key] || 0) === v) return r;
+  return edit(r, x => { const ch = x.chars.find(y => y.id === cid); ch.tok = { ...(ch.tok || {}), [key]: v }; });
 }
 
 // Turn the card in a play slot (0 = slot 1, 1 = slot 2) face up or down.
