@@ -11,6 +11,7 @@ import { localStore } from '../scripts/campaign/store.js';
 import { cardImageUrl, itemImageUrl, eventImageUrl, matImageUrl, pqImageUrl, cardBackUrl } from '../scripts/campaign/cardImages.js';
 import { playmatHtml, XP_STEPS, turnPost, cardsPost } from './playmat.js';
 import { tokenDefs } from '../scripts/campaign/classTokens.js';
+import { bannerUrl, bannerCode } from '../scripts/campaign/bggBanners.js';
 import { morphInto } from './morph.js';
 import {
   validate, prosperityLevel, handOf, handList, zoneOf, CARD_ZONES, shopCopies, itemsInUse, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE,
@@ -481,7 +482,20 @@ function portraitStyle(c, size) {
   const bw = size / f.w;
   return `background-image:url(${url});background-size:${bw}px auto;background-position:${-f.u * bw}px ${-f.t * bw}px`;
 }
+// What the playmat remembers while the page is open: the open modal, the mat side, the history filter. Saved BGG codes of the user are kept
+// in this browser (not in the campaign record).
+const pm = { modal: null, matSide: 'front', histKind: 'all' };
+const CODES_KEY = 'havenmap.campaign.codes';
+const loadCodes = () => { try { const a = JSON.parse(localStorage.getItem(CODES_KEY) || '[]'); return Array.isArray(a) ? a : []; } catch { return []; } };
+const saveCodes = a => { try { localStorage.setItem(CODES_KEY, JSON.stringify(a)); } catch { /* ignore */ } };
+const matSlug = c => String(matImageUrl(c.cls, 'front')).split('/').pop().replace(/\.[a-z]+$/i, '');
+const pmState = c => ({
+  modal: pm.modal, matSide: pm.matSide, histKind: pm.histKind,
+  customCodes: pm.modal === 'codes' ? loadCodes() : [],
+  log: pm.modal === 'history' ? [...(record.log || [])].reverse().filter(e => String(e.d).startsWith(`${c.name}:`)) : [],
+});
 const playmatCtx = {
+  matUrl: (cls, side) => matImageUrl(cls, side),
   esc, pretty, cardById, itemById, cardImageUrl, itemImageUrl, cardBackUrl, portraitStyle,
   playerName: c => (record.players.find(p => p.seat === c.seat)?.name ?? ''),
   traitChips: c => `${(c.traits || []).map(t => chip(t)).join('')}${classTraits(c).map(t => chip(t)).join('')}${(c.special || []).map(t => chip(specialName(t), 'info')).join('')}`,
@@ -491,7 +505,7 @@ const playmatCtx = {
 function characterTab(r, cid) {
   const c = r.chars.find(x => x.id === cid);
   if (!c) return '<div class="empty">Character not found.</div>';
-  return playmatHtml(c, playmatCtx) + `<details class="oldsheet"><summary>Character sheet (what the playmat does not show yet)</summary>${characterCard(c, r)}</details>`;
+  return playmatHtml(c, playmatCtx, pmState(c)) + `<details class="oldsheet"><summary>Character sheet (what the playmat does not show yet)</summary>${characterCard(c, r)}</details>`;
 }
 
 // The "+" tab: add a character (up to ed.MAX_CHARACTERS) from the classes not yet in play.
@@ -1409,6 +1423,8 @@ function flipPlayed(f) {
   const { char, slot } = f.dataset;
   setTimeout(() => commit(ed.flipPlayCard(record, char, Number(slot))), 560);
 }
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && pm.modal) { pm.modal = null; render(); } });
+main.addEventListener('change', e => { if (e.target.matches?.('[data-histkind]')) { pm.histKind = e.target.value; render(); } });
 main.addEventListener('keydown', e => {
   const f = e.target.closest?.('.pm .flipcard[data-slot]');
   if (f && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); flipPlayed(f); }
@@ -1416,6 +1432,36 @@ main.addEventListener('keydown', e => {
 // Playmat clicks: flip a played card, the + and - of XP, gold and inherited perks, click on a number to type a value.
 const HUD_KEY = { xp: 'xp', gold: 'gold', inh: 'inh' };
 main.addEventListener('click', e => {
+  const dock = e.target.closest?.('button[data-modal]');
+  if (dock) { pm.modal = dock.dataset.modal; render(); return; }
+  if (e.target.closest?.('[data-modalclose]') || e.target.matches?.('.pm .mmodal')) { pm.modal = null; render(); return; }
+  const mf = e.target.closest?.('[data-matflip]');
+  if (mf) { pm.matSide = pm.matSide === 'back' ? 'front' : 'back'; render(); return; }
+  const cp = e.target.closest?.('[data-code]');
+  if (cp) {
+    (navigator.clipboard ? navigator.clipboard.writeText(cp.dataset.code) : Promise.reject()).catch(() => {});
+    const old = cp.innerHTML;
+    cp.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
+    setTimeout(() => { cp.innerHTML = old; }, 900);
+    return;
+  }
+  const bt = e.target.closest?.('[data-bnr]');
+  if (bt) {
+    (navigator.clipboard ? navigator.clipboard.writeText(bannerCode(bt.dataset.bnr)) : Promise.reject()).catch(() => {});
+    const note = main.querySelector('[data-bnrnote]'), old = note.innerHTML;
+    main.querySelectorAll('.bnrtile.copied').forEach(x => x.classList.remove('copied'));
+    bt.classList.add('copied');
+    note.innerHTML = `\u2713 Copied the <b>${esc(bt.title.replace(/^Copy the | banner code$/g, ''))} banner</b> code`;
+    setTimeout(() => { note.innerHTML = old; bt.classList.remove('copied'); }, 1800);
+    return;
+  }
+  if (e.target.closest?.('[data-codeadd]')) {
+    const label = main.querySelector('[data-code-label]').value.trim(), text = main.querySelector('[data-code-text]').value.trim();
+    if (label && text) { saveCodes([...loadCodes(), { label, text }]); render(); }
+    return;
+  }
+  const cd = e.target.closest?.('[data-codedel]');
+  if (cd) { const a = loadCodes(); a.splice(Number(cd.dataset.codedel), 1); saveCodes(a); render(); return; }
   const f = e.target.closest?.('.flipcard[data-slot]');
   if (f) { flipPlayed(f); return; }
   const tk = e.target.closest?.('button[data-tk]');
@@ -1428,8 +1474,7 @@ main.addEventListener('click', e => {
   if (bgg) {
     const c = record.chars.find(x => x.id === bgg.dataset.char);
     if (!c) return;
-    const slug = String(matImageUrl(c.cls, 'front')).split('/').pop().replace(/\.[a-z]+$/i, '');
-    const ctx = { bannerUrl: `https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_banners/${slug}.jpg`, pretty, cardById };
+    const ctx = { bannerUrl: bannerUrl(matSlug(c)), pretty, cardById };
     const text = bgg.dataset.bgg === 'turn' ? turnPost(c, ctx) : cardsPost(c, ctx);
     (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).catch(() => {});
     const old = bgg.innerHTML;
