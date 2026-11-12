@@ -8,7 +8,8 @@ import { SCENARIOS, STICKERS } from '../scripts/games/gh2_scenarios.js';
 import { BATTLE_GOALS } from '../scripts/games/battle_goals.js';
 import { escapeHtml as esc } from '../scripts/escape.js';
 import { localStore } from '../scripts/campaign/store.js';
-import { cardImageUrl, itemImageUrl, eventImageUrl, matImageUrl, pqImageUrl } from '../scripts/campaign/cardImages.js';
+import { cardImageUrl, itemImageUrl, eventImageUrl, matImageUrl, pqImageUrl, cardBackUrl } from '../scripts/campaign/cardImages.js';
+import { playmatHtml, XP_STEPS } from './playmat.js';
 import {
   validate, prosperityLevel, handOf, handList, zoneOf, CARD_ZONES, shopCopies, itemsInUse, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE,
 } from '../scripts/campaign/record.js';
@@ -408,9 +409,7 @@ function benchList(c) {
   }).join('')}</div>`;
 }
 
-// --- ability card areas: hand, discard, lost (cards move by drag and drop or the row buttons) ---------------------
-
-const AREA_TITLE = { hand: 'Hand', active: 'Active', play1: 'Play slot 1', play2: 'Play slot 2', discard: 'Discard', lost: 'Lost' };
+// --- ability cards: the playmat (campaign/playmat.js) shows the zones; helpers for the rest of the page ---------------
 
 // Initiative number shown in front of a card name; a dash when the number is not known for that class yet.
 const iniTag = card => `<span class="ini${card?.ini == null ? ' none' : ''}" title="Initiative">${card?.ini ?? '&ndash;'}</span>`;
@@ -424,43 +423,6 @@ function cardPicture(card, id) {
   const url = cardImageUrl(card);
   const name = pretty(card?.slug ?? id);
   return url ? `<img class="cardpic" src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false">` : `<div class="noimg">${esc(name)}</div>`;
-}
-
-function cardRow(c, id, area) {
-  const card = cardById.get(id);
-  const url = cardImageUrl(card);
-  const slot = area === 'play1' ? c.play[0] : area === 'play2' ? c.play[1] : null;
-  const label = `${iniTag(card)}<span class="cname">${esc(pretty(card?.slug ?? id))}</span>${slot ? `<span class="badge">${slot.up ? 'face up' : 'face down'}</span>` : ''}`;
-  if (imgMode === 'always') {
-    return `<li class="cardrow tile" data-card="${id}" data-char="${esc(c.id)}" draggable="true">
-      ${cardPicture(card, id)}<div class="tilebar">${label}</div></li>`;
-  }
-  return `<li class="cardrow"${url ? ` data-img="${esc(url)}"` : ''} data-card="${id}" data-char="${esc(c.id)}" draggable="true">${label}</li>`;
-}
-
-// Hand header: "6 of 12" (the hand size, a warning when over it) and the two sort buttons.
-const handHead = (c, n) => `<span class="handinfo"><span class="${c.hand && n > c.hand ? 'over-limit' : ''}" title="${c.hand ? `Hand size ${esc(c.hand)}` : ''}">${n}${c.hand ? ` of ${esc(c.hand)}` : ''}</span>
-  <span class="sortgrp"><button type="button" class="handsort" data-handsort="ini" data-char="${esc(c.id)}" title="Sort by initiative, and keep the hand sorted">Ini</button><button type="button" class="handsort" data-handsort="lvl" data-char="${esc(c.id)}" title="Sort by level once">Lvl</button></span></span>`;
-
-// The playmat layout (docs/merc-tab-handover.md): active area, the two play slots, discard and lost piles, and the hand below.
-function deckZones(c) {
-  if (!c.deck.length) return '<div class="hint">no cards yet</div>';
-  const lists = Object.fromEntries(CARD_ZONES.map(z => [z, []]));
-  for (const id of c.deck) lists[zoneOf(c, id)].push(id);
-  lists.hand = handList(c);
-  lists.active = c.act.filter(id => lists.active.includes(id));
-  ['discard', 'lost'].forEach(z => lists[z].sort(byInitiative));
-  const panel = (z, cls) => `
-    <div class="zone ${cls}" data-zone="${z}" data-char="${esc(c.id)}">
-      <h4>${AREA_TITLE[z]} ${z === 'hand' ? handHead(c, lists.hand.length) : `<span>${lists[z].length}</span>`}</h4>
-      <ul class="${imgMode === 'always' ? 'tiles' : ''}">${lists[z].map(id => cardRow(c, id, z)).join('') || '<li class="empty-row">empty</li>'}</ul>
-    </div>`;
-  return `<div class="board">
-    ${panel('active', 'b-active')}
-    <div class="b-play"><div class="slots">${panel('play1', 'slot')}${panel('play2', 'slot')}</div></div>
-    <div class="b-piles">${panel('discard', 'pile')}${panel('lost', 'pile')}</div>
-    ${panel('hand', 'b-hand')}
-  </div><p class="hint">Drag cards between the areas. A play slot takes cards from the hand only. No need to switch on Edit.</p>`;
 }
 
 // Traits the class brings that are not on the sheet's list yet, the species (Vermling, Quatryl, ...) among them. Events check
@@ -488,7 +450,6 @@ function characterCard(c, r) {
     <div class="pile"><b>Traits</b>${(c.traits || []).map(t => chip(t)).join('') || '<span class="hint">none</span>'}${classTraits(c).map(t => chip(t)).join('')}${(c.special || []).map(t => chip(specialName(t), 'info')).join('')}${(c.extra || []).map(t => chip(t, 'dim')).join('')}
       <button type="button" class="editbtn editicon traitedit" data-trait-edit="${esc(c.id)}" aria-label="Special traits of ${esc(c.name)}" title="Special traits (Hero, Indebted, ...)">${PENCIL}</button></div>
     <div class="pile"><b>Deck (${c.deck.length} cards)</b>${c.hand ? `hand size ${esc(c.hand)}` : ''}</div>
-    ${deckZones(c)}
     <div class="pile"><b>Other owned cards (${c.bench.length})</b></div>
     ${benchList(c)}
     <div class="pile"><b>Items (${c.items.length})</b></div>
@@ -510,9 +471,27 @@ function mercenaries(r) {
   return `<div class="subbar">${bar}${toggle}</div>` + (cur === 'add' ? addTab(r) : characterTab(r, cur));
 }
 
+// Portrait: the character mat cropped to the focus region saved with campaign/mockups/portrait-tool.html (fractions of the mat width).
+const PORTRAIT_FOCUS = {};
+fetch('../scripts/games/portrait-focus.json').then(r => (r.ok ? r.json() : {})).then(j => { Object.assign(PORTRAIT_FOCUS, j); if (record && tab === 'Mercenaries') render(); }).catch(() => {});
+function portraitStyle(c, size) {
+  const url = matImageUrl(c.cls, 'front');
+  const f = PORTRAIT_FOCUS[String(url).split('/').pop().replace(/\.[a-z]+$/i, '')];
+  if (!f) return `background-image:url(${url});background-size:cover;background-position:center`;
+  const bw = size / f.w;
+  return `background-image:url(${url});background-size:${bw}px auto;background-position:${-f.u * bw}px ${-f.t * bw}px`;
+}
+const playmatCtx = {
+  esc, pretty, cardById, itemById, cardImageUrl, itemImageUrl, cardBackUrl, portraitStyle,
+  playerName: c => (record.players.find(p => p.seat === c.seat)?.name ?? ''),
+  traitChips: c => `${(c.traits || []).map(t => chip(t)).join('')}${classTraits(c).map(t => chip(t)).join('')}${(c.special || []).map(t => chip(specialName(t), 'info')).join('')}`,
+};
+
+// The playmat first; what the playmat does not show yet (traits, other cards, items, modifier deck, enhancements) stays below in the old sheet.
 function characterTab(r, cid) {
   const c = r.chars.find(x => x.id === cid);
-  return c ? characterCard(c, r) : '<div class="empty">Character not found.</div>';
+  if (!c) return '<div class="empty">Character not found.</div>';
+  return playmatHtml(c, playmatCtx) + `<details class="oldsheet"><summary>Character sheet (what the playmat does not show yet)</summary>${characterCard(c, r)}</details>`;
 }
 
 // The "+" tab: add a character (up to ed.MAX_CHARACTERS) from the classes not yet in play.
@@ -1201,7 +1180,7 @@ function render() {
   }
   const flowPage = tab === 'Scenarios' && view.scnView === 'flow';
   if (!flowPage) view.flowFull = false;
-  main.classList.toggle('wide', flowPage);                // the flowchart may use the whole window width
+  main.classList.toggle('wide', flowPage || (tab === 'Mercenaries' && currentSub() !== 'add'));                // the flowchart may use the whole window width
   document.body.classList.toggle('noscroll', !!view.flowFull);
   editing = tab === 'Overview' ? editSections.size > 0 : editPages.has(tab);
   saveView();
@@ -1367,7 +1346,7 @@ main.addEventListener('error', e => {
 const dragPayload = e => { try { return JSON.parse(e.dataTransfer.getData('text/plain')); } catch { return null; } };
 main.addEventListener('dragstart', e => {
   if (evDragStart(e)) return;                    // a card row of the Events tab
-  const row = e.target.closest?.('.cardrow');
+  const row = e.target.closest?.('.ac[data-card], .flipcard[data-card]');
   if (!row) { e.preventDefault(); return; }
   e.dataTransfer.setData('text/plain', JSON.stringify({ char: row.dataset.char, card: Number(row.dataset.card) }));
   e.dataTransfer.effectAllowed = 'move';
@@ -1380,30 +1359,29 @@ main.addEventListener('dragend', () => {
 // Where in the hand a dropped card goes: in front of the row under the pointer (left half, or upper half in the list view), after it
 // otherwise. Returns { before } for moveCard: a card id, or null for the end of the hand; undefined = not over a card.
 function handDropPlace(e, zone) {
-  const row = e.target.closest?.('.cardrow');
+  const row = e.target.closest?.('.ac');
   if (!row || !zone.contains(row)) return { before: undefined };
   const r = row.getBoundingClientRect();
-  const tiles = !!row.closest('ul.tiles');
-  const first = tiles ? e.clientX < r.left + r.width / 2 : e.clientY < r.top + r.height / 2;
+  const first = e.clientX < r.left + r.width / 2;
   if (first) return { before: Number(row.dataset.card), row, side: 'before' };
-  const next = row.nextElementSibling?.closest('.cardrow');
+  const next = row.nextElementSibling?.closest('.ac');
   return { before: next ? Number(next.dataset.card) : null, row, side: 'after' };
 }
 const clearMarks = () => main.querySelectorAll('.ins-before, .ins-after').forEach(el => el.classList.remove('ins-before', 'ins-after'));
 main.addEventListener('dragover', e => {
   if (evDragOver(e)) return;
-  const zone = e.target.closest?.('.zone');
+  const zone = e.target.closest?.('[data-zone]');
   if (!zone) return;
   e.preventDefault();
   e.dataTransfer.dropEffect = 'move';
-  main.querySelectorAll('.zone.over').forEach(z => { if (z !== zone) z.classList.remove('over'); });
+  main.querySelectorAll('[data-zone].over').forEach(z => { if (z !== zone) z.classList.remove('over'); });
   zone.classList.add('over');
   clearMarks();
   if (zone.dataset.zone === 'hand') { const p = handDropPlace(e, zone); if (p.row) p.row.classList.add(p.side === 'before' ? 'ins-before' : 'ins-after'); }
 });
 main.addEventListener('drop', e => {
   if (evDrop(e)) return;
-  const zone = e.target.closest?.('.zone');
+  const zone = e.target.closest?.('[data-zone]');
   if (!zone) return;
   e.preventDefault();
   const d = dragPayload(e);
@@ -1412,15 +1390,65 @@ main.addEventListener('drop', e => {
   if (!d || d.char !== zone.dataset.char) return;
   if (zone.dataset.zone !== 'hand') { commit(ed.moveCard(record, d.char, d.card, zone.dataset.zone)); return; }
   const place = handDropPlace(e, zone).before;
-  const fromHand = !!e.target.closest?.('.zone[data-zone="hand"]') && main.querySelector(`.zone[data-zone="hand"][data-char="${CSS.escape(d.char)}"] .cardrow[data-card="${d.card}"]`);
+  const fromHand = !!zone.querySelector(`.ac[data-card="${d.card}"]`);
   // inside the hand, dropping on empty space puts the card at the end; from another zone it just enters the hand
   commit(ed.moveCard(record, d.char, d.card, 'hand', place === undefined && !fromHand ? {} : { before: place === undefined ? null : place }));
 });
+// Playmat clicks: flip a played card, the + and - of XP, gold and inherited perks, click on a number to type a value.
+const HUD_KEY = { xp: 'xp', gold: 'gold', inh: 'inh' };
 main.addEventListener('click', e => {
-  const b = e.target.closest?.('[data-handsort]');
-  if (!b) return;
-  commit(ed.sortHand(record, b.dataset.char, b.dataset.handsort));
+  const f = e.target.closest?.('.flipcard[data-slot]');
+  if (f) { commit(ed.flipPlayCard(record, f.dataset.char, Number(f.dataset.slot))); return; }
+  const b = e.target.closest?.('button[data-hud]');
+  if (b) {
+    const c = record.chars.find(x => x.id === b.dataset.char), k = HUD_KEY[b.dataset.hud];
+    if (c && k) commit(ed.setCharacter(record, c.id, k, (c[k] || 0) + Number(b.dataset.d)));
+    return;
+  }
+  const v = e.target.closest?.('.edv[data-hud]');
+  if (v && !v.querySelector('input')) {
+    const c = record.chars.find(x => x.id === v.dataset.char), k = HUD_KEY[v.dataset.hud];
+    if (!c || !k) return;
+    const inp = document.createElement('input');
+    inp.className = 'edin'; inp.inputMode = 'numeric'; inp.value = c[k] ?? 0;
+    v.textContent = ''; v.appendChild(inp); inp.focus(); inp.select();
+    let done = false;
+    const finish = ok => {
+      if (done) return; done = true;
+      const t = inp.value.trim();
+      if (ok && /^[+-]\d+$/.test(t)) commit(ed.setCharacter(record, c.id, k, (c[k] || 0) + parseInt(t, 10)));
+      else if (ok && /^\d+$/.test(t)) commit(ed.setCharacter(record, c.id, k, parseInt(t, 10)));
+      else render();
+    };
+    inp.addEventListener('keydown', ev => { if (ev.key === 'Enter') { ev.stopPropagation(); finish(true); } else if (ev.key === 'Escape') { ev.stopPropagation(); finish(false); } });
+    inp.addEventListener('blur', () => finish(true));
+    return;
+  }
+  const sb = e.target.closest?.('[data-handsort]');
+  if (sb) { commit(ed.sortHand(record, sb.dataset.char, sb.dataset.handsort)); return; }
 });
+// Hover zoom: every card zooms to the same absolute height whatever its resting size (the CSS scales by --hz).
+const HOVER_H = 320;
+main.addEventListener('mouseover', e => {
+  const el = e.target.closest?.('.pm .fan6 .ac, .pm .activelist .ac, .pm .flipcard, .pm .shelf6 .it');
+  if (!el || (el.classList.contains('flipcard') && !el.classList.contains('is-front'))) return;
+  if (e.relatedTarget && el.contains(e.relatedTarget)) return;
+  const h = el.getBoundingClientRect().height;
+  if (h > 0) el.style.setProperty('--hz', HOVER_H / h);
+});
+// Hold a + or - of the playmat to repeat it (the repeat clicks the button under the pointer, which survives the re-render).
+(() => {
+  let t, iv, held = false, x = 0, y = 0;
+  const stop = () => { clearTimeout(t); clearInterval(iv); };
+  main.addEventListener('pointerdown', e => {
+    const b = e.target.closest?.('.pm .sp .spc button');
+    if (!b || b.disabled) return;
+    held = false; x = e.clientX; y = e.clientY; stop();
+    t = setTimeout(() => { held = true; iv = setInterval(() => { const el = document.elementFromPoint(x, y)?.closest('.pm .sp .spc button'); if (el && !el.disabled) el.click(); else stop(); }, 90); }, 420);
+  });
+  ['pointerup', 'pointercancel'].forEach(n => document.addEventListener(n, stop));
+  main.addEventListener('click', e => { if (held && e.isTrusted && e.target.closest?.('.pm .sp .spc button')) { held = false; e.stopImmediatePropagation(); e.preventDefault(); } }, true);
+})();
 main.addEventListener('submit', e => {
   if (evSubmit(e)) return;
   if (e.target.id !== 'addChar') return;
