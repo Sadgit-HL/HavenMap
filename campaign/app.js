@@ -492,6 +492,8 @@ const matSlug = c => String(matImageUrl(c.cls, 'front')).split('/').pop().replac
 const pmState = c => ({
   modal: pm.modal, matSide: pm.matSide, histKind: pm.histKind,
   customCodes: pm.modal === 'codes' ? loadCodes() : [],
+  enh: pm.modal === 'enh' ? record.enh.map((e, i) => ({ e, i })).filter(x => x.e.cls === c.cls) : [],
+  enhCards: pm.modal === 'enh' ? CARDS.filter(k => k.cls === classByName(c.cls)?.i).map(k => pretty(k.slug)) : [],
   log: pm.modal === 'history' ? [...(record.log || [])].reverse().filter(e => String(e.d).startsWith(`${c.name}:`)) : [],
 });
 const playmatCtx = {
@@ -1424,7 +1426,10 @@ function flipPlayed(f) {
   setTimeout(() => commit(ed.flipPlayCard(record, char, Number(slot))), 560);
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && pm.modal) { pm.modal = null; render(); } });
-main.addEventListener('change', e => { if (e.target.matches?.('[data-histkind]')) { pm.histKind = e.target.value; render(); } });
+main.addEventListener('change', e => {
+  if (e.target.matches?.('[data-histkind]')) { pm.histKind = e.target.value; render(); }
+  else if (e.target.matches?.('[data-enhprice]')) commit(ed.setEnhancementPrice(record, Number(e.target.dataset.enhprice), e.target.value));
+});
 main.addEventListener('keydown', e => {
   const f = e.target.closest?.('.pm .flipcard[data-slot]');
   if (f && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); flipPlayed(f); }
@@ -1460,6 +1465,13 @@ main.addEventListener('click', e => {
     if (label && text) { saveCodes([...loadCodes(), { label, text }]); render(); }
     return;
   }
+  if (e.target.closest?.('[data-enhadd]')) {
+    const c = record.chars.find(x => x.id === e.target.closest('[data-enhadd]').dataset.char), q = k => main.querySelector(`[data-enh-${k}]`).value;
+    if (c) commit(ed.addEnhancement(record, { cls: c.cls, card: q('card'), top: q('top'), bottom: q('bottom'), price: q('price') }));
+    return;
+  }
+  const ed1 = e.target.closest?.('[data-enhdel]');
+  if (ed1) { commit(ed.removeEnhancement(record, Number(ed1.dataset.enhdel))); return; }
   const cd = e.target.closest?.('[data-codedel]');
   if (cd) { const a = loadCodes(); a.splice(Number(cd.dataset.codedel), 1); saveCodes(a); render(); return; }
   const f = e.target.closest?.('.flipcard[data-slot]');

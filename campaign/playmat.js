@@ -111,6 +111,7 @@ export function cardsPost(c, { pretty, cardById }) {
 const ICON = d => `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 const DOCK = [
   ['mat', 'Character mat', 'Character mat, front and back', ICON('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M9 5v14"/>')],
+  ['enh', 'Enhancements', 'Enhancement table (editable)', ICON('<path d="M4 18h16M6 18v-3h12v3M8 15c0-3 1-5 4-6V6h5v3H12"/>')],
   ['codes', 'BGG codes', 'Copy a forum post code', ICON('<rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2"/>')],
   ['history', 'History', 'History of changes of this character', ICON('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>')],
 ];
@@ -133,6 +134,11 @@ function modalHtml(c, X, S) {
       <div class="bnrsec"><h3>Class banners</h3><p class="bnrnote" data-bnrnote>Click a class to copy its <b>banner image</b> code.</p><div class="bnrgrid">${banners}</div></div>
       <div class="codelist">${custom}</div>
       <div class="addrow"><input data-code-label placeholder="Label" aria-label="Label"><input data-code-text placeholder="Code to copy" aria-label="Code" style="flex:2"><button type="button" class="btn6" data-codeadd>Add</button></div>`;
+  } else if (S.modal === 'enh') {
+    title = 'Enhancements';
+    const rows = (S.enh || []).map(({ e, i }) => `<tr><td>${esc(e.card)}</td><td>${esc(e.top ?? '\u2013')}</td><td>${esc(e.bottom ?? '\u2013')}</td><td><input class="enhprice" type="number" min="0" max="9999" inputmode="numeric" value="${e.price ?? ''}" placeholder="gold" data-enhprice="${i}" aria-label="Price of ${esc(e.card)}"> <button type="button" class="delx" data-enhdel="${i}" aria-label="Remove ${esc(e.card)}">&times;</button></td></tr>`).join('');
+    body = `<table class="enhtable"><thead><tr><th>Card</th><th>Top</th><th>Bottom</th><th>Price</th></tr></thead><tbody>${rows || '<tr><td colspan="4" class="enhempty">No enhancements logged for this class.</td></tr>'}</tbody></table>
+      <div class="addrow"><input data-enh-card list="enh-cards" placeholder="Card" aria-label="Card"><datalist id="enh-cards">${(S.enhCards || []).map(n => `<option value="${esc(n)}">`).join('')}</datalist><input data-enh-top placeholder="Top" aria-label="Top"><input data-enh-bottom placeholder="Bottom" aria-label="Bottom"><input data-enh-price placeholder="Gold" aria-label="Price" style="width:70px" inputmode="numeric"><button type="button" class="btn6" data-enhadd data-char="${esc(c.id)}">Add</button></div>`;
   } else if (S.modal === 'history') {
     title = 'History'; big = ' big';
     const log = S.log || [], kinds = [...new Set(log.map(e => e.kind))].sort(), f = S.histKind || 'all';
