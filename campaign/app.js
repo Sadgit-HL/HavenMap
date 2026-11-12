@@ -10,7 +10,7 @@ import { escapeHtml as esc } from '../scripts/escape.js';
 import { localStore } from '../scripts/campaign/store.js';
 import { cardImageUrl, itemImageUrl, eventImageUrl, matImageUrl, pqImageUrl } from '../scripts/campaign/cardImages.js';
 import {
-  validate, prosperityLevel, handOf, shopCopies, itemsInUse, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE,
+  validate, prosperityLevel, handOf, zoneOf, CARD_ZONES, shopCopies, itemsInUse, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE,
 } from '../scripts/campaign/record.js';
 import * as ed from '../scripts/campaign/edit.js';
 import { describeChange, LOG_TABS, LOG_MAX } from '../scripts/campaign/changelog.js';
@@ -410,7 +410,7 @@ function benchList(c) {
 
 // --- ability card areas: hand, discard, lost (cards move by drag and drop or the row buttons) ---------------------
 
-const AREA_TITLE = { hand: 'Hand', discard: 'Discard', lost: 'Lost' };
+const AREA_TITLE = { hand: 'Hand', active: 'Active', play1: 'Play slot 1', play2: 'Play slot 2', discard: 'Discard', lost: 'Lost' };
 
 // Initiative number shown in front of a card name; a dash when the number is not known for that class yet.
 const iniTag = card => `<span class="ini${card?.ini == null ? ' none' : ''}" title="Initiative">${card?.ini ?? '&ndash;'}</span>`;
@@ -429,28 +429,42 @@ function cardPicture(card, id) {
 function cardRow(c, id, area) {
   const card = cardById.get(id);
   const url = cardImageUrl(card);
-  const active = area === 'hand' && c.act.includes(id);
-  const label = `${iniTag(card)}<span class="cname">${esc(pretty(card?.slug ?? id))}</span>${active ? '<span class="badge">active</span>' : ''}`;
+  const slot = area === 'play1' ? c.play[0] : area === 'play2' ? c.play[1] : null;
+  const label = `${iniTag(card)}<span class="cname">${esc(pretty(card?.slug ?? id))}</span>${slot ? `<span class="badge">${slot.up ? 'face up' : 'face down'}</span>` : ''}`;
   if (imgMode === 'always') {
-    return `<li class="cardrow tile${active ? ' is-active' : ''}" data-card="${id}" data-char="${esc(c.id)}" draggable="true">
+    return `<li class="cardrow tile" data-card="${id}" data-char="${esc(c.id)}" draggable="true">
       ${cardPicture(card, id)}<div class="tilebar">${label}</div></li>`;
   }
-  return `<li class="cardrow${active ? ' is-active' : ''}" data-card="${id}" data-char="${esc(c.id)}"${url ? ` data-img="${esc(url)}"` : ''} draggable="true">${label}</li>`;
+  return `<li class="cardrow"${url ? ` data-img="${esc(url)}"` : ''} data-card="${id}" data-char="${esc(c.id)}" draggable="true">${label}</li>`;
 }
 
+// Hand in the player's own order (c.hord) when there is one, else lowest initiative first; cards missing from hord come last.
+function handList(c) {
+  const hand = handOf(c);
+  if (!Array.isArray(c.hord)) return hand.sort(byInitiative);
+  const pos = id => { const i = c.hord.indexOf(id); return i < 0 ? Infinity : i; };
+  return hand.sort((a, b) => pos(a) - pos(b) || byInitiative(a, b));
+}
+
+// The playmat layout (docs/merc-tab-handover.md): active area, the two play slots, discard and lost piles, and the hand below.
 function deckZones(c) {
   if (!c.deck.length) return '<div class="hint">no cards yet</div>';
-  const out = { discard: new Set(c.disc), lost: new Set(c.lost) };
-  const lists = {
-    hand: c.deck.filter(id => !out.discard.has(id) && !out.lost.has(id)).sort(byInitiative),
-    discard: c.deck.filter(id => out.discard.has(id)).sort(byInitiative),
-    lost: c.deck.filter(id => out.lost.has(id)).sort(byInitiative),
-  };
-  return `<div class="zones">${['hand', 'discard', 'lost'].map(area => `
-    <div class="zone" data-zone="${area}" data-char="${esc(c.id)}">
-      <h4>${AREA_TITLE[area]} <span>${lists[area].length}</span></h4>
-      <ul class="${imgMode === 'always' ? 'tiles' : ''}">${lists[area].map(id => cardRow(c, id, area)).join('') || '<li class="empty-row">empty</li>'}</ul>
-    </div>`).join('')}</div><p class="hint">Drag cards between the areas. No need to switch on Edit.</p>`;
+  const lists = Object.fromEntries(CARD_ZONES.map(z => [z, []]));
+  for (const id of c.deck) lists[zoneOf(c, id)].push(id);
+  lists.hand = handList(c);
+  lists.active = c.act.filter(id => lists.active.includes(id));
+  ['discard', 'lost'].forEach(z => lists[z].sort(byInitiative));
+  const panel = (z, cls) => `
+    <div class="zone ${cls}" data-zone="${z}" data-char="${esc(c.id)}">
+      <h4>${AREA_TITLE[z]} <span>${lists[z].length}</span></h4>
+      <ul class="${imgMode === 'always' ? 'tiles' : ''}">${lists[z].map(id => cardRow(c, id, z)).join('') || '<li class="empty-row">empty</li>'}</ul>
+    </div>`;
+  return `<div class="board">
+    ${panel('active', 'b-active')}
+    <div class="b-play"><div class="slots">${panel('play1', 'slot')}${panel('play2', 'slot')}</div></div>
+    <div class="b-piles">${panel('discard', 'pile')}${panel('lost', 'pile')}</div>
+    ${panel('hand', 'b-hand')}
+  </div><p class="hint">Drag cards between the areas. A play slot takes cards from the hand only. No need to switch on Edit.</p>`;
 }
 
 // Traits the class brings that are not on the sheet's list yet, the species (Vermling, Quatryl, ...) among them. Events check

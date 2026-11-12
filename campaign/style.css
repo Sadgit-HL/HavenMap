@@ -80,6 +80,13 @@ button.primary { background:var(--accent); color:#1b150c; border:1px solid var(-
 .badge { font-size:10px; color:var(--info); border:1px solid var(--info); border-radius:8px; padding:0 5px; }
 .empty-row { color:var(--muted); font-size:12px; padding:4px 2px; }
 @media (max-width:640px) { .zones { grid-template-columns:1fr; } }
+/* playmat layout of the ability card zones (Mercenaries tab) */
+.board { display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1.4fr) minmax(0,.9fr); grid-template-areas:'active play piles' 'hand hand hand'; gap:10px; margin:6px 0 6px; }
+.board .b-active { grid-area:active; } .board .b-play { grid-area:play; } .board .b-piles { grid-area:piles; display:flex; flex-direction:column; gap:10px; } .board .b-hand { grid-area:hand; }
+.board .slots { display:grid; grid-template-columns:1fr 1fr; gap:8px; height:100%; }
+.board .slot { border-style:solid; } .board .pile { flex:1; } .board .pile.zone ul.tiles { grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); }
+.board .b-hand ul.tiles { grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); }
+@media (max-width:760px) { .board { grid-template-columns:1fr; grid-template-areas:'play' 'active' 'hand' 'piles'; } .board .b-piles { flex-direction:row; } .board .b-piles .pile { flex:1; } }
 
 .imgmode { display:flex; align-items:center; gap:4px; color:var(--muted); font-size:12px; }
 .imgmode button { background:transparent; color:var(--muted); border:1px solid var(--line); border-radius:6px; padding:3px 10px; font:inherit; cursor:pointer; }
