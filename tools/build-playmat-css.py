@@ -21,7 +21,9 @@ css = re.sub(r'@import[^;]*;', '', css)
 # first class (or tag) of a selector must be in this list for the rule to be taken
 KEEP = set('''stage6 hud portrait who namerow sub chips chip sep lvl xp xprow xplab xpto xpbar stat counters grp bggseg bggb gear sp spc edv edin
 shelf6 it itbar itbadge board6 toprow zone zlabel activelist ac inib pini slot6 slotcard slotempty flipcard flipinner face cardback backlabel realback
-hand6 hbar hctl sortgrp btn6 fan6 piles6 pile6 pilecard pilerow6 hint tk tkh ctr target seg setwrap'''.split())
+hand6 hbar hctl sortgrp btn6 fan6 piles6 pile6 pilecard pilerow6 hint tk tkh ctr target seg setwrap
+dock mbtn mmodal mmodalbox mmodalx matflip codelist coderow bgg-icons bgg-row bgg-block bgg-ic bnrsec bnrgrid bnrtile bnrnote bnrnoimg
+histbar hlist hrow hz ha hm hempty delx addrow mrow'''.split())
 
 def split_rules(text):
     """Top level rules as (prelude, body); at-rule bodies are kept as text."""
@@ -77,11 +79,12 @@ for prelude, body in split_rules(css):
 
 EXTRA = """
 /* campaign page additions (not in the mockup) */
-.pm .stage6{grid-template-columns:150px minmax(0,1fr) 112px;height:calc(100vh - 150px);min-height:640px}
+.pm .stage6{grid-template-columns:150px minmax(0,1fr) 112px 64px;height:calc(100vh - 150px);min-height:640px}
 .pm .noimg{display:flex;align-items:center;justify-content:center;text-align:center;padding:6px;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:6px;background:#1c1711;aspect-ratio:5/7}
 .pm .hbar .over-limit{color:#e08a7a}
 .pm .fan6 .ac.ins-before{box-shadow:-5px 0 0 var(--accent)}.pm .fan6 .ac.ins-after{box-shadow:5px 0 0 var(--accent)}
 .pm .edv{cursor:text}.pm .edin{width:64px}
+.pm .mmodal{z-index:300}.pm .hrow small{color:var(--muted);margin-left:6px}.pm .matflip img{max-width:100%;cursor:pointer}
 .oldsheet{margin-top:14px}.oldsheet>summary{cursor:pointer;color:var(--muted);padding:6px 2px}
 """
 
