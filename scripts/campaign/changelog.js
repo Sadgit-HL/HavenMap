@@ -2,7 +2,8 @@
 // no DOM and no storage. The app stamps each entry with the time and the user (campaign/app.js commit) and keeps them in
 // record.log. The record's fields map to the page (tab) where they are edited. Scenario and item names are left out:
 // locked ones are hidden from the players, so the log uses numbers only.
-import { SCN_STATE_NAME, availableSet } from './record.js';
+import { SCN_STATE_NAME, availableSet, zoneOf } from './record.js';
+import { CARDS } from '../games/gh2_cards.js';
 import { ALL_CLASSES } from './classList.js';
 
 export const LOG_TABS = ['Overview', 'Scenarios', 'Mercenaries', 'Items', 'Events', 'Cards', 'Resources'];
@@ -12,6 +13,30 @@ const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const fmt = v => (v === undefined || v === null || v === '' ? '-' : typeof v === 'object' ? JSON.stringify(v) : String(v));
 const diffList = (a = [], b = []) => ({ add: b.filter(x => !a.some(y => same(x, y))), del: a.filter(x => !b.some(y => same(x, y))) });
 const plusMinus = ({ add, del }) => [add.length ? `+${add.join(', +')}` : '', del.length ? `-${del.join(', -')}` : ''].filter(Boolean).join(' ');
+const CARD = new Map(CARDS.map(c => [c.id, c]));
+const ZONE_NAME = { hand: 'hand', active: 'active area', play1: 'play slot 1', play2: 'play slot 2', discard: 'discard pile', lost: 'lost pile' };
+const cardLabel = id => {
+  const k = CARD.get(id);
+  if (!k) return `#${id}`;
+  const name = k.slug.replace(/-/g, ' ').replace(/\b\w/g, ch => ch.toUpperCase());
+  const more = [k.lv != null ? `level ${k.lv}` : '', k.ini != null ? `initiative ${k.ini}` : ''].filter(Boolean).join(', ');
+  return more ? `${name} (${more})` : name;
+};
+// Card moves between zones and flips of a played card of one character; [] when nothing of that kind changed.
+function describeCards(o, c) {
+  const lines = [];
+  const ids = [...new Set([...(o.deck || []), ...(c.deck || [])])];
+  for (const id of ids) {
+    if (!(o.deck || []).includes(id) || !(c.deck || []).includes(id)) continue;          // deck changes are the generic array diff
+    const from = zoneOf(o, id), to = zoneOf(c, id);
+    if (from !== to) lines.push(`${cardLabel(id)}: ${ZONE_NAME[from]} to ${ZONE_NAME[to]}`);
+    else if (to === 'play1' || to === 'play2') {
+      const i = to === 'play1' ? 0 : 1;
+      if (!!o.play?.[i]?.up !== !!c.play?.[i]?.up) lines.push(`${cardLabel(id)}: turned face ${c.play[i].up ? 'up' : 'down'}`);
+    }
+  }
+  return lines;
+}
 const keys = (a = {}, b = {}) => [...new Set([...Object.keys(a), ...Object.keys(b)])];
 
 const PARTY = { diff: 'Difficulty', insp: 'Inspiration', avg: 'Average level', diffName: 'Difficulty name' };
@@ -83,8 +108,12 @@ export function describeChange(a, b) {
   for (const [id, c] of cb) {
     const o = ca.get(id);
     if (!o) { add('Mercenaries', 'Character', `Added ${c.name} (${c.cls})`); continue; }
+    const cardLines = describeCards(o, c);
+    cardLines.forEach(d => add('Mercenaries', 'Card', `${c.name}: ${d}`));
+    if (!cardLines.length && !same(o.hord, c.hord)) add('Mercenaries', 'Card', `${c.name}: hand order changed`);
     for (const k of keys(o, c)) {
       if (same(o[k], c[k])) continue;
+      if (['disc', 'act', 'lost', 'play', 'hord'].includes(k)) continue;                  // described above
       if (k === 'seat') add('Mercenaries', 'Character player', `${c.name}: ${(b.players || []).find(p => p.seat === c.seat)?.name ?? 'nobody'} (was ${(a.players || []).find(p => p.seat === o.seat)?.name ?? 'nobody'})`);
       else if (k === 'am') add('Cards', 'Modifier deck', `${c.name}: modifier deck changed`);
       else if (k === 'items') {

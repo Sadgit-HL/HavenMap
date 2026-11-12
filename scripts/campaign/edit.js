@@ -5,7 +5,7 @@ import { SCENARIOS, STICKERS } from '../games/gh2_scenarios.js';
 import { ITEMS } from '../games/gh2_items.js';
 import { CLASSES } from '../games/gh2_classes.js';
 import { ALL_CLASSES } from './classList.js';
-import { SCN_STATE, availableSet } from './record.js';
+import { SCN_STATE, availableSet, CARD_ZONES, zoneOf } from './record.js';
 import { SPECIAL_TRAITS } from './traits.js';
 import { EVENT_TABLE, PILES, frontOf, boxState, markKey, eventPlace, nextEvent, optionKeys, seatList, tally, cryptoRandom } from './events.js';
 
@@ -503,7 +503,7 @@ export function addCharacter(r, { cls, name }) {
   if (!availableClasses(r).some(c => c.i === klass.i)) return r;
   return edit(r, x => {
     x.chars.push({ id: nextCharId(x.chars), cls: klass.name, name: nm, lv: 1, xp: 0, gold: 0, inh: 0, traits: [],
-      deck: [], disc: [], act: [], lost: [], bench: [], items: [] });
+      deck: [], disc: [], act: [], lost: [], play: [null, null], hord: null, bench: [], items: [] });
   });
 }
 
@@ -515,34 +515,49 @@ export function renameCharacter(r, cid, name) {
 
 // --- ability card piles ----------------------------------------------------------------------------------------
 
-export const CARD_AREAS = ['hand', 'discard', 'lost'];
+export const CARD_AREAS = CARD_ZONES;            // hand, active, play1, play2, discard, lost
 
-// Move a card of the character's selected deck to an area. The hand is derived (deck minus discard, active and lost),
-// so moving to 'hand' removes the card from every pile; moving to 'discard' or 'lost' also clears its active mark.
-// Cards that are not in the deck are ignored.
-export function moveCard(r, cid, cardId, area) {
+// Move a card of the character's selected deck to a zone. A card is in one zone only. Rules:
+//  - play1 and play2 take cards from the hand only; a card already in a play slot can go to the other slot (the two swap, or it
+//    moves into the empty slot). A card that enters an occupied slot sends that slot's card back to the hand.
+//  - a card entering a play slot is face down; leaving the slot drops the face state.
+//  - the manual hand order (hord) follows: cards leaving the hand are removed from it, cards entering the hand go to its end.
+// Cards that are not in the deck, unknown zones and moves the rules forbid return the record unchanged.
+export function moveCard(r, cid, cardId, dest) {
   const c = r.chars.find(x => x.id === cid);
-  if (!c || !CARD_AREAS.includes(area) || !c.deck.includes(cardId)) return r;
-  const now = c.lost.includes(cardId) ? 'lost' : c.disc.includes(cardId) ? 'discard' : 'hand';
-  if (now === area) return r;                     // already there (a hand card marked active stays active)
+  if (!c || !CARD_ZONES.includes(dest) || !c.deck.includes(cardId)) return r;
+  const now = zoneOf(c, cardId);
+  if (now === dest) return r;
+  const toPlay = dest === 'play1' || dest === 'play2', inPlay = now === 'play1' || now === 'play2';
+  if (toPlay && now !== 'hand' && !inPlay) return r;
   return edit(r, x => {
     const ch = x.chars.find(y => y.id === cid);
+    const play = ch.play || [null, null];
+    const toHand = id => { if (Array.isArray(ch.hord) && !ch.hord.includes(id)) ch.hord.push(id); };
+    if (toPlay && inPlay) {
+      ch.play = [play[1], play[0]];
+      return;
+    }
     const without = list => (list || []).filter(v => v !== cardId);
     ch.disc = without(ch.disc); ch.lost = without(ch.lost); ch.act = without(ch.act);
-    if (area === 'discard') ch.disc.push(cardId);
-    if (area === 'lost') ch.lost.push(cardId);
+    ch.play = play.map(p => (p && p.id === cardId ? null : p));
+    if (Array.isArray(ch.hord)) ch.hord = without(ch.hord);
+    if (dest === 'discard') ch.disc.push(cardId);
+    else if (dest === 'lost') ch.lost.push(cardId);
+    else if (dest === 'active') ch.act.push(cardId);
+    else if (dest === 'hand') toHand(cardId);
+    else {
+      const i = dest === 'play1' ? 0 : 1;
+      if (ch.play[i]) toHand(ch.play[i].id);
+      ch.play[i] = { id: cardId, up: false };
+    }
   });
 }
 
-// Mark a card in the hand as active (played in front of the player, not in the discard yet) or clear the mark.
+// Put a hand card into the active area, or clear it from there (back to the hand). Kept for older callers; moveCard does the work.
 export function setCardActive(r, cid, cardId, active) {
   const c = r.chars.find(x => x.id === cid);
-  if (!c || !c.deck.includes(cardId)) return r;
-  const inPile = c.disc.includes(cardId) || c.lost.includes(cardId);
-  if (active && inPile) return r;                // active cards come from the hand
-  return edit(r, x => {
-    const ch = x.chars.find(y => y.id === cid);
-    ch.act = (ch.act || []).filter(v => v !== cardId);
-    if (active) ch.act.push(cardId);
-  });
+  if (!c) return r;
+  if (active) return moveCard(r, cid, cardId, zoneOf(c, cardId) === 'hand' ? 'active' : zoneOf(c, cardId));
+  return zoneOf(c, cardId) === 'active' ? moveCard(r, cid, cardId, 'hand') : r;
 }

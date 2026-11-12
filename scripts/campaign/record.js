@@ -25,7 +25,10 @@ Record fields (all optional on load, defaults filled by normalize):
   stk, cls          sticker labels, unlocked class names
   avail             class names available in this campaign (optional; absent = every class in scripts/campaign/classList.js)
   scn               { "<number>": { s, l?, p?, ch?, d? } }   state, level, party size, chests, date
-  chars             [{ id, cls, name, seat?, lv, xp, gold, inh, traits, special, hand, deck, disc, act, lost, bench, items:[{id, st}], am }]
+  chars             [{ id, cls, name, seat?, lv, xp, gold, inh, traits, special, hand, deck, disc, act, lost, play, hord, bench, items:[{id, st}], am }]
+                    Every ability card of `deck` is in exactly one place: lost, disc (discard pile, last = top), play, act (active area) or the hand
+                    (all the rest). play = [slot 1, slot 2], each null or { id, up } (up = face up); only hand cards enter a slot, slot 1 sets the
+                    initiative. hord = manual hand order [cardId] or null (null = sorted by initiative)
                     special = special traits gained through events (keys of scripts/campaign/traits.js)
   items             { unl: [itemId], taken: { itemId: copies in use } }
   events            { city, road: { top, bottom, out, locked }, pend? }   piles are ordered, see scripts/campaign/events.js
@@ -95,8 +98,23 @@ export function normalize(raw) {
   r.imb = Math.max(0, Math.min(80, Math.trunc(Number(r.imb)) || 0));
   r.don = Math.max(0, Math.min(100, Math.trunc(Number(r.don)) || 0));
   r.scn = r.scn || {};
-  r.chars = (r.chars || []).map(c => ({ traits: [], special: [], deck: [], disc: [], act: [], lost: [], bench: [], items: [], ...c }));
+  r.chars = (r.chars || []).map(normalizeChar);
   return r;
+}
+
+// A character with every field present. Each ability card is in one place only: a record that lists a card twice keeps it in
+// the first of lost, discard, a play slot, active; play slots keep { id, up } or null; hord keeps hand cards only.
+function normalizeChar(c) {
+  const ch = { traits: [], special: [], deck: [], disc: [], act: [], lost: [], bench: [], items: [], play: [null, null], hord: null, ...c };
+  const seen = new Set();
+  const take = list => (Array.isArray(list) ? list : []).filter(id => !seen.has(id) && seen.add(id));
+  ch.lost = take(ch.lost);
+  ch.disc = take(ch.disc);
+  const play = Array.isArray(ch.play) ? ch.play : [];
+  ch.play = [0, 1].map(i => { const p = play[i]; return p && ch.deck.includes(p.id) && !seen.has(p.id) && seen.add(p.id) ? { id: p.id, up: !!p.up } : null; });
+  ch.act = take(ch.act);
+  if (Array.isArray(ch.hord)) { const own = new Set(); ch.hord = ch.hord.filter(id => ch.deck.includes(id) && !seen.has(id) && !own.has(id) && own.add(id)); } else ch.hord = null;
+  return ch;
 }
 
 // List of problems; an empty list means the record is usable. Does not throw.
@@ -135,9 +153,21 @@ export function prosperityLevel(checks) {
 
 export const classByName = name => CLASSES.find(c => c.name.toLowerCase() === String(name || '').toLowerCase());
 
-// Ability card ids in the hand: the selected deck minus discard, active and lost.
+// Where an ability card of the character's deck is: 'hand', 'active', 'play1', 'play2', 'discard' or 'lost'.
+export const CARD_ZONES = ['hand', 'active', 'play1', 'play2', 'discard', 'lost'];
+export function zoneOf(c, id) {
+  if ((c.lost || []).includes(id)) return 'lost';
+  if ((c.disc || []).includes(id)) return 'discard';
+  const play = c.play || [];
+  if (play[0]?.id === id) return 'play1';
+  if (play[1]?.id === id) return 'play2';
+  if ((c.act || []).includes(id)) return 'active';
+  return 'hand';
+}
+
+// Ability card ids in the hand (deck order): the selected deck minus lost, discard, play slots and the active area.
 export function handOf(c) {
-  const out = new Set([...(c.disc || []), ...(c.act || []), ...(c.lost || [])]);
+  const out = new Set([...(c.disc || []), ...(c.act || []), ...(c.lost || []), ...(c.play || []).filter(Boolean).map(p => p.id)]);
   return (c.deck || []).filter(id => !out.has(id));
 }
 
