@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Top bar styles</title>
+<style>
+:root{--bg:#1b1610;--panel:#241d14;--panel2:#2d2519;--panel3:#362c1d;--line:#4a3d28;--text:#efe6d2;--muted:#a99a7c;--accent:#c7a44a;--ok:#6fae6a;--info:#6aa6d4}
+*{box-sizing:border-box}
+body{margin:0;padding:20px 16px 70px;background:var(--bg);color:var(--text);font:14px/1.4 system-ui,Segoe UI,sans-serif}
+h1{font-size:20px;margin:0 0 4px;color:var(--accent)}p.lead{margin:0 0 20px;color:var(--muted);max-width:900px}
+.v{max-width:1280px;margin:0 0 30px}.v h2{font-size:15px;margin:0 0 2px}.v .why{color:var(--muted);font-size:12.5px;margin:0 0 10px;max-width:980px}
+button{font:inherit;color:inherit;cursor:pointer}button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+/* shared parts */
+.av{flex:none;background:#120e08 center/cover no-repeat;border:1px solid var(--line)}
+.chip{display:inline-block;padding:1px 9px;border-radius:999px;font-size:11.5px;background:var(--panel3);border:1px solid var(--line);color:var(--text)}
+.chip.info{border-color:var(--info);color:var(--info);background:transparent}
+.nm{font-weight:700;letter-spacing:.01em}.sub{color:var(--muted);font-size:12px}
+.pen{width:22px;height:22px;border:0;border-radius:6px;background:transparent;color:var(--muted);display:inline-flex;align-items:center;justify-content:center;padding:0}.pen:hover{background:var(--panel3);color:var(--text)}
+.lvl{flex:none;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:800;color:#1b150c;background:radial-gradient(circle at 30% 25%,#e2c56b,#a8842c);border:2px solid #f0d68a;box-shadow:0 1px 0 #000}
+.bar{position:relative;height:8px;border-radius:99px;background:#120e08;border:1px solid var(--line);overflow:hidden}.bar b{display:block;height:100%;background:linear-gradient(90deg,#9c7a28,#e2c56b);border-radius:99px}
+.sp{display:inline-flex;align-items:stretch;border:1px solid var(--line);border-radius:9px;background:var(--panel2);overflow:hidden;vertical-align:middle}
+.sp>b{min-width:40px;padding:2px 9px;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
+.sp .spc{display:flex;flex-direction:column;border-left:1px solid var(--line)}.sp .spc button{flex:1;width:26px;min-height:14px;border:0;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;padding:0}
+.sp .spc button+button{border-top:1px solid var(--line)}.sp .spc button:hover{background:var(--panel3);color:var(--accent)}
+.stat{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.tok{display:inline-flex;align-items:center;gap:6px}.tok img{width:40px;height:40px;object-fit:contain}
+.ib{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);background:var(--panel2);border-radius:9px;padding:6px 10px;color:var(--text);transition:background .12s,border-color .12s}
+.ib:hover{background:var(--panel3);border-color:var(--accent)}.ib.sq{width:36px;height:36px;padding:0}.ib svg{flex:none}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--panel2)}.seg button{border:0;background:transparent;padding:6px 11px;display:inline-flex;align-items:center;gap:6px;color:var(--text)}.seg button+button{border-left:1px solid var(--line)}.seg button:hover{background:var(--panel3);color:var(--accent)}
+.grp{display:inline-flex;flex-direction:column;gap:3px}.grp small{font-size:10px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.sep{width:1px;align-self:stretch;background:var(--line);margin:4px 2px}
+.spacer{flex:1}
+.tip{position:relative}.tip:hover::after,.tip:focus-visible::after{content:attr(data-tip);position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);white-space:nowrap;background:#0f0b07;border:1px solid var(--line);border-radius:6px;padding:3px 8px;font-size:11.5px;z-index:5}
+
+/* A. command bar: one slim row */
+.A{display:flex;align-items:center;gap:14px;padding:8px 14px;background:linear-gradient(180deg,#2a2217,#201910);border:1px solid var(--line);border-radius:14px}
+.A .av{width:46px;height:46px;border-radius:50%}.A .lvl{width:34px;height:34px;font-size:16px}
+.A .xpw{width:190px}.A .xpw .row{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:3px}.A .xpw .row b{color:var(--text)}
+/* B. two tier */
+.B{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.B .t1{display:flex;align-items:center;gap:14px;padding:10px 16px}.B .t2{display:flex;align-items:center;gap:16px;padding:8px 16px;background:#1d170f;border-top:1px solid var(--line)}
+.B .av{width:54px;height:54px;border-radius:12px}.B .lvl{width:38px;height:38px;font-size:18px}.B .xpw{width:260px}
+/* C. banner card */
+.C{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#120e08}
+.C .bn{position:absolute;inset:0;background:center/cover no-repeat;opacity:.75}.C .bn::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(18,14,8,.95) 0,rgba(18,14,8,.45) 50%,rgba(18,14,8,.9) 100%)}
+.C .in{position:relative;display:flex;align-items:center;gap:10px;padding:12px 14px}.C .seg button{padding:6px 8px}.C .xpw{width:140px!important}
+.C .av{width:64px;height:64px;border-radius:50%;border:2px solid var(--accent)}.C .nm{font-size:22px}.C .tile{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 10px;background:rgba(36,29,20,.8);border:1px solid var(--line);border-radius:10px}
+.C .lvl{width:40px;height:40px;font-size:19px}.C .xpw{width:200px}.C .xpw .row{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:3px}
+/* D. ring + menu */
+.D{display:flex;align-items:center;gap:16px;padding:8px 16px;background:var(--panel);border:1px solid var(--line);border-radius:999px}
+.D .ring{position:relative;width:58px;height:58px;flex:none}.D .ring svg{position:absolute;inset:0;transform:rotate(-90deg)}.D .ring .av{position:absolute;inset:6px;border-radius:50%}
+.D .ring .lv{position:absolute;right:-4px;bottom:-4px;width:24px;height:24px;font-size:12px;border-width:2px}
+.D .pill{display:inline-flex;align-items:center;gap:8px;padding:3px 4px 3px 12px;border:1px solid var(--line);border-radius:999px;background:var(--panel2)}.D .pill img{width:18px;height:18px}.D .pill .lab{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.D details{position:relative}.D summary{list-style:none;display:inline-flex;align-items:center;gap:6px;cursor:pointer;border:1px solid var(--line);background:var(--panel2);border-radius:999px;padding:7px 14px}.D summary::-webkit-details-marker{display:none}
+.D summary:hover{border-color:var(--accent)}.D .menu{position:absolute;right:0;top:calc(100% + 6px);z-index:6;min-width:210px;background:#17120b;border:1px solid var(--line);border-radius:10px;padding:5px;box-shadow:0 12px 30px rgba(0,0,0,.6)}
+.D .menu button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:transparent;border-radius:7px;padding:8px 10px;text-align:left}.D .menu button:hover{background:var(--panel3)}.D .menu small{display:block;color:var(--muted);font-size:11px}
+/* E. icon toolbar with progress along the bottom edge */
+.E{position:relative;display:flex;align-items:center;gap:14px;padding:10px 16px 14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.E .av{width:44px;height:44px;border-radius:10px}.E .lvl{width:30px;height:30px;font-size:14px;margin-left:-26px;margin-top:34px;border-width:2px}
+.E .edge{position:absolute;left:0;right:0;bottom:0;height:4px;background:#120e08}.E .edge b{display:block;height:100%;width:83%;background:linear-gradient(90deg,#9c7a28,#e2c56b)}
+.E .xpn{font-size:12px;color:var(--muted)}.E .xpn b{color:var(--text);font-size:14px}
+.E .grid{display:flex;gap:6px}
+</style>
+</head>
+<body>
+<h1>Top bar styles</h1>
+<p class="lead">Five layouts for the character header. Same content in each: portrait, name and class, traits, level, XP, gold, inherited perks, class tokens, the three BGG code buttons (AMD, Turn, Cards) and settings. Counters use the spin box. Hover the icon-only buttons in E and the Copy menu in D.</p>
+
+<section class="v"><h2>A. Command bar</h2><p class="why">One slim row. Level badge sits on the portrait, XP is a labelled bar, gold and inherited perks are spin boxes with small captions. The three BGG buttons are one segmented control with a "BGG" caption, so it is obvious they all copy a code. Traits move into the subtitle line to save height.</p>
+<header class="A">
+  <div style="position:relative"><div class="av" style="background-image:url(https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_mats/front/hail.png)"></div></div>
+  <div><div class="nm" style="font-size:17px">Sam <button class="pen" aria-label="Edit character">✎</button></div><div class="sub">Hail · played by Guido</div><div style="margin-top:3px;display:flex;gap:4px"><span class="chip">Chaotic</span><span class="chip">Educated</span><span class="chip">Resourceful</span></div></div>
+  <div class="sep"></div>
+  <div class="lvl" title="Level">5</div>
+  <div class="xpw"><div class="row"><span>XP</span><span><b class="num">264</b> / 275</span></div><div class="bar"><b style="width:83%"></b></div></div>
+  <div class="stat">Gold<span data-sp="42"></span></div><div class="stat">Inherited perks<span data-sp="0"></span></div>
+  <div class="spacer"></div>
+  <div class="tok"><img src="../../images/common/mercenary_tokens/hail_resolve.png" alt="Resolve"><span data-sp="3"></span></div>
+  <div class="sep"></div>
+  <div class="grp"><small>BGG code</small><span class="seg"><button title="Copy BGG code"><i data-i="dice"></i>AMD</button><button title="Copy BGG code"><i data-i="doc"></i>Turn</button><button title="Copy BGG code"><i data-i="cards"></i>Cards</button></span></div>
+  <button class="ib sq tip" data-tip="Settings" aria-label="Settings"><i data-i="gear"></i></button>
+</header></section>
+
+<section class="v"><h2>B. Two tier</h2><p class="why">Identity on top (bigger portrait, name, traits), a quiet toolbar underneath for the numbers on the left and the actions on the right. The toolbar row reads like an app toolbar, with the BGG buttons grouped and labelled. Tokens move to the toolbar so the identity row stays calm.</p>
+<header class="B">
+  <div class="t1"><div class="av" style="background-image:url(https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_mats/front/hail.png)"></div>
+    <div><div class="nm" style="font-size:20px">Sam <button class="pen" aria-label="Edit character">✎</button></div><div class="sub">Hail · played by Guido</div></div>
+    <div style="display:flex;gap:5px;margin-left:8px"><span class="chip">Chaotic</span><span class="chip">Educated</span><span class="chip">Resourceful</span><span class="chip info">Friend of the Hero</span></div>
+    <div class="spacer"></div><button class="ib sq tip" data-tip="Settings" aria-label="Settings"><i data-i="gear"></i></button></div>
+  <div class="t2">
+    <div class="lvl" title="Level">5</div>
+    <div class="xpw"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:3px"><span>210</span><b class="num" style="color:var(--text)">264 XP</b><span>275</span></div><div class="bar"><b style="width:83%"></b></div></div>
+    <div class="sep"></div>
+    <div class="stat">Gold<span data-sp="42"></span></div><div class="stat">Inherited perks<span data-sp="0"></span></div>
+    <div class="sep"></div><div class="tok"><img src="../../images/common/mercenary_tokens/hail_resolve.png" alt="Resolve"><span data-sp="3"></span></div>
+    <div class="spacer"></div>
+    <div class="grp"><small>Copy BGG code</small><span class="seg"><button title="Copy BGG code"><i data-i="dice"></i>AMD</button><button title="Copy BGG code"><i data-i="doc"></i>Turn</button><button title="Copy BGG code"><i data-i="cards"></i>Cards</button></span></div>
+  </div>
+</header></section>
+
+<section class="v"><h2>C. Banner card</h2><p class="why">Uses the class banner image as a darkened background, so each class gets its own look for free. Large name, round portrait with an accent ring, numbers as small dashboard tiles. The most characterful option, at the cost of height.</p>
+<header class="C"><div class="bn" style="background-image:url(https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_banners/hail.jpg)"></div>
+  <div class="in">
+    <div class="av" style="background-image:url(https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_mats/front/hail.png)"></div>
+    <div><div class="nm">Sam <button class="pen" aria-label="Edit character">✎</button></div><div class="sub">Hail · played by Guido</div><div style="margin-top:4px;display:flex;gap:4px"><span class="chip">Chaotic</span><span class="chip">Educated</span><span class="chip">Resourceful</span></div></div>
+    <div class="tile"><div class="lvl" title="Level">5</div></div>
+    <div class="tile" style="padding:8px 14px"><div class="xpw"><div class="row"><span>XP</span><span><b class="num" style="color:var(--text)">264</b> / 275</span></div><div class="bar"><b style="width:83%"></b></div></div></div>
+    <div class="tile"><span class="sub" style="font-size:10px;letter-spacing:.08em;text-transform:uppercase">Gold</span><span data-sp="42"></span></div>
+    <div class="tile"><span class="sub" style="font-size:10px;letter-spacing:.08em;text-transform:uppercase">Inherited perks</span><span data-sp="0"></span></div>
+    <div class="spacer"></div>
+    <div class="tile"><div class="tok"><img src="../../images/common/mercenary_tokens/hail_resolve.png" alt="Resolve"><span data-sp="3"></span></div></div>
+    <div style="display:flex;flex-direction:column;gap:6px"><span class="seg"><button title="Copy BGG code"><i data-i="dice"></i>AMD</button><button title="Copy BGG code"><i data-i="doc"></i>Turn</button><button title="Copy BGG code"><i data-i="cards"></i>Cards</button></span><span class="sub" style="text-align:center;font-size:10px;letter-spacing:.08em;text-transform:uppercase">Copy BGG code</span></div>
+    <button class="ib sq tip" data-tip="Settings" aria-label="Settings"><i data-i="gear"></i></button>
+  </div>
+</header></section>
+
+<section class="v"><h2>D. Ring and Copy menu</h2><p class="why">Level and XP share one ring around the portrait, so the badge and the bar disappear. Gold and inherited perks are pills with the coin icon. The three BGG buttons collapse into one "Copy BGG code" menu with a description under each entry. Cleanest and shortest, but one extra click per copy.</p>
+<header class="D">
+  <div class="ring"><svg viewBox="0 0 58 58"><circle cx="29" cy="29" r="26" fill="none" stroke="#120e08" stroke-width="4"/><circle cx="29" cy="29" r="26" fill="none" stroke="#e2c56b" stroke-width="4" stroke-linecap="round" stroke-dasharray="163.4" stroke-dashoffset="27.8"/></svg><div class="av" style="background-image:url(https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_mats/front/hail.png)"></div><div class="lvl lv" title="Level">5</div></div>
+  <div><div class="nm" style="font-size:17px">Sam <button class="pen" aria-label="Edit character">✎</button></div><div class="sub">Hail · <span class="num">264</span> / 275 XP</div></div>
+  <div style="display:flex;gap:4px"><span class="chip">Chaotic</span><span class="chip">Educated</span><span class="chip">Resourceful</span></div>
+  <div class="spacer"></div>
+  <div class="pill"><img src="../../images/common/icons/coin.png" alt=""><span class="lab">Gold</span><span data-sp="42"></span></div>
+  <div class="pill"><span class="lab">Inherited perks</span><span data-sp="0"></span></div>
+  <div class="tok"><img src="../../images/common/mercenary_tokens/hail_resolve.png" alt="Resolve"><span data-sp="3"></span></div>
+  <details><summary><i data-i="copy"></i>Copy BGG code <span style="color:var(--muted)">▾</span></summary>
+    <div class="menu"><button title="Copy BGG code"><i data-i="dice"></i><span>Attack modifier deck<small>AMD roll code</small></span></button><button title="Copy BGG code"><i data-i="doc"></i><span>Turn<small>Banner and the two played cards</small></span></button><button title="Copy BGG code"><i data-i="cards"></i><span>Cards<small>Next round: initiative and cards</small></span></button></div></details>
+  <button class="ib sq tip" data-tip="Settings" aria-label="Settings" style="border-radius:50%"><i data-i="gear"></i></button>
+</header></section>
+
+<section class="v"><h2>E. Icon toolbar</h2><p class="why">Dense and quiet. The BGG buttons become icon-only squares with tooltips, XP progress is a thin line along the bottom edge of the bar with the numbers beside the level, and the portrait is a small rounded square. Fastest to scan, least labelled, so it needs the tooltips to teach the icons.</p>
+<header class="E">
+  <div class="av" style="background-image:url(https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_mats/front/hail.png)"></div>
+  <div class="lvl" title="Level">5</div>
+  <div><div class="nm" style="font-size:16px">Sam <button class="pen" aria-label="Edit character">✎</button> <span class="sub" style="font-weight:400">Hail</span></div><div class="xpn"><b class="num">264</b> / 275 XP · Level 5</div></div>
+  <div style="display:flex;gap:4px"><span class="chip">Chaotic</span><span class="chip">Educated</span><span class="chip">Resourceful</span></div>
+  <div class="spacer"></div>
+  <div class="stat">Gold<span data-sp="42"></span></div><div class="stat">Inherited perks<span data-sp="0"></span></div>
+  <div class="tok"><img src="../../images/common/mercenary_tokens/hail_resolve.png" alt="Resolve"><span data-sp="3"></span></div>
+  <div class="sep"></div>
+  <div class="grid"><button class="ib sq tip" data-tip="Copy BGG code: AMD" aria-label="Copy BGG code: AMD"><i data-i="dice"></i></button><button class="ib sq tip" data-tip="Copy BGG code: Turn" aria-label="Copy BGG code: Turn"><i data-i="doc"></i></button><button class="ib sq tip" data-tip="Copy BGG code: Cards" aria-label="Copy BGG code: Cards"><i data-i="cards"></i></button><button class="ib sq tip" data-tip="Settings" aria-label="Settings"><i data-i="gear"></i></button></div>
+  <div class="edge"><b></b></div>
+</header></section>
+
+<script>
+const I = {
+  dice: '<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg>',
+  doc: '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg>',
+  cards: '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="12" height="16" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v13"/></svg>',
+  copy: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2"/></svg>',
+  gear: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>',
+  up: '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>',
+  dn: '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>'
+};
+document.querySelectorAll('[data-i]').forEach(e => e.outerHTML = I[e.dataset.i]);
+document.querySelectorAll('[data-sp]').forEach(e => {
+  let v = +e.dataset.sp;
+  e.className = 'sp';
+  e.innerHTML = '<b class="num">' + v + '</b><span class="spc"><button type="button" data-d="1" aria-label="Increase">' + I.up + '</button><button type="button" data-d="-1" aria-label="Decrease">' + I.dn + '</button></span>';
+  e.addEventListener('click', ev => { const b = ev.target.closest('button'); if (!b) return; v = Math.max(0, v + +b.dataset.d); e.querySelector('b').textContent = v });
+});
+</script>
+</body>
+</html>
