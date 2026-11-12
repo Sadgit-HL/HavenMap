@@ -33,7 +33,7 @@ Legend: **Static** = generated table exists (`scripts/games/`), **App** = alread
 
 | Element | Mechanic | Status |
 |---|---|---|
-| Header | Class, name, level, XP, gold, inherited gold. | Page (add up to four characters, edit values), Schema (`chars`) |
+| Header | Class, name, level, XP, gold, inherited perks. | Page (add up to four characters, edit values), Schema (`chars`) |
 | Traits | Three per hero (class table), plus extra marks such as `Friend of Hero`. | Static (`TRAITS`), Page (shown, not editable); **New**: the extra marks |
 | Personal modifier deck | Composition from perks, cards out of the deck are ticked, Bless and Curse, GeekRoller code. | **App** (hero attack modifier decks); Page shows the imported faces only |
 | Ability cards | Hand size; a selected deck; other owned cards (bench); discard, active and lost piles; hand is derived. Cards are chosen at level-up. | Static (`CARDS` with initiative where known), Page (Hand, Discard, Lost areas with drag and drop, sorted by initiative, pictures on hover with Ctrl or always, bench shown, hand size editable); choosing cards at level-up is **New** |

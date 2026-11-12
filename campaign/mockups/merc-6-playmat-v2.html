@@ -102,6 +102,7 @@ body[data-zplay=hover] .flipcard.is-front.settled:hover,.flipcard.is-front.zoome
 .flipcard.rev .flipinner{transition:none;transform:rotateY(180deg)}
 .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:8px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.6)}.face.front{transform:rotateY(180deg)}.face img{width:100%;height:100%;object-fit:cover;display:block}
 .face.back .realback{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.face.back .backlabel{position:absolute;left:0;right:0;bottom:14%;text-align:center;font-weight:700;color:#fff;text-shadow:0 1px 3px #000;letter-spacing:.04em}
 .cardback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--accent);background:radial-gradient(circle at 50% 40%,#4a3a22 0%,#2a2014 70%);border:3px solid #1b150c;outline:2px solid var(--accent);outline-offset:-9px;border-radius:8px;text-transform:uppercase;letter-spacing:.18em;font-size:12px}
 .cardback::before{content:'';position:absolute;inset:14px;border:1px solid rgba(199,164,74,.5);border-radius:5px}
 .fliphint{display:none}
@@ -207,7 +208,7 @@ body[data-motion=reduce] *,body[data-motion=reduce] *::before,body[data-motion=r
 .setpop details summary{font-size:12px;color:var(--muted);cursor:pointer}.setpop details .setrow{margin-top:8px}
 .setpop select{background:#2d2519;color:var(--text);border:1px solid var(--line);border-radius:6px;font:inherit;font-size:12px;padding:2px 6px}
 .setpop .btn6{align-self:flex-end}
-.bgg-icons{display:flex;flex-direction:column;gap:10px}.bgg-row{display:flex;flex-wrap:wrap;gap:6px}
+.bgg-icons{display:flex;flex-direction:column;gap:12px}.bgg-block h4{margin:0 0 6px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}.bgg-row{display:flex;flex-wrap:wrap;gap:6px}
 .bgg-ic{min-width:40px;height:40px;padding:4px;display:flex;align-items:center;justify-content:center;background:#2d2519;border:1px solid var(--line);border-radius:8px;cursor:pointer;color:var(--text)}
 .bgg-ic img.inv{filter:brightness(0) invert(1)}.bgg-ic:hover{border-color:var(--accent)}.bgg-ic img{max-height:30px;max-width:34px}
 .codelist{display:flex;flex-direction:column;gap:8px}
@@ -219,8 +220,7 @@ body[data-motion=reduce] *,body[data-motion=reduce] *::before,body[data-motion=r
 </style></head>
 <body class="m-playmat" data-zactive="hover" data-zplay="hover" data-zhand="hover" data-zpiles="hover"><nav class="mocknav"><b>Mercenary tab mockups</b><a href="index.html">Overview</a><a href="merc-1-playmat.html">1 Playmat</a><a href="merc-2-sheet.html">2 Sheet</a><a href="merc-3-tray.html">3 Hand tray</a><a href="merc-4-mat.html">4 Mat board</a><a href="merc-5-phone.html">5 Phone first</a><a href="merc-6-playmat-v2.html" aria-current="page">6 Playmat v2</a></nav>
 <div class="stage6">
-  <header class="hud"><div class="portrait " id="chport" style="background-image:url(https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_mats/front/tinkerer.png)" role="img" aria-label="Class portrait (cropped from the character mat)"></div><div><div class="namerow"><h1 id="chname">Simon</h1><button type="button" class="btn6" id="editchar" title="Edit character" aria-label="Edit character"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1-4 11-11a2 2 0 0 1 3 3L8 19z"/><path d="M14 7l3 3"/></svg></button></div><div class="sub" id="chsub">Tinkerer &middot; played by Guido</div><div class="chips" id="chchips"><span class="chip ">Educated</span><span class="chip ">Nimble</span><span class="chip ">Resourceful</span><span class="chip info">Friend of the Hero</span></div></div>
-    <div class="lvl" title="Level">5</div><div class="xp " title="Level 5: 210 XP. Next level (6) at 275 XP."><div class="xpbar"><b style="width:83%"></b></div><div class="xpnum"><span id="chxp" class="edv" tabindex="0" title="Click to edit. Type a total, or +N / -N to add or subtract">264 XP</span><em>210</em><em>275</em></div></div><div class="stat"><b id="chgold" class="edv" tabindex="0" title="Click to edit. Type a number, or +N / -N to add or subtract">42</b>gold</div><div class="stat"><b id="chinh" class="edv" tabindex="0" title="Click to edit. Type a number, or +N / -N to add or subtract">0</b>inherited</div><div class="counters"><span class="ctr"><label>Time tokens</label><button type="button" aria-label="Decrease Time tokens">&minus;</button><b>2</b><button type="button" aria-label="Increase Time tokens">+</button></span><span class="ctr"><label>Resolve</label><button type="button" aria-label="Decrease Resolve">&minus;</button><b>1</b><button type="button" aria-label="Increase Resolve">+</button></span><button type="button" class="ctr add" title="Name and track a custom counter">+ counter</button></div><span class="setwrap"><button type="button" class="btn6" id="setbtn" title="Display settings" aria-label="Display settings" aria-expanded="false"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M19.14 12.94a7.07 7.07 0 0 0 .06-.94c0-.32-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96a.5.5 0 0 0-.61.22L2.65 8.84a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.07.63-.07.94s.02.63.06.94l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.12.22.37.29.61.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.26.42.5.42h3.84c.24 0 .45-.18.5-.42l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.49 0 .61-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg></button><div class="setpop" id="setpop" hidden>
+  <header class="hud"><div class="portrait " id="chport" style="background-image:url(https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_mats/front/tinkerer.png)" role="img" aria-label="Class portrait (cropped from the character mat)"></div><div class="who"><div class="namerow"><h1 id="chname">Simon</h1><button type="button" class="btn6" id="editchar" title="Edit character" aria-label="Edit character"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1-4 11-11a2 2 0 0 1 3 3L8 19z"/><path d="M14 7l3 3"/></svg></button></div><div class="sub" id="chsub">Tinkerer &middot; played by Guido</div><div class="chips" id="chchips"><span class="chip ">Educated</span><span class="chip ">Nimble</span><span class="chip ">Resourceful</span><span class="chip info">Friend of the Hero</span></div></div><div class="sep"></div><div class="lvl" title="Level">5</div><div class="xp" title="Level 5: 210 XP. Next level (6) at 275 XP."><div class="xprow"><span class="xplab">XP</span><span class="sp"><span id="chxp" class="edv" tabindex="0" title="Click to edit. Type a number, or +N / -N to add or subtract">264</span><span class="spc"><button type="button" data-hud="chxp" data-d="1" aria-label="Increase XP"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button><button type="button" data-hud="chxp" data-d="-1" aria-label="Decrease XP"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></span></span><span class="xpto">/ <em id="xphi">275</em></span></div><div class="xpbar"><b style="width:83%"></b></div></div><div class="stat"><small>Gold</small><span class="sp"><b id="chgold" class="edv" tabindex="0" title="Click to edit. Type a number, or +N / -N to add or subtract">42</b><span class="spc"><button type="button" data-hud="chgold" data-d="1" aria-label="Increase gold"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button><button type="button" data-hud="chgold" data-d="-1" aria-label="Decrease gold"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></span></span></div><div class="stat"><small>Inherited perks</small><span class="sp"><b id="chinh" class="edv" tabindex="0" title="Click to edit. Type a number, or +N / -N to add or subtract">0</b><span class="spc"><button type="button" data-hud="chinh" data-d="1" aria-label="Increase inherited perks"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button><button type="button" data-hud="chinh" data-d="-1" aria-label="Decrease inherited perks"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></span></span></div><div class="counters"><span id="tokens" style="display:contents"></span></div><div class="grp"><small>BGG code</small><span class="bggseg"><button type="button" class="bggb" id="hudroll" title="Copy BGG code" aria-label="Copy BGG code: AMD"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg><span>AMD</span></button><button type="button" class="bggb" id="hudturn" title="Copy BGG code" aria-label="Copy BGG code: Turn"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg><span>Turn</span></button><button type="button" class="bggb" id="hudnext" title="Copy BGG code" aria-label="Copy BGG code: Cards"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="12" height="16" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v13"/></svg><span>Cards</span></button></span></div><span class="setwrap"><button type="button" class="btn6 gear" id="setbtn" title="Display settings" aria-label="Display settings" aria-expanded="false"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M19.14 12.94a7.07 7.07 0 0 0 .06-.94c0-.32-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96a.5.5 0 0 0-.61.22L2.65 8.84a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.07.63-.07.94s.02.63.06.94l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.12.22.37.29.61.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.26.42.5.42h3.84c.24 0 .45-.18.5-.42l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.49 0 .61-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg></button><div class="setpop" id="setpop" hidden>
 <div class="setrow"><label>Hand layout</label><span class="seg" data-set="layout"><button type="button" data-v="spread">Spread</button><button type="button" data-v="fan">Fan</button></span></div>
 <div class="setrow"><label>Card zoom</label><span class="seg" data-set="zoom"><button type="button" data-v="hover">Hover</button><button type="button" data-v="click">Click</button></span></div>
 <details><summary>Zoom per zone</summary><div class="setrow"><label for="setz-active">Active</label><select id="setz-active" data-zone="active"><option value="">Default</option><option value="hover">Hover</option><option value="click">Click</option></select></div><div class="setrow"><label for="setz-play">Play area</label><select id="setz-play" data-zone="play"><option value="">Default</option><option value="hover">Hover</option><option value="click">Click</option></select></div><div class="setrow"><label for="setz-hand">Hand</label><select id="setz-hand" data-zone="hand"><option value="">Default</option><option value="hover">Hover</option><option value="click">Click</option></select></div><div class="setrow"><label for="setz-items">Items</label><select id="setz-items" data-zone="items"><option value="">Default</option><option value="hover">Hover</option><option value="click">Click</option></select></div><div class="setrow"><label for="setz-piles">Discard &amp; lost</label><select id="setz-piles" data-zone="piles"><option value="">Default</option><option value="hover">Hover</option><option value="click">Click</option></select></div></details>
@@ -236,7 +236,7 @@ body[data-motion=reduce] *,body[data-motion=reduce] *::before,body[data-motion=r
     <div class="hand6" data-layout="spread"><div class="hbar"><span class="zlabel">Hand &middot; <b id="handcount">14</b> of <span id="handlimit">12</span></span><span class="hctl"><span class="sortgrp"><button type="button" class="btn6" id="sortbtn" title="Sort by initiative" aria-label="Sort by initiative">Ini</button><button type="button" class="btn6" id="sortlvl" title="Sort by level" aria-label="Sort by level">Lvl</button></span></span></div><div class="fan6"><div style="--i:0" draggable="true" data-ini="73" class="ac" title="Disorienting Flash (level 1)"><img src="img/cards/disorienting-flash.jpg" alt="Disorienting Flash" loading="lazy"><span class="inib" title="Initiative 73">73</span></div><div style="--i:1" draggable="true" data-ini="61" class="ac" title="Enhancement Field (level 1)"><img src="img/cards/enhancement-field.jpg" alt="Enhancement Field" loading="lazy"><span class="inib" title="Initiative 61">61</span></div><div style="--i:2" draggable="true" data-ini="16" class="ac" title="Flamethrower (level 1)"><img src="img/cards/flamethrower.jpg" alt="Flamethrower" loading="lazy"><span class="inib" title="Initiative 16">16</span></div><div style="--i:3" draggable="true" data-ini="74" class="ac" title="Harmless Contraption (level 1)"><img src="img/cards/harmless-contraption.jpg" alt="Harmless Contraption" loading="lazy"><span class="inib" title="Initiative 74">74</span></div><div style="--i:4" draggable="true" data-ini="80" class="ac" title="Ink Bomb (level 1)"><img src="img/cards/ink-bomb.jpg" alt="Ink Bomb" loading="lazy"><span class="inib" title="Initiative 80">80</span></div><div style="--i:5" draggable="true" data-ini="19" class="ac" title="Net Shooter (level 1)"><img src="img/cards/net-shooter.jpg" alt="Net Shooter" loading="lazy"><span class="inib" title="Initiative 19">19</span></div><div style="--i:6" draggable="true" data-ini="46" class="ac" title="Potent Potables (level 1)"><img src="img/cards/potent-potables.jpg" alt="Potent Potables" loading="lazy"><span class="inib" title="Initiative 46">46</span></div><div style="--i:7" draggable="true" data-ini="37" class="ac" title="Reinvigorating Elixir (level 1)"><img src="img/cards/reinvigorating-elixir.jpg" alt="Reinvigorating Elixir" loading="lazy"><span class="inib" title="Initiative 37">37</span></div><div style="--i:8" draggable="true" data-ini="20" class="ac" title="Stun Shot (level 1)"><img src="img/cards/stun-shot.jpg" alt="Stun Shot" loading="lazy"><span class="inib" title="Initiative 20">20</span></div><div style="--i:9" draggable="true" data-ini="76" class="ac" title="Toxic Bolt (level 1)"><img src="img/cards/toxic-bolt.jpg" alt="Toxic Bolt" loading="lazy"><span class="inib" title="Initiative 76">76</span></div><div style="--i:10" draggable="true" data-ini="23" class="ac" title="Crank Bow (level 2)"><img src="img/cards/crank-bow.jpg" alt="Crank Bow" loading="lazy"><span class="inib" title="Initiative 23">23</span></div><div style="--i:11" draggable="true" data-ini="72" class="ac" title="Hook Gun (level X)"><img src="img/cards/hook-gun.jpg" alt="Hook Gun" loading="lazy"><span class="inib" title="Initiative 72">72</span></div><div style="--i:12" draggable="true" data-ini="22" class="ac" title="Gas Canister (level X)"><img src="img/cards/gas-canister.jpg" alt="Gas Canister" loading="lazy"><span class="inib" title="Initiative 22">22</span></div><div style="--i:13" draggable="true" data-ini="35" class="ac" title="Repulsor Gun (level 2)"><img src="img/cards/repulsor-gun.jpg" alt="Repulsor Gun" loading="lazy"><span class="inib" title="Initiative 35">35</span></div></div></div>
   </section>
   <section class="piles6"><div class="pile6 target" data-pile="discard"><h4>Discard <b id="discardcount">3</b></h4><div class="pilecard"><div draggable="true" class="ac " title="Proximity Mine (level 4)"><img src="img/cards/proximity-mine.jpg" alt="Proximity Mine" loading="lazy"></div></div><span class="hint">drop</span></div><div class="pile6 lost target" data-pile="lost"><h4>Lost <b id="lostcount">1</b></h4><div class="pilecard"><div draggable="true" class="ac " title="Disintegration Beam (level 5)"><img src="img/cards/disintegration-beam.jpg" alt="Disintegration Beam" loading="lazy"></div></div></div></section>
-  <aside class="dock" aria-label="Modals"><button type="button" class="mbtn " data-modal="mat" title="Opens modal: Character mat, front and back"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M9 5v14"/></svg><span>Character mat</span></button><button type="button" class="mbtn " data-modal="deck" title="Opens modal: Deck (card pool and hand)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="3" width="13" height="16" rx="2"/><path d="M4 7v14h13"/><path d="M13.5 8v6M10.5 11h6"/></svg><span>Deck</span><span class="pooldot" id="pooldot" hidden></span></button><button type="button" class="mbtn " data-modal="perks" title="Opens modal: Perk selection and masteries"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg><span>Perks & masteries</span></button><button type="button" class="mbtn " data-modal="amd" title="Opens modal: Attack modifier deck"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="12" height="15" rx="2"/><path d="M8 3h10a2 2 0 0 1 2 2v13"/></svg><span>Attack modifiers</span></button><button type="button" class="mbtn " data-modal="journal" title="Opens modal: Personal quest, battle goal and notes (tabs in one modal)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h11a2 2 0 0 1 2 2v14H8a2 2 0 0 1-2-2z"/><path d="M6 17a2 2 0 0 0 2 2M10 8h6M10 12h6"/></svg><span>Journal</span></button><button type="button" class="mbtn " data-modal="enh" title="Opens modal: Enhancement table (editable)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18h16M6 18v-3h12v3M8 15c0-3 1-5 4-6V6h5v3H12"/></svg><span>Enhancements</span></button><button type="button" class="mbtn " data-modal="codes" title="Opens modal: Copy a forum post code"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2"/></svg><span>BGG codes</span></button></aside>
+  <aside class="dock" aria-label="Modals"><button type="button" class="mbtn " data-modal="mat" title="Opens modal: Character mat, front and back"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M9 5v14"/></svg><span>Character mat</span></button><button type="button" class="mbtn " data-modal="deck" title="Opens modal: Deck (card pool and hand)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="3" width="13" height="16" rx="2"/><path d="M4 7v14h13"/><path d="M13.5 8v6M10.5 11h6"/></svg><span>Deck</span><span class="pooldot" id="pooldot" hidden></span></button><button type="button" class="mbtn " data-modal="perks" title="Opens modal: Perk selection and masteries"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg><span>Perks & masteries</span></button><button type="button" class="mbtn " data-modal="amd" title="Opens modal: Attack modifier deck"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="12" height="15" rx="2"/><path d="M8 3h10a2 2 0 0 1 2 2v13"/></svg><span>Attack modifiers</span></button><button type="button" class="mbtn " data-modal="journal" title="Opens modal: Personal quest, battle goal and notes (tabs in one modal)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h11a2 2 0 0 1 2 2v14H8a2 2 0 0 1-2-2z"/><path d="M6 17a2 2 0 0 0 2 2M10 8h6M10 12h6"/></svg><span>Journal</span></button><button type="button" class="mbtn " data-modal="enh" title="Opens modal: Enhancement table (editable)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18h16M6 18v-3h12v3M8 15c0-3 1-5 4-6V6h5v3H12"/></svg><span>Enhancements</span></button><button type="button" class="mbtn " data-modal="codes" title="Opens modal: Copy a forum post code"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2"/></svg><span>BGG codes</span></button><button type="button" class="mbtn " data-modal="history" title="Opens modal: History of game state changes"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>History</span></button></aside>
 </div>
 <div class="mmodal" id="modal-amd" hidden role="dialog" aria-modal="true" aria-label="Attack modifier deck">
   <div class="mmodalbox amdbox"><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2 id="modaltitle-amd">Attack modifier deck</h2><div class="amdbar"><span class="mrow" id="amdcount" style="margin:0"></span><span class="amdbtns"><button type="button" class="btn6" id="amdcopy" title="Copy GeekRoller code" aria-label="Copy GeekRoller code"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg></button><button type="button" class="btn6" id="amdshuffle" title="Shuffle deck now" aria-label="Shuffle deck now"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M10.59 9.17 5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg></button></span></div><div class="amdgrid" id="amdreal" style="margin-top:8px"><p class="mrow">Loading the real Tinkerer deck&hellip;</p></div>
@@ -244,23 +244,25 @@ body[data-motion=reduce] *,body[data-motion=reduce] *::before,body[data-motion=r
     </div></div><div class="mmodal" id="modal-perks" hidden role="dialog" aria-modal="true" aria-label="Perks &amp; masteries">
   <div class="mmodalbox big"><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2 id="modaltitle-perks">Perks &amp; masteries</h2><h3>Perks <span id="perkcount">&nbsp;</span></h3><div class="perklist am-perklist" id="perksreal"><p class="mrow">Loading the real Tinkerer perk list&hellip;</p></div>
     <h3>Masteries <span>0 of 3</span></h3><div class="perklist"><label class="perkrow"><input type="checkbox" ><span>Kill an enemy with Fire damage 10 times</span></label><label class="perkrow"><input type="checkbox" ><span>Fully heal an ally 5 times</span></label><label class="perkrow"><input type="checkbox" ><span>Long rest 15 times</span></label></div></div></div><div class="mmodal" id="modal-journal" hidden role="dialog" aria-modal="true" aria-label="Journal">
-  <div class="mmodalbox "><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2 id="modaltitle-journal">Journal</h2><div class="seg jtabs" role="tablist" aria-label="Journal section">
-      <button type="button" data-jtab="quest" aria-pressed="true">Personal quest</button>
-      <button type="button" data-jtab="goal" aria-pressed="false">Battle goal</button>
+  <div class="mmodalbox jbox"><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2 id="modaltitle-journal">Journal</h2><div class="seg jtabs" role="tablist" aria-label="Journal section">
+      <button type="button" data-jtab="goal" aria-pressed="true">Battle goals</button>
+      <button type="button" data-jtab="quest" aria-pressed="false">Personal quest</button>
       <button type="button" data-jtab="notes" aria-pressed="false">Notes</button></div>
-    <div class="jtab" data-jpane="quest"><h4>PQ14 &middot; The Oathbreaker</h4><p class="mrow">Kill 100 enemies with melee attacks. Progress: 62 of 100.</p><button type="button" class="btn6">Mark progress</button></div>
-    <div class="jtab" data-jpane="goal" hidden><h4>Battle goal</h4><p class="mrow">No goal drawn for this scenario yet.</p><button type="button" class="btn6">Draw a goal</button></div>
-    <div class="jtab" data-jpane="notes" hidden><textarea class="notesarea" placeholder="Notes for this character"></textarea></div></div></div><div class="mmodal" id="modal-mat" hidden role="dialog" aria-modal="true" aria-label="Character mat">
+    <div class="jtab" data-jpane="goal"><div id="bgbox"></div></div>
+    <div class="jtab" data-jpane="quest" hidden><div id="pqbox"></div></div>
+    <div class="jtab notespane" data-jpane="notes" hidden><div class="mdbar" id="mdbar"><button type="button" class="btn6" data-md="b" title="Bold (Ctrl+B)"><b>B</b></button><button type="button" class="btn6" data-md="i" title="Italic (Ctrl+I)"><i>I</i></button><button type="button" class="btn6" data-md="h" title="Heading">H</button><button type="button" class="btn6" data-md="ul" title="Bullet list">&bull; List</button><button type="button" class="btn6" data-md="todo" title="Checkbox">&#9744; Todo</button><button type="button" class="btn6 mdview" id="mdview" aria-pressed="false">Preview</button></div><textarea class="notesarea" id="jnotes" placeholder="Notes for this character (markdown: **bold**, *italic*, # heading, - list, - [ ] todo)"></textarea><div class="mdprev" id="mdprev" hidden></div></div></div></div><div class="mmodal" id="modal-mat" hidden role="dialog" aria-modal="true" aria-label="Character mat">
   <div class="mmodalbox big"><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2 id="modaltitle-mat">Character mat</h2><div class="matflip"><img src="https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_mats/front/tinkerer.png" alt="Tinkerer mat, front" id="matimg" data-front="https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_mats/front/tinkerer.png" data-back="https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_mats/back/tinkerer.png" role="button" tabindex="0" title="Click to flip"></div></div></div><div class="mmodal" id="modal-codes" hidden role="dialog" aria-modal="true" aria-label="BGG forum codes">
-  <div class="mmodalbox "><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2 id="modaltitle-codes">BGG forum codes</h2><div class="codelist"><div class="coderow"><div><b style="margin:0">Attack modifier deck</b></div><button type="button" class="btn6" data-code="1custom20{+0;+0;+0;+0;+0;+0;+1;+1;+1;+1;+1;-1;-1;-1;-1;-1;+2;-2;x2;Miss}" title="Copy GeekRoller code" aria-label="Copy GeekRoller code: Attack modifier deck"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg></button></div><div class="coderow"><div><b style="margin:0">Random side scenario</b></div><button type="button" class="btn6" data-code="1custom5{1;9;10;13;17}" title="Copy GeekRoller code" aria-label="Copy GeekRoller code: Random side scenario"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg></button></div><div class="coderow"><div><b style="margin:0">Random item design</b></div><button type="button" class="btn6" data-code="1custom9{81;83;87;88;91;92;94;95;96}" title="Copy GeekRoller code" aria-label="Copy GeekRoller code: Random item design"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg></button></div><div class="coderow"><div><b style="margin:0">Battle goal draw</b></div><button type="button" class="btn6" data-code="2custom2{1;2}" title="Copy GeekRoller code" aria-label="Copy GeekRoller code: Battle goal draw"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg></button></div><h3 style="margin-top:16px">Icons <span>click to copy</span></h3><div class="bgg-icons"><div class="bgg-row"><button type="button" class="bgg-ic" data-code="[ImageID=7494755 inline]" title="air: copy [ImageID=7494755 inline]" aria-label="Copy air icon code"><img src="../../images/common/perk-icons/air.png" alt="air"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494743 inline]" title="dark: copy [ImageID=7494743 inline]" aria-label="Copy dark icon code"><img src="../../images/common/perk-icons/dark.png" alt="dark"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494745 inline]" title="earth: copy [ImageID=7494745 inline]" aria-label="Copy earth icon code"><img src="../../images/common/perk-icons/earth.png" alt="earth"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494747 inline]" title="fire: copy [ImageID=7494747 inline]" aria-label="Copy fire icon code"><img src="../../images/common/perk-icons/fire.png" alt="fire"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494749 inline]" title="ice: copy [ImageID=7494749 inline]" aria-label="Copy ice icon code"><img src="../../images/common/perk-icons/ice.png" alt="ice"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494751 inline]" title="light: copy [ImageID=7494751 inline]" aria-label="Copy light icon code"><img src="../../images/common/perk-icons/light.png" alt="light"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494753 inline]" title="wild: copy [ImageID=7494753 inline]" aria-label="Copy wild icon code"><img src="../../images/common/icons/wild.png" alt="wild"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494742 inline]" title="air_x: copy [ImageID=7494742 inline]" aria-label="Copy air_x icon code"><img src="../../images/common/icons/air_x.png" alt="air_x"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494744 inline]" title="dark_x: copy [ImageID=7494744 inline]" aria-label="Copy dark_x icon code"><img src="../../images/common/icons/dark_x.png" alt="dark_x"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494746 inline]" title="earth_x: copy [ImageID=7494746 inline]" aria-label="Copy earth_x icon code"><img src="../../images/common/icons/earth_x.png" alt="earth_x"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494748 inline]" title="fire_x: copy [ImageID=7494748 inline]" aria-label="Copy fire_x icon code"><img src="../../images/common/icons/fire_x.png" alt="fire_x"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494750 inline]" title="ice_x: copy [ImageID=7494750 inline]" aria-label="Copy ice_x icon code"><img src="../../images/common/icons/ice_x.png" alt="ice_x"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494752 inline]" title="light_x: copy [ImageID=7494752 inline]" aria-label="Copy light_x icon code"><img src="../../images/common/icons/light_x.png" alt="light_x"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494754 inline]" title="wild_x: copy [ImageID=7494754 inline]" aria-label="Copy wild_x icon code"><img src="../../images/common/icons/wild_x.png" alt="wild_x"></button></div><div class="bgg-row"><button type="button" class="bgg-ic" data-code="[ImageID=7410416 inline]" title="coin: copy [ImageID=7410416 inline]" aria-label="Copy coin icon code"><img class="inv" src="../../images/common/icons/coin.png" alt="coin"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410468 inline]" title="loot: copy [ImageID=7410468 inline]" aria-label="Copy loot icon code"><img src="../../images/common/perk-icons/loot.png" alt="loot"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410418 inline]" title="arrowvine: copy [ImageID=7410418 inline]" aria-label="Copy arrowvine icon code"><img class="inv" src="../../images/common/icons/arrowvine.png" alt="arrowvine"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410419 inline]" title="axenut: copy [ImageID=7410419 inline]" aria-label="Copy axenut icon code"><img class="inv" src="../../images/common/icons/axenut.png" alt="axenut"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410420 inline]" title="corpsecap: copy [ImageID=7410420 inline]" aria-label="Copy corpsecap icon code"><img class="inv" src="../../images/common/icons/corpsecap.png" alt="corpsecap"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410421 inline]" title="flamefruit: copy [ImageID=7410421 inline]" aria-label="Copy flamefruit icon code"><img class="inv" src="../../images/common/icons/flamefruit.png" alt="flamefruit"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410422 inline]" title="hide: copy [ImageID=7410422 inline]" aria-label="Copy hide icon code"><img class="inv" src="../../images/common/icons/hide.png" alt="hide"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410437 inline]" title="lumber: copy [ImageID=7410437 inline]" aria-label="Copy lumber icon code"><img class="inv" src="../../images/common/icons/lumber.png" alt="lumber"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410438 inline]" title="metal: copy [ImageID=7410438 inline]" aria-label="Copy metal icon code"><img class="inv" src="../../images/common/icons/metal.png" alt="metal"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410425 inline]" title="rockroot: copy [ImageID=7410425 inline]" aria-label="Copy rockroot icon code"><img class="inv" src="../../images/common/icons/rockroot.png" alt="rockroot"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410426 inline]" title="snowthistle: copy [ImageID=7410426 inline]" aria-label="Copy snowthistle icon code"><img class="inv" src="../../images/common/icons/snowthistle.png" alt="snowthistle"></button></div><div class="bgg-row"><button type="button" class="bgg-ic" data-code="[ImageID=4113436 inline]" title="bless: copy [ImageID=4113436 inline]" aria-label="Copy bless icon code"><img src="../../images/common/perk-icons/bless.png" alt="bless"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113437 inline]" title="curse: copy [ImageID=4113437 inline]" aria-label="Copy curse icon code"><img src="../../images/common/perk-icons/curse.png" alt="curse"></button><button type="button" class="bgg-ic" data-code="[ImageID=7268961 inline]" title="bane: copy [ImageID=7268961 inline]" aria-label="Copy bane icon code"><img src="../../images/common/conditions/bane.png" alt="bane"></button><button type="button" class="bgg-ic" data-code="[ImageID=7268962 inline]" title="brittle: copy [ImageID=7268962 inline]" aria-label="Copy brittle icon code"><img src="../../images/common/perk-icons/brittle.png" alt="brittle"></button><button type="button" class="bgg-ic" data-code="[ImageID=7268963 inline]" title="chill: copy [ImageID=7268963 inline]" aria-label="Copy chill icon code"><img src="../../images/common/icons/chill.png" alt="chill"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113438 inline]" title="disarm: copy [ImageID=4113438 inline]" aria-label="Copy disarm icon code"><img src="../../images/common/perk-icons/disarm.png" alt="disarm"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113440 inline]" title="immobilize: copy [ImageID=4113440 inline]" aria-label="Copy immobilize icon code"><img src="../../images/common/perk-icons/immobilize.png" alt="immobilize"></button><button type="button" class="bgg-ic" data-code="[ImageID=7415909 inline]" title="impair: copy [ImageID=7415909 inline]" aria-label="Copy impair icon code"><img src="../../images/common/perk-icons/impair.png" alt="impair"></button><button type="button" class="bgg-ic" data-code="[ImageID=7268970 inline]" title="infect: copy [ImageID=7268970 inline]" aria-label="Copy infect icon code"><img src="../../images/common/icons/infect.png" alt="infect"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113441 inline]" title="invisible: copy [ImageID=4113441 inline]" aria-label="Copy invisible icon code"><img src="../../images/common/perk-icons/invisible.png" alt="invisible"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113442 inline]" title="muddle: copy [ImageID=4113442 inline]" aria-label="Copy muddle icon code"><img src="../../images/common/perk-icons/muddle.png" alt="muddle"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113443 inline]" title="poison: copy [ImageID=4113443 inline]" aria-label="Copy poison icon code"><img src="../../images/common/perk-icons/poison.png" alt="poison"></button><button type="button" class="bgg-ic" data-code="[ImageID=5697614 inline]" title="regenerate: copy [ImageID=5697614 inline]" aria-label="Copy regenerate icon code"><img src="../../images/common/perk-icons/regenerate.png" alt="regenerate"></button><button type="button" class="bgg-ic" data-code="[ImageID=9001386 inline]" title="safeguard: copy [ImageID=9001386 inline]" aria-label="Copy safeguard icon code"><img src="../../images/common/perk-icons/safeguard.png" alt="safeguard"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113444 inline]" title="strengthen: copy [ImageID=4113444 inline]" aria-label="Copy strengthen icon code"><img src="../../images/common/perk-icons/strengthen.png" alt="strengthen"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113445 inline]" title="stun: copy [ImageID=4113445 inline]" aria-label="Copy stun icon code"><img src="../../images/common/perk-icons/stun.png" alt="stun"></button><button type="button" class="bgg-ic" data-code="[ImageID=7396243 inline]" title="ward: copy [ImageID=7396243 inline]" aria-label="Copy ward icon code"><img src="../../images/common/perk-icons/ward.png" alt="ward"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113446 inline]" title="wound: copy [ImageID=4113446 inline]" aria-label="Copy wound icon code"><img src="../../images/common/perk-icons/wound.png" alt="wound"></button></div><div class="bgg-row"><button type="button" class="bgg-ic" data-code="[ImageID=4113461 inline]" title="damage: copy [ImageID=4113461 inline]" aria-label="Copy damage icon code"><img src="../../images/common/perk-icons/damage.png" alt="damage"></button><button type="button" class="bgg-ic" data-code="[ImageID=4123143 inline]" title="pierce: copy [ImageID=4123143 inline]" aria-label="Copy pierce icon code"><img src="../../images/common/perk-icons/pierce.png" alt="pierce"></button><button type="button" class="bgg-ic" data-code="[ImageID=4123145 inline]" title="target: copy [ImageID=4123145 inline]" aria-label="Copy target icon code"><img src="../../images/common/perk-icons/target.png" alt="target"></button><button type="button" class="bgg-ic" data-code="[ImageID=4184470 inline]" title="xp: copy [ImageID=4184470 inline]" aria-label="Copy xp icon code"><img class="inv" src="../../images/common/icons/xp.png" alt="xp"></button><button type="button" class="bgg-ic" data-code="[ImageID=5238116 inline]" title="rolling: copy [ImageID=5238116 inline]" aria-label="Copy rolling icon code"><img src="../../images/common/perk-icons/flip.png" alt="rolling"></button><button type="button" class="bgg-ic" data-code="[ImageID=7268969 inline]" title="hatchet: copy [ImageID=7268969 inline]" aria-label="Copy hatchet icon code"><img src="../../images/common/conditions/hatchet.png" alt="hatchet"></button><button type="button" class="bgg-ic" data-code="[ImageID=7396351 inline]" title="pull: copy [ImageID=7396351 inline]" aria-label="Copy pull icon code"><img src="../../images/common/perk-icons/pull.png" alt="pull"></button><button type="button" class="bgg-ic" data-code="[ImageID=7396352 inline]" title="push: copy [ImageID=7396352 inline]" aria-label="Copy push icon code"><img src="../../images/common/perk-icons/push.png" alt="push"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410414 inline]" title="melee geminate: copy [ImageID=7410414 inline]" aria-label="Copy melee geminate icon code"><img src="../../images/common/conditions/geminate_melee.png" alt="melee geminate"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410415 inline]" title="ranged geminate: copy [ImageID=7410415 inline]" aria-label="Copy ranged geminate icon code"><img src="../../images/common/conditions/geminate_range.png" alt="ranged geminate"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410417 inline]" title="shield: copy [ImageID=7410417 inline]" aria-label="Copy shield icon code"><img src="../../images/common/perk-icons/shield.png" alt="shield"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410435 inline]" title="item: copy [ImageID=7410435 inline]" aria-label="Copy item icon code"><img class="inv" src="../../images/common/icons/item.png" alt="item"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410466 inline]" title="attack: copy [ImageID=7410466 inline]" aria-label="Copy attack icon code"><img src="../../images/common/perk-icons/attack.png" alt="attack"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410467 inline]" title="heal: copy [ImageID=7410467 inline]" aria-label="Copy heal icon code"><img src="../../images/common/perk-icons/heal.png" alt="heal"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410469 inline]" title="move: copy [ImageID=7410469 inline]" aria-label="Copy move icon code"><img src="../../images/common/perk-icons/move.png" alt="move"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410470 inline]" title="range: copy [ImageID=7410470 inline]" aria-label="Copy range icon code"><img src="../../images/common/perk-icons/range.png" alt="range"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410471 inline]" title="retaliate: copy [ImageID=7410471 inline]" aria-label="Copy retaliate icon code"><img src="../../images/common/perk-icons/retaliate.png" alt="retaliate"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410473 inline]" title="teleport: copy [ImageID=7410473 inline]" aria-label="Copy teleport icon code"><img src="../../images/common/perk-icons/teleport.png" alt="teleport"></button><button type="button" class="bgg-ic" data-code="[ImageID=7415846 inline]" title="jump: copy [ImageID=7415846 inline]" aria-label="Copy jump icon code"><img class="inv" src="../../images/common/icons/jump.png" alt="jump"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494808 inline]" title="flying: copy [ImageID=7494808 inline]" aria-label="Copy flying icon code"><img class="inv" src="../../images/common/icons/flying.png" alt="flying"></button><button type="button" class="bgg-ic" data-code="[ImageID=7496358 inline]" title="recover: copy [ImageID=7496358 inline]" aria-label="Copy recover icon code"><img class="inv" src="../../images/common/icons/recover.png" alt="recover"></button><button type="button" class="bgg-ic" data-code="[ImageID=8221149 inline]" title="difficult: copy [ImageID=8221149 inline]" aria-label="Copy difficult icon code"><img src="../../images/common/icons/difficult.png" alt="difficult"></button><button type="button" class="bgg-ic" data-code="[ImageID=8221150 inline]" title="hazardous: copy [ImageID=8221150 inline]" aria-label="Copy hazardous icon code"><img src="../../images/common/icons/hazardous.png" alt="hazardous"></button><button type="button" class="bgg-ic" data-code="[ImageID=8221151 inline]" title="icy: copy [ImageID=8221151 inline]" aria-label="Copy icy icon code"><img src="../../images/common/icons/icy.png" alt="icy"></button><button type="button" class="bgg-ic" data-code="[ImageID=8221152 inline]" title="obstacle: copy [ImageID=8221152 inline]" aria-label="Copy obstacle icon code"><img src="../../images/common/icons/obstacle.png" alt="obstacle"></button><button type="button" class="bgg-ic" data-code="[ImageID=8221153 inline]" title="trap: copy [ImageID=8221153 inline]" aria-label="Copy trap icon code"><img src="../../images/common/icons/trap.png" alt="trap"></button><button type="button" class="bgg-ic" data-code="[ImageID=9595578 inline]" title="divination: copy [ImageID=9595578 inline]" aria-label="Copy divination icon code"><img class="inv" src="../../images/common/icons/divination.png" alt="divination"></button><button type="button" class="bgg-ic" data-code="[ImageID=9595579 inline]" title="irritation: copy [ImageID=9595579 inline]" aria-label="Copy irritation icon code"><img class="inv" src="../../images/common/icons/irritation.png" alt="irritation"></button><button type="button" class="bgg-ic" data-code="[ImageID=9595580 inline]" title="resolve: copy [ImageID=9595580 inline]" aria-label="Copy resolve icon code"><img class="inv" src="../../images/common/icons/resolve.png" alt="resolve"></button><button type="button" class="bgg-ic" data-code="[ImageID=9595581 inline]" title="rift: copy [ImageID=9595581 inline]" aria-label="Copy rift icon code"><img class="inv" src="../../images/common/icons/rift.png" alt="rift"></button></div></div></div></div></div><div class="mmodal" id="modal-enh" hidden role="dialog" aria-modal="true" aria-label="Enhancements">
-  <div class="mmodalbox "><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2 id="modaltitle-enh">Enhancements</h2><table class="enhtable"><thead><tr><th>Card</th><th>Top</th><th>Bottom</th><th>Price</th></tr></thead><tbody id="enhrows"></tbody></table></div></div><div class="mmodal" id="modal-item" hidden role="dialog" aria-modal="true" aria-label="Item">
+  <div class="mmodalbox "><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2 id="modaltitle-codes">BGG forum codes</h2><div class="codelist"><h3 style="margin-top:0">Icons <span>click to copy</span></h3><div class="bgg-icons"><div class="bgg-block"><h4>General</h4><div class="bgg-row"><button type="button" class="bgg-ic" data-code="[ImageID=7410466 inline]" title="attack: copy [ImageID=7410466 inline]" aria-label="Copy attack icon code"><img src="../../images/common/perk-icons/attack.png" alt="attack"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410469 inline]" title="move: copy [ImageID=7410469 inline]" aria-label="Copy move icon code"><img src="../../images/common/perk-icons/move.png" alt="move"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113461 inline]" title="damage: copy [ImageID=4113461 inline]" aria-label="Copy damage icon code"><img src="../../images/common/perk-icons/damage.png" alt="damage"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494808 inline]" title="flying: copy [ImageID=7494808 inline]" aria-label="Copy flying icon code"><img class="inv" src="../../images/common/icons/flying.png" alt="flying"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410467 inline]" title="heal: copy [ImageID=7410467 inline]" aria-label="Copy heal icon code"><img src="../../images/common/perk-icons/heal.png" alt="heal"></button><button type="button" class="bgg-ic" data-code="[ImageID=7415846 inline]" title="jump: copy [ImageID=7415846 inline]" aria-label="Copy jump icon code"><img class="inv" src="../../images/common/icons/jump.png" alt="jump"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410468 inline]" title="loot: copy [ImageID=7410468 inline]" aria-label="Copy loot icon code"><img src="../../images/common/perk-icons/loot.png" alt="loot"></button><button type="button" class="bgg-ic" data-code="[ImageID=7396351 inline]" title="pull: copy [ImageID=7396351 inline]" aria-label="Copy pull icon code"><img src="../../images/common/perk-icons/pull.png" alt="pull"></button><button type="button" class="bgg-ic" data-code="[ImageID=7396352 inline]" title="push: copy [ImageID=7396352 inline]" aria-label="Copy push icon code"><img src="../../images/common/perk-icons/push.png" alt="push"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410470 inline]" title="range: copy [ImageID=7410470 inline]" aria-label="Copy range icon code"><img src="../../images/common/perk-icons/range.png" alt="range"></button><button type="button" class="bgg-ic" data-code="[ImageID=7496358 inline]" title="recover: copy [ImageID=7496358 inline]" aria-label="Copy recover icon code"><img class="inv" src="../../images/common/icons/recover.png" alt="recover"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410471 inline]" title="retaliate: copy [ImageID=7410471 inline]" aria-label="Copy retaliate icon code"><img src="../../images/common/perk-icons/retaliate.png" alt="retaliate"></button><button type="button" class="bgg-ic" data-code="[ImageID=5238116 inline]" title="rolling: copy [ImageID=5238116 inline]" aria-label="Copy rolling icon code"><img src="../../images/common/perk-icons/flip.png" alt="rolling"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410417 inline]" title="shield: copy [ImageID=7410417 inline]" aria-label="Copy shield icon code"><img src="../../images/common/perk-icons/shield.png" alt="shield"></button><button type="button" class="bgg-ic" data-code="[ImageID=4123145 inline]" title="target: copy [ImageID=4123145 inline]" aria-label="Copy target icon code"><img src="../../images/common/perk-icons/target.png" alt="target"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410473 inline]" title="teleport: copy [ImageID=7410473 inline]" aria-label="Copy teleport icon code"><img src="../../images/common/perk-icons/teleport.png" alt="teleport"></button><button type="button" class="bgg-ic" data-code="[ImageID=4184470 inline]" title="xp: copy [ImageID=4184470 inline]" aria-label="Copy xp icon code"><img class="inv" src="../../images/common/icons/xp.png" alt="xp"></button></div></div><div class="bgg-block"><h4>Conditions</h4><div class="bgg-row"><button type="button" class="bgg-ic" data-code="[ImageID=7268961 inline]" title="bane: copy [ImageID=7268961 inline]" aria-label="Copy bane icon code"><img src="../../images/common/conditions/bane.png" alt="bane"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113436 inline]" title="bless: copy [ImageID=4113436 inline]" aria-label="Copy bless icon code"><img src="../../images/common/perk-icons/bless.png" alt="bless"></button><button type="button" class="bgg-ic" data-code="[ImageID=7268962 inline]" title="brittle: copy [ImageID=7268962 inline]" aria-label="Copy brittle icon code"><img src="../../images/common/perk-icons/brittle.png" alt="brittle"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113437 inline]" title="curse: copy [ImageID=4113437 inline]" aria-label="Copy curse icon code"><img src="../../images/common/perk-icons/curse.png" alt="curse"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113438 inline]" title="disarm: copy [ImageID=4113438 inline]" aria-label="Copy disarm icon code"><img src="../../images/common/perk-icons/disarm.png" alt="disarm"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113440 inline]" title="immobilize: copy [ImageID=4113440 inline]" aria-label="Copy immobilize icon code"><img src="../../images/common/perk-icons/immobilize.png" alt="immobilize"></button><button type="button" class="bgg-ic" data-code="[ImageID=7415909 inline]" title="impair: copy [ImageID=7415909 inline]" aria-label="Copy impair icon code"><img src="../../images/common/perk-icons/impair.png" alt="impair"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113441 inline]" title="invisible: copy [ImageID=4113441 inline]" aria-label="Copy invisible icon code"><img src="../../images/common/perk-icons/invisible.png" alt="invisible"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113442 inline]" title="muddle: copy [ImageID=4113442 inline]" aria-label="Copy muddle icon code"><img src="../../images/common/perk-icons/muddle.png" alt="muddle"></button><button type="button" class="bgg-ic" data-code="[ImageID=4123143 inline]" title="pierce: copy [ImageID=4123143 inline]" aria-label="Copy pierce icon code"><img src="../../images/common/perk-icons/pierce.png" alt="pierce"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113443 inline]" title="poison: copy [ImageID=4113443 inline]" aria-label="Copy poison icon code"><img src="../../images/common/perk-icons/poison.png" alt="poison"></button><button type="button" class="bgg-ic" data-code="[ImageID=5697614 inline]" title="regenerate: copy [ImageID=5697614 inline]" aria-label="Copy regenerate icon code"><img src="../../images/common/perk-icons/regenerate.png" alt="regenerate"></button><button type="button" class="bgg-ic" data-code="[ImageID=9001386 inline]" title="safeguard: copy [ImageID=9001386 inline]" aria-label="Copy safeguard icon code"><img src="../../images/common/perk-icons/safeguard.png" alt="safeguard"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113444 inline]" title="strengthen: copy [ImageID=4113444 inline]" aria-label="Copy strengthen icon code"><img src="../../images/common/perk-icons/strengthen.png" alt="strengthen"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113445 inline]" title="stun: copy [ImageID=4113445 inline]" aria-label="Copy stun icon code"><img src="../../images/common/perk-icons/stun.png" alt="stun"></button><button type="button" class="bgg-ic" data-code="[ImageID=7396243 inline]" title="ward: copy [ImageID=7396243 inline]" aria-label="Copy ward icon code"><img src="../../images/common/perk-icons/ward.png" alt="ward"></button><button type="button" class="bgg-ic" data-code="[ImageID=4113446 inline]" title="wound: copy [ImageID=4113446 inline]" aria-label="Copy wound icon code"><img src="../../images/common/perk-icons/wound.png" alt="wound"></button></div></div><div class="bgg-block"><h4>Elements</h4><div class="bgg-row"><button type="button" class="bgg-ic" data-code="[ImageID=7494755 inline]" title="air: copy [ImageID=7494755 inline]" aria-label="Copy air icon code"><img src="../../images/common/perk-icons/air.png" alt="air"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494742 inline]" title="air_x: copy [ImageID=7494742 inline]" aria-label="Copy air_x icon code"><img src="../../images/common/icons/air_x.png" alt="air_x"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494743 inline]" title="dark: copy [ImageID=7494743 inline]" aria-label="Copy dark icon code"><img src="../../images/common/perk-icons/dark.png" alt="dark"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494744 inline]" title="dark_x: copy [ImageID=7494744 inline]" aria-label="Copy dark_x icon code"><img src="../../images/common/icons/dark_x.png" alt="dark_x"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494745 inline]" title="earth: copy [ImageID=7494745 inline]" aria-label="Copy earth icon code"><img src="../../images/common/perk-icons/earth.png" alt="earth"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494746 inline]" title="earth_x: copy [ImageID=7494746 inline]" aria-label="Copy earth_x icon code"><img src="../../images/common/icons/earth_x.png" alt="earth_x"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494747 inline]" title="fire: copy [ImageID=7494747 inline]" aria-label="Copy fire icon code"><img src="../../images/common/perk-icons/fire.png" alt="fire"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494748 inline]" title="fire_x: copy [ImageID=7494748 inline]" aria-label="Copy fire_x icon code"><img src="../../images/common/icons/fire_x.png" alt="fire_x"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494749 inline]" title="ice: copy [ImageID=7494749 inline]" aria-label="Copy ice icon code"><img src="../../images/common/perk-icons/ice.png" alt="ice"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494750 inline]" title="ice_x: copy [ImageID=7494750 inline]" aria-label="Copy ice_x icon code"><img src="../../images/common/icons/ice_x.png" alt="ice_x"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494751 inline]" title="light: copy [ImageID=7494751 inline]" aria-label="Copy light icon code"><img src="../../images/common/perk-icons/light.png" alt="light"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494752 inline]" title="light_x: copy [ImageID=7494752 inline]" aria-label="Copy light_x icon code"><img src="../../images/common/icons/light_x.png" alt="light_x"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494753 inline]" title="wild: copy [ImageID=7494753 inline]" aria-label="Copy wild icon code"><img src="../../images/common/icons/wild.png" alt="wild"></button><button type="button" class="bgg-ic" data-code="[ImageID=7494754 inline]" title="wild_x: copy [ImageID=7494754 inline]" aria-label="Copy wild_x icon code"><img src="../../images/common/icons/wild_x.png" alt="wild_x"></button></div></div><div class="bgg-block"><h4>Loot</h4><div class="bgg-row"><button type="button" class="bgg-ic" data-code="[ImageID=7410416 inline]" title="coin: copy [ImageID=7410416 inline]" aria-label="Copy coin icon code"><img class="inv" src="../../images/common/icons/coin.png" alt="coin"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410418 inline]" title="arrowvine: copy [ImageID=7410418 inline]" aria-label="Copy arrowvine icon code"><img class="inv" src="../../images/common/icons/arrowvine.png" alt="arrowvine"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410419 inline]" title="axenut: copy [ImageID=7410419 inline]" aria-label="Copy axenut icon code"><img class="inv" src="../../images/common/icons/axenut.png" alt="axenut"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410420 inline]" title="corpsecap: copy [ImageID=7410420 inline]" aria-label="Copy corpsecap icon code"><img class="inv" src="../../images/common/icons/corpsecap.png" alt="corpsecap"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410421 inline]" title="flamefruit: copy [ImageID=7410421 inline]" aria-label="Copy flamefruit icon code"><img class="inv" src="../../images/common/icons/flamefruit.png" alt="flamefruit"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410422 inline]" title="hide: copy [ImageID=7410422 inline]" aria-label="Copy hide icon code"><img class="inv" src="../../images/common/icons/hide.png" alt="hide"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410437 inline]" title="lumber: copy [ImageID=7410437 inline]" aria-label="Copy lumber icon code"><img class="inv" src="../../images/common/icons/lumber.png" alt="lumber"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410438 inline]" title="metal: copy [ImageID=7410438 inline]" aria-label="Copy metal icon code"><img class="inv" src="../../images/common/icons/metal.png" alt="metal"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410425 inline]" title="rockroot: copy [ImageID=7410425 inline]" aria-label="Copy rockroot icon code"><img class="inv" src="../../images/common/icons/rockroot.png" alt="rockroot"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410426 inline]" title="snowthistle: copy [ImageID=7410426 inline]" aria-label="Copy snowthistle icon code"><img class="inv" src="../../images/common/icons/snowthistle.png" alt="snowthistle"></button></div></div><div class="bgg-block"><h4>Terrain</h4><div class="bgg-row"><button type="button" class="bgg-ic" data-code="[ImageID=8221149 inline]" title="difficult: copy [ImageID=8221149 inline]" aria-label="Copy difficult icon code"><img src="../../images/common/icons/difficult.png" alt="difficult"></button><button type="button" class="bgg-ic" data-code="[ImageID=8221150 inline]" title="hazardous: copy [ImageID=8221150 inline]" aria-label="Copy hazardous icon code"><img src="../../images/common/icons/hazardous.png" alt="hazardous"></button><button type="button" class="bgg-ic" data-code="[ImageID=8221151 inline]" title="icy: copy [ImageID=8221151 inline]" aria-label="Copy icy icon code"><img src="../../images/common/icons/icy.png" alt="icy"></button><button type="button" class="bgg-ic" data-code="[ImageID=8221152 inline]" title="obstacle: copy [ImageID=8221152 inline]" aria-label="Copy obstacle icon code"><img src="../../images/common/icons/obstacle.png" alt="obstacle"></button><button type="button" class="bgg-ic" data-code="[ImageID=8221153 inline]" title="trap: copy [ImageID=8221153 inline]" aria-label="Copy trap icon code"><img src="../../images/common/icons/trap.png" alt="trap"></button></div></div><div class="bgg-block"><h4>Class specific</h4><div class="bgg-row"><button type="button" class="bgg-ic" data-code="[ImageID=7268969 inline]" title="hatchet: copy [ImageID=7268969 inline]" aria-label="Copy hatchet icon code"><img src="../../images/common/conditions/hatchet.png" alt="hatchet"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410414 inline]" title="melee geminate: copy [ImageID=7410414 inline]" aria-label="Copy melee geminate icon code"><img src="../../images/common/conditions/geminate_melee.png" alt="melee geminate"></button><button type="button" class="bgg-ic" data-code="[ImageID=7410415 inline]" title="ranged geminate: copy [ImageID=7410415 inline]" aria-label="Copy ranged geminate icon code"><img src="../../images/common/conditions/geminate_range.png" alt="ranged geminate"></button><button type="button" class="bgg-ic" data-code="[ImageID=9920344 inline]" title="plague: copy [ImageID=9920344 inline]" aria-label="Copy plague icon code"><img src="../../images/common/icons/plague.png" alt="plague"></button><button type="button" class="bgg-ic" data-code="[ImageID=9595578 inline]" title="divination: copy [ImageID=9595578 inline]" aria-label="Copy divination icon code"><img class="inv" src="../../images/common/icons/divination.png" alt="divination"></button><button type="button" class="bgg-ic" data-code="[ImageID=9595579 inline]" title="irritation: copy [ImageID=9595579 inline]" aria-label="Copy irritation icon code"><img class="inv" src="../../images/common/icons/irritation.png" alt="irritation"></button><button type="button" class="bgg-ic" data-code="[ImageID=9595580 inline]" title="resolve: copy [ImageID=9595580 inline]" aria-label="Copy resolve icon code"><img class="inv" src="../../images/common/icons/resolve.png" alt="resolve"></button><button type="button" class="bgg-ic" data-code="[ImageID=9595581 inline]" title="rift: copy [ImageID=9595581 inline]" aria-label="Copy rift icon code"><img class="inv" src="../../images/common/icons/rift.png" alt="rift"></button></div></div></div></div><div class="bnrsec" id="bnrsec"></div><div class="codelist" id="customcodes"></div><div class="addrow" id="codeadd"><input id="code-label" placeholder="Label" aria-label="Label"><input id="code-text" placeholder="Code to copy" aria-label="Code" style="flex:2"><button type="button" class="btn6" id="code-addbtn">Add</button></div></div></div><div class="mmodal" id="modal-history" hidden role="dialog" aria-modal="true" aria-label="History">
+  <div class="mmodalbox big"><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2 id="modaltitle-history">History</h2><div class="histbar"><label for="histfilter">Show</label><select id="histfilter"><option value="all">All</option></select><button type="button" class="btn6" id="histclear">Clear</button><span class="hn" id="histn"></span></div><div class="hlist" id="histlist"></div></div></div>
+<div class="mmodal" id="modal-enh" hidden role="dialog" aria-modal="true" aria-label="Enhancements">
+  <div class="mmodalbox "><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2 id="modaltitle-enh">Enhancements</h2><table class="enhtable"><thead><tr><th>Card</th><th>Top</th><th>Bottom</th><th>Price</th></tr></thead><tbody id="enhrows"></tbody></table><div class="addrow" id="enhadd"><input id="enh-card" placeholder="Card" aria-label="Card"><input id="enh-top" placeholder="Top" aria-label="Top"><input id="enh-bot" placeholder="Bottom" aria-label="Bottom"><input id="enh-price" placeholder="Gold" aria-label="Price" style="width:70px"><button type="button" class="btn6" id="enh-addbtn">Add</button></div></div></div><div class="mmodal" id="modal-item" hidden role="dialog" aria-modal="true" aria-label="Item">
   <div class="mmodalbox"><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2 id="itname">Item</h2>
   <div class="itmodal"><div class="itcard pick" id="itcard"><img id="itimg" alt=""></div>
   <div class="itpanel"><div class="row" id="itstaterow"><span>State</span><span class="seg" id="itstate"><button type="button" class="btn6" data-st="0">Available</button><button type="button" class="btn6" data-st="1">Spent</button><button type="button" class="btn6" data-st="2">Consumed</button></span></div>
   <div class="row"><span>Tokens</span><span class="tkpick" id="tkpick"></span></div><div class="row" id="stkrow"><span>Stickers</span><span class="tkpick" id="stkpick"></span></div><div class="row"><button type="button" class="btn6" id="itclear">Clear all</button></div></div></div></div></div><div class="mmodal" id="modal-deck" hidden role="dialog" aria-modal="true" aria-label="Deck">
   <div class="mmodalbox big"><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><div class="deckrow"><h2>Deck</h2><span class="seg" id="decktabs"><button type="button" data-tab="hand" aria-pressed="true">Hand</button><button type="button" data-tab="pool" aria-pressed="false">Card pool</button></span></div>
   <section id="tab-pool" hidden>
-    <div class="poolbar"><span>Level <button type="button" class="btn6" id="lvdn" aria-label="Level down">&minus;</button> <b id="lvnum">5</b> <button type="button" class="btn6" id="lvup" aria-label="Level up">+</button></span><span id="poolcount"></span><span class="grow"></span><button type="button" class="btn6" id="poolundo">Undo last pick</button></div>
+    <div class="poolbar"><span>Level <span class="sp"><b id="lvnum">5</b><span class="spc"><button type="button" id="lvup" aria-label="Level up"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button><button type="button" id="lvdn" aria-label="Level down"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></span></span></span><span id="poolcount"></span><span class="grow"></span><button type="button" class="btn6" id="poolundo">Undo last pick</button></div>
     <div class="poolbanner" id="poolbanner" hidden></div><div id="poolbody"></div>
   </section>
   <section id="tab-hand">
@@ -305,12 +307,12 @@ document.getElementById('sortlvl').addEventListener('click',sortHandByLevel);sor
 const reindexHand=()=>{if(window.HMS&&window.HMS.autosort)sortHand();[...hand.children].forEach((c,i)=>c.style.setProperty('--i',i));handCount.textContent=hand.children.length};
 // ---- unified drag/drop: hand, active area and play slots can all give and take cards, one shared dragData ----
 const gearSVG='<svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 2.6h3.4l.5 2.4 1.7.7 2.1-1.3 2.4 2.4-1.3 2.1.7 1.7 2.4.5v3.4l-2.4.5-.7 1.7 1.3 2.1-2.4 2.4-2.1-1.3-1.7.7-.5 2.4h-3.4l-.5-2.4-1.7-.7-2.1 1.3-2.4-2.4 1.3-2.1-.7-1.7-2.4-.5v-3.4l2.4-.5.7-1.7-1.3-2.1 2.4-2.4 2.1 1.3 1.7-.7z"/><circle cx="12" cy="12" r="3.4"/></svg>';
-// card back of the character's class: the real GH2 back where one exists, otherwise the drawn back
-const REAL_BACKS=['berserker','bladeswarm','elementalist','plagueherald','quartermaster','sawbones','soothsinger','soultether','sunkeeper','wildfury'];
+// card back of the character's class: GH2 art where it exists, GH1 art (gh-*) as fallback until GH2 art is provided, otherwise the drawn back
+const BACK_FILES={berserker:'gh2-berserker-back.jpeg',bladeswarm:'gh2-bladeswarm-back.jpeg',doomstalker:'gh2-doomstalker-back.jpeg',elementalist:'gh2-elementalist-back.jpeg',plagueherald:'gh2-plagueherald-back.jpeg',quartermaster:'gh2-quartermaster-back.jpeg',sawbones:'gh2-sawbones-back.jpeg',soothsinger:'gh2-soothsinger-back.jpeg',soultether:'gh2-soultether-back.jpeg',sunkeeper:'gh2-sunkeeper-back.jpeg',wildfury:'gh2-wildfury-back.jpeg',anaphi:'mp-anaphi-back.jpeg',cassandra:'mp-cassandra-back.jpeg',hail:'mp-hail-back.jpeg',satha:'mp-satha-back.jpeg',bruiser:'gh-bruiser-back.png',cragheart:'gh-cragheart-back.png',mindthief:'gh-mindthief-back.png',nightshroud:'gh-nightshroud-back.png',spellweaver:'gh-spellweaver-back.png',tinkerer:'gh-tinkerer-back.jpg'};
 function cardBackHTML(){
   const cls=(window.charClass?window.charClass():'Tinkerer');
-  const key=cls.toLowerCase().replace(/ /g,'-');
-  return REAL_BACKS.includes(key)?'<img class="realback" src="../../images/common/card_backs/gh2-'+key+'-back.jpeg" alt="'+cls+' card back" draggable="false">':'<div class="cardback">'+gearSVG+'<b>'+cls+'</b></div>';
+  const key=cls.toLowerCase().replace(/ /g,'');
+  return BACK_FILES[key]?'<img class="realback" src="../../images/common/card_backs/'+BACK_FILES[key]+'" alt="'+cls+' card back" draggable="false">':'<img class="realback" src="../../images/common/card_backs/ability-back-placeholder.png" alt="'+cls+' card back (placeholder)" draggable="false"><span class="backlabel">'+cls+'</span>';
 }
 function flipHTML(data,front){return '<div class="flipcard'+(front?' is-front':'')+'" draggable="true" data-name="'+data.name+'" data-img="'+data.img+'" data-ini="'+data.ini+'" role="button" tabindex="0" title="Click to flip: '+data.name+'"><div class="flipinner"><div class="face back">'+cardBackHTML()+'</div><div class="face front"><img src="'+data.img+'" alt="'+data.name+'"></div></div></div>'}
 function toCardEl(data){const el=document.createElement('div');el.className='ac';el.title=data.name;el.draggable=true;if(data.ini)el.dataset.ini=data.ini;el.innerHTML='<img src="'+data.img+'" alt="'+data.name+'" loading="lazy">'+(data.ini?'<span class="inib" title="Initiative '+data.ini+'">'+data.ini+'</span>':'');return el}
@@ -764,13 +766,6 @@ function showPcBig(pc) {
   pcBig.hidden = false;
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closePcBig(); }, true);
-document.addEventListener('contextmenu', e => {
-  if (window.HMS?.amd !== 'draw') return;
-  const pc = e.target.closest && e.target.closest('#amdreal .amcard > .pc, #amdreal .amcard > img');
-  if (!pc) return;
-  e.preventDefault();
-  showPcBig(pc);
-}, true);
 document.addEventListener('click', e => {
   const pc = e.target.closest && e.target.closest('.am-perk-cards .pc, #amdreal .amcard > .pc, #amdreal .amcard > img, ' + POOL_IMG);
   if (!pc) { closePcBig(); return; }
@@ -941,6 +936,7 @@ function renderPerks() {
 
 function renderAll() { renderAmd(); renderPerks(); }
 renderAll();
+window.HM_AMD = { perkState, perks, catalog, SPECIAL, perkDelta, special, showPcBig };   // read by the history recorder
 
 function copyCode(btn, code) {
   if (!code) return;
@@ -950,6 +946,7 @@ function copyCode(btn, code) {
   setTimeout(() => { btn.innerHTML = old; }, 900);
 }
 document.getElementById('amdcopy').addEventListener('click', e => copyCode(e.currentTarget, amdCode));
+document.getElementById('hudroll').addEventListener('click', e => copyCode(e.currentTarget, amdCode));
 document.querySelectorAll('[data-code]').forEach(b => b.addEventListener('click', () => copyCode(b, b.dataset.code)));
 
 // ---- display settings (cogwheel): hand layout and card zoom (hover or click, globally or per zone) ----
@@ -1134,10 +1131,13 @@ document.getElementById('itemok').addEventListener('click',()=>{
   document.getElementById('modal-items').hidden=true;
 });
 
-// ---- character stats: gold, inherited gold and XP are edited in place; name, player, class and traits in a dialog
+// ---- character stats: gold, inherited perks and XP are edited in place; name, player, class and traits in a dialog
 // special traits gained or lost through events (scripts/campaign/traits.js)
 const SPECIAL_TRAITS=['Hero','Friend of the Hero','Friend of the Silent Knife','Indebted','Blackmailer','Carapace Combatant','Memory of Serenity','Immunity','Herald of Xorn'];
-const CHAR_CLASSES=[["Anaphi",["nimble","resourceful","outcast"]],["Berserker",["chaotic","intimidating","nimble"]],["Bruiser",["intimidating","strong","armored"]],["Bladeswarm",["armored","outcast","strong"]],["Cassandra",["arcane","outcast","resourceful"]],["Cragheart",["arcane","outcast","strong"]],["Doomstalker",["armored","chaotic","outcast"]],["Elementalist",["arcane","chaotic","resourceful"]],["Hail",["chaotic","educated","resourceful"]],["Mindthief",["nimble","outcast","persuasive"]],["Nightshroud",["chaotic","intimidating","nimble"]],["Plagueherald",["arcane","intimidating","outcast"]],["Quartermaster",["arcane","educated","intimidating"]],["Satha",["armored","intimidating","persuasive"]],["Sawbones",["educated","persuasive","resourceful"]],["Silent Knife",["chaotic","nimble","resourceful"]],["Sunkeeper",["armored","educated","persuasive"]],["Soothsinger",["educated","nimble","persuasive"]],["Soultether",["armored","resourceful","strong"]],["Spellweaver",["arcane","educated","resourceful"]],["Tinkerer",["educated","nimble","resourceful"]],["Wildfury",["chaotic","intimidating","strong"]]];
+const CHAR_CLASSES=[["Anaphi",["nimble","resourceful","outcast"]],["Astral",["arcane","educated","strong"]],["Banner Spear",["armored","persuasive","resourceful"]],["Berserker",["chaotic","intimidating","nimble"]],["Bladeswarm",["armored","outcast","strong"]],["Blinkblade",["educated","nimble","resourceful"]],["Boneshaper",["arcane","educated","intimidating"]],["Bruiser",["intimidating","strong","armored"]],["Cassandra",["arcane","outcast","resourceful"]],["Coral",["armored","chaotic","strong"]],["Cragheart",["arcane","outcast","strong"]],["Deathwalker",["arcane","outcast","persuasive"]],["Deepwraith",["armored","intimidating","nimble"]],["Demolitionist",["chaotic","nimble","strong"]],["Doomstalker",["armored","chaotic","outcast"]],["Drifter",["outcast","resourceful","strong"]],["Elementalist",["arcane","chaotic","resourceful"]],["Frozen Fist",["intimidating","persuasive","strong"]],["Geminate",["arcane","chaotic","nimble"]],["H.I.V.E.",["armored","educated","resourceful"]],["Hail",["chaotic","educated","resourceful"]],["Hatchet",["intimidating","resourceful","strong"]],["Metal Mosaic",["armored","resourceful","strong"]],["Mindthief",["nimble","outcast","persuasive"]],["Nightshroud",["chaotic","intimidating","nimble"]],["Pain Conduit",["chaotic","intimidating","outcast"]],["Plagueherald",["arcane","intimidating","outcast"]],["Pyroclast",["arcane","chaotic","intimidating"]],["Quartermaster",["arcane","educated","intimidating"]],["Red Guard",["armored","outcast","persuasive"]],["Satha",["armored","intimidating","persuasive"]],["Sawbones",["educated","persuasive","resourceful"]],["Shattersong",["educated","outcast","persuasive"]],["Silent Knife",["chaotic","nimble","resourceful"]],["Snowdancer",["chaotic","nimble","persuasive"]],["Soothsinger",["educated","nimble","persuasive"]],["Soultether",["armored","resourceful","strong"]],["Spellweaver",["arcane","educated","resourceful"]],["Sunkeeper",["armored","educated","persuasive"]],["Tinkerer",["educated","nimble","resourceful"]],["Trapper",["nimble","outcast","resourceful"]],["Voidwarden",["arcane","educated","outcast"]],["Wildfury",["chaotic","intimidating","strong"]]];
+// image file name of a class (character mat, banner): the lower case name with hyphens, except where the file uses the old name
+const SLUG_ALIAS={astral:'infuser',coral:'crashing-tide','h.i.v.e.':'hive'};
+const classSlug=c=>{const k=String(c||'').toLowerCase();return SLUG_ALIAS[k]||k.replace(/ /g,'-')};
 const XP_STEPS=[0,45,95,150,210,275,350,440,540];   // XP needed for level 1..9
 const levelOfXp=xp=>XP_STEPS.reduce((l,t,i)=>xp>=t?i+1:l,1);
 const cap=w=>w.replace(/^./,c=>c.toUpperCase());
@@ -1146,19 +1146,47 @@ let CH={name:'Simon',player:'Guido',cls:'Tinkerer',extra:['Friend of the Hero'],
 try{const o=JSON.parse(localStorage.getItem(CH_KEY)||'null');if(o&&typeof o==='object')CH={...CH,...o,extra:Array.isArray(o.extra)?o.extra.map(t=>t==='Friend of Hero'?'Friend of the Hero':t):CH.extra}}catch(e){}
 const classTraits=n=>(CHAR_CLASSES.find(c=>c[0]===n)||[n,[]])[1];
 const saveCh=()=>{try{localStorage.setItem(CH_KEY,JSON.stringify(CH))}catch(e){}};
+// class-specific tokens: 'count' = number with -/+, 'cycle' = one token shown, click steps through its states (no counting)
+// entries for classes not in CHAR_CLASSES yet are kept ready and unused until those classes exist
+const TOKEN_DEFS={
+  hail:[{k:'resolve',l:'Resolve',img:'hail_resolve'}],
+  quartermaster:[{k:'supply',l:'Supply',img:'quartermaster_supply'}],
+  soothsinger:[{k:'high',l:'High note',img:'soothsinger_high_note'},{k:'low',l:'Low note',img:'soothsinger_low_note'}],
+  deepwraith:[{k:'trophy',l:'Trophy',img:'deepwraith_trophy'}],
+  shattersong:[{k:'resonance',l:'Resonance',img:'shattersong_resonance'}],
+  blinkblade:[{k:'time',l:'Time',img:'blinkblade_time'},{k:'speed',l:'Speed',states:['Fast','Slow'],imgs:['blinkblade_speed_fast','blinkblade_speed_slow']}],
+  metalmosaic:[{k:'pressure',l:'Pressure',states:['0','1','2','3'],imgs:['metal_mosaic_pressure_0','metal_mosaic_pressure_1','metal_mosaic_pressure_2','metal_mosaic_pressure_3']}]
+};
+const tkImg=(n,l)=>'<img src="'+TOK_DIR+n+'.png" alt="'+l+'" draggable="false" style="width:52px;height:52px;object-fit:contain;display:block">';
+function renderTokens(){
+  const el=document.getElementById('tokens');if(!el)return;
+  const defs=TOKEN_DEFS[(CH.cls||'').toLowerCase().replace(/ /g,'')]||[];
+  CH.tok=CH.tok||{};
+  el.innerHTML=defs.map(d=>{
+    if(d.states){const i=CH.tok[d.k]||0;return '<span class="ctr" title="'+d.l+': '+d.states[i]+' (click to change)"><button type="button" data-tk="'+d.k+'" style="width:auto;height:auto;padding:2px;background:none;border:0" aria-label="'+d.l+': '+d.states[i]+'">'+tkImg(d.imgs[i],d.l+' '+d.states[i])+'</button></span>'}
+    return '<span class="ctr" title="'+d.l+'">'+tkImg(d.img,d.l)+'<span class="sp"><b>'+(CH.tok[d.k]||0)+'</b><span class="spc"><button type="button" data-tk="'+d.k+'" data-d="1" aria-label="Increase '+d.l+'"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button><button type="button" data-tk="'+d.k+'" data-d="-1" aria-label="Decrease '+d.l+'"'+((CH.tok[d.k]||0)?'':' disabled')+'><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></span></span></span>'}).join('');
+}
+document.getElementById('tokens').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-tk]');if(!b)return;
+  const k=b.dataset.tk,defs=TOKEN_DEFS[(CH.cls||'').toLowerCase().replace(/ /g,'')]||[],d=defs.find(x=>x.k===k);if(!d)return;
+  CH.tok=CH.tok||{};
+  if(d.states)CH.tok[k]=((CH.tok[k]||0)+1)%d.states.length;else CH.tok[k]=Math.max(0,(CH.tok[k]||0)+Number(b.dataset.d));
+  saveCh();renderTokens();
+});
+
 window.charClass=()=>CH.cls;
 function refreshBacks(){document.querySelectorAll('.flipcard .face.back').forEach(b=>{b.innerHTML=cardBackHTML()})}
 function renderHud(){
-  refreshBacks();
+  refreshBacks();renderTokens();
   document.getElementById('chname').textContent=CH.name;
   document.getElementById('chsub').textContent=CH.cls+' \u00b7 played by '+CH.player;
   document.getElementById('chchips').innerHTML=classTraits(CH.cls).map(t=>'<span class="chip ">'+cap(t)+'</span>').join('')+CH.extra.map(t=>'<span class="chip info">'+t.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</span>').join('');
-  document.getElementById('chport').style.backgroundImage='url(https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_mats/front/'+CH.cls.toLowerCase().replace(/ /g,'-')+'.png)';
+  document.getElementById('chport').style.backgroundImage='url(https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_mats/front/'+classSlug(CH.cls)+'.png)';
   document.getElementById('chgold').textContent=CH.gold;document.getElementById('chinh').textContent=CH.inh;
   const lv=levelOfXp(CH.xp),lo=XP_STEPS[lv-1],hi=XP_STEPS[lv]??null;
-  document.getElementById('chxp').textContent=CH.xp+' XP';
-  const xpEl=document.querySelector('.hud .xp'),ems=xpEl.querySelectorAll('.xpnum em');
-  ems[0].textContent=lo;ems[1].textContent=hi??'max';
+  document.getElementById('chxp').textContent=CH.xp;
+  const xpEl=document.querySelector('.hud .xp');
+  document.getElementById('xphi').textContent=hi??'max';
   xpEl.querySelector('.xpbar b').style.width=(hi?Math.min(100,(CH.xp-lo)/(hi-lo)*100):100)+'%';
   xpEl.title='Level '+lv+': '+lo+' XP.'+(hi?' Next level ('+(lv+1)+') at '+hi+' XP.':' Maximum level.');
 }
@@ -1192,6 +1220,10 @@ function editInPlace(el,get,set){
 editInPlace(document.getElementById('chgold'),()=>CH.gold,v=>{CH.gold=v;saveCh()});
 editInPlace(document.getElementById('chinh'),()=>CH.inh,v=>{CH.inh=v;saveCh()});
 editInPlace(document.getElementById('chxp'),()=>CH.xp,v=>{CH.xp=v;applyXp()});
+document.querySelector('.hud').addEventListener('click',e=>{const b=e.target.closest('button[data-hud]');if(!b)return;const d=Number(b.dataset.d);
+  if(b.dataset.hud==='chgold'){CH.gold=Math.max(0,CH.gold+d);saveCh();renderHud()}
+  else if(b.dataset.hud==='chinh'){CH.inh=Math.max(0,CH.inh+d);saveCh();renderHud()}
+  else{CH.xp=Math.max(0,CH.xp+d);applyXp()}});
 // the level stepper in the Card pool tab (mockup stand-in for levelling) moves the XP to that level's threshold
 function syncXpToLevel(){if(levelOfXp(CH.xp)!==PL.level){CH.xp=XP_STEPS[PL.level-1];renderHud();saveCh()}}   // called by setLevel
 // dialog
@@ -1298,4 +1330,642 @@ document.addEventListener('dblclick',e=>{
   clearZoomed();f.classList.toggle('is-front');
 });
 document.addEventListener('dragstart',clearZoomed,true);
-</script></body></html>
+</script><style>
+.jbox{width:min(780px,100%);height:min(680px,90vh);display:flex;flex-direction:column}.jbox .jtab{flex:1;min-height:0;overflow:auto}.jbox .jtab[hidden]{display:none}.jbox .notesarea{width:100%;height:100%;min-height:200px;resize:none}
+.hudroll{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;margin-left:auto}.hud .hudroll+.hudroll{margin-left:6px}.hud .hudroll+.hudroll+.hudroll+.counters{margin-left:12px}.rollbtn{display:inline-flex;align-items:center;gap:6px}
+.addrow{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}.addrow input,.pqin,.pqta{background:#1c1711;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:5px 8px;font:inherit;font-size:13px;min-width:0;flex:1}
+.pqta{width:100%;resize:vertical}.pqdock{display:flex;gap:18px;align-items:flex-start}.pqcard{flex:none;width:300px;line-height:0}.pqcard img{width:100%;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.5)}.pqside{flex:1;min-width:0}.pqside h4{margin:10px 0 6px;font-size:15px;color:var(--accent);letter-spacing:0;text-transform:none}
+.pqoffer{display:flex;gap:16px;flex-wrap:wrap;margin:8px 0}.pqpick{background:#1c1711;border:1px solid var(--line);border-radius:10px;padding:8px;color:var(--text);font:inherit;cursor:pointer;width:min(260px,100%);text-align:center}.pqpick:hover{border-color:var(--accent)}.pqpick img{width:100%;border-radius:8px;display:block;margin-bottom:6px}
+.pqdeck{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-bottom:8px}.pqdl{font-size:12px;color:var(--muted);margin-right:6px}.pqchip{min-width:26px;height:24px;border-radius:6px;border:1px solid var(--line);background:#1c1711;color:var(--muted);font:inherit;font-size:11px;cursor:pointer;padding:0 4px}.pqchip.st-mine{background:var(--accent);color:#1b150c;border-color:var(--accent)}.pqchip.st-other{border-color:var(--info);color:var(--info)}.pqchip.st-done{border-color:var(--ok);color:var(--ok);text-decoration:line-through}.pqchip.cur{outline:2px solid var(--text);outline-offset:1px}
+.pqreq{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;margin:6px 0;border:1px solid var(--line);border-radius:8px;background:#1c1711}.pqreq.locked{opacity:.45}.pqreq.done{border-color:var(--ok)}.pqc{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.pqcheck{display:inline-flex;gap:5px;align-items:center;color:var(--muted);font-size:12px}
+@media (max-width:720px){.pqdock{flex-direction:column;align-items:center}.pqcard{width:min(300px,100%)}.pqside{width:100%}}.pqrow{display:flex;gap:8px;align-items:center;margin:8px 0;flex-wrap:wrap}.pqrow label{color:var(--muted);font-size:12px}
+.bgcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:8px 0}.bgcard{border:1px solid var(--line);border-radius:8px;padding:10px;background:#1c1711;text-align:left;color:var(--text);font:inherit;cursor:pointer}.bgcard:hover{border-color:var(--accent)}.bgcard b{display:block;color:var(--accent);text-transform:capitalize}.bgcard small{color:var(--muted)}
+.bgcard.kept{cursor:default}.bgcard.done{border-color:var(--ok)}.delx{background:none;border:0;color:var(--muted);cursor:pointer;font-size:16px}
+.jbox .notespane{display:flex;flex-direction:column;gap:6px}.jbox .notespane[hidden]{display:none}.jbox .notespane .notesarea{flex:1;height:auto}.mdbar{display:flex;gap:6px;flex-wrap:wrap}.mdprev{flex:1;min-height:0;overflow:auto;background:#120f0b;border:1px solid var(--line);border-radius:8px;padding:8px 12px}.mdprev[hidden]{display:none}.mdprev h3,.mdprev h4,.mdprev h5{margin:8px 0 4px;color:var(--accent)}.mdprev p{margin:4px 0}.mdprev ul{margin:4px 0;padding-left:20px}.mdprev li.td{list-style:none;margin-left:-18px}.mdprev code{background:#1c1711;padding:0 4px;border-radius:4px}.mdview[aria-pressed="true"]{background:var(--accent);color:#1b150c}
+</style>
+<script type="module">
+// Journal (personal quest, battle goal, notes), manual enhancements and custom codes. State: localStorage 'hm-journal',
+// 'hm-enh-manual', 'hm-codes-custom'. Battle goal cards come from the real data (scripts/games/battle_goals.js, drawn three, keep one);
+// personal quest name and requirements come from scripts/games/gh2_pq_text.js (generated from the Secretariat data); the card image is docked beside them.
+import { BATTLE_GOALS } from '../../scripts/games/battle_goals.js';
+import { PERSONAL_QUESTS } from '../../scripts/games/gh2_quests.js';
+import { GH2_PQ } from '../../scripts/games/gh2_pq_text.js';
+const load = (k, d) => { try { return JSON.parse(localStorage.getItem(k) || 'null') ?? d } catch (e) { return d } };
+const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)) } catch (e) {} };
+const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+const $ = id => document.getElementById(id);
+const cap = t => t.replace(/-/g, ' ');
+const DICE = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg>';
+const ROLL = { get pq() { return rollCode() }, bg: '2custom2{1;2}' };
+const rollBtn = (k, label, off) => '<button type="button" class="btn6 rollbtn"' + (off ? ' disabled' : '') + ' data-roll="' + k + '" title="' + (off ? 'Nothing left in the deck' : k === 'pq' ? 'Copy a GeekRoller code over the quests still in the deck' : k === 'bg' ? 'Copy a GeekRoller code over the goals still in the deck' : 'Copy the GeekRoller code') + '">' + DICE + '<span>' + label + '</span></button>';
+
+// ---- journal ----
+let J = { pq: 'PQ14', counts: {}, deck: {}, offer: null, keep: null, done: false, notes: '', ...load('hm-journal', {}) };
+if (!Object.keys(J.deck).length) J.deck[J.pq] = 'mine';
+const saveJ = () => save('hm-journal', J);
+const ST = { deck: 'In deck', mine: 'Mine', other: 'Other player', done: 'Completed' };
+const stOf = sl => J.deck[sl] || 'deck';
+const inDeck = () => PERSONAL_QUESTS.map(x => x.slug).filter(sl => stOf(sl) === 'deck');
+const rollCode = () => { const d = inDeck().map(sl => +sl.slice(2)); return d.length ? '1custom' + d.length + '{' + d.join(';') + '}' : '' };
+function syncDone() { const q = GH2_PQ[J.pq], cnt = J.counts[J.pq] || []; if (!q) return; const all = q.reqs.every((r, i) => (cnt[i] || 0) >= r.n); if (all && stOf(J.pq) === 'mine') J.deck[J.pq] = 'done'; else if (!all && stOf(J.pq) === 'done') J.deck[J.pq] = 'mine' }
+const goalBySlug = sl => BATTLE_GOALS.find(g => g.slug === sl);
+function renderPQ() {
+  if (J.pqOffer) {
+    $('pqbox').innerHTML = '<p class="mrow">Pick one to keep:</p><div class="pqoffer">' + J.pqOffer.map(sl => '<button type="button" class="pqpick" data-pqkeep="' + sl + '" title="Keep ' + sl + ' ' + esc((GH2_PQ[sl] || {}).name || '') + '"><img src="../../images/common/personal_quests/' + sl + '.png" alt="Personal quest ' + sl + '"><span>' + sl.slice(2) + ' ' + esc((GH2_PQ[sl] || {}).name || '') + '</span></button>').join('') + '</div><div class="pqrow"><button type="button" class="btn6" id="pqredraw">Draw again</button><button type="button" class="btn6" id="pqcancel">Cancel</button></div>';
+    return;
+  }
+  const q = GH2_PQ[J.pq] || { name: J.pq, reqs: [] };
+  const cnt = (J.counts[J.pq] = J.counts[J.pq] || []);
+  const done = i => (cnt[i] || 0) >= q.reqs[i].n;
+  const open = i => q.reqs[i].after.every(done);
+  const all = q.reqs.length && q.reqs.every((r, i) => done(i));
+  $('pqbox').innerHTML =
+    '<div class="pqdock"><div class="pqcard"><img src="../../images/common/personal_quests/' + J.pq + '.png" alt="Personal quest ' + J.pq + '"></div><div class="pqside">' +
+    '<div class="pqdeck" title="Click a quest to show it"><span class="pqdl">' + inDeck().length + ' of 22 in deck</span>' + PERSONAL_QUESTS.map(x => '<button type="button" class="pqchip st-' + stOf(x.slug) + (x.slug === J.pq ? ' cur' : '') + '" data-pqgo="' + x.slug + '" title="' + x.slug + ' ' + esc((GH2_PQ[x.slug] || {}).name || '') + ': ' + ST[stOf(x.slug)] + '">' + x.slug.slice(2) + '</button>').join('') + '</div>' +
+    '<div class="pqrow"><label for="pqsel">Quest</label><select id="pqsel">' + PERSONAL_QUESTS.map(x => '<option value="' + x.slug + '"' + (x.slug === J.pq ? ' selected' : '') + '>' + x.slug + ' ' + esc((GH2_PQ[x.slug] || {}).name || '') + '</option>').join('') + '</select></div>' +
+    '<h4>' + esc(q.name) + (all ? ' <span class="chip info">Complete</span>' : '') + '</h4>' +
+    '<div class="pqrow"><label for="pqst">Status</label><select id="pqst">' + Object.keys(ST).map(k => '<option value="' + k + '"' + (k === stOf(J.pq) ? ' selected' : '') + '>' + ST[k] + '</option>').join('') + '</select></div>' +
+    q.reqs.map((r, i) => '<div class="pqreq' + (open(i) ? '' : ' locked') + (done(i) ? ' done' : '') + '"><span class="pqt">' + esc(r.t) + (r.after.length ? '' : '') + '</span>' +
+      (r.n > 1 ? '<span class="pqc"><span class="sp"><b>' + Math.min(cnt[i] || 0, r.n) + ' / ' + r.n + '</b><span class="spc"><button type="button" data-rq="' + i + '" data-d="1" aria-label="Increase"' + (open(i) && (cnt[i] || 0) < r.n ? '' : ' disabled') + '><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button><button type="button" data-rq="' + i + '" data-d="-1" aria-label="Decrease"' + (open(i) && (cnt[i] || 0) > 0 ? '' : ' disabled') + '><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></span></span></span>'
+        : '<span class="pqc"><label class="pqcheck"><input type="checkbox" data-rqc="' + i + '"' + (done(i) ? ' checked' : '') + (open(i) ? '' : ' disabled') + '> done</label></span>') + '</div>').join('') +
+    '<div class="pqrow"><button type="button" class="btn6" id="pqdraw"' + (inDeck().length < 2 ? ' disabled' : '') + '>Draw two Personal Quests</button>' + rollBtn('pq', 'BGG code for roll', !rollCode()) + '</div></div></div>';
+}
+// battle goals: same deck states as the quests. A goal you keep is 'mine', achieved is 'done', another player's is 'other'. Discarding returns it to the deck.
+if (!J.bgs) { J.bgs = {}; if (J.keep) J.bgs[J.keep] = J.done ? 'done' : 'mine' }
+const bgSt = sl => J.bgs[sl] || 'deck';
+const bgDeck = () => BATTLE_GOALS.map(x => x.slug).filter(sl => bgSt(sl) === 'deck');
+const bgNo = sl => BATTLE_GOALS.findIndex(x => x.slug === sl) + 1;
+const bgRollCode = () => { const d = bgDeck().map(bgNo); return d.length ? '3custom' + d.length + '{' + d.join(';') + '}' : '' };
+ROLL.bg = undefined; Object.defineProperty(ROLL, 'bg', { get: bgRollCode });
+const bgCard = (o, cls, tag) => '<' + tag + ' class="bgcard' + cls + '"' + (tag === 'button' ? ' type="button" data-keep="' + o.slug + '"' : '') + '><b>' + esc(cap(o.slug)) + '</b>' + esc(o.t) + '<br><small>' + o.chk + ' checkmark' + (o.chk > 1 ? 's' : '') + '</small></' + tag + '>';
+function renderBG() {
+  const cur = goalBySlug(J.bgv && !J.offer ? J.bgv : null) || goalBySlug(BATTLE_GOALS.map(x => x.slug).find(sl => bgSt(sl) === 'mine' || bgSt(sl) === 'done'));
+  let h = '<div class="pqdeck" title="Click a goal to show it"><span class="pqdl">' + bgDeck().length + ' of ' + BATTLE_GOALS.length + ' in deck</span>' + BATTLE_GOALS.map(x => '<button type="button" class="pqchip st-' + bgSt(x.slug) + (cur && x.slug === cur.slug && !J.offer ? ' cur' : '') + '" data-bggo="' + x.slug + '" title="' + esc(cap(x.slug)) + ': ' + ST[bgSt(x.slug)] + '">' + bgNo(x.slug) + '</button>').join('') + '</div>';
+  if (J.offer) {
+    h += '<p class="mrow">Pick one to keep:</p><div class="bgcards">' + J.offer.map(sl => bgCard(goalBySlug(sl), '', 'button')).join('') + '</div><button type="button" class="btn6" id="bgredraw">Draw again</button>';
+  } else if (cur) {
+    const st = bgSt(cur.slug);
+    h += '<div class="bgcards">' + bgCard(cur, ' kept' + (st === 'done' ? ' done' : ''), 'div') + '</div><div class="pqrow"><label for="bgst">Status</label><select id="bgst">' + Object.keys(ST).map(k => '<option value="' + k + '"' + (k === st ? ' selected' : '') + '>' + ST[k] + '</option>').join('') + '</select><button type="button" class="btn6" id="bgdrop">Return to deck</button></div>';
+  } else {
+    h += '<p class="mrow">No goal drawn for this scenario yet.</p>';
+  }
+  h += '<div class="pqrow"><button type="button" class="btn6" id="bgdraw"' + (bgDeck().length < 3 ? ' disabled' : '') + '>Draw three goals</button>' + rollBtn('bg', 'BGG code for roll', !bgRollCode()) + '<button type="button" class="btn6" id="bgreset" title="New scenario: all goals back in the deck">Return all to deck</button></div>';
+  $('bgbox').innerHTML = h;
+}
+function draw() { const a = bgDeck(); const o = []; while (o.length < 3 && a.length) o.push(a.splice(Math.floor(Math.random() * a.length), 1)[0]); J.offer = o; saveJ(); renderBG() }
+$('pqbox').addEventListener('input', e => {
+  return;
+});
+$('pqbox').addEventListener('change', e => { if (e.target.id === 'pqsel') { J.pq = e.target.value; saveJ(); renderPQ() } if (e.target.id === 'pqst') { J.deck[J.pq] = e.target.value; saveJ(); renderPQ(); return }
+  const c = e.target.closest('[data-rqc]'); if (c) { const q = GH2_PQ[J.pq], cnt = (J.counts[J.pq] = J.counts[J.pq] || []); cnt[+c.dataset.rqc] = c.checked ? q.reqs[+c.dataset.rqc].n : 0; syncDone(); saveJ(); renderPQ() } });
+function drawPQ() { const a = inDeck(), o = []; while (o.length < 2 && a.length) o.push(a.splice(Math.floor(Math.random() * a.length), 1)[0]); J.pqOffer = o; saveJ(); renderPQ() }
+$('pqbox').addEventListener('click', e => {
+  const k = e.target.closest('[data-pqkeep]'); if (k) { J.deck[k.dataset.pqkeep] = 'mine'; J.pq = k.dataset.pqkeep; J.pqOffer = null; saveJ(); renderPQ(); return }
+  const bt = e.target.closest('#pqdraw,#pqredraw,#pqcancel'); if (bt) { if (bt.id === 'pqcancel') { J.pqOffer = null; saveJ(); renderPQ() } else drawPQ(); return }
+  const g = e.target.closest('[data-pqgo]'); if (g) { J.pq = g.dataset.pqgo; saveJ(); renderPQ(); return } const t = e.target.closest('[data-rq]'); if (!t) return; const i = +t.dataset.rq, q = GH2_PQ[J.pq], cnt = (J.counts[J.pq] = J.counts[J.pq] || []); cnt[i] = Math.max(0, Math.min(q.reqs[i].n, (cnt[i] || 0) + Number(t.dataset.d))); syncDone(); saveJ(); renderPQ() });
+$('bgbox').addEventListener('click', e => {
+  const g = e.target.closest('[data-bggo]'); if (g) { J.bgv = g.dataset.bggo; J.offer = null; saveJ(); renderBG(); return }
+  const t = e.target.closest('button'); if (!t) return;
+  if (t.id === 'bgdraw' || t.id === 'bgredraw') draw();
+  else if (t.dataset.keep) { J.offer.filter(sl => sl !== t.dataset.keep).forEach(sl => delete J.bgs[sl]); J.bgs[t.dataset.keep] = 'mine'; J.bgv = t.dataset.keep; J.offer = null; saveJ(); renderBG() }
+  else if (t.id === 'bgdrop') { delete J.bgs[J.bgv || BATTLE_GOALS.map(x => x.slug).find(sl => bgSt(sl) === 'mine' || bgSt(sl) === 'done')]; J.bgv = null; saveJ(); renderBG() }
+  else if (t.id === 'bgreset') { J.bgs = {}; J.bgv = null; J.offer = null; saveJ(); renderBG() }
+});
+$('bgbox').addEventListener('change', e => { if (e.target.id !== 'bgst') return; const sl = J.bgv || BATTLE_GOALS.map(x => x.slug).find(x => bgSt(x) === 'mine' || bgSt(x) === 'done'); if (e.target.value === 'deck') delete J.bgs[sl]; else J.bgs[sl] = e.target.value; J.bgv = sl; saveJ(); renderBG() });
+document.querySelector('[data-jpane="quest"]').addEventListener('click', rollClick); document.querySelector('[data-jpane="goal"]').addEventListener('click', rollClick);
+function rollClick(e) { const b = e.target.closest('[data-roll]'); if (!b) return; navigator.clipboard?.writeText(ROLL[b.dataset.roll]).catch(() => {}); const o = b.innerHTML; b.innerHTML = '\u2713 Copied'; setTimeout(() => b.innerHTML = o, 900) }
+$('jnotes').value = J.notes; $('jnotes').addEventListener('input', e => { J.notes = e.target.value; saveJ() });
+// markdown notes: toolbar inserts syntax around the selection, Preview renders (escaped), checkboxes in the preview write back to the text
+const mdInline = t => esc(t).replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/\*([^*]+)\*/g, '<i>$1</i>');
+function mdRender(src) {
+  let out = '', list = false, n = -1;
+  const close = () => { if (list) { out += '</ul>'; list = false } };
+  src.split('\n').forEach(line => {
+    n++;
+    let m;
+    if ((m = line.match(/^(#{1,3})\s+(.*)/))) { close(); const l = m[1].length + 2; out += '<h' + l + '>' + mdInline(m[2]) + '</h' + l + '>' }
+    else if ((m = line.match(/^\s*[-*]\s+\[([ xX])\]\s+(.*)/))) { if (!list) { out += '<ul>'; list = true } out += '<li class="td"><label><input type="checkbox" data-line="' + n + '"' + (m[1] !== ' ' ? ' checked' : '') + '> ' + mdInline(m[2]) + '</label></li>' }
+    else if ((m = line.match(/^\s*[-*]\s+(.*)/))) { if (!list) { out += '<ul>'; list = true } out += '<li>' + mdInline(m[1]) + '</li>' }
+    else if (!line.trim()) close();
+    else { close(); out += '<p>' + mdInline(line) + '</p>' }
+  });
+  close(); return out;
+}
+function mdWrap(ta, a, b) { const s = ta.selectionStart, e = ta.selectionEnd; ta.setRangeText(a + ta.value.slice(s, e) + b, s, e, 'end'); if (s === e) ta.setSelectionRange(s + a.length, s + a.length); ta.focus(); ta.dispatchEvent(new Event('input')) }
+function mdLine(ta, prefix) { const s = ta.selectionStart, e = ta.selectionEnd, v = ta.value, a = v.lastIndexOf('\n', s - 1) + 1; let b = v.indexOf('\n', e); if (b < 0) b = v.length; ta.setRangeText(v.slice(a, b).split('\n').map(l => prefix + l).join('\n'), a, b, 'end'); ta.focus(); ta.dispatchEvent(new Event('input')) }
+function mdPreview(on) { $('mdview').setAttribute('aria-pressed', on); $('mdview').textContent = on ? 'Edit' : 'Preview'; $('jnotes').hidden = on; $('mdprev').hidden = !on; if (on) $('mdprev').innerHTML = mdRender($('jnotes').value) || '<p class="mrow">Nothing yet.</p>'; $('mdbar').querySelectorAll('[data-md]').forEach(b => b.disabled = on) }
+$('mdbar').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return; const ta = $('jnotes');
+  if (b.id === 'mdview') mdPreview($('mdview').getAttribute('aria-pressed') !== 'true');
+  else if (b.dataset.md === 'b') mdWrap(ta, '**', '**'); else if (b.dataset.md === 'i') mdWrap(ta, '*', '*');
+  else if (b.dataset.md === 'h') mdLine(ta, '# '); else if (b.dataset.md === 'ul') mdLine(ta, '- '); else if (b.dataset.md === 'todo') mdLine(ta, '- [ ] ');
+});
+$('jnotes').addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && (e.key === 'b' || e.key === 'i')) { e.preventDefault(); mdWrap($('jnotes'), e.key === 'b' ? '**' : '*', e.key === 'b' ? '**' : '*') }
+  else if (e.key === 'Enter' && !e.shiftKey) { const ta = e.target, v = ta.value, a = v.lastIndexOf('\n', ta.selectionStart - 1) + 1, m = v.slice(a, ta.selectionStart).match(/^(\s*[-*]\s+(\[[ xX]\]\s+)?)(.*)/); if (m) { e.preventDefault(); if (!m[3]) { ta.setRangeText('', a, ta.selectionStart, 'end') } else ta.setRangeText('\n' + m[1].replace(/\[[xX]\]/, '[ ]'), ta.selectionStart, ta.selectionEnd, 'end'); ta.dispatchEvent(new Event('input')) } } });
+$('mdprev').addEventListener('change', e => { const c = e.target.closest('[data-line]'); if (!c) return; const L = $('jnotes').value.split('\n'), i = +c.dataset.line; L[i] = L[i].replace(/\[[ xX]\]/, c.checked ? '[x]' : '[ ]'); $('jnotes').value = L.join('\n'); J.notes = $('jnotes').value; saveJ() });
+renderPQ(); renderBG();
+
+// ---- manual enhancements: rows added by hand, shown below the ones derived from stickers placed on cards ----
+let EM = load('hm-enh-manual', []);
+const saveEM = () => save('hm-enh-manual', EM);
+const baseRenderEnh = window.renderEnh;
+window.renderEnh = function () {
+  baseRenderEnh();
+  const body = $('enhrows'); if (!body) return;
+  const empty = body.querySelector('.enhempty'); if (empty && EM.length) empty.closest('tr').remove();
+  EM.forEach((r, i) => body.insertAdjacentHTML('beforeend', '<tr data-man="' + i + '"><td>' + esc(r.card) + '</td><td>' + esc(r.top || '–') + '</td><td>' + esc(r.bot || '–') + '</td><td>' + esc(r.price || '') + ' <button type="button" class="delx" data-delenh="' + i + '" aria-label="Remove ' + esc(r.card) + '">&times;</button></td></tr>'));
+};
+$('enh-addbtn').addEventListener('click', () => {
+  const card = $('enh-card').value.trim(); if (!card) return;
+  EM.push({ card, top: $('enh-top').value.trim(), bot: $('enh-bot').value.trim(), price: $('enh-price').value.trim() }); saveEM();
+  ['enh-card', 'enh-top', 'enh-bot', 'enh-price'].forEach(id => $(id).value = ''); window.renderEnh();
+});
+$('enhrows').addEventListener('click', e => { const d = e.target.closest('[data-delenh]'); if (!d) return; EM.splice(+d.dataset.delenh, 1); saveEM(); window.renderEnh() });
+window.renderEnh();
+
+// ---- custom BGG codes ----
+let CC = load('hm-codes-custom', []);
+const saveCC = () => save('hm-codes-custom', CC);
+const copy = (btn, text) => { (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).catch(() => { const t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select(); try { document.execCommand('copy') } catch (e) {} t.remove() }); const o = btn.textContent; btn.textContent = 'Copied'; setTimeout(() => btn.textContent = o, 900) };
+function renderCC() {
+  $('customcodes').innerHTML = CC.map((c, i) => '<div class="coderow"><div><b style="margin:0">' + esc(c.label) + '</b></div><span><button type="button" class="btn6" data-cpy="' + i + '">Copy</button> <button type="button" class="delx" data-delcode="' + i + '" aria-label="Remove ' + esc(c.label) + '">&times;</button></span></div>').join('');
+}
+$('customcodes').addEventListener('click', e => { const c = e.target.closest('[data-cpy]'), d = e.target.closest('[data-delcode]'); if (c) copy(c, CC[+c.dataset.cpy].text); else if (d) { CC.splice(+d.dataset.delcode, 1); saveCC(); renderCC() } });
+$('code-addbtn').addEventListener('click', () => { const label = $('code-label').value.trim(), text = $('code-text').value.trim(); if (!label || !text) return; CC.push({ label, text }); saveCC(); $('code-label').value = $('code-text').value = ''; renderCC() });
+renderCC();
+</script>
+<style>
+.histbar{display:flex;gap:8px;align-items:center;margin:8px 0;flex-wrap:wrap}.histbar select{background:#1c1711;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:4px 8px;font:inherit;font-size:13px}.histbar .hn{color:var(--muted);font-size:12px;margin-left:auto}
+.hlist{max-height:min(60vh,520px);overflow:auto;border:1px solid var(--line);border-radius:8px;background:#120f0b}.hrow{display:grid;grid-template-columns:104px 100px 1fr;gap:8px;padding:5px 10px;border-bottom:1px solid #2a2218;font-size:13px}.hrow:last-child{border-bottom:0}.hrow time{color:var(--muted);font-size:12px}.hrow .hc{color:var(--accent);font-size:12px}.hempty{padding:14px;color:var(--muted)}
+@media (max-width:520px){.hrow{grid-template-columns:1fr;gap:0}}
+.hm{display:inline-block;width:16px;text-align:center;font-weight:700}.hm.hp{color:var(--ok)}.hm.hn2{color:#d46a5a}.hz{display:inline-block;padding:0 7px;border:1px solid var(--line);border-radius:10px;background:#1c1711;font-size:12px}.ha{color:var(--accent);font-weight:700;margin:0 2px}.hrow small{color:var(--muted)}
+</style>
+<script type="module">
+// History: records game state changes of this character tab automatically, into localStorage 'hm-history' (newest last, capped).
+// Two sources: (1) card zone changes (hand, play slots, discard, lost) by watching the page, (2) writes to the tracked
+// localStorage records (character, journal, items, card pool, enhancements, markers), diffed old against new.
+import { GH2_PQ } from '../../scripts/games/gh2_pq_text.js';
+const HKEY = 'hm-history', MAX = 500;
+const $ = id => document.getElementById(id);
+const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+const rawSet = Storage.prototype.setItem;
+const loadH = () => { try { const a = JSON.parse(localStorage.getItem(HKEY) || '[]'); return Array.isArray(a) ? a : [] } catch (e) { return [] } };
+const parse = (v, d) => { try { return JSON.parse(v) ?? d } catch (e) { return d } };
+let shown = false;
+function log(c, m, x) {
+  const h = loadH(); h.push(x ? { t: Date.now(), c, m, x } : { t: Date.now(), c, m }); if (h.length > MAX) h.splice(0, h.length - MAX);
+  try { rawSet.call(localStorage, HKEY, JSON.stringify(h)) } catch (e) {}
+  if (shown) { fillFilter(); renderH() }
+}
+const MERGE_MS = 4000;   // a counter changed again within this time (since its last change) is folded into the same entry
+const cntMsg = (label, f, t, tail) => label + ': ' + f + ' → ' + t + (tail || '') + (typeof f === 'number' && typeof t === 'number' ? ' (' + (t - f > 0 ? '+' : '') + (t - f) + ')' : '');
+function logCount(c, key, label, from, to, tail) {
+  const h = loadH(), now = Date.now();
+  let hit = -1;
+  for (let i = h.length - 1; i >= 0 && now - h[i].t < MERGE_MS; i--) if (h[i].x && h[i].x.cnt === key) { hit = i; break }
+  if (hit >= 0) {
+    const e = h[hit];
+    if (e.x.from === to) h.splice(hit, 1);   // back to where it started: net nothing, no entry
+    else { e.x.to = to; e.t = now; e.m = cntMsg(label, e.x.from, to, tail) }
+  } else h.push({ t: now, c, m: cntMsg(label, from, to, tail), x: { cnt: key, from, to } });
+  if (h.length > MAX) h.splice(0, h.length - MAX);
+  try { rawSet.call(localStorage, HKEY, JSON.stringify(h)) } catch (e) {}
+  if (shown) { fillFilter(); renderH() }
+}
+const ST = { deck: 'In deck', mine: 'Mine', other: 'Other player', done: 'Completed' };
+const cap = t => String(t).replace(/[-_]/g, ' ').replace(/^./, c => c.toUpperCase());
+const ARR = '→';
+const setDiff = (cat, label, o, n, f = x => x) => { const a = new Set(o.map(x => JSON.stringify(x))), b = new Set(n.map(x => JSON.stringify(x))); n.filter(x => !a.has(JSON.stringify(x))).forEach(x => log(cat, label + ' added: ' + f(x))); o.filter(x => !b.has(JSON.stringify(x))).forEach(x => log(cat, label + ' removed: ' + f(x))) };
+
+const DEF_CH = { name: 'Simon', player: 'Guido', cls: 'Tinkerer', extra: ['Friend of the Hero'], xp: 264, gold: 42, inh: 0, tok: {} };
+function diffChar(o, n) {
+  o = { ...DEF_CH, ...o }; const L = { name: 'Name', player: 'Player', cls: 'Class', xp: 'XP', gold: 'Gold', inh: 'Inherited perks' };
+  for (const k in L) if (n[k] !== undefined && o[k] !== n[k]) { if (typeof n[k] === 'number') logCount('Character', 'ch-' + k, L[k], o[k], n[k]); else log('Character', L[k] + ': ' + o[k] + ' ' + ARR + ' ' + n[k]) }
+  setDiff('Character', 'Trait', o.extra || [], n.extra || []);
+  const ot = o.tok || {}, nt = n.tok || {};
+  new Set([...Object.keys(ot), ...Object.keys(nt)]).forEach(k => { if ((ot[k] || 0) !== (nt[k] || 0)) logCount('Character', 'tok-' + k, 'Token ' + cap(k), ot[k] || 0, nt[k] || 0) });
+}
+const goalName = sl => '"' + cap(sl) + '"';
+function diffJournal(o, n) {
+  const ob = o.bgs || {}, nb = n.bgs || {};
+  new Set([...Object.keys(ob), ...Object.keys(nb)]).forEach(sl => { const a = ob[sl] || 'deck', b = nb[sl] || 'deck'; if (a !== b) log('Battle goal', goalName(sl) + ': ' + ST[a] + ' ' + ARR + ' ' + ST[b]) });
+  if (n.pqOffer && JSON.stringify(n.pqOffer) !== JSON.stringify(o.pqOffer)) log('Personal quest', 'Drew two: ' + n.pqOffer.map(q => q.slice(2) + ' ' + ((GH2_PQ[q] || {}).name || '')).join(', '));
+  if (n.offer && JSON.stringify(n.offer) !== JSON.stringify(o.offer)) log('Battle goal', 'Drew three: ' + n.offer.map(cap).join(', '));
+  const od = { PQ14: 'mine', ...(o.deck || {}) }, nd = n.deck || {};
+  new Set([...Object.keys(od), ...Object.keys(nd)]).forEach(q => { const a = od[q] || 'deck', b = nd[q] || 'deck'; if (a !== b) log('Personal quest', q.slice(2) + ' ' + ((GH2_PQ[q] || {}).name || '') + ': ' + ST[a] + ' ' + ARR + ' ' + ST[b]) });
+  const oc = o.counts || {}, nc = n.counts || {};
+  Object.keys(nc).forEach(q => { const a = oc[q] || [], b = nc[q] || [], r = (GH2_PQ[q] || { reqs: [] }).reqs; b.forEach((v, i) => { if ((a[i] || 0) !== (v || 0)) logCount('Personal quest', 'pq-' + q + '-' + i, q.slice(2) + ' ' + ((GH2_PQ[q] || {}).name || '') + ', ' + String((r[i] || {}).t || 'requirement ' + (i + 1)).slice(0, 50), a[i] || 0, v || 0, r[i] && r[i].n > 1 ? ' of ' + r[i].n : '') }) });
+}
+const DIFFS = {
+  'hm-character': (o, n) => diffChar(o || {}, n || {}),
+  'hm-journal': (o, n) => diffJournal(o || {}, n || {}),
+  'hm-items-equipped': (o, n) => setDiff('Items', 'Item', o || [], n || []),
+  'hm-hand-selection': (o, n) => setDiff('Cards', 'Hand selection', o || [], n || [], cap),
+  'hm-enh-manual': (o, n) => setDiff('Enhancements', 'Enhancement', o || [], n || [], r => r.card + (r.top || r.bot ? ' (' + [r.top, r.bot].filter(Boolean).join(' / ') + ')' : '') + (r.price ? ', ' + r.price + ' gold' : '')),
+  'hm-enh-prices': (o, n) => { o = o || {}; n = n || {}; new Set([...Object.keys(o), ...Object.keys(n)]).forEach(k => { if (o[k] !== n[k]) log('Enhancements', 'Price of ' + cap(k) + ': ' + (o[k] ?? '-') + ' ' + ARR + ' ' + (n[k] ?? '-')) }) },
+  'hm-card-pool': (o, n) => { o = o || { level: 5, picks: ['repulsor-gun', 'teleportation-pad', 'proximity-mine'] }; n = n || {}; if (n.level !== undefined && o.level !== n.level) logCount('Cards', 'pool-level', 'Level', o.level, n.level); setDiff('Cards', 'Pool pick', o.picks || [], n.picks || [], cap) },
+  'hm-item-markers': (o, n) => {
+    o = o || {}; n = n || {};
+    const cnt = a => { const r = {}; (a || []).forEach(m => { const k = (m.s ? 'sticker' : 'token') + '|' + m.k; r[k] = (r[k] || 0) + 1 }); return r };   // count per kind, so moving a marker is not logged
+    new Set([...Object.keys(o), ...Object.keys(n)]).forEach(key => {
+      const a = cnt(o[key]), b = cnt(n[key]), type = key.startsWith('i:') ? 'item' : 'card', name = key.replace(/^[a-z]:/, '');
+      new Set([...Object.keys(a), ...Object.keys(b)]).forEach(mk => {
+        const d = (b[mk] || 0) - (a[mk] || 0); if (!d) return;
+        const [kind, k] = mk.split('|'), what = cap(k) + ' ' + kind;
+        for (let i = 0; i < Math.abs(d); i++) log('Enhancements', (d > 0 ? 'Added ' : 'Removed ') + what + (d > 0 ? ' to ' : ' from ') + name, { mk: d > 0 ? '+' : '-', card: name, what, type });
+      });
+    });
+  }
+};
+Storage.prototype.setItem = function (k, v) {
+  let old = null; const tracked = this === localStorage && DIFFS[k];
+  if (tracked) { try { old = this.getItem(k) } catch (e) {} }
+  rawSet.call(this, k, v);
+  if (tracked && old !== v) { try { DIFFS[k](parse(old, null), parse(v, null)) } catch (e) {} }
+};
+
+// ---- card zones ----
+const nm = t => String(t || '').replace(/\s*\(level [^)]*\)\s*$/i, '').trim();
+const lvOf = t => (String(t || '').match(/\(level ([^)]*)\)/i) || [])[1];
+function snap() {
+  const z = {};
+  document.querySelectorAll('.fan6 .ac').forEach(e => { const t = e.title || (e.querySelector('img') || {}).alt; z[nm(t)] = { z: 'Hand', lv: lvOf(t), ini: e.dataset.ini } });
+  document.querySelectorAll('.activelist .ac').forEach(e => { const t = e.title || (e.querySelector('img') || {}).alt; z[nm(t)] = { z: 'Active area', lv: lvOf(t), ini: e.dataset.ini } });
+  document.querySelectorAll('.slot6').forEach(s => { const f = s.querySelector('.flipcard'); if (f) z[nm(f.dataset.name)] = { z: 'Play slot ' + s.dataset.slot, ini: f.dataset.ini } });
+  if (typeof PILES !== 'undefined') for (const k in PILES) PILES[k].forEach(c => z[nm(c.name)] = { z: k === 'lost' ? 'Lost pile' : 'Discard pile', ini: c.ini });
+  return z;
+}
+let prev = null, timer = 0, seen = {};
+const detail = (c, a, b) => { const i = (a && a.ini) || (b && b.ini), lv = (a && a.lv) || (b && b.lv) || seen[c]; return [lv ? 'level ' + lv : '', i ? 'initiative ' + i : ''].filter(Boolean).join(', ') };
+function cardLog(c, a, b) { const f = a ? a.z : 'none', t = b ? b.z : 'none'; log('Cards', c + ': ' + f + ' ' + ARR + ' ' + t, { card: c, from: f, to: t, d: detail(c, a, b) }) }
+function checkCards() {
+  const cur = snap();
+  for (const c in cur) if (cur[c].lv) seen[c] = cur[c].lv;
+  if (prev) {
+    for (const c in cur) if (!prev[c] || prev[c].z !== cur[c].z) cardLog(c, prev[c], cur[c]);
+    for (const c in prev) if (!(c in cur)) cardLog(c, prev[c], null);
+  }
+  prev = cur;
+  checkPerks();
+}
+setTimeout(() => { prev = snap(); for (const c in prev) if (prev[c].lv) seen[c] = prev[c].lv; new MutationObserver(() => { clearTimeout(timer); timer = setTimeout(checkCards, 120) }).observe(document.body, { childList: true, subtree: true, characterData: true }) }, 500);
+
+// ---- attack modifier deck: draws, returns, bless/curse changes, roll code copies (clicks), perk boxes (state diff) ----
+const amdLeft = () => (document.getElementById('amdcount') || {}).textContent || '';
+const faceOf = k => { const A = window.HM_AMD; if (!A) return k; const sp = A.SPECIAL.find(x => x.key === k); if (sp) return sp.label; const c = A.catalog.find(x => x.key === k); return c ? c.face : k };
+document.getElementById('amdreal').addEventListener('click', e => {
+  const b = e.target.closest('button[data-draw],button[data-ret],button[data-adj]'); if (!b || b.disabled) return;
+  const A = window.HM_AMD && window.HM_AMD.SPECIAL ? window.HM_AMD : null;
+  if (b.dataset.adj && A && A.special) {   // bless / curse added or removed by hand: summed like the other counters (this listener runs after the page's own handler, so the new count is already set)
+    const k = b.dataset.adj, to = A.special[k], from = to - Number(b.dataset.d);
+    if (from !== to) logCount('AMD', 'amd-' + k, faceOf(k) + ' cards in deck', from, to);
+    return;
+  }
+  let x;
+  if (b.dataset.draw) { const k = b.dataset.draw, sp = A && A.SPECIAL.some(y => y.key === k); x = { amd: 'draw', verb: 'Drew', what: faceOf(k), n: sp ? 'removed from the game' : 'to discard' } }
+  else if (b.dataset.ret) x = { amd: 'ret', verb: 'Returned from discard', what: faceOf(b.dataset.ret), n: '' };
+  else x = { amd: Number(b.dataset.d) > 0 ? 'add' : 'rem', verb: Number(b.dataset.d) > 0 ? 'Added' : 'Removed', what: faceOf(b.dataset.adj), n: '' };
+  setTimeout(() => { const note = [x.n, amdLeft()].filter(Boolean).join(', '); log('AMD', x.verb + ' ' + x.what + (note ? ' (' + note + ')' : ''), { amd: x.amd, verb: x.verb, what: x.what, note }) }, 0);
+});
+['amdcopy', 'hudroll'].forEach(id => document.getElementById(id).addEventListener('click', () => log('AMD', 'Copied the roll code (' + (amdLeft() || 'deck') + ')', { amd: 'copy', verb: 'Copied the roll code', note: amdLeft() })));
+let perkPrev = null;
+function perkSnap() { const A = window.HM_AMD; if (!A) return null; const r = {}; A.perks.forEach(p => { const full = A.perkState.perks.includes(p.index); let c = full ? p.boxes : 0; if (!full) { let m = A.perkState.boxes[p.index] || 0; while (m) { c += m & 1; m >>= 1 } } const d = Object.entries(A.perkDelta(p)).filter(e => e[1]).map(([k, n]) => (n > 0 ? '+' : '−') + Math.abs(n) + ' ' + faceOf(k)).join(', '); r[p.index] = { c, n: p.boxes, label: String(p.label || '').trim() || d || 'perk ' + (p.index + 1), d: String(p.label || '').trim() ? d : '' } }); return r }
+function checkPerks() {
+  const cur = perkSnap(); if (!cur) return;
+  if (perkPrev) for (const i in cur) if (cur[i].c !== perkPrev[i].c) { const q = cur[i], was = perkPrev[i].c; log('Perks', 'Perk "' + String(q.label).slice(0, 70) + '": ' + was + ' ' + ARR + ' ' + q.c + ' of ' + q.n + (q.d ? ' [' + q.d + ']' : '') + (q.c === q.n ? ' (applied to the deck)' : was === q.n ? ' (removed from the deck)' : '')) }
+  perkPrev = cur;
+}
+setTimeout(() => { perkPrev = perkSnap() }, 500);
+
+// ---- perks ----
+document.addEventListener('change', e => { const r = e.target.closest && e.target.closest('.perkrow'); if (r && e.target.type === 'checkbox') log('Perks', (e.target.checked ? 'Ticked: ' : 'Unticked: ') + r.textContent.trim().slice(0, 80)) });
+
+// ---- modal ----
+function renderH() {
+  const f = $('histfilter').value, h = loadH().map((x, i) => ({ ...x, i })).filter(x => f === 'all' || x.c === f).reverse();
+  $('histn').textContent = h.length + ' entries';
+  $('histlist').innerHTML = h.length ? h.map(x => { const d = new Date(x.t); return '<div class="hrow" data-i="' + x.i + '"><time>' + d.toLocaleDateString([], { day: '2-digit', month: '2-digit' }) + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + '</time><span class="hc">' + esc(x.c) + '</span><span>' + (x.x && x.x.amd ? '<span class="hm ' + ({ draw: 'hn2', ret: 'hp', add: 'hp', rem: 'hn2' }[x.x.amd] || '') + '">' + ({ draw: '↓', ret: '↑', add: '+', rem: '−', copy: '⧉' }[x.x.amd]) + '</span> ' + esc(x.x.verb) + (x.x.what ? ' <span class="hz">' + esc(x.x.what) + '</span>' : '') + (x.x.note ? ' <small>' + esc(x.x.note) + '</small>' : '') : x.x && x.x.mk ? '<span class="hm ' + (x.x.mk === '+' ? 'hp' : 'hn2') + '">' + (x.x.mk === '+' ? '+' : '−') + '</span> <span class="hz">' + esc(x.x.what) + '</span> <span class="ha">' + (x.x.mk === '+' ? '→' : '←') + '</span> <b>' + esc(x.x.card) + '</b> <small>' + esc(x.x.type) + '</small>' : x.x && x.x.card ? '<b>' + esc(x.x.card) + '</b> <span class="hz">' + esc(x.x.from) + '</span> <span class="ha">' + ARR + '</span> <span class="hz">' + esc(x.x.to) + '</span>' + (x.x.d ? ' <small>' + esc(x.x.d) + '</small>' : '') : esc(x.m)) + '</span></div>' }).join('') : '<div class="hempty">No changes recorded yet.</div>';
+}
+function fillFilter() { const cats = [...new Set(loadH().map(x => x.c))].sort(), cur = $('histfilter').value; $('histfilter').innerHTML = '<option value="all">All</option>' + cats.map(c => '<option' + (c === cur ? ' selected' : '') + '>' + esc(c) + '</option>').join('') }
+document.querySelector('[data-modal="history"]').addEventListener('click', () => { shown = true; fillFilter(); renderH() });
+window.HM_CTX && window.HM_CTX.register({
+  sel: '#histlist .hrow',
+  title: () => 'History entry',
+  actions: el => [
+    { label: 'Copy entry text', run: () => { const t = [...el.children].map(c => c.textContent.trim()).join('  '); (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).catch(() => {}) } },
+    { sep: true },
+    { label: 'Delete entry', danger: true, run: () => { if (!confirm('Delete this history entry?')) return; const h = loadH(); h.splice(+el.dataset.i, 1); try { rawSet.call(localStorage, HKEY, JSON.stringify(h)) } catch (e) {} fillFilter(); renderH() } }
+  ]
+});
+$('histfilter').addEventListener('change', renderH);
+$('histclear').addEventListener('click', () => { if (confirm('Clear the whole history of this character?')) { try { rawSet.call(localStorage, HKEY, '[]') } catch (e) {} fillFilter(); renderH() } });
+new MutationObserver(() => { shown = !$('modal-history').hidden }).observe($('modal-history'), { attributes: true, attributeFilter: ['hidden'] });
+window.addEventListener('storage', e => { if (e.key === HKEY && shown) { fillFilter(); renderH() } });
+</script>
+<style>
+.bnrsec{margin:14px 0;padding-top:12px;border-top:1px solid var(--line)}.bnrsec h3{margin:0 0 4px}.bnrsec .bnrnote{color:var(--muted);font-size:12px;margin:0 0 8px}
+.sp{display:inline-flex;align-items:stretch;border:1px solid var(--line);border-radius:10px;background:#2d2519;overflow:hidden;vertical-align:middle}
+.sp>b,.sp>output,.sp>.edv{min-width:44px;padding:3px 10px;font-size:18px;font-weight:600;color:var(--text);display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums;white-space:nowrap}
+.sp .spc{display:flex;flex-direction:column;border-left:1px solid var(--line)}
+.sp .spc button{flex:1;width:28px;min-height:15px;height:auto;padding:0;border:0;border-radius:0;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.sp .spc button+button{border-top:1px solid var(--line)}.sp .spc button:hover{background:#3a2f1e;color:var(--accent)}.sp .spc button:active{background:var(--accent);color:#1b150c}.sp .spc button:disabled{opacity:.3;cursor:not-allowed}
+.hud .stat .sp>b,.hud .stat .sp>.edv{font-size:18px;color:var(--text)}
+.xpnum .sp>.edv{font-size:15px;padding:1px 8px;min-width:0}.xpnum .sp .spc button{min-height:12px}
+/* top bar, variant A: one slim row */
+.hud{gap:14px;padding:8px 14px;background:linear-gradient(180deg,#2a2217,#201910);border-radius:14px;flex-wrap:wrap}
+.hud .portrait{width:46px;height:46px;border:1px solid var(--line);background-size:cover;flex:none}.hud h1{font-size:17px}
+.hud .who .chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}.hud .who .chip{padding:1px 8px;font-size:11px}.hud .who .sub{font-size:12px}
+.hud .sep{width:1px;align-self:stretch;background:var(--line);margin:4px 2px}
+.hud .lvl{width:34px;height:34px;font-size:16px;background:radial-gradient(circle at 30% 25%,#e2c56b,#a8842c);border:2px solid #f0d68a;box-shadow:0 1px 0 #000}
+.hud .xp{width:190px}.hud .xprow{display:flex;align-items:center;gap:6px;margin-bottom:3px;font-size:11px;color:var(--muted)}.hud .xprow .xplab{letter-spacing:.06em}.hud .xprow .xpto{margin-left:auto;white-space:nowrap}.hud .xprow .xpto em{font-style:normal;color:var(--text)}
+.hud .xpbar{height:8px;border-radius:99px;background:#120e08;border:1px solid var(--line);overflow:hidden}.hud .xpbar b{display:block;height:100%;background:linear-gradient(90deg,#9c7a28,#e2c56b);border-radius:99px}
+.hud .xprow .sp>.edv{font-size:13px;padding:0 7px;min-width:34px}.hud .xprow .sp .spc button{min-height:10px;width:22px}
+.hud .stat{gap:2px}.hud .stat small{font-size:10px;letter-spacing:.07em;text-transform:uppercase}
+.hud .grp{display:inline-flex;flex-direction:column;gap:3px;margin-left:6px}.hud .grp small{font-size:10px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.hud .bggseg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#2d2519}
+.hud .bggb{border:0;background:transparent;color:var(--text);padding:6px 11px;display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:13px;cursor:pointer;transition:background .12s,color .12s}
+.hud .bggb+.bggb{border-left:1px solid var(--line)}.hud .bggb:hover{background:#3a2f1e;color:var(--accent)}
+.hud .gear{width:36px;height:36px;padding:0;justify-content:center;border-radius:9px}
+.bnrgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(66px,1fr));gap:6px;max-height:190px;overflow:auto;padding:2px}
+.bnrtile{display:flex;flex-direction:column;align-items:center;gap:2px;background:#1c1711;border:1px solid var(--line);border-radius:8px;padding:5px 2px 3px;color:var(--muted);font:inherit;font-size:10px;line-height:1.1;cursor:pointer;position:relative}
+.bnrtile img{width:40px;height:40px;object-fit:contain}.bnrtile .bnrnoimg{width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--accent)}
+.bnrtile:hover{border-color:var(--accent)}.bnrtile.copied{border-color:var(--ok);box-shadow:0 0 0 1px var(--ok) inset;color:var(--text)}
+.bnrtile span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+</style>
+<script type="module">
+// Banner codes: one banner image per class (Wordhaven_Assets/wh_banners/<slug>.jpg). The grid shows square class icons to pick the class;
+// what is copied is the BANNER (the wide image), never the icon. The copied code is built by bannerCode(), change it there if BGG needs another form.
+const BANNER_BASE = 'https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_banners/';
+const ICON_BASE = '../../images/common/attack_mods/class_icons/';
+const bannerCode = url => '[inlineimg]' + url + '[/inlineimg]';          // the tag the PBF turn template uses for the banner
+// slug, display name (when it differs from the slug), icon file name (when it differs from the display name; null = no icon)
+const BN = [
+  ['anaphi'], ['banner-spear', 'Banner Spear'], ['berserker'], ['bladeswarm'], ['blinkblade'], ['boneshaper'], ['bruiser'], ['cassandra'], ['cragheart'],
+  ['crashing-tide', 'Coral', 'Crashing Tide'], ['deathwalker'], ['deepwraith'], ['demolitionist'], ['doomstalker'], ['drifter'], ['elementalist'],
+  ['frozen-fist', 'Frozen Fist'], ['geminate'], ['hail'], ['hatchet'], ['hive', 'H.I.V.E.'], ['infuser', 'Astral', 'Infuser'], ['metal-mosaic', 'Metal Mosaic'], ['mindthief'],
+  ['nightshroud'], ['pain-conduit', 'Pain Conduit'], ['plagueherald'], ['pyroclast'], ['quartermaster'], ['red-guard', 'Red Guard'], ['satha'], ['sawbones'], ['shattersong'],
+  ['silentknife', 'Silent Knife'], ['snowdancer'], ['soothsinger'], ['soultether'], ['spellweaver'], ['sunkeeper'], ['tinkerer'], ['trapper'], ['voidwarden'], ['wildfury']
+].map(([slug, name, icon]) => { const n = name || slug.replace(/^./, c => c.toUpperCase()); return { slug, name: n, icon: icon === undefined ? n : icon } });
+const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+const sec = document.getElementById('bnrsec');
+sec.innerHTML = '<h3>Class banners</h3><p class="bnrnote" id="bnrnote" aria-live="polite">Click a class to copy its <b>banner image</b> code.</p>' +
+  '<div class="bnrgrid">' + BN.map(x => '<button type="button" class="bnrtile" data-b="' + x.slug + '" title="Copy the ' + esc(x.name) + ' banner code">' + (x.icon ? '<img src="' + ICON_BASE + encodeURIComponent(x.icon) + '.webp" alt="">' : '<span class="bnrnoimg">?</span>') + '<span>' + esc(x.name) + '</span></button>').join('') + '</div>';
+const note = document.getElementById('bnrnote'), note0 = note.innerHTML;
+let nt = 0;
+sec.addEventListener('click', e => {
+  const t = e.target.closest('.bnrtile'); if (!t) return;
+  const b = BN.find(x => x.slug === t.dataset.b), code = bannerCode(BANNER_BASE + b.slug + '.jpg');
+  (navigator.clipboard ? navigator.clipboard.writeText(code) : Promise.reject()).catch(() => { const ta = document.createElement('textarea'); ta.value = code; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy') } catch (e) {} ta.remove() });
+  sec.querySelectorAll('.bnrtile.copied').forEach(x => x.classList.remove('copied')); t.classList.add('copied');
+  note.innerHTML = '\u2713 Copied the <b>' + esc(b.name) + ' banner</b> code'; clearTimeout(nt); nt = setTimeout(() => { note.innerHTML = note0; t.classList.remove('copied') }, 1800);
+});
+
+// ---- Turn post (top bar button): the PBF turn template filled with the class banner and the cards in play slot 1 (top) and 2 (bottom).
+// Everything else stays as in the template (icon lines, X placeholders). The next-round cards part is a separate step.
+function turnPost() {
+  let cls = 'Tinkerer'; try { cls = (JSON.parse(localStorage.getItem('hm-character') || 'null') || {}).cls || cls } catch (e) {}
+  const c = cls.toLowerCase(), b = BN.find(x => x.name.toLowerCase() === c || (x.icon || '').toLowerCase() === c) || BN.find(x => x.slug === 'tinkerer');
+  const card = k => { const f = document.querySelector('.slot6[data-slot="' + k + '"] .flipcard'); return (f && f.dataset.name) || 'XXX' };
+  return bannerCode(BANNER_BASE + b.slug + '.jpg') + '\n' +
+    '[u][b]' + card(1) + ' - top action[/b][/u]\n[imageid=7410469  inline] X\n\n' +
+    '[u][b]' + card(2) + ' - bottom action[/b][/u]\n[imageid=7410466  inline] X\n\n' +
+    '[b]End of Turn[/b]\n---------------------';
+}
+function nextPost() {   // initiative = initiative of the card in play slot 1 (it sets the initiative); name = the character name shown in the header
+  const name = (document.getElementById('chname') || {}).textContent || 'X';
+  const f = k => document.querySelector('.slot6[data-slot="' + k + '"] .flipcard');
+  const card = k => (f(k) && f(k).dataset.name) || 'X';
+  const ini = (f(1) && f(1).dataset.ini) || 'X';
+  return '[u][b]Cards for the next round[/b][/u]\n[o][b]' + ini + '[/b]\n' + card(1) + ', ' + card(2) + '[/o]\n[i]' + name.trim() + ' will [/i]';
+}
+[['hudturn', turnPost], ['hudnext', nextPost]].forEach(([id, build]) => document.getElementById(id).addEventListener('click', e => {
+  const btn = e.currentTarget, code = build();
+  (navigator.clipboard ? navigator.clipboard.writeText(code) : Promise.reject()).catch(() => { const t = document.createElement('textarea'); t.value = code; document.body.appendChild(t); t.select(); try { document.execCommand('copy') } catch (x) {} t.remove() });
+  const o = btn.innerHTML; btn.innerHTML = '\u2713 <span>Copied</span>'; setTimeout(() => btn.innerHTML = o, 1100);
+}));
+
+</script>
+<script>
+// Hold to repeat for every spin box button (.sp). The repeat clicks whatever button is under the pointer, so it keeps working when the widget re-renders.
+(function () {
+  let t, iv, held = false, x = 0, y = 0;
+  const stop = () => { clearTimeout(t); clearInterval(iv) };
+  document.addEventListener('pointerdown', e => {
+    const b = e.target.closest('.sp .spc button'); if (!b || b.disabled) return;
+    held = false; x = e.clientX; y = e.clientY; stop();
+    t = setTimeout(() => { held = true; iv = setInterval(() => { const el = document.elementFromPoint(x, y), bb = el && el.closest('.sp .spc button'); if (bb && !bb.disabled) bb.click(); else stop() }, 90) }, 420);
+  });
+  ['pointerup', 'pointercancel'].forEach(ev => document.addEventListener(ev, stop));
+  document.addEventListener('click', e => { if (held && e.isTrusted && e.target.closest('.sp .spc button')) { held = false; e.stopImmediatePropagation(); e.preventDefault() } }, true);   // the click that ends a hold is not another step
+})();
+</script>
+<style>
+/* context menu: one shared menu, filled from a registry of element types (see HM_CTX in the script below) */
+#ctxmenu{position:fixed;z-index:9999;min-width:210px;max-width:280px;background:#17120b;border:1px solid var(--line);border-radius:10px;padding:5px;box-shadow:0 14px 36px rgba(0,0,0,.65);font-size:13px}
+#ctxmenu[hidden]{display:none}
+#ctxmenu .cm-h{padding:6px 10px 3px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+#ctxmenu .cm-sep{height:1px;background:var(--line);margin:4px 2px}
+#ctxmenu button{display:flex;align-items:center;gap:8px;width:100%;border:0;background:transparent;color:var(--text);border-radius:7px;padding:7px 10px;font:inherit;text-align:left;cursor:pointer}
+#ctxmenu button:hover,#ctxmenu button:focus-visible{background:#3a2f1e;color:var(--accent);outline:none}
+#ctxmenu button:disabled{opacity:.4;cursor:not-allowed;background:transparent;color:var(--text)}
+#ctxmenu button.cm-danger{color:#e08a7a}#ctxmenu button.cm-danger:hover{background:#3a1f1a;color:#f0a090}
+#ctxmenu .cm-k{margin-left:auto;color:var(--muted);font-size:11px}
+</style>
+<script>
+// Universal context menu. Desktop: right-click (or the Menu key / Shift+F10). Touch: long press. The browser menu is suppressed everywhere except in text fields; Shift+right-click always gets it.
+// Every action here must also exist in normal UI; the menu is a shortcut. Elements are matched by selector (no markup changes needed):
+//   HM_CTX.register({ sel: '.css-selector', title: el => 'optional header', actions: el => [ {label, run, disabled, danger} | {header: 'Text'} | {sep: true} ] })
+// The first registered entry whose selector matches the target (closest) wins, so register the most specific first.
+(function () {
+  const REG = [];
+  const menu = document.createElement('div');
+  menu.id = 'ctxmenu'; menu.setAttribute('role', 'menu'); menu.hidden = true;
+  document.body.appendChild(menu);
+  let lastFocus = null, openedAt = 0;
+
+  const items = () => [...menu.querySelectorAll('button:not(:disabled)')];
+  function close(refocus) { if (menu.hidden) return; menu.hidden = true; menu.innerHTML = ''; if (refocus && lastFocus && lastFocus.focus) try { lastFocus.focus() } catch (e) {} }
+  function build(list) {
+    menu.innerHTML = '';
+    list.forEach(a => {
+      if (a.sep) { const d = document.createElement('div'); d.className = 'cm-sep'; d.setAttribute('role', 'separator'); menu.appendChild(d); return }
+      if (a.header) { const d = document.createElement('div'); d.className = 'cm-h'; d.textContent = a.header; menu.appendChild(d); return }
+      const b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'menuitem'); b.textContent = a.label;
+      if (a.disabled) b.disabled = true;
+      if (a.danger) b.className = 'cm-danger';
+      b.addEventListener('click', e => { e.stopPropagation(); close(false); if (!a.disabled) a.run() });
+      menu.appendChild(b);
+    });
+  }
+  function openAt(x, y, list) {
+    build(list); menu.hidden = false; openedAt = Date.now();
+    const r = menu.getBoundingClientRect();
+    menu.style.left = Math.max(6, Math.min(x, innerWidth - r.width - 6)) + 'px';
+    menu.style.top = Math.max(6, Math.min(y, innerHeight - r.height - 6)) + 'px';
+    const f = items()[0]; if (f) f.focus({ preventScroll: true });
+  }
+  function match(target) {
+    for (const r of REG) { const el = target.closest && target.closest(r.sel); if (el) return { r, el } }
+    return null;
+  }
+  function openFor(target, x, y) {
+    const m = match(target); if (!m) return false;
+    const list = m.r.actions(m.el); if (!list || !list.length) return false;
+    if (m.r.title) list.unshift({ header: m.r.title(m.el) });
+    lastFocus = document.activeElement;
+    openAt(x, y, list); return true;
+  }
+  window.HM_CTX = { register: r => REG.push(r), open: openFor, close };
+
+  document.addEventListener('contextmenu', e => {
+    if (e.shiftKey) return;                                                         // Shift+right-click: browser menu
+    if (e.target.closest && e.target.closest('input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=range]),textarea,[contenteditable=true]')) return;   // text fields keep the browser menu (cut, copy, paste)
+    let x = e.clientX, y = e.clientY;
+    if (!x && !y) { const r = e.target.getBoundingClientRect(); x = r.left + r.width / 2; y = r.top + r.height / 2 }   // opened from the keyboard
+    e.preventDefault();                                                              // never the browser menu, also where there is no HavenMap menu
+    if (!openFor(e.target, x, y)) close(false);
+  });
+  document.addEventListener('pointerdown', e => { if (!menu.hidden && !menu.contains(e.target) && Date.now() - openedAt > 250) close(false) }, true);
+  ['scroll'].forEach(ev => window.addEventListener(ev, () => close(false), true));
+  document.addEventListener('keydown', e => {
+    if (menu.hidden) return;
+    const it = items(), i = it.indexOf(document.activeElement);
+    if (e.key === 'Escape') { e.preventDefault(); e.stopImmediatePropagation(); close(true) }
+    else if (e.key === 'ArrowDown') { e.preventDefault(); (it[(i + 1) % it.length] || it[0]).focus() }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); (it[(i - 1 + it.length) % it.length] || it[0]).focus() }
+    else if (e.key === 'Home') { e.preventDefault(); it[0] && it[0].focus() }
+    else if (e.key === 'End') { e.preventDefault(); it[it.length - 1] && it[it.length - 1].focus() }
+    else if (e.key === 'Tab') close(false);
+  }, true);
+
+  // long press for touch and pen (iOS has no contextmenu event; Android fires one itself, opening twice is harmless)
+  let lp = null, swallow = 0;
+  document.addEventListener('pointerdown', e => {
+    if (e.pointerType === 'mouse' || !menu.hidden && menu.contains(e.target)) return;
+    if (e.target.closest('input,textarea,select,a,.sp .spc button')) return;       // spin buttons use hold to repeat
+    const x = e.clientX, y = e.clientY, t = e.target;
+    clearTimeout(lp);
+    lp = setTimeout(() => { if (openFor(t, x, y)) swallow = Date.now() }, 550);
+    const cancel = ev => { if (ev && ev.type === 'pointermove' && Math.hypot(ev.clientX - x, ev.clientY - y) < 10) return; clearTimeout(lp); ['pointermove', 'pointerup', 'pointercancel'].forEach(n => document.removeEventListener(n, cancel)) };
+    ['pointermove', 'pointerup', 'pointercancel'].forEach(n => document.addEventListener(n, cancel));
+  });
+  document.addEventListener('click', e => { if (swallow && Date.now() - swallow < 900) { swallow = 0; e.stopImmediatePropagation(); e.preventDefault() } }, true);
+
+  // ---- cards: hand, active area, play slots and the top card of discard and lost ----
+  const ZONES = [['hand', 'Hand'], ['active', 'Active area'], ['slot1', 'Play slot 1'], ['slot2', 'Play slot 2'], ['discard', 'Discard pile'], ['lost', 'Lost pile']];
+  function srcOf(el) {
+    const f = el.closest('.flipcard');
+    if (f) { const slot = f.closest('.slot6'); return { kind: 'slot', slot, zone: 'slot' + slot.dataset.slot, name: f.dataset.name, img: f.dataset.img, ini: f.dataset.ini, up: f.classList.contains('is-front'), el: f } }
+    const c = el.closest('.ac'); if (!c) return null;
+    const img = c.querySelector('img'), base = { el: c, name: img.alt, img: img.src, ini: c.dataset.ini || '', up: true };
+    if (c.closest('.fan6')) return { ...base, kind: 'list', container: hand, zone: 'hand' };
+    if (c.closest('.activelist')) return { ...base, kind: 'list', container: active, zone: 'active' };
+    return null;
+  }
+  function moveCard(src, dest) {
+    if (src.zone === dest) return;
+    const data = { name: src.name, img: src.img, ini: src.ini };
+    if (dest === 'hand' || dest === 'active') {
+      const cont = dest === 'hand' ? hand : active;
+      cont.appendChild(toCardEl(data)); sourceRemove(src);
+      if (dest === 'hand') reindexHand(); else activeCount.textContent = active.children.length;
+    } else if (dest === 'slot1' || dest === 'slot2') {
+      const slot = document.querySelector('.slot6[data-slot="' + dest.slice(4) + '"]');
+      const prev = takeFromSlot(slot); placeInSlot(slot, data);
+      if (src.kind === 'list') { src.el.remove(); if (src.container === hand) reindexHand(); else activeCount.textContent = active.children.length; if (prev) { hand.appendChild(toCardEl(prev)); reindexHand() } }
+      else if (src.kind === 'slot') { if (prev) placeInSlot(src.slot, prev); else takeFromSlot(src.slot) }
+      else if (src.kind === 'pile') { removeFromPile(src.pile); if (prev) { hand.appendChild(toCardEl(prev)); reindexHand() } }
+    } else {   // discard or lost
+      addToPile(dest, { name: src.name, img: src.img, ini: src.ini || '' }); sourceRemove(src);
+    }
+  }
+  const enlarge = el => { clearZoomed(); measureZoom(el); el.classList.add('zoomed') };
+  HM_CTX.register({
+    sel: '.fan6 .ac, .activelist .ac, .flipcard',
+    title: el => (srcOf(el) || {}).name || 'Card',
+    actions: el => {
+      const s = srcOf(el); if (!s) return [];
+      const handle = s.el.querySelector(':scope > .tkh');
+      const list = [{ label: 'Enlarge', run: () => enlarge(s.el), disabled: !s.up }, { label: 'Add marker or sticker', run: () => handle && handle.click(), disabled: !handle }, { sep: true }, { header: 'Move to' }];
+      ZONES.filter(z => z[0] !== s.zone).forEach(z => list.push({ label: z[1], run: () => moveCard(s, z[0]) }));
+      if (s.zone === 'hand') list.push({ sep: true }, { label: 'Move to start', run: () => { hand.insertBefore(s.el, hand.firstChild); reindexHand() } }, { label: 'Move to end', run: () => { hand.appendChild(s.el); reindexHand() } });
+      return list;
+    }
+  });
+
+  // ---- items on the shelf ----
+  HM_CTX.register({
+    sel: '.shelf6 .it',
+    title: el => el.title.split(' — ')[0] || 'Item',
+    actions: el => { const h = el.querySelector(':scope > .tkh'); return [{ label: 'Add marker', run: () => h && h.click(), disabled: !h }] }
+  });
+  // ---- attack modifier deck tiles (replaces the old draw mode right-click) ----
+  HM_CTX.register({
+    sel: '#amdreal .amdtile',
+    title: el => (el.title || (el.querySelector('img') || {}).alt || 'Attack modifier card'),
+    actions: el => { const pc = el.querySelector('.amcard > .pc, .amcard > img'); return [{ label: 'Enlarge', run: () => window.HM_AMD && window.HM_AMD.showPcBig(pc), disabled: !pc }] }
+  });
+  // ---- piles: right-click the pile (card or heading) ----
+  HM_CTX.register({
+    sel: '.pile6',
+    title: el => el.dataset.pile === 'lost' ? 'Lost pile' : 'Discard pile',
+    actions: el => {
+      const key = el.dataset.pile, arr = PILES[key], n = arr.length;
+      return [
+        { label: 'Recover top card to hand', disabled: !n, run: () => { const c = arr[n - 1]; removeFromPile(key); hand.appendChild(toCardEl(c)); reindexHand() } },
+        { label: 'Move whole pile to hand (' + n + ')', disabled: !n, danger: true, run: () => { if (!confirm('Move all ' + n + ' cards from the ' + (key === 'lost' ? 'lost' : 'discard') + ' pile to the hand?')) return; while (arr.length) { const c = arr[arr.length - 1]; removeFromPile(key); hand.appendChild(toCardEl(c)) } reindexHand() } }
+      ];
+    }
+  });
+
+  // ---- counters (the spin box): +5, -5, reset. Done by clicking the box's own buttons, so every existing rule, save and history entry still applies ----
+  const sigOf = b => b.id ? '#' + b.id : ['data-tk', 'data-rq', 'data-hud'].map(a => b.hasAttribute(a) ? 'button[' + a + '="' + b.getAttribute(a) + '"]' : '').join('');
+  const upSig = box => { const b = box.querySelector('.spc button[data-d="1"], .spc button[id$="up"]'); return b ? sigOf(b) + (b.id ? '' : '[data-d="1"]') : null };
+  const dnSig = box => { const b = box.querySelector('.spc button[data-d="-1"], .spc button[id$="dn"]'); return b ? sigOf(b) + (b.id ? '' : '[data-d="-1"]') : null };
+  const valOf = sig => { const b = document.querySelector(sig), box = b && b.closest('.sp'), v = box && box.querySelector('b, .edv, output'); return v ? parseInt(v.textContent, 10) || 0 : 0 };
+  function press(sig, n, until) {
+    for (let i = 0; i < n; i++) {
+      const b = document.querySelector(sig); if (!b || b.disabled) break;
+      if (until && valOf(sig) <= 0) break;
+      b.click();
+    }
+  }
+  HM_CTX.register({
+    sel: '.sp',
+    title: el => { const b = el.querySelector('.spc button'); return b ? (b.getAttribute('aria-label') || 'Counter').replace(/^(Increase|Decrease|Level up|Level down)\s*/i, '') || 'Counter' : 'Counter' },
+    actions: el => {
+      if (el.querySelector('#lvup')) return [];   // the level has no sensible reset: browser menu
+      const up = upSig(el), dn = dnSig(el); if (!up || !dn) return [];
+      const hud = !!el.querySelector('[data-hud]');
+      return [
+        { label: '+5', run: () => press(up, 5) },
+        { label: '−5', run: () => press(dn, 5) },
+        { sep: true },
+        { label: 'Reset to 0', danger: true, run: () => { if (hud && !confirm('Reset this value to 0?')) return; press(dn, 5000, true) } }
+      ];
+    }
+  });
+})();
+</script>
+<style>
+/* embed mode (used by the phone mockup 7): ?embed=<modal id> shows one modal full screen, ?embed=items shows only the item shelf */
+html.embed body{padding-top:0}html.embed:not(.embed-items),html.embed:not(.embed-items) body{overflow:hidden}html.embed .mocknav{display:none}
+html.embed .mmodal{padding:0;background:var(--bg)}html.embed .mmodalbox{width:100%;max-width:none;height:100%;max-height:100%;border:0;border-radius:0}
+html.embed-items .stage6>*:not(.shelf6){display:none!important}html.embed-items .stage6{display:block;padding:8px;min-height:0}html.embed-items .shelf6{grid-template-columns:repeat(2,minmax(0,1fr))}
+</style>
+<script>
+(function(){
+  const q=new URLSearchParams(location.search).get('embed');if(!q)return;
+  const root=document.documentElement;root.classList.add('embed');
+  const send=()=>parent.postMessage('hm-close','*');
+  document.addEventListener('click',e=>{const m=e.target.closest('.mmodal');if(e.target.closest('[data-modalclose]')||(m&&e.target===m))setTimeout(send,0)},true);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')send()});
+  window.addEventListener('DOMContentLoaded',()=>{
+    if(q==='items'){root.classList.add('embed-items');return}
+    // modals are wired by the module scripts; open after they have run
+    const open=()=>{const b=q==='char'?document.getElementById('editchar'):document.querySelector('[data-modal="'+q+'"]');if(b)b.click();else{const m=document.getElementById('modal-'+q);if(m)m.hidden=false}};
+    setTimeout(open,300);
+  });
+})();
+</script>
+</body></html>
