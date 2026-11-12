@@ -186,6 +186,11 @@
 .pm .coderow{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#2d2519;border:1px solid var(--line);border-radius:8px;padding:8px 10px}
 .pm .coderow b{display:block;font-size:12px;color:var(--muted);margin-bottom:3px}
 .pm .coderow code{font-size:11px;word-break:break-all;color:var(--text)}
+.pm .enhtable{width:100%;border-collapse:collapse;margin-bottom:12px}
+.pm .enhtable th, .pm .enhtable td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);font-size:13px}
+.pm .enhprice{width:70px;background:#2d2519;color:var(--text);border:1px solid var(--line);border-radius:6px;font:inherit;font-size:12px;padding:2px 6px}
+.pm .enhempty{color:var(--muted)}
+.pm .enhtable th{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
 .pm .hud .hudroll+.hudroll{margin-left:6px}
 .pm .hud .hudroll+.hudroll+.hudroll+.counters{margin-left:12px}
 .pm .addrow{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
