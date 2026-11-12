@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Mercenary tab mockup: 7 Phone v2</title><link rel="stylesheet" href="mock.css"><style>
+/* Phone v2: template of "5 Phone first" (Cards / Items / Info tabs, bottom menu) with the playmat v2 functions:
+   two face-down play cards (tap to flip, slot 1 sets initiative), active strip, hand with sort, discard and lost piles,
+   class card backs, class tokens in the header. No drag: every move is tap card -> pick a zone. */
+.stage{display:flex;justify-content:center;padding:24px 10px 40px}
+.phone{width:390px;max-width:100%;height:800px;border:10px solid #0b0907;border-radius:38px;background:var(--bg);display:flex;flex-direction:column;overflow:hidden;position:relative;box-shadow:0 20px 50px rgba(0,0,0,.6)}
+@media (max-width:520px){body{padding-top:0}.mocknav{display:none}.stage{padding:0}.phone{width:100vw;height:100dvh;border:0;border-radius:0;box-shadow:none}}
+.top{display:flex;gap:10px;align-items:center;padding:8px 12px;background:var(--panel);border-bottom:1px solid var(--line)}
+.top .portrait{width:44px;height:44px;border-radius:50%;border:2px solid var(--accent);flex:none}
+.top b{font-size:16px}.top .sub{font-size:11px;color:var(--muted)}.top .who{min-width:0}
+.top .lvl{margin-left:auto;width:34px;height:34px;border-radius:50%;background:var(--accent);color:#1b150c;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none}
+.top .gold{font-size:13px;text-align:right;flex:none}
+.xpbar{height:4px;background:#120f0b;margin:0}.xpbar b{display:block;height:100%;width:83%;background:var(--accent)}
+.toks{display:flex;gap:6px;flex-wrap:wrap;padding:4px 12px;background:var(--panel);border-bottom:1px solid var(--line);min-height:0}.toks:empty{display:none}
+.toks .ctr{padding:1px 5px}
+.sp{display:inline-flex;align-items:stretch;border:1px solid var(--line);border-radius:10px;background:#2d2519;overflow:hidden;vertical-align:middle}
+.sp>b{min-width:34px;padding:2px 8px;font-size:17px;font-weight:600;color:var(--text);display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
+.sp .spc{display:flex;flex-direction:column;border-left:1px solid var(--line)}
+.sp .spc button{flex:1;width:30px;min-height:17px;height:auto;padding:0;border:0;border-radius:0;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.sp .spc button+button{border-top:1px solid var(--line)}.sp .spc button:active{background:var(--accent);color:#1b150c}.sp .spc button:disabled{opacity:.3}
+.toks img{width:40px;height:40px;object-fit:contain;display:block}
+.body{flex:1;min-width:0;overflow:auto;overflow-x:hidden;padding:10px 12px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch}
+.body h4{margin:0;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+.row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+.slot{min-width:0;position:relative;border:2px dashed rgba(236,223,200,.3);border-radius:10px;padding:6px;display:flex;flex-direction:column;align-items:center;gap:4px;min-height:60px}
+.slot .lab{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:flex;gap:6px;align-items:center}
+.slot .ini{background:var(--accent);color:#1b150c;border-radius:9px;padding:0 6px;font-weight:800;font-size:11px}
+.slot .empty{justify-content:center;color:var(--muted);font-size:12px;aspect-ratio:5/7}
+.slot .ac{width:100%}
+.strip{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;scroll-snap-type:x proximity}.strip .ac{width:112px;scroll-snap-align:start}.strip.empty{color:var(--muted);font-size:12px;border:1px dashed var(--line);border-radius:8px;padding:12px;justify-content:center}
+.ac{cursor:pointer}.ac .inib{position:absolute;left:4px;top:4px;background:rgba(18,15,11,.85);color:var(--accent);border-radius:9px;padding:0 6px;font-size:11px;font-weight:800}
+.ac .more{position:absolute;right:3px;bottom:3px;width:26px;height:26px;border-radius:13px;border:1px solid var(--line);background:rgba(18,15,11,.85);color:var(--text);font-size:15px;line-height:1;padding:0}
+.flip{perspective:700px}.flip .inner{position:relative;width:100%;height:100%;transition:transform .4s;transform-style:preserve-3d}.flip.up .inner{transform:rotateY(180deg)}
+.flip .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:8px;overflow:hidden}.flip .front{transform:rotateY(180deg)}.flip .face img{width:100%;height:100%;object-fit:cover;display:block}
+.backlabel{position:absolute;left:0;right:0;bottom:14%;text-align:center;font-weight:700;color:#fff;text-shadow:0 1px 3px #000;letter-spacing:.04em;font-size:13px}
+.hbtns{display:flex;gap:6px}.sm{background:#2d2519;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:3px 9px;font:inherit;font-size:12px;cursor:pointer}.sm[aria-pressed=true]{border-color:var(--accent);color:var(--accent)}
+.piles{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}.pile{border:2px dashed rgba(236,223,200,.3);border-radius:10px;height:84px;display:flex;align-items:center;gap:10px;padding:6px 10px;background:none;color:var(--text);font:inherit;cursor:pointer;text-align:left}
+.pile b{font-size:22px}.pile span{font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;display:block}.pile .top1{width:44px;aspect-ratio:5/7;border-radius:5px;overflow:hidden;margin-left:auto;background:#120f0b}.pile .top1 img{width:100%;height:100%;object-fit:cover;display:block}
+.nav{display:grid;grid-template-columns:repeat(3,1fr) 56px;border-top:1px solid var(--line);background:var(--panel);padding-bottom:env(safe-area-inset-bottom)}
+.nav button{background:none;border:0;color:var(--muted);padding:12px 0;font:inherit;font-size:12px;cursor:pointer}.nav button[aria-current]{color:var(--accent);border-top:2px solid var(--accent)}.nav .menu{border-left:1px solid var(--line);font-size:18px}
+.sheetwrap{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;z-index:20}.sheetwrap[hidden]{display:none}
+.sheet{width:100%;max-height:85%;overflow:auto;background:var(--panel);border-top:2px solid var(--accent);border-radius:16px 16px 0 0;padding:12px;box-shadow:0 -10px 30px rgba(0,0,0,.6)}
+.sheet h3{margin:0 0 8px;font-size:15px;display:flex;justify-content:space-between;align-items:center}.sheet h3 button{background:none;border:0;color:var(--muted);font-size:22px;cursor:pointer}
+.sheet .prev{display:flex;gap:12px;margin-bottom:10px}.sheet .prev .ac{width:120px;cursor:default}.sheet .prev .meta{font-size:12px;color:var(--muted)}
+.sheet .opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}.sheet .opts button{background:#2d2519;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:12px 8px;font:inherit;font-size:14px;cursor:pointer}.sheet .opts button:active{border-color:var(--accent)}
+.sheet .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.itl{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.it{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px;font-size:13px}.it small{display:block;color:var(--muted);font-size:11px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:8px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{background:#1c1711;border:1px solid var(--line);border-radius:12px;padding:2px 9px;font-size:12px}.chip.info{border-color:var(--info);color:var(--info)}
+select{background:#1c1711;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:6px;font:inherit}
+.note{font-size:12px;color:var(--muted)}
+.embedwrap{position:absolute;inset:0;z-index:30;background:var(--bg);display:flex;flex-direction:column}.embedwrap[hidden]{display:none}.embedwrap iframe{flex:1;border:0;width:100%;background:var(--bg)}
+.embedx{position:absolute;right:6px;top:6px;z-index:2;width:34px;height:34px;border-radius:17px;border:1px solid var(--line);background:rgba(18,15,11,.9);color:var(--text);font-size:22px;line-height:1;cursor:pointer}
+.itemsframe{flex:1;border:0;width:100%;min-height:0;background:var(--bg)}.body.flush{padding:0;overflow:hidden}
+</style></head>
+<body class="m-phone"><nav class="mocknav"><b>Mercenary tab mockups</b><a href="index.html">Overview</a><a href="merc-1-playmat.html">1 Playmat</a><a href="merc-2-sheet.html">2 Sheet</a><a href="merc-3-tray.html">3 Hand tray</a><a href="merc-4-mat.html">4 Mat board</a><a href="merc-5-phone.html">5 Phone first</a><a href="merc-6-playmat-v2.html">6 Playmat v2</a><a href="merc-7-phone-v2.html" aria-current="page">7 Phone v2</a></nav>
+<div class="stage"><div class="phone" id="phone">
+  <header class="top"><div class="portrait" id="portrait"></div><div class="who"><b id="chname">Simon</b><div class="sub" id="clsline"></div></div><div class="gold"><b id="chgold">42</b> gold<br><span class="sub"><span id="chinh">0</span> inherited perks &middot; <span id="chxp"></span></span></div><div class="lvl" id="chlvl" title="Level">5</div></header>
+  <div class="xpbar"><b id="xpfill"></b></div>
+  <div class="toks" id="toks"></div>
+  <main class="body" id="view"></main>
+  <nav class="nav"><button type="button" data-tab="cards" aria-current="page">Cards</button><button type="button" data-tab="items">Items</button><button type="button" data-tab="info">Info</button><button type="button" class="menu" id="menubtn" aria-label="Open menu">&#9776;</button></nav>
+  <div class="embedwrap" id="embedwrap" hidden><button type="button" class="embedx" id="embedx" aria-label="Close">&times;</button><iframe id="embedframe" title="Embedded view"></iframe></div>
+  <div class="sheetwrap" id="sheetwrap" hidden><div class="sheet" id="sheet"></div></div>
+</div></div>
+<script>
+// ---- data (same cards as playmat v2) ----
+const C={}; // id -> {id,name,lv,ini,img}
+[['flamethrower','Flamethrower',1,16],['net-shooter','Net Shooter',1,19],['stun-shot','Stun Shot',1,20],['gas-canister','Gas Canister',1,22],['crank-bow','Crank Bow',2,23],['repulsor-gun','Repulsor Gun',2,35],['reinvigorating-elixir','Reinvigorating Elixir',2,37],['potent-potables','Potent Potables',1,46],['enhancement-field','Enhancement Field',1,61],['hook-gun','Hook Gun',1,72],['disorienting-flash','Disorienting Flash',1,73],['harmless-contraption','Harmless Contraption',1,74],['toxic-bolt','Toxic Bolt',1,76],['ink-bomb','Ink Bomb',1,80],['jet-propulsion','Jet Propulsion',3,34],['restorative-mist','Restorative Mist',1,17],['teleportation-pad','Teleportation Pad',3,62],['dangerous-contraption','Dangerous Contraption',4,10],['proximity-mine','Proximity Mine',4,null],['disintegration-beam','Disintegration Beam',5,null],['volatile-concoction','Volatile Concoction',4,null],['stamina-booster','Stamina Booster',1,null]]
+ .forEach(([id,name,lv,ini])=>C[id]={id,name,lv,ini,img:'img/cards/'+id+'.jpg'});
+const Z={ // zones; play is [slot1, slot2] with {id,up}
+  hand:['flamethrower','net-shooter','stun-shot','gas-canister','crank-bow','repulsor-gun','reinvigorating-elixir','potent-potables','enhancement-field','hook-gun','disorienting-flash','harmless-contraption','toxic-bolt','ink-bomb'],
+  active:['teleportation-pad','dangerous-contraption'],discard:['proximity-mine','disintegration-beam','volatile-concoction'],lost:['stamina-booster'],
+  play:[{id:'jet-propulsion',up:false},{id:'restorative-mist',up:true}]};
+const BACK_FILES={berserker:'gh2-berserker-back.jpeg',bladeswarm:'gh2-bladeswarm-back.jpeg',doomstalker:'gh2-doomstalker-back.jpeg',elementalist:'gh2-elementalist-back.jpeg',plagueherald:'gh2-plagueherald-back.jpeg',quartermaster:'gh2-quartermaster-back.jpeg',sawbones:'gh2-sawbones-back.jpeg',soothsinger:'gh2-soothsinger-back.jpeg',soultether:'gh2-soultether-back.jpeg',sunkeeper:'gh2-sunkeeper-back.jpeg',wildfury:'gh2-wildfury-back.jpeg',anaphi:'mp-anaphi-back.jpeg',cassandra:'mp-cassandra-back.jpeg',hail:'mp-hail-back.jpeg',satha:'mp-satha-back.jpeg',bruiser:'gh-bruiser-back.png',cragheart:'gh-cragheart-back.png',mindthief:'gh-mindthief-back.png',nightshroud:'gh-nightshroud-back.png',spellweaver:'gh-spellweaver-back.png',tinkerer:'gh-tinkerer-back.jpg'};
+const TOKEN_DEFS={hail:[{k:'resolve',l:'Resolve',img:'hail_resolve'}],quartermaster:[{k:'supply',l:'Supply',img:'quartermaster_supply'}],soothsinger:[{k:'high',l:'High note',img:'soothsinger_high_note'},{k:'low',l:'Low note',img:'soothsinger_low_note'}],deepwraith:[{k:'trophy',l:'Trophy',img:'deepwraith_trophy'}],shattersong:[{k:'resonance',l:'Resonance',img:'shattersong_resonance'}],blinkblade:[{k:'time',l:'Time',img:'blinkblade_time'},{k:'speed',l:'Speed',states:['Fast','Slow'],imgs:['blinkblade_speed_fast','blinkblade_speed_slow']}],metalmosaic:[{k:'pressure',l:'Pressure',states:['0','1','2','3'],imgs:['metal_mosaic_pressure_0','metal_mosaic_pressure_1','metal_mosaic_pressure_2','metal_mosaic_pressure_3']}]};
+const CLASSES=['Anaphi','Berserker','Bruiser','Bladeswarm','Cassandra','Cragheart','Doomstalker','Elementalist','Hail','Mindthief','Nightshroud','Plagueherald','Quartermaster','Satha','Sawbones','Silent Knife','Sunkeeper','Soothsinger','Soultether','Spellweaver','Tinkerer','Wildfury'];
+const BK='../../images/common/card_backs/',TK='../../images/common/mercenary_tokens/';
+const CHAR_CLASSES=[["Anaphi",["nimble","resourceful","outcast"]],["Astral",["arcane","educated","strong"]],["Banner Spear",["armored","persuasive","resourceful"]],["Berserker",["chaotic","intimidating","nimble"]],["Bladeswarm",["armored","outcast","strong"]],["Blinkblade",["educated","nimble","resourceful"]],["Boneshaper",["arcane","educated","intimidating"]],["Bruiser",["intimidating","strong","armored"]],["Cassandra",["arcane","outcast","resourceful"]],["Coral",["armored","chaotic","strong"]],["Cragheart",["arcane","outcast","strong"]],["Deathwalker",["arcane","outcast","persuasive"]],["Deepwraith",["armored","intimidating","nimble"]],["Demolitionist",["chaotic","nimble","strong"]],["Doomstalker",["armored","chaotic","outcast"]],["Drifter",["outcast","resourceful","strong"]],["Elementalist",["arcane","chaotic","resourceful"]],["Frozen Fist",["intimidating","persuasive","strong"]],["Geminate",["arcane","chaotic","nimble"]],["H.I.V.E.",["armored","educated","resourceful"]],["Hail",["chaotic","educated","resourceful"]],["Hatchet",["intimidating","resourceful","strong"]],["Metal Mosaic",["armored","resourceful","strong"]],["Mindthief",["nimble","outcast","persuasive"]],["Nightshroud",["chaotic","intimidating","nimble"]],["Pain Conduit",["chaotic","intimidating","outcast"]],["Plagueherald",["arcane","intimidating","outcast"]],["Pyroclast",["arcane","chaotic","intimidating"]],["Quartermaster",["arcane","educated","intimidating"]],["Red Guard",["armored","outcast","persuasive"]],["Satha",["armored","intimidating","persuasive"]],["Sawbones",["educated","persuasive","resourceful"]],["Shattersong",["educated","outcast","persuasive"]],["Silent Knife",["chaotic","nimble","resourceful"]],["Snowdancer",["chaotic","nimble","persuasive"]],["Soothsinger",["educated","nimble","persuasive"]],["Soultether",["armored","resourceful","strong"]],["Spellweaver",["arcane","educated","resourceful"]],["Sunkeeper",["armored","educated","persuasive"]],["Tinkerer",["educated","nimble","resourceful"]],["Trapper",["nimble","outcast","resourceful"]],["Voidwarden",["arcane","educated","outcast"]],["Wildfury",["chaotic","intimidating","strong"]]];
+const SLUG_ALIAS={astral:'infuser',coral:'crashing-tide','h.i.v.e.':'hive'};
+const classSlug=c=>{const k=String(c||'').toLowerCase();return SLUG_ALIAS[k]||k.replace(/ /g,'-')};
+const XP_STEPS=[0,45,95,150,210,275,350,440,540],levelOfXp=xp=>XP_STEPS.reduce((l,t,i)=>xp>=t?i+1:l,1);
+const CH_KEY='hm-character';   // same record as playmat v2, so class, XP, gold, traits and tokens are shared
+let CH={name:'Simon',player:'Guido',cls:'Tinkerer',extra:['Friend of the Hero'],xp:264,gold:42,inh:0,tok:{}};
+function loadCh(){try{const o=JSON.parse(localStorage.getItem(CH_KEY)||'null');if(o&&typeof o==='object')CH={...CH,...o,tok:o.tok||{},extra:Array.isArray(o.extra)?o.extra:CH.extra}}catch(e){}}
+function saveCh(){try{const o=JSON.parse(localStorage.getItem(CH_KEY)||'null')||{};localStorage.setItem(CH_KEY,JSON.stringify({...o,...CH}))}catch(e){}}
+loadCh();
+const S={tab:'cards'};const cap=w=>w.replace(/^./,c=>c.toUpperCase());
+const $=s=>document.querySelector(s),key=()=>CH.cls.toLowerCase().replace(/ /g,'');
+const el=(h)=>{const d=document.createElement('div');d.innerHTML=h;return d.firstElementChild};
+
+// ---- card pieces ----
+function backHTML(){const k=key();return BACK_FILES[k]?'<img src="'+BK+BACK_FILES[k]+'" alt="'+CH.cls+' card back" draggable="false">':'<img src="'+BK+'ability-back-placeholder.png" alt="card back (placeholder)" draggable="false"><span class="backlabel">'+CH.cls+'</span>'}
+const cardHTML=(id,zone,extra)=>{const c=C[id];return '<div class="ac" data-id="'+id+'" data-zone="'+zone+'" title="'+c.name+' (level '+c.lv+')"><img src="'+c.img+'" alt="'+c.name+'" loading="lazy" draggable="false">'+(c.ini?'<span class="inib">'+c.ini+'</span>':'')+(extra||'')+'</div>'};
+function sortHand(mode){Z.hand.sort(mode==='ini'?(x,y)=>(C[x].ini??999)-(C[y].ini??999):(x,y)=>C[x].lv-C[y].lv||(C[x].ini??999)-(C[y].ini??999))}
+sortHand('ini');
+
+// ---- header tokens ----
+function renderTokens(){
+  const defs=TOKEN_DEFS[key()]||[];
+  $('#toks').innerHTML=defs.map(d=>{
+    if(d.states){const i=CH.tok[d.k]||0;return '<span class="ctr" title="'+d.l+': '+d.states[i]+'"><button type="button" data-tk="'+d.k+'" style="width:auto;height:auto;padding:2px;background:none;border:0" aria-label="'+d.l+': '+d.states[i]+'"><img src="'+TK+d.imgs[i]+'.png" alt="'+d.l+' '+d.states[i]+'"></button></span>'}
+    return '<span class="ctr" title="'+d.l+'"><img src="'+TK+d.img+'.png" alt="'+d.l+'"><span class="sp"><b>'+(CH.tok[d.k]||0)+'</b><span class="spc"><button type="button" data-tk="'+d.k+'" data-d="1" aria-label="Increase '+d.l+'"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button><button type="button" data-tk="'+d.k+'" data-d="-1" aria-label="Decrease '+d.l+'"'+((CH.tok[d.k]||0)?'':' disabled')+'><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></span></span></span>'}).join('');
+}
+$('#toks').addEventListener('click',e=>{const b=e.target.closest('button[data-tk]');if(!b)return;const d=(TOKEN_DEFS[key()]||[]).find(x=>x.k===b.dataset.tk);if(!d)return;
+  if(d.states)CH.tok[d.k]=((CH.tok[d.k]||0)+1)%d.states.length;else CH.tok[d.k]=Math.max(0,(CH.tok[d.k]||0)+Number(b.dataset.d));saveCh();renderTokens()});
+
+// ---- views ----
+function slotHTML(i){
+  const p=Z.play[i],lab='<div class="lab">Slot '+(i+1)+(i===0?' &middot; initiative <span class="ini">'+(p&&p.up?C[p.id].ini:'?')+'</span>':'')+'</div>';
+  if(!p)return '<div class="slot" data-slot="'+i+'">'+lab+'<div class="empty">empty</div></div>';
+  const c=C[p.id];
+  return '<div class="slot" data-slot="'+i+'">'+lab+'<div class="ac flip'+(p.up?' up':'')+'" data-id="'+p.id+'" data-zone="play" data-slot="'+i+'" title="Tap to flip: '+c.name+'"><div class="inner"><div class="face back">'+backHTML()+'</div><div class="face front"><img src="'+c.img+'" alt="'+c.name+'" draggable="false"></div></div><button type="button" class="more" data-more aria-label="Move '+c.name+'">&#8943;</button></div></div>'}
+const stripHTML=(ids,zone)=>ids.length?'<div class="strip">'+ids.map(id=>cardHTML(id,zone)).join('')+'</div>':'<div class="strip empty">empty</div>';
+const pileHTML=(z,label)=>{const a=Z[z],t=a.length?C[a[a.length-1]]:null;return '<button type="button" class="pile" data-pile="'+z+'"><div><span>'+label+'</span><b>'+a.length+'</b></div>'+(t?'<div class="top1"><img src="'+t.img+'" alt="'+t.name+'"></div>':'')+'</button>'};
+function render(){
+  document.querySelectorAll('.nav [data-tab]').forEach(b=>b.toggleAttribute('aria-current',b.dataset.tab===S.tab));
+  $('#clsline').textContent=CH.cls+' \u00b7 played by '+CH.player;$('#chname').textContent=CH.name;$('#chgold').textContent=CH.gold;$('#chinh').textContent=CH.inh;
+  const lv=levelOfXp(CH.xp),lo=XP_STEPS[lv-1],hi=XP_STEPS[lv];$('#chlvl').textContent=lv;$('#chxp').textContent=CH.xp+' XP';$('#xpfill').style.width=(hi?Math.round((CH.xp-lo)/(hi-lo)*100):100)+'%';
+  $('#portrait').style.backgroundImage='url(https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_mats/front/'+classSlug(CH.cls)+'.png)';
+  renderTokens();
+  const v=$('#view');
+  if(S.tab==='cards'){
+    v.className='body';v.innerHTML='<h4>Play area <span>tap to flip, button to move</span></h4><div class="row2">'+slotHTML(0)+slotHTML(1)+'</div>'
+     +'<h4>Active <span>'+Z.active.length+'</span></h4>'+stripHTML(Z.active,'active')
+     +'<h4>Hand <span class="hbtns"><span style="align-self:center">'+Z.hand.length+' of 12</span><button type="button" class="sm" data-sort="ini" title="Sort by initiative">Ini</button><button type="button" class="sm" data-sort="lvl" title="Sort by level">Lvl</button></span></h4>'+stripHTML(Z.hand,'hand')
+     +'<div class="piles">'+pileHTML('discard','Discard')+pileHTML('lost','Lost')+'</div>';
+  }else if(S.tab==='items'){
+    v.className='body flush';v.innerHTML='<iframe class="itemsframe" id="itemsframe" src="merc-6-playmat-v2.html?embed=items" title="Items"></iframe>';return;
+  }else{
+    const tr=(CHAR_CLASSES.find(c=>c[0]===CH.cls)||[0,[]])[1];
+    v.innerHTML='<div class="panel"><h4>Traits</h4><div class="chips">'+tr.map(t=>'<span class="chip">'+cap(t)+'</span>').join('')+CH.extra.map(t=>'<span class="chip info">'+t.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</span>').join('')+'</div></div>'
+     +'<div class="panel"><h4>Class (mockup test)</h4><select id="clssel">'+CHAR_CLASSES.map(c=>'<option'+(c[0]===CH.cls?' selected':'')+'>'+c[0]+'</option>').join('')+'</select><div class="note">Changes card back and header tokens. Saved in the shared character record.</div></div>'
+     +'<div class="panel"><h4>Open</h4><div class="opts" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'+MODALS.map(m=>'<button type="button" class="mbtn" data-modal="'+m[0]+'">'+m[1]+'</button>').join('')+'</div></div>';
+    const sel=$('#clssel');sel.onchange=()=>{CH.cls=sel.value;CH.tok={};saveCh();render()};
+  }
+}
+const MODALS=[['amd','Attack modifiers'],['perks','Perks &amp; masteries'],['journal','Journal'],['mat','Character mat'],['codes','BGG codes'],['enh','Enhancements'],['history','History'],['deck','Card pool &amp; level up'],['char','Edit character']];
+
+// ---- sheets and moves ----
+const sw=$('#sheetwrap'),sh=$('#sheet');
+function open(html){sh.innerHTML=html;sw.hidden=false}function close(){sw.hidden=true}
+sw.addEventListener('click',e=>{if(e.target===sw||e.target.closest('[data-close]'))close()});
+function where(id){for(const z of ['hand','active','discard','lost']){const i=Z[z].indexOf(id);if(i>=0)return{z,i}}const i=Z.play.findIndex(p=>p&&p.id===id);return i>=0?{z:'play',i}:null}
+function remove(id){const w=where(id);if(!w)return;if(w.z==='play')Z.play[w.i]=null;else Z[w.z].splice(w.i,1)}
+function moveTo(id,dest){ // dest: hand|active|discard|lost|slot0|slot1
+  remove(id);
+  if(dest.startsWith('slot')){const i=+dest[4];const old=Z.play[i];if(old)Z.hand.push(old.id);Z.play[i]={id,up:false}}else Z[dest].push(id);
+  close();render()}
+function actionSheet(id){
+  const c=C[id],w=where(id),isHand=w.z==='hand',all=[['slot0','Play slot 1'],['slot1','Play slot 2'],['active','Active'],['hand','Hand'],['discard','Discard'],['lost','Lost']];
+  const here=w.z==='play'?'slot'+w.i:w.z;
+  open('<h3>'+c.name+'<button type="button" data-close aria-label="Close">&times;</button></h3><div class="prev">'+cardHTML(id,'prev')+'<div class="meta">Level '+c.lv+'<br>Initiative '+(c.ini??'unknown')+'<br>Now in: '+(w.z==='play'?'play slot '+(w.i+1):w.z)+'</div></div><div class="opts">'+all.filter(a=>a[0]!==here).map(a=>'<button type="button" data-to="'+a[0]+'">'+a[1]+'</button>').join('')+(isHand?'<button type="button" data-ord="-1">&larr; Move left</button><button type="button" data-ord="1">Move right &rarr;</button><button type="button" data-ord="start">To start</button><button type="button" data-ord="end">To end</button>':'')+'</div>');
+  sh.querySelectorAll('[data-to]').forEach(b=>b.onclick=()=>moveTo(id,b.dataset.to));
+  sh.querySelectorAll('[data-ord]').forEach(b=>b.onclick=()=>{const a=Z.hand,i=a.indexOf(id),o=b.dataset.ord;let j=o==='start'?0:o==='end'?a.length-1:Math.max(0,Math.min(a.length-1,i+Number(o)));a.splice(i,1);a.splice(j,0,id);close();render()});
+}
+function pileSheet(z){
+  const a=Z[z];open('<h3>'+(z==='discard'?'Discard':'Lost')+' &middot; '+a.length+'<button type="button" data-close aria-label="Close">&times;</button></h3>'+(a.length?'<div class="grid">'+a.map(id=>cardHTML(id,z)).join('')+'</div>':'<div class="note">empty</div>'));
+  sh.querySelectorAll('.ac').forEach(c=>c.onclick=()=>actionSheet(c.dataset.id));
+}
+const ew=$('#embedwrap'),ef=$('#embedframe');
+function openEmbed(m){close();ef.src='merc-6-playmat-v2.html?embed='+m;ew.hidden=false}
+function closeEmbed(){ew.hidden=true;ef.src='about:blank';loadCh();render()}
+$('#embedx').onclick=closeEmbed;window.addEventListener('message',e=>{if(e.data==='hm-close')closeEmbed()});
+const modalStub=openEmbed;
+$('#menubtn').onclick=()=>open('<h3>Open<button type="button" data-close aria-label="Close">&times;</button></h3><div class="opts">'+MODALS.map(m=>'<button type="button" data-modal="'+m[0]+'">'+m[1]+'</button>').join('')+'</div>');
+
+// ---- events ----
+document.addEventListener('click',e=>{
+  const t=e.target;
+  const mod=t.closest('[data-modal]');if(mod){modalStub(mod.dataset.modal);return}
+  const tab=t.closest('[data-tab]');if(tab){S.tab=tab.dataset.tab;render();return}
+  const so=t.closest('[data-sort]');if(so){sortHand(so.dataset.sort);render();return}
+  const pl=t.closest('[data-pile]');if(pl){pileSheet(pl.dataset.pile);return}
+  if(t.closest('#sheet'))return;
+  const ac=t.closest('#view .ac');if(!ac)return;
+  if(ac.dataset.zone==='play'&&!t.closest('[data-more]')){const p=Z.play[+ac.dataset.slot];p.up=!p.up;render();return}
+  actionSheet(ac.dataset.id);
+});
+render();
+</script></body></html>
