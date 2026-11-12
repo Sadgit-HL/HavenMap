@@ -86,6 +86,13 @@ button.primary { background:var(--accent); color:#1b150c; border:1px solid var(-
 .board .slots { display:grid; grid-template-columns:1fr 1fr; gap:8px; height:100%; }
 .board .slot { border-style:solid; } .board .pile { flex:1; } .board .pile.zone ul.tiles { grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); }
 .board .b-hand ul.tiles { grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); }
+.handinfo { display:inline-flex; align-items:center; gap:8px; font-weight:400; }
+.handinfo .over-limit { color:#e08a7a; font-weight:700; }
+.sortgrp { display:inline-flex; gap:4px; }
+.handsort { background:#2d2519; color:var(--text); border:1px solid var(--line); border-radius:6px; padding:0 8px; font-size:11px; line-height:18px; cursor:pointer; }
+.handsort:hover { border-color:var(--accent); color:var(--accent); }
+.cardrow.ins-before { box-shadow:inset 0 3px 0 var(--accent); } .cardrow.ins-after { box-shadow:inset 0 -3px 0 var(--accent); }
+ul.tiles .cardrow.ins-before { box-shadow:inset 3px 0 0 var(--accent); } ul.tiles .cardrow.ins-after { box-shadow:inset -3px 0 0 var(--accent); }
 @media (max-width:760px) { .board { grid-template-columns:1fr; grid-template-areas:'play' 'active' 'hand' 'piles'; } .board .b-piles { flex-direction:row; } .board .b-piles .pile { flex:1; } }
 
 .imgmode { display:flex; align-items:center; gap:4px; color:var(--muted); font-size:12px; }

@@ -10,7 +10,7 @@ import { escapeHtml as esc } from '../scripts/escape.js';
 import { localStore } from '../scripts/campaign/store.js';
 import { cardImageUrl, itemImageUrl, eventImageUrl, matImageUrl, pqImageUrl } from '../scripts/campaign/cardImages.js';
 import {
-  validate, prosperityLevel, handOf, zoneOf, CARD_ZONES, shopCopies, itemsInUse, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE,
+  validate, prosperityLevel, handOf, handList, zoneOf, CARD_ZONES, shopCopies, itemsInUse, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE,
 } from '../scripts/campaign/record.js';
 import * as ed from '../scripts/campaign/edit.js';
 import { describeChange, LOG_TABS, LOG_MAX } from '../scripts/campaign/changelog.js';
@@ -438,13 +438,9 @@ function cardRow(c, id, area) {
   return `<li class="cardrow"${url ? ` data-img="${esc(url)}"` : ''} data-card="${id}" data-char="${esc(c.id)}" draggable="true">${label}</li>`;
 }
 
-// Hand in the player's own order (c.hord) when there is one, else lowest initiative first; cards missing from hord come last.
-function handList(c) {
-  const hand = handOf(c);
-  if (!Array.isArray(c.hord)) return hand.sort(byInitiative);
-  const pos = id => { const i = c.hord.indexOf(id); return i < 0 ? Infinity : i; };
-  return hand.sort((a, b) => pos(a) - pos(b) || byInitiative(a, b));
-}
+// Hand header: "6 of 12" (the hand size, a warning when over it) and the two sort buttons.
+const handHead = (c, n) => `<span class="handinfo"><span class="${c.hand && n > c.hand ? 'over-limit' : ''}" title="${c.hand ? `Hand size ${esc(c.hand)}` : ''}">${n}${c.hand ? ` of ${esc(c.hand)}` : ''}</span>
+  <span class="sortgrp"><button type="button" class="handsort" data-handsort="ini" data-char="${esc(c.id)}" title="Sort by initiative, and keep the hand sorted">Ini</button><button type="button" class="handsort" data-handsort="lvl" data-char="${esc(c.id)}" title="Sort by level once">Lvl</button></span></span>`;
 
 // The playmat layout (docs/merc-tab-handover.md): active area, the two play slots, discard and lost piles, and the hand below.
 function deckZones(c) {
@@ -456,7 +452,7 @@ function deckZones(c) {
   ['discard', 'lost'].forEach(z => lists[z].sort(byInitiative));
   const panel = (z, cls) => `
     <div class="zone ${cls}" data-zone="${z}" data-char="${esc(c.id)}">
-      <h4>${AREA_TITLE[z]} <span>${lists[z].length}</span></h4>
+      <h4>${AREA_TITLE[z]} ${z === 'hand' ? handHead(c, lists.hand.length) : `<span>${lists[z].length}</span>`}</h4>
       <ul class="${imgMode === 'always' ? 'tiles' : ''}">${lists[z].map(id => cardRow(c, id, z)).join('') || '<li class="empty-row">empty</li>'}</ul>
     </div>`;
   return `<div class="board">
@@ -1379,8 +1375,21 @@ main.addEventListener('dragstart', e => {
 });
 main.addEventListener('dragend', () => {
   evDragEnd();
-  main.querySelectorAll('.dragging, .over').forEach(el => el.classList.remove('dragging', 'over'));
+  main.querySelectorAll('.dragging, .over, .ins-before, .ins-after').forEach(el => el.classList.remove('dragging', 'over', 'ins-before', 'ins-after'));
 });
+// Where in the hand a dropped card goes: in front of the row under the pointer (left half, or upper half in the list view), after it
+// otherwise. Returns { before } for moveCard: a card id, or null for the end of the hand; undefined = not over a card.
+function handDropPlace(e, zone) {
+  const row = e.target.closest?.('.cardrow');
+  if (!row || !zone.contains(row)) return { before: undefined };
+  const r = row.getBoundingClientRect();
+  const tiles = !!row.closest('ul.tiles');
+  const first = tiles ? e.clientX < r.left + r.width / 2 : e.clientY < r.top + r.height / 2;
+  if (first) return { before: Number(row.dataset.card), row, side: 'before' };
+  const next = row.nextElementSibling?.closest('.cardrow');
+  return { before: next ? Number(next.dataset.card) : null, row, side: 'after' };
+}
+const clearMarks = () => main.querySelectorAll('.ins-before, .ins-after').forEach(el => el.classList.remove('ins-before', 'ins-after'));
 main.addEventListener('dragover', e => {
   if (evDragOver(e)) return;
   const zone = e.target.closest?.('.zone');
@@ -1389,6 +1398,8 @@ main.addEventListener('dragover', e => {
   e.dataTransfer.dropEffect = 'move';
   main.querySelectorAll('.zone.over').forEach(z => { if (z !== zone) z.classList.remove('over'); });
   zone.classList.add('over');
+  clearMarks();
+  if (zone.dataset.zone === 'hand') { const p = handDropPlace(e, zone); if (p.row) p.row.classList.add(p.side === 'before' ? 'ins-before' : 'ins-after'); }
 });
 main.addEventListener('drop', e => {
   if (evDrop(e)) return;
@@ -1397,8 +1408,18 @@ main.addEventListener('drop', e => {
   e.preventDefault();
   const d = dragPayload(e);
   zone.classList.remove('over');
+  clearMarks();
   if (!d || d.char !== zone.dataset.char) return;
-  commit(ed.moveCard(record, d.char, d.card, zone.dataset.zone));
+  if (zone.dataset.zone !== 'hand') { commit(ed.moveCard(record, d.char, d.card, zone.dataset.zone)); return; }
+  const place = handDropPlace(e, zone).before;
+  const fromHand = !!e.target.closest?.('.zone[data-zone="hand"]') && main.querySelector(`.zone[data-zone="hand"][data-char="${CSS.escape(d.char)}"] .cardrow[data-card="${d.card}"]`);
+  // inside the hand, dropping on empty space puts the card at the end; from another zone it just enters the hand
+  commit(ed.moveCard(record, d.char, d.card, 'hand', place === undefined && !fromHand ? {} : { before: place === undefined ? null : place }));
+});
+main.addEventListener('click', e => {
+  const b = e.target.closest?.('[data-handsort]');
+  if (!b) return;
+  commit(ed.sortHand(record, b.dataset.char, b.dataset.handsort));
 });
 main.addEventListener('submit', e => {
   if (evSubmit(e)) return;
