@@ -561,6 +561,33 @@ export function moveCard(r, cid, cardId, dest, opts = {}) {
   });
 }
 
+// --- enhancements -----------------------------------------------------------------------------------------------
+
+const enhText = v => { const t = String(v ?? '').trim().slice(0, 60); return t || null; };
+
+// Log an enhancement of a card: { cls, card, top, bottom, price? }. A class and a card are required; price is gold (0 to 9999).
+export function addEnhancement(r, { cls, card, top, bottom, price }) {
+  const c = String(cls ?? '').trim().slice(0, 40), cd = enhText(card);
+  if (!c || !cd) return r;
+  const p = toInt(price);
+  return edit(r, x => { x.enh.push({ cls: c, card: cd, top: enhText(top), bottom: enhText(bottom), ...(p !== null && p >= 0 ? { price: Math.min(p, 9999) } : {}) }); });
+}
+
+export function removeEnhancement(r, index) {
+  const i = toInt(index);
+  if (i === null || i < 0 || i >= r.enh.length) return r;
+  return edit(r, x => { x.enh.splice(i, 1); });
+}
+
+// Price in gold of one enhancement; an empty value clears it.
+export function setEnhancementPrice(r, index, price) {
+  const i = toInt(index), blank = String(price ?? '').trim() === '', p = toInt(price);
+  if (i === null || i < 0 || i >= r.enh.length || (!blank && (p === null || p < 0))) return r;
+  const next = blank ? undefined : Math.min(p, 9999);
+  if (r.enh[i].price === next) return r;
+  return edit(r, x => { if (next === undefined) delete x.enh[i].price; else x.enh[i].price = next; });
+}
+
 // A class token of a character: a count (0 to 99) or, for a token with states, the state index. Keys the class does not have are ignored.
 export function setToken(r, cid, key, value) {
   const c = r.chars.find(x => x.id === cid);

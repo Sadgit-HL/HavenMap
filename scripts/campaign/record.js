@@ -38,7 +38,7 @@ Record fields (all optional on load, defaults filled by normalize):
                     notes = { "road:4": "text" }   free note on a card
   evlog             finished events [{ kind, id, opt, votes, rnd?, closed?, place }]
   decks             { bg, tre, mp }                 battle goals drawn, treasures claimed, med packs
-  enh, retired      enhancement log, retired characters
+  enh, retired      enhancement log [{ cls, card, top, bottom, price? }] (top and bottom = what was added, price = gold paid), retired characters
   log               edit history, oldest first: [{ t: epoch ms, u: user, tab, kind, d }] (scripts/campaign/changelog.js), the last 1000 kept
   resLinks          { "<resource title>|<game>": url }   overrides scripts/games/resources.js's own link for that cell
 */

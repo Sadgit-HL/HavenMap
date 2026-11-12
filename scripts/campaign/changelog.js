@@ -95,7 +95,18 @@ export function describeChange(a, b) {
       for (const k of keys(x, rb[i])) if (!same(x[k], rb[i][k])) add('Overview', 'Retired character', `${who(rb[i])}: ${k === 'cls' ? 'class' : k} ${fmt(x[k])} to ${fmt(rb[i][k])}`);
     });
   }
-  if (!same(a.enh, b.enh)) add('Mercenaries', 'Enhancement', `${(a.enh || []).length} to ${(b.enh || []).length} enhancements`);
+  if (!same(a.enh, b.enh)) {
+    const ea = a.enh || [], eb = b.enh || [];
+    const what = e => `${e.cls}, ${e.card}${e.top || e.bottom ? ` (${[e.top && `top ${e.top}`, e.bottom && `bottom ${e.bottom}`].filter(Boolean).join(', ')})` : ''}`;
+    const nop = e => ({ ...e, price: undefined });
+    if (ea.length === eb.length && ea.every((e, i) => same(nop(e), nop(eb[i])))) {                       // only prices changed
+      ea.forEach((e, i) => { if (e.price !== eb[i].price) add('Mercenaries', 'Enhancement', `${what(e)}: price ${fmt(e.price)} to ${fmt(eb[i].price)}`); });
+    } else {
+      const d = diffList(ea.map(e => JSON.stringify(e)), eb.map(e => JSON.stringify(e)));
+      d.add.forEach(j => { const e = JSON.parse(j); add('Mercenaries', 'Enhancement', `Added ${what(e)}${e.price != null ? `, ${e.price} gold` : ''}`); });
+      d.del.forEach(j => { const e = JSON.parse(j); add('Mercenaries', 'Enhancement', `Removed ${what(e)}${e.price != null ? `, ${e.price} gold` : ''}`); });
+    }
+  }
 
   for (const n of keys(a.scn, b.scn).sort((x, y) => x - y)) {
     const x = a.scn?.[n] || {}, y = b.scn?.[n] || {};
