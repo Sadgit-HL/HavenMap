@@ -9,7 +9,9 @@ import { BATTLE_GOALS } from '../scripts/games/battle_goals.js';
 import { escapeHtml as esc } from '../scripts/escape.js';
 import { localStore } from '../scripts/campaign/store.js';
 import { cardImageUrl, itemImageUrl, eventImageUrl, matImageUrl, pqImageUrl, cardBackUrl } from '../scripts/campaign/cardImages.js';
-import { playmatHtml, XP_STEPS } from './playmat.js';
+import { playmatHtml, XP_STEPS, turnPost, cardsPost } from './playmat.js';
+import { tokenDefs } from '../scripts/campaign/classTokens.js';
+import { morphInto } from './morph.js';
 import {
   validate, prosperityLevel, handOf, handList, zoneOf, CARD_ZONES, shopCopies, itemsInUse, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE,
 } from '../scripts/campaign/record.js';
@@ -466,9 +468,7 @@ function mercenaries(r) {
   const cur = currentSub();
   const bar = `<nav class="subtabs" role="tablist">${subTabList().map(t =>
     `<button type="button" role="tab" aria-selected="${t.id === cur}" data-sub="${esc(t.id)}"${t.title ? ` title="${esc(t.title)}"` : ''}>${esc(t.label)}</button>`).join('')}</nav>`;
-  const toggle = `<div class="imgmode" role="group" aria-label="Card images"><span>Card images</span>${
-    [['hover', 'Hover'], ['always', 'Always']].map(([m, l]) => `<button type="button" data-imgmode="${m}" aria-pressed="${imgMode === m}">${l}</button>`).join('')}${imgMode === 'hover' ? '<span class="ctrlhint">Hold Ctrl over a card</span>' : ''}</div>`;
-  return `<div class="subbar">${bar}${toggle}</div>` + (cur === 'add' ? addTab(r) : characterTab(r, cur));
+  return `<div class="subbar">${bar}</div>` + (cur === 'add' ? addTab(r) : characterTab(r, cur));
 }
 
 // Portrait: the character mat cropped to the focus region saved with campaign/mockups/portrait-tool.html (fractions of the mat width).
@@ -1182,12 +1182,12 @@ function render() {
   if (!flowPage) view.flowFull = false;
   main.classList.toggle('wide', flowPage || (tab === 'Mercenaries' && currentSub() !== 'add'));                // the flowchart may use the whole window width
   document.body.classList.toggle('noscroll', !!view.flowFull);
-  editing = tab === 'Overview' ? editSections.size > 0 : editPages.has(tab);
+  editing = tab === 'Overview' ? editSections.size > 0 : tab === 'Mercenaries' ? false : editPages.has(tab);
   saveView();
   const issues = validate(record);
   // The Items and Events pages carry their own pencil button (in the filter row / tab row). Scenarios has no page-wide
   // edit mode at all: every row (table or flowchart) opens the scenario modal, which carries its own pencil button.
-  const noPagebar = tab === 'Overview' || tab === 'Items' || tab === 'Events' || tab === 'Cards' || tab === 'Scenarios' || tab === 'Resources' || tab === 'History';
+  const noPagebar = tab === 'Overview' || tab === 'Items' || tab === 'Events' || tab === 'Cards' || tab === 'Scenarios' || tab === 'Resources' || tab === 'History' || tab === 'Mercenaries';   // the Mercenaries tab is the playmat: no page pencil
   const pagebar = noPagebar ? '' : `<div class="pagebar"><button type="button" class="editbtn editicon" data-pageedit aria-pressed="${editing}" aria-label="${editing ? 'Stop editing this page' : `Edit ${esc(tab.toLowerCase())}`}" title="${editing ? 'Stop editing this page' : `Edit ${esc(tab.toLowerCase())}`}">${PENCIL}</button></div>`;
   const body = { Overview: overview, Scenarios: scenarios, Mercenaries: mercenaries, Items: items, Events: events, Cards: cardsPage, Resources: resources, History: historyPage }[tab](record);
   renderModal();
@@ -1197,7 +1197,9 @@ function render() {
   renderRepModal();
   renderRetModal();
   renderScnModal();
-  main.innerHTML = pagebar + (issues.length ? `<div class="issues">${issues.length} issue(s): ${esc(issues.slice(0, 5).join('; '))}</div>` : '') + body;
+  const html = pagebar + (issues.length ? `<div class="issues">${issues.length} issue(s): ${esc(issues.slice(0, 5).join('; '))}</div>` : '') + body;
+  // The playmat is redrawn in place (campaign/morph.js): cards keep their picture and hover state, so a drop or a flip does not flicker.
+  if (tab === 'Mercenaries' && !editing && main.querySelector('.pm')) morphInto(main, html); else main.innerHTML = html;
   if (tab === 'Cards' && view.cardType === 'am') hydrateAm();
 }
 
@@ -1394,11 +1396,47 @@ main.addEventListener('drop', e => {
   // inside the hand, dropping on empty space puts the card at the end; from another zone it just enters the hand
   commit(ed.moveCard(record, d.char, d.card, 'hand', place === undefined && !fromHand ? {} : { before: place === undefined ? null : place }));
 });
+// Flip a played card with the mockup's animation: turn the card in place first (the page is redrawn from the record, which would cut
+// the animation short), save when it has finished. A card turned face up goes flat afterwards ("settled"), as in the mockup.
+function flipPlayed(f) {
+  if (f.dataset.flipping) return;
+  f.dataset.flipping = '1';
+  if (f.classList.contains('is-front')) {
+    if (f.classList.contains('settled')) { f.classList.remove('settled'); f.classList.add('rev'); void f.offsetWidth; f.classList.remove('rev'); }   // back into the 3D pose without a visible jump
+    void f.offsetWidth;
+    f.classList.remove('is-front');
+  } else f.classList.add('is-front');
+  const { char, slot } = f.dataset;
+  setTimeout(() => commit(ed.flipPlayCard(record, char, Number(slot))), 560);
+}
+main.addEventListener('keydown', e => {
+  const f = e.target.closest?.('.pm .flipcard[data-slot]');
+  if (f && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); flipPlayed(f); }
+});
 // Playmat clicks: flip a played card, the + and - of XP, gold and inherited perks, click on a number to type a value.
 const HUD_KEY = { xp: 'xp', gold: 'gold', inh: 'inh' };
 main.addEventListener('click', e => {
   const f = e.target.closest?.('.flipcard[data-slot]');
-  if (f) { commit(ed.flipPlayCard(record, f.dataset.char, Number(f.dataset.slot))); return; }
+  if (f) { flipPlayed(f); return; }
+  const tk = e.target.closest?.('button[data-tk]');
+  if (tk) {
+    const c = record.chars.find(x => x.id === tk.dataset.char), d = c && tokenDefs(c.cls).find(t => t.k === tk.dataset.tk);
+    if (d) commit(ed.setToken(record, c.id, d.k, d.states ? ((c.tok?.[d.k] || 0) + 1) % d.states.length : (c.tok?.[d.k] || 0) + Number(tk.dataset.d)));
+    return;
+  }
+  const bgg = e.target.closest?.('button[data-bgg]');
+  if (bgg) {
+    const c = record.chars.find(x => x.id === bgg.dataset.char);
+    if (!c) return;
+    const slug = String(matImageUrl(c.cls, 'front')).split('/').pop().replace(/\.[a-z]+$/i, '');
+    const ctx = { bannerUrl: `https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_banners/${slug}.jpg`, pretty, cardById };
+    const text = bgg.dataset.bgg === 'turn' ? turnPost(c, ctx) : cardsPost(c, ctx);
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).catch(() => {});
+    const old = bgg.innerHTML;
+    bgg.innerHTML = '\u2713 <span>Copied</span>';
+    setTimeout(() => { bgg.innerHTML = old; }, 1100);
+    return;
+  }
   const b = e.target.closest?.('button[data-hud]');
   if (b) {
     const c = record.chars.find(x => x.id === b.dataset.char), k = HUD_KEY[b.dataset.hud];
