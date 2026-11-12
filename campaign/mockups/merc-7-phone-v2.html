@@ -81,6 +81,16 @@ const BK='../../images/common/card_backs/',TK='../../images/common/mercenary_tok
 const CHAR_CLASSES=[["Anaphi",["nimble","resourceful","outcast"]],["Astral",["arcane","educated","strong"]],["Banner Spear",["armored","persuasive","resourceful"]],["Berserker",["chaotic","intimidating","nimble"]],["Bladeswarm",["armored","outcast","strong"]],["Blinkblade",["educated","nimble","resourceful"]],["Boneshaper",["arcane","educated","intimidating"]],["Bruiser",["intimidating","strong","armored"]],["Cassandra",["arcane","outcast","resourceful"]],["Coral",["armored","chaotic","strong"]],["Cragheart",["arcane","outcast","strong"]],["Deathwalker",["arcane","outcast","persuasive"]],["Deepwraith",["armored","intimidating","nimble"]],["Demolitionist",["chaotic","nimble","strong"]],["Doomstalker",["armored","chaotic","outcast"]],["Drifter",["outcast","resourceful","strong"]],["Elementalist",["arcane","chaotic","resourceful"]],["Frozen Fist",["intimidating","persuasive","strong"]],["Geminate",["arcane","chaotic","nimble"]],["H.I.V.E.",["armored","educated","resourceful"]],["Hail",["chaotic","educated","resourceful"]],["Hatchet",["intimidating","resourceful","strong"]],["Metal Mosaic",["armored","resourceful","strong"]],["Mindthief",["nimble","outcast","persuasive"]],["Nightshroud",["chaotic","intimidating","nimble"]],["Pain Conduit",["chaotic","intimidating","outcast"]],["Plagueherald",["arcane","intimidating","outcast"]],["Pyroclast",["arcane","chaotic","intimidating"]],["Quartermaster",["arcane","educated","intimidating"]],["Red Guard",["armored","outcast","persuasive"]],["Satha",["armored","intimidating","persuasive"]],["Sawbones",["educated","persuasive","resourceful"]],["Shattersong",["educated","outcast","persuasive"]],["Silent Knife",["chaotic","nimble","resourceful"]],["Snowdancer",["chaotic","nimble","persuasive"]],["Soothsinger",["educated","nimble","persuasive"]],["Soultether",["armored","resourceful","strong"]],["Spellweaver",["arcane","educated","resourceful"]],["Sunkeeper",["armored","educated","persuasive"]],["Tinkerer",["educated","nimble","resourceful"]],["Trapper",["nimble","outcast","resourceful"]],["Voidwarden",["arcane","educated","outcast"]],["Wildfury",["chaotic","intimidating","strong"]]];
 const SLUG_ALIAS={astral:'infuser',coral:'crashing-tide','h.i.v.e.':'hive'};
 const classSlug=c=>{const k=String(c||'').toLowerCase();return SLUG_ALIAS[k]||k.replace(/ /g,'-')};
+// portrait: the character mat cropped to the focus region saved by portrait-tool.html (scripts/games/portrait-focus.json: {slug:{u,t,w}}, fractions of the mat width); no entry yet: centred cover
+const FOCUS={};
+fetch('../../scripts/games/portrait-focus.json').then(r=>r.ok?r.json():{}).then(j=>{Object.assign(FOCUS,j);if(typeof render==='function')render()}).catch(()=>{});
+function setPortrait(el,cls){
+  const slug=classSlug(cls),f=FOCUS[slug],S=el.clientWidth||46;
+  el.style.backgroundImage='url(https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_mats/front/'+slug+'.png)';
+  if(f){const bw=S/f.w;el.style.backgroundSize=bw+'px auto';el.style.backgroundPosition=(-f.u*bw)+'px '+(-f.t*bw)+'px'}
+  else{el.style.backgroundSize='cover';el.style.backgroundPosition='center'}
+}
+
 const XP_STEPS=[0,45,95,150,210,275,350,440,540],levelOfXp=xp=>XP_STEPS.reduce((l,t,i)=>xp>=t?i+1:l,1);
 const CH_KEY='hm-character';   // same record as playmat v2, so class, XP, gold, traits and tokens are shared
 let CH={name:'Simon',player:'Guido',cls:'Tinkerer',extra:['Friend of the Hero'],xp:264,gold:42,inh:0,tok:{}};
@@ -119,7 +129,7 @@ function render(){
   document.querySelectorAll('.nav [data-tab]').forEach(b=>b.toggleAttribute('aria-current',b.dataset.tab===S.tab));
   $('#clsline').textContent=CH.cls+' \u00b7 played by '+CH.player;$('#chname').textContent=CH.name;$('#chgold').textContent=CH.gold;$('#chinh').textContent=CH.inh;
   const lv=levelOfXp(CH.xp),lo=XP_STEPS[lv-1],hi=XP_STEPS[lv];$('#chlvl').textContent=lv;$('#chxp').textContent=CH.xp+' XP';$('#xpfill').style.width=(hi?Math.round((CH.xp-lo)/(hi-lo)*100):100)+'%';
-  $('#portrait').style.backgroundImage='url(https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_mats/front/'+classSlug(CH.cls)+'.png)';
+  setPortrait($('#portrait'),CH.cls);
   renderTokens();
   const v=$('#view');
   if(S.tab==='cards'){

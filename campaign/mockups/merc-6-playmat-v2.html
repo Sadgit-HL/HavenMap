@@ -1138,6 +1138,16 @@ const CHAR_CLASSES=[["Anaphi",["nimble","resourceful","outcast"]],["Astral",["ar
 // image file name of a class (character mat, banner): the lower case name with hyphens, except where the file uses the old name
 const SLUG_ALIAS={astral:'infuser',coral:'crashing-tide','h.i.v.e.':'hive'};
 const classSlug=c=>{const k=String(c||'').toLowerCase();return SLUG_ALIAS[k]||k.replace(/ /g,'-')};
+// portrait: the character mat cropped to the focus region saved by portrait-tool.html (scripts/games/portrait-focus.json: {slug:{u,t,w}}, fractions of the mat width); no entry yet: centred cover
+const FOCUS={};
+fetch('../../scripts/games/portrait-focus.json').then(r=>r.ok?r.json():{}).then(j=>{Object.assign(FOCUS,j);if(typeof renderHud==='function')renderHud()}).catch(()=>{});
+function setPortrait(el,cls){
+  const slug=classSlug(cls),f=FOCUS[slug],S=el.clientWidth||46;
+  el.style.backgroundImage='url(https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_mats/front/'+slug+'.png)';
+  if(f){const bw=S/f.w;el.style.backgroundSize=bw+'px auto';el.style.backgroundPosition=(-f.u*bw)+'px '+(-f.t*bw)+'px'}
+  else{el.style.backgroundSize='cover';el.style.backgroundPosition='center'}
+}
+
 const XP_STEPS=[0,45,95,150,210,275,350,440,540];   // XP needed for level 1..9
 const levelOfXp=xp=>XP_STEPS.reduce((l,t,i)=>xp>=t?i+1:l,1);
 const cap=w=>w.replace(/^./,c=>c.toUpperCase());
@@ -1181,7 +1191,7 @@ function renderHud(){
   document.getElementById('chname').textContent=CH.name;
   document.getElementById('chsub').textContent=CH.cls+' \u00b7 played by '+CH.player;
   document.getElementById('chchips').innerHTML=classTraits(CH.cls).map(t=>'<span class="chip ">'+cap(t)+'</span>').join('')+CH.extra.map(t=>'<span class="chip info">'+t.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</span>').join('');
-  document.getElementById('chport').style.backgroundImage='url(https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_mats/front/'+classSlug(CH.cls)+'.png)';
+  setPortrait(document.getElementById('chport'),CH.cls);
   document.getElementById('chgold').textContent=CH.gold;document.getElementById('chinh').textContent=CH.inh;
   const lv=levelOfXp(CH.xp),lo=XP_STEPS[lv-1],hi=XP_STEPS[lv]??null;
   document.getElementById('chxp').textContent=CH.xp;
