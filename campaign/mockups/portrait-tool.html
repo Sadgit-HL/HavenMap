@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Portrait focus tool</title>
+<style>
+:root{--bg:#1b1610;--panel:#241d14;--panel2:#2d2519;--panel3:#3a2f1e;--line:#4a3d28;--text:#efe6d2;--muted:#a99a7c;--accent:#c7a44a;--ok:#6fae6a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.4 system-ui,Segoe UI,sans-serif;height:100vh;display:flex;flex-direction:column}
+header{padding:10px 16px;border-bottom:1px solid var(--line);display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+header h1{font-size:16px;margin:0;color:var(--accent)}header .note{color:var(--muted);font-size:12px}
+main{flex:1;display:grid;grid-template-columns:190px 1fr 250px;gap:0;min-height:0}
+button{font:inherit;color:inherit;cursor:pointer;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:7px 14px}
+button:hover{border-color:var(--accent)}button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.ok{background:var(--accent);color:#1b150c;border-color:var(--accent);font-weight:700}
+button.ok:hover{filter:brightness(1.1)}
+#list{border-right:1px solid var(--line);overflow:auto;padding:6px}
+#list button{display:flex;justify-content:space-between;width:100%;border:0;border-radius:6px;background:transparent;padding:5px 8px;text-align:left}
+#list button:hover{background:var(--panel2)}#list button.cur{background:var(--panel3);color:var(--accent)}#list .st{color:var(--muted)}#list .done .st{color:var(--ok)}
+#stage{position:relative;overflow:auto;padding:16px;display:flex;flex-direction:column;align-items:center;gap:10px}
+#wrap{position:relative;display:inline-block;overflow:hidden;line-height:0;touch-action:none;user-select:none;max-width:100%;border:1px solid var(--line)}
+#mat{display:block;width:min(100%,900px);max-width:900px;height:auto;-webkit-user-drag:none}
+#box{position:absolute;border:2px solid var(--accent);box-shadow:0 0 0 9999px rgba(0,0,0,.6);cursor:move;border-radius:2px}
+#box::after{content:"";position:absolute;inset:0;border-radius:50%;border:1px dashed rgba(255,255,255,.55);pointer-events:none}
+#side{border-left:1px solid var(--line);padding:14px;display:flex;flex-direction:column;gap:14px;overflow:auto}
+.pv{display:flex;gap:14px;align-items:flex-end}.pv div{border-radius:50%;border:1px solid var(--line);background-color:#120e08;background-repeat:no-repeat}.pv small{display:block;color:var(--muted);font-size:11px;text-align:center;margin-top:3px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+label.lab{display:flex;flex-direction:column;gap:3px;color:var(--muted);font-size:12px}
+input[type=range]{width:100%;accent-color:var(--accent)}
+#prog{color:var(--muted);font-size:12px}
+.help{color:var(--muted);font-size:12px;line-height:1.5}.help b{color:var(--text)}
+#msg{font-size:12px;min-height:1.4em}
+@media (max-width:900px){main{grid-template-columns:1fr}#list{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Portrait focus tool</h1>
+  <span class="note">Move and zoom the square over the character, then click OK. The round preview is what the top bar shows.</span>
+  <span style="flex:1"></span>
+  <button type="button" id="connect" title="Choose scripts/games/portrait-focus.json once; OK then writes straight into it">Connect save file</button>
+  <button type="button" id="copy" title="Copy all coordinates as JSON">Copy JSON</button>
+</header>
+<main>
+  <nav id="list" aria-label="Classes"></nav>
+  <section id="stage">
+    <div class="row"><b id="title" style="font-size:16px"></b><span id="prog"></span></div>
+    <div id="wrap"><img id="mat" alt="Character mat" draggable="false"><div id="box" tabindex="0" aria-label="Focus region, drag to move, arrow keys to nudge, plus and minus to zoom"></div></div>
+    <div class="row"><button type="button" id="back">Back</button><button type="button" id="ok" class="ok">OK, next</button><button type="button" id="skip">Skip</button><button type="button" id="reset">Reset</button></div>
+    <div id="msg" role="status"></div>
+  </section>
+  <aside id="side">
+    <div class="pv"><div id="p46"></div><div id="p64"></div><div id="p120"></div></div>
+    <div class="pv" style="margin-top:-8px"><small style="width:46px">top bar</small><small style="width:64px">64</small><small style="width:120px">120</small></div>
+    <label class="lab">Zoom<input type="range" id="zoom" min="8" max="70" step="0.5"></label>
+    <div class="help"><b>Drag</b> the square to move it.<br><b>Mouse wheel</b> or the slider to zoom.<br><b>Arrow keys</b> nudge, <b>+ / -</b> zoom, <b>Enter</b> = OK.<br>Saved so far: <b id="count"></b></div>
+  </aside>
+</main>
+
+<script>
+// Class slugs = file names of the character mats (Wordhaven_Assets/wh_character_mats/front/<slug>.png).
+const MAT = 'https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_mats/front/';
+const JSON_URL = '../../scripts/games/portrait-focus.json';
+const CLASSES = [
+  ['anaphi','Anaphi'],['banner-spear','Banner Spear'],['berserker','Berserker'],['bladeswarm','Bladeswarm'],['blinkblade','Blinkblade'],['boneshaper','Boneshaper'],['bruiser','Bruiser'],
+  ['cassandra','Cassandra'],['cragheart','Cragheart'],['crashing-tide','Coral'],['deathwalker','Deathwalker'],['deepwraith','Deepwraith'],['demolitionist','Demolitionist'],['doomstalker','Doomstalker'],
+  ['drifter','Drifter'],['elementalist','Elementalist'],['frozen-fist','Frozen Fist'],['geminate','Geminate'],['hail','Hail'],['hatchet','Hatchet'],['hive','H.I.V.E.'],['infuser','Astral'],
+  ['metal-mosaic','Metal Mosaic'],['mindthief','Mindthief'],['nightshroud','Nightshroud'],['pain-conduit','Pain Conduit'],['plagueherald','Plagueherald'],['pyroclast','Pyroclast'],
+  ['quartermaster','Quartermaster'],['red-guard','Red Guard'],['satha','Satha'],['sawbones','Sawbones'],['shattersong','Shattersong'],['silent-knife','Silent Knife'],['snowdancer','Snowdancer'],
+  ['soothsinger','Soothsinger'],['soultether','Soultether'],['spellweaver','Spellweaver'],['sunkeeper','Sunkeeper'],['tinkerer','Tinkerer'],['trapper','Trapper'],['voidwarden','Voidwarden'],['wildfury','Wildfury']
+];
+// Stored per slug: { u, t, w } = left, top and side of the square, all as fractions of the mat image WIDTH.
+// The same numbers rebuild the crop at any size S: background-size S/w px, background-position -u*S/w px, -t*S/w px.
+const DEFAULT = { u: 0.04, t: 0.05, w: 0.34 };
+const $ = id => document.getElementById(id);
+let DATA = {}, idx = 0, cur = { ...DEFAULT }, fileHandle = null, imgRatio = 0.65;   // imgRatio = height / width of the shown mat
+
+try { DATA = JSON.parse(localStorage.getItem('hm-portrait-focus') || '{}') || {} } catch (e) {}
+fetch(JSON_URL).then(r => r.ok ? r.json() : {}).then(j => { DATA = { ...j, ...DATA }; render() }).catch(() => {});   // the saved file wins over nothing, local edits win over the file
+
+const say = (t, bad) => { $('msg').textContent = t; $('msg').style.color = bad ? '#e08a7a' : 'var(--ok)' };
+const round = n => Math.round(n * 10000) / 10000;
+const clamp = () => { cur.w = Math.max(0.08, Math.min(cur.w, Math.min(0.9, imgRatio))); cur.u = Math.max(0, Math.min(cur.u, 1 - cur.w)); cur.t = Math.max(0, Math.min(cur.t, imgRatio - cur.w)) };
+
+function pv(el, S) {
+  const bw = S / cur.w;
+  el.style.width = el.style.height = S + 'px';
+  el.style.backgroundImage = 'url(' + MAT + CLASSES[idx][0] + '.png)';
+  el.style.backgroundSize = bw + 'px auto';
+  el.style.backgroundPosition = (-cur.u * bw) + 'px ' + (-cur.t * bw) + 'px';
+}
+function draw() {
+  clamp();
+  const b = $('box');
+  b.style.left = cur.u * 100 + '%'; b.style.top = (cur.t / imgRatio) * 100 + '%';
+  b.style.width = cur.w * 100 + '%'; b.style.height = (cur.w / imgRatio) * 100 + '%';
+  pv($('p46'), 46); pv($('p64'), 64); pv($('p120'), 120);
+  $('zoom').value = cur.w * 100;
+  $('count').textContent = Object.keys(DATA).length + ' of ' + CLASSES.length;
+}
+function render() {
+  const [slug, name] = CLASSES[idx];
+  $('title').textContent = name + '  (' + slug + ')';
+  $('prog').textContent = (idx + 1) + ' / ' + CLASSES.length + (DATA[slug] ? '  saved' : '  not saved yet');
+  cur = { ...(DATA[slug] || DEFAULT) };
+  $('list').innerHTML = CLASSES.map((c, i) => '<button type="button" data-i="' + i + '" class="' + (i === idx ? 'cur ' : '') + (DATA[c[0]] ? 'done' : '') + '"><span>' + c[1] + '</span><span class="st">' + (DATA[c[0]] ? '✓' : '') + '</span></button>').join('');
+  const cb = $('list').querySelector('.cur'); if (cb) cb.scrollIntoView({ block: 'nearest' });
+  const img = $('mat'); img.onload = () => { imgRatio = img.naturalHeight / img.naturalWidth; draw() };
+  img.src = MAT + slug + '.png';
+  if (img.complete && img.naturalWidth) { imgRatio = img.naturalHeight / img.naturalWidth; draw() } else draw();
+}
+
+// ---- move and zoom ----
+const wrap = $('wrap'), box = $('box');
+let drag = null;
+box.addEventListener('pointerdown', e => { e.preventDefault(); box.setPointerCapture(e.pointerId); drag = { x: e.clientX, y: e.clientY, u: cur.u, t: cur.t }; box.focus() });
+box.addEventListener('pointermove', e => { if (!drag) return; const r = wrap.getBoundingClientRect(); cur.u = drag.u + (e.clientX - drag.x) / r.width; cur.t = drag.t + (e.clientY - drag.y) / r.width; draw() });
+['pointerup', 'pointercancel'].forEach(n => box.addEventListener(n, () => { drag = null }));
+wrap.addEventListener('pointerdown', e => { if (e.target === box) return; const r = wrap.getBoundingClientRect(); cur.u = (e.clientX - r.left) / r.width - cur.w / 2; cur.t = (e.clientY - r.top) / r.width - cur.w / 2; draw() });   // click on the mat: centre the square there
+function zoom(f) { const cx = cur.u + cur.w / 2, cy = cur.t + cur.w / 2; cur.w *= f; cur.u = cx - cur.w / 2; cur.t = cy - cur.w / 2; draw() }
+wrap.addEventListener('wheel', e => { e.preventDefault(); zoom(e.deltaY < 0 ? 0.95 : 1.05) }, { passive: false });
+$('zoom').addEventListener('input', e => { const cx = cur.u + cur.w / 2, cy = cur.t + cur.w / 2; cur.w = +e.target.value / 100; cur.u = cx - cur.w / 2; cur.t = cy - cur.w / 2; draw() });
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  const st = e.shiftKey ? 0.01 : 0.003;
+  if (e.key === 'ArrowLeft') cur.u -= st; else if (e.key === 'ArrowRight') cur.u += st; else if (e.key === 'ArrowUp') cur.t -= st; else if (e.key === 'ArrowDown') cur.t += st;
+  else if (e.key === '+' || e.key === '=') zoom(0.95); else if (e.key === '-') zoom(1.05);
+  else if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') { save(); return } else return;
+  e.preventDefault(); draw();
+});
+
+// ---- saving: file (File System Access API) when connected, always the browser copy ----
+const json = () => JSON.stringify(Object.fromEntries(Object.keys(DATA).sort().map(k => [k, DATA[k]])), null, 1) + '\n';
+async function writeFile() {
+  if (!fileHandle) return false;
+  try { const w = await fileHandle.createWritable(); await w.write(json()); await w.close(); return true } catch (e) { say('Could not write the file: ' + e.message, true); return false }
+}
+async function save() {
+  const slug = CLASSES[idx][0];
+  DATA[slug] = { u: round(cur.u), t: round(cur.t), w: round(cur.w) };
+  try { localStorage.setItem('hm-portrait-focus', JSON.stringify(DATA)) } catch (e) {}
+  const wrote = await writeFile();
+  say(CLASSES[idx][1] + ' saved' + (wrote ? ' to the file.' : ' in the browser (connect a file or use Copy JSON to keep it).'));
+  if (idx < CLASSES.length - 1) { idx++; render() } else render();
+}
+$('ok').addEventListener('click', save);
+$('skip').addEventListener('click', () => { if (idx < CLASSES.length - 1) { idx++; render() } });
+$('back').addEventListener('click', () => { if (idx > 0) { idx--; render() } });
+$('reset').addEventListener('click', () => { cur = { ...DEFAULT }; draw() });
+$('list').addEventListener('click', e => { const b = e.target.closest('button[data-i]'); if (b) { idx = +b.dataset.i; render() } });
+$('copy').addEventListener('click', () => { const t = json(); (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => say('JSON copied (' + Object.keys(DATA).length + ' classes).')).catch(() => { const a = document.createElement('textarea'); a.value = t; document.body.appendChild(a); a.select(); try { document.execCommand('copy'); say('JSON copied.') } catch (x) { say('Copy failed', true) } a.remove() }) });
+$('connect').addEventListener('click', async () => {
+  if (!window.showOpenFilePicker) { say('This browser cannot write files directly. Use Copy JSON.', true); return }
+  try {
+    [fileHandle] = await window.showOpenFilePicker({ types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }] });
+    const f = await fileHandle.getFile(), txt = await f.text();
+    try { const j = JSON.parse(txt || '{}'); DATA = { ...j, ...DATA } } catch (e) {}
+    $('connect').textContent = 'Saving to ' + fileHandle.name; await writeFile(); render(); say('Connected. OK now writes to ' + fileHandle.name + '.');
+  } catch (e) { if (e.name !== 'AbortError') say('Not connected: ' + e.message, true) }
+});
+render();
+</script>
+</body>
+</html>
