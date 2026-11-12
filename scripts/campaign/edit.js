@@ -5,7 +5,7 @@ import { SCENARIOS, STICKERS } from '../games/gh2_scenarios.js';
 import { ITEMS } from '../games/gh2_items.js';
 import { CLASSES } from '../games/gh2_classes.js';
 import { ALL_CLASSES } from './classList.js';
-import { SCN_STATE, availableSet, CARD_ZONES, zoneOf } from './record.js';
+import { SCN_STATE, availableSet, CARD_ZONES, zoneOf, handList, cardLevel } from './record.js';
 import { SPECIAL_TRAITS } from './traits.js';
 import { EVENT_TABLE, PILES, frontOf, boxState, markKey, eventPlace, nextEvent, optionKeys, seatList, tally, cryptoRandom } from './events.js';
 
@@ -522,12 +522,18 @@ export const CARD_AREAS = CARD_ZONES;            // hand, active, play1, play2, 
 //    moves into the empty slot). A card that enters an occupied slot sends that slot's card back to the hand.
 //  - a card entering a play slot is face down; leaving the slot drops the face state.
 //  - the manual hand order (hord) follows: cards leaving the hand are removed from it, cards entering the hand go to its end.
+//  - opts.before sets the place in the hand: a card id puts the card in front of that card, null at the end (the hand then follows a
+//    manual order, hord); left out, a card entering the hand keeps the automatic initiative order (or goes to the end of a manual order).
 // Cards that are not in the deck, unknown zones and moves the rules forbid return the record unchanged.
-export function moveCard(r, cid, cardId, dest) {
+export function moveCard(r, cid, cardId, dest, opts = {}) {
   const c = r.chars.find(x => x.id === cid);
   if (!c || !CARD_ZONES.includes(dest) || !c.deck.includes(cardId)) return r;
   const now = zoneOf(c, cardId);
-  if (now === dest) return r;
+  const pos = dest === 'hand' && 'before' in opts ? opts.before : undefined;      // undefined = no place given
+  if (pos === cardId) return r;
+  if (now === dest && pos === undefined) return r;
+  const order = pos !== undefined ? handList(c).filter(id => id !== cardId) : null;
+  if (order) { let i = pos === null ? order.length : order.indexOf(pos); if (i < 0) i = order.length; order.splice(i, 0, cardId); if (now === 'hand' && !Array.isArray(c.hord) && order.join() === handList(c).join()) return r; }
   const toPlay = dest === 'play1' || dest === 'play2', inPlay = now === 'play1' || now === 'play2';
   if (toPlay && now !== 'hand' && !inPlay) return r;
   return edit(r, x => {
@@ -545,13 +551,25 @@ export function moveCard(r, cid, cardId, dest) {
     if (dest === 'discard') ch.disc.push(cardId);
     else if (dest === 'lost') ch.lost.push(cardId);
     else if (dest === 'active') ch.act.push(cardId);
-    else if (dest === 'hand') toHand(cardId);
+    else if (dest === 'hand') { if (order) ch.hord = order; else toHand(cardId); }
     else {
       const i = dest === 'play1' ? 0 : 1;
       if (ch.play[i]) toHand(ch.play[i].id);
       ch.play[i] = { id: cardId, up: false };
     }
   });
+}
+
+// Sort the hand: 'ini' = automatic mode, always lowest initiative first (clears the manual order); 'lvl' = a one-time order by card level,
+// then initiative, which stays until the hand is reordered or 'ini' is chosen.
+export function sortHand(r, cid, mode) {
+  const c = r.chars.find(x => x.id === cid);
+  if (!c || !['ini', 'lvl'].includes(mode)) return r;
+  if (mode === 'ini') return Array.isArray(c.hord) ? edit(r, x => { x.chars.find(y => y.id === cid).hord = null; }) : r;
+  const cur = handList({ ...c, hord: null });
+  const order = [...cur].sort((a, b) => cardLevel(a) - cardLevel(b));            // stable: initiative order inside a level
+  if (order.join() === (Array.isArray(c.hord) ? c.hord : []).join()) return r;
+  return edit(r, x => { x.chars.find(y => y.id === cid).hord = order; });
 }
 
 // Put a hand card into the active area, or clear it from there (back to the hand). Kept for older callers; moveCard does the work.

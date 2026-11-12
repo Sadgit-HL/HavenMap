@@ -171,6 +171,20 @@ export function handOf(c) {
   return (c.deck || []).filter(id => !out.has(id));
 }
 
+const CARD_INFO = new Map(CARDS.map(k => [k.id, k]));
+const cardIni = id => CARD_INFO.get(id)?.ini ?? Infinity;             // unknown initiative sorts last
+// Card level for sorting: X cards first, then 1 to 9, then the rest (M and unknown).
+export const cardLevel = id => { const lv = CARD_INFO.get(id)?.lv; return lv === 'X' ? 0 : Number.isFinite(Number(lv)) && lv !== undefined ? Number(lv) : 99; };
+
+// The hand in display order. hord null = automatic: lowest initiative first, deck order for ties and unknown initiatives.
+// With a manual order (hord) the cards follow it; hand cards missing from hord (new in the deck) come after, by initiative.
+export function handList(c) {
+  const hand = handOf(c).sort((a, b) => (cardIni(a) === cardIni(b) ? 0 : cardIni(a) < cardIni(b) ? -1 : 1));
+  if (!Array.isArray(c.hord)) return hand;
+  const pos = id => { const i = c.hord.indexOf(id); return i < 0 ? Infinity : i; };
+  return hand.sort((a, b) => (pos(a) === pos(b) ? 0 : pos(a) < pos(b) ? -1 : 1));
+}
+
 // Copies of an item in use: the number of characters holding it (calculated from the character sheets,
 // not stored; `items.taken` of an imported record is ignored).
 export function itemsInUse(r, item) {

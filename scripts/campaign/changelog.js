@@ -110,7 +110,7 @@ export function describeChange(a, b) {
     if (!o) { add('Mercenaries', 'Character', `Added ${c.name} (${c.cls})`); continue; }
     const cardLines = describeCards(o, c);
     cardLines.forEach(d => add('Mercenaries', 'Card', `${c.name}: ${d}`));
-    if (!cardLines.length && !same(o.hord, c.hord)) add('Mercenaries', 'Card', `${c.name}: hand order changed`);
+    if (!cardLines.length && !same(o.hord, c.hord)) add('Mercenaries', 'Card', `${c.name}: ${c.hord === null ? 'hand sorted by initiative (automatic)' : 'hand order changed'}`);
     for (const k of keys(o, c)) {
       if (same(o[k], c[k])) continue;
       if (['disc', 'act', 'lost', 'play', 'hord'].includes(k)) continue;                  // described above
