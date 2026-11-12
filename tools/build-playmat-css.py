@@ -51,7 +51,7 @@ def scope(sel):
 
 def rule(prelude, body):
     sels = [scope(s) for s in re.split(r',(?![^\[]*\])(?![^(]*\))', prelude)]
-    sels = [s for s in sels if s]
+    sels = [s for s in sels if s and not re.search(r'\.over(?![-\w])', s)]            # no drop zone highlight while dragging (the mockup shows none)
     if not sels: return ''
     # a `body[data-z...] .x` rule may name a class we do not keep: check the class after the attribute selector
     keep = []
@@ -81,7 +81,6 @@ EXTRA = """
 .pm .noimg{display:flex;align-items:center;justify-content:center;text-align:center;padding:6px;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:6px;background:#1c1711;aspect-ratio:5/7}
 .pm .hbar .over-limit{color:#e08a7a}
 .pm .fan6 .ac.ins-before{box-shadow:-5px 0 0 var(--accent)}.pm .fan6 .ac.ins-after{box-shadow:5px 0 0 var(--accent)}
-.pm .slot6.over,.pm .pile6.over,.pm .activelist.over,.pm .fan6.over{outline:2px solid var(--accent);outline-offset:-2px}
 .pm .edv{cursor:text}.pm .edin{width:64px}
 .oldsheet{margin-top:14px}.oldsheet>summary{cursor:pointer;color:var(--muted);padding:6px 2px}
 """

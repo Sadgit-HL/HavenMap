@@ -73,14 +73,12 @@
 .pm .activelist{display:flex;gap:14px;justify-content:center;align-items:stretch;flex:1;min-width:0}
 .pm .activelist .ac{cursor:grab;transition:transform .14s,box-shadow .14s}
 .pm .activelist .ac:active{cursor:grabbing}
-.pm .activelist .ac.over{outline:2px solid var(--accent)}
 .pm .activelist .ac.dragging{opacity:.35;pointer-events:none}
 .pm[data-zactive=hover] .activelist .ac:hover, .pm .activelist .ac.zoomed{transform:scale(var(--hz,1.35));z-index:20;box-shadow:0 14px 34px rgba(0,0,0,.75)}
 .pm .zone .zlabel{position:absolute;left:14px;top:6px}
 .pm .zone .zlabel b{color:var(--text)}
 .pm .zone.play{border-color:rgba(199,164,74,.55);background:rgba(199,164,74,.07)}
 .pm .slot6{position:relative;display:flex;flex-direction:column;align-items:center;min-height:0;height:100%;border-radius:8px;transition:box-shadow .12s}
-.pm .slot6.over{box-shadow:0 0 0 2px var(--accent) inset}
 .pm .slotcard{height:100%;display:flex;min-height:0}
 .pm .slot6 .slotempty{font-size:30px;font-weight:700;letter-spacing:0;opacity:.55}
 .pm .slotempty{height:100%;aspect-ratio:5/7;width:auto;border:2px dashed rgba(236,223,200,.25);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.1em}
@@ -116,7 +114,6 @@
 .pm .fan6 .ac:active{cursor:grabbing}
 .pm .fan6 .ac{transform-origin:50% 100%}
 .pm[data-zhand=hover] .fan6 .ac:hover, .pm .fan6 .ac.zoomed{transform:scale(var(--hz,1.85));z-index:35;box-shadow:0 16px 40px rgba(0,0,0,.8)}
-.pm .fan6 .ac.over{outline:2px solid var(--accent);transform:translateX(10px)}
 .pm .fan6 .ac.dragging{opacity:.35;pointer-events:none}
 .pm .inib{position:absolute;left:calc(17% - 3px);top:5px;z-index:2;min-width:22px;height:22px;padding:0 4px;border-radius:11px;background:rgba(18,15,11,.88);border:1.5px solid var(--accent);color:var(--accent);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
 .pm .fan6 .ac, .pm .activelist .ac, .pm .pile6 .ac{position:relative}
@@ -137,7 +134,6 @@
 .pm .pile6.target{border-color:var(--accent);background:rgba(199,164,74,.14)}
 .pm .pile6 h4{margin:0;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .pm .pile6 h4 b{color:var(--text);font-size:13px}
-.pm .pile6.over{box-shadow:0 0 0 2px var(--accent) inset}
 .pm .pile6{cursor:pointer}
 .pm .pile6 .ac{cursor:grab}
 .pm .pile6 .ac:active{cursor:grabbing}
@@ -199,6 +195,5 @@
 .pm .noimg{display:flex;align-items:center;justify-content:center;text-align:center;padding:6px;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:6px;background:#1c1711;aspect-ratio:5/7}
 .pm .hbar .over-limit{color:#e08a7a}
 .pm .fan6 .ac.ins-before{box-shadow:-5px 0 0 var(--accent)}.pm .fan6 .ac.ins-after{box-shadow:5px 0 0 var(--accent)}
-.pm .slot6.over,.pm .pile6.over,.pm .activelist.over,.pm .fan6.over{outline:2px solid var(--accent);outline-offset:-2px}
 .pm .edv{cursor:text}.pm .edin{width:64px}
 .oldsheet{margin-top:14px}.oldsheet>summary{cursor:pointer;color:var(--muted);padding:6px 2px}
