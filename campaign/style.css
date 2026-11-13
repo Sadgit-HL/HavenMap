@@ -378,5 +378,336 @@ main.wide { max-width:none; }
 .flowwrap.full { position:fixed; inset:0; z-index:55; max-height:none; min-height:0; border:0; border-radius:0; }
 .flowfsbar { position:sticky; top:0; left:0; z-index:2; display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:8px 12px; background:rgba(18,15,11,.92); border-bottom:1px solid var(--line); width:max-content; max-width:100vw; box-sizing:border-box; }
 body.noscroll { overflow:hidden; }
-/* touch drag of playmat cards (pointer events, see app.js): the finger must not scroll the page */
-.pm:not(.pp) .ac[data-card], .pm:not(.pp) .flipcard[data-card] { touch-action: none; }
+/* touch drag of playmat cards (pointer events, see app.js): a quick swipe scrolls, a short hold picks the card up */
+.pm:not(.pp) .ac[data-card], .pm:not(.pp) .flipcard[data-card] { touch-action: pan-y; }
+.pm .ac.armed, .pm .flipcard.armed { outline: 2px solid var(--accent); }
+.pm .enhtable th { position: static; background: none; }
+
+/* touch: bigger hit areas for small controls (the visuals stay the same) */
+@media (pointer: coarse) {
+  .pm .tkh::after, .pm .pcell .rec::after { content: ''; position: absolute; inset: -12px; }
+  .pm .pcell .rec::after { inset: -10px -8px -6px; }
+  .pm .sp .spc button { min-width: 36px; min-height: 22px; }
+  .pm .pcard .psel { width: 30px; height: 30px; }
+  .pm .btn6 { min-height: 36px; }
+  .pm .mmodalx { width: 40px; height: 40px; }
+}
+
+.pm .cardmore { display: none; position: absolute; right: 3px; top: 3px; width: 22px; height: 22px; padding: 0; border-radius: 50%; background: rgba(18,15,11,.85); border: 1.5px solid var(--accent); color: var(--accent); font-size: 15px; line-height: 1; cursor: pointer; z-index: 8; }
+.pm .flipcard:not(.is-front) > .cardmore { display: none !important; }
+.pm .itcard .tk.sel { filter: drop-shadow(0 0 3px var(--accent)) drop-shadow(0 0 3px var(--accent)); }
+.pm .nudge { display: flex; flex-wrap: wrap; gap: 4px; }
+@media (pointer: coarse) {
+  .pm .cardmore { display: block; width: 30px; height: 30px; }
+  .pm .fan6 .ac.ins-before { box-shadow: -10px 0 0 var(--accent); }
+  .pm .fan6 .ac.ins-after { box-shadow: 10px 0 0 var(--accent); }
+}
+
+.pm .pvx { display: none; position: fixed; top: 12px; right: 12px; width: 44px; height: 44px; border-radius: 50%; background: rgba(18,15,11,.92); border: 2px solid var(--accent); color: var(--accent); font-size: 26px; line-height: 1; z-index: 700; cursor: pointer; }
+@media (pointer: coarse) {
+  .pm .mmodal:has([data-poolbig]:not([hidden]), [data-perkbig]:not([hidden]), [data-pilezoom]:not([hidden])) .pvx { display: block; }
+}
+
+/* character switcher in the playmat top bar */
+.pm .chsw { position: relative; }
+.pm .chname { background: none; border: 0; padding: 0; margin: 0; font: inherit; color: inherit; cursor: pointer; text-align: left; }
+.pm .chname span { font-size: .6em; color: var(--muted); }
+.pm .chname:hover span { color: var(--accent); }
+.pm .chlist { position: absolute; left: 0; top: calc(100% + 4px); z-index: 60; display: flex; flex-direction: column; min-width: 170px; padding: 4px; background: var(--panel); border: 1px solid var(--accent); border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,.6); font-size: 13px; font-weight: 400; }
+.pm .chlist button { background: none; border: 0; border-radius: 5px; padding: 7px 10px; color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+.pm .chlist button:hover, .pm .chlist button[aria-current] { background: #2d2519; }
+.pm .chlist button[aria-current] { color: var(--accent); }
+/* the character row above the top bar is gone: the playmat takes its height */
+main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); }
+
+.pm .hud .who, .pm .hud .portrait { cursor: pointer; }
+.pm .hud .who:hover .chname span { color: var(--accent); }
+.pm .hud .who, .pm .hud .portrait { user-select: none; -webkit-user-select: none; }
+
+/* item shelf: bigger equip button; item modal: state buttons are icons */
+.pm .itbar .equipbtn { padding: 5px 9px; }
+.pm .itpanel .seg .stbtn { display: inline-flex; align-items: center; justify-content: center; padding: 6px 10px; }
+.pm .itpanel .seg:has(.stbtn) { flex-direction: row; gap: 6px; }
+.pm .stbtn img { display: block; }
+
+/* hover zoom: the marker handle is hidden (a click opens the modal instead); played cards keep it because a click flips them */
+.pm[data-zhand="hover"] .fan6 .tkh, .pm[data-zactive="hover"] .activelist .tkh, .pm[data-zitems="hover"] .shelf6 .tkh { display: none; }
+
+.pm .pcell .rec svg { display: block; margin: 0 auto; pointer-events: none; }
+.pm .poolbar [data-pilerecall] svg { display: block; width: 16px; height: 16px; }
+
+/* recover icon (images/common/icons/recover.png is dark, so its buttons get a light plate) */
+.pm .pcell .rec, .pm .poolbar [data-pilerecall] { background: #efe6d2; }
+.pm .pcell .rec:hover, .pm .poolbar [data-pilerecall]:hover:not(:disabled) { background: #fff; }
+.pm .pcell .rec img { display: block; height: 11px; width: auto; margin: 2px auto 0; pointer-events: none; }
+.pm .poolbar [data-pilerecall] { padding: 3px 8px; }
+.pm .poolbar [data-pilerecall] img { display: block; height: 18px; width: auto; pointer-events: none; }
+.pm .poolbar [data-pilerecall]:disabled img { opacity: .4; }
+.pm .stbtn img[src$="recover.png"] { object-fit: contain; }
+.pm .itpanel .seg .stbtn:first-child { background: #efe6d2; }
+
+/* lighter plate for the dark state/recover icons */
+.pm .itpanel .seg .stbtn, .pm .pcell .rec, .pm .poolbar [data-pilerecall] { background: #fbf6ea; }
+.pm .itpanel .seg .stbtn:first-child { background: #fbf6ea; }
+.pm .itpanel .seg .stbtn:hover, .pm .pcell .rec:hover, .pm .poolbar [data-pilerecall]:hover:not(:disabled) { background: #fff; }
+.pm .itpanel .seg .stbtn[aria-pressed="true"], .pm .itpanel .seg .stbtn.on { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* plate only a little lighter than the modal panel (#231d17) */
+.pm .itpanel .seg .stbtn, .pm .itpanel .seg .stbtn:first-child, .pm .pcell .rec, .pm .poolbar [data-pilerecall] { background: #4a4135; }
+.pm .itpanel .seg .stbtn:hover, .pm .pcell .rec:hover, .pm .poolbar [data-pilerecall]:hover:not(:disabled) { background: #5e5344; }
+
+/* recover icon: inverted (light card, hue kept red) on the normal dark plate */
+.pm img[src$="recover.png"] { filter: invert(1) hue-rotate(180deg); }
+.pm .pcell .rec, .pm .poolbar [data-pilerecall], .pm .itpanel .seg .stbtn:first-child { background: rgba(18,15,11,.88); }
+.pm .pcell .rec:hover, .pm .poolbar [data-pilerecall]:hover:not(:disabled), .pm .itpanel .seg .stbtn:first-child:hover { background: #3a3026; }
+
+/* item state icons: no plate */
+.pm .itpanel .seg .stbtn, .pm .itpanel .seg .stbtn:first-child { background: transparent; }
+.pm .itpanel .seg .stbtn:hover, .pm .itpanel .seg .stbtn:first-child:hover { background: rgba(255,255,255,.08); }
+
+/* hover zoom in the pile modals: no Recover tab (a click recovers) */
+.pm[data-zpiles="hover"] .pcell .rec { display: none; }
+.pm[data-zpiles="hover"] .pcell { cursor: pointer; }
+
+/* the settings popup and character list hang below the top bar: keep the bar above the hand's Ini/Lvl buttons */
+.pm .hud { position: relative; z-index: 200; }
+
+/* attack modifier modal: draw = spent icon, return = recover icon */
+.pm .amfoot button { display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+.pm .amfoot .amico { display: block; height: 22px; width: auto; pointer-events: none; }
+.pm .amfoot button:disabled .amico { opacity: .4; }
+
+/* Modifiers view in the place of the hand */
+.pm .hbar .tog { display: inline-flex; border: 1px solid var(--line); border-radius: 9px; overflow: hidden; background: #2d2519; margin-right: 4px; }
+.pm .hbar .tog button { border: 0; background: transparent; color: var(--text); padding: 3px 12px; font: inherit; font-size: 12px; cursor: pointer; }
+.pm .hbar .tog button[aria-pressed="true"] { background: var(--accent); color: #120f0b; font-weight: 700; }
+.pm .hbar .cnt { font-size: 12px; color: var(--muted); }
+.pm .hbar .cnt b { color: var(--text); }
+.pm .hbar [data-amedit][aria-pressed="true"] { background: var(--accent); color: #120f0b; border-color: var(--accent); font-weight: 700; }
+.pm .amv { position: absolute; left: 12px; right: 12px; top: 36px; bottom: 8px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(200px, 30%); gap: 10px; z-index: 2; }
+.pm .amv .area { border: 1px solid var(--line); border-radius: 10px; background: rgba(18,15,11,.7); padding: 8px 10px; overflow: auto; min-height: 0; display: flex; flex-direction: column; }
+.pm .amv .area > h5 { margin: 0 0 6px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); flex: none; }
+.pm .amv .area.drop { outline: 2px dashed var(--accent); outline-offset: -4px; background: rgba(40,32,20,.8); }
+.pm .amv .stacks { display: flex; flex-wrap: wrap; gap: 14px 14px; align-content: flex-start; flex: 1; padding-top: 8px; overflow: auto; }
+.pm .amv .stk { position: relative; width: 104px; flex: none; cursor: grab; user-select: none; -webkit-user-select: none; margin-top: 9px; }
+.pm .amv .stk .stkface { display: block; position: relative; z-index: 1; }
+.pm .amv .stk .pc, .pm .amv .stk .amslot { --pc-width: 104px; border: 1px solid var(--line); border-radius: 5px; overflow: hidden; display: block; }
+.pm .amv .stk img { display: block; max-width: 100%; pointer-events: none; }
+.pm .amv .stk .edge { position: absolute; left: 0; top: 0; width: 104px; height: 68px; border-radius: 5px; background: #2b2219; border: 1px solid #6b5a3c; box-shadow: 0 1px 3px rgba(0,0,0,.7); }
+.pm .amv .stk .nb { position: absolute; right: -6px; top: -9px; z-index: 3; min-width: 22px; height: 22px; padding: 0 5px; border-radius: 99px; background: var(--accent); color: #120f0b; font-weight: 800; font-size: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px #000; }
+.pm .amv .stkctl { display: flex; align-items: center; justify-content: center; gap: 4px; margin-top: 5px; position: relative; z-index: 2; }
+.pm .amv .stkctl button { width: 26px; height: 26px; border: 1px solid var(--line); background: #2d2519; color: var(--text); border-radius: 6px; cursor: pointer; font-weight: 800; }
+.pm .amv .stkctl b { min-width: 26px; text-align: center; }
+.pm .amv .ampal { flex: none; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
+.pm .amv .ampal > span { color: var(--accent); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; margin-right: 4px; }
+@media (pointer: coarse) { .pm .hbar .tog button { padding: 8px 14px; } .pm .amv .stkctl button { width: 34px; height: 34px; } }
+
+/* Modifiers view: the deck lies on the table (no box); the discard looks like the ability card piles */
+.pm .amv .deckarea { border: 2px dashed transparent; background: transparent; }
+.pm .amv .discarea { border: 2px dashed rgba(236,223,200,.28); border-radius: 12px; background: rgba(0,0,0,.2); align-items: center; }
+.pm .amv .discarea > h5 { margin: 0 0 4px; font-size: 11px; letter-spacing: .1em; }
+.pm .amv .discarea .stacks { justify-content: center; }
+.pm .amv .area.drop { outline: 0; }
+.pm .amv .discarea.drop { border-color: var(--accent); background: rgba(199,164,74,.14); }
+.pm .amv .deckarea.drop { border-color: var(--accent); background: rgba(199,164,74,.08); }
+.pm .amv .stk.lift .nb, .pm .amv .stk.lift .edge { visibility: hidden; }
+.pm .amv .stacks { padding: 16px 14px 6px 8px; }
+.pm .amv .stk .nb { right: -8px; top: -11px; }
+/* modifier cards 25% larger (104 -> 130 px wide) */
+.pm .amv .stk { width: 130px; }
+.pm .amv .stk .pc, .pm .amv .stk .amslot { --pc-width: 130px; }
+.pm .amv .stk .edge { width: 130px; height: 85px; }
+
+/* modifier discard: one top card, as wide as from the second play slot to the right edge */
+.pm .amv { --ch: calc(32cqh - 36px); grid-template-columns: minmax(0, 1fr) calc(128px + var(--ch) * 5 / 7); }
+.pm .amv .discarea { cursor: pointer; }
+.pm .amv .discarea > h5 b { color: var(--text); font-size: 13px; }
+.pm .amv .discarea .stacks { align-content: center; flex: 1; }
+.pm .amcell .amslot, .pm .amcell .pc { --pc-width: 130px; display: block; border: 1px solid var(--line); border-radius: 5px; overflow: hidden; }
+.pm[data-zpiles="hover"] .amcell { cursor: pointer; }
+.pm .poolbar [data-amact="shuffle"] { background: rgba(18,15,11,.88); padding: 3px 8px; }
+.pm .poolbar [data-amact="shuffle"] img { display: block; height: 18px; width: auto; pointer-events: none; }
+.pm .poolbar [data-amact="shuffle"]:disabled img { opacity: .4; }
+.pm .amcell { height: auto; aspect-ratio: auto; width: auto; align-self: flex-start; }
+.pm .hbar .hctl .btn6 svg { display: block; pointer-events: none; }
+.pm .hbar .hctl .btn6[data-code], .pm .hbar .hctl .btn6[data-amact="shuffle"], .pm .hbar .hctl .btn6[data-amedit] { padding: 4px 7px; display: inline-flex; align-items: center; }
+
+/* Edit view counters: style 1 of mockups/counter-styles.html (segmented stepper) */
+.pm .amv .stkctl { display: flex; align-items: stretch; width: 100%; gap: 0; margin-top: 6px; border: 1px solid #4a3d28; border-radius: 10px; overflow: hidden; background: #2d2519; }
+.pm .amv .stkctl button { flex: 0 0 36px; width: auto; height: auto; padding: 4px 0; border: 0; border-radius: 0; background: transparent; font-size: 20px; line-height: 1; font-weight: 400; color: var(--muted); transition: background .12s, color .12s; }
+.pm .amv .stkctl button:hover { background: #3a2f1e; color: var(--text); }
+.pm .amv .stkctl button:active { background: var(--accent); color: #1b150c; }
+.pm .amv .stkctl button:disabled { opacity: .35; cursor: not-allowed; }
+.pm .amv .stkctl output { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; border-inline: 1px solid #4a3d28; color: var(--text); }
+.pm .amv .stk.zero .stkface, .pm .amv .stk.zero .edge { opacity: .4; }
+
+/* Modifiers view: roll code button (half) with Shuffle and Edit (other half) above the discard */
+.pm .amv .amside { display: flex; flex-direction: column; gap: 8px; min-height: 0; }
+.pm .amv .amctl { flex: 0 0 96px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pm .amv .amcode { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; border-radius: 12px; border: 2px solid #f0d68a; background: linear-gradient(180deg,#d9bb62,#a98826); color: #1b150c; font: inherit; font-weight: 800; font-size: 14px; cursor: pointer; box-shadow: 0 3px 0 #6a5316, 0 6px 14px rgba(0,0,0,.45); }
+.pm .amv .amcode:active { transform: translateY(2px); box-shadow: 0 1px 0 #6a5316; }
+.pm .amv .amcode:disabled { opacity: .45; cursor: not-allowed; }
+.pm .amv .amcode svg { display: block; pointer-events: none; }
+.pm .amv .amcode.copied { background: linear-gradient(180deg,#8fcf86,#5f9f57); border-color: #b8e8b0; }
+.pm .amv .amtools { display: grid; grid-template-rows: 1fr 1fr; gap: 8px; }
+.pm .amv .amtools button { display: flex; align-items: center; justify-content: center; border-radius: 10px; border: 1px solid var(--line); background: #2d2519; color: var(--text); cursor: pointer; }
+.pm .amv .amtools button:hover { background: #3a2f1e; color: var(--accent); }
+.pm .amv .amtools button svg { display: block; pointer-events: none; }
+.pm .amv .amtools button[aria-pressed="true"] { background: var(--accent); color: #120f0b; border-color: var(--accent); }
+.pm .amv .amside .discarea { flex: 1; min-height: 0; }
+.pm .pgrp h3 span { color: var(--muted); font-weight: 600; letter-spacing: 0; }
+.pm .pgrp h3 span.full { color: var(--accent); }
+/* the slot count belongs to the heading text: HEAD (0/1) */
+.pm .pgrp h3 { justify-content: flex-start; gap: .4em; }
+.pm .pgrp h3 span { font-size: inherit; font-weight: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; }
+.pm .pgrp h3 span.full { color: var(--accent); }
+.pm .mmodalbox .pgrp h3 { justify-content: flex-start; gap: .4em; }
+.pm .mmodalbox .pgrp h3 span { font-size: inherit; font-weight: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; }
+.pm .mmodalbox .pgrp h3 span.full { color: var(--accent); }
+/* modifier discard modal: the cell is exactly as big as its card (the ability pile cells are 5:7) */
+.pm .pilelist .amcell { width: 130px; height: auto; aspect-ratio: auto; box-shadow: none; border-radius: 5px; align-self: flex-start; }
+.pm .pilelist .amcell .amslot, .pm .pilelist .amcell .pc { width: 130px; border: 0; border-radius: 5px; }
+.pm .pilelist .amcell .pc { --pc-width: 130px; }
+
+/* Top and bottom strips, active area, placed cards */
+.pm .amv .amstrip, .pm .amv .amactive { border: 2px dashed rgba(236,223,200,.28); border-radius: 10px; background: rgba(0,0,0,.2); display: flex; align-items: center; gap: 8px; padding: 4px 8px; flex: none; min-height: 58px; }
+.pm .amv .amstrip .lab { flex: none; width: 54px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.pm .amv .amstrip .minis, .pm .amv .amactive .minis { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; min-height: 48px; overflow: hidden; }
+.pm .amv .amactive { flex: 0 0 96px; flex-direction: column; align-items: stretch; gap: 2px; }
+.pm .amv .amactive .lab { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); text-align: center; }
+.pm .amv .amactive .lab b { color: var(--text); font-size: 13px; }
+.pm .amv .amactive .minis { justify-content: center; }
+.pm .amv .mini { flex: none; width: 70px; cursor: grab; user-select: none; -webkit-user-select: none; }
+.pm .amv .mini .stkface { display: block; }
+.pm .amv .mini .pc, .pm .amv .mini .amslot { --pc-width: 70px; display: block; border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+.pm .amv .mini img { display: block; max-width: 100%; pointer-events: none; }
+.pm .amv .amstrip[data-amdrop="top"] .mini:first-child { outline: 2px solid var(--accent); outline-offset: 1px; border-radius: 4px; }
+.pm .amv .amstrip.drop, .pm .amv .amactive.drop { border-color: var(--accent); background: rgba(199,164,74,.14); }
+.pm .amv .deckarea { gap: 6px; }
+.pm .amv .amcode.amdraw { font-size: 13px; }
+.pm .amv .amcode.amdraw img { display: block; }
+.pm .amv .amrow { flex: none; display: flex; gap: 8px; }
+.pm .amv .amrow .amstrip { flex: 1 1 0; min-width: 0; }
+
+/* Hand editor */
+.pm .hbar [data-handedit] svg { display: block; pointer-events: none; }
+.pm .hbar [data-handedit] { padding: 4px 7px; display: inline-flex; align-items: center; }
+
+/* modifier cards: zoom like the ability cards (zone setting of the hand), growing upwards from the lower edge */
+.pm .amv .stk, .pm .amv .mini { position: relative; }
+.pm .amv .stkface { transition: transform .14s, box-shadow .14s; transform-origin: 50% 100%; }
+.pm[data-zhand="hover"] .amv .stk:hover, .pm[data-zhand="hover"] .amv .mini:hover, .pm .amv .stk.zoomed, .pm .amv .mini.zoomed { z-index: 40; }
+.pm[data-zhand="hover"] .amv .stk:hover .stkface, .pm[data-zhand="hover"] .amv .mini:hover .stkface, .pm .amv .stk.zoomed .stkface, .pm .amv .mini.zoomed .stkface { transform: scale(var(--hz, 2.4)); box-shadow: 0 16px 40px rgba(0,0,0,.8); }
+.pm[data-zhand="hover"] .amv .stk:hover .stkface, .pm[data-zhand="hover"] .amv .mini:hover .stkface { transition-delay: var(--hdelay, 0s); }
+.pm .amv .area, .pm .amv .stacks, .pm .amv .minis { overflow: visible; }
+.pm .amv .stk:hover .edge { visibility: hidden; }
+/* the active area is as high as the Top and Bottom strips */
+.pm .amv .amstrip { height: 78px; min-height: 0; }
+.pm .amv .amactive { flex: 0 0 78px; height: 78px; min-height: 0; }
+.pm .amv .amstrip .minis, .pm .amv .amactive .minis { overflow: visible; }
+/* the active area lines up with the Top and Bottom strips (the deck area's padding and border sit around the strips) */
+.pm .amv .amactive { margin-bottom: 10px; }
+
+/* a zoomed card always lies above everything else on the page (the containers that form stacking contexts are lifted while one of their cards is zoomed) */
+.pm .amv:has(.stk:hover, .mini:hover, .zoomed) { z-index: 60; }
+.pm .board6:has(.ac:hover, .flipcard:hover, .stk:hover, .mini:hover, .zoomed) { z-index: 250; }
+.pm .shelf6:has(.it:hover, .zoomed) { position: relative; z-index: 250; }
+/* zoomed modifier cards: no frame around the card */
+.pm[data-zhand="hover"] .amv .stk:hover .pc, .pm[data-zhand="hover"] .amv .stk:hover .amslot, .pm[data-zhand="hover"] .amv .mini:hover .pc, .pm[data-zhand="hover"] .amv .mini:hover .amslot,
+.pm .amv .stk.zoomed .pc, .pm .amv .stk.zoomed .amslot, .pm .amv .mini.zoomed .pc, .pm .amv .mini.zoomed .amslot { border-color: transparent; }
+/* item state buttons: a full frame for the current state (the segment's clipping cut the first one) */
+.pm .itpanel .seg:has(.stbtn) { overflow: visible; border: 0; background: transparent; padding: 3px; }
+.pm .itpanel .seg .stbtn { border-radius: 8px; border: 1px solid var(--line); }
+.pm .itpanel .seg .stbtn[aria-pressed="true"], .pm .itpanel .seg .stbtn.on { outline: 0; border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+
+/* Hand editor modal: large, one view, a state badge on the upper rim of every card */
+.pm .mmodalbox.huge { width: min(1500px, 97vw); max-height: 94vh; }
+.pm .pgrid { display: flex; flex-wrap: wrap; gap: 16px; }
+.pm .mmodalbox.huge .pcard { width: 150px; margin-top: 8px; overflow: visible; }
+.pm .mmodalbox.huge .pcard > img { border-radius: 6px; }
+.pm .pcard .cbadge { position: absolute; left: 50%; top: -9px; transform: translateX(-50%); z-index: 3; display: inline-flex; align-items: center; gap: 4px; height: 20px; padding: 0 9px; border-radius: 10px; font: inherit; font-size: 11px; font-weight: 800; white-space: nowrap; cursor: pointer; background: rgba(18,15,11,.92); border: 1.5px solid var(--accent); color: var(--accent); }
+.pm .pcard .cbadge.locked { border-color: #6b5a3c; color: var(--muted); }
+.pm .pcard .cbadge.hand { background: var(--accent); color: #120f0b; }
+.pm .pcard .cbadge.off { opacity: .45; cursor: not-allowed; }
+.pm .pcard .cbadge svg { display: block; }
+.pm .pcard.locked { filter: none; }
+.pm .pcard.locked > img { filter: grayscale(.8) brightness(.38); }
+.pm .pcard.hand { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); border-radius: 8px; }
+.pm .pcard.unlocked { border-color: transparent; }
+/* leave room beside the hand editor for the docked card preview (left or right, as set) */
+.pm .mmodalbox.huge { width: min(1500px, calc(100vw - 430px)); }
+.pm[data-dock="left"] .mmodalbox.huge { margin-left: auto; margin-right: 24px; }
+.pm[data-dock="right"] .mmodalbox.huge { margin-right: auto; margin-left: 24px; }
+@media (max-width: 1000px) { .pm .mmodalbox.huge { width: 97vw; margin: 0 auto !important; } }
+
+/* hand bar: the pencil belongs to the hand title, the sort buttons form a joined pill with a label */
+.pm .hbar .sortlab { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-right: 2px; }
+.pm .hbar .sortgrp { display: inline-flex; gap: 0; border: 1px solid var(--line); border-radius: 9px; overflow: hidden; background: #2d2519; }
+.pm .hbar .sortgrp .btn6 { border: 0; border-radius: 0; background: transparent; padding: 3px 12px; }
+.pm .hbar .sortgrp .btn6 + .btn6 { border-left: 1px solid var(--line); }
+.pm .hbar .sortgrp .btn6:hover { background: #3a2f1e; color: var(--accent); }
+.pm .hbar .zlabel + [data-handedit] { margin-left: -4px; }
+
+/* top bar: BGG code buttons in the style of the roll code button */
+.pm .hud .bggseg { gap: 8px; border: 0; background: transparent; overflow: visible; }
+.pm .hud .bggb, .pm .hud .bggb+.bggb { border: 1px solid #f0d68a; border-radius: 10px; background: linear-gradient(180deg,#e2c56b,#b8942f); color: #1b150c; font-weight: 800; padding: 5px 12px; box-shadow: 0 2px 0 #6a5316, 0 3px 8px rgba(0,0,0,.4); }
+.pm .hud .bggb:hover { background: linear-gradient(180deg,#edd47f,#c4a03a); color: #1b150c; }
+.pm .hud .bggb:active { transform: translateY(1px); box-shadow: 0 1px 0 #6a5316; }
+.pm .hud .bggb svg { color: #1b150c; }
+.pm .hud .bggseg .bggb, .pm .hud .bggseg .bggb + .bggb { border: 1px solid #f0d68a; border-radius: 10px; background: linear-gradient(180deg,#e2c56b,#b8942f); color: #1b150c; font-weight: 800; box-shadow: 0 2px 0 #6a5316, 0 3px 8px rgba(0,0,0,.4); }
+.pm .hud .bggseg .bggb:hover { background: linear-gradient(180deg,#edd47f,#c4a03a); color: #1b150c; }
+
+/* the roll code and BGG code buttons: a quieter gold */
+.pm .hud .bggseg .bggb, .pm .hud .bggseg .bggb + .bggb, .pm .amv .amcode { border: 1px solid #a98d42; background: linear-gradient(180deg,#a68a3d,#85702e); color: #1b150c; box-shadow: 0 1px 0 #4a3b14; }
+.pm .hud .bggseg .bggb:hover, .pm .amv .amcode:hover:not(:disabled) { background: linear-gradient(180deg,#b79a47,#92793a); color: #1b150c; }
+.pm .hud .bggseg .bggb:active, .pm .amv .amcode:active { transform: translateY(1px); box-shadow: none; }
+.pm .amv .amcode.copied { background: linear-gradient(180deg,#7fb877,#58904f); border-color: #8fc788; box-shadow: 0 1px 0 #2c4a28; }
+
+/* Edit character modal */
+.pm .chedit { display: flex; flex-direction: column; gap: 12px; }
+.pm .chedit .cehero { display: flex; align-items: center; gap: 14px; padding: 4px 2px 8px; border-bottom: 1px solid var(--line); }
+.pm .chedit .ceport { width: 76px; height: 76px; border-radius: 50%; border: 2px solid var(--accent); background-size: cover; flex: none; box-shadow: 0 2px 8px rgba(0,0,0,.5); }
+.pm .chedit .cehtxt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.pm .chedit .cehtxt b { font-size: 19px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pm .chedit .cehtxt span { color: var(--muted); }
+.pm .chedit .cehtxt em { color: var(--accent); font-style: normal; font-size: 12px; }
+.pm .chedit .cesec { display: flex; flex-direction: column; gap: 8px; padding: 10px 12px 12px; border: 1px solid var(--line); border-radius: 10px; background: rgba(0,0,0,.18); }
+.pm .chedit .cesec h4 { margin: 0; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.pm .chedit .cegrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.pm .chedit label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); }
+.pm .chedit input, .pm .chedit select { height: 34px; background: #2d2519; color: var(--text); border: 1px solid var(--line); border-radius: 8px; font: inherit; font-size: 14px; padding: 0 10px; }
+.pm .chedit input:focus, .pm .chedit select:focus { outline: 0; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(199,164,74,.25); }
+.pm .chedit .cerow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-height: 26px; }
+.pm .chedit .celab { font-size: 12px; color: var(--muted); }
+.pm .chedit .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.pm .chedit .hint { color: var(--muted); font-size: 12px; }
+.pm .chedit .cewarn { padding: 9px 12px; border: 1px solid #b4533f; border-left-width: 4px; border-radius: 8px; background: rgba(180,83,63,.14); color: #f0cdbf; font-size: 13px; line-height: 1.4; }
+.pm .chedit .cewarn b { color: #ffd9cc; }
+.pm .chedit .chfoot { display: flex; justify-content: flex-end; gap: 10px; margin-top: 2px; }
+.pm .chedit .chfoot .btn6 { padding: 7px 16px; font-size: 13px; }
+.pm .chedit .ce-save { background: var(--accent); color: #120f0b; border-color: var(--accent); font-weight: 800; }
+.pm .chedit .ce-danger { background: #b4533f; color: #fff; border-color: #d17a66; font-weight: 800; }
+@media (max-width: 520px) { .pm .chedit .cegrid { grid-template-columns: 1fr; } }
+
+/* Items tab: owner chips and the give menu */
+.itemwith { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.itemwith .chip { display: inline-flex; align-items: center; gap: 4px; }
+.itemwith .givesel { font: inherit; font-size: 12px; background: #2d2519; color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 2px 4px; }
+
+/* Equip items modal: the same state badge and frame as the hand editor */
+.pm .pcard .cbadge.equipped { background: var(--accent); color: #120f0b; }
+.pm .pcard .cbadge:disabled { opacity: .45; cursor: not-allowed; }
+.pm .mmodalbox.huge .pcard .tk img { max-width: none; }
+
+/* Equip items: the slot groups lie side by side and wrap */
+.pm .itgroups { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 6px 36px; }
+.pm .itgroups .pgrp { margin-bottom: 8px; }
+
+/* state badges float on the upper edge of the card (about two thirds above it) */
+.pm .pcard .cbadge { top: -14px; }
+.pm .mmodalbox.huge .pcard { margin-top: 14px; }
+.pm .pcard .cbadge { top: -18px; }
+.pm .mmodalbox.huge .pcard { margin-top: 18px; }
+
+/* no black box behind the modifier card pictures (the card art has rounded, transparent corners) */
+.pm .amv .pc, .pm .amv .amslot, .pm .amcell .pc, .pm .amcell .amslot { background: transparent; }

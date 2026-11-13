@@ -25,7 +25,8 @@ Record fields (all optional on load, defaults filled by normalize):
   stk, cls          sticker labels, unlocked class names
   avail             class names available in this campaign (optional; absent = every class in scripts/campaign/classList.js)
   scn               { "<number>": { s, l?, p?, ch?, d? } }   state, level, party size, chests, date
-  chars             [{ id, cls, name, seat?, lv, xp, gold, inh, traits, special, hand, deck, disc, act, lost, play, hord, tok, bench, items:[{id, st, s}], am }]
+  chars             [{ id, cls, name, seat?, lv, xp, gold, inh, traits, special, hand, deck, disc, act, lost, play, hord, tok, bench, own, items:[{id, st, s}], am }]
+                    own = the item ids the character owns (given from the Items tab); items = the owned items that are equipped (slot limits), with their state
                     Every ability card of `deck` is in exactly one place: lost, disc (discard pile, last = top), play, act (active area) or the hand
                     (all the rest). play = [slot 1, slot 2], each null or { id, up } (up = face up); only hand cards enter a slot, slot 1 sets the
                     initiative. hord = manual hand order [cardId] or null (null = sorted by initiative),
@@ -126,6 +127,9 @@ function cleanMarks(mk) {
 // the first of lost, discard, a play slot, active; play slots keep { id, up } or null; hord keeps hand cards only.
 function normalizeChar(c) {
   const ch = { traits: [], special: [], deck: [], disc: [], act: [], lost: [], bench: [], items: [], play: [null, null], hord: null, tok: {}, bgo: null, pqo: null, pqc: {}, notes: '', mk: {}, mp: {}, pk: { perks: [], boxes: {}, ms: [] }, ...c };
+  // a card is owned once: the deck lists it once, and the bench does not list a card that is in the deck (an import may have both)
+  ch.deck = [...new Set(Array.isArray(ch.deck) ? ch.deck : [])];
+  ch.bench = [...new Set(Array.isArray(ch.bench) ? ch.bench : [])].filter(id => !ch.deck.includes(id));
   const seen = new Set();
   const take = list => (Array.isArray(list) ? list : []).filter(id => !seen.has(id) && seen.add(id));
   ch.lost = take(ch.lost);
@@ -137,6 +141,7 @@ function normalizeChar(c) {
   ch.pqo = Array.isArray(ch.pqo) ? ch.pqo.slice(0, 2) : null;
   if (!ch.pqc || typeof ch.pqc !== 'object' || Array.isArray(ch.pqc)) ch.pqc = {};
   ch.items = (Array.isArray(ch.items) ? ch.items : []).map(it => ({ ...it, s: Math.max(0, Math.min(2, Math.trunc(Number(it.s ?? ((it.st || []).some(Boolean) ? 1 : 0))) || 0)) }));
+  { const seenIt = new Set(); ch.own = [...(Array.isArray(ch.own) ? ch.own : []), ...ch.items.map(it => it.id)].filter(id => !seenIt.has(String(id)) && seenIt.add(String(id))); }   // the equipped items are owned
   ch.notes = typeof ch.notes === 'string' ? ch.notes : '';
   ch.mk = cleanMarks(ch.mk);
   ch.mp = ch.mp && typeof ch.mp === 'object' && !Array.isArray(ch.mp) ? Object.fromEntries(Object.entries(ch.mp).filter(([k, v]) => /^c:\d+$/.test(k) && Number.isInteger(v) && v >= 0 && v <= 9999)) : {};
@@ -207,7 +212,7 @@ export const cardLevel = id => { const lv = CARD_INFO.get(id)?.lv; return lv ===
 
 // The card pool of a character: every card it owns (the deck of the scenario plus the other owned cards), and how many level up cards
 // it may still pick (level - 1 minus the owned cards of level 2 and up; the cards of level 1 and X are the starting pool).
-export const ownedCards = c => [...c.deck, ...c.bench];
+export const ownedCards = c => [...new Set([...c.deck, ...c.bench])];
 export const pendingPicks = c => Math.max(0, (c.lv || 1) - 1 - ownedCards(c).filter(id => { const l = cardLevel(id); return l >= 2 && l < 99; }).length);
 
 // The hand in display order. hord null = automatic: lowest initiative first, deck order for ties and unknown initiatives.
@@ -219,12 +224,11 @@ export function handList(c) {
   return hand.sort((a, b) => (pos(a) === pos(b) ? 0 : pos(a) < pos(b) ? -1 : 1));
 }
 
-// Copies of an item in use: the number of characters holding it (calculated from the character sheets,
+// Copies of an item in use: the number of characters owning it (calculated from the character sheets,
 // not stored; `items.taken` of an imported record is ignored).
+export const ownsItem = (c, id) => (c.own || []).some(x => String(x) === String(id)) || (c.items || []).some(it => String(it.id) === String(id));
 export function itemsInUse(r, item) {
-  let n = 0;
-  for (const c of r.chars) for (const it of c.items || []) if (String(it.id) === String(item.id)) n++;
-  return n;
+  return r.chars.filter(c => ownsItem(c, item.id)).length;
 }
 
 // Item slots: head, body and legs one each, hands two (a one-handed item uses 1, a two-handed item 2), small items half the level rounded up.

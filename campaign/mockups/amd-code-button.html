@@ -1,0 +1,69 @@
+<!doctype html><meta charset="utf-8"><title>Roll code button: 3 options</title>
+<style>
+:root{--bg:#16130f;--panel:#231d17;--line:#3a3026;--text:#ecdfc8;--muted:#a89a82;--accent:#c7a44a}
+*{box-sizing:border-box}body{margin:0;padding:18px;background:#0e0c09;color:var(--text);font:13px/1.35 system-ui,Segoe UI,sans-serif}
+h1{font-size:17px;margin:0 0 4px}h2{margin:22px 0 4px;font-size:15px;color:var(--accent)}p.d{margin:0 0 8px;color:var(--muted);max-width:940px}
+.mat{position:relative;width:1060px;height:330px;background:radial-gradient(ellipse at 50% 40%,#2b3a2c 0%,#1a2519 70%,#121a12 100%);border:1px solid var(--line);border-radius:12px;overflow:hidden;padding:10px 12px}
+.bar{display:flex;align-items:center;gap:10px;height:34px}
+.tog{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#2d2519}
+.tog button{border:0;background:transparent;color:var(--text);padding:3px 12px;font:inherit;font-size:12px}
+.tog button.on{background:var(--accent);color:#120f0b;font-weight:700}
+.cnt{font-size:12px;color:var(--muted)}.cnt b{color:var(--text)}
+.grow{flex:1}
+.btn6{display:inline-flex;align-items:center;background:#2d2519;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:4px 7px;font:inherit;cursor:pointer}
+.body{position:absolute;left:12px;right:12px;top:50px;bottom:10px;display:grid;grid-template-columns:minmax(0,1fr) 262px;gap:10px}
+.area{border:2px dashed transparent;padding:8px 10px;display:flex;flex-direction:column;min-height:0}
+.area h5{margin:0 0 4px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.stacks{display:flex;gap:14px;padding-top:10px}
+.stk{width:104px;position:relative}.stk img{display:block;width:100%;border:1px solid var(--line);border-radius:5px}
+.stk .nb{position:absolute;right:-6px;top:-9px;background:var(--accent);color:#120f0b;font-weight:800;font-size:12px;border-radius:99px;min-width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+.col{display:flex;flex-direction:column;gap:8px;min-height:0}
+.disc{flex:1;border:2px dashed rgba(236,223,200,.28);border-radius:12px;background:rgba(0,0,0,.2);align-items:center;display:flex;flex-direction:column;padding:6px;color:var(--muted)}
+.disc h5{margin:0;font-size:11px;letter-spacing:.1em;text-transform:uppercase}.disc h5 b{color:var(--text)}
+/* option 1: filled accent button with label */
+.code1{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(180deg,#e2c56b,#b8942f);color:#1b150c;border:1px solid #f0d68a;border-radius:10px;padding:5px 14px 5px 10px;font:inherit;font-weight:800;font-size:14px;box-shadow:0 2px 0 #6a5316,0 4px 10px rgba(0,0,0,.45);cursor:pointer}
+.code1:active{transform:translateY(1px);box-shadow:0 1px 0 #6a5316}
+.code1 svg{width:22px;height:22px}
+/* option 2: large icon button */
+.code2{width:48px;height:42px;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#e2c56b,#b8942f);color:#1b150c;border:1px solid #f0d68a;border-radius:11px;box-shadow:0 2px 0 #6a5316,0 4px 10px rgba(0,0,0,.45);cursor:pointer}
+.code2 svg{width:28px;height:28px}
+/* option 3: large area above the discard */
+.code3{flex:0 0 96px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-radius:12px;border:2px solid #f0d68a;background:linear-gradient(180deg,#d9bb62,#a98826);color:#1b150c;font:inherit;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 3px 0 #6a5316,0 6px 14px rgba(0,0,0,.45)}
+.code3 svg{width:40px;height:40px}.code3 small{font-weight:600;font-size:11px;opacity:.75}
+.code3:active{transform:translateY(2px)}
+.copied{background:linear-gradient(180deg,#8fcf86,#5f9f57)!important;border-color:#b8e8b0!important}
+</style>
+<body>
+<h1>Roll code button: three options</h1>
+<p class="d">Click each button to see the copy confirmation (it turns green and reads "Copied" for 1.5 s). Shuffle and Edit stay small icons. Mock data.</p>
+<template id="dice"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg></template>
+<template id="shuf"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M10.59 9.17 5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg></template>
+<template id="pen"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1-4 11-11a2 2 0 0 1 3 3L8 19z"/><path d="M14 7l3 3"/></svg></template>
+
+<h2>1. Filled accent button with a label, left of the counts</h2>
+<p class="d">The only filled control in the bar. Dice plus "Roll code". The toggle stays at the far left.</p>
+<div class="mat" data-v="1"></div>
+<h2>2. Large icon button, left of the counts</h2>
+<p class="d">The same gold plate as option 1, icon only, 48 by 42 px. Shortest in the bar.</p>
+<div class="mat" data-v="2"></div>
+<h2>3. Large button area above the discard</h2>
+<p class="d">A 96 px tall gold area at the top of the right column (above the discard, which shrinks accordingly). Biggest target, and it sits next to the cards you are discarding. Fine for touch.</p>
+<div class="mat" data-v="3"></div>
+
+<script>
+const B='../../images/common/attack_mods';
+const tpl=id=>document.getElementById(id).innerHTML;
+const card=(f,n,x)=>`<div class="stk"><img src="${B}/frames/${f}.webp" style="display:none"><div style="position:relative;aspect-ratio:600/391"><img src="${B}/frames/${f}.webp" style="position:absolute;inset:0"><img src="${B}/numbers/c-${n}.webp" style="position:absolute;inset:0;border:0">${x?`<img src="${B}/spheres/shuffle.webp" style="position:absolute;inset:0;border:0">`:''}</div>${''}</div>`;
+const cards=[['p0','p0'],['positive','p1'],['negative','m1'],['positive','p2'],['negative','m2'],['x2','x2',1]].map(([f,n,x])=>card(f,n,x));
+document.querySelectorAll('.mat').forEach(m=>{
+  const v=m.dataset.v;
+  const c1=`<button class="code1" data-code><span>${tpl('dice')}</span><span class="lbl">Roll code</span></button>`;
+  const c2=`<button class="code2" data-code title="Copy roll code" aria-label="Copy roll code">${tpl('dice')}</button>`;
+  const c3=`<button class="code3" data-code>${tpl('dice')}<span class="lbl">Copy roll code</span><small>1custom20{...}</small></button>`;
+  m.innerHTML=`<div class="bar"><span class="tog"><button>Hand</button><button class="on">Modifiers</button></span>${v==='1'?c1:v==='2'?c2:''}<span class="cnt"><b>20</b> in deck &middot; <b>0</b> discarded</span><span class="grow"></span><button class="btn6">${tpl('shuf')}</button><button class="btn6">${tpl('pen')}</button></div>
+  <div class="body"><div class="area"><h5>Deck</h5><div class="stacks">${cards.join('')}</div></div>
+  <div class="col">${v==='3'?c3:''}<div class="disc"><h5>Discard &middot; <b>0</b></h5></div></div></div>`;
+});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-code]');if(!b)return;const l=b.querySelector('.lbl');const old=l&&l.textContent;b.classList.add('copied');if(l)l.textContent='Copied';setTimeout(()=>{b.classList.remove('copied');if(l)l.textContent=old},1500);});
+</script>
+</body>

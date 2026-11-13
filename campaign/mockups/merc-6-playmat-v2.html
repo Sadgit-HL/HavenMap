@@ -13,7 +13,7 @@
 .itbar{display:flex;align-items:center;gap:6px}.itbar .btn6{padding:1px 4px;line-height:1}
 .pcbig img.nat{aspect-ratio:auto;height:auto;object-fit:contain}
 .slotlim{display:flex;gap:14px;flex-wrap:wrap}.slotlim b{color:var(--text)}.slotlim .full b{color:var(--accent)}
-.shelf6 .it{ .14s,box-shadow .14s;cursor:default;position:relative;transform-origin:0 50%}
+.shelf6 .it{transition:transform .14s,box-shadow .14s;cursor:default;position:relative;transform-origin:0 50%}
 .shelf6 .it:nth-of-type(-n+2){transform-origin:0 0}.shelf6 .it:nth-of-type(n+3):nth-of-type(-n+4){transform-origin:0 15%}.shelf6 .it:nth-of-type(n+7){transform-origin:0 100%}
 body[data-zitems=hover] .shelf6 .it:hover,.shelf6 .it.zoomed{transform:scale(var(--hz,2.2));z-index:20;box-shadow:0 14px 34px rgba(0,0,0,.75)}
 .lvl{cursor:pointer}
@@ -158,7 +158,7 @@ body[data-zhand=hover] .hand6[data-layout=fan] .fan6 .ac:hover,.hand6[data-layou
 .amdtile.real b{font-size:13px;color:var(--text);background:#2d2519;border:1px solid var(--line);border-radius:999px;min-width:20px;padding:0 5px;text-align:center}
 .amdtile.real .amcard{position:relative;padding:0;border:0;background:none;cursor:pointer;color:inherit;font:inherit}
 
-.amdtile.real .amcard{cursor:zoom-in}.amdtile.real.none .pc,.amdtile.real.none img{opacity:.3;filter:grayscale(1)}
+.amdtile.real.none .pc,.amdtile.real.none img{opacity:.3;filter:grayscale(1)}
 .amdtile.real .amcard img{display:block;width:88px;aspect-ratio:3/2;object-fit:cover;border-radius:4px;border:1px solid var(--line)}
 .amdtile.real .amcard b{position:absolute;right:3px;bottom:3px}
 .amdtile.real .amfoot{display:flex;gap:4px}
@@ -180,7 +180,7 @@ body[data-zhand=hover] .hand6[data-layout=fan] .fan6 .ac:hover,.hand6[data-layou
 .am-perk-check.is-checked{background:var(--accent);color:#1b150c;border-color:var(--accent)}
 .am-perk-cards{display:flex;align-items:center;gap:4px;flex-shrink:0}
 .am-perk-cards .pc{--pc-width:46px;border:1px solid var(--line)}
-.am-perk-cards .pc{cursor:zoom-in}
+
 .pcbig[hidden]{display:none}
 .pcbig{position:fixed;top:50%;transform:translateY(-50%);z-index:410;pointer-events:none}
 .pcbig img{display:block;width:var(--zw,420px);aspect-ratio:3/2;object-fit:cover;border-radius:10px;box-shadow:0 20px 50px rgba(0,0,0,.8)}

@@ -81,7 +81,7 @@ export function phoneHtml(c, X, S = {}) {
   }
 
   return `<div class="pm pp" data-zactive="click" data-zplay="click" data-zhand="click" data-zpiles="click" data-zitems="click" data-inib="on" data-motion="full">
-    <header class="top"><div class="portrait" style="${esc(X.portraitStyle(c, 44))}" role="img" aria-label="Class portrait"></div><div class="who"><b>${esc(c.name)}</b><div class="sub">${esc(c.cls)}${X.playerName(c) ? ` &middot; played by ${esc(X.playerName(c))}` : ''}</div></div>
+    <header class="top"><div class="portrait" style="${esc(X.portraitStyle(c, 44))}" role="img" aria-label="Class portrait"></div><div class="who"><b>${esc(c.name)}</b> <button type="button" class="sm" data-charedit aria-label="Edit character" title="Edit character">&#9998;</button><div class="sub">${esc(c.cls)}${X.playerName(c) ? ` &middot; played by ${esc(X.playerName(c))}` : ''}</div></div>
       <div class="gold"><b>${c.gold ?? 0}</b> gold<br><span class="sub">${c.inh ?? 0} inherited perks &middot; ${c.xp ?? 0} XP</span></div><div class="lvl" role="button" tabindex="0" data-opendeck="pool" title="Level ${lv} (tap for the card pool)">${lv}</div></header>
     <div class="xpbar"><b style="width:${pct}%"></b></div>
     ${tokens ? `<div class="toks">${tokens}</div>` : ''}

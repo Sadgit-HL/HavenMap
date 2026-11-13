@@ -1,0 +1,140 @@
+<!doctype html><meta charset="utf-8"><title>AMD view replacing the hand</title>
+<style>
+:root{--bg:#16130f;--panel:#231d17;--line:#3a3026;--text:#ecdfc8;--muted:#a89a82;--accent:#c7a44a;--coral:#e26a6a}
+*{box-sizing:border-box}body{margin:0;padding:18px;background:#0e0c09;color:var(--text);font:13px/1.35 system-ui,Segoe UI,sans-serif}
+h1{font-size:17px;margin:0 0 6px}p.d{color:var(--muted);max-width:900px;margin:0 0 12px}
+.mat{position:relative;width:1060px;height:600px;background:var(--bg);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:grid;grid-template-columns:70px 1fr 120px;grid-template-rows:56px 150px 1fr;gap:8px;padding:8px}
+.hud{grid-column:1/-1;display:flex;align-items:center;gap:14px;background:linear-gradient(180deg,#2a2217,#201910);border:1px solid var(--line);border-radius:12px;padding:0 12px}
+.por{width:40px;height:40px;border-radius:50%;border:2px solid var(--accent);background:#4b3a22}
+.nm b{font-size:15px}.nm small{display:block;color:var(--muted);font-size:11px}
+.st{color:var(--muted);font-size:11px;text-align:center}.st b{display:block;color:var(--text);font-size:15px}
+.grow{flex:1}
+.shelf{grid-row:2/4;background:rgba(18,15,11,.6);border:1px solid var(--line);border-radius:10px;display:flex;flex-direction:column;gap:6px;padding:6px;align-items:center}
+.it{width:46px;height:34px;border-radius:5px;background:#3a3026}
+.zone{border:1px dashed var(--line);border-radius:10px;padding:6px;color:var(--muted);font-size:11px;display:flex;gap:6px;align-items:center}
+.piles{grid-row:2;grid-column:3;display:flex;flex-direction:column;gap:8px}
+.pile{flex:1;min-height:0;border:1px dashed var(--line);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:11px}
+.lower{grid-column:2/4;grid-row:3;border:1px solid var(--line);border-radius:10px;background:rgba(18,15,11,.55);display:flex;flex-direction:column;min-height:0;position:relative}
+.top{grid-column:2;grid-row:2}
+.bar{display:flex;align-items:center;gap:10px;padding:6px 10px;border-bottom:1px solid var(--line);flex:none}
+.tog{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#2d2519}
+.tog button{border:0;background:transparent;color:var(--text);padding:5px 14px;font:inherit;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.tog button[aria-pressed=true]{background:var(--accent);color:#120f0b;font-weight:700}
+.btn{display:inline-flex;align-items:center;gap:5px;background:#2d2519;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:5px 10px;font:inherit;cursor:pointer}
+.btn[aria-pressed=true]{background:var(--accent);color:#120f0b;border-color:var(--accent);font-weight:700}
+.btn:disabled{opacity:.45;cursor:default}
+.cnt{color:var(--muted);font-size:12px}.cnt b{color:var(--text)}
+.hand{flex:1;display:flex;gap:6px;align-items:flex-end;padding:10px;color:var(--muted)}
+.cd{width:92px;height:130px;border-radius:6px;background:#3a3026;border:1px solid #55483a}
+/* AMD view */
+.amd{flex:1;display:grid;grid-template-columns:1fr 270px;gap:10px;padding:10px;min-height:0}
+.area{border:1px solid var(--line);border-radius:10px;background:#120f0b;padding:8px;overflow:auto;min-height:0;position:relative}
+.area>h5{margin:0 0 6px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between}
+.area.drop{outline:2px dashed var(--accent);outline-offset:-4px;background:#1a150f}
+.stacks{display:flex;flex-wrap:wrap;gap:16px 14px;align-content:flex-start}
+.stk{position:relative;width:118px;cursor:grab;user-select:none}
+.stk .pcs{position:relative;height:77px}
+.pc{position:absolute;left:0;top:0;width:118px;height:77px;border-radius:5px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.7)}
+.pc img{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.stk .nb{position:absolute;right:-6px;top:-8px;background:var(--accent);color:#120f0b;font-weight:800;font-size:12px;border-radius:99px;min-width:22px;height:22px;display:flex;align-items:center;justify-content:center;padding:0 5px;z-index:3;box-shadow:0 1px 3px #000}
+.stk.zero{opacity:.35;cursor:default}
+.ed{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:5px}
+.ed button{width:24px;height:24px;border:1px solid var(--line);background:#2d2519;color:var(--text);border-radius:6px;cursor:pointer;font-weight:800}
+.ed span{min-width:26px;text-align:center;font-weight:700}
+.palette{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+.palette .btn{padding:3px 9px}
+.side{display:flex;flex-direction:column;gap:10px;min-height:0}
+.edpanel{border:1px solid var(--accent);border-radius:10px;padding:8px;background:var(--panel)}
+.edpanel h5{margin:0 0 6px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.row{display:flex;align-items:center;gap:8px;justify-content:space-between;margin:5px 0}
+.step{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:7px;overflow:hidden}.step button{border:0;background:#2d2519;color:var(--text);width:26px;height:26px;cursor:pointer}.step span{min-width:28px;text-align:center;font-weight:700}
+.note{position:absolute;right:10px;bottom:8px;color:var(--muted);font-size:11px}
+</style>
+<body>
+<h1>AMD view in the place of the hand</h1>
+<p class="d">The toggle sits at the same spot in both views (left of the section bar). Drag a stack from the deck to the discard area, or just click it; click a discard stack to return one card. Edit shows steppers per card type, bless and curse, and the palette to add types to the base set. All numbers are mock data.</p>
+
+<div class="mat" id="mat">
+ <div class="hud"><div class="por"></div><div class="nm"><b>Brute</b><small>played by Anna</small></div><span class="grow"></span><div class="st">XP<b>34</b></div><div class="st">Gold<b>20</b></div></div>
+ <div class="shelf"><div class="it"></div><div class="it"></div><div class="it"></div></div>
+ <div class="zone top">Active / Play</div>
+ <div class="piles"><div class="pile">Discard</div><div class="pile">Lost</div></div>
+ <section class="lower">
+  <div class="bar">
+   <span class="tog" role="group"><button type="button" id="tHand" aria-pressed="true">Hand</button><button type="button" id="tAmd" aria-pressed="false">Modifiers</button></span>
+   <span id="barHand" class="cnt">Hand <b>8</b> of 10</span>
+   <span id="barAmd" style="display:none;align-items:center;gap:8px;flex:1">
+     <span class="cnt"><b id="nDeck">0</b> in deck &middot; <b id="nDisc">0</b> discarded</span><span class="grow" style="flex:1"></span>
+     <button class="btn" id="bCode" title="Copy GeekRoller code">Copy roll code</button>
+     <button class="btn" id="bDraw" title="Draw a card (later)" disabled>Draw</button>
+     <button class="btn" id="bShuf" title="Shuffle the discard back">Shuffle</button>
+     <button class="btn" id="bEdit" aria-pressed="false" title="Edit the deck">Edit</button>
+   </span>
+  </div>
+  <div class="hand" id="vHand"><span class="cd"></span><span class="cd"></span><span class="cd"></span><span class="cd"></span><span class="cd"></span><span class="cd"></span><span class="cd"></span><span class="cd"></span></div>
+  <div class="amd" id="vAmd" style="display:none">
+   <div class="area" id="deck" data-drop="deck"><h5><span>Deck</span></h5><div class="stacks" id="deckS"></div><div id="pal" class="palette" style="display:none"></div></div>
+   <div class="side">
+    <div class="area" id="disc" data-drop="disc" style="flex:1"><h5><span>Discard</span></h5><div class="stacks" id="discS"></div></div>
+    <div class="edpanel" id="edp" style="display:none"><h5>Special cards</h5>
+     <div class="row"><span>Bless</span><span class="step"><button data-sp="bless,-1">-</button><span id="vBless">0</span><button data-sp="bless,1">+</button></span></div>
+     <div class="row"><span>Curse</span><span class="step"><button data-sp="curse,-1">-</button><span id="vCurse">0</span><button data-sp="curse,1">+</button></span></div></div>
+   </div>
+  </div>
+ </section>
+</div>
+
+<script>
+const B='../../images/common/attack_mods';
+const FR={'+0':'p0','+1':'positive','+2':'positive','+3':'positive','+4':'positive','-1':'negative','-2':'negative','null':'null','x2':'x2'};
+const NM={'+0':'p0','+1':'p1','+2':'p2','+3':'p3','+4':'p4','-1':'m1','-2':'m2','x2':'x2'};
+const ORDER=['-2','-1','+0','+1','+2','+3','+4','x2','null','bless','curse'];
+// per type: d = in deck, x = discarded
+const S={'-2':{d:1,x:0},'-1':{d:5,x:0},'+0':{d:6,x:0},'+1':{d:5,x:1},'+2':{d:1,x:0},'x2':{d:1,x:0},'null':{d:1,x:0},bless:{d:2,x:0},curse:{d:1,x:1}};
+let edit=false;
+const layers=k=>{
+  if(k==='bless'||k==='curse')return `<img src="${B}/frames/${k}.webp" alt="${k}">`;
+  let h=`<img src="${B}/frames/${FR[k]}.webp" alt="${k}">`;
+  if(k!=='null')h+=`<img src="${B}/numbers/c-${NM[k]}.webp" alt="">`;
+  if(k==='x2'||k==='null')h+=`<img src="${B}/spheres/shuffle.webp" alt="">`;
+  return h;};
+function stack(k,n,zone){
+  const shown=Math.min(n,4);
+  let pcs='';for(let i=shown-1;i>=0;i--)pcs+=`<div class="pc" style="left:${i*3}px;top:${-i*3}px">${layers(k)}</div>`;
+  const e=(edit&&zone==='deck')?`<div class="ed"><button data-ed="${k},-1">-</button><span>${n}</span><button data-ed="${k},1">+</button></div>`:'';
+  return `<div class="stk${n?'':' zero'}" draggable="${n>0&&!edit}" data-k="${k}" data-z="${zone}" style="margin-top:${(shown-1)*3}px"><div class="pcs">${pcs}</div>${n>1?`<span class="nb">${n}</span>`:''}${e}</div>`;
+}
+function render(){
+  const ks=ORDER.filter(k=>S[k]);
+  const dk=ks.filter(k=>S[k].d>0||edit), ds=ks.filter(k=>S[k].x>0);
+  deckS.innerHTML=dk.map(k=>stack(k,S[k].d,'deck')).join('')||'<span class="cnt">Empty</span>';
+  discS.innerHTML=ds.map(k=>stack(k,S[k].x,'disc')).join('')||'<span class="cnt">Empty</span>';
+  nDeck.textContent=ks.reduce((a,k)=>a+S[k].d,0);nDisc.textContent=ks.reduce((a,k)=>a+S[k].x,0);
+  const missing=ORDER.filter(k=>!S[k]&&k!=='bless'&&k!=='curse');
+  pal.style.display=edit?'flex':'none';
+  pal.innerHTML=edit?`<span class="cnt" style="align-self:center">Add type</span>`+missing.map(k=>`<button class="btn" data-add="${k}">${k}</button>`).join('')+(missing.length?'':'<span class="cnt">all types present</span>'):'';
+  edp.style.display=edit?'block':'none';
+  vBless.textContent=S.bless?S.bless.d:0;vCurse.textContent=S.curse?S.curse.d:0;
+}
+function move(k,from,to){const s=S[k];if(!s||s[from==='deck'?'d':'x']<1)return;s[from==='deck'?'d':'x']--;s[to==='deck'?'d':'x']++;render();}
+document.addEventListener('click',e=>{
+  const st=e.target.closest('.stk');
+  if(st&&!edit&&!e.target.closest('.ed')){const z=st.dataset.z;move(st.dataset.k,z,z==='deck'?'disc':'deck');return;}
+  const ed=e.target.closest('[data-ed]');if(ed){const [k,dv]=ed.dataset.ed.split(',');S[k].d=Math.max(0,S[k].d+Number(dv));render();return;}
+  const ad=e.target.closest('[data-add]');if(ad){S[ad.dataset.add]={d:1,x:0};render();return;}
+  const sp=e.target.closest('[data-sp]');if(sp){const [k,dv]=sp.dataset.sp.split(',');S[k]=S[k]||{d:0,x:0};S[k].d=Math.max(0,S[k].d+Number(dv));render();return;}
+});
+let drag=null;
+document.addEventListener('dragstart',e=>{const st=e.target.closest?.('.stk');if(!st)return;drag={k:st.dataset.k,z:st.dataset.z};e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',drag.k);});
+document.addEventListener('dragover',e=>{const a=e.target.closest?.('[data-drop]');document.querySelectorAll('.area.drop').forEach(x=>x.classList.remove('drop'));if(a&&drag&&a.dataset.drop!==drag.z){e.preventDefault();a.classList.add('drop');}});
+document.addEventListener('drop',e=>{const a=e.target.closest?.('[data-drop]');document.querySelectorAll('.area.drop').forEach(x=>x.classList.remove('drop'));if(a&&drag&&a.dataset.drop!==drag.z){e.preventDefault();move(drag.k,drag.z,a.dataset.drop);}drag=null;});
+document.addEventListener('dragend',()=>{document.querySelectorAll('.area.drop').forEach(x=>x.classList.remove('drop'));drag=null;});
+function view(a){tHand.setAttribute('aria-pressed',!a);tAmd.setAttribute('aria-pressed',a);vHand.style.display=a?'none':'flex';vAmd.style.display=a?'grid':'none';barHand.style.display=a?'none':'';barAmd.style.display=a?'flex':'none';}
+tHand.onclick=()=>view(false);tAmd.onclick=()=>view(true);
+bEdit.onclick=()=>{edit=!edit;bEdit.setAttribute('aria-pressed',edit);render();};
+bShuf.onclick=()=>{for(const k in S){S[k].d+=S[k].x;S[k].x=0;}render();};
+render();
+if(location.hash==='#edit'){view(true);edit=true;bEdit.setAttribute('aria-pressed',true);render();}
+else if(location.hash==='#amd')view(true);
+</script>
+</body>

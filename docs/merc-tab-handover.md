@@ -209,7 +209,7 @@ Stage (b) is implemented (2026-11-12): the hand follows `handList(c)` in `record
   Gloomhaven Secretariat data, AGPL-3.0, at `D:\github\gloomhavensecretariat\data\gh2e`). Corrections go into the tool (`ITEM_SLOT_FIX`,
   `CLASS_NAME_FIX`, `CARD_FIX`). Re-running `extract-campaign-tables.py` with the older workbook changes unrelated files (cards, scenarios,
   events, quests): after running it, `git checkout --` every generated file except the intended one.
-- Cache busting: `campaign/index.html` loads `app.js?v=99` (bump when shipping).
+- Cache busting: `campaign/index.html` loads `app.js?v=133` and `style.css?v=122` (bump when shipping; the module imports of `playmat.js` and `scripts/` carry no version, so tell the user to hard refresh with Ctrl+F5).
 - Known data problems found while building mockups: `gh2_cards.js` has initiative 73 for Potent Potables (card shows 46) and none for
   Disorienting Flash (card shows 73); the mockups use the card values (`INI_FIX` in the generator). Worth fixing in `tools/card-initiative.json`.
 - Class names: GH2E `Plagueherald` (one word) after `CLASS_NAME_FIX`; 43 classes in `scripts/campaign/classList.js` (GH2E 18, Mercenary Pack 4,
@@ -247,8 +247,72 @@ iot`; they are photos, not clean scans) docked on the left, name and requirement
 ## 7. Open after the port (2026-11-13)
 
 - Markers ported 2026-11-13 (untested in a browser): `c.mk = { 'c:<card id>' | 'i:<item id>': [{ k, s?: 1, x, y }] }` (x, y in percent of the card; `cleanMarks` in `record.js`; `addMarker`, `moveMarker`, `removeMarker`, `clearMarkers` in `edit.js`; log kind Marker in `changelog.js`; lists `MARKER_TOKENS`, `MARK_STICKERS` in `classTokens.js`). The corner handle (`.tkh`, `data-mkopen`) or the context menu opens the item modal (state plus markers) or the `cardmk` modal; click the card or drag from the picker to place, drag a placed marker to move, drop it outside the card to remove (`app.js`, section Markers). Not done: markers on pool cards, phone view, enhancement rows derived from stickers (the enhancement table stays manual).
-- Added 2026-11-13 after the list of missing parts (all untested in a browser): Edit character modal (pencil next to the name: name, player, event traits; the class cannot be changed; draft in `pm.cf`, saved in one commit); pile modal for discard and lost (click a pile: cards side by side, Recover per card, Recover all, docked preview with markers); hover enlarge and markers on cards of the Deck modal (`data-poolbig`); Enhancements table rows derived from stickers with a price per card (`c.mp`, `setMarkPrice`); history lines for modifier deck draw, return, shuffle, bless and curse (`amdDo`, `addLog` in `app.js`, written to the log directly because the deck state is not in the record); phone view: markers on cards (button Markers in the card sheet, items use the item modal), XP, gold and inherited perks editable on the Info tab; touch and pen drag and drop of cards on the playmat (pointer events, `app.js`, `applyDrop` is shared with the mouse drop).
+- Added 2026-11-13 after the list of missing parts (all untested in a browser): Edit character modal (pencil next to the name: name, player, event traits; the the class can be changed since section 10; draft in `pm.cf`, saved in one commit); pile modal for discard and lost (click a pile: cards side by side, Recover per card, Recover all, docked preview with markers); hover enlarge and markers on cards of the Deck modal (`data-poolbig`); Enhancements table rows derived from stickers with a price per card (`c.mp`, `setMarkPrice`); history lines for modifier deck draw, return, shuffle, bless and curse (`amdDo`, `addLog` in `app.js`, written to the log directly because the deck state is not in the record); phone view: markers on cards (button Markers in the card sheet, items use the item modal), XP, gold and inherited perks editable on the Info tab; touch and pen drag and drop of cards on the playmat (pointer events, `app.js`, `applyDrop` is shared with the mouse drop).
 - Still open: the item and enhancement price shortcuts of the old mockup (unclear what they were), the phone view has no Edit character, no run in a browser.
 - Phone view cannot edit gold, inherited perks or XP; AMD drawn state is session only; no perk limit is enforced.
 - Item states from imported records count as spent when any old tick is set (meaning of the three spreadsheet tick columns unconfirmed).
-- No browser test was run for the port; long press and phone view are untested on a real device.
+- Since the second session (section 10) most playmat features were exercised in headless Edge with Playwright against a local server; long press, touch drag and the phone view are still untested on a real device.
+
+## 10. Second session after the port (2026-11-13 and later)
+
+Everything below is in the working tree of `campaign/` (`app.js`, `playmat.js`, `style.css`, `playmat.css` generated), `scripts/campaign/` and `tools/`.
+It was tested in headless Edge (Playwright, `channel: 'msedge'`, test records built from `import/campaign-import.json` through `record.normalize`).
+
+### 10.1 Attack modifier deck now lives in the hand area (Modifiers view)
+
+- Toggle `Hand | Modifiers` in the hand bar (`data-hview`), also the Space key (not while typing, on a button or link, or with a modal open). Buttons clicked with
+  the mouse blur, so Space keeps working. `S.hview`, `S.amv` in `pmState`; `hviewTog`, `amBar`, `amViewHtml(A, esc, edit)` in `playmat.js`.
+- Layout (`.amv`): deck stacks (one stack per card kind, count badge, up to four edges), Top and Bottom strips side by side under the deck, a right column
+  with the roll code panel (96 px: big gold `Roll code` button, Shuffle and Edit stacked), the Discard area (only the top card plus count, click opens
+  modal `amdpile`), and the Active area (78 px, same top and bottom edge as the strips). The right column starts under the second play slot
+  (`calc(128px + (32cqh - 36px) * 5 / 7)`).
+- Session state in `pm.amd[charId]` (not saved): `{ disc, order, adj, bless, curse, top, bot, act }`. `scripts/campaign/amdDeck.js`: `drawState` (pool = what is
+  left for the random roll; `topList`, `botList`, `actList`, `pile`, `top`, `missing`), `amdAct(c, st, kind, key, opts)` with kinds `draw ret add rem shuffle plus minus move`;
+  `moveCard` moves one card between `pool`, `disc`, `top`, `bot`, `act` (exact positions via `idx` and `at`; a special card reaching the discard leaves the game).
+  Shuffle clears top and bottom, not active. `adj` edits the card counts of the deck (Edit mode: segmented steppers, all standard cards shown dimmed at 0, Bless and
+  Curse always shown). `deckOf(c, adj)`.
+- Roll button: copies the GeekRoller code of the pool; while a Top card exists (or the pool is empty and a Bottom card exists) it turns into `Top: X` / `Bottom: X` and
+  draws that known card. Copy feedback: check mark and `Copied` for 1.5 s (`.amcode`).
+- Drag and drop (HTML5, mouse): stacks and placed cards between zones, drop position inside a strip, canvas drag image (a cloned element came out as a black
+  silhouette). Click sends one card to the discard. Every move writes a History line (`amdDo`, `AM_PLACE`).
+- Zoom like ability cards (zone setting of the hand): hover with delay, or click then second click acts; zoomed cards grow from the lower edge, frame removed, and
+  their containers are lifted with `:has()` rules so a zoomed card is always on top (`.board6`, `.amv`, `.shelf6`).
+- The Attack modifiers dock button, the AMD BGG button in the top bar and the old Deck dock button are gone. The old AMD modal (`S.modal === 'amd'`) is kept only
+  because the phone view still lists it in `PHONE_MODALS`; port the Modifiers view to the phone before removing it. The setting `Deck card click` (amd) was removed.
+- Mockups of the choices: `campaign/mockups/amd-quick.html` (five options), `amd-view.html`, `amd-code-button.html`; icon `images/common/icons/draw.svg`.
+
+### 10.2 Hand editor and items
+
+- Hand editor (`S.modal === 'deck'`, opened by the pencil next to the hand title or the level badge): one view, class cards grouped by level, state badge on the upper rim of
+  each card (Locked, Unlocked, Hand; `.cbadge`), click steps to the next state (`data-cstate` in `deckClick`: Locked to Unlocked is a level-up pick, Unlocked to Hand fills
+  the draft hand `pm.hsel`, Hand back to Unlocked or, for a picked card, to Locked). In-hand cards are framed. Confirm hand applies it (`ed.applyHand`, second click when
+  scenario cards are in play). Large modal (`.mmodalbox.huge`) that leaves room for the docked preview; hover or click zoom as in the pile and perk modals.
+- Data fix: a card listed in deck and bench (imports do that) was owned twice and landed twice in the hand. `ownedCards` is unique and `normalizeChar` de-duplicates the
+  deck and removes bench cards that are in the deck.
+- Items: each character has `own` (owned item ids); `items` stays the equipped subset. `giveItem` and `returnItem` in `edit.js`, `ownsItem` and `itemsInUse` (copies owned)
+  in `record.js`. The Items tab has a `Give to...` menu per item and owner chips with an x. The Equip items modal lists only owned unlocked items, with a badge
+  Equipped or Owned (click toggles within the slot limits) and the slot count in the heading (`HEAD (1/1)`); same large modal and zoom.
+- Item modal: state buttons are icons (`recover.png` inverted by a CSS filter, `spent.png`, `consumed.png`), current state framed, sticker section hidden for items.
+
+### 10.3 Other playmat changes
+
+- Edit character modal: sections, portrait, class selection. `ed.changeCharacterClass` starts the character over (name = class name, player, level, XP, gold, ability cards,
+  items and owned items, perks and masteries, markers, tokens, battle goals and personal quests the character holds); inherited perks, event traits and notes stay;
+  the level 1 and X cards of the new class are unlocked (bench). The enhancement log (`r.enh`, entries name their class) is campaign-wide and untouched. The page Undo restores it.
+- Pile modals: recover icon (`images/common/icons/recover.png`); in hover zoom the tab is hidden and a click recovers. Perk modal: hover or click zoom, docked.
+- Top bar: divider before the cogwheel, BGG buttons (Turn, Cards) in the quiet gold of the roll code button; the settings popup lies above the hand bar; the old
+  `Character sheet` section below the playmat and `characterCard` were removed. Hand bar: pencil beside the hand title, sort buttons in a labelled pill.
+- Hover zoom mode hides the marker handle of hand, active and item cards (a click opens the marker modal); cards in the play area have no marker handle or menu entry.
+- Sort: `Lvl` puts X cards after level 1. Initiative numbers: all 649 ability cards have `ini` now, read off the card images (Wordhaven_Assets) into
+  `tools/card-initiative.json` (445 entries) and regenerated with `python -I tools/extract-campaign-tables.py "import/WH Tracker.xlsx"`. That workbook differs from the
+  default `asset-backups/WHTracker.xlsx` and rewrites other generated files: after running, `git checkout --` everything except `scripts/games/gh2_cards.js`.
+  The JSON also keeps 145 older values the generator could not reproduce from that workbook.
+- `campaign/playmat.css` is still generated: `tools/build-playmat-css.py` (the `zoom-in` cursor was removed there and in `merc-6-playmat-v2.html`).
+
+### 10.4 Open
+
+- The phone view has no Modifiers view, no hand editor of this kind and no class change; it still opens the old AMD modal.
+- AMD state (draws, top, bottom, active, count edits) is not saved with the campaign. Saving needs a field in the record and a schema note.
+- The initiative numbers were read by eye from the images; a wrong digit is possible (contact sheets are not kept in the repo).
+- Hand to Locked in the hand editor removes a level-up pick with one click (Undo of the page restores it).
+- Touch devices: drag of modifier cards uses HTML5 drag events (mouse only); click and second click work.

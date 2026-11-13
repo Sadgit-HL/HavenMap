@@ -5,7 +5,7 @@ import { SCENARIOS, STICKERS } from '../games/gh2_scenarios.js';
 import { ITEMS } from '../games/gh2_items.js';
 import { CLASSES } from '../games/gh2_classes.js';
 import { ALL_CLASSES } from './classList.js';
-import { SCN_STATE, availableSet, CARD_ZONES, zoneOf, handList, cardLevel, ownedCards, pendingPicks, classByName, SLOT_ORDER, itemFits, itemsInUse } from './record.js';
+import { SCN_STATE, availableSet, CARD_ZONES, zoneOf, handList, cardLevel, ownedCards, pendingPicks, classByName, SLOT_ORDER, itemFits, itemsInUse, ownsItem } from './record.js';
 import { CARDS } from '../games/gh2_cards.js';
 import { SPECIAL_TRAITS } from './traits.js';
 import { tokenDefs, markerTokens, MARK_STICKERS } from './classTokens.js';
@@ -514,6 +514,28 @@ export function addCharacter(r, { cls, name }) {
   });
 }
 
+// A character takes another class and starts over as a new character: name (the class name), player, level, XP, gold, ability cards (every zone),
+// items, perks and masteries, markers, class tokens, hand size, the old modifier deck, and the battle goals and personal quests the character holds
+// (they go back into their decks). Kept: the inherited perks, the event traits and the notes. The level 1 and X ability cards of the new class are
+// unlocked (they wait in the pool; the hand is chosen in the hand editor). The enhancement log is a record of the campaign (each entry names its
+// class), so it is not touched. Unknown classes, a class another character plays and the same class are ignored.
+export function changeCharacterClass(r, cid, cls) {
+  const c = r.chars.find(x => x.id === cid), klass = CLASSES.find(k => k.name.toLowerCase() === String(cls || '').toLowerCase());
+  if (!c || !klass || klass.name.toLowerCase() === String(c.cls).toLowerCase()) return r;
+  if (r.chars.some(x => x.id !== cid && String(x.cls).toLowerCase() === klass.name.toLowerCase())) return r;
+  const start = CARDS.filter(k => k.cls === klass.i && cardLevel(k.id) < 2).map(k => k.id);                 // level 1 and X
+  return edit(r, x => {
+    const t = x.chars.find(k => k.id === cid);
+    t.cls = klass.name; t.name = klass.name; delete t.seat;
+    t.lv = 1; t.xp = 0; t.gold = 0; t.traits = [];
+    t.deck = []; t.bench = start; t.disc = []; t.act = []; t.lost = []; t.play = [null, null]; t.hord = null; t.items = []; t.own = [];
+    t.tok = {}; t.mk = {}; t.mp = {}; t.pk = { perks: [], boxes: {}, ms: [] };
+    t.bgo = null; t.pqo = null; t.pqc = {};
+    for (const map of [x.bgs, x.pq]) for (const k of Object.keys(map || {})) if (map[k] && map[k].c === cid) delete map[k];
+    delete t.hand; delete t.am;
+  });
+}
+
 export function renameCharacter(r, cid, name) {
   const nm = String(name || '').trim().slice(0, 30);
   if (!nm || !r.chars.some(c => c.id === cid)) return r;
@@ -692,18 +714,33 @@ export function setItemState(r, cid, itemId, state) {
 export function setEquippedItems(r, cid, ids) {
   const c = r.chars.find(x => x.id === cid);
   if (!c) return r;
+  const owned = new Set((c.own || []).map(String));                             // only owned items can be equipped
   const keep = [], chosen = [];
   for (const raw of [...new Set((ids || []).map(String))]) {
     const item = itemById.get(raw);
     if (!item || !r.items.unl.includes(item.id)) continue;
+    if (!owned.has(raw)) continue;
     const mine = c.items.some(it => String(it.id) === raw);
-    if (!mine && itemsInUse(r, item) >= (item.n || 0)) continue;
     if (!itemFits(chosen, item, c.lv)) continue;
     chosen.push(item);
     keep.push(c.items.find(it => String(it.id) === raw) || { id: item.id, st: [false, false, false], s: 0 });
   }
   if (JSON.stringify(keep.map(i => i.id)) === JSON.stringify(c.items.map(i => i.id))) return r;
   return edit(r, x => { x.chars.find(y => y.id === cid).items = keep; });
+}
+
+// Give an unlocked item with a copy left in the shop to a character: it joins the owned items (not equipped yet).
+export function giveItem(r, cid, itemId) {
+  const c = r.chars.find(x => x.id === cid), item = itemById.get(String(itemId));
+  if (!c || !item || !r.items.unl.includes(item.id) || ownsItem(c, item.id) || itemsInUse(r, item) >= (item.n || 0)) return r;
+  return edit(r, x => { const t = x.chars.find(y => y.id === cid); t.own = [...(t.own || []), item.id]; });
+}
+
+// Take an item away from a character (owned and equipped): the copy goes back to the shop.
+export function returnItem(r, cid, itemId) {
+  const c = r.chars.find(x => x.id === cid);
+  if (!c || !ownsItem(c, itemId)) return r;
+  return edit(r, x => { const t = x.chars.find(y => y.id === cid); t.own = (t.own || []).filter(i => String(i) !== String(itemId)); t.items = t.items.filter(it => String(it.id) !== String(itemId)); });
 }
 
 // Order the items of a character by slot (head, body, hands, legs, small), then by number.
@@ -792,13 +829,14 @@ export function flipPlayCard(r, cid, slot) {
 }
 
 // Sort the hand: 'ini' = automatic mode, always lowest initiative first (clears the manual order); 'lvl' = a one-time order by card level,
-// then initiative, which stays until the hand is reordered or 'ini' is chosen.
+// (level 1, then X, then 2 to 9), then initiative, which stays until the hand is reordered or 'ini' is chosen.
 export function sortHand(r, cid, mode) {
   const c = r.chars.find(x => x.id === cid);
   if (!c || !['ini', 'lvl'].includes(mode)) return r;
   if (mode === 'ini') return Array.isArray(c.hord) ? edit(r, x => { x.chars.find(y => y.id === cid).hord = null; }) : r;
   const cur = handList({ ...c, hord: null });
-  const order = [...cur].sort((a, b) => cardLevel(a) - cardLevel(b));            // stable: initiative order inside a level
+  const key = id => { const l = cardLevel(id); return l === 0 ? 1.5 : l; };         // the X cards come right after level 1
+  const order = [...cur].sort((a, b) => key(a) - key(b));                          // stable: initiative order inside a level
   if (order.join() === (Array.isArray(c.hord) ? c.hord : []).join()) return r;
   return edit(r, x => { x.chars.find(y => y.id === cid).hord = order; });
 }

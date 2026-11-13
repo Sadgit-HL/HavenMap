@@ -1,0 +1,100 @@
+<!doctype html><meta charset="utf-8"><title>AMD quick access: 5 options</title>
+<style>
+:root{--bg:#16130f;--panel:#231d17;--line:#3a3026;--text:#ecdfc8;--muted:#a89a82;--accent:#c7a44a;--coral:#e26a6a}
+*{box-sizing:border-box}body{margin:0;padding:18px;background:#0e0c09;color:var(--text);font:13px/1.35 system-ui,Segoe UI,sans-serif}
+h2{margin:26px 0 4px;font-size:15px;color:var(--accent)}p.d{margin:0 0 8px;color:var(--muted);max-width:900px}
+.mat{position:relative;width:960px;height:430px;background:var(--bg);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:grid;grid-template-columns:70px 1fr 120px;grid-template-rows:56px 1fr;gap:8px;padding:8px}
+.hud{grid-column:1/-1;display:flex;align-items:center;gap:14px;background:linear-gradient(180deg,#2a2217,#201910);border:1px solid var(--line);border-radius:12px;padding:0 12px;position:relative}
+.por{width:40px;height:40px;border-radius:50%;border:2px solid var(--accent);background:#4b3a22}
+.nm b{font-size:15px}.nm small{display:block;color:var(--muted);font-size:11px}
+.st{color:var(--muted);font-size:11px;text-align:center}.st b{display:block;color:var(--text);font-size:15px}
+.grow{flex:1}
+.shelf{background:rgba(18,15,11,.6);border:1px solid var(--line);border-radius:10px;display:flex;flex-direction:column;gap:6px;padding:6px;align-items:center}
+.it{width:46px;height:34px;border-radius:5px;background:#3a3026}
+.board{position:relative;display:flex;flex-direction:column;gap:8px}
+.zone{flex:0 0 120px;border:1px dashed var(--line);border-radius:10px;padding:6px;display:flex;gap:6px;align-items:center;color:var(--muted);font-size:11px}
+.hand{flex:1;border:1px dashed var(--line);border-radius:10px;padding:6px;display:flex;gap:6px;align-items:flex-end;color:var(--muted);font-size:11px;position:relative}
+.cd{width:62px;height:88px;border-radius:6px;background:#3a3026;border:1px solid #55483a}
+.piles{display:flex;flex-direction:column;gap:8px}
+.pile{flex:1;border:1px dashed var(--line);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:11px;position:relative}
+.mc{width:34px;height:48px;border-radius:5px;background:#1b1712;border:1.5px solid #6b5a3c;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:var(--text);flex:none}
+.mc.p{color:#9be08a}.mc.n{color:#e88}.mc.x{color:var(--accent);border-color:var(--accent)}.mc.back{background:repeating-linear-gradient(45deg,#2b2219,#2b2219 4px,#352a1d 4px,#352a1d 8px);color:transparent}
+.mc.big{width:46px;height:64px;font-size:20px}.mc.sm{width:24px;height:34px;font-size:11px;border-width:1px}
+.btn{display:inline-flex;align-items:center;gap:5px;background:#2d2519;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:5px 9px;font:inherit;cursor:pointer}
+.btn.pri{background:var(--accent);color:#120f0b;border-color:var(--accent);font-weight:700}
+.btn.ic{padding:4px 6px}
+.cnt{font-size:11px;color:var(--muted)}.cnt b{color:var(--text)}
+.new{outline:2px dashed var(--coral);outline-offset:2px}
+.tag{position:absolute;top:-9px;left:10px;background:var(--coral);color:#120f0b;font-size:10px;font-weight:800;padding:0 6px;border-radius:6px;z-index:5}
+.pop{position:absolute;background:var(--panel);border:1px solid var(--accent);border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.7);padding:10px;z-index:10}
+.row{display:flex;align-items:center;gap:6px}
+.stepper{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:7px;overflow:hidden}.stepper button{border:0;background:#2d2519;color:var(--text);width:22px;height:24px;cursor:pointer}.stepper span{min-width:24px;text-align:center;font-weight:700}
+</style>
+<body>
+<h1 style="font-size:17px;margin:0 0 4px">Attack modifier deck: quick access, five options</h1>
+<p class="d">Dashed coral outline = the new element. Everything else is the current playmat, shown schematically. The full AMD modal stays for roll codes, bless/curse editing and returning from the discard.</p>
+
+<h2>A. Top bar chip: deck and draw in one place</h2>
+<p class="d">A compact widget in the top bar (about 190 px). One click on the card back draws; the last drawn card shows beside it; the numbers are deck and discard. Adv and Dis draw two. The dots button opens the full modal. Cost: roughly one stat box of top-bar space.</p>
+<div class="mat">
+ <div class="hud"><div class="por"></div><div class="nm"><b>Brute</b><small>played by Anna</small></div><span class="grow"></span><div class="st">XP<b>34</b></div><div class="st">Gold<b>20</b></div>
+  <div class="row new" style="padding:4px 8px;border-radius:10px;position:relative"><span class="tag">NEW</span>
+   <button class="btn ic" title="Draw one"><span class="mc back sm"></span></button>
+   <span class="mc p">+1</span>
+   <span class="cnt"><b>14</b> deck<br><b>6</b> disc</span>
+   <span style="display:flex;flex-direction:column;gap:3px"><button class="btn" style="padding:1px 6px;font-size:11px">Adv</button><button class="btn" style="padding:1px 6px;font-size:11px">Dis</button></span>
+   <button class="btn ic" title="Open deck">&#8943;</button></div></div>
+ <div class="shelf"><div class="it"></div><div class="it"></div><div class="it"></div></div>
+ <div class="board"><div class="zone">Active / Play</div><div class="hand">Hand<span class="cd"></span><span class="cd"></span><span class="cd"></span><span class="cd"></span></div></div>
+ <div class="piles"><div class="pile">Discard</div><div class="pile">Lost</div></div></div>
+
+<h2>B. A third pile: the modifier deck next to Discard and Lost</h2>
+<p class="d">Matches the table metaphor. A card back in the pile column draws on click; its own small discard shows the last drawn face on top. Count under each. A shuffle and a menu button sit below the pair. Cost: the pile column gets one more cell (the three share its height).</p>
+<div class="mat" style="grid-template-columns:70px 1fr 150px">
+ <div class="hud"><div class="por"></div><div class="nm"><b>Brute</b><small>played by Anna</small></div><span class="grow"></span><div class="st">XP<b>34</b></div><div class="st">Gold<b>20</b></div></div>
+ <div class="shelf"><div class="it"></div><div class="it"></div><div class="it"></div></div>
+ <div class="board"><div class="zone">Active / Play</div><div class="hand">Hand<span class="cd"></span><span class="cd"></span><span class="cd"></span><span class="cd"></span></div></div>
+ <div class="piles" style="position:relative"><div class="pile" style="flex:.7">Discard</div><div class="pile" style="flex:.7">Lost</div>
+  <div class="pile new" style="flex:1.1;flex-direction:column;gap:4px;position:relative"><span class="tag">NEW</span>
+   <div class="row"><div style="position:relative"><span class="mc back big"></span><span class="cnt" style="position:absolute;bottom:-14px;left:0;width:100%;text-align:center"><b>14</b></span></div>
+   <div style="position:relative"><span class="mc p big">+1</span><span class="cnt" style="position:absolute;bottom:-14px;left:0;width:100%;text-align:center"><b>6</b></span></div></div>
+   <div class="row" style="margin-top:12px"><button class="btn ic" title="Shuffle">&#8644;</button><button class="btn ic" title="Open deck">&#8943;</button></div></div></div></div>
+
+<h2>C. Edge drawer: a slim tab that expands</h2>
+<p class="d">A 34 px tab on the right edge of the board with the deck count and a draw button; hover or click expands the drawer shown here, with draw per card type and bless and curse steppers. Collapsed it costs almost nothing. Cost: the open drawer overlays the piles.</p>
+<div class="mat">
+ <div class="hud"><div class="por"></div><div class="nm"><b>Brute</b><small>played by Anna</small></div><span class="grow"></span><div class="st">XP<b>34</b></div><div class="st">Gold<b>20</b></div></div>
+ <div class="shelf"><div class="it"></div><div class="it"></div><div class="it"></div></div>
+ <div class="board"><div class="zone">Active / Play</div><div class="hand">Hand<span class="cd"></span><span class="cd"></span><span class="cd"></span><span class="cd"></span></div></div>
+ <div class="piles"><div class="pile">Discard</div><div class="pile">Lost</div></div>
+ <div class="pop new" style="top:70px;width:250px;border-radius:10px 0 0 10px;right:0"><span class="tag">NEW (expanded)</span>
+  <div class="row" style="justify-content:space-between;margin-bottom:8px"><b>Modifier deck</b><span class="cnt"><b>14</b> deck &middot; <b>6</b> discard</span></div>
+  <div class="row" style="flex-wrap:wrap;gap:6px 8px">
+   <span class="row"><span class="mc sm n">-2</span><button class="btn ic">&#9660;</button></span><span class="row"><span class="mc sm n">-1</span><button class="btn ic">&#9660;</button></span><span class="row"><span class="mc sm">0</span><button class="btn ic">&#9660;</button></span><span class="row"><span class="mc sm p">+1</span><button class="btn ic">&#9660;</button></span><span class="row"><span class="mc sm x">x2</span><button class="btn ic">&#9660;</button></span></div>
+  <div class="row" style="margin-top:8px;justify-content:space-between"><span class="row">Bless<span class="stepper"><button>-</button><span>1</span><button>+</button></span></span><span class="row">Curse<span class="stepper"><button>-</button><span>0</span><button>+</button></span></span></div>
+  <div class="row" style="margin-top:8px"><button class="btn pri" style="flex:1;justify-content:center">Draw random</button><button class="btn ic">&#8644;</button></div></div></div>
+
+<h2>D. Popover from a top bar button: last draws and bless/curse</h2>
+<p class="d">The top bar only gets a small deck button with the count. A click opens a popover under it with a strip of the last drawn cards (newest large), Draw, Adv, Dis, Shuffle and the bless/curse steppers. Closes on outside click. Cost: about 60 px in the top bar, nothing when closed.</p>
+<div class="mat">
+ <div class="hud"><div class="por"></div><div class="nm"><b>Brute</b><small>played by Anna</small></div><span class="grow"></span><div class="st">XP<b>34</b></div><div class="st">Gold<b>20</b></div>
+  <button class="btn ic new" style="position:relative;gap:6px;padding:4px 8px"><span class="tag">NEW</span><span class="mc back sm"></span><b>14</b></button></div>
+ <div class="shelf"><div class="it"></div><div class="it"></div><div class="it"></div></div>
+ <div class="board"><div class="zone">Active / Play</div><div class="hand">Hand<span class="cd"></span><span class="cd"></span><span class="cd"></span><span class="cd"></span></div></div>
+ <div class="piles"><div class="pile">Discard</div><div class="pile">Lost</div></div>
+ <div class="pop" style="right:14px;top:64px;width:300px">
+  <div class="row" style="align-items:flex-end;margin-bottom:8px"><span class="mc big p">+1</span><span class="mc n">-1</span><span class="mc">0</span><span class="mc x">x2</span><span class="mc sm p">+1</span><span class="grow"></span><span class="cnt"><b>14</b> deck<br><b>6</b> disc</span></div>
+  <div class="row" style="margin-bottom:8px"><button class="btn pri" style="flex:1;justify-content:center">Draw</button><button class="btn">Adv</button><button class="btn">Dis</button><button class="btn ic">&#8644;</button></div>
+  <div class="row" style="justify-content:space-between"><span class="row">Bless<span class="stepper"><button>-</button><span>1</span><button>+</button></span></span><span class="row">Curse<span class="stepper"><button>-</button><span>0</span><button>+</button></span></span><button class="btn" style="font-size:11px">Full deck</button></div></div></div>
+
+<h2>E. Slim strip along the bottom of the board: draw log</h2>
+<p class="d">A 48 px strip under the hand: Draw, Adv, Dis on the left, a row of the last drawn cards in the middle (the result stays visible during the attack), counts and Shuffle on the right. Always visible, no click needed to see the result. Cost: one thin row; the hand area loses about 56 px.</p>
+<div class="mat">
+ <div class="hud"><div class="por"></div><div class="nm"><b>Brute</b><small>played by Anna</small></div><span class="grow"></span><div class="st">XP<b>34</b></div><div class="st">Gold<b>20</b></div></div>
+ <div class="shelf"><div class="it"></div><div class="it"></div><div class="it"></div></div>
+ <div class="board"><div class="zone" style="flex-basis:104px">Active / Play</div><div class="hand" style="flex:1">Hand<span class="cd"></span><span class="cd"></span><span class="cd"></span><span class="cd"></span></div>
+  <div class="new row" style="height:48px;border-radius:10px;padding:0 10px;background:var(--panel);position:relative"><span class="tag">NEW</span>
+   <button class="btn pri">Draw</button><button class="btn">Adv</button><button class="btn">Dis</button>
+   <span class="grow"></span><span class="cnt">last</span><span class="mc p" style="width:30px;height:42px">+1</span><span class="mc n sm" style="height:40px;width:28px">-1</span><span class="mc sm">0</span><span class="mc sm x">x2</span><span class="grow"></span><span class="cnt"><b>14</b> / <b>6</b></span><button class="btn ic">&#8644;</button><button class="btn ic">&#8943;</button></div></div>
+ <div class="piles"><div class="pile">Discard</div><div class="pile">Lost</div></div></div>
+</body>

@@ -22,9 +22,9 @@ export const MARKER_TOKENS = {
   demolitionist: ['demolitionist'], doomstalker: ['doomstalker'], elementalist: ['elementalist'], hatchet: ['hatchet'], mindthief: ['mindthief'],
   nightshroud: ['nightshroud'], plagueherald: ['plagueherald'], quartermaster: ['quartermaster'], redguard: ['red_guard'], sawbones: ['sawbones'],
   silentknife: ['silent_knife'], sunkeeper: ['sunkeeper'], soothsinger: ['soothsinger'], soultether: ['soultether'], spellweaver: ['spellweaver'],
-  voidwarden: ['voidwarden'], boneshaper: [1, 2, 3, 4, 5, 6].map(n => `boneshaper_skeleton_${n}`), deepwraith: ['deepwraith_trophy'],
-  geminate: ['geminate_character', 'geminate_melee'], hive: ['hive_mode'], shattersong: ['shattersong_resonance'], anaphi: ['anaphi'],
-  cassandra: ['cassandra'], hail: ['hail', 'hail_resolve'], satha: ['satha'],
+  voidwarden: ['voidwarden'], boneshaper: [1, 2, 3, 4, 5, 6].map(n => `boneshaper_skeleton_${n}`), 
+  hive: ['hive_mode'], anaphi: ['anaphi'],
+  cassandra: ['cassandra'], hail: ['hail'], satha: ['satha'],
 };
 export const markerTokens = cls => MARKER_TOKENS[String(cls || '').toLowerCase().replace(/[ _]/g, '')] || [];
 export const MARK_STICKERS = ['plus_one', 'hex_attack', 'air', 'earth', 'fire', 'ice', 'light', 'dark', 'wild', 'bless', 'curse', 'poison', 'wound', 'muddle',
