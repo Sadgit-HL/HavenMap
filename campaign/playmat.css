@@ -40,6 +40,9 @@
 .pm .itbar{display:flex;align-items:center;gap:6px}
 .pm .itbar .btn6{padding:1px 4px;line-height:1}
 .pm .pcbig img.nat{aspect-ratio:auto;height:auto;object-fit:contain}
+.pm .slotlim{display:flex;gap:14px;flex-wrap:wrap}
+.pm .slotlim b{color:var(--text)}
+.pm .slotlim .full b{color:var(--accent)}
 .pm .shelf6 .it{.14s,box-shadow .14s;cursor:default;position:relative;transform-origin:0 50%}
 .pm .shelf6 .it:nth-of-type(-n+2){transform-origin:0 0}
 .pm .shelf6 .it:nth-of-type(n+3):nth-of-type(-n+4){transform-origin:0 15%}
@@ -87,8 +90,20 @@
 .pm .pcard .pck{display:none;position:absolute;right:4px;top:4px;width:18px;height:18px;border-radius:50%;background:var(--accent);color:#120f0b;font-size:12px;font-weight:800;align-items:center;justify-content:center}
 .pm .pcard .plv{position:absolute;left:4px;bottom:4px;min-width:16px;height:16px;border-radius:8px;background:rgba(18,15,11,.88);border:1px solid var(--accent);color:var(--accent);font-size:10px;font-weight:700;text-align:center;line-height:14px;padding:0 3px}
 .pm .poolfoot{display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-top:8px;font-size:12px;color:var(--muted);position:sticky;bottom:-18px;background:var(--panel);padding:10px 0 4px;border-top:1px solid var(--line)}
+.pm .itmodal{display:flex;gap:18px;align-items:flex-start}
+.pm .itcard{position:relative;flex-shrink:0;width:300px;line-height:0;user-select:none}
+.pm .itcard>img{width:100%;display:block;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.6)}
+.pm .itcard.pick{cursor:crosshair}
+.pm .itpanel{display:flex;flex-direction:column;gap:12px;min-width:150px;font-size:12px;color:var(--muted)}
+.pm .itpanel .seg{display:flex;flex-direction:column;gap:4px}
+.pm .itpanel .seg button{text-align:left}
+.pm .itpanel .row{display:flex;flex-direction:column;gap:5px}
+.pm .itpanel .row[hidden]{display:none}
 .pm .tk{position:absolute;width:var(--tkw,14.6%);aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;z-index:6}
 .pm .tk>img{width:100%;height:100%;display:block;object-fit:contain;filter:drop-shadow(0 1px 3px rgba(0,0,0,.9))}
+.pm .itcard .tk{pointer-events:auto;cursor:grab;touch-action:none}
+.pm .itcard .tk:active{cursor:grabbing}
+.pm .itcard .tk:hover{filter:brightness(1.15)}
 .pm .tk .mkx{position:absolute;right:-4px;top:-4px;width:14px;height:14px;border-radius:50%;background:#c98a8a;color:#120f0b;font-size:11px;line-height:14px;cursor:pointer;padding:0;border:0}
 .pm .tkh{position:absolute;left:3px;bottom:3px;width:20px;height:20px;padding:1px;border-radius:50%;background:rgba(18,15,11,.85);border:1.5px solid var(--accent);cursor:pointer;z-index:8;opacity:.75}
 .pm .tkh:hover{opacity:1}
