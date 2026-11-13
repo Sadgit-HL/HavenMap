@@ -1732,6 +1732,7 @@ function mkSelOf(c) {
 }
 const mkKeyNow = () => (pm.modal === 'item' ? `i:${pm.itemId}` : pm.modal === 'cardmk' ? pm.mkKey : null);
 function openMarkers(key) {
+  pm.sheet = null;
   if (key.startsWith('i:')) { pm.itemId = key.slice(2); pm.modal = 'item'; } else { pm.mkKey = key; pm.modal = 'cardmk'; }
   render();
 }
@@ -1741,7 +1742,7 @@ let mkBlock = false;
 main.addEventListener('click', e => {
   const q = sel => e.target.closest?.(sel), c = pmChar();
   if (!c) return;
-  const h = q('.pm .tkh');
+  const h = q('.pm .tkh, .pm .opts [data-mkopen]');
   if (h) { e.stopImmediatePropagation(); e.preventDefault(); openMarkers(h.dataset.mkopen); return; }
   if (!q('.pm .mmodal')) return;
   const pick = q('[data-mkpick]');

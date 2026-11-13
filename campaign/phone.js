@@ -4,7 +4,7 @@
 // scripts/campaign/edit.js, like the playmat does.
 import { handList, zoneOf, pendingPicks } from '../scripts/campaign/record.js';
 import { tokenDefs, TOKEN_IMAGE_DIR } from '../scripts/campaign/classTokens.js';
-import { modalHtml, XP_STEPS, levelOfXp } from './playmat.js';
+import { modalHtml, XP_STEPS, levelOfXp, markersHtml } from './playmat.js';
 
 const UP = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>';
 const DN = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
@@ -21,7 +21,7 @@ export function phoneHtml(c, X, S = {}) {
 
   const card = id => {
     const k = cardOf(id), url = X.cardImageUrl(k), ini = k?.ini;
-    return `<div class="ac" data-card="${id}" data-char="${cid}" title="${esc(nameOf(id))}">${url ? `<img src="${esc(url)}" alt="${esc(nameOf(id))}" loading="lazy" draggable="false">` : `<div class="noimg">${esc(nameOf(id))}</div>`}${ini != null ? `<span class="inib">${ini}</span>` : ''}</div>`;
+    return `<div class="ac" data-card="${id}" data-char="${cid}" title="${esc(nameOf(id))}">${url ? `<img src="${esc(url)}" alt="${esc(nameOf(id))}" loading="lazy" draggable="false">` : `<div class="noimg">${esc(nameOf(id))}</div>`}${ini != null ? `<span class="inib">${ini}</span>` : ''}${markersHtml(c.mk?.[`c:${id}`])}</div>`;
   };
   const lists = { active: [], discard: [], lost: [] };
   for (const id of c.deck) { const z = zoneOf(c, id); if (lists[z]) lists[z].push(id); }
@@ -33,7 +33,7 @@ export function phoneHtml(c, X, S = {}) {
     const lab = `<div class="lab">Slot ${i + 1}${ini !== null ? ` &middot; initiative <span class="ini">${ini}</span>` : ''}</div>`;
     if (!p) return `<div class="slot">${lab}<div class="empty">empty</div></div>`;
     const url = X.cardImageUrl(k);
-    return `<div class="slot">${lab}<div class="ac flip${p.up ? ' up' : ''}" data-card="${p.id}" data-char="${cid}" data-pslot="${i}" title="Tap to flip: ${esc(nameOf(p.id))}"><div class="inner"><div class="face back">${back}</div><div class="face front">${url ? `<img src="${esc(url)}" alt="${esc(nameOf(p.id))}" draggable="false">` : ''}</div></div><button type="button" class="more" data-more aria-label="Move ${esc(nameOf(p.id))}">&#8943;</button></div></div>`;
+    return `<div class="slot">${lab}<div class="ac flip${p.up ? ' up' : ''}" data-card="${p.id}" data-char="${cid}" data-pslot="${i}" title="Tap to flip: ${esc(nameOf(p.id))}"><div class="inner"><div class="face back">${back}</div><div class="face front">${url ? `<img src="${esc(url)}" alt="${esc(nameOf(p.id))}" draggable="false">` : ''}</div></div>${markersHtml(c.mk?.[`c:${p.id}`])}<button type="button" class="more" data-more aria-label="Move ${esc(nameOf(p.id))}">&#8943;</button></div></div>`;
   };
   const strip = ids => (ids.length ? `<div class="strip">${ids.map(card).join('')}</div>` : '<div class="strip empty">empty</div>');
   const pileBtn = (z, label) => {
@@ -71,7 +71,7 @@ export function phoneHtml(c, X, S = {}) {
     const k = cardOf(sh.id), z = zoneOf(c, sh.id);
     const opts = PHONE_ZONES.filter(([zz]) => zz !== z && !(zz.startsWith('play') && z !== 'hand' && !z.startsWith('play'))).map(([zz, l]) => `<button type="button" data-pto="${zz}" data-card="${sh.id}" data-char="${cid}">${l}</button>`).join('');
     const ord = z === 'hand' ? [['start', 'Move to start'], ['end', 'Move to end']].map(([o, l]) => `<button type="button" data-pord="${o}" data-card="${sh.id}" data-char="${cid}">${l}</button>`).join('') : '';
-    sheet = `<h3>${esc(nameOf(sh.id))}<button type="button" data-sheetclose aria-label="Close">&times;</button></h3><div class="prev">${card(sh.id)}<div class="meta">Level ${esc(k?.lv ?? '?')}<br>Initiative ${k?.ini ?? 'unknown'}<br>Now in: ${esc(ZONE_NAME[z] || z)}</div></div><div class="opts">${opts}${ord}</div>`;
+    sheet = `<h3>${esc(nameOf(sh.id))}<button type="button" data-sheetclose aria-label="Close">&times;</button></h3><div class="prev">${card(sh.id)}<div class="meta">Level ${esc(k?.lv ?? '?')}<br>Initiative ${k?.ini ?? 'unknown'}<br>Now in: ${esc(ZONE_NAME[z] || z)}</div></div><div class="opts">${opts}${ord}<button type="button" data-mkopen="c:${sh.id}" data-char="${cid}">Markers</button></div>`;
   } else if (sh && sh.kind === 'pile') {
     const a = piled(sh.z);
     sheet = `<h3>${sh.z === 'lost' ? 'Lost' : 'Discard'} &middot; ${a.length}<button type="button" data-sheetclose aria-label="Close">&times;</button></h3>${a.length ? `<div class="grid">${a.map(card).join('')}</div>` : '<div class="note">empty</div>'}`;
