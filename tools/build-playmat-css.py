@@ -26,6 +26,7 @@ dock mbtn mmodal mmodalbox mmodalx matflip codelist coderow bgg-icons bgg-row bg
 histbar hlist hrow hz ha hm hempty delx addrow mrow enhtable enhprice enhempty
 jbox jtab jtabs pqdock pqcard pqside pqreq pqc pqcheck pqdeck pqdl pqchip pqrow pqoffer pqpick bgcards bgcard mdbar mdprev mdview notesarea notespane rollbtn
 amdgrid amdtile amcard amfoot amdbar amdbtns pcbig
+deckrow seg poolbar grow poolbanner poolfoot pgrp pgrid lvrow pcard psel plv pck pooldot
 perklist perkrow am-perklist am-perk am-perk-boxes am-perk-check am-perk-cards am-perk-arrow am-perk-gone am-perk-text am-perk-note am-perk-tag big'''.split())
 
 def split_rules(text):
