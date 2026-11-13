@@ -190,6 +190,11 @@ const cardIni = id => CARD_INFO.get(id)?.ini ?? Infinity;             // unknown
 // Card level for sorting: X cards first, then 1 to 9, then the rest (M and unknown).
 export const cardLevel = id => { const lv = CARD_INFO.get(id)?.lv; return lv === 'X' ? 0 : Number.isFinite(Number(lv)) && lv !== undefined ? Number(lv) : 99; };
 
+// The card pool of a character: every card it owns (the deck of the scenario plus the other owned cards), and how many level up cards
+// it may still pick (level - 1 minus the owned cards of level 2 and up; the cards of level 1 and X are the starting pool).
+export const ownedCards = c => [...c.deck, ...c.bench];
+export const pendingPicks = c => Math.max(0, (c.lv || 1) - 1 - ownedCards(c).filter(id => { const l = cardLevel(id); return l >= 2 && l < 99; }).length);
+
 // The hand in display order. hord null = automatic: lowest initiative first, deck order for ties and unknown initiatives.
 // With a manual order (hord) the cards follow it; hand cards missing from hord (new in the deck) come after, by initiative.
 export function handList(c) {

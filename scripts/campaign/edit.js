@@ -5,7 +5,8 @@ import { SCENARIOS, STICKERS } from '../games/gh2_scenarios.js';
 import { ITEMS } from '../games/gh2_items.js';
 import { CLASSES } from '../games/gh2_classes.js';
 import { ALL_CLASSES } from './classList.js';
-import { SCN_STATE, availableSet, CARD_ZONES, zoneOf, handList, cardLevel } from './record.js';
+import { SCN_STATE, availableSet, CARD_ZONES, zoneOf, handList, cardLevel, ownedCards, pendingPicks, classByName } from './record.js';
+import { CARDS } from '../games/gh2_cards.js';
 import { SPECIAL_TRAITS } from './traits.js';
 import { tokenDefs } from './classTokens.js';
 import { perkList } from './amdDeck.js';
@@ -673,6 +674,42 @@ export function setEnhancementPrice(r, index, price) {
   const next = blank ? undefined : Math.min(p, 9999);
   if (r.enh[i].price === next) return r;
   return edit(r, x => { if (next === undefined) delete x.enh[i].price; else x.enh[i].price = next; });
+}
+
+// --- card pool and hand selection -------------------------------------------------------------------------------
+
+// Level up: take a card of the class of level 2 up to the character's level into the pool (it is owned, not yet in the deck). One pick per level.
+export function addPoolCard(r, cid, cardId) {
+  const c = r.chars.find(x => x.id === cid), id = toInt(cardId), card = CARDS.find(k => k.id === id);
+  if (!c || !card || card.cls !== classByName(c.cls)?.i || ownedCards(c).includes(id)) return r;
+  const lv = cardLevel(id);
+  if (lv < 2 || lv > (c.lv || 1) || lv >= 99 || pendingPicks(c) < 1) return r;
+  return edit(r, x => { x.chars.find(y => y.id === cid).bench.push(id); });
+}
+
+// Take a picked card (level 2 and up) out of the pool again, from wherever it lies.
+export function removePoolCard(r, cid, cardId) {
+  const c = r.chars.find(x => x.id === cid), id = toInt(cardId), lv = cardLevel(id);
+  if (!c || !ownedCards(c).includes(id) || lv < 2 || lv >= 99) return r;
+  return edit(r, x => {
+    const ch = x.chars.find(y => y.id === cid), out = l => l.filter(n => n !== id);
+    ch.deck = out(ch.deck); ch.bench = out(ch.bench); ch.disc = out(ch.disc); ch.lost = out(ch.lost); ch.act = out(ch.act);
+    ch.play = ch.play.map(p => (p && p.id === id ? null : p)); if (ch.hord) ch.hord = out(ch.hord);
+  });
+}
+
+// The hand for a scenario: the chosen owned cards become the deck (all in the hand), the other owned cards wait in the bench, and the scenario
+// cards (discard, lost, active, play slots) are reset. At most the hand size of the character (when set).
+export function applyHand(r, cid, ids) {
+  const c = r.chars.find(x => x.id === cid), own = c && ownedCards(c);
+  if (!c) return r;
+  const pick = [...new Set((ids || []).map(Number))].filter(id => own.includes(id)), limit = c.hand || 0;
+  if (!pick.length || (limit && pick.length > limit)) return r;
+  const deck = own.filter(id => pick.includes(id));
+  return edit(r, x => {
+    const ch = x.chars.find(y => y.id === cid);
+    ch.deck = deck; ch.bench = own.filter(id => !pick.includes(id)); ch.disc = []; ch.lost = []; ch.act = []; ch.play = [null, null]; ch.hord = null;
+  });
 }
 
 // --- perks and masteries ----------------------------------------------------------------------------------------

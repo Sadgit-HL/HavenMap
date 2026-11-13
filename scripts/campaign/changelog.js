@@ -139,6 +139,17 @@ export function describeChange(a, b) {
     for (const k of keys(o, c)) {
       if (same(o[k], c[k])) continue;
       if (['disc', 'act', 'lost', 'play', 'hord'].includes(k)) continue;                  // described above
+      if (k === 'deck' || k === 'bench') {
+        if (k === 'bench' && !same(o.deck, c.deck)) continue;                               // described with the deck
+        const own = x => new Set([...(x.deck || []), ...(x.bench || [])]), oa = own(o), ob = own(c);
+        const pool = { add: [...ob].filter(i => !oa.has(i)).map(cardLabel), del: [...oa].filter(i => !ob.has(i)).map(cardLabel) };
+        if (pool.add.length || pool.del.length) add('Mercenaries', 'Card pool', `${c.name}: ${plusMinus(pool)}`);
+        else {
+          const hand = { add: (c.deck || []).filter(i => !(o.deck || []).includes(i)).map(cardLabel), del: (o.deck || []).filter(i => !(c.deck || []).includes(i)).map(cardLabel) };
+          add('Mercenaries', 'Hand selection', `${c.name}: ${(c.deck || []).length} cards selected for the scenario${plusMinus(hand) ? ` (${plusMinus(hand)})` : ''}`);
+        }
+        continue;
+      }
       if (k === 'notes') { add('Mercenaries', 'Notes', `${c.name}: notes ${c.notes ? 'edited' : 'cleared'}`); continue; }
       if (k === 'bgo' || k === 'pqo') {
         if (c[k]) add('Mercenaries', k === 'bgo' ? 'Battle goal' : 'Personal quest', `${c.name}: drew ${c[k].map(sl => (k === 'bgo' ? cap(sl) : `${sl.slice(2)} ${GH2_PQ[sl]?.name || ''}`.trim())).join(', ')}`);
