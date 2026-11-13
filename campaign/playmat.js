@@ -2,7 +2,7 @@
 // playmatHtml() turns one character of the record into the playmat markup; the page (app.js) wires the clicks and drags to the
 // pure edit functions in scripts/campaign/edit.js, so everything done here is saved, undoable and logged in the history.
 import { handList, zoneOf, ownedCards, pendingPicks, cardLevel, SLOT_ORDER, SLOT_LABEL, slotLimits, slotUse, itemFits } from '../scripts/campaign/record.js';
-import { tokenDefs, TOKEN_IMAGE_DIR } from '../scripts/campaign/classTokens.js';
+import { tokenDefs, TOKEN_IMAGE_DIR, markerTokens, MARK_STICKERS, MARK_STICKER_DIR, markLabel } from '../scripts/campaign/classTokens.js';
 import { BGG_ICON_GROUPS } from '../scripts/campaign/bggIcons.js';
 import { BANNERS, BANNER_ICON_DIR } from '../scripts/campaign/bggBanners.js';
 import { holdStatus } from '../scripts/campaign/edit.js';
@@ -22,6 +22,17 @@ const UP = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="
 const DN = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
 
 // S = what the page remembers: { modal, matSide, customCodes, histKind, log } (open modal, mat side, saved codes, history filter and entries).
+// Marker elements for a list [{ k, s?, x, y }]; x and y are percent of the card.
+export function markersHtml(list) {
+  return (list || []).map((m, i) => `<div class="tk" data-i="${i}" style="left:${m.x}%;top:${m.y}%${m.s ? `;--tkw:${m.k === 'hex_attack' ? 12 : 9}%` : ''}"><img src="${m.s ? MARK_STICKER_DIR : TOKEN_IMAGE_DIR}${m.k}.png" alt="${m.k}" draggable="false"></div>`).join('');
+}
+const pickSize = (k, sticker) => (sticker ? (k === 'hex_attack' ? 36 : 27) : 44);   // same size as placed on the 300 px card
+function markPanel(c, S, esc) {
+  const sel = S.mkSel || {}, btn = (k, s) => `<button type="button" style="--sz:${pickSize(k, s)}px" data-mkpick="${k}" data-s="${s ? 1 : 0}" aria-pressed="${sel.k === k && !!sel.s === s}" title="${esc(markLabel(k))}"><img src="${s ? MARK_STICKER_DIR : TOKEN_IMAGE_DIR}${k}.png" alt="${k}" draggable="false"></button>`;
+  const toks = markerTokens(c.cls);
+  return `${toks.length ? `<div class="row"><span>Tokens</span><span class="tkpick">${toks.map(k => btn(k, false)).join('')}</span></div>` : ''}<div class="row"><span>Stickers</span><span class="tkpick" id="stkpick">${MARK_STICKERS.map(k => btn(k, true)).join('')}</span></div>`;
+}
+
 // X = helpers of the page: { esc, pretty, cardById, itemById, cardImageUrl, itemImageUrl, cardBackUrl, portraitStyle, traitChips, playerName }
 export function playmatHtml(c, X, S = {}) {
   const { esc } = X;
@@ -29,11 +40,16 @@ export function playmatHtml(c, X, S = {}) {
   const nameOf = id => X.pretty(X.cardById.get(id)?.slug ?? id);
   const iniOf = id => X.cardById.get(id)?.ini;
 
+  // markers (tokens and stickers) on a card or an item, and the corner handle that opens the marker editor
+  const HANDLE = '<svg viewBox="0 0 24 24" width="100%" height="100%" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8.5 15.5l.7-2.6 5.6-5.6a1 1 0 0 1 1.4 0l.5.5a1 1 0 0 1 0 1.4l-5.6 5.6z"/><path d="M13.6 8.6l1.8 1.8"/></svg>';
+  const marks = key => markersHtml(c.mk?.[key]);
+  const handle = key => `<button type="button" class="tkh" data-mkopen="${key}" data-char="${cid}" title="Tokens" aria-label="Place tokens" draggable="false">${HANDLE}</button>`;
+
   // a card as it lies in the hand, the active area or on a pile
-  const ac = (id, i) => {
+  const ac = (id, i, withHandle = true) => {
     const card = X.cardById.get(id), url = X.cardImageUrl(card), name = nameOf(id), ini = iniOf(id);
     const inner = url ? `<img src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false">` : `<div class="noimg">${esc(name)}</div>`;
-    return `<div class="ac" draggable="true" data-card="${id}" data-char="${cid}"${ini != null ? ` data-ini="${ini}"` : ''}${i != null ? ` style="--i:${i}"` : ''} title="${esc(name)}">${inner}${ini != null ? `<span class="inib" title="Initiative ${ini}">${ini}</span>` : ''}</div>`;
+    return `<div class="ac" draggable="true" data-card="${id}" data-char="${cid}"${ini != null ? ` data-ini="${ini}"` : ''}${i != null ? ` style="--i:${i}"` : ''} title="${esc(name)}">${inner}${ini != null ? `<span class="inib" title="Initiative ${ini}">${ini}</span>` : ''}${marks(`c:${id}`)}${withHandle ? handle(`c:${id}`) : ''}</div>`;
   };
 
   // a face-down or face-up card in a play slot
@@ -42,7 +58,7 @@ export function playmatHtml(c, X, S = {}) {
     const p = c.play[i];
     const inner = !p ? `<div class="slotempty">${i + 1}</div>` : (() => {
       const card = X.cardById.get(p.id), url = X.cardImageUrl(card), name = nameOf(p.id), ini = iniOf(p.id);
-      return `<div class="flipcard${p.up ? ' is-front settled' : ''}" draggable="true" data-card="${p.id}" data-char="${cid}" data-slot="${i}"${ini != null ? ` data-ini="${ini}"` : ''} role="button" tabindex="0" title="Click to flip: ${esc(name)}"><div class="flipinner"><div class="face back">${back}</div><div class="face front">${url ? `<img src="${esc(url)}" alt="${esc(name)}" draggable="false">` : `<div class="noimg">${esc(name)}</div>`}</div></div></div>`;
+      return `<div class="flipcard${p.up ? ' is-front settled' : ''}" draggable="true" data-card="${p.id}" data-char="${cid}" data-slot="${i}"${ini != null ? ` data-ini="${ini}"` : ''} role="button" tabindex="0" title="Click to flip: ${esc(name)}"><div class="flipinner"><div class="face back">${back}</div><div class="face front">${url ? `<img src="${esc(url)}" alt="${esc(name)}" draggable="false">` : `<div class="noimg">${esc(name)}</div>`}</div></div>${marks(`c:${p.id}`)}${handle(`c:${p.id}`)}</div>`;
     })();
     return `<div class="slot6${i === 0 ? ' first' : ''}" data-slot="${i + 1}" data-zone="play${i + 1}" data-char="${cid}"><div class="slotcard">${inner}</div></div>`;
   };
@@ -53,7 +69,7 @@ export function playmatHtml(c, X, S = {}) {
   for (const id of c.deck) { const z = zoneOf(c, id); if (lists[z]) lists[z].push(id); }
   const active = c.act.filter(id => lists.active.includes(id));
   const hand = handList(c);
-  const top = z => { const a = z === 'discard' ? c.disc : c.lost; const id = a.filter(x => c.deck.includes(x)).at(-1); return id == null ? '<div class="slotempty">Empty</div>' : ac(id); };
+  const top = z => { const a = z === 'discard' ? c.disc : c.lost; const id = a.filter(x => c.deck.includes(x)).at(-1); return id == null ? '<div class="slotempty">Empty</div>' : ac(id, undefined, false); };
   const pile = (z, title, cls) => `<div class="pile6${cls}" data-pile="${z}" data-zone="${z}" data-char="${cid}"><h4>${title} <b>${lists[z].length}</b></h4><div class="pilecard">${top(z)}</div></div>`;
 
   // top bar
@@ -73,7 +89,7 @@ export function playmatHtml(c, X, S = {}) {
   const ITEM_STATE = ['Available', 'Spent', 'Consumed'], STATE_ICON = [null, '../images/common/icons/spent.png', '../images/common/icons/consumed.png'];
   const items = c.items.map(it => {
     const item = X.itemById.get(it.id), url = X.itemImageUrl(item), name = X.pretty(item?.slug ?? it.id), s = it.s || 0;
-    return `<div class="it${s === 1 ? ' spent' : s === 2 ? ' consumed' : ''}" data-itemstate data-id="${esc(it.id)}" data-char="${cid}" title="${esc(name)}${item?.slot ? ` (${esc(item.slot)})` : ''} \u2014 ${ITEM_STATE[s]}, click to open">${url ? `<img src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false">` : `<div class="noimg">${esc(name)}</div>`}${STATE_ICON[s] ? `<span class="itbadge"><img src="${STATE_ICON[s]}" alt="" draggable="false"></span>` : ''}</div>`;
+    return `<div class="it${s === 1 ? ' spent' : s === 2 ? ' consumed' : ''}" data-itemstate data-id="${esc(it.id)}" data-char="${cid}" title="${esc(name)}${item?.slot ? ` (${esc(item.slot)})` : ''} \u2014 ${ITEM_STATE[s]}, click to open">${url ? `<img src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false">` : `<div class="noimg">${esc(name)}</div>`}${STATE_ICON[s] ? `<span class="itbadge"><img src="${STATE_ICON[s]}" alt="" draggable="false"></span>` : ''}${marks(`i:${it.id}`)}${handle(`i:${it.id}`)}</div>`;
   }).join('');
 
   const ST = S.set || {}, zm = z => (ST.zones && ST.zones[z]) || ST.zoom || 'hover';
@@ -160,7 +176,7 @@ const dockHtml = pend => `<aside class="dock" aria-label="Modals">${DOCK.map(([i
 export function modalHtml(c, X, S) {
   if (!S.modal) return '';
   const { esc } = X;
-  let title = '', big = '', body = '';
+  let title = '', big = '', body = '', extra = '';
   if (S.modal === 'mat') {
     title = 'Character mat'; big = ' big';
     const side = S.matSide === 'back' ? 'back' : 'front';
@@ -182,7 +198,12 @@ export function modalHtml(c, X, S) {
     if (!it) return '';
     title = X.pretty(item?.slug ?? it.id);
     const url = X.itemImageUrl(item), st = it.s || 0;
-    body = `<div class="itmodal"><div class="itcard">${url ? `<img src="${esc(url)}" alt="${esc(title)}">` : ''}</div><div class="itpanel"><div class="row"><span>State</span><span class="seg">${['Available', 'Spent', 'Consumed'].map((n, k) => `<button type="button" class="btn6" data-itstate="${k}" data-id="${esc(it.id)}" data-char="${esc(c.id)}" aria-pressed="${st === k}">${n}</button>`).join('')}</span></div></div></div>`;
+    body = `<div class="itmodal"><div class="itcard pick" data-mkcard="i:${esc(it.id)}">${url ? `<img src="${esc(url)}" alt="${esc(title)}" draggable="false">` : ''}${markersHtml(c.mk?.[`i:${it.id}`])}</div><div class="itpanel"><div class="row"><span>State</span><span class="seg">${['Available', 'Spent', 'Consumed'].map((n, k) => `<button type="button" class="btn6" data-itstate="${k}" data-id="${esc(it.id)}" data-char="${esc(c.id)}" aria-pressed="${st === k}">${n}</button>`).join('')}</span></div>${markPanel(c, S, esc)}<div class="row"><button type="button" class="btn6" data-mkclear="i:${esc(it.id)}">Clear all</button></div></div></div>`;
+  } else if (S.modal === 'cardmk') {
+    const id = Number(String(S.mkKey || '').slice(2)), card = X.cardById.get(id);
+    if (!card) return '';
+    title = X.pretty(card.slug); const url = X.cardImageUrl(card);
+    body = `<div class="itmodal"><div class="itcard pick" data-mkcard="c:${id}">${url ? `<img src="${esc(url)}" alt="${esc(title)}" draggable="false">` : ''}${markersHtml(c.mk?.[`c:${id}`])}</div><div class="itpanel">${markPanel(c, S, esc)}<div class="row"><button type="button" class="btn6" data-mkclear="c:${id}">Clear all</button></div></div></div>`;
   } else if (S.modal === 'items') {
     title = 'Equip items'; big = ' big';
     const I = S.items || { pool: [], isel: [] }, sel = new Set(I.isel.map(String));
@@ -261,8 +282,15 @@ export function modalHtml(c, X, S) {
     const rows = log.filter(e => f === 'all' || e.kind === f);
     body = `<div class="histbar"><label for="histfilter">Show</label><select id="histfilter" data-histkind><option value="all">All</option>${kinds.map(k => `<option${k === f ? ' selected' : ''}>${esc(k)}</option>`).join('')}</select><span class="hn">${rows.length} entries</span></div>
       <div class="hlist">${rows.length ? rows.slice(0, 300).map(e => { const d = new Date(e.t); return `<div class="hrow"><time>${d.toLocaleDateString([], { day: '2-digit', month: '2-digit' })} ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</time><span class="hc">${esc(e.kind)}</span><span>${esc(e.d)}${e.u ? `<small>${esc(e.u)}</small>` : ''}</span></div>`; }).join('') : '<div class="hempty">No changes recorded for this character yet.</div>'}</div>`;
+  } else if (S.modal === 'pile') {
+    const z = S.pileZ === 'lost' ? 'lost' : 'disc';
+    title = z === 'lost' ? 'Lost' : 'Discard'; big = ' big';
+    const ids = (c[z] || []).filter(id => c.deck.includes(id));
+    const cell = id => { const card = X.cardById.get(id), url = X.cardImageUrl(card), name = X.pretty(card?.slug ?? id); return `<div class="pcell" data-pcard="${id}" title="${esc(name)}"><button type="button" class="rec" data-pilerec="${id}" data-char="${esc(c.id)}" title="Recover ${esc(name)}">Recover</button>${url ? `<img src="${esc(url)}" alt="${esc(name)}" draggable="false">` : `<div class="noimg">${esc(name)}</div>`}${markersHtml(c.mk?.[`c:${id}`])}</div>`; };
+    body = `<div class="poolbar"><span>${ids.length} ${ids.length === 1 ? 'card' : 'cards'}</span><span class="grow"></span><button type="button" class="btn6" data-pilerecall="${z}" data-char="${esc(c.id)}"${ids.length ? '' : ' disabled'}>Recover all</button></div><div class="pilelist">${ids.length ? ids.map(cell).join('') : '<p class="mrow">Nothing here.</p>'}</div>`;
+    extra = '<img class="pilezoom" data-pilezoom alt="" hidden>';
   } else return '';
-  return `<div class="mmodal" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="mmodalbox${big}"><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2>${esc(title)}</h2>${body}</div></div>`;
+  return `<div class="mmodal" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="mmodalbox${big}"><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2>${esc(title)}</h2>${body}</div>${extra}</div>`;
 }
 
 // ---- the journal: battle goals, personal quest, notes ----

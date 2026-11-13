@@ -99,10 +99,16 @@
 .pm .itpanel .seg button{text-align:left}
 .pm .itpanel .row{display:flex;flex-direction:column;gap:5px}
 .pm .itpanel .row[hidden]{display:none}
+.pm .tkpick{display:flex;flex-wrap:wrap;gap:6px;max-width:170px}
+.pm .tkpick button{cursor:grab;touch-action:none;width:max(calc(var(--sz,44px) + 8px),32px);height:max(calc(var(--sz,44px) + 8px),32px);padding:2px;border-radius:50%;background:transparent;border:2px solid var(--line);display:flex;align-items:center;justify-content:center}
+.pm .tkpick button[aria-pressed=true]{border-color:var(--accent);background:rgba(255,200,80,.15)}
+.pm .tkpick{max-width:230px}
+.pm #stkpick button{border-radius:8px}
+.pm .tkpick img{width:var(--sz,44px);height:var(--sz,44px);display:block;object-fit:contain}
 .pm .tk{position:absolute;width:var(--tkw,14.6%);aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;z-index:6}
 .pm .tk>img{width:100%;height:100%;display:block;object-fit:contain;filter:drop-shadow(0 1px 3px rgba(0,0,0,.9))}
 .pm .itcard .tk{pointer-events:auto;cursor:grab;touch-action:none}
-.pm .itcard .tk:active{cursor:grabbing}
+.pm .itcard .tk:active, .pm .tkpick button:active{cursor:grabbing}
 .pm .itcard .tk:hover{filter:brightness(1.15)}
 .pm .tk .mkx{position:absolute;right:-4px;top:-4px;width:14px;height:14px;border-radius:50%;background:#c98a8a;color:#120f0b;font-size:11px;line-height:14px;cursor:pointer;padding:0;border:0}
 .pm .tkh{position:absolute;left:3px;bottom:3px;width:20px;height:20px;padding:1px;border-radius:50%;background:rgba(18,15,11,.85);border:1.5px solid var(--accent);cursor:pointer;z-index:8;opacity:.75}
@@ -191,9 +197,17 @@
 .pm .pile6 .ac{cursor:grab}
 .pm .pile6 .ac:active{cursor:grabbing}
 .pm .pile6 .ac.dragging{opacity:.35;pointer-events:none}
+.pm .pilelist{display:flex;flex-wrap:wrap;gap:22px 10px;max-height:62vh;overflow:auto;padding:22px 4px 4px}
+.pm .pcell{position:relative;width:var(--hcw,150px);aspect-ratio:5/7;flex:none;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.6)}
+.pm .pcell > img{width:100%;height:100%;display:block;object-fit:cover;border-radius:8px}
+.pm .pcell .rec{position:absolute;left:8px;top:-15px;height:16px;padding:0 8px;border-radius:8px 8px 0 0;background:rgba(18,15,11,.88);border:1.5px solid var(--accent);border-bottom:0;color:var(--accent);font-size:10px;font-weight:800;line-height:1;cursor:pointer;z-index:2}
+.pm .pcell .rec:hover{background:var(--accent);color:#120f0b}
+.pm .pilelist .mrow{margin:6px 0}
 .pm .pilerow6{position:relative;display:flex;align-items:center;gap:10px;background:#2d2519;border:1px solid var(--line);border-radius:8px;padding:6px 10px}
 .pm .pilerow6 > img{width:34px;height:48px;object-fit:cover;border-radius:4px;cursor:pointer}
 .pm .pilerow6 span{flex:1;font-size:13px}
+.pm .pilezoom{position:fixed;left:max(18px,calc(50vw - 370px));top:50%;transform:translateY(-50%);height:230px;width:auto;aspect-ratio:5/7;object-fit:cover;border-radius:10px;box-shadow:0 20px 50px rgba(0,0,0,.8);pointer-events:none;z-index:210}
+.pm .pilezoom[hidden]{display:none}
 .pm .pile6 .ac{height:56%;width:auto;box-shadow:4px 4px 0 -1px #2b2318,8px 8px 0 -2px #241c13}
 .pm .pile6.lost .ac{filter:grayscale(.8) brightness(.7)}
 .pm .dock{display:flex;flex-direction:column;gap:8px;align-items:stretch}
@@ -258,6 +272,8 @@
 .pm .notesarea{width:100%;min-height:140px;background:#120f0b;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px;font:inherit;resize:vertical}
 .pm .matflip{display:flex;justify-content:center}
 .pm .matflip img{width:100%;border-radius:8px;border:1px solid var(--line);cursor:pointer}
+.pm .pilezoom{height:var(--pzh,280px)}
+.pm[data-dock=right] .pilezoom{left:auto;right:max(18px,calc(50vw - 370px))}
 .pm[data-zactive=hover] .activelist .ac:hover, .pm[data-zplay=hover] .flipcard.is-front.settled:hover, .pm[data-zhand=hover] .fan6 .ac:hover, .pm[data-zitems=hover] .shelf6 .it:hover{transition-delay:var(--hdelay,0s)}
 .pm[data-inib=off] .inib{display:none!important}
 .pm .activelist .inib, .pm .pile6 .inib, .pm .hand6:not([data-layout=fan]) .inib{display:none!important}

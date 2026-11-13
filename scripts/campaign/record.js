@@ -110,10 +110,22 @@ export function normalize(raw) {
   return r;
 }
 
+// Markers on cards ('c:<card id>') and items ('i:<item id>'): [{ k, s?: 1 (sticker), x, y }] with x and y in percent of the card.
+function cleanMarks(mk) {
+  const out = {};
+  if (!mk || typeof mk !== 'object' || Array.isArray(mk)) return out;
+  for (const [key, list] of Object.entries(mk)) {
+    if (!/^[ci]:\w+$/.test(key) || !Array.isArray(list)) continue;
+    const a = list.filter(m => m && typeof m.k === 'string' && Number.isFinite(m.x) && Number.isFinite(m.y)).map(m => ({ k: m.k, ...(m.s ? { s: 1 } : {}), x: Math.max(0, Math.min(100, m.x)), y: Math.max(0, Math.min(100, m.y)) }));
+    if (a.length) out[key] = a;
+  }
+  return out;
+}
+
 // A character with every field present. Each ability card is in one place only: a record that lists a card twice keeps it in
 // the first of lost, discard, a play slot, active; play slots keep { id, up } or null; hord keeps hand cards only.
 function normalizeChar(c) {
-  const ch = { traits: [], special: [], deck: [], disc: [], act: [], lost: [], bench: [], items: [], play: [null, null], hord: null, tok: {}, bgo: null, pqo: null, pqc: {}, notes: '', pk: { perks: [], boxes: {}, ms: [] }, ...c };
+  const ch = { traits: [], special: [], deck: [], disc: [], act: [], lost: [], bench: [], items: [], play: [null, null], hord: null, tok: {}, bgo: null, pqo: null, pqc: {}, notes: '', mk: {}, pk: { perks: [], boxes: {}, ms: [] }, ...c };
   const seen = new Set();
   const take = list => (Array.isArray(list) ? list : []).filter(id => !seen.has(id) && seen.add(id));
   ch.lost = take(ch.lost);
@@ -126,6 +138,7 @@ function normalizeChar(c) {
   if (!ch.pqc || typeof ch.pqc !== 'object' || Array.isArray(ch.pqc)) ch.pqc = {};
   ch.items = (Array.isArray(ch.items) ? ch.items : []).map(it => ({ ...it, s: Math.max(0, Math.min(2, Math.trunc(Number(it.s ?? ((it.st || []).some(Boolean) ? 1 : 0))) || 0)) }));
   ch.notes = typeof ch.notes === 'string' ? ch.notes : '';
+  ch.mk = cleanMarks(ch.mk);
   { const pk = ch.pk && typeof ch.pk === 'object' ? ch.pk : {}; ch.pk = { perks: [...new Set((Array.isArray(pk.perks) ? pk.perks : []).map(Number).filter(n => Number.isInteger(n) && n >= 0))].sort((x, y) => x - y), boxes: pk.boxes && typeof pk.boxes === 'object' && !Array.isArray(pk.boxes) ? pk.boxes : {}, ms: [...new Set((Array.isArray(pk.ms) ? pk.ms : []).map(Number).filter(n => Number.isInteger(n) && n >= 0))].sort((x, y) => x - y) }; }
   ch.tok = ch.tok && typeof ch.tok === 'object' && !Array.isArray(ch.tok) ? Object.fromEntries(Object.entries(ch.tok).map(([k, v]) => [k, Math.max(0, Math.min(99, Math.trunc(Number(v)) || 0))])) : {};
   if (Array.isArray(ch.hord)) { const own = new Set(); ch.hord = ch.hord.filter(id => ch.deck.includes(id) && !seen.has(id) && !own.has(id) && own.add(id)); } else ch.hord = null;

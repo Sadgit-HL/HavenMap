@@ -10,7 +10,7 @@ import { escapeHtml as esc } from '../scripts/escape.js';
 import { localStore } from '../scripts/campaign/store.js';
 import { cardImageUrl, itemImageUrl, eventImageUrl, matImageUrl, pqImageUrl, cardBackUrl } from '../scripts/campaign/cardImages.js';
 import { playmatHtml, XP_STEPS, turnPost, cardsPost, goalRollCode, questRollCode, cleanSettings } from './playmat.js';
-import { tokenDefs } from '../scripts/campaign/classTokens.js';
+import { tokenDefs, markerTokens, MARK_STICKERS } from '../scripts/campaign/classTokens.js';
 import { bannerUrl, bannerCode } from '../scripts/campaign/bggBanners.js';
 import { GH2_PQ } from '../scripts/games/gh2_pq_text.js';
 import { morphInto } from './morph.js';
@@ -489,7 +489,7 @@ function portraitStyle(c, size) {
 }
 // What the playmat remembers while the page is open: the open modal, the mat side, the history filter. Saved BGG codes of the user are kept
 // in this browser (not in the campaign record).
-const pm = { modal: null, matSide: 'front', histKind: 'all', jtab: 'goal', bgv: null, pqv: null, notesPreview: false, amd: {}, amZoom: null, setOpen: false, dtab: 'hand', hsel: {}, hsArmed: false, itemId: null, isel: {}, ptab: 'cards', sheet: null };   // amd = draw state per character (not saved)
+const pm = { modal: null, matSide: 'front', histKind: 'all', jtab: 'goal', bgv: null, pqv: null, notesPreview: false, amd: {}, amZoom: null, setOpen: false, dtab: 'hand', hsel: {}, hsArmed: false, itemId: null, isel: {}, ptab: 'cards', sheet: null, mkKey: null, mkSel: null, pileZ: null };   // amd = draw state per character (not saved)
 const CODES_KEY = 'havenmap.campaign.codes';
 // Display settings of the playmat (gear in the top bar), kept in this browser.
 // Narrow screens get the phone view (campaign/phone.js) instead of the playmat.
@@ -505,7 +505,7 @@ const matSlug = c => String(matImageUrl(c.cls, 'front')).split('/').pop().replac
 const pmState = c => ({
   modal: pm.modal, matSide: pm.matSide, histKind: pm.histKind, jtab: pm.jtab, bgv: pm.bgv, pqv: pm.pqv, notesPreview: pm.notesPreview,
   bgs: record.bgs, pq: record.pq,
-  itemId: pm.itemId, set: pmset, setOpen: pm.setOpen, ptab: pm.ptab, sheet: pm.sheet,
+  itemId: pm.itemId, mkKey: pm.mkKey, pileZ: pm.pileZ, mkSel: mkSelOf(c), set: pmset, setOpen: pm.setOpen, ptab: pm.ptab, sheet: pm.sheet,
   items: pm.modal === 'items' ? { pool: ITEMS.filter(i => record.items.unl.includes(i.id) && (c.items.some(x => String(x.id) === String(i.id)) || shopCopies(record, i) > 0)), isel: pm.isel[c.id] || [] } : null,
   deck: pm.modal === 'deck' ? { tab: pm.dtab, cards: CARDS.filter(k => k.cls === classByName(c.cls)?.i).sort((a, b) => cardLevel(a.id) - cardLevel(b.id) || (a.ini ?? 1e9) - (b.ini ?? 1e9)), hsel: pm.hsel[c.id] || [], armed: pm.hsArmed } : null,
   amd: pm.modal === 'amd' ? drawState(c, pm.amd[c.id]) : null, amZoom: pm.modal === 'amd' ? pm.amZoom : null,
@@ -1599,8 +1599,14 @@ registerMenu({
       const hand = handList(c);
       list.push({ sep: true }, { label: 'Move to start', run: () => commit(ed.moveCard(record, c.id, id, 'hand', { before: hand[0] })) }, { label: 'Move to end', run: () => commit(ed.moveCard(record, c.id, id, 'hand', { before: null })) });
     }
+    list.splice(1, 0, { label: 'Add marker or sticker', run: () => openMarkers(`c:${id}`) });
     return list;
   },
+});
+registerMenu({
+  sel: '.pm .it[data-itemstate]',
+  title: el => (el.title || 'Item').split(' — ')[0],
+  actions: el => [{ label: 'Add marker', run: () => openMarkers(`i:${el.dataset.id}`) }],
 });
 registerMenu({
   sel: '.pm .pile6',
@@ -1713,6 +1719,114 @@ document.addEventListener('keydown', e => {
     const v = ta.value, a = v.lastIndexOf('\n', ta.selectionStart - 1) + 1, m = v.slice(a, ta.selectionStart).match(/^(\s*[-*]\s+(\[[ xX]\]\s+)?)(.*)/);
     if (m) { e.preventDefault(); if (!m[3]) ta.setRangeText('', a, ta.selectionStart, 'end'); else ta.setRangeText(`\n${m[1].replace(/\[[xX]\]/, '[ ]')}`, ta.selectionStart, ta.selectionEnd, 'end'); }
   }
+});
+
+
+// Markers (tokens and stickers) on ability cards and items. The corner handle (or the context menu) opens the editor modal: pick a token or sticker
+// and click the card, or drag it from the picker onto the card; drag a placed marker to move it, drop it outside the card to remove it.
+function mkSelOf(c) {
+  const s = pm.mkSel, toks = c ? markerTokens(c.cls) : [];
+  if (s && (s.s ? MARK_STICKERS.includes(s.k) : toks.includes(s.k))) return s;
+  return toks.length ? { k: toks[0], s: 0 } : { k: MARK_STICKERS[0], s: 1 };
+}
+const mkKeyNow = () => (pm.modal === 'item' ? `i:${pm.itemId}` : pm.modal === 'cardmk' ? pm.mkKey : null);
+function openMarkers(key) {
+  if (key.startsWith('i:')) { pm.itemId = key.slice(2); pm.modal = 'item'; } else { pm.mkKey = key; pm.modal = 'cardmk'; }
+  render();
+}
+const mkPct = (card, e) => { const r = card.getBoundingClientRect(); return { x: Math.min(100, Math.max(0, ((e.clientX - r.left) / r.width) * 100)), y: Math.min(100, Math.max(0, ((e.clientY - r.top) / r.height) * 100)) }; };
+const mkOver = (card, e) => { const r = card.getBoundingClientRect(); return e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom; };
+let mkBlock = false;
+main.addEventListener('click', e => {
+  const q = sel => e.target.closest?.(sel), c = pmChar();
+  if (!c) return;
+  const h = q('.pm .tkh');
+  if (h) { e.stopImmediatePropagation(); e.preventDefault(); openMarkers(h.dataset.mkopen); return; }
+  if (!q('.pm .mmodal')) return;
+  const pick = q('[data-mkpick]');
+  if (pick) { e.stopImmediatePropagation(); if (!mkBlock) { pm.mkSel = { k: pick.dataset.mkpick, s: Number(pick.dataset.s) }; render(); } return; }
+  const clr = q('[data-mkclear]');
+  if (clr) { e.stopImmediatePropagation(); commit(ed.clearMarkers(record, c.id, clr.dataset.mkclear)); return; }
+  const card = q('.pm .itcard[data-mkcard]');
+  if (card && !q('.tk')) {
+    e.stopImmediatePropagation();
+    const sel = mkSelOf(c);
+    commit(ed.addMarker(record, c.id, card.dataset.mkcard, { k: sel.k, ...(sel.s ? { s: 1 } : {}), ...mkPct(card, e) }));
+  }
+}, true);
+(() => {
+  let drag = null;
+  main.addEventListener('pointerdown', e => {
+    const c = pmChar(), pick = e.target.closest?.('.pm [data-mkpick]'), tk = e.target.closest?.('.pm .itcard .tk'), card = e.target.closest?.('.pm .itcard[data-mkcard]');
+    if (!c || e.button) return;
+    if (pick) { drag = { kind: 'pick', pick, x: e.clientX, y: e.clientY, ghost: null }; pick.setPointerCapture(e.pointerId); }
+    else if (tk && card) { drag = { kind: 'move', tk, card, moved: false }; tk.setPointerCapture(e.pointerId); e.preventDefault(); document.body.style.cursor = 'grabbing'; }
+  });
+  main.addEventListener('pointermove', e => {
+    if (!drag) return;
+    if (drag.kind === 'pick') {
+      if (!drag.ghost) {
+        if (Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 5) return;
+        const g = document.createElement('img'), sticker = drag.pick.dataset.s === '1';
+        g.src = drag.pick.querySelector('img').src;
+        g.style.cssText = `position:fixed;z-index:999;width:${sticker ? (drag.pick.dataset.mkpick === 'hex_attack' ? 36 : 27) : 44}px;pointer-events:none;transform:translate(-50%,-50%);filter:drop-shadow(0 4px 8px #000)`;
+        document.body.appendChild(g); drag.ghost = g; document.body.style.cursor = 'grabbing';
+      }
+      drag.ghost.style.left = `${e.clientX}px`; drag.ghost.style.top = `${e.clientY}px`;
+    } else {
+      drag.moved = true;
+      const q = mkPct(drag.card, e);
+      drag.tk.style.left = `${q.x}%`; drag.tk.style.top = `${q.y}%`;
+      drag.tk.style.opacity = mkOver(drag.card, e) ? '' : '.3';                      // faded outside the card: releasing there removes it
+    }
+  });
+  const end = e => {
+    if (!drag) return;
+    const d = drag; drag = null; document.body.style.cursor = '';
+    const c = pmChar(), key = mkKeyNow();
+    if (d.kind === 'pick') {
+      if (!d.ghost) return;
+      d.ghost.remove(); mkBlock = true; setTimeout(() => { mkBlock = false; }, 0);
+      const card = main.querySelector('.pm .itcard[data-mkcard]');
+      if (e.type === 'pointerup' && c && key && card && mkOver(card, e)) {
+        pm.mkSel = { k: d.pick.dataset.mkpick, s: Number(d.pick.dataset.s) };
+        commit(ed.addMarker(record, c.id, key, { k: pm.mkSel.k, ...(pm.mkSel.s ? { s: 1 } : {}), ...mkPct(card, e) }));
+        render();
+      }
+    } else if (d.moved && c && key) {
+      const i = Number(d.tk.dataset.i);
+      if (e.type === 'pointerup' && mkOver(d.card, e)) { const q = mkPct(d.card, e); commit(ed.moveMarker(record, c.id, key, i, q.x, q.y)); }
+      else commit(ed.removeMarker(record, c.id, key, i));
+      render();
+    }
+  };
+  main.addEventListener('pointerup', end); main.addEventListener('pointercancel', end);
+})();
+
+// Pile modal: click a pile to list its cards; Recover brings one card (or all) back to the hand; the card under the pointer is shown large.
+main.addEventListener('click', e => {
+  const q = sel => e.target.closest?.(sel), c = pmChar();
+  if (!c) return;
+  const rec = q('[data-pilerec]');
+  if (rec) { e.stopImmediatePropagation(); commit(ed.moveCard(record, c.id, Number(rec.dataset.pilerec), 'hand')); return; }
+  const all = q('[data-pilerecall]');
+  if (all) {
+    e.stopImmediatePropagation();
+    const ids = (all.dataset.pilerecall === 'lost' ? c.lost : c.disc).filter(id => c.deck.includes(id));
+    let r = record; for (const id of [...ids].reverse()) r = ed.moveCard(r, c.id, id, 'hand');
+    pm.modal = null; commit(r); render(); return;
+  }
+  const pile = q('.pm .pile6');
+  if (pile && !pm.modal && !q('.tkh')) { e.stopImmediatePropagation(); pm.pileZ = pile.dataset.pile === 'lost' ? 'lost' : 'disc'; pm.modal = 'pile'; render(); return; }
+  const cell = q('.pm .pcell > img');
+  if (cell && (pmset.zones.piles || pmset.zoom) === 'click') { e.stopImmediatePropagation(); const z = main.querySelector('[data-pilezoom]'); if (z) { z.hidden = !z.hidden && z.src === cell.src; z.src = cell.src; z.style.setProperty('--pzh', `${HOVER_H()}px`); } }
+}, true);
+document.addEventListener('mouseover', e => {
+  const img = e.target.closest?.('.pm .pcell > img'), z = main.querySelector('[data-pilezoom]');
+  if (!z) return;
+  if (!img) { if (z.src && (pmset.zones.piles || pmset.zoom) === 'hover') z.hidden = true; return; }
+  if ((pmset.zones.piles || pmset.zoom) !== 'hover') return;
+  z.src = img.src; z.style.setProperty('--pzh', `${HOVER_H()}px`); z.hidden = false;
 });
 
 // Playmat clicks: flip a played card, the + and - of XP, gold and inherited perks, click on a number to type a value.

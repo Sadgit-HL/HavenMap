@@ -246,7 +246,8 @@ iot`; they are photos, not clean scans) docked on the left, name and requirement
 
 ## 7. Open after the port (2026-11-13)
 
-- Not ported: markers (tokens and stickers) on cards and items; hover enlarge of pool cards; history lines for modifier deck draws, bless and curse.
+- Markers ported 2026-11-13 (untested in a browser): `c.mk = { 'c:<card id>' | 'i:<item id>': [{ k, s?: 1, x, y }] }` (x, y in percent of the card; `cleanMarks` in `record.js`; `addMarker`, `moveMarker`, `removeMarker`, `clearMarkers` in `edit.js`; log kind Marker in `changelog.js`; lists `MARKER_TOKENS`, `MARK_STICKERS` in `classTokens.js`). The corner handle (`.tkh`, `data-mkopen`) or the context menu opens the item modal (state plus markers) or the `cardmk` modal; click the card or drag from the picker to place, drag a placed marker to move, drop it outside the card to remove (`app.js`, section Markers). Not done: markers on pool cards, phone view, enhancement rows derived from stickers (the enhancement table stays manual).
+- Not ported: hover enlarge of pool cards; history lines for modifier deck draws, bless and curse.
 - Phone view cannot edit gold, inherited perks or XP; AMD drawn state is session only; no perk limit is enforced.
 - Item states from imported records count as spent when any old tick is set (meaning of the three spreadsheet tick columns unconfirmed).
 - No browser test was run for the port; long press and phone view are untested on a real device.

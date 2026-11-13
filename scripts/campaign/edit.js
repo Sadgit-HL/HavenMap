@@ -8,7 +8,7 @@ import { ALL_CLASSES } from './classList.js';
 import { SCN_STATE, availableSet, CARD_ZONES, zoneOf, handList, cardLevel, ownedCards, pendingPicks, classByName, SLOT_ORDER, itemFits, itemsInUse } from './record.js';
 import { CARDS } from '../games/gh2_cards.js';
 import { SPECIAL_TRAITS } from './traits.js';
-import { tokenDefs } from './classTokens.js';
+import { tokenDefs, markerTokens, MARK_STICKERS } from './classTokens.js';
 import { perkList } from './amdDeck.js';
 import { MASTERIES } from '../games/masteries.js';
 import { BATTLE_GOALS } from '../games/battle_goals.js';
@@ -809,4 +809,33 @@ export function setCardActive(r, cid, cardId, active) {
   if (!c) return r;
   if (active) return moveCard(r, cid, cardId, zoneOf(c, cardId) === 'hand' ? 'active' : zoneOf(c, cardId));
   return zoneOf(c, cardId) === 'active' ? moveCard(r, cid, cardId, 'hand') : r;
+}
+
+// --- markers on ability cards and items ('c:<card id>' or 'i:<item id>'; x and y in percent of the card) -----------------------------------------
+const markKeyOk = (c, key) => (/^c:\d+$/.test(key) && [...c.deck, ...c.bench].includes(Number(key.slice(2)))) || (/^i:\w+$/.test(key) && c.items.some(it => `i:${it.id}` === key));
+const pct = v => Math.round(clamp(Number(v), 0, 100) * 10) / 10;
+
+export function addMarker(r, cid, key, m) {
+  const c = r.chars.find(x => x.id === cid);
+  if (!c || !markKeyOk(c, key) || !m || !Number.isFinite(Number(m.x)) || !Number.isFinite(Number(m.y))) return r;
+  if (!(m.s ? MARK_STICKERS.includes(m.k) : markerTokens(c.cls).includes(m.k))) return r;
+  return edit(r, x => { const ch = x.chars.find(y => y.id === cid); (ch.mk[key] = ch.mk[key] || []).push({ k: m.k, ...(m.s ? { s: 1 } : {}), x: pct(m.x), y: pct(m.y) }); });
+}
+
+export function moveMarker(r, cid, key, i, px, py) {
+  const c = r.chars.find(x => x.id === cid), m = c?.mk?.[key]?.[i];
+  if (!m || !Number.isFinite(Number(px)) || !Number.isFinite(Number(py)) || (m.x === pct(px) && m.y === pct(py))) return r;
+  return edit(r, x => { const t = x.chars.find(y => y.id === cid).mk[key][i]; t.x = pct(px); t.y = pct(py); });
+}
+
+export function removeMarker(r, cid, key, i) {
+  const c = r.chars.find(x => x.id === cid);
+  if (!c?.mk?.[key]?.[i]) return r;
+  return edit(r, x => { const ch = x.chars.find(y => y.id === cid); ch.mk[key].splice(i, 1); if (!ch.mk[key].length) delete ch.mk[key]; });
+}
+
+export function clearMarkers(r, cid, key) {
+  const c = r.chars.find(x => x.id === cid);
+  if (!c?.mk?.[key]) return r;
+  return edit(r, x => { delete x.chars.find(y => y.id === cid).mk[key]; });
 }

@@ -21,7 +21,7 @@ css = re.sub(r'@import[^;]*;', '', css)
 # first class (or tag) of a selector must be in this list for the rule to be taken
 KEEP = set('''stage6 hud portrait who namerow sub chips chip sep lvl xp xprow xplab xpto xpbar stat counters grp bggseg bggb gear sp spc edv edin
 shelf6 it itbar itbadge board6 toprow zone zlabel activelist ac inib pini slot6 slotcard slotempty flipcard flipinner face cardback backlabel realback
-hand6 hbar hctl sortgrp btn6 fan6 piles6 pile6 pilecard pilerow6 hint tk tkh ctr target seg setwrap
+hand6 hbar hctl sortgrp btn6 fan6 piles6 pile6 pilecard pilerow6 hint tk tkh tkpick stkpick pcell pilelist pilezoom ctr target seg setwrap
 dock mbtn mmodal mmodalbox mmodalx matflip codelist coderow bgg-icons bgg-row bgg-block bgg-ic bnrsec bnrgrid bnrtile bnrnote bnrnoimg
 histbar hlist hrow hz ha hm hempty delx addrow mrow enhtable enhprice enhempty
 jbox jtab jtabs pqdock pqcard pqside pqreq pqc pqcheck pqdeck pqdl pqchip pqrow pqoffer pqpick bgcards bgcard mdbar mdprev mdview notesarea notespane rollbtn

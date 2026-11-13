@@ -196,6 +196,17 @@ export function describeChange(a, b) {
         ma.filter(i => !mb.includes(i)).forEach(i => add('Mercenaries', 'Mastery', `${c.name}: mastery unticked: ${mt(i)}`));
         continue;
       }
+      if (k === 'mk') {
+        const cnt = a => { const r = {}; (a || []).forEach(m => { const q = `${m.s ? 'sticker' : 'token'}|${m.k}`; r[q] = (r[q] || 0) + 1; }); return r; };   // counts only: moving a marker is not logged
+        keys(o.mk, c.mk).forEach(key => {
+          const x = cnt(o.mk?.[key]), y = cnt(c.mk?.[key]), on = key.startsWith('i:') ? `item #${key.slice(2)}` : cardLabel(Number(key.slice(2)));
+          keys(x, y).forEach(q => {
+            const d = (y[q] || 0) - (x[q] || 0), [kind, name] = q.split('|');
+            if (d) add('Mercenaries', 'Marker', `${c.name}: ${d > 0 ? 'added' : 'removed'} ${kind} ${name.replace(/_/g, ' ')}${Math.abs(d) > 1 ? ` x${Math.abs(d)}` : ''} ${d > 0 ? 'to' : 'from'} ${on}`);
+          });
+        });
+        continue;
+      }
       if (k === 'tok') {
         for (const t of tokenDefs(c.cls)) {
           const a = o.tok?.[t.k] || 0, b = c.tok?.[t.k] || 0, show = v => (t.states ? t.states[v] ?? v : v);
