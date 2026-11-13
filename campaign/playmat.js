@@ -1,7 +1,7 @@
 // The playmat of the Mercenaries tab (design: campaign/mockups/merc-6-playmat-v2.html, styles: campaign/playmat.css, generated).
 // playmatHtml() turns one character of the record into the playmat markup; the page (app.js) wires the clicks and drags to the
 // pure edit functions in scripts/campaign/edit.js, so everything done here is saved, undoable and logged in the history.
-import { handList, zoneOf } from '../scripts/campaign/record.js';
+import { handList, zoneOf, ownedCards, pendingPicks, cardLevel } from '../scripts/campaign/record.js';
 import { tokenDefs, TOKEN_IMAGE_DIR } from '../scripts/campaign/classTokens.js';
 import { BGG_ICON_GROUPS } from '../scripts/campaign/bggIcons.js';
 import { BANNERS, BANNER_ICON_DIR } from '../scripts/campaign/bggBanners.js';
@@ -80,7 +80,7 @@ export function playmatHtml(c, X, S = {}) {
     <header class="hud"><div class="portrait" style="${esc(X.portraitStyle(c, 72))}" role="img" aria-label="Class portrait (cropped from the character mat)"></div>
       <div class="who"><div class="namerow"><h1>${esc(c.name)}</h1></div><div class="sub">${esc(c.cls)}${X.playerName(c) ? ` &middot; played by ${esc(X.playerName(c))}` : ''}</div><div class="chips">${X.traitChips(c)}</div></div>
       <div class="sep"></div>
-      <div class="lvl" title="Level">${lv}</div>
+      <div class="lvl" title="Level ${lv} (click for the card pool)" data-opendeck="pool" role="button" tabindex="0">${lv}</div>
       <div class="xp" title="Level ${lv}: ${lo} XP.${hi ? ` Next level (${lv + 1}) at ${hi} XP.` : ' Maximum level.'}"><div class="xprow"><span class="xplab">XP</span>${sp('xp', 'XP', 'span', c.xp ?? 0)}<span class="xpto">/ <em>${hi ?? 'max'}</em></span></div><div class="xpbar"><b style="width:${pct}%"></b></div></div>
       <div class="stat"><small>Gold</small>${sp('gold', 'gold', 'b', c.gold ?? 0)}</div>
       <div class="stat"><small>Inherited perks</small>${sp('inh', 'inherited perks', 'b', c.inh ?? 0)}</div>
@@ -96,7 +96,7 @@ export function playmatHtml(c, X, S = {}) {
       <div class="hand6" data-layout="spread"><div class="hbar"><span class="zlabel">Hand &middot; <b class="${limit && hand.length > limit ? 'over-limit' : ''}">${hand.length}</b>${limit ? ` of <span>${esc(limit)}</span>` : ''}</span><span class="hctl"><span class="sortgrp"><button type="button" class="btn6" data-handsort="ini" data-char="${cid}" title="Sort by initiative and keep the hand sorted">Ini</button><button type="button" class="btn6" data-handsort="lvl" data-char="${cid}" title="Sort by level once">Lvl</button></span></span></div><div class="fan6" data-zone="hand" data-char="${cid}">${hand.map((id, i) => ac(id, i)).join('')}</div></div>
     </section>
     <section class="piles6">${pile('discard', 'Discard', ' target')}${pile('lost', 'Lost', ' lost target')}</section>
-    ${dockHtml()}
+    ${dockHtml(pendingPicks(c))}
   </div>${modalHtml(c, X, S)}</div>`;
 }
 
@@ -119,6 +119,7 @@ export function cardsPost(c, { pretty, cardById }) {
 // ---- the dock (buttons that open the modals) and the modals ----
 const ICON = d => `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 const DOCK = [
+  ['deck', 'Deck', 'Deck: hand selection and card pool', ICON('<rect x="7" y="3" width="13" height="16" rx="2"/><path d="M4 7v14h13"/><path d="M13.5 8v6M10.5 11h6"/>')],
   ['journal', 'Journal', 'Battle goals, personal quest and notes (tabs in one modal)', ICON('<path d="M6 3h11a2 2 0 0 1 2 2v14H8a2 2 0 0 1-2-2z"/><path d="M6 17a2 2 0 0 0 2 2M10 8h6M10 12h6"/>')],
   ['mat', 'Character mat', 'Character mat, front and back', ICON('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M9 5v14"/>')],
   ['perks', 'Perks & masteries', 'Perk selection and masteries', ICON('<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>')],
@@ -127,7 +128,7 @@ const DOCK = [
   ['codes', 'BGG codes', 'Copy a forum post code', ICON('<rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2"/>')],
   ['history', 'History', 'History of changes of this character', ICON('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>')],
 ];
-const dockHtml = () => `<aside class="dock" aria-label="Modals">${DOCK.map(([id, label, tip, svg]) => `<button type="button" class="mbtn" data-modal="${id}" title="Opens modal: ${tip}">${svg}<span>${label}</span></button>`).join('')}</aside>`;
+const dockHtml = pend => `<aside class="dock" aria-label="Modals">${DOCK.map(([id, label, tip, svg]) => `<button type="button" class="mbtn" data-modal="${id}" title="Opens modal: ${tip}">${svg}<span>${label}</span>${id === 'deck' && pend ? `<span class="pooldot" title="${pend} card pick pending">${pend}</span>` : ''}</button>`).join('')}</aside>`;
 
 function modalHtml(c, X, S) {
   if (!S.modal) return '';
@@ -149,6 +150,26 @@ function modalHtml(c, X, S) {
   } else if (S.modal === 'journal') {
     title = 'Journal'; big = ' jbox';
     body = journalBody(c, X, S);
+  } else if (S.modal === 'deck') {
+    title = 'Deck'; big = ' big';
+    const D = S.deck || { tab: 'hand', cards: [], hsel: [], armed: false }, owned = new Set(ownedCards(c)), pend = pendingPicks(c), level = c.lv || 1;
+    const nm = k => X.pretty(k.slug), hsel = new Set(D.hsel), limit = c.hand || 0, full = limit && hsel.size >= limit;
+    const tile = (k, cls, extra = '') => { const url = X.cardImageUrl(X.cardById.get(k.id)); return `<div class="pcard ${cls}" data-s="${k.id}" data-name="${esc(nm(k))}" title="${esc(nm(k))} (level ${esc(k.lv)})">${url ? `<img src="${esc(url)}" alt="${esc(nm(k))}" loading="lazy" draggable="false">` : ''}<span class="plv">${esc(k.lv)}</span>${extra}</div>`; };
+    const groups = list => { const g = {}; list.forEach(k => { const key = String(k.lv) === 'X' ? '1' : String(k.lv); (g[key] = g[key] || []).push(k); }); return Object.keys(g).sort((a, b) => a - b).map(k => [k, g[k]]); };
+    const join = a => (a[0] || '') + (a.length > 1 ? `<div class="lvrow">${a.slice(1).join('')}</div>` : '');
+    const label = k => (k === '1' ? 'Level 1 &amp; X' : `Level ${k}`);
+    const tabs = `<div class="deckrow"><span class="seg"><button type="button" data-dtab="hand" aria-pressed="${D.tab === 'hand'}">Hand</button><button type="button" data-dtab="pool" aria-pressed="${D.tab === 'pool'}">Card pool</button></span></div>`;
+    if (D.tab === 'pool') {
+      const picked = ownedCards(c).filter(id => { const l = cardLevel(id); return l >= 2 && l < 99; });
+      const grid = join(groups(D.cards).map(([k, list]) => { const locked = k !== '1' && Number(k) > level;
+        return `<div class="pgrp"><h3>${label(k)}<span>${locked ? `locked until level ${k}` : ''}</span></h3><div class="pgrid">${list.map(x => tile(x, owned.has(x.id) ? '' : locked ? 'locked' : `avail${pend ? ' can' : ''}`)).join('')}</div></div>`; }));
+      body = `${tabs}<div class="poolbar"><span>Level <span class="sp"><b>${level}</b><span class="spc"><button type="button" data-lvstep="1" aria-label="Level up">${UP}</button><button type="button" data-lvstep="-1" aria-label="Level down">${DN}</button></span></span></span><span>${owned.size} cards in pool</span><span class="grow"></span><button type="button" class="btn6" data-poolundo="${picked.at(-1) ?? ''}"${picked.length ? '' : ' disabled'}>Undo last pick</button></div>
+        ${pend ? `<div class="poolbanner">Level up: choose ${pend} new card${pend > 1 ? 's' : ''} of level ${level} or lower.</div>` : ''}${grid}`;
+    } else {
+      const grid = join(groups(D.cards.filter(k => owned.has(k.id))).map(([k, list]) => `<div class="pgrp"><h3>${label(k)}</h3><div class="pgrid">${list.map(x => { const on = hsel.has(x.id), off = !on && full; return tile(x, on ? 'sel' : off ? 'dis' : '', `<button type="button" class="psel" data-hsel="${x.id}" aria-pressed="${on}" aria-label="Select ${esc(nm(x))}"${off ? ' disabled' : ''}></button>`); }).join('')}</div></div>`));
+      body = `${tabs}<div class="poolbar"><span>Selected <b>${hsel.size}${limit ? ` / ${limit}` : ''}</b></span><span class="grow"></span><button type="button" class="btn6" data-handclear>Clear</button></div>${grid}
+        <div class="poolfoot"><span>${hsel.size && limit && hsel.size < limit ? 'Fewer cards than the hand limit' : ''}</span><button type="button" class="btn6" data-handok${hsel.size ? '' : ' disabled'}>${D.armed ? 'Reset scenario cards and apply' : 'Confirm hand'}</button></div>`;
+    }
   } else if (S.modal === 'perks') {
     title = 'Perks & masteries'; big = ' big';
     const perks = perkList(c.cls), on = i => c.pk.perks.includes(i), mask = i => c.pk.boxes[i] || 0;

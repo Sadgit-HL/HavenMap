@@ -15,7 +15,7 @@ import { bannerUrl, bannerCode } from '../scripts/campaign/bggBanners.js';
 import { GH2_PQ } from '../scripts/games/gh2_pq_text.js';
 import { morphInto } from './morph.js';
 import {
-  validate, prosperityLevel, handOf, handList, zoneOf, CARD_ZONES, shopCopies, itemsInUse, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE,
+  validate, prosperityLevel, handOf, handList, zoneOf, CARD_ZONES, shopCopies, itemsInUse, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE, ownedCards, cardLevel,
 } from '../scripts/campaign/record.js';
 import * as ed from '../scripts/campaign/edit.js';
 import { describeChange, LOG_TABS, LOG_MAX } from '../scripts/campaign/changelog.js';
@@ -486,7 +486,7 @@ function portraitStyle(c, size) {
 }
 // What the playmat remembers while the page is open: the open modal, the mat side, the history filter. Saved BGG codes of the user are kept
 // in this browser (not in the campaign record).
-const pm = { modal: null, matSide: 'front', histKind: 'all', jtab: 'goal', bgv: null, pqv: null, notesPreview: false, amd: {}, amZoom: null };   // amd = draw state per character (not saved)
+const pm = { modal: null, matSide: 'front', histKind: 'all', jtab: 'goal', bgv: null, pqv: null, notesPreview: false, amd: {}, amZoom: null, dtab: 'hand', hsel: {}, hsArmed: false };   // amd = draw state per character (not saved)
 const CODES_KEY = 'havenmap.campaign.codes';
 const loadCodes = () => { try { const a = JSON.parse(localStorage.getItem(CODES_KEY) || '[]'); return Array.isArray(a) ? a : []; } catch { return []; } };
 const saveCodes = a => { try { localStorage.setItem(CODES_KEY, JSON.stringify(a)); } catch { /* ignore */ } };
@@ -494,6 +494,7 @@ const matSlug = c => String(matImageUrl(c.cls, 'front')).split('/').pop().replac
 const pmState = c => ({
   modal: pm.modal, matSide: pm.matSide, histKind: pm.histKind, jtab: pm.jtab, bgv: pm.bgv, pqv: pm.pqv, notesPreview: pm.notesPreview,
   bgs: record.bgs, pq: record.pq,
+  deck: pm.modal === 'deck' ? { tab: pm.dtab, cards: CARDS.filter(k => k.cls === classByName(c.cls)?.i).sort((a, b) => cardLevel(a.id) - cardLevel(b.id) || (a.ini ?? 1e9) - (b.ini ?? 1e9)), hsel: pm.hsel[c.id] || [], armed: pm.hsArmed } : null,
   amd: pm.modal === 'amd' ? drawState(c, pm.amd[c.id]) : null, amZoom: pm.modal === 'amd' ? pm.amZoom : null,
   customCodes: pm.modal === 'codes' ? loadCodes() : [],
   enh: pm.modal === 'enh' ? record.enh.map((e, i) => ({ e, i })).filter(x => x.e.cls === c.cls) : [],
@@ -1226,6 +1227,44 @@ function render() {
   if (pm.modal === 'perks') hydratePerkCards();
 }
 
+// Deck modal: tabs, card pool picks and undo, the level stepper, the hand selection and its confirmation.
+function deckClick(e, c) {
+  const t = e.target, q = sel => t.closest?.(sel);
+  if (q('[data-dtab]')) { pm.dtab = q('[data-dtab]').dataset.dtab; pm.hsArmed = false; render(); return true; }
+  const pick = q('.pcard.avail.can');
+  if (pick) { commit(ed.addPoolCard(record, c.id, Number(pick.dataset.s))); return true; }
+  const undo = q('[data-poolundo]');
+  if (undo) { if (undo.dataset.poolundo !== '') commit(ed.removePoolCard(record, c.id, Number(undo.dataset.poolundo))); return true; }
+  const step = q('[data-lvstep]');
+  if (step) {
+    const lv = Math.max(1, Math.min(9, (c.lv || 1) + Number(step.dataset.lvstep)));
+    let r = ed.setCharacter(ed.setCharacter(record, c.id, 'lv', lv), c.id, 'xp', XP_STEPS[lv - 1] ?? 0);   // the level moves the XP to the threshold of the level
+    for (;;) {                                                                                           // picks beyond the new level go back
+      const ch = r.chars.find(x => x.id === c.id), over = ownedCards(ch).filter(id => cardLevel(id) >= 2 && cardLevel(id) < 99);
+      if (over.length <= lv - 1) break;
+      r = ed.removePoolCard(r, c.id, over.at(-1));
+    }
+    commit(r); return true;
+  }
+  const hs = q('[data-hsel]');
+  if (hs) {
+    if (hs.disabled) return true;
+    const id = Number(hs.dataset.hsel), cur = pm.hsel[c.id] || [];
+    pm.hsel[c.id] = cur.includes(id) ? cur.filter(x => x !== id) : [...cur, id]; pm.hsArmed = false; render(); return true;
+  }
+  if (q('[data-handclear]')) { pm.hsel[c.id] = []; pm.hsArmed = false; render(); return true; }
+  const ok = q('[data-handok]');
+  if (ok) {
+    if (ok.disabled) return true;
+    const inPlay = c.disc.length || c.lost.length || c.act.length || c.play.some(Boolean);
+    if (inPlay && !pm.hsArmed) { pm.hsArmed = true; render(); setTimeout(() => { if (pm.hsArmed) { pm.hsArmed = false; render(); } }, 4000); return true; }
+    pm.hsArmed = false; pm.modal = null;
+    commit(ed.applyHand(record, c.id, pm.hsel[c.id] || []));
+    return true;
+  }
+  return false;
+}
+
 // The cards of the perk rows are drawn the same way (data-perkcard = perk index . r (removed) or a (added) . position).
 function hydratePerkCards() {
   const c = record?.chars.find(x => x.id === currentSub());
@@ -1537,8 +1576,15 @@ document.addEventListener('keydown', e => {
 const HUD_KEY = { xp: 'xp', gold: 'gold', inh: 'inh' };
 main.addEventListener('click', e => {
   const dock = e.target.closest?.('button[data-modal]');
-  if (dock) { pm.modal = dock.dataset.modal; render(); return; }
+  if (dock || e.target.closest?.('[data-opendeck]')) {
+    pm.modal = dock ? dock.dataset.modal : 'deck';
+    const dc = pmChar();
+    if (pm.modal === 'deck' && dc) { pm.dtab = dock ? 'hand' : 'pool'; pm.hsel[dc.id] = [...dc.deck]; pm.hsArmed = false; }
+    render(); return;
+  }
   if (e.target.closest?.('[data-modalclose]') || e.target.matches?.('.pm .mmodal')) { pm.modal = null; pm.amZoom = null; render(); return; }
+  const dch = pmChar();
+  if (dch && deckClick(e, dch)) return;
   const pb = e.target.closest?.('[data-perkbox]') || e.target.closest?.('[data-perkrow]');
   if (pb && pmChar()) { const [i, b] = (pb.dataset.perkbox || pb.dataset.perkrow).split('.').map(Number); commit(ed.togglePerkBox(record, pmChar().id, i, b)); return; }
   const amb = e.target.closest?.('button[data-amact]'), amc = pmChar();
