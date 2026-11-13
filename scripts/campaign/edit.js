@@ -839,3 +839,11 @@ export function clearMarkers(r, cid, key) {
   if (!c?.mk?.[key]) return r;
   return edit(r, x => { delete x.chars.find(y => y.id === cid).mk[key]; });
 }
+
+// Price of the enhancements shown for a card in the Enhancements table (rows derived from the stickers on the card), key 'c:<card id>'.
+export function setMarkPrice(r, cid, key, price) {
+  const c = r.chars.find(x => x.id === cid), raw = String(price ?? '').trim(), p = raw === '' ? null : toInt(raw);
+  if (!c || !/^c:\d+$/.test(key) || (raw !== '' && (p === null || p < 0))) return r;
+  if ((c.mp?.[key] ?? null) === (p === null ? null : Math.min(p, 9999))) return r;
+  return edit(r, x => { const ch = x.chars.find(y => y.id === cid); ch.mp = ch.mp || {}; if (p === null) delete ch.mp[key]; else ch.mp[key] = Math.min(p, 9999); });
+}

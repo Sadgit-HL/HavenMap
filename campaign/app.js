@@ -1651,6 +1651,7 @@ main.addEventListener('change', e => {
   else if (e.target.matches?.('[data-flag]')) { pmset[e.target.dataset.flag] = e.target.checked; saveSet(); render(); }
   else if (e.target.matches?.('select[data-zone]')) { pmset.zones[e.target.dataset.zone] = e.target.value; saveSet(); render(); }
   else if (e.target.matches?.('[data-mastery]')) commit(ed.setMastery(record, e.target.dataset.char, Number(e.target.dataset.mastery), e.target.checked));
+  else if (e.target.matches?.('[data-mkprice]')) commit(ed.setMarkPrice(record, e.target.dataset.char, e.target.dataset.mkprice, e.target.value));
   else if (e.target.matches?.('[data-enhprice]')) commit(ed.setEnhancementPrice(record, Number(e.target.dataset.enhprice), e.target.value));
   else if (e.target.matches?.('[data-bgst]')) { const c = pmChar(); if (c) { pm.bgv = e.target.dataset.slug; commit(ed.setBattleGoalStatus(record, c.id, e.target.dataset.slug, e.target.value)); } }
   else if (e.target.matches?.('[data-pqst]')) { const c = pmChar(); if (c) { pm.pqv = e.target.dataset.slug; commit(ed.setQuestStatus(record, c.id, e.target.dataset.slug, e.target.value)); } }

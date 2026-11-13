@@ -125,7 +125,7 @@ function cleanMarks(mk) {
 // A character with every field present. Each ability card is in one place only: a record that lists a card twice keeps it in
 // the first of lost, discard, a play slot, active; play slots keep { id, up } or null; hord keeps hand cards only.
 function normalizeChar(c) {
-  const ch = { traits: [], special: [], deck: [], disc: [], act: [], lost: [], bench: [], items: [], play: [null, null], hord: null, tok: {}, bgo: null, pqo: null, pqc: {}, notes: '', mk: {}, pk: { perks: [], boxes: {}, ms: [] }, ...c };
+  const ch = { traits: [], special: [], deck: [], disc: [], act: [], lost: [], bench: [], items: [], play: [null, null], hord: null, tok: {}, bgo: null, pqo: null, pqc: {}, notes: '', mk: {}, mp: {}, pk: { perks: [], boxes: {}, ms: [] }, ...c };
   const seen = new Set();
   const take = list => (Array.isArray(list) ? list : []).filter(id => !seen.has(id) && seen.add(id));
   ch.lost = take(ch.lost);
@@ -139,6 +139,7 @@ function normalizeChar(c) {
   ch.items = (Array.isArray(ch.items) ? ch.items : []).map(it => ({ ...it, s: Math.max(0, Math.min(2, Math.trunc(Number(it.s ?? ((it.st || []).some(Boolean) ? 1 : 0))) || 0)) }));
   ch.notes = typeof ch.notes === 'string' ? ch.notes : '';
   ch.mk = cleanMarks(ch.mk);
+  ch.mp = ch.mp && typeof ch.mp === 'object' && !Array.isArray(ch.mp) ? Object.fromEntries(Object.entries(ch.mp).filter(([k, v]) => /^c:\d+$/.test(k) && Number.isInteger(v) && v >= 0 && v <= 9999)) : {};
   { const pk = ch.pk && typeof ch.pk === 'object' ? ch.pk : {}; ch.pk = { perks: [...new Set((Array.isArray(pk.perks) ? pk.perks : []).map(Number).filter(n => Number.isInteger(n) && n >= 0))].sort((x, y) => x - y), boxes: pk.boxes && typeof pk.boxes === 'object' && !Array.isArray(pk.boxes) ? pk.boxes : {}, ms: [...new Set((Array.isArray(pk.ms) ? pk.ms : []).map(Number).filter(n => Number.isInteger(n) && n >= 0))].sort((x, y) => x - y) }; }
   ch.tok = ch.tok && typeof ch.tok === 'object' && !Array.isArray(ch.tok) ? Object.fromEntries(Object.entries(ch.tok).map(([k, v]) => [k, Math.max(0, Math.min(99, Math.trunc(Number(v)) || 0))])) : {};
   if (Array.isArray(ch.hord)) { const own = new Set(); ch.hord = ch.hord.filter(id => ch.deck.includes(id) && !seen.has(id) && !own.has(id) && own.add(id)); } else ch.hord = null;

@@ -276,7 +276,14 @@ export function modalHtml(c, X, S) {
   } else if (S.modal === 'enh') {
     title = 'Enhancements';
     const rows = (S.enh || []).map(({ e, i }) => `<tr><td>${esc(e.card)}</td><td>${esc(e.top ?? '\u2013')}</td><td>${esc(e.bottom ?? '\u2013')}</td><td><input class="enhprice" type="number" min="0" max="9999" inputmode="numeric" value="${e.price ?? ''}" placeholder="gold" data-enhprice="${i}" aria-label="Price of ${esc(e.card)}"> <button type="button" class="delx" data-enhdel="${i}" aria-label="Remove ${esc(e.card)}">&times;</button></td></tr>`).join('');
-    body = `<table class="enhtable"><thead><tr><th>Card</th><th>Top</th><th>Bottom</th><th>Price</th></tr></thead><tbody>${rows || '<tr><td colspan="4" class="enhempty">No enhancements logged for this class.</td></tr>'}</tbody></table>
+    // rows derived from the stickers placed on cards (top = upper half of the card, bottom = lower half)
+    const derived = Object.entries(c.mk || {}).filter(([k, l]) => k.startsWith('c:') && l.some(m => m.s)).map(([k, l]) => {
+      const st = l.filter(m => m.s), part = top => { const n = {}; st.filter(m => (m.y < 50) === top).forEach(m => { n[m.k] = (n[m.k] || 0) + 1; }); return Object.keys(n).map(q => markLabel(q) + (n[q] > 1 ? ` ×${n[q]}` : '')).join(', ') || '–'; };
+      const card = X.cardById.get(Number(k.slice(2)));
+      return { k, name: X.pretty(card?.slug ?? k.slice(2)), top: part(true), bottom: part(false) };
+    }).sort((a, b) => a.name.localeCompare(b.name));
+    const drows = derived.map(d => `<tr><td>${esc(d.name)}</td><td>${esc(d.top)}</td><td>${esc(d.bottom)}</td><td><input class="enhprice" type="number" min="0" max="9999" inputmode="numeric" value="${c.mp?.[d.k] ?? ''}" placeholder="gold" data-mkprice="${d.k}" data-char="${esc(c.id)}" aria-label="Price of ${esc(d.name)}"></td></tr>`).join('');
+    body = `<table class="enhtable"><thead><tr><th>Card</th><th>Top</th><th>Bottom</th><th>Price</th></tr></thead><tbody>${rows}${drows}${rows || drows ? '' : '<tr><td colspan="4" class="enhempty">No enhancements logged for this class.</td></tr>'}</tbody></table>
       <div class="addrow"><input data-enh-card list="enh-cards" placeholder="Card" aria-label="Card"><datalist id="enh-cards">${(S.enhCards || []).map(n => `<option value="${esc(n)}">`).join('')}</datalist><input data-enh-top placeholder="Top" aria-label="Top"><input data-enh-bottom placeholder="Bottom" aria-label="Bottom"><input data-enh-price placeholder="Gold" aria-label="Price" style="width:70px" inputmode="numeric"><button type="button" class="btn6" data-enhadd data-char="${esc(c.id)}">Add</button></div>`;
   } else if (S.modal === 'history') {
     title = 'History'; big = ' big';
