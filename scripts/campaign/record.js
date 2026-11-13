@@ -32,6 +32,8 @@ Record fields (all optional on load, defaults filled by normalize):
                     tok = class special tokens { key: count or state index } (scripts/campaign/classTokens.js)
                     bgo, pqo = battle goals (3) and personal quests (2) just drawn, one to be kept, or null; pqc = { questSlug: [count per requirement] };
                     notes = free text of the journal (markdown)
+                    pk = perks taken { perks: [index into the class perk list], boxes: { index: ticked-box mask of a multi-box perk } } (scripts/amd/heroDeck.js);
+                    the modifier deck follows from it (scripts/campaign/amdDeck.js)
                     special = special traits gained through events (keys of scripts/campaign/traits.js)
   items             { unl: [itemId], taken: { itemId: copies in use } }
   events            { city, road: { top, bottom, out, locked }, pend? }   piles are ordered, see scripts/campaign/events.js
@@ -111,7 +113,7 @@ export function normalize(raw) {
 // A character with every field present. Each ability card is in one place only: a record that lists a card twice keeps it in
 // the first of lost, discard, a play slot, active; play slots keep { id, up } or null; hord keeps hand cards only.
 function normalizeChar(c) {
-  const ch = { traits: [], special: [], deck: [], disc: [], act: [], lost: [], bench: [], items: [], play: [null, null], hord: null, tok: {}, bgo: null, pqo: null, pqc: {}, notes: '', ...c };
+  const ch = { traits: [], special: [], deck: [], disc: [], act: [], lost: [], bench: [], items: [], play: [null, null], hord: null, tok: {}, bgo: null, pqo: null, pqc: {}, notes: '', pk: { perks: [], boxes: {} }, ...c };
   const seen = new Set();
   const take = list => (Array.isArray(list) ? list : []).filter(id => !seen.has(id) && seen.add(id));
   ch.lost = take(ch.lost);
@@ -123,6 +125,7 @@ function normalizeChar(c) {
   ch.pqo = Array.isArray(ch.pqo) ? ch.pqo.slice(0, 2) : null;
   if (!ch.pqc || typeof ch.pqc !== 'object' || Array.isArray(ch.pqc)) ch.pqc = {};
   ch.notes = typeof ch.notes === 'string' ? ch.notes : '';
+  { const pk = ch.pk && typeof ch.pk === 'object' ? ch.pk : {}; ch.pk = { perks: [...new Set((Array.isArray(pk.perks) ? pk.perks : []).map(Number).filter(n => Number.isInteger(n) && n >= 0))].sort((x, y) => x - y), boxes: pk.boxes && typeof pk.boxes === 'object' && !Array.isArray(pk.boxes) ? pk.boxes : {} }; }
   ch.tok = ch.tok && typeof ch.tok === 'object' && !Array.isArray(ch.tok) ? Object.fromEntries(Object.entries(ch.tok).map(([k, v]) => [k, Math.max(0, Math.min(99, Math.trunc(Number(v)) || 0))])) : {};
   if (Array.isArray(ch.hord)) { const own = new Set(); ch.hord = ch.hord.filter(id => ch.deck.includes(id) && !seen.has(id) && !own.has(id) && own.add(id)); } else ch.hord = null;
   return ch;
