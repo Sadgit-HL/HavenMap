@@ -46,6 +46,7 @@ export function phoneHtml(c, X, S = {}) {
     return `<span class="ctr" title="${esc(d.l)}">${img(d.img, d.l)}<span class="sp"><b>${v}</b><span class="spc"><button type="button" data-tk="${d.k}" data-char="${cid}" data-d="1" aria-label="Increase ${esc(d.l)}">${UP}</button><button type="button" data-tk="${d.k}" data-char="${cid}" data-d="-1" aria-label="Decrease ${esc(d.l)}"${v ? '' : ' disabled'}>${DN}</button></span></span></span>`;
   }).join('');
 
+  const sp = (key, label, aria, val, note = '') => `<div class="statrow"><span>${label}</span><span class="sp"><b class="edv" tabindex="0" data-hud="${key}" data-char="${cid}">${val}</b><span class="spc"><button type="button" data-hud="${key}" data-char="${cid}" data-d="1" aria-label="Increase ${aria}">${UP}</button><button type="button" data-hud="${key}" data-char="${cid}" data-d="-1" aria-label="Decrease ${aria}">${DN}</button></span></span>${note ? `<small>${note}</small>` : ''}</div>`;
   let view = '';
   if (tab === 'cards') {
     view = `<h4>Play area <span>tap to flip, button to move</span></h4><div class="row2">${slot(0)}${slot(1)}</div>
@@ -60,7 +61,7 @@ export function phoneHtml(c, X, S = {}) {
     view = `<h4>Items <span class="hbtns"><span style="align-self:center">${c.items.length}</span><button type="button" class="sm" data-itemssort="${cid}">Slot</button><button type="button" class="sm" data-itemsedit="${cid}">Equip</button></span></h4><div class="itl">${tiles || '<div class="note">No items.</div>'}</div>`;
   } else {
     view = `<div class="panel"><h4>Traits</h4><div class="chips">${X.traitChips(c)}</div></div>
-      <div class="panel"><h4>Character</h4><div class="note">Gold <b>${c.gold ?? 0}</b> &middot; inherited perks <b>${c.inh ?? 0}</b> &middot; XP <b>${c.xp ?? 0}</b>${hi ? ` of ${hi}` : ''}. These are changed on a wide screen.</div></div>
+      <div class="panel"><h4>Character</h4><div class="stats">${sp('xp', 'XP', 'XP', c.xp ?? 0, hi ? `of ${hi}` : 'max')}${sp('gold', 'Gold', 'gold', c.gold ?? 0)}${sp('inh', 'Inherited perks', 'inherited perks', c.inh ?? 0)}</div></div>
       <div class="panel"><h4>Open</h4><div class="opts">${PHONE_MODALS.map(([id, l]) => `<button type="button" data-modal="${id}">${l}</button>`).join('')}</div></div>`;
   }
 
