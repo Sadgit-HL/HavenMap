@@ -1825,6 +1825,23 @@ main.addEventListener('change', e => {
   if (a && pm.cf && a.value) { pm.cf.special.push(a.value); render(); }
 });
 
+// Deck modal: hovering a card of the pool or the hand selection shows it large, docked beside the modal, with its tokens and stickers.
+document.addEventListener('mouseover', e => {
+  const big = main.querySelector('[data-poolbig]');
+  if (!big) return;
+  const card = e.target.closest?.('.pm .pcard');
+  if (!card || !card.querySelector(':scope > img')) { big.hidden = true; return; }
+  if ((pmset.zones.piles || pmset.zoom) !== 'hover' && pmset.zoom !== 'hover') return;
+  const w = Math.min(({ s: 270, m: 340, l: 420 })[pmset.size] || 340, (innerHeight - 40) * 5 / 7);
+  big.style.setProperty('--zw', `${w}px`);
+  const img = card.querySelector(':scope > img').cloneNode();
+  img.className = 'port';
+  const wrap = document.createElement('div');
+  wrap.style.position = 'relative'; wrap.appendChild(img);
+  card.querySelectorAll(':scope > .tk').forEach(t => wrap.appendChild(t.cloneNode(true)));
+  big.replaceChildren(wrap); big.hidden = false;
+});
+
 // Pile modal: click a pile to list its cards; Recover brings one card (or all) back to the hand; the card under the pointer is shown large.
 main.addEventListener('click', e => {
   const q = sel => e.target.closest?.(sel), c = pmChar();

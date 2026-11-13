@@ -223,7 +223,7 @@ export function modalHtml(c, X, S) {
     title = 'Deck'; big = ' big';
     const D = S.deck || { tab: 'hand', cards: [], hsel: [], armed: false }, owned = new Set(ownedCards(c)), pend = pendingPicks(c), level = c.lv || 1;
     const nm = k => X.pretty(k.slug), hsel = new Set(D.hsel), limit = c.hand || 0, full = limit && hsel.size >= limit;
-    const tile = (k, cls, extra = '') => { const url = X.cardImageUrl(X.cardById.get(k.id)); return `<div class="pcard ${cls}" data-s="${k.id}" data-name="${esc(nm(k))}" title="${esc(nm(k))} (level ${esc(k.lv)})">${url ? `<img src="${esc(url)}" alt="${esc(nm(k))}" loading="lazy" draggable="false">` : ''}<span class="plv">${esc(k.lv)}</span>${extra}</div>`; };
+    const tile = (k, cls, extra = '') => { const url = X.cardImageUrl(X.cardById.get(k.id)); return `<div class="pcard ${cls}" data-s="${k.id}" data-name="${esc(nm(k))}" title="${esc(nm(k))} (level ${esc(k.lv)})">${url ? `<img src="${esc(url)}" alt="${esc(nm(k))}" loading="lazy" draggable="false">` : ''}<span class="plv">${esc(k.lv)}</span>${markersHtml(c.mk?.[`c:${k.id}`])}${extra}</div>`; };
     const groups = list => { const g = {}; list.forEach(k => { const key = String(k.lv) === 'X' ? '1' : String(k.lv); (g[key] = g[key] || []).push(k); }); return Object.keys(g).sort((a, b) => a - b).map(k => [k, g[k]]); };
     const join = a => (a[0] || '') + (a.length > 1 ? `<div class="lvrow">${a.slice(1).join('')}</div>` : '');
     const label = k => (k === '1' ? 'Level 1 &amp; X' : `Level ${k}`);
@@ -239,6 +239,7 @@ export function modalHtml(c, X, S) {
       body = `${tabs}<div class="poolbar"><span>Selected <b>${hsel.size}${limit ? ` / ${limit}` : ''}</b></span><span class="grow"></span><button type="button" class="btn6" data-handclear>Clear</button></div>${grid}
         <div class="poolfoot"><span>${hsel.size && limit && hsel.size < limit ? 'Fewer cards than the hand limit' : ''}</span><button type="button" class="btn6" data-handok${hsel.size ? '' : ' disabled'}>${D.armed ? 'Reset scenario cards and apply' : 'Confirm hand'}</button></div>`;
     }
+    extra = '<div class="pcbig" data-poolbig hidden></div>';
   } else if (S.modal === 'perks') {
     title = 'Perks & masteries'; big = ' big';
     const perks = perkList(c.cls), on = i => c.pk.perks.includes(i), mask = i => c.pk.boxes[i] || 0;
