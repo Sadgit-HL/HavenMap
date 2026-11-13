@@ -486,7 +486,7 @@ function portraitStyle(c, size) {
 }
 // What the playmat remembers while the page is open: the open modal, the mat side, the history filter. Saved BGG codes of the user are kept
 // in this browser (not in the campaign record).
-const pm = { modal: null, matSide: 'front', histKind: 'all', jtab: 'goal', bgv: null, pqv: null, notesPreview: false, amd: {}, amZoom: null, dtab: 'hand', hsel: {}, hsArmed: false };   // amd = draw state per character (not saved)
+const pm = { modal: null, matSide: 'front', histKind: 'all', jtab: 'goal', bgv: null, pqv: null, notesPreview: false, amd: {}, amZoom: null, dtab: 'hand', hsel: {}, hsArmed: false, itemId: null, isel: {} };   // amd = draw state per character (not saved)
 const CODES_KEY = 'havenmap.campaign.codes';
 const loadCodes = () => { try { const a = JSON.parse(localStorage.getItem(CODES_KEY) || '[]'); return Array.isArray(a) ? a : []; } catch { return []; } };
 const saveCodes = a => { try { localStorage.setItem(CODES_KEY, JSON.stringify(a)); } catch { /* ignore */ } };
@@ -494,6 +494,8 @@ const matSlug = c => String(matImageUrl(c.cls, 'front')).split('/').pop().replac
 const pmState = c => ({
   modal: pm.modal, matSide: pm.matSide, histKind: pm.histKind, jtab: pm.jtab, bgv: pm.bgv, pqv: pm.pqv, notesPreview: pm.notesPreview,
   bgs: record.bgs, pq: record.pq,
+  itemId: pm.itemId,
+  items: pm.modal === 'items' ? { pool: ITEMS.filter(i => record.items.unl.includes(i.id) && (c.items.some(x => String(x.id) === String(i.id)) || shopCopies(record, i) > 0)), isel: pm.isel[c.id] || [] } : null,
   deck: pm.modal === 'deck' ? { tab: pm.dtab, cards: CARDS.filter(k => k.cls === classByName(c.cls)?.i).sort((a, b) => cardLevel(a.id) - cardLevel(b.id) || (a.ini ?? 1e9) - (b.ini ?? 1e9)), hsel: pm.hsel[c.id] || [], armed: pm.hsArmed } : null,
   amd: pm.modal === 'amd' ? drawState(c, pm.amd[c.id]) : null, amZoom: pm.modal === 'amd' ? pm.amZoom : null,
   customCodes: pm.modal === 'codes' ? loadCodes() : [],
@@ -1227,6 +1229,29 @@ function render() {
   if (pm.modal === 'perks') hydratePerkCards();
 }
 
+// Items: click an item to open it (state), the pencil opens the equip dialog, Slot sorts the shelf.
+function itemClick(e, c) {
+  const q = sel => e.target.closest?.(sel);
+  const st = q('[data-itstate]');
+  if (st) { commit(ed.setItemState(record, c.id, st.dataset.id, Number(st.dataset.itstate))); return true; }
+  const sort = q('[data-itemssort]');
+  if (sort) { commit(ed.sortItems(record, c.id)); return true; }
+  if (q('[data-itemsedit]')) {
+    pm.isel[c.id] = c.items.map(it => String(it.id)); pm.modal = 'items'; render(); return true;
+  }
+  const tile = q('.pm .shelf6 .it[data-itemstate]');
+  if (tile && !pm.modal) { pm.itemId = tile.dataset.id; pm.modal = 'item'; render(); return true; }
+  const sel = q('[data-isel]');
+  if (sel) {
+    if (sel.disabled) return true;
+    const id = sel.dataset.isel, cur = pm.isel[c.id] || [];
+    pm.isel[c.id] = cur.includes(id) ? cur.filter(x => x !== id) : [...cur, id]; render(); return true;
+  }
+  if (q('[data-itemclear]')) { pm.isel[c.id] = []; render(); return true; }
+  if (q('[data-itemok]')) { pm.modal = null; commit(ed.setEquippedItems(record, c.id, pm.isel[c.id] || [])); return true; }
+  return false;
+}
+
 // Deck modal: tabs, card pool picks and undo, the level stepper, the hand selection and its confirmation.
 function deckClick(e, c) {
   const t = e.target, q = sel => t.closest?.(sel);
@@ -1584,7 +1609,7 @@ main.addEventListener('click', e => {
   }
   if (e.target.closest?.('[data-modalclose]') || e.target.matches?.('.pm .mmodal')) { pm.modal = null; pm.amZoom = null; render(); return; }
   const dch = pmChar();
-  if (dch && deckClick(e, dch)) return;
+  if (dch && (deckClick(e, dch) || itemClick(e, dch))) return;
   const pb = e.target.closest?.('[data-perkbox]') || e.target.closest?.('[data-perkrow]');
   if (pb && pmChar()) { const [i, b] = (pb.dataset.perkbox || pb.dataset.perkrow).split('.').map(Number); commit(ed.togglePerkBox(record, pmChar().id, i, b)); return; }
   const amb = e.target.closest?.('button[data-amact]'), amc = pmChar();

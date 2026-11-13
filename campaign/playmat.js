@@ -1,7 +1,7 @@
 // The playmat of the Mercenaries tab (design: campaign/mockups/merc-6-playmat-v2.html, styles: campaign/playmat.css, generated).
 // playmatHtml() turns one character of the record into the playmat markup; the page (app.js) wires the clicks and drags to the
 // pure edit functions in scripts/campaign/edit.js, so everything done here is saved, undoable and logged in the history.
-import { handList, zoneOf, ownedCards, pendingPicks, cardLevel } from '../scripts/campaign/record.js';
+import { handList, zoneOf, ownedCards, pendingPicks, cardLevel, SLOT_ORDER, SLOT_LABEL, slotLimits, slotUse, itemFits } from '../scripts/campaign/record.js';
 import { tokenDefs, TOKEN_IMAGE_DIR } from '../scripts/campaign/classTokens.js';
 import { BGG_ICON_GROUPS } from '../scripts/campaign/bggIcons.js';
 import { BANNERS, BANNER_ICON_DIR } from '../scripts/campaign/bggBanners.js';
@@ -70,9 +70,10 @@ export function playmatHtml(c, X, S = {}) {
   const DOC = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg>';
   const DICE = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg>';
   const CARDS_ICON = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="12" height="16" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v13"/></svg>';
+  const ITEM_STATE = ['Available', 'Spent', 'Consumed'], STATE_ICON = [null, '../images/common/icons/spent.png', '../images/common/icons/consumed.png'];
   const items = c.items.map(it => {
-    const item = X.itemById.get(it.id), url = X.itemImageUrl(item), name = X.pretty(item?.slug ?? it.id), spent = (it.st || []).some(Boolean);
-    return `<div class="it${spent ? ' spent' : ''}" data-itemstate data-id="${esc(it.id)}" title="${esc(name)}${item?.slot ? ` (${esc(item.slot)})` : ''}">${url ? `<img src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false">` : `<div class="noimg">${esc(name)}</div>`}</div>`;
+    const item = X.itemById.get(it.id), url = X.itemImageUrl(item), name = X.pretty(item?.slug ?? it.id), s = it.s || 0;
+    return `<div class="it${s === 1 ? ' spent' : s === 2 ? ' consumed' : ''}" data-itemstate data-id="${esc(it.id)}" data-char="${cid}" title="${esc(name)}${item?.slot ? ` (${esc(item.slot)})` : ''} \u2014 ${ITEM_STATE[s]}, click to open">${url ? `<img src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false">` : `<div class="noimg">${esc(name)}</div>`}${STATE_ICON[s] ? `<span class="itbadge"><img src="${STATE_ICON[s]}" alt="" draggable="false"></span>` : ''}</div>`;
   }).join('');
 
   return `<div class="pm" data-zactive="hover" data-zplay="hover" data-zhand="hover" data-zpiles="hover" data-zitems="hover" data-inib="on" data-motion="full">
@@ -87,7 +88,7 @@ export function playmatHtml(c, X, S = {}) {
       <div class="counters">${tokens}</div>
       <div class="grp"><small>BGG code</small><span class="bggseg"><button type="button" class="bggb" data-bgg="amd" data-char="${cid}" title="Copy BGG code" aria-label="Copy BGG code: AMD">${DICE}<span>AMD</span></button><button type="button" class="bggb" data-bgg="turn" data-char="${cid}" title="Copy BGG code" aria-label="Copy BGG code: Turn">${DOC}<span>Turn</span></button><button type="button" class="bggb" data-bgg="cards" data-char="${cid}" title="Copy BGG code" aria-label="Copy BGG code: Cards">${CARDS_ICON}<span>Cards</span></button></span></div>
     </header>
-    <section class="shelf6" aria-label="Items"><h4>Items <span class="itbar"><span>${c.items.length}</span></span></h4>${items}</section>
+    <section class="shelf6" aria-label="Items"><h4>Items <span class="itbar"><span>${c.items.length}</span><button type="button" class="btn6" data-itemssort="${cid}" title="Sort by slot" aria-label="Sort by slot">Slot</button><button type="button" class="btn6" data-itemsedit="${cid}" title="Equip items" aria-label="Equip items"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1-4 11-11a2 2 0 0 1 3 3L8 19z"/><path d="M14 7l3 3"/></svg></button></span></h4>${items}</section>
     <section class="board6">
       <div class="toprow">
         <div class="zone"><span class="zlabel">Active &middot; <b>${active.length}</b></span><div class="activelist" data-zone="active" data-char="${cid}">${active.map(id => ac(id)).join('')}</div></div>
@@ -150,6 +151,26 @@ function modalHtml(c, X, S) {
   } else if (S.modal === 'journal') {
     title = 'Journal'; big = ' jbox';
     body = journalBody(c, X, S);
+  } else if (S.modal === 'item') {
+    const it = c.items.find(x => String(x.id) === String(S.itemId)), item = it && X.itemById.get(it.id);
+    if (!it) return '';
+    title = X.pretty(item?.slug ?? it.id);
+    const url = X.itemImageUrl(item), st = it.s || 0;
+    body = `<div class="itmodal"><div class="itcard">${url ? `<img src="${esc(url)}" alt="${esc(title)}">` : ''}</div><div class="itpanel"><div class="row"><span>State</span><span class="seg">${['Available', 'Spent', 'Consumed'].map((n, k) => `<button type="button" class="btn6" data-itstate="${k}" data-id="${esc(it.id)}" data-char="${esc(c.id)}" aria-pressed="${st === k}">${n}</button>`).join('')}</span></div></div></div>`;
+  } else if (S.modal === 'items') {
+    title = 'Equip items'; big = ' big';
+    const I = S.items || { pool: [], isel: [] }, sel = new Set(I.isel.map(String));
+    const chosen = I.pool.filter(i => sel.has(String(i.id))), u = slotUse(chosen), l = slotLimits(c.lv);
+    const lim = [['Head', u.head, l.head], ['Body', u.body, l.body], ['Legs', u.legs, l.legs], ['Hands', u.hands, l.hands], ['Small', u.small, l.small]].map(([n, a, b]) => `<span class="${a >= b ? 'full' : ''}">${n} <b>${a} / ${b}</b></span>`).join('');
+    const groups = SLOT_ORDER.map(sl => {
+      const list = I.pool.filter(i => i.slot === sl);
+      if (!list.length) return '';
+      return `<div class="pgrp"><h3>${SLOT_LABEL[sl]}</h3><div class="pgrid">${list.map(i => {
+        const on = sel.has(String(i.id)), off = !on && !itemFits(chosen, i, c.lv), url = X.itemImageUrl(i), nm = X.pretty(i.slug);
+        return `<div class="pcard ${on ? 'sel' : off ? 'dis' : ''}" data-name="${esc(nm)}" title="${esc(nm)} (${esc(sl)})">${url ? `<img src="${esc(url)}" alt="${esc(nm)}" loading="lazy" draggable="false">` : ''}<button type="button" class="psel" data-isel="${esc(i.id)}" aria-pressed="${on}" aria-label="Select ${esc(nm)}"${off ? ' disabled' : ''}></button></div>`;
+      }).join('')}</div></div>`;
+    }).join('');
+    body = `<div class="poolbar"><span class="slotlim">${lim}</span><span class="grow"></span><button type="button" class="btn6" data-itemclear>Clear</button></div>${groups || '<p class="mrow">No unlocked items.</p>'}<div class="poolfoot"><span></span><button type="button" class="btn6" data-itemok data-char="${esc(c.id)}">Confirm items</button></div>`;
   } else if (S.modal === 'deck') {
     title = 'Deck'; big = ' big';
     const D = S.deck || { tab: 'hand', cards: [], hsel: [], armed: false }, owned = new Set(ownedCards(c)), pend = pendingPicks(c), level = c.lv || 1;
