@@ -76,7 +76,8 @@ export function playmatHtml(c, X, S = {}) {
     return `<div class="it${s === 1 ? ' spent' : s === 2 ? ' consumed' : ''}" data-itemstate data-id="${esc(it.id)}" data-char="${cid}" title="${esc(name)}${item?.slot ? ` (${esc(item.slot)})` : ''} \u2014 ${ITEM_STATE[s]}, click to open">${url ? `<img src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false">` : `<div class="noimg">${esc(name)}</div>`}${STATE_ICON[s] ? `<span class="itbadge"><img src="${STATE_ICON[s]}" alt="" draggable="false"></span>` : ''}</div>`;
   }).join('');
 
-  return `<div class="pm" data-zactive="hover" data-zplay="hover" data-zhand="hover" data-zpiles="hover" data-zitems="hover" data-inib="on" data-motion="full">
+  const ST = S.set || {}, zm = z => (ST.zones && ST.zones[z]) || ST.zoom || 'hover';
+  return `<div class="pm" data-zactive="${zm('active')}" data-zplay="${zm('play')}" data-zhand="${zm('hand')}" data-zpiles="${zm('piles')}" data-zitems="${zm('items')}" data-inib="${ST.inib === false ? 'off' : 'on'}" data-motion="${ST.reduce ? 'reduce' : 'full'}" data-dock="${ST.dock === 'right' ? 'right' : 'left'}" style="--hdelay:${({ short: 150, long: 400 })[ST.delay] || 0}ms">
   <div class="stage6">
     <header class="hud"><div class="portrait" style="${esc(X.portraitStyle(c, 72))}" role="img" aria-label="Class portrait (cropped from the character mat)"></div>
       <div class="who"><div class="namerow"><h1>${esc(c.name)}</h1></div><div class="sub">${esc(c.cls)}${X.playerName(c) ? ` &middot; played by ${esc(X.playerName(c))}` : ''}</div><div class="chips">${X.traitChips(c)}</div></div>
@@ -87,6 +88,7 @@ export function playmatHtml(c, X, S = {}) {
       <div class="stat"><small>Inherited perks</small>${sp('inh', 'inherited perks', 'b', c.inh ?? 0)}</div>
       <div class="counters">${tokens}</div>
       <div class="grp"><small>BGG code</small><span class="bggseg"><button type="button" class="bggb" data-bgg="amd" data-char="${cid}" title="Copy BGG code" aria-label="Copy BGG code: AMD">${DICE}<span>AMD</span></button><button type="button" class="bggb" data-bgg="turn" data-char="${cid}" title="Copy BGG code" aria-label="Copy BGG code: Turn">${DOC}<span>Turn</span></button><button type="button" class="bggb" data-bgg="cards" data-char="${cid}" title="Copy BGG code" aria-label="Copy BGG code: Cards">${CARDS_ICON}<span>Cards</span></button></span></div>
+      ${settingsHtml(ST, S.setOpen)}
     </header>
     <section class="shelf6" aria-label="Items"><h4>Items <span class="itbar"><span>${c.items.length}</span><button type="button" class="btn6" data-itemssort="${cid}" title="Sort by slot" aria-label="Sort by slot">Slot</button><button type="button" class="btn6" data-itemsedit="${cid}" title="Equip items" aria-label="Equip items"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1-4 11-11a2 2 0 0 1 3 3L8 19z"/><path d="M14 7l3 3"/></svg></button></span></h4>${items}</section>
     <section class="board6">
@@ -94,7 +96,7 @@ export function playmatHtml(c, X, S = {}) {
         <div class="zone"><span class="zlabel">Active &middot; <b>${active.length}</b></span><div class="activelist" data-zone="active" data-char="${cid}">${active.map(id => ac(id)).join('')}</div></div>
         <div class="zone play"><span class="zlabel">Play area &middot; Initiative <b>${playIni}</b></span>${slotHtml(0)}${slotHtml(1)}</div>
       </div>
-      <div class="hand6" data-layout="spread"><div class="hbar"><span class="zlabel">Hand &middot; <b class="${limit && hand.length > limit ? 'over-limit' : ''}">${hand.length}</b>${limit ? ` of <span>${esc(limit)}</span>` : ''}</span><span class="hctl"><span class="sortgrp"><button type="button" class="btn6" data-handsort="ini" data-char="${cid}" title="Sort by initiative and keep the hand sorted">Ini</button><button type="button" class="btn6" data-handsort="lvl" data-char="${cid}" title="Sort by level once">Lvl</button></span></span></div><div class="fan6" data-zone="hand" data-char="${cid}">${hand.map((id, i) => ac(id, i)).join('')}</div></div>
+      <div class="hand6" data-layout="${ST.layout === 'fan' ? 'fan' : 'spread'}"><div class="hbar"><span class="zlabel">Hand &middot; <b class="${limit && hand.length > limit ? 'over-limit' : ''}">${hand.length}</b>${limit ? ` of <span>${esc(limit)}</span>` : ''}</span><span class="hctl"><span class="sortgrp"><button type="button" class="btn6" data-handsort="ini" data-char="${cid}" title="Sort by initiative and keep the hand sorted">Ini</button><button type="button" class="btn6" data-handsort="lvl" data-char="${cid}" title="Sort by level once">Lvl</button></span></span></div><div class="fan6" data-zone="hand" data-char="${cid}">${hand.map((id, i) => ac(id, i)).join('')}</div></div>
     </section>
     <section class="piles6">${pile('discard', 'Discard', ' target')}${pile('lost', 'Lost', ' lost target')}</section>
     ${dockHtml(pendingPicks(c))}
@@ -115,6 +117,30 @@ export function cardsPost(c, { pretty, cardById }) {
   const name = i => (c.play[i] ? pretty(cardById.get(c.play[i].id)?.slug ?? c.play[i].id) : 'X');
   const ini = c.play[0] ? (cardById.get(c.play[0].id)?.ini ?? 'X') : 'X';
   return `[u][b]Cards for the next round[/b][/u]\n[o][b]${ini}[/b]\n${name(0)}, ${name(1)}[/o]\n[i]${c.name} will [/i]`;
+}
+
+// ---- display settings (the gear of the top bar; kept in this browser by the page) ----
+export const SET_DEFAULT = { layout: 'spread', zoom: 'hover', zones: { active: '', play: '', hand: '', piles: '', items: '' }, size: 'm', delay: 'off', dock: 'left', amd: 'enlarge', inib: true, autosort: false, reduce: false };
+const SET_ENUM = { layout: ['spread', 'fan'], zoom: ['hover', 'click'], size: ['s', 'm', 'l'], delay: ['off', 'short', 'long'], dock: ['left', 'right'], amd: ['enlarge', 'draw'] };
+export function cleanSettings(o) {
+  const s = JSON.parse(JSON.stringify(SET_DEFAULT));
+  if (!o || typeof o !== 'object') return s;
+  for (const k in SET_ENUM) if (SET_ENUM[k].includes(o[k])) s[k] = o[k];
+  for (const k in s.zones) if (o.zones && ['hover', 'click'].includes(o.zones[k])) s.zones[k] = o.zones[k];
+  for (const k of ['inib', 'autosort', 'reduce']) if (typeof o[k] === 'boolean') s[k] = o[k];
+  return s;
+}
+function settingsHtml(st, open) {
+  const set = st && st.layout ? st : SET_DEFAULT;
+  const seg = (name, opts) => `<span class="seg" data-set="${name}">${opts.map(([v, l]) => `<button type="button" data-v="${v}" aria-pressed="${set[name] === v}">${l}</button>`).join('')}</span>`;
+  const row = (label, inner) => `<div class="setrow"><label>${label}</label>${inner}</div>`;
+  const zone = (z, label) => `<div class="setrow"><label for="setz-${z}">${label}</label><select id="setz-${z}" data-zone="${z}">${[['', 'Default'], ['hover', 'Hover'], ['click', 'Click']].map(([v, l]) => `<option value="${v}"${set.zones[z] === v ? ' selected' : ''}>${l}</option>`).join('')}</select></div>`;
+  const chk = (flag, label) => `<label class="chk"><span>${label}</span><input type="checkbox" data-flag="${flag}"${set[flag] ? ' checked' : ''}></label>`;
+  return `<span class="setwrap"><button type="button" class="btn6 gear" data-setbtn title="Display settings" aria-label="Display settings" aria-expanded="${!!open}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>${open ? `<div class="setpop">
+    ${row('Hand layout', seg('layout', [['spread', 'Spread'], ['fan', 'Fan']]))}${row('Card zoom', seg('zoom', [['hover', 'Hover'], ['click', 'Click']]))}
+    <details><summary>Zoom per zone</summary>${zone('active', 'Active')}${zone('play', 'Play area')}${zone('hand', 'Hand')}${zone('items', 'Items')}${zone('piles', 'Discard &amp; lost')}</details>
+    ${row('Zoom size', seg('size', [['s', 'S'], ['m', 'M'], ['l', 'L']]))}${row('Hover delay', seg('delay', [['off', 'Off'], ['short', 'Short'], ['long', 'Long']]))}${row('Docked preview', seg('dock', [['left', 'Left'], ['right', 'Right']]))}${row('Deck card click', seg('amd', [['enlarge', 'Enlarge'], ['draw', 'Draw']]))}
+    <hr>${chk('inib', 'Initiative badge on cards')}${chk('autosort', 'Auto-sort hand by initiative')}${chk('reduce', 'Reduce motion')}<button type="button" class="btn6" data-setreset>Reset</button></div>` : ''}</span>`;
 }
 
 // ---- the dock (buttons that open the modals) and the modals ----
