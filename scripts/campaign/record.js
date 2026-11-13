@@ -30,6 +30,8 @@ Record fields (all optional on load, defaults filled by normalize):
                     (all the rest). play = [slot 1, slot 2], each null or { id, up } (up = face up); only hand cards enter a slot, slot 1 sets the
                     initiative. hord = manual hand order [cardId] or null (null = sorted by initiative),
                     tok = class special tokens { key: count or state index } (scripts/campaign/classTokens.js)
+                    bgo, pqo = battle goals (3) and personal quests (2) just drawn, one to be kept, or null; pqc = { questSlug: [count per requirement] };
+                    notes = free text of the journal (markdown)
                     special = special traits gained through events (keys of scripts/campaign/traits.js)
   items             { unl: [itemId], taken: { itemId: copies in use } }
   events            { city, road: { top, bottom, out, locked }, pend? }   piles are ordered, see scripts/campaign/events.js
@@ -38,6 +40,8 @@ Record fields (all optional on load, defaults filled by normalize):
                     notes = { "road:4": "text" }   free note on a card
   evlog             finished events [{ kind, id, opt, votes, rnd?, closed?, place }]
   decks             { bg, tre, mp }                 battle goals drawn, treasures claimed, med packs
+  bgs, pq           battle goals of the current scenario and personal quests that are out of the deck: { slug: { st: 'mine'|'done', c: charId|null } }
+                    (c = the character who holds it, null = a player who is not in the app; a slug that is not listed is in the deck)
   enh, retired      enhancement log [{ cls, card, top, bottom, price? }] (top and bottom = what was added, price = gold paid), retired characters
   log               edit history, oldest first: [{ t: epoch ms, u: user, tab, kind, d }] (scripts/campaign/changelog.js), the last 1000 kept
   resLinks          { "<resource title>|<game>": url }   overrides scripts/games/resources.js's own link for that cell
@@ -55,7 +59,7 @@ export function emptyRecord() {
     rep: { demons: 0, merchants: 0, guard: 0 }, pros: 0, imb: 0, don: 0, stk: [], cls: [],
     scn: {}, chars: [], items: { unl: [], taken: {} },
     events: { city: { top: [], bottom: [], out: [], locked: [] }, road: { top: [], bottom: [], out: [], locked: [] }, marks: {}, notes: {} }, evlog: [],
-    decks: { bg: [], tre: [], mp: [] }, enh: [], retired: [], resLinks: {}, log: [],
+    decks: { bg: [], tre: [], mp: [] }, bgs: {}, pq: {}, enh: [], retired: [], resLinks: {}, log: [],
   };
 }
 
@@ -99,6 +103,7 @@ export function normalize(raw) {
   r.imb = Math.max(0, Math.min(80, Math.trunc(Number(r.imb)) || 0));
   r.don = Math.max(0, Math.min(100, Math.trunc(Number(r.don)) || 0));
   r.scn = r.scn || {};
+  for (const k of ['bgs', 'pq']) r[k] = r[k] && typeof r[k] === 'object' && !Array.isArray(r[k]) ? r[k] : {};
   r.chars = (r.chars || []).map(normalizeChar);
   return r;
 }
@@ -106,7 +111,7 @@ export function normalize(raw) {
 // A character with every field present. Each ability card is in one place only: a record that lists a card twice keeps it in
 // the first of lost, discard, a play slot, active; play slots keep { id, up } or null; hord keeps hand cards only.
 function normalizeChar(c) {
-  const ch = { traits: [], special: [], deck: [], disc: [], act: [], lost: [], bench: [], items: [], play: [null, null], hord: null, tok: {}, ...c };
+  const ch = { traits: [], special: [], deck: [], disc: [], act: [], lost: [], bench: [], items: [], play: [null, null], hord: null, tok: {}, bgo: null, pqo: null, pqc: {}, notes: '', ...c };
   const seen = new Set();
   const take = list => (Array.isArray(list) ? list : []).filter(id => !seen.has(id) && seen.add(id));
   ch.lost = take(ch.lost);
@@ -114,6 +119,10 @@ function normalizeChar(c) {
   const play = Array.isArray(ch.play) ? ch.play : [];
   ch.play = [0, 1].map(i => { const p = play[i]; return p && ch.deck.includes(p.id) && !seen.has(p.id) && seen.add(p.id) ? { id: p.id, up: !!p.up } : null; });
   ch.act = take(ch.act);
+  ch.bgo = Array.isArray(ch.bgo) ? ch.bgo.slice(0, 3) : null;
+  ch.pqo = Array.isArray(ch.pqo) ? ch.pqo.slice(0, 2) : null;
+  if (!ch.pqc || typeof ch.pqc !== 'object' || Array.isArray(ch.pqc)) ch.pqc = {};
+  ch.notes = typeof ch.notes === 'string' ? ch.notes : '';
   ch.tok = ch.tok && typeof ch.tok === 'object' && !Array.isArray(ch.tok) ? Object.fromEntries(Object.entries(ch.tok).map(([k, v]) => [k, Math.max(0, Math.min(99, Math.trunc(Number(v)) || 0))])) : {};
   if (Array.isArray(ch.hord)) { const own = new Set(); ch.hord = ch.hord.filter(id => ch.deck.includes(id) && !seen.has(id) && !own.has(id) && own.add(id)); } else ch.hord = null;
   return ch;

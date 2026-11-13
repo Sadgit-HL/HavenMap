@@ -8,6 +8,9 @@ import { ALL_CLASSES } from './classList.js';
 import { SCN_STATE, availableSet, CARD_ZONES, zoneOf, handList, cardLevel } from './record.js';
 import { SPECIAL_TRAITS } from './traits.js';
 import { tokenDefs } from './classTokens.js';
+import { BATTLE_GOALS } from '../games/battle_goals.js';
+import { PERSONAL_QUESTS } from '../games/gh2_quests.js';
+import { GH2_PQ } from '../games/gh2_pq_text.js';
 import { EVENT_TABLE, PILES, frontOf, boxState, markKey, eventPlace, nextEvent, optionKeys, seatList, tally, cryptoRandom } from './events.js';
 
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
@@ -504,7 +507,7 @@ export function addCharacter(r, { cls, name }) {
   if (!availableClasses(r).some(c => c.i === klass.i)) return r;
   return edit(r, x => {
     x.chars.push({ id: nextCharId(x.chars), cls: klass.name, name: nm, lv: 1, xp: 0, gold: 0, inh: 0, traits: [],
-      deck: [], disc: [], act: [], lost: [], play: [null, null], hord: null, tok: {}, bench: [], items: [] });
+      deck: [], disc: [], act: [], lost: [], play: [null, null], hord: null, tok: {}, bgo: null, pqo: null, pqc: {}, notes: '', bench: [], items: [] });
   });
 }
 
@@ -559,6 +562,88 @@ export function moveCard(r, cid, cardId, dest, opts = {}) {
       ch.play[i] = { id: cardId, up: false };
     }
   });
+}
+
+// --- journal: battle goals, personal quests, notes ---------------------------------------------------------------
+
+const BG_SLUGS = new Set(BATTLE_GOALS.map(g => g.slug));
+const PQ_SLUGS = new Set(PERSONAL_QUESTS.map(q => q.slug));
+export const CARD_STATUS = ['deck', 'mine', 'other', 'done'];     // a goal or quest: in the deck, held by this character, held by another player, completed
+
+// Where a goal or quest of the campaign (map = r.bgs or r.pq) is as seen from one character.
+export function holdStatus(map, cid, slug) {
+  const e = map?.[slug];
+  if (!e) return 'deck';
+  if (e.c !== cid) return 'other';
+  return e.st === 'done' ? 'done' : 'mine';
+}
+export const goalDeck = r => BATTLE_GOALS.map(g => g.slug).filter(sl => !r.bgs[sl]);
+export const questDeck = r => PERSONAL_QUESTS.map(q => q.slug).filter(sl => !r.pq[sl]);
+
+// What the pure functions need from outside: the random draw is made by the caller and passed in as slugs, so everything here stays testable.
+function offer(r, cid, field, slugs, deck, max) {
+  const c = r.chars.find(x => x.id === cid);
+  const list = Array.isArray(slugs) ? [...new Set(slugs)] : [];
+  if (!c || !list.length || list.length > max || !list.every(sl => deck.includes(sl))) return r;
+  return edit(r, x => { x.chars.find(y => y.id === cid)[field] = list; });
+}
+function keep(r, cid, field, mapKey, slug) {
+  const c = r.chars.find(x => x.id === cid);
+  if (!c || !Array.isArray(c[field]) || !c[field].includes(slug) || r[mapKey][slug]) return r;
+  return edit(r, x => { x[mapKey][slug] = { st: 'mine', c: cid }; x.chars.find(y => y.id === cid)[field] = null; });
+}
+function setStatus(r, cid, mapKey, slugs, slug, status) {
+  const c = r.chars.find(x => x.id === cid);
+  if (!c || !slugs.has(slug) || !CARD_STATUS.includes(status) || holdStatus(r[mapKey], cid, slug) === status) return r;
+  return edit(r, x => {
+    if (status === 'deck') delete x[mapKey][slug];
+    else x[mapKey][slug] = { st: status === 'done' ? 'done' : 'mine', c: status === 'other' ? null : cid };
+  });
+}
+export const offerBattleGoals = (r, cid, slugs) => offer(r, cid, 'bgo', slugs, goalDeck(r), 3);
+export const keepBattleGoal = (r, cid, slug) => keep(r, cid, 'bgo', 'bgs', slug);
+export const setBattleGoalStatus = (r, cid, slug, status) => setStatus(r, cid, 'bgs', BG_SLUGS, slug, status);
+export const offerQuests = (r, cid, slugs) => offer(r, cid, 'pqo', slugs, questDeck(r), 2);
+export const keepQuest = (r, cid, slug) => keep(r, cid, 'pqo', 'pq', slug);
+export const setQuestStatus = (r, cid, slug, status) => setStatus(r, cid, 'pq', PQ_SLUGS, slug, status);
+
+// Drop the goals or quests that were drawn and not kept ('bgo' or 'pqo').
+export function clearOffer(r, cid, field) {
+  const c = r.chars.find(x => x.id === cid);
+  if (!c || !['bgo', 'pqo'].includes(field) || !c[field]) return r;
+  return edit(r, x => { x.chars.find(y => y.id === cid)[field] = null; });
+}
+// A new scenario: every battle goal goes back to the deck and the open offers are dropped.
+export function returnAllBattleGoals(r) {
+  if (!Object.keys(r.bgs).length && !r.chars.some(c => c.bgo)) return r;
+  return edit(r, x => { x.bgs = {}; x.chars.forEach(c => { c.bgo = null; }); });
+}
+
+// Progress of one requirement of the quest this character holds. A requirement is locked until the ones it follows are complete.
+// All requirements complete turns a held quest into a completed one, and un-ticking one turns it back.
+export function setQuestCount(r, cid, slug, index, value) {
+  const c = r.chars.find(x => x.id === cid), q = GH2_PQ[slug], i = toInt(index), n = toInt(value);
+  if (!c || !q || i === null || n === null || !q.reqs[i] || !['mine', 'done'].includes(holdStatus(r.pq, cid, slug))) return r;
+  const cur = (c.pqc?.[slug] || []).slice();
+  while (cur.length < q.reqs.length) cur.push(0);
+  const done = k => (cur[k] || 0) >= q.reqs[k].n;
+  if (!q.reqs[i].after.every(done)) return r;
+  const v = clamp(n, 0, q.reqs[i].n);
+  if (cur[i] === v) return r;
+  return edit(r, x => {
+    const ch = x.chars.find(y => y.id === cid);
+    cur[i] = v;
+    ch.pqc = { ...(ch.pqc || {}), [slug]: cur };
+    const all = q.reqs.every((rq, k) => cur[k] >= rq.n);
+    if (all && x.pq[slug].st === 'mine') x.pq[slug].st = 'done';
+    else if (!all && x.pq[slug].st === 'done') x.pq[slug].st = 'mine';
+  });
+}
+
+export function setNotes(r, cid, text) {
+  const c = r.chars.find(x => x.id === cid), t = String(text ?? '').slice(0, 6000);
+  if (!c || (c.notes || '') === t) return r;
+  return edit(r, x => { x.chars.find(y => y.id === cid).notes = t; });
 }
 
 // --- enhancements -----------------------------------------------------------------------------------------------

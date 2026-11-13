@@ -5,6 +5,8 @@
 import { SCN_STATE_NAME, availableSet, zoneOf } from './record.js';
 import { CARDS } from '../games/gh2_cards.js';
 import { tokenDefs } from './classTokens.js';
+import { BATTLE_GOALS } from '../games/battle_goals.js';
+import { GH2_PQ } from '../games/gh2_pq_text.js';
 import { ALL_CLASSES } from './classList.js';
 
 export const LOG_TABS = ['Overview', 'Scenarios', 'Mercenaries', 'Items', 'Events', 'Cards', 'Resources'];
@@ -45,7 +47,7 @@ const FACTION = { demons: 'Demons', merchants: 'Merchants', guard: 'City Guard' 
 const SCN_FIELD = { l: 'level', p: 'party size', ch: 'chests', d: 'date' };
 const CHAR_FIELD = { lv: 'level', xp: 'XP', cls: 'class', name: 'name' };
 const HANDLED = new Set(['ver', 'log', 'v', 'evlog', 'name', 'players', 'party', 'rep', 'pros', 'imb', 'don', 'stk', 'cls', 'avail',
-  'scn', 'chars', 'items', 'events', 'decks', 'enh', 'retired', 'resLinks']);
+  'scn', 'chars', 'items', 'events', 'decks', 'enh', 'retired', 'resLinks', 'bgs', 'pq']);
 
 export function describeChange(a, b) {
   const out = [];
@@ -116,6 +118,15 @@ export function describeChange(a, b) {
     }
   }
 
+  // battle goals and personal quests: who holds which
+  const holder = (x, ch) => (!x ? 'in the deck' : x.c == null ? 'held by another player' : `${x.st === 'done' ? 'completed by' : 'held by'} ${(ch.find(k => k.id === x.c) || {}).name || x.c}`);
+  const cap = t => String(t).replace(/-/g, ' ').replace(/^./, m => m.toUpperCase());
+  for (const [key, label, title] of [['bgs', 'Battle goal', sl => cap(sl)], ['pq', 'Personal quest', sl => `${sl.slice(2)} ${GH2_PQ[sl]?.name || ''}`.trim()]]) {
+    for (const sl of keys(a[key], b[key])) {
+      const x = a[key]?.[sl], y = b[key]?.[sl];
+      if (!same(x, y)) add('Mercenaries', label, `${title(sl)}: ${holder(x, a.chars || [])} to ${holder(y, b.chars || [])}`);
+    }
+  }
   const ca = new Map((a.chars || []).map(c => [c.id, c])), cb = new Map((b.chars || []).map(c => [c.id, c]));
   for (const [id, c] of cb) {
     const o = ca.get(id);
@@ -126,6 +137,18 @@ export function describeChange(a, b) {
     for (const k of keys(o, c)) {
       if (same(o[k], c[k])) continue;
       if (['disc', 'act', 'lost', 'play', 'hord'].includes(k)) continue;                  // described above
+      if (k === 'notes') { add('Mercenaries', 'Notes', `${c.name}: notes ${c.notes ? 'edited' : 'cleared'}`); continue; }
+      if (k === 'bgo' || k === 'pqo') {
+        if (c[k]) add('Mercenaries', k === 'bgo' ? 'Battle goal' : 'Personal quest', `${c.name}: drew ${c[k].map(sl => (k === 'bgo' ? cap(sl) : `${sl.slice(2)} ${GH2_PQ[sl]?.name || ''}`.trim())).join(', ')}`);
+        continue;
+      }
+      if (k === 'pqc') {
+        for (const sl of keys(o.pqc, c.pqc)) {
+          const q = GH2_PQ[sl], x = o.pqc?.[sl] || [], y = c.pqc?.[sl] || [];
+          (q?.reqs || []).forEach((rq, i) => { if ((x[i] || 0) !== (y[i] || 0)) add('Mercenaries', 'Personal quest', `${c.name}: quest ${sl.slice(2)} ${q.name}, ${rq.t}: ${x[i] || 0} to ${y[i] || 0}${rq.n > 1 ? ` of ${rq.n}` : ''}`); });
+        }
+        continue;
+      }
       if (k === 'tok') {
         for (const t of tokenDefs(c.cls)) {
           const a = o.tok?.[t.k] || 0, b = c.tok?.[t.k] || 0, show = v => (t.states ? t.states[v] ?? v : v);
