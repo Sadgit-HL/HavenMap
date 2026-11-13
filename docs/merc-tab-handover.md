@@ -1,6 +1,6 @@
 # Mercenary tab redesign: handover
 
-Written 2026-11-10, cleaned up the same day. Purpose: let a fresh session continue the design of the Mercenaries tab of the campaign
+Written 2026-11-10, cleaned up the same day, updated 2026-11-13 (mockups ported into the app, see section 6). Purpose: let a fresh session continue the design of the Mercenaries tab of the campaign
 page (`campaign/`) without asking the user to repeat anything. Read this first, then `merc_tab.md`, then the mockups. The project log is
 `docs/HANDOVER.md` (section 18 describes the rest of the campaign page).
 
