@@ -14,6 +14,7 @@ import { tokenDefs } from '../scripts/campaign/classTokens.js';
 import { bannerUrl, bannerCode } from '../scripts/campaign/bggBanners.js';
 import { GH2_PQ } from '../scripts/games/gh2_pq_text.js';
 import { morphInto } from './morph.js';
+import { registerMenu } from './ctxmenu.js';
 import {
   validate, prosperityLevel, handOf, handList, zoneOf, CARD_ZONES, shopCopies, itemsInUse, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE, ownedCards, cardLevel,
 } from '../scripts/campaign/record.js';
@@ -1547,9 +1548,60 @@ function flipPlayed(f) {
   const { char, slot } = f.dataset;
   setTimeout(() => commit(ed.flipPlayCard(record, char, Number(slot))), 560);
 }
-main.addEventListener('contextmenu', e => {          // deck card click set to Draw: the right click enlarges the card
-  const amz = e.target.closest?.('.pm [data-amzoom]');
-  if (amz && pmset.amd === 'draw') { e.preventDefault(); pm.amZoom = pm.amZoom === amz.dataset.amzoom ? null : amz.dataset.amzoom; render(); }
+// Context menu of the playmat (right click, long press): cards, piles, counters, deck cards. Each action calls the same edit functions as the normal UI.
+const ZONE_LABEL = { hand: 'Hand', active: 'Active area', play1: 'Play slot 1', play2: 'Play slot 2', discard: 'Discard pile', lost: 'Lost pile' };
+registerMenu({
+  sel: '.pm .fan6 .ac, .pm .activelist .ac, .pm .flipcard',
+  title: el => el.title || 'Card',
+  actions: el => {
+    const c = record?.chars.find(x => x.id === el.dataset.char), id = Number(el.dataset.card);
+    if (!c || !c.deck.includes(id)) return [];
+    const from = zoneOf(c, id), down = el.classList.contains('flipcard') && !el.classList.contains('is-front');
+    const list = [{ label: 'Enlarge', disabled: down, run: () => { const h = el.getBoundingClientRect().height; if (h > 0) el.style.setProperty('--hz', HOVER_H() / h); main.querySelectorAll('.pm .zoomed').forEach(x => x.classList.remove('zoomed')); el.classList.add('zoomed'); } },
+      { sep: true }, { header: 'Move to' }];
+    for (const z of CARD_ZONES.filter(z => z !== from)) {
+      const slotRule = z.startsWith('play') && from !== 'hand' && !from.startsWith('play');                // only hand cards enter a play slot
+      list.push({ label: ZONE_LABEL[z], disabled: slotRule, run: () => commit(ed.moveCard(record, c.id, id, z)) });
+    }
+    if (from === 'hand') {
+      const hand = handList(c);
+      list.push({ sep: true }, { label: 'Move to start', run: () => commit(ed.moveCard(record, c.id, id, 'hand', { before: hand[0] })) }, { label: 'Move to end', run: () => commit(ed.moveCard(record, c.id, id, 'hand', { before: null })) });
+    }
+    return list;
+  },
+});
+registerMenu({
+  sel: '.pm .pile6',
+  title: el => (el.dataset.pile === 'lost' ? 'Lost pile' : 'Discard pile'),
+  actions: el => {
+    const c = record?.chars.find(x => x.id === el.dataset.char);
+    if (!c) return [];
+    const key = el.dataset.pile, ids = (key === 'lost' ? c.lost : c.disc).filter(id => c.deck.includes(id));
+    return [
+      { label: 'Recover top card to hand', disabled: !ids.length, run: () => commit(ed.moveCard(record, c.id, ids.at(-1), 'hand')) },
+      { label: `Move whole pile to hand (${ids.length})`, disabled: !ids.length, danger: true, run: () => {
+        if (!confirm(`Move all ${ids.length} cards from the ${key === 'lost' ? 'lost' : 'discard'} pile to the hand?`)) return;
+        let r = record; for (const id of [...ids].reverse()) r = ed.moveCard(r, c.id, id, 'hand'); commit(r);
+      } },
+    ];
+  },
+});
+registerMenu({
+  sel: '.pm .sp',
+  title: el => { const b = el.querySelector('.spc button'); return b ? (b.getAttribute('aria-label') || 'Counter').replace(/^(Increase|Decrease)\s*/i, '') || 'Counter' : 'Counter'; },
+  actions: el => {
+    const b = el.querySelector('.spc button[data-hud], .spc button[data-tk]'), c = b && record?.chars.find(x => x.id === b.dataset.char);
+    if (!c) return [];                                                                                     // the level and the other counters have no menu
+    const hud = b.dataset.hud, key = HUD_KEY[hud] || b.dataset.tk;
+    const cur = hud ? c[key] || 0 : c.tok?.[key] || 0, set = v => commit(hud ? ed.setCharacter(record, c.id, key, v) : ed.setToken(record, c.id, key, v));
+    return [{ label: '+5', run: () => set(cur + 5) }, { label: '\u22125', run: () => set(Math.max(0, cur - 5)) }, { sep: true },
+      { label: 'Reset to 0', danger: true, disabled: !cur, run: () => { if (hud && !confirm('Reset this value to 0?')) return; set(0); } }];
+  },
+});
+registerMenu({
+  sel: '.pm .amdtile',
+  title: el => el.title || 'Attack modifier card',
+  actions: el => { const z = el.querySelector('[data-amzoom]'); return [{ label: 'Enlarge', disabled: !z, run: () => { pm.amZoom = z.dataset.amzoom; render(); } }]; },
 });
 main.addEventListener('dblclick', e => {
   const f = e.target.closest?.('.pm .flipcard.is-front[data-slot]');
