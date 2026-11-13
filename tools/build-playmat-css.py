@@ -25,7 +25,8 @@ hand6 hbar hctl sortgrp btn6 fan6 piles6 pile6 pilecard pilerow6 hint tk tkh ctr
 dock mbtn mmodal mmodalbox mmodalx matflip codelist coderow bgg-icons bgg-row bgg-block bgg-ic bnrsec bnrgrid bnrtile bnrnote bnrnoimg
 histbar hlist hrow hz ha hm hempty delx addrow mrow enhtable enhprice enhempty
 jbox jtab jtabs pqdock pqcard pqside pqreq pqc pqcheck pqdeck pqdl pqchip pqrow pqoffer pqpick bgcards bgcard mdbar mdprev mdview notesarea notespane rollbtn
-amdgrid amdtile amcard amfoot amdbar amdbtns pcbig'''.split())
+amdgrid amdtile amcard amfoot amdbar amdbtns pcbig
+perklist perkrow am-perklist am-perk am-perk-boxes am-perk-check am-perk-cards am-perk-arrow am-perk-gone am-perk-text am-perk-note am-perk-tag big'''.split())
 
 def split_rules(text):
     """Top level rules as (prelude, body); at-rule bodies are kept as text."""
