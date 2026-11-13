@@ -26,7 +26,7 @@ dock mbtn mmodal mmodalbox mmodalx matflip codelist coderow bgg-icons bgg-row bg
 histbar hlist hrow hz ha hm hempty delx addrow mrow enhtable enhprice enhempty
 jbox jtab jtabs pqdock pqcard pqside pqreq pqc pqcheck pqdeck pqdl pqchip pqrow pqoffer pqpick bgcards bgcard mdbar mdprev mdview notesarea notespane rollbtn
 amdgrid amdtile amcard amfoot amdbar amdbtns pcbig
-itmodal itcard itpanel slotlim deckrow seg poolbar grow poolbanner poolfoot pgrp pgrid lvrow pcard psel plv pck pooldot
+setpop setrow chk itmodal itcard itpanel slotlim deckrow seg poolbar grow poolbanner poolfoot pgrp pgrid lvrow pcard psel plv pck pooldot
 perklist perkrow am-perklist am-perk am-perk-boxes am-perk-check am-perk-cards am-perk-arrow am-perk-gone am-perk-text am-perk-note am-perk-tag big'''.split())
 
 def split_rules(text):
@@ -90,6 +90,7 @@ EXTRA = """
 .pm .edv{cursor:text}.pm .edin{width:64px}
 .pm .mmodal{z-index:300}.pm .hrow small{color:var(--muted);margin-left:6px}.pm .matflip img{max-width:100%;cursor:pointer}
 .pm .amdtile.real .pc{--pc-width:88px}.pm .amdbox .amdgrid{margin-top:8px}
+.pm[data-dock=right] .pcbig{left:auto;right:max(12px,calc(50vw - 378px - var(--zw,340px)))}
 .pm .pcbig{left:max(12px,calc(50vw - 378px - var(--zw,340px)))}.pm .amcard{cursor:zoom-in}.pm .amslot{display:block}
 .oldsheet{margin-top:14px}.oldsheet>summary{cursor:pointer;color:var(--muted);padding:6px 2px}
 """
