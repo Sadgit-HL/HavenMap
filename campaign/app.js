@@ -26,7 +26,7 @@ import { REPUTATION_SECTIONS } from '../scripts/games/gh2_reputation.js';
 import { PROSPERITY_SECTIONS, PROSPERITY_ITEMS, IMBUEMENT_SECTIONS } from '../scripts/games/gh2_prosperity.js';
 import { frontOf as eventFront, EVENT_TABLE } from '../scripts/campaign/events.js';
 import { buildCard } from '../scripts/amd/card.js';
-import { deckOf, drawState, amdAct, amdRollCode } from '../scripts/campaign/amdDeck.js';
+import { deckOf, drawState, amdAct, amdRollCode, perkList } from '../scripts/campaign/amdDeck.js';
 import { heroCatalog, heroPerkClass } from '../scripts/amd/heroDeck.js';
 import { PERSONAL_QUESTS } from '../scripts/games/gh2_quests.js';
 import ghConfig from '../scripts/games/gh.js';
@@ -1223,6 +1223,20 @@ function render() {
   if (tab === 'Mercenaries' && !editing && main.querySelector('.pm')) morphInto(main, html); else main.innerHTML = html;
   if (tab === 'Cards' && view.cardType === 'am') hydrateAm();
   if (pm.modal === 'amd') hydrateAmdModal();
+  if (pm.modal === 'perks') hydratePerkCards();
+}
+
+// The cards of the perk rows are drawn the same way (data-perkcard = perk index . r (removed) or a (added) . position).
+function hydratePerkCards() {
+  const c = record?.chars.find(x => x.id === currentSub());
+  if (!c) return;
+  const perks = perkList(c.cls);
+  main.querySelectorAll('[data-perkcard]').forEach(el => {
+    if (el.firstChild) return;
+    const [i, side, j] = el.dataset.perkcard.split('.');
+    const card = perks[Number(i)]?.[side === 'r' ? 'removes' : 'adds']?.[Number(j)];
+    if (card) el.append(buildCard(card, c.cls, side === 'a'));
+  });
 }
 
 // The cards of the modifier deck modal are drawn by scripts/amd/card.js into empty slots (data-amslot, kept by the redraw).
@@ -1448,6 +1462,7 @@ function flipPlayed(f) {
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && pm.modal) { pm.modal = null; render(); } });
 main.addEventListener('change', e => {
   if (e.target.matches?.('[data-histkind]')) { pm.histKind = e.target.value; render(); }
+  else if (e.target.matches?.('[data-mastery]')) commit(ed.setMastery(record, e.target.dataset.char, Number(e.target.dataset.mastery), e.target.checked));
   else if (e.target.matches?.('[data-enhprice]')) commit(ed.setEnhancementPrice(record, Number(e.target.dataset.enhprice), e.target.value));
   else if (e.target.matches?.('[data-bgst]')) { const c = pmChar(); if (c) { pm.bgv = e.target.dataset.slug; commit(ed.setBattleGoalStatus(record, c.id, e.target.dataset.slug, e.target.value)); } }
   else if (e.target.matches?.('[data-pqst]')) { const c = pmChar(); if (c) { pm.pqv = e.target.dataset.slug; commit(ed.setQuestStatus(record, c.id, e.target.dataset.slug, e.target.value)); } }
@@ -1524,6 +1539,8 @@ main.addEventListener('click', e => {
   const dock = e.target.closest?.('button[data-modal]');
   if (dock) { pm.modal = dock.dataset.modal; render(); return; }
   if (e.target.closest?.('[data-modalclose]') || e.target.matches?.('.pm .mmodal')) { pm.modal = null; pm.amZoom = null; render(); return; }
+  const pb = e.target.closest?.('[data-perkbox]') || e.target.closest?.('[data-perkrow]');
+  if (pb && pmChar()) { const [i, b] = (pb.dataset.perkbox || pb.dataset.perkrow).split('.').map(Number); commit(ed.togglePerkBox(record, pmChar().id, i, b)); return; }
   const amb = e.target.closest?.('button[data-amact]'), amc = pmChar();
   if (amb && amc) { if (!amb.disabled) { pm.amd[amc.id] = amdAct(amc, pm.amd[amc.id], amb.dataset.amact, amb.dataset.key); render(); } return; }
   const amz = e.target.closest?.('[data-amzoom]');

@@ -6,7 +6,10 @@ import { tokenDefs, TOKEN_IMAGE_DIR } from '../scripts/campaign/classTokens.js';
 import { BGG_ICON_GROUPS } from '../scripts/campaign/bggIcons.js';
 import { BANNERS, BANNER_ICON_DIR } from '../scripts/campaign/bggBanners.js';
 import { holdStatus } from '../scripts/campaign/edit.js';
-import { amdRollCode } from '../scripts/campaign/amdDeck.js';
+import { amdRollCode, perkList } from '../scripts/campaign/amdDeck.js';
+import { groupPerks } from '../scripts/amd/heroDeck.js';
+import { perkTextHtml, perkRuleNote } from '../scripts/amd/perkText.js';
+import { MASTERIES } from '../scripts/games/masteries.js';
 import { BATTLE_GOALS } from '../scripts/games/battle_goals.js';
 import { PERSONAL_QUESTS } from '../scripts/games/gh2_quests.js';
 import { GH2_PQ } from '../scripts/games/gh2_pq_text.js';
@@ -118,6 +121,7 @@ const ICON = d => `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" s
 const DOCK = [
   ['journal', 'Journal', 'Battle goals, personal quest and notes (tabs in one modal)', ICON('<path d="M6 3h11a2 2 0 0 1 2 2v14H8a2 2 0 0 1-2-2z"/><path d="M6 17a2 2 0 0 0 2 2M10 8h6M10 12h6"/>')],
   ['mat', 'Character mat', 'Character mat, front and back', ICON('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M9 5v14"/>')],
+  ['perks', 'Perks & masteries', 'Perk selection and masteries', ICON('<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>')],
   ['amd', 'Attack modifiers', 'Attack modifier deck: draw, return, bless and curse, roll code', ICON('<rect x="3" y="6" width="13" height="15" rx="2"/><path d="M8 3h10a3 3 0 0 1 3 3v11"/><path d="M9.5 13.5h4M11.5 11.5v4"/>')],
   ['enh', 'Enhancements', 'Enhancement table (editable)', ICON('<path d="M4 18h16M6 18v-3h12v3M8 15c0-3 1-5 4-6V6h5v3H12"/>')],
   ['codes', 'BGG codes', 'Copy a forum post code', ICON('<rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2"/>')],
@@ -145,6 +149,28 @@ function modalHtml(c, X, S) {
   } else if (S.modal === 'journal') {
     title = 'Journal'; big = ' jbox';
     body = journalBody(c, X, S);
+  } else if (S.modal === 'perks') {
+    title = 'Perks & masteries'; big = ' big';
+    const perks = perkList(c.cls), on = i => c.pk.perks.includes(i), mask = i => c.pk.boxes[i] || 0;
+    const slot = (i, side, j) => `<span class="amslot" data-keep data-perkcard="${i}.${side}.${j}"></span>`;
+    const rows = groupPerks(perks).map(g => {
+      const p = g.perk, repeated = g.members.length > 1;
+      const boxes = repeated ? g.members.map(m => ({ box: 0, perk: m.index, ticked: on(m.index) }))
+        : Array.from({ length: p.boxes }, (_, b) => ({ box: b, perk: p.index, ticked: on(p.index) || !!(mask(p.index) & (1 << b)) }));
+      const done = repeated ? g.members.every(m => on(m.index)) : on(p.index);
+      const partial = !done && (repeated ? g.members.some(m => on(m.index)) : mask(p.index) !== 0);
+      const tip = (k, b) => repeated ? `Take this perk (${k + 1} of ${g.members.length})` : p.boxes > 1 ? `Box ${b.box + 1} of ${p.boxes}` : 'Take this perk';
+      const btns = boxes.map((b, k) => `<button type="button" class="am-perk-check${b.ticked ? ' is-checked' : ''}" data-perkbox="${b.perk}.${b.box}" title="${tip(k, b)}" aria-label="${tip(k, b)}">${b.ticked ? '✓' : ''}</button>`).join('');
+      const cards = p.removes.length
+        ? p.removes.map((_, j) => slot(p.index, 'r', j)).join('') + '<span class="am-perk-arrow">→</span>' + (p.adds.length ? p.adds.map((_, j) => slot(p.index, 'a', j)).join('') : '<span class="am-perk-gone">removed</span>')
+        : p.adds.map((_, j) => slot(p.index, 'a', j)).join('');
+      const nCards = p.removes.length + p.adds.length, txt = !nCards ? p.label : perkRuleNote(p.label);
+      const tag = repeated ? `×${g.members.length}` : p.boxes > 1 ? `all ${p.boxes}` : '';
+      return `<div class="am-perk${done ? ' is-on' : ''}${partial ? ' is-partial' : ''}"${boxes.length === 1 ? ` data-perkrow="${boxes[0].perk}.0"` : ''}><span class="am-perk-boxes">${btns}</span><span class="am-perk-cards">${cards}</span>${txt ? `<span class="am-perk-text${nCards ? ' am-perk-note' : ''}">${perkTextHtml(txt)}</span>` : ''}${tag ? `<span class="am-perk-tag">${tag}</span>` : ''}</div>`;
+    }).join('');
+    const ms = MASTERIES[c.cls] || [];
+    body = `<h3>Perks <span>${c.pk.perks.length} of ${perks.length}</span></h3><div class="perklist am-perklist">${rows || `<p class="mrow">No perk data for ${esc(c.cls)}.</p>`}</div>
+      <h3>Masteries <span>${c.pk.ms.filter(i => i < ms.length).length} of ${ms.length}</span></h3><div class="perklist">${ms.map((t, i) => `<label class="perkrow${c.pk.ms.includes(i) ? ' on' : ''}"><input type="checkbox" data-mastery="${i}" data-char="${esc(c.id)}"${c.pk.ms.includes(i) ? ' checked' : ''}><span>${esc(t)}</span></label>`).join('') || '<p class="mrow">No masteries for this class.</p>'}</div>`;
   } else if (S.modal === 'amd') {
     title = 'Attack modifier deck'; big = ' amdbox';
     const A = S.amd || { tiles: [], specials: [], faces: [], total: 0, disc: 0 };
