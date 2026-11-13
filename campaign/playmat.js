@@ -300,7 +300,7 @@ export function modalHtml(c, X, S) {
     const ids = (c[z] || []).filter(id => c.deck.includes(id));
     const cell = id => { const card = X.cardById.get(id), url = X.cardImageUrl(card), name = X.pretty(card?.slug ?? id); return `<div class="pcell" data-pcard="${id}" title="${esc(name)}"><button type="button" class="rec" data-pilerec="${id}" data-char="${esc(c.id)}" title="Recover ${esc(name)}">Recover</button>${url ? `<img src="${esc(url)}" alt="${esc(name)}" draggable="false">` : `<div class="noimg">${esc(name)}</div>`}${markersHtml(c.mk?.[`c:${id}`])}</div>`; };
     body = `<div class="poolbar"><span>${ids.length} ${ids.length === 1 ? 'card' : 'cards'}</span><span class="grow"></span><button type="button" class="btn6" data-pilerecall="${z}" data-char="${esc(c.id)}"${ids.length ? '' : ' disabled'}>Recover all</button></div><div class="pilelist">${ids.length ? ids.map(cell).join('') : '<p class="mrow">Nothing here.</p>'}</div>`;
-    extra = '<img class="pilezoom" data-pilezoom alt="" hidden>';
+    extra = '<img class="pilezoom" data-pilezoom alt="" hidden><div class="pilezoomtk" data-pilezoomtk hidden></div>';
   } else return '';
   return `<div class="mmodal" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="mmodalbox${big}"><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2>${esc(title)}</h2>${body}</div>${extra}</div>`;
 }

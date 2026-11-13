@@ -1858,14 +1858,25 @@ main.addEventListener('click', e => {
   const pile = q('.pm .pile6');
   if (pile && !pm.modal && !q('.tkh')) { e.stopImmediatePropagation(); pm.pileZ = pile.dataset.pile === 'lost' ? 'lost' : 'disc'; pm.modal = 'pile'; render(); return; }
   const cell = q('.pm .pcell > img');
-  if (cell && (pmset.zones.piles || pmset.zoom) === 'click') { e.stopImmediatePropagation(); const z = main.querySelector('[data-pilezoom]'); if (z) { z.hidden = !z.hidden && z.src === cell.src; z.src = cell.src; z.style.setProperty('--pzh', `${HOVER_H()}px`); } }
+  if (cell && (pmset.zones.piles || pmset.zoom) === 'click') { e.stopImmediatePropagation(); const z = main.querySelector('[data-pilezoom]'); if (z) { const hide = !z.hidden && z.src === cell.src; showPileZoom(hide ? null : cell); } }
 }, true);
+function showPileZoom(cell) {                                                                          // cell = the .pcell > img to show, or null to hide
+  const z = main.querySelector('[data-pilezoom]'), tk = main.querySelector('[data-pilezoomtk]');
+  if (!z) return;
+  if (!cell) { z.hidden = true; if (tk) tk.hidden = true; return; }
+  z.src = cell.src; z.style.setProperty('--pzh', `${HOVER_H()}px`); z.hidden = false;
+  if (!tk) return;
+  const rc = z.getBoundingClientRect();
+  Object.assign(tk.style, { left: `${rc.left}px`, top: `${rc.top}px`, width: `${rc.width}px`, height: `${rc.height}px` });
+  tk.replaceChildren(...[...cell.parentElement.querySelectorAll(':scope > .tk')].map(t => t.cloneNode(true)));
+  tk.hidden = false;
+}
 document.addEventListener('mouseover', e => {
   const img = e.target.closest?.('.pm .pcell > img'), z = main.querySelector('[data-pilezoom]');
   if (!z) return;
-  if (!img) { if (z.src && (pmset.zones.piles || pmset.zoom) === 'hover') z.hidden = true; return; }
+  if (!img) { if (z.src && (pmset.zones.piles || pmset.zoom) === 'hover') showPileZoom(null); return; }
   if ((pmset.zones.piles || pmset.zoom) !== 'hover') return;
-  z.src = img.src; z.style.setProperty('--pzh', `${HOVER_H()}px`); z.hidden = false;
+  showPileZoom(img);
 });
 
 // Playmat clicks: flip a played card, the + and - of XP, gold and inherited perks, click on a number to type a value.

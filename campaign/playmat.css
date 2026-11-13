@@ -89,7 +89,7 @@
 .pm .pcard.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
 .pm .pcard.dis{filter:grayscale(.6) brightness(.5);cursor:not-allowed}
 .pm .pcbig img.port{aspect-ratio:5/7}
-.pm .pcbig .tk img{width:100%;height:100%;aspect-ratio:auto;object-fit:contain;border-radius:0;box-shadow:none}
+.pm .pcbig .tk img, .pm .pilezoomtk .tk img{width:100%;height:100%;aspect-ratio:auto;object-fit:contain;border-radius:0;box-shadow:none}
 .pm .pcard .psel{position:absolute;right:4px;top:4px;width:20px;height:20px;border-radius:50%;border:2px solid var(--accent);background:rgba(18,15,11,.85);color:#120f0b;font-size:13px;font-weight:800;line-height:1;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .pm .pcard .psel[aria-pressed=true]{background:var(--accent)}
 .pm .pcard .psel[aria-pressed=true]::after{content:'';width:9px;height:5px;border-left:2.5px solid #120f0b;border-bottom:2.5px solid #120f0b;transform:rotate(-45deg) translate(1px,-1px)}
@@ -215,6 +215,8 @@
 .pm .pilerow6 span{flex:1;font-size:13px}
 .pm .pilezoom{position:fixed;left:max(18px,calc(50vw - 370px));top:50%;transform:translateY(-50%);height:230px;width:auto;aspect-ratio:5/7;object-fit:cover;border-radius:10px;box-shadow:0 20px 50px rgba(0,0,0,.8);pointer-events:none;z-index:210}
 .pm .pilezoom[hidden]{display:none}
+.pm .pilezoomtk{position:fixed;z-index:211;pointer-events:none}
+.pm .pilezoomtk[hidden]{display:none}
 .pm .pile6 .ac{height:56%;width:auto;box-shadow:4px 4px 0 -1px #2b2318,8px 8px 0 -2px #241c13}
 .pm .pile6.lost .ac{filter:grayscale(.8) brightness(.7)}
 .pm .dock{display:flex;flex-direction:column;gap:8px;align-items:stretch}
