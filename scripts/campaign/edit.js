@@ -5,7 +5,7 @@ import { SCENARIOS, STICKERS } from '../games/gh2_scenarios.js';
 import { ITEMS } from '../games/gh2_items.js';
 import { CLASSES } from '../games/gh2_classes.js';
 import { ALL_CLASSES } from './classList.js';
-import { SCN_STATE, availableSet, CARD_ZONES, zoneOf, handList, cardLevel, ownedCards, pendingPicks, classByName } from './record.js';
+import { SCN_STATE, availableSet, CARD_ZONES, zoneOf, handList, cardLevel, ownedCards, pendingPicks, classByName, SLOT_ORDER, itemFits, itemsInUse } from './record.js';
 import { CARDS } from '../games/gh2_cards.js';
 import { SPECIAL_TRAITS } from './traits.js';
 import { tokenDefs } from './classTokens.js';
@@ -674,6 +674,46 @@ export function setEnhancementPrice(r, index, price) {
   const next = blank ? undefined : Math.min(p, 9999);
   if (r.enh[i].price === next) return r;
   return edit(r, x => { if (next === undefined) delete x.enh[i].price; else x.enh[i].price = next; });
+}
+
+// --- items of a character ---------------------------------------------------------------------------------------
+
+// State of an item of a character: 0 available, 1 spent, 2 consumed.
+export function setItemState(r, cid, itemId, state) {
+  const c = r.chars.find(x => x.id === cid), s = toInt(state);
+  if (!c || s === null || s < 0 || s > 2) return r;
+  const i = c.items.findIndex(it => String(it.id) === String(itemId));
+  if (i < 0 || c.items[i].s === s) return r;
+  return edit(r, x => { x.chars.find(y => y.id === cid).items[i].s = s; });
+}
+
+// The items a character carries: unlocked items only, one copy each, the copies of the shop and the slot limits respected (what does not fit is
+// dropped, in the order given). Items kept keep their state, new ones start available.
+export function setEquippedItems(r, cid, ids) {
+  const c = r.chars.find(x => x.id === cid);
+  if (!c) return r;
+  const keep = [], chosen = [];
+  for (const raw of [...new Set((ids || []).map(String))]) {
+    const item = itemById.get(raw);
+    if (!item || !r.items.unl.includes(item.id)) continue;
+    const mine = c.items.some(it => String(it.id) === raw);
+    if (!mine && itemsInUse(r, item) >= (item.n || 0)) continue;
+    if (!itemFits(chosen, item, c.lv)) continue;
+    chosen.push(item);
+    keep.push(c.items.find(it => String(it.id) === raw) || { id: item.id, st: [false, false, false], s: 0 });
+  }
+  if (JSON.stringify(keep.map(i => i.id)) === JSON.stringify(c.items.map(i => i.id))) return r;
+  return edit(r, x => { x.chars.find(y => y.id === cid).items = keep; });
+}
+
+// Order the items of a character by slot (head, body, hands, legs, small), then by number.
+export function sortItems(r, cid) {
+  const c = r.chars.find(x => x.id === cid), rank = { head: 0, body: 1, '1H': 2, '2H': 2, legs: 3, small: 4 };
+  if (!c) return r;
+  const key = it => { const item = itemById.get(String(it.id)); return [rank[item?.slot] ?? 9, Number(it.id) || 0]; };
+  const sorted = [...c.items].sort((a, b) => key(a)[0] - key(b)[0] || key(a)[1] - key(b)[1]);
+  if (sorted.every((it, i) => it === c.items[i])) return r;
+  return edit(r, x => { x.chars.find(y => y.id === cid).items = sorted; });
 }
 
 // --- card pool and hand selection -------------------------------------------------------------------------------

@@ -25,7 +25,7 @@ Record fields (all optional on load, defaults filled by normalize):
   stk, cls          sticker labels, unlocked class names
   avail             class names available in this campaign (optional; absent = every class in scripts/campaign/classList.js)
   scn               { "<number>": { s, l?, p?, ch?, d? } }   state, level, party size, chests, date
-  chars             [{ id, cls, name, seat?, lv, xp, gold, inh, traits, special, hand, deck, disc, act, lost, play, hord, tok, bench, items:[{id, st}], am }]
+  chars             [{ id, cls, name, seat?, lv, xp, gold, inh, traits, special, hand, deck, disc, act, lost, play, hord, tok, bench, items:[{id, st, s}], am }]
                     Every ability card of `deck` is in exactly one place: lost, disc (discard pile, last = top), play, act (active area) or the hand
                     (all the rest). play = [slot 1, slot 2], each null or { id, up } (up = face up); only hand cards enter a slot, slot 1 sets the
                     initiative. hord = manual hand order [cardId] or null (null = sorted by initiative),
@@ -124,6 +124,7 @@ function normalizeChar(c) {
   ch.bgo = Array.isArray(ch.bgo) ? ch.bgo.slice(0, 3) : null;
   ch.pqo = Array.isArray(ch.pqo) ? ch.pqo.slice(0, 2) : null;
   if (!ch.pqc || typeof ch.pqc !== 'object' || Array.isArray(ch.pqc)) ch.pqc = {};
+  ch.items = (Array.isArray(ch.items) ? ch.items : []).map(it => ({ ...it, s: Math.max(0, Math.min(2, Math.trunc(Number(it.s ?? ((it.st || []).some(Boolean) ? 1 : 0))) || 0)) }));
   ch.notes = typeof ch.notes === 'string' ? ch.notes : '';
   { const pk = ch.pk && typeof ch.pk === 'object' ? ch.pk : {}; ch.pk = { perks: [...new Set((Array.isArray(pk.perks) ? pk.perks : []).map(Number).filter(n => Number.isInteger(n) && n >= 0))].sort((x, y) => x - y), boxes: pk.boxes && typeof pk.boxes === 'object' && !Array.isArray(pk.boxes) ? pk.boxes : {}, ms: [...new Set((Array.isArray(pk.ms) ? pk.ms : []).map(Number).filter(n => Number.isInteger(n) && n >= 0))].sort((x, y) => x - y) }; }
   ch.tok = ch.tok && typeof ch.tok === 'object' && !Array.isArray(ch.tok) ? Object.fromEntries(Object.entries(ch.tok).map(([k, v]) => [k, Math.max(0, Math.min(99, Math.trunc(Number(v)) || 0))])) : {};
@@ -210,6 +211,20 @@ export function itemsInUse(r, item) {
   let n = 0;
   for (const c of r.chars) for (const it of c.items || []) if (String(it.id) === String(item.id)) n++;
   return n;
+}
+
+// Item slots: head, body and legs one each, hands two (a one-handed item uses 1, a two-handed item 2), small items half the level rounded up.
+export const SLOT_ORDER = ['head', 'body', 'legs', '1H', '2H', 'small'];
+export const SLOT_LABEL = { head: 'Head', body: 'Body', legs: 'Legs', '1H': 'One hand', '2H': 'Two hands', small: 'Small items' };
+export const slotLimits = lv => ({ head: 1, body: 1, legs: 1, hands: 2, small: Math.ceil((lv || 1) / 2) });
+export function slotUse(items) {
+  const u = { head: 0, body: 0, legs: 0, hands: 0, small: 0 };
+  for (const it of items) { if (it.slot === '1H') u.hands += 1; else if (it.slot === '2H') u.hands += 2; else if (it.slot in u) u[it.slot] += 1; }
+  return u;
+}
+export function itemFits(items, it, lv) {
+  const u = slotUse(items), l = slotLimits(lv);
+  return it.slot === '1H' ? u.hands + 1 <= l.hands : it.slot === '2H' ? u.hands + 2 <= l.hands : (u[it.slot] ?? 99) + 1 <= (l[it.slot] ?? 0);
 }
 
 // Copies of an item still in the shop (total copies minus copies in use); 0 when locked.

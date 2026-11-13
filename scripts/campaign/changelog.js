@@ -187,7 +187,12 @@ export function describeChange(a, b) {
       else if (k === 'am') add('Cards', 'Modifier deck', `${c.name}: modifier deck changed`);
       else if (k === 'items') {
         const ids = diffList((o.items || []).map(i => `#${i.id}`), (c.items || []).map(i => `#${i.id}`));
-        add('Mercenaries', 'Character items', `${c.name}: ${plusMinus(ids) || 'item ticks changed'}`);
+        if (ids.add.length || ids.del.length) add('Mercenaries', 'Character items', `${c.name}: ${plusMinus(ids)}`);
+        else {
+          const NAME = ['available', 'spent', 'consumed'];
+          (c.items || []).forEach((it, i) => { const was = (o.items || []).find(x => x.id === it.id); if (was && was.s !== it.s) add('Mercenaries', 'Item state', `${c.name}: item #${it.id} ${NAME[was.s ?? 0]} to ${NAME[it.s ?? 0]}`); });
+          if (!(c.items || []).some((it, i) => { const was = (o.items || []).find(x => x.id === it.id); return was && was.s !== it.s; })) add('Mercenaries', 'Character items', `${c.name}: items reordered`);
+        }
       } else if (Array.isArray(o[k]) || Array.isArray(c[k])) {
         add('Mercenaries', 'Character', `${c.name}: ${CHAR_FIELD[k] || k} ${plusMinus(diffList(o[k], c[k])) || 'reordered'}`);
       } else add('Mercenaries', 'Character', `${c.name}: ${CHAR_FIELD[k] || k} ${fmt(o[k])} to ${fmt(c[k])}`);
