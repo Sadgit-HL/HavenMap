@@ -453,7 +453,7 @@ function characterCard(c, r) {
     : esc(c.name);
   return `<div class="card">
     <h3>${nameCell} <span style="color:var(--muted)">${esc(c.cls)} (${cls ? esc(cls.src.toUpperCase()) : '?'})</span></h3>
-    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr))">${kv('Player', val(true, playerName || '-', playerSel))}${stat('Level', 'lv', 9, 1)}${stat('XP', 'xp', 9999)}${stat('Gold', 'gold', 9999)}${stat('Inherited', 'inh', 9999)}${stat('Hand size', 'hand', 20, 1)}</div>
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr))">${kv('Player', val(true, playerName || '-', playerSel))}${stat('Level', 'lv', 9, 1)}${stat('XP', 'xp', 9999)}${stat('Gold', 'gold', 9999)}${stat('Inherited perks', 'inh', 9999)}${stat('Hand size', 'hand', 20, 1)}</div>
     <div class="pile"><b>Traits</b>${(c.traits || []).map(t => chip(t)).join('') || '<span class="hint">none</span>'}${classTraits(c).map(t => chip(t)).join('')}${(c.special || []).map(t => chip(specialName(t), 'info')).join('')}${(c.extra || []).map(t => chip(t, 'dim')).join('')}
       <button type="button" class="editbtn editicon traitedit" data-trait-edit="${esc(c.id)}" aria-label="Special traits of ${esc(c.name)}" title="Special traits (Hero, Indebted, ...)">${PENCIL}</button></div>
     <div class="pile"><b>Deck (${c.deck.length} cards)</b>${c.hand ? `hand size ${esc(c.hand)}` : ''}</div>
