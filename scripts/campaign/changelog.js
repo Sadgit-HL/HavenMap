@@ -51,6 +51,26 @@ const CHAR_FIELD = { lv: 'level', xp: 'XP', cls: 'class', name: 'name' };
 const HANDLED = new Set(['ver', 'log', 'v', 'evlog', 'name', 'players', 'party', 'rep', 'pros', 'imb', 'don', 'stk', 'cls', 'avail',
   'scn', 'chars', 'items', 'events', 'decks', 'enh', 'retired', 'resLinks', 'bgs', 'pq']);
 
+// Counters that change by small steps (XP, gold, tokens, quest counts) are folded: a change of the same counter by the same user within
+// `windowMs` of an earlier entry is merged into it ("Sam: gold 42 to 47 (+5)"), and the entry is dropped when the counter ends where it began.
+const COUNTER = /^(.+) (-?\d+) to (-?\d+)(?: of (\d+))?(?: \(([+-]\d+)\))?$/;
+export function foldLog(log, entries, windowMs = 4000) {
+  const out = [...log];
+  for (const e of entries) {
+    const m = COUNTER.exec(e.d);
+    let j = -1;
+    if (m) for (let i = out.length - 1; i >= 0 && e.t - out[i].t <= windowMs; i--) {
+      const p = COUNTER.exec(out[i].d);
+      if (p && p[1] === m[1] && p[4] === m[4] && out[i].tab === e.tab && out[i].kind === e.kind && out[i].u === e.u) { j = i; break; }
+    }
+    if (j < 0) { out.push(e); continue; }
+    const p = COUNTER.exec(out[j].d), from = Number(p[2]), to = Number(m[3]);
+    if (from === to) out.splice(j, 1);
+    else out[j] = { ...out[j], t: e.t, d: `${m[1]} ${from} to ${to}${m[4] != null ? ` of ${m[4]}` : ''} (${to > from ? '+' : ''}${to - from})` };
+  }
+  return out;
+}
+
 export function describeChange(a, b) {
   const out = [];
   const add = (tab, kind, d) => out.push({ tab, kind, d });

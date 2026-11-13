@@ -19,7 +19,7 @@ import {
   validate, prosperityLevel, handOf, handList, zoneOf, CARD_ZONES, shopCopies, itemsInUse, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE, ownedCards, cardLevel,
 } from '../scripts/campaign/record.js';
 import * as ed from '../scripts/campaign/edit.js';
-import { describeChange, LOG_TABS, LOG_MAX } from '../scripts/campaign/changelog.js';
+import { describeChange, foldLog, LOG_TABS, LOG_MAX } from '../scripts/campaign/changelog.js';
 import { CLASSES } from '../scripts/games/gh2_classes.js';
 import { ALL_CLASSES, classKnown } from '../scripts/campaign/classList.js';
 import { availableSet, PROSPERITY_START } from '../scripts/campaign/record.js';
@@ -123,7 +123,7 @@ function userName() {
 function withLog(from, to, kindPrefix = '') {
   const t = Date.now(), u = userName();
   const entries = describeChange(from, to).map(e => ({ t, u, tab: e.tab, kind: kindPrefix + e.kind, d: e.d }));
-  return entries.length ? { ...to, log: [...(from.log || []), ...entries].slice(-LOG_MAX) } : { ...to, log: from.log || [] };
+  return entries.length ? { ...to, log: foldLog(from.log || [], entries).slice(-LOG_MAX) } : { ...to, log: from.log || [] };
 }
 function commit(next) {
   if (next === record) return;
