@@ -1880,6 +1880,25 @@ document.addEventListener('mouseover', e => {
   showPileZoom(img);
 });
 
+// Attack modifier deck action: changes the session state and writes a history line (the deck state is not part of the record, so the line is added directly).
+function addLog(tabName, kind, d) {
+  const e = { t: Date.now(), u: userName(), tab: tabName, kind, d };
+  record = { ...record, log: foldLog(record.log || [], [e]).slice(-LOG_MAX) };
+  localStore.save(record);
+}
+function amdDo(c, kind, key) {
+  const before = drawState(c, pm.amd[c.id]);
+  pm.amd[c.id] = amdAct(c, pm.amd[c.id], kind, key);
+  const tile = before.tiles.find(t => t.key === key), sp = before.specials.find(s => s.key === key), face = tile?.face ?? sp?.label ?? key;
+  const after = drawState(c, pm.amd[c.id]), sp2 = after.specials.find(s => s.key === key);
+  if (kind === 'shuffle') addLog('Cards', 'Modifier deck', `${c.name}: discarded modifier cards shuffled back into the deck`);
+  else if (kind === 'draw' && sp) addLog('Cards', 'Modifier deck', `${c.name}: drew ${sp.label} (removed from the game)`);
+  else if (kind === 'draw') addLog('Cards', 'Modifier deck', `${c.name}: drew ${face} (${after.total} left in the deck)`);
+  else if (kind === 'ret') addLog('Cards', 'Modifier deck', `${c.name}: returned ${face} from the discard to the deck`);
+  else if (sp && sp2 && sp.n !== sp2.n) addLog('Cards', 'Modifier deck', `${c.name}: ${sp.label.toLowerCase()} cards in deck ${sp.n} to ${sp2.n}`);
+  render();
+}
+
 // Playmat clicks: flip a played card, the + and - of XP, gold and inherited perks, click on a number to type a value.
 const HUD_KEY = { xp: 'xp', gold: 'gold', inh: 'inh' };
 main.addEventListener('click', e => {
@@ -1899,9 +1918,9 @@ main.addEventListener('click', e => {
   const pb = e.target.closest?.('[data-perkbox]') || e.target.closest?.('[data-perkrow]');
   if (pb && pmChar()) { const [i, b] = (pb.dataset.perkbox || pb.dataset.perkrow).split('.').map(Number); commit(ed.togglePerkBox(record, pmChar().id, i, b)); return; }
   const amb = e.target.closest?.('button[data-amact]'), amc = pmChar();
-  if (amb && amc) { if (!amb.disabled) { pm.amd[amc.id] = amdAct(amc, pm.amd[amc.id], amb.dataset.amact, amb.dataset.key); render(); } return; }
+  if (amb && amc) { if (!amb.disabled) amdDo(amc, amb.dataset.amact, amb.dataset.key); return; }
   const amz = e.target.closest?.('[data-amzoom]');
-  if (amz && pmset.amd === 'draw' && amc) { const left = drawState(amc, pm.amd[amc.id]).tiles.find(t => t.key === amz.dataset.amzoom)?.n; if (left) { pm.amd[amc.id] = amdAct(amc, pm.amd[amc.id], 'draw', amz.dataset.amzoom); render(); } return; }
+  if (amz && pmset.amd === 'draw' && amc) { const left = drawState(amc, pm.amd[amc.id]).tiles.find(t => t.key === amz.dataset.amzoom)?.n; if (left) amdDo(amc, 'draw', amz.dataset.amzoom); return; }
   if (amz) { pm.amZoom = pm.amZoom === amz.dataset.amzoom ? null : amz.dataset.amzoom; render(); return; }
   if (pm.amZoom) { pm.amZoom = null; render(); }
   const mf = e.target.closest?.('[data-matflip]');
