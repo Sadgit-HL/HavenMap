@@ -157,7 +157,7 @@ const DOCK = [
 ];
 const dockHtml = pend => `<aside class="dock" aria-label="Modals">${DOCK.map(([id, label, tip, svg]) => `<button type="button" class="mbtn" data-modal="${id}" title="Opens modal: ${tip}">${svg}<span>${label}</span>${id === 'deck' && pend ? `<span class="pooldot" title="${pend} card pick pending">${pend}</span>` : ''}</button>`).join('')}</aside>`;
 
-function modalHtml(c, X, S) {
+export function modalHtml(c, X, S) {
   if (!S.modal) return '';
   const { esc } = X;
   let title = '', big = '', body = '';

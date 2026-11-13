@@ -15,6 +15,7 @@ import { bannerUrl, bannerCode } from '../scripts/campaign/bggBanners.js';
 import { GH2_PQ } from '../scripts/games/gh2_pq_text.js';
 import { morphInto } from './morph.js';
 import { registerMenu } from './ctxmenu.js';
+import { phoneHtml } from './phone.js';
 import {
   validate, prosperityLevel, handOf, handList, zoneOf, CARD_ZONES, shopCopies, itemsInUse, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE, ownedCards, cardLevel,
 } from '../scripts/campaign/record.js';
@@ -488,9 +489,13 @@ function portraitStyle(c, size) {
 }
 // What the playmat remembers while the page is open: the open modal, the mat side, the history filter. Saved BGG codes of the user are kept
 // in this browser (not in the campaign record).
-const pm = { modal: null, matSide: 'front', histKind: 'all', jtab: 'goal', bgv: null, pqv: null, notesPreview: false, amd: {}, amZoom: null, setOpen: false, dtab: 'hand', hsel: {}, hsArmed: false, itemId: null, isel: {} };   // amd = draw state per character (not saved)
+const pm = { modal: null, matSide: 'front', histKind: 'all', jtab: 'goal', bgv: null, pqv: null, notesPreview: false, amd: {}, amZoom: null, setOpen: false, dtab: 'hand', hsel: {}, hsArmed: false, itemId: null, isel: {}, ptab: 'cards', sheet: null };   // amd = draw state per character (not saved)
 const CODES_KEY = 'havenmap.campaign.codes';
 // Display settings of the playmat (gear in the top bar), kept in this browser.
+// Narrow screens get the phone view (campaign/phone.js) instead of the playmat.
+const phoneMQ = window.matchMedia('(max-width: 700px)');
+const isPhone = () => phoneMQ.matches;
+phoneMQ.addEventListener?.('change', () => { if (record && tab === 'Mercenaries') render(); });
 const SET_KEY = 'havenmap.campaign.pmset';
 let pmset = (() => { try { return cleanSettings(JSON.parse(localStorage.getItem(SET_KEY) || 'null')); } catch { return cleanSettings(null); } })();
 const saveSet = () => { try { localStorage.setItem(SET_KEY, JSON.stringify(pmset)); } catch { /* ignore */ } };
@@ -500,7 +505,7 @@ const matSlug = c => String(matImageUrl(c.cls, 'front')).split('/').pop().replac
 const pmState = c => ({
   modal: pm.modal, matSide: pm.matSide, histKind: pm.histKind, jtab: pm.jtab, bgv: pm.bgv, pqv: pm.pqv, notesPreview: pm.notesPreview,
   bgs: record.bgs, pq: record.pq,
-  itemId: pm.itemId, set: pmset, setOpen: pm.setOpen,
+  itemId: pm.itemId, set: pmset, setOpen: pm.setOpen, ptab: pm.ptab, sheet: pm.sheet,
   items: pm.modal === 'items' ? { pool: ITEMS.filter(i => record.items.unl.includes(i.id) && (c.items.some(x => String(x.id) === String(i.id)) || shopCopies(record, i) > 0)), isel: pm.isel[c.id] || [] } : null,
   deck: pm.modal === 'deck' ? { tab: pm.dtab, cards: CARDS.filter(k => k.cls === classByName(c.cls)?.i).sort((a, b) => cardLevel(a.id) - cardLevel(b.id) || (a.ini ?? 1e9) - (b.ini ?? 1e9)), hsel: pm.hsel[c.id] || [], armed: pm.hsArmed } : null,
   amd: pm.modal === 'amd' ? drawState(c, pm.amd[c.id]) : null, amZoom: pm.modal === 'amd' ? pm.amZoom : null,
@@ -521,6 +526,7 @@ const playmatCtx = {
 function characterTab(r, cid) {
   const c = r.chars.find(x => x.id === cid);
   if (!c) return '<div class="empty">Character not found.</div>';
+  if (isPhone()) return phoneHtml(c, playmatCtx, pmState(c));
   return playmatHtml(c, playmatCtx, pmState(c)) + `<details class="oldsheet"><summary>Character sheet (what the playmat does not show yet)</summary>${characterCard(c, r)}</details>`;
 }
 
@@ -1235,6 +1241,32 @@ function render() {
   if (pm.modal === 'perks') hydratePerkCards();
 }
 
+// Phone view: tabs, the menu, bottom sheets, tap a card to move it, tap a played card to flip it.
+function phoneClick(e) {
+  const t = e.target, q = sel => t.closest?.(sel);
+  if (!q('.pp')) return false;
+  const c = pmChar();
+  if (q('[data-ptab]')) { pm.ptab = q('[data-ptab]').dataset.ptab; pm.sheet = null; render(); return true; }
+  if (q('[data-pmenu]')) { pm.sheet = { kind: 'menu' }; render(); return true; }
+  if (q('[data-sheetclose]') || t.matches?.('.pp .sheetwrap')) { pm.sheet = null; render(); return true; }
+  if (!c) return false;
+  const to = q('[data-pto]');
+  if (to) { pm.sheet = null; commit(ed.moveCard(record, c.id, Number(to.dataset.card), to.dataset.pto)); if (record.chars.find(x => x.id === c.id) === c) render(); return true; }
+  const ord = q('[data-pord]');
+  if (ord) { pm.sheet = null; commit(ed.moveCard(record, c.id, Number(ord.dataset.card), 'hand', { before: ord.dataset.pord === 'start' ? handList(c)[0] : null })); return true; }
+  const so = q('[data-psort]');
+  if (so) { commit(ed.sortHand(record, c.id, so.dataset.psort)); return true; }
+  const pile = q('[data-ppile]');
+  if (pile) { pm.sheet = { kind: 'pile', z: pile.dataset.ppile }; render(); return true; }
+  if (q('.pp .sheet .prev')) return true;
+  const ac = q('.pp .ac[data-card]');
+  if (ac) {
+    if (ac.dataset.pslot !== undefined && !q('[data-more]')) { commit(ed.flipPlayCard(record, c.id, Number(ac.dataset.pslot))); return true; }
+    pm.sheet = { kind: 'card', id: Number(ac.dataset.card) }; render(); return true;
+  }
+  return false;
+}
+
 // Display settings: the gear, the segmented choices, Reset, and click zoom (zones set to Click).
 function setClick(e) {
   const q = sel => e.target.closest?.(sel);
@@ -1264,7 +1296,7 @@ function itemClick(e, c) {
   if (q('[data-itemsedit]')) {
     pm.isel[c.id] = c.items.map(it => String(it.id)); pm.modal = 'items'; render(); return true;
   }
-  const tile = q('.pm .shelf6 .it[data-itemstate]');
+  const tile = q('.pm .it[data-itemstate]');
   if (tile && !pm.modal) { pm.itemId = tile.dataset.id; pm.modal = 'item'; render(); return true; }
   const sel = q('[data-isel]');
   if (sel) {
@@ -1687,7 +1719,9 @@ document.addEventListener('keydown', e => {
 const HUD_KEY = { xp: 'xp', gold: 'gold', inh: 'inh' };
 main.addEventListener('click', e => {
   const dock = e.target.closest?.('button[data-modal]');
+  if (phoneClick(e)) return;
   if (dock || e.target.closest?.('[data-opendeck]')) {
+    pm.sheet = null;
     pm.modal = dock ? dock.dataset.modal : 'deck';
     const dc = pmChar();
     if (pm.modal === 'deck' && dc) { pm.dtab = dock ? 'hand' : 'pool'; pm.hsel[dc.id] = [...dc.deck]; pm.hsArmed = false; }
