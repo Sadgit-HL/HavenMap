@@ -26,6 +26,7 @@ import { REPUTATION_SECTIONS } from '../scripts/games/gh2_reputation.js';
 import { PROSPERITY_SECTIONS, PROSPERITY_ITEMS, IMBUEMENT_SECTIONS } from '../scripts/games/gh2_prosperity.js';
 import { frontOf as eventFront, EVENT_TABLE } from '../scripts/campaign/events.js';
 import { buildCard } from '../scripts/amd/card.js';
+import { deckOf, drawState, amdAct, amdRollCode } from '../scripts/campaign/amdDeck.js';
 import { heroCatalog, heroPerkClass } from '../scripts/amd/heroDeck.js';
 import { PERSONAL_QUESTS } from '../scripts/games/gh2_quests.js';
 import ghConfig from '../scripts/games/gh.js';
@@ -485,7 +486,7 @@ function portraitStyle(c, size) {
 }
 // What the playmat remembers while the page is open: the open modal, the mat side, the history filter. Saved BGG codes of the user are kept
 // in this browser (not in the campaign record).
-const pm = { modal: null, matSide: 'front', histKind: 'all', jtab: 'goal', bgv: null, pqv: null, notesPreview: false };
+const pm = { modal: null, matSide: 'front', histKind: 'all', jtab: 'goal', bgv: null, pqv: null, notesPreview: false, amd: {}, amZoom: null };   // amd = draw state per character (not saved)
 const CODES_KEY = 'havenmap.campaign.codes';
 const loadCodes = () => { try { const a = JSON.parse(localStorage.getItem(CODES_KEY) || '[]'); return Array.isArray(a) ? a : []; } catch { return []; } };
 const saveCodes = a => { try { localStorage.setItem(CODES_KEY, JSON.stringify(a)); } catch { /* ignore */ } };
@@ -493,6 +494,7 @@ const matSlug = c => String(matImageUrl(c.cls, 'front')).split('/').pop().replac
 const pmState = c => ({
   modal: pm.modal, matSide: pm.matSide, histKind: pm.histKind, jtab: pm.jtab, bgv: pm.bgv, pqv: pm.pqv, notesPreview: pm.notesPreview,
   bgs: record.bgs, pq: record.pq,
+  amd: pm.modal === 'amd' ? drawState(c, pm.amd[c.id]) : null, amZoom: pm.modal === 'amd' ? pm.amZoom : null,
   customCodes: pm.modal === 'codes' ? loadCodes() : [],
   enh: pm.modal === 'enh' ? record.enh.map((e, i) => ({ e, i })).filter(x => x.e.cls === c.cls) : [],
   enhCards: pm.modal === 'enh' ? CARDS.filter(k => k.cls === classByName(c.cls)?.i).map(k => pretty(k.slug)) : [],
@@ -1220,6 +1222,21 @@ function render() {
   // The playmat is redrawn in place (campaign/morph.js): cards keep their picture and hover state, so a drop or a flip does not flicker.
   if (tab === 'Mercenaries' && !editing && main.querySelector('.pm')) morphInto(main, html); else main.innerHTML = html;
   if (tab === 'Cards' && view.cardType === 'am') hydrateAm();
+  if (pm.modal === 'amd') hydrateAmdModal();
+}
+
+// The cards of the modifier deck modal are drawn by scripts/amd/card.js into empty slots (data-amslot, kept by the redraw).
+function hydrateAmdModal() {
+  const c = record?.chars.find(x => x.id === currentSub());
+  if (!c) return;
+  const byKey = new Map(deckOf(c).map(t => [t.key, t]));
+  main.querySelectorAll('[data-amslot]').forEach(el => {
+    const t = byKey.get(el.dataset.amslot);
+    if (!t || el.dataset.shown === el.dataset.amslot) return;
+    el.dataset.shown = el.dataset.amslot;
+    el.replaceChildren(buildCard(t.card, c.cls, !!t.extra));
+    if (el.hasAttribute('data-big')) el.firstChild.style.setProperty('--pc-width', '340px');
+  });
 }
 
 // Edits: inputs and selects report on `change`, buttons on `click`; each maps to one pure function in edit.js.
@@ -1506,7 +1523,12 @@ const HUD_KEY = { xp: 'xp', gold: 'gold', inh: 'inh' };
 main.addEventListener('click', e => {
   const dock = e.target.closest?.('button[data-modal]');
   if (dock) { pm.modal = dock.dataset.modal; render(); return; }
-  if (e.target.closest?.('[data-modalclose]') || e.target.matches?.('.pm .mmodal')) { pm.modal = null; render(); return; }
+  if (e.target.closest?.('[data-modalclose]') || e.target.matches?.('.pm .mmodal')) { pm.modal = null; pm.amZoom = null; render(); return; }
+  const amb = e.target.closest?.('button[data-amact]'), amc = pmChar();
+  if (amb && amc) { if (!amb.disabled) { pm.amd[amc.id] = amdAct(amc, pm.amd[amc.id], amb.dataset.amact, amb.dataset.key); render(); } return; }
+  const amz = e.target.closest?.('[data-amzoom]');
+  if (amz) { pm.amZoom = pm.amZoom === amz.dataset.amzoom ? null : amz.dataset.amzoom; render(); return; }
+  if (pm.amZoom) { pm.amZoom = null; render(); }
   const mf = e.target.closest?.('[data-matflip]');
   if (mf) { pm.matSide = pm.matSide === 'back' ? 'front' : 'back'; render(); return; }
   const jt = e.target.closest?.('[data-jtab]');
@@ -1558,7 +1580,7 @@ main.addEventListener('click', e => {
     const c = record.chars.find(x => x.id === bgg.dataset.char);
     if (!c) return;
     const ctx = { bannerUrl: bannerUrl(matSlug(c)), pretty, cardById };
-    const text = bgg.dataset.bgg === 'turn' ? turnPost(c, ctx) : cardsPost(c, ctx);
+    const text = bgg.dataset.bgg === 'turn' ? turnPost(c, ctx) : bgg.dataset.bgg === 'amd' ? amdRollCode(drawState(c, pm.amd[c.id]).faces) : cardsPost(c, ctx);
     (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).catch(() => {});
     const old = bgg.innerHTML;
     bgg.innerHTML = '\u2713 <span>Copied</span>';

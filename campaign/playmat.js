@@ -6,6 +6,7 @@ import { tokenDefs, TOKEN_IMAGE_DIR } from '../scripts/campaign/classTokens.js';
 import { BGG_ICON_GROUPS } from '../scripts/campaign/bggIcons.js';
 import { BANNERS, BANNER_ICON_DIR } from '../scripts/campaign/bggBanners.js';
 import { holdStatus } from '../scripts/campaign/edit.js';
+import { amdRollCode } from '../scripts/campaign/amdDeck.js';
 import { BATTLE_GOALS } from '../scripts/games/battle_goals.js';
 import { PERSONAL_QUESTS } from '../scripts/games/gh2_quests.js';
 import { GH2_PQ } from '../scripts/games/gh2_pq_text.js';
@@ -64,6 +65,7 @@ export function playmatHtml(c, X, S = {}) {
     return `<span class="ctr" title="${esc(d.l)}">${tkImg(d.img, d.l)}<span class="sp"><b>${v}</b><span class="spc"><button type="button" data-tk="${d.k}" data-char="${cid}" data-d="1" aria-label="Increase ${esc(d.l)}">${UP}</button><button type="button" data-tk="${d.k}" data-char="${cid}" data-d="-1" aria-label="Decrease ${esc(d.l)}"${v ? '' : ' disabled'}>${DN}</button></span></span></span>`;
   }).join('');
   const DOC = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg>';
+  const DICE = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg>';
   const CARDS_ICON = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="12" height="16" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v13"/></svg>';
   const items = c.items.map(it => {
     const item = X.itemById.get(it.id), url = X.itemImageUrl(item), name = X.pretty(item?.slug ?? it.id), spent = (it.st || []).some(Boolean);
@@ -80,7 +82,7 @@ export function playmatHtml(c, X, S = {}) {
       <div class="stat"><small>Gold</small>${sp('gold', 'gold', 'b', c.gold ?? 0)}</div>
       <div class="stat"><small>Inherited perks</small>${sp('inh', 'inherited perks', 'b', c.inh ?? 0)}</div>
       <div class="counters">${tokens}</div>
-      <div class="grp"><small>BGG code</small><span class="bggseg"><button type="button" class="bggb" data-bgg="turn" data-char="${cid}" title="Copy BGG code" aria-label="Copy BGG code: Turn">${DOC}<span>Turn</span></button><button type="button" class="bggb" data-bgg="cards" data-char="${cid}" title="Copy BGG code" aria-label="Copy BGG code: Cards">${CARDS_ICON}<span>Cards</span></button></span></div>
+      <div class="grp"><small>BGG code</small><span class="bggseg"><button type="button" class="bggb" data-bgg="amd" data-char="${cid}" title="Copy BGG code" aria-label="Copy BGG code: AMD">${DICE}<span>AMD</span></button><button type="button" class="bggb" data-bgg="turn" data-char="${cid}" title="Copy BGG code" aria-label="Copy BGG code: Turn">${DOC}<span>Turn</span></button><button type="button" class="bggb" data-bgg="cards" data-char="${cid}" title="Copy BGG code" aria-label="Copy BGG code: Cards">${CARDS_ICON}<span>Cards</span></button></span></div>
     </header>
     <section class="shelf6" aria-label="Items"><h4>Items <span class="itbar"><span>${c.items.length}</span></span></h4>${items}</section>
     <section class="board6">
@@ -116,6 +118,7 @@ const ICON = d => `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" s
 const DOCK = [
   ['journal', 'Journal', 'Battle goals, personal quest and notes (tabs in one modal)', ICON('<path d="M6 3h11a2 2 0 0 1 2 2v14H8a2 2 0 0 1-2-2z"/><path d="M6 17a2 2 0 0 0 2 2M10 8h6M10 12h6"/>')],
   ['mat', 'Character mat', 'Character mat, front and back', ICON('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M9 5v14"/>')],
+  ['amd', 'Attack modifiers', 'Attack modifier deck: draw, return, bless and curse, roll code', ICON('<rect x="3" y="6" width="13" height="15" rx="2"/><path d="M8 3h10a3 3 0 0 1 3 3v11"/><path d="M9.5 13.5h4M11.5 11.5v4"/>')],
   ['enh', 'Enhancements', 'Enhancement table (editable)', ICON('<path d="M4 18h16M6 18v-3h12v3M8 15c0-3 1-5 4-6V6h5v3H12"/>')],
   ['codes', 'BGG codes', 'Copy a forum post code', ICON('<rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2"/>')],
   ['history', 'History', 'History of changes of this character', ICON('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>')],
@@ -142,6 +145,17 @@ function modalHtml(c, X, S) {
   } else if (S.modal === 'journal') {
     title = 'Journal'; big = ' jbox';
     body = journalBody(c, X, S);
+  } else if (S.modal === 'amd') {
+    title = 'Attack modifier deck'; big = ' amdbox';
+    const A = S.amd || { tiles: [], specials: [], faces: [], total: 0, disc: 0 };
+    const DOWN = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>';
+    const tiles = A.tiles.map(t => `<div class="amdtile real${t.n ? '' : ' none'}" title="${esc(t.face)}${t.rolling ? ' (reshuffles the deck)' : ''}"><div class="amcard" data-amzoom="${esc(t.key)}"><div class="amslot" data-keep data-amslot="${esc(t.key)}"></div><b>${t.n}/${t.base}</b></div>
+      <div class="amfoot"><button type="button" data-amact="draw" data-key="${esc(t.key)}"${t.n ? '' : ' disabled'} title="Draw one ${esc(t.face)}">${DOWN}</button><button type="button" data-amact="ret" data-key="${esc(t.key)}"${t.d ? '' : ' disabled'} title="Return one ${esc(t.face)} from the discard to the deck">&#8630; ${t.d}</button></div></div>`).join('');
+    const specials = A.specials.map(sp => `<div class="amdtile real${sp.n ? '' : ' none'}"><div class="amcard"><img src="${esc(sp.img)}" alt="${esc(sp.label)}" draggable="false"><b>${sp.n}</b></div>
+      <div class="amfoot"><button type="button" data-amact="draw" data-key="${sp.key}"${sp.n ? '' : ' disabled'} title="Draw (removes the card from the game)">${DOWN}</button><button type="button" data-amact="rem" data-key="${sp.key}"${sp.n ? '' : ' disabled'} title="Remove one ${sp.label} card">&minus;</button><button type="button" data-amact="add" data-key="${sp.key}"${sp.n >= sp.max ? ' disabled' : ''} title="Add one ${sp.label} card">+</button></div></div>`).join('');
+    const code = amdRollCode(A.faces);
+    body = `<div class="amdbar"><span class="mrow" style="margin:0">${A.total} in deck &middot; ${A.disc} in discard</span><span class="amdbtns"><button type="button" class="btn6" data-code="${esc(code)}" title="Copy GeekRoller code" aria-label="Copy GeekRoller code"${code ? '' : ' disabled'}><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg></button><button type="button" class="btn6" data-amact="shuffle" title="Shuffle deck now (the discard goes back)" aria-label="Shuffle deck now"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M10.59 9.17 5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg></button></span></div>
+      <div class="amdgrid">${tiles}${specials}</div>${S.amZoom ? `<div class="pcbig" style="--zw:340px"><div class="amslot" data-keep data-amslot="${esc(S.amZoom)}" data-big></div></div>` : ''}`;
   } else if (S.modal === 'enh') {
     title = 'Enhancements';
     const rows = (S.enh || []).map(({ e, i }) => `<tr><td>${esc(e.card)}</td><td>${esc(e.top ?? '\u2013')}</td><td>${esc(e.bottom ?? '\u2013')}</td><td><input class="enhprice" type="number" min="0" max="9999" inputmode="numeric" value="${e.price ?? ''}" placeholder="gold" data-enhprice="${i}" aria-label="Price of ${esc(e.card)}"> <button type="button" class="delx" data-enhdel="${i}" aria-label="Remove ${esc(e.card)}">&times;</button></td></tr>`).join('');
