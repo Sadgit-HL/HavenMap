@@ -243,3 +243,10 @@ iot`; they are photos, not clean scans) docked on the left, name and requirement
 4. Implement in stages in `campaign/app.js`: (a) new zone layout and data model (`play`, `hord`), with History logging; (b) hand with sort
    and manual order; (c) flip and play area; (d) stats strip and counters; (e) modals; (f) responsive and touch behaviour.
 5. Add a test pass in a headless browser per stage (see section 8) and commit per stage when the user asks.
+
+## 7. Open after the port (2026-11-13)
+
+- Not ported: markers (tokens and stickers) on cards and items; hover enlarge of pool cards; history lines for modifier deck draws, bless and curse.
+- Phone view cannot edit gold, inherited perks or XP; AMD drawn state is session only; no perk limit is enforced.
+- Item states from imported records count as spent when any old tick is set (meaning of the three spreadsheet tick columns unconfirmed).
+- No browser test was run for the port; long press and phone view are untested on a real device.
