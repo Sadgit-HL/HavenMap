@@ -1547,17 +1547,15 @@ main.addEventListener('dragover', e => {
   if (!zone) return;
   e.preventDefault();
   e.dataTransfer.dropEffect = 'move';
+  markDropZone(e, zone);
+});
+function markDropZone(e, zone) {
   main.querySelectorAll('[data-zone].over').forEach(z => { if (z !== zone) z.classList.remove('over'); });
   zone.classList.add('over');
   clearMarks();
   if (zone.dataset.zone === 'hand') { const p = handDropPlace(e, zone); if (p.row) p.row.classList.add(p.side === 'before' ? 'ins-before' : 'ins-after'); }
-});
-main.addEventListener('drop', e => {
-  if (evDrop(e)) return;
-  const zone = e.target.closest?.('[data-zone]');
-  if (!zone) return;
-  e.preventDefault();
-  const d = dragPayload(e);
+}
+function applyDrop(e, zone, d) {                                  // e: the drop event, or { target, clientX, clientY } from a touch drag
   zone.classList.remove('over');
   clearMarks();
   if (!d || d.char !== zone.dataset.char) return;
@@ -1566,7 +1564,54 @@ main.addEventListener('drop', e => {
   const fromHand = !!zone.querySelector(`.ac[data-card="${d.card}"]`);
   // inside the hand, dropping on empty space puts the card at the end; from another zone it just enters the hand
   commit(ed.moveCard(record, d.char, d.card, 'hand', place === undefined && !fromHand ? {} : { before: place === undefined ? null : place }));
+}
+main.addEventListener('drop', e => {
+  if (evDrop(e)) return;
+  const zone = e.target.closest?.('[data-zone]');
+  if (!zone) return;
+  e.preventDefault();
+  applyDrop(e, zone, dragPayload(e));
 });
+// Touch and pen: HTML5 drag events do not fire, so dragging a card by finger is built from pointer events (same drop rules as the mouse).
+(() => {
+  let t = null;
+  const zoneAt = (x, y) => document.elementFromPoint(x, y)?.closest?.('.pm [data-zone]');
+  main.addEventListener('pointerdown', e => {
+    if (e.pointerType === 'mouse' || e.button || pm.modal) return;
+    const el = e.target.closest?.('.pm:not(.pp) .ac[data-card], .pm:not(.pp) .flipcard[data-card]');
+    if (!el || e.target.closest('button')) return;
+    t = { el, x: e.clientX, y: e.clientY, id: e.pointerId, ghost: null };
+  });
+  main.addEventListener('pointermove', e => {
+    if (!t || e.pointerId !== t.id) return;
+    if (!t.ghost) {
+      if (Math.hypot(e.clientX - t.x, e.clientY - t.y) < 10) return;
+      const r = t.el.getBoundingClientRect(), g = t.el.cloneNode(true);
+      g.classList.add('touchghost'); g.classList.remove('zoomed', 'dragging');
+      g.style.cssText = `position:fixed;left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;margin:0;z-index:600;pointer-events:none;transform:none;opacity:.92;box-shadow:0 12px 30px rgba(0,0,0,.7)`;
+      t.dx = t.x - r.left; t.dy = t.y - r.top;
+      (main.querySelector('.pm') || document.body).appendChild(g);
+      t.ghost = g; t.el.classList.add('dragging'); hidePreview();
+    }
+    e.preventDefault();
+    t.ghost.style.left = `${e.clientX - t.dx}px`; t.ghost.style.top = `${e.clientY - t.dy}px`;
+    const z = zoneAt(e.clientX, e.clientY);
+    if (z) markDropZone({ target: document.elementFromPoint(e.clientX, e.clientY), clientX: e.clientX, clientY: e.clientY }, z);
+    else { main.querySelectorAll('[data-zone].over').forEach(x => x.classList.remove('over')); clearMarks(); }
+  });
+  const end = e => {
+    if (!t || e.pointerId !== t.id) return;
+    const d = t; t = null;
+    if (!d.ghost) return;
+    d.ghost.remove(); d.el.classList.remove('dragging');
+    const z = e.type === 'pointerup' ? zoneAt(e.clientX, e.clientY) : null;
+    main.querySelectorAll('[data-zone].over').forEach(x => x.classList.remove('over')); clearMarks();
+    const swallowClick = ev => { ev.stopImmediatePropagation(); ev.preventDefault(); };
+    document.addEventListener('click', swallowClick, true); setTimeout(() => document.removeEventListener('click', swallowClick, true), 50);
+    if (z) applyDrop({ target: document.elementFromPoint(e.clientX, e.clientY), clientX: e.clientX, clientY: e.clientY }, z, { char: d.el.dataset.char, card: Number(d.el.dataset.card) });
+  };
+  main.addEventListener('pointerup', end); main.addEventListener('pointercancel', end);
+})();
 // Flip a played card with the mockup's animation: turn the card in place first (the page is redrawn from the record, which would cut
 // the animation short), save when it has finished. A card turned face up goes flat afterwards ("settled"), as in the mockup.
 function flipPlayed(f) {

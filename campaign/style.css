@@ -378,3 +378,5 @@ main.wide { max-width:none; }
 .flowwrap.full { position:fixed; inset:0; z-index:55; max-height:none; min-height:0; border:0; border-radius:0; }
 .flowfsbar { position:sticky; top:0; left:0; z-index:2; display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:8px 12px; background:rgba(18,15,11,.92); border-bottom:1px solid var(--line); width:max-content; max-width:100vw; box-sizing:border-box; }
 body.noscroll { overflow:hidden; }
+/* touch drag of playmat cards (pointer events, see app.js): the finger must not scroll the page */
+.pm:not(.pp) .ac[data-card], .pm:not(.pp) .flipcard[data-card] { touch-action: none; }
