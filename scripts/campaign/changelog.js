@@ -5,6 +5,8 @@
 import { SCN_STATE_NAME, availableSet, zoneOf } from './record.js';
 import { CARDS } from '../games/gh2_cards.js';
 import { tokenDefs } from './classTokens.js';
+import { perkList } from './amdDeck.js';
+import { MASTERIES } from '../games/masteries.js';
 import { BATTLE_GOALS } from '../games/battle_goals.js';
 import { GH2_PQ } from '../games/gh2_pq_text.js';
 import { ALL_CLASSES } from './classList.js';
@@ -147,6 +149,20 @@ export function describeChange(a, b) {
           const q = GH2_PQ[sl], x = o.pqc?.[sl] || [], y = c.pqc?.[sl] || [];
           (q?.reqs || []).forEach((rq, i) => { if ((x[i] || 0) !== (y[i] || 0)) add('Mercenaries', 'Personal quest', `${c.name}: quest ${sl.slice(2)} ${q.name}, ${rq.t}: ${x[i] || 0} to ${y[i] || 0}${rq.n > 1 ? ` of ${rq.n}` : ''}`); });
         }
+        continue;
+      }
+      if (k === 'pk') {
+        const perks = perkList(c.cls), name = i => perks[i]?.label || `perk ${i + 1}`, pc = m => m.toString(2).replace(/0/g, '').length;
+        const pa = o.pk?.perks || [], pb = c.pk?.perks || [];
+        pb.filter(i => !pa.includes(i)).forEach(i => add('Mercenaries', 'Perk', `${c.name}: took perk ${name(i)}`));
+        pa.filter(i => !pb.includes(i)).forEach(i => add('Mercenaries', 'Perk', `${c.name}: gave up perk ${name(i)}`));
+        keys(o.pk?.boxes, c.pk?.boxes).forEach(i => {
+          const x = o.pk?.boxes?.[i] || 0, y = c.pk?.boxes?.[i] || 0;
+          if (x !== y && !pa.includes(Number(i)) && !pb.includes(Number(i))) add('Mercenaries', 'Perk', `${c.name}: perk ${name(Number(i))}, boxes ${pc(x)} to ${pc(y)} of ${perks[i]?.boxes ?? '?'}`);
+        });
+        const ma = o.pk?.ms || [], mb = c.pk?.ms || [], mt = i => MASTERIES[c.cls]?.[i] || `mastery ${i + 1}`;
+        mb.filter(i => !ma.includes(i)).forEach(i => add('Mercenaries', 'Mastery', `${c.name}: mastery achieved: ${mt(i)}`));
+        ma.filter(i => !mb.includes(i)).forEach(i => add('Mercenaries', 'Mastery', `${c.name}: mastery unticked: ${mt(i)}`));
         continue;
       }
       if (k === 'tok') {

@@ -8,6 +8,8 @@ import { ALL_CLASSES } from './classList.js';
 import { SCN_STATE, availableSet, CARD_ZONES, zoneOf, handList, cardLevel } from './record.js';
 import { SPECIAL_TRAITS } from './traits.js';
 import { tokenDefs } from './classTokens.js';
+import { perkList } from './amdDeck.js';
+import { MASTERIES } from '../games/masteries.js';
 import { BATTLE_GOALS } from '../games/battle_goals.js';
 import { PERSONAL_QUESTS } from '../games/gh2_quests.js';
 import { GH2_PQ } from '../games/gh2_pq_text.js';
@@ -671,6 +673,28 @@ export function setEnhancementPrice(r, index, price) {
   const next = blank ? undefined : Math.min(p, 9999);
   if (r.enh[i].price === next) return r;
   return edit(r, x => { if (next === undefined) delete x.enh[i].price; else x.enh[i].price = next; });
+}
+
+// --- perks and masteries ----------------------------------------------------------------------------------------
+
+// Tick or untick one checkbox of a perk (index into the class perk list). A perk with several boxes (double, triple) counts once all
+// its boxes are ticked and stops counting as soon as one is unticked (the rule of scripts/attackMods.js).
+export function togglePerkBox(r, cid, index, box = 0) {
+  const c = r.chars.find(x => x.id === cid), i = toInt(index), b = toInt(box), perk = c && perkList(c.cls)[i];
+  if (!perk || b === null || b < 0 || b >= perk.boxes) return r;
+  return edit(r, x => {
+    const pk = x.chars.find(y => y.id === cid).pk, full = (1 << perk.boxes) - 1, taken = pk.perks.includes(i);
+    const m = (taken ? full : pk.boxes[i] || 0) ^ (1 << b);
+    if ((m === full) !== taken) pk.perks = m === full ? [...pk.perks, i].sort((p, q) => p - q) : pk.perks.filter(n => n !== i);
+    if (m && m !== full) pk.boxes[i] = m; else delete pk.boxes[i];
+  });
+}
+
+// A mastery of the class (index into MASTERIES[class]) achieved or not.
+export function setMastery(r, cid, index, on) {
+  const c = r.chars.find(x => x.id === cid), i = toInt(index), n = c ? (MASTERIES[c.cls] || []).length : 0;
+  if (!c || i === null || i < 0 || i >= n || c.pk.ms.includes(i) === !!on) return r;
+  return edit(r, x => { const pk = x.chars.find(y => y.id === cid).pk; pk.ms = on ? [...pk.ms, i].sort((p, q) => p - q) : pk.ms.filter(m => m !== i); });
 }
 
 // A class token of a character: a count (0 to 99) or, for a token with states, the state index. Keys the class does not have are ignored.
