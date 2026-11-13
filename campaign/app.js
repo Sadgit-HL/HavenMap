@@ -489,7 +489,7 @@ function portraitStyle(c, size) {
 }
 // What the playmat remembers while the page is open: the open modal, the mat side, the history filter. Saved BGG codes of the user are kept
 // in this browser (not in the campaign record).
-const pm = { modal: null, matSide: 'front', histKind: 'all', jtab: 'goal', bgv: null, pqv: null, notesPreview: false, amd: {}, amZoom: null, setOpen: false, dtab: 'hand', hsel: {}, hsArmed: false, itemId: null, isel: {}, ptab: 'cards', sheet: null, mkKey: null, mkSel: null, pileZ: null };   // amd = draw state per character (not saved)
+const pm = { modal: null, matSide: 'front', histKind: 'all', jtab: 'goal', bgv: null, pqv: null, notesPreview: false, amd: {}, amZoom: null, setOpen: false, dtab: 'hand', hsel: {}, hsArmed: false, itemId: null, isel: {}, ptab: 'cards', sheet: null, mkKey: null, mkSel: null, pileZ: null, cf: null };   // amd = draw state per character (not saved)
 const CODES_KEY = 'havenmap.campaign.codes';
 // Display settings of the playmat (gear in the top bar), kept in this browser.
 // Narrow screens get the phone view (campaign/phone.js) instead of the playmat.
@@ -505,7 +505,7 @@ const matSlug = c => String(matImageUrl(c.cls, 'front')).split('/').pop().replac
 const pmState = c => ({
   modal: pm.modal, matSide: pm.matSide, histKind: pm.histKind, jtab: pm.jtab, bgv: pm.bgv, pqv: pm.pqv, notesPreview: pm.notesPreview,
   bgs: record.bgs, pq: record.pq,
-  itemId: pm.itemId, mkKey: pm.mkKey, pileZ: pm.pileZ, mkSel: mkSelOf(c), set: pmset, setOpen: pm.setOpen, ptab: pm.ptab, sheet: pm.sheet,
+  itemId: pm.itemId, mkKey: pm.mkKey, pileZ: pm.pileZ, cf: pm.cf, players: record.players, classChips: classTraits(c).map(t => chip(t)).join(''), mkSel: mkSelOf(c), set: pmset, setOpen: pm.setOpen, ptab: pm.ptab, sheet: pm.sheet,
   items: pm.modal === 'items' ? { pool: ITEMS.filter(i => record.items.unl.includes(i.id) && (c.items.some(x => String(x.id) === String(i.id)) || shopCopies(record, i) > 0)), isel: pm.isel[c.id] || [] } : null,
   deck: pm.modal === 'deck' ? { tab: pm.dtab, cards: CARDS.filter(k => k.cls === classByName(c.cls)?.i).sort((a, b) => cardLevel(a.id) - cardLevel(b.id) || (a.ini ?? 1e9) - (b.ini ?? 1e9)), hsel: pm.hsel[c.id] || [], armed: pm.hsArmed } : null,
   amd: pm.modal === 'amd' ? drawState(c, pm.amd[c.id]) : null, amZoom: pm.modal === 'amd' ? pm.amZoom : null,
@@ -1802,6 +1802,28 @@ main.addEventListener('click', e => {
   };
   main.addEventListener('pointerup', end); main.addEventListener('pointercancel', end);
 })();
+
+// Edit character modal: name, player and event traits are drafted in pm.cf and saved together (the class cannot be changed here).
+main.addEventListener('click', e => {
+  const q = sel => e.target.closest?.(sel), c = pmChar();
+  if (!c) return;
+  if (q('[data-charedit]') && !pm.modal) { e.stopImmediatePropagation(); pm.cf = { name: c.name, seat: c.seat ?? '', special: [...(c.special || [])] }; pm.modal = 'char'; render(); return; }
+  if (pm.modal !== 'char' || !pm.cf) return;
+  const x = q('[data-cfx]');
+  if (x) { e.stopImmediatePropagation(); pm.cf.special = pm.cf.special.filter(k => k !== x.dataset.cfx); render(); return; }
+  if (q('[data-cfsave]')) {
+    e.stopImmediatePropagation();
+    const f = pm.cf; let r = record;
+    r = ed.renameCharacter(r, c.id, f.name); r = ed.setCharacterPlayer(r, c.id, f.seat);
+    for (const t of SPECIAL_TRAITS) r = ed.setSpecialTrait(r, c.id, t.key, f.special.includes(t.key));
+    pm.modal = null; pm.cf = null; commit(r); render();
+  }
+}, true);
+main.addEventListener('input', e => { const f = e.target.closest?.('[data-cf]'); if (f && pm.cf) pm.cf[f.dataset.cf] = f.value; });
+main.addEventListener('change', e => {
+  const a = e.target.closest?.('[data-cfadd]');
+  if (a && pm.cf && a.value) { pm.cf.special.push(a.value); render(); }
+});
 
 // Pile modal: click a pile to list its cards; Recover brings one card (or all) back to the hand; the card under the pointer is shown large.
 main.addEventListener('click', e => {

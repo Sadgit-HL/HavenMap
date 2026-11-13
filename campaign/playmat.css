@@ -57,7 +57,14 @@
 .pm .edv{cursor:text;border-bottom:1px dashed transparent}
 .pm .edv:hover, .pm .edv:focus{border-bottom-color:var(--accent);outline:none}
 .pm .edin{width:64px;background:#2d2519;color:var(--text);border:1px solid var(--accent);border-radius:5px;font:inherit;font-size:inherit;font-weight:inherit;padding:0 4px;text-align:center}
+.pm .chform{display:flex;flex-direction:column;gap:12px}
+.pm .chform label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted)}
+.pm .chform input, .pm .chform select{background:#2d2519;color:var(--text);border:1px solid var(--line);border-radius:6px;font:inherit;font-size:13px;padding:5px 8px}
+.pm .chform .chnote{font-size:12px;color:var(--accent)}
+.pm .chform .chnote[hidden]{display:none}
+.pm .chform .chips{display:flex;flex-wrap:wrap;gap:6px}
 .pm .chip .chx{background:none;border:0;color:inherit;cursor:pointer;padding:0 0 0 6px;font-size:13px}
+.pm .chfoot{display:flex;justify-content:flex-end;gap:8px;margin-top:6px}
 .pm .deckrow{display:block;margin:0 0 12px}
 .pm .deckrow h2{margin:0 28px 12px 0}
 .pm .poolbar{display:flex;align-items:center;gap:14px;margin:0 0 10px;font-size:13px;color:var(--muted)}

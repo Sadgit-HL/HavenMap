@@ -5,6 +5,7 @@ import { handList, zoneOf, ownedCards, pendingPicks, cardLevel, SLOT_ORDER, SLOT
 import { tokenDefs, TOKEN_IMAGE_DIR, markerTokens, MARK_STICKERS, MARK_STICKER_DIR, markLabel } from '../scripts/campaign/classTokens.js';
 import { BGG_ICON_GROUPS } from '../scripts/campaign/bggIcons.js';
 import { BANNERS, BANNER_ICON_DIR } from '../scripts/campaign/bggBanners.js';
+import { SPECIAL_TRAITS, specialName } from '../scripts/campaign/traits.js';
 import { holdStatus } from '../scripts/campaign/edit.js';
 import { amdRollCode, perkList } from '../scripts/campaign/amdDeck.js';
 import { groupPerks } from '../scripts/amd/heroDeck.js';
@@ -96,7 +97,7 @@ export function playmatHtml(c, X, S = {}) {
   return `<div class="pm" data-zactive="${zm('active')}" data-zplay="${zm('play')}" data-zhand="${zm('hand')}" data-zpiles="${zm('piles')}" data-zitems="${zm('items')}" data-inib="${ST.inib === false ? 'off' : 'on'}" data-motion="${ST.reduce ? 'reduce' : 'full'}" data-dock="${ST.dock === 'right' ? 'right' : 'left'}" style="--hdelay:${({ short: 150, long: 400 })[ST.delay] || 0}ms">
   <div class="stage6">
     <header class="hud"><div class="portrait" style="${esc(X.portraitStyle(c, 72))}" role="img" aria-label="Class portrait (cropped from the character mat)"></div>
-      <div class="who"><div class="namerow"><h1>${esc(c.name)}</h1></div><div class="sub">${esc(c.cls)}${X.playerName(c) ? ` &middot; played by ${esc(X.playerName(c))}` : ''}</div><div class="chips">${X.traitChips(c)}</div></div>
+      <div class="who"><div class="namerow"><h1>${esc(c.name)}</h1><button type="button" class="btn6" data-charedit title="Edit character" aria-label="Edit character"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1-4 11-11a2 2 0 0 1 3 3L8 19z"/><path d="M14 7l3 3"/></svg></button></div><div class="sub">${esc(c.cls)}${X.playerName(c) ? ` &middot; played by ${esc(X.playerName(c))}` : ''}</div><div class="chips">${X.traitChips(c)}</div></div>
       <div class="sep"></div>
       <div class="lvl" title="Level ${lv} (click for the card pool)" data-opendeck="pool" role="button" tabindex="0">${lv}</div>
       <div class="xp" title="Level ${lv}: ${lo} XP.${hi ? ` Next level (${lv + 1}) at ${hi} XP.` : ' Maximum level.'}"><div class="xprow"><span class="xplab">XP</span>${sp('xp', 'XP', 'span', c.xp ?? 0)}<span class="xpto">/ <em>${hi ?? 'max'}</em></span></div><div class="xpbar"><b style="width:${pct}%"></b></div></div>
@@ -282,6 +283,16 @@ export function modalHtml(c, X, S) {
     const rows = log.filter(e => f === 'all' || e.kind === f);
     body = `<div class="histbar"><label for="histfilter">Show</label><select id="histfilter" data-histkind><option value="all">All</option>${kinds.map(k => `<option${k === f ? ' selected' : ''}>${esc(k)}</option>`).join('')}</select><span class="hn">${rows.length} entries</span></div>
       <div class="hlist">${rows.length ? rows.slice(0, 300).map(e => { const d = new Date(e.t); return `<div class="hrow"><time>${d.toLocaleDateString([], { day: '2-digit', month: '2-digit' })} ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</time><span class="hc">${esc(e.kind)}</span><span>${esc(e.d)}${e.u ? `<small>${esc(e.u)}</small>` : ''}</span></div>`; }).join('') : '<div class="hempty">No changes recorded for this character yet.</div>'}</div>`;
+  } else if (S.modal === 'char') {
+    title = 'Edit character';
+    const f = S.cf || { name: c.name, seat: c.seat ?? '', special: c.special || [] };
+    const free = SPECIAL_TRAITS.filter(t => !f.special.includes(t.key));
+    body = `<div class="chform"><label>Name<input data-cf="name" maxlength="30" autocomplete="off" value="${esc(f.name)}"></label>
+      <label>Player<select data-cf="seat"><option value="">(nobody)</option>${(S.players || []).map(p => `<option value="${esc(p.seat)}"${String(p.seat) === String(f.seat) ? ' selected' : ''}>${esc(p.name)}</option>`).join('')}</select></label>
+      <label>Class<span>${esc(c.cls)}</span></label>
+      <label>Class traits<span class="chips">${S.classChips || ''}</span></label>
+      <label>Event traits<span class="chips">${f.special.map(k => `<span class="chip info">${esc(specialName(k))}<button type="button" class="chx" data-cfx="${esc(k)}" aria-label="Remove ${esc(specialName(k))}">&times;</button></span>`).join('')}</span><select data-cfadd><option value="">Add a trait...</option>${free.map(t => `<option value="${esc(t.key)}">${esc(t.name)}</option>`).join('')}</select></label></div>
+      <div class="chfoot"><button type="button" class="btn6" data-modalclose>Cancel</button><button type="button" class="btn6" data-cfsave>Save</button></div>`;
   } else if (S.modal === 'pile') {
     const z = S.pileZ === 'lost' ? 'lost' : 'disc';
     title = z === 'lost' ? 'Lost' : 'Discard'; big = ' big';
