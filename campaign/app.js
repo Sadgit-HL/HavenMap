@@ -9,9 +9,10 @@ import { BATTLE_GOALS } from '../scripts/games/battle_goals.js';
 import { escapeHtml as esc } from '../scripts/escape.js';
 import { localStore } from '../scripts/campaign/store.js';
 import { cardImageUrl, itemImageUrl, eventImageUrl, matImageUrl, pqImageUrl, cardBackUrl } from '../scripts/campaign/cardImages.js';
-import { playmatHtml, XP_STEPS, turnPost, cardsPost } from './playmat.js';
+import { playmatHtml, XP_STEPS, turnPost, cardsPost, goalRollCode, questRollCode } from './playmat.js';
 import { tokenDefs } from '../scripts/campaign/classTokens.js';
 import { bannerUrl, bannerCode } from '../scripts/campaign/bggBanners.js';
+import { GH2_PQ } from '../scripts/games/gh2_pq_text.js';
 import { morphInto } from './morph.js';
 import {
   validate, prosperityLevel, handOf, handList, zoneOf, CARD_ZONES, shopCopies, itemsInUse, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE,
@@ -484,13 +485,14 @@ function portraitStyle(c, size) {
 }
 // What the playmat remembers while the page is open: the open modal, the mat side, the history filter. Saved BGG codes of the user are kept
 // in this browser (not in the campaign record).
-const pm = { modal: null, matSide: 'front', histKind: 'all' };
+const pm = { modal: null, matSide: 'front', histKind: 'all', jtab: 'goal', bgv: null, pqv: null, notesPreview: false };
 const CODES_KEY = 'havenmap.campaign.codes';
 const loadCodes = () => { try { const a = JSON.parse(localStorage.getItem(CODES_KEY) || '[]'); return Array.isArray(a) ? a : []; } catch { return []; } };
 const saveCodes = a => { try { localStorage.setItem(CODES_KEY, JSON.stringify(a)); } catch { /* ignore */ } };
 const matSlug = c => String(matImageUrl(c.cls, 'front')).split('/').pop().replace(/\.[a-z]+$/i, '');
 const pmState = c => ({
-  modal: pm.modal, matSide: pm.matSide, histKind: pm.histKind,
+  modal: pm.modal, matSide: pm.matSide, histKind: pm.histKind, jtab: pm.jtab, bgv: pm.bgv, pqv: pm.pqv, notesPreview: pm.notesPreview,
+  bgs: record.bgs, pq: record.pq,
   customCodes: pm.modal === 'codes' ? loadCodes() : [],
   enh: pm.modal === 'enh' ? record.enh.map((e, i) => ({ e, i })).filter(x => x.e.cls === c.cls) : [],
   enhCards: pm.modal === 'enh' ? CARDS.filter(k => k.cls === classByName(c.cls)?.i).map(k => pretty(k.slug)) : [],
@@ -498,6 +500,7 @@ const pmState = c => ({
 });
 const playmatCtx = {
   matUrl: (cls, side) => matImageUrl(cls, side),
+  pqImg: slug => `../images/common/personal_quests/${slug}.png`,
   esc, pretty, cardById, itemById, cardImageUrl, itemImageUrl, cardBackUrl, portraitStyle,
   playerName: c => (record.players.find(p => p.seat === c.seat)?.name ?? ''),
   traitChips: c => `${(c.traits || []).map(t => chip(t)).join('')}${classTraits(c).map(t => chip(t)).join('')}${(c.special || []).map(t => chip(specialName(t), 'info')).join('')}`,
@@ -1429,11 +1432,75 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && pm.modal) 
 main.addEventListener('change', e => {
   if (e.target.matches?.('[data-histkind]')) { pm.histKind = e.target.value; render(); }
   else if (e.target.matches?.('[data-enhprice]')) commit(ed.setEnhancementPrice(record, Number(e.target.dataset.enhprice), e.target.value));
+  else if (e.target.matches?.('[data-bgst]')) { const c = pmChar(); if (c) { pm.bgv = e.target.dataset.slug; commit(ed.setBattleGoalStatus(record, c.id, e.target.dataset.slug, e.target.value)); } }
+  else if (e.target.matches?.('[data-pqst]')) { const c = pmChar(); if (c) { pm.pqv = e.target.dataset.slug; commit(ed.setQuestStatus(record, c.id, e.target.dataset.slug, e.target.value)); } }
+  else if (e.target.matches?.('[data-pqsel]')) { pm.pqv = e.target.value; render(); }
+  else if (e.target.matches?.('[data-pqchk]')) {
+    const c = pmChar(), q = GH2_PQ[e.target.dataset.slug];
+    if (c && q) commit(ed.setQuestCount(record, c.id, e.target.dataset.slug, Number(e.target.dataset.pqchk), e.target.checked ? q.reqs[Number(e.target.dataset.pqchk)].n : 0));
+  }
+  else if (e.target.matches?.('[data-notes]')) { const c = pmChar(); if (c) commit(ed.setNotes(record, c.id, e.target.value)); }
+  else if (e.target.matches?.('[data-mdline]')) {
+    const c = pmChar();
+    if (c) { const L = (c.notes || '').split('\n'), i = Number(e.target.dataset.mdline); L[i] = L[i].replace(/\[[ xX]\]/, e.target.checked ? '[x]' : '[ ]'); commit(ed.setNotes(record, c.id, L.join('\n'))); }
+  }
 });
 main.addEventListener('keydown', e => {
   const f = e.target.closest?.('.pm .flipcard[data-slot]');
   if (f && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); flipPlayed(f); }
 });
+// The character of the open playmat, and the random picks of the journal (the pure edit functions get the chosen slugs).
+const pmChar = () => record?.chars.find(x => x.id === currentSub());
+const pick = (list, n) => { const a = [...list], out = []; while (out.length < n && a.length) out.push(a.splice(Math.floor(Math.random() * a.length), 1)[0]); return out; };
+// Journal clicks: battle goals, personal quests, roll codes, the notes toolbar. Returns true when the click was one of them.
+function journalClick(e, c) {
+  const t = e.target, q = sel => t.closest?.(sel);
+  let b;
+  if ((b = q('[data-bggo]'))) { pm.bgv = b.dataset.bggo; render(); return true; }
+  if (q('[data-bgdraw]')) { commit(ed.offerBattleGoals(record, c.id, pick(ed.goalDeck(record), 3))); return true; }
+  if ((b = q('[data-bgkeep]'))) { pm.bgv = b.dataset.bgkeep; commit(ed.keepBattleGoal(record, c.id, b.dataset.bgkeep)); return true; }
+  if (q('[data-bgcancel]')) { commit(ed.clearOffer(record, c.id, 'bgo')); return true; }
+  if ((b = q('[data-bgdrop]'))) { commit(ed.setBattleGoalStatus(record, c.id, b.dataset.slug, 'deck')); pm.bgv = null; return true; }
+  if (q('[data-bgreset]')) { if (confirm('A new scenario: put every battle goal back into the deck?')) commit(ed.returnAllBattleGoals(record)); return true; }
+  if ((b = q('[data-pqgo]'))) { pm.pqv = b.dataset.pqgo; render(); return true; }
+  if (q('[data-pqdraw]')) { commit(ed.offerQuests(record, c.id, pick(ed.questDeck(record), 2))); return true; }
+  if ((b = q('[data-pqkeep]'))) { pm.pqv = b.dataset.pqkeep; commit(ed.keepQuest(record, c.id, b.dataset.pqkeep)); return true; }
+  if (q('[data-pqcancel]')) { commit(ed.clearOffer(record, c.id, 'pqo')); return true; }
+  if ((b = q('[data-pqreq]'))) {
+    const cur = (c.pqc?.[b.dataset.slug] || [])[Number(b.dataset.pqreq)] || 0;
+    commit(ed.setQuestCount(record, c.id, b.dataset.slug, Number(b.dataset.pqreq), cur + Number(b.dataset.d)));
+    return true;
+  }
+  if ((b = q('[data-roll]'))) {
+    const code = b.dataset.roll === 'bg' ? goalRollCode(ed.goalDeck(record)) : questRollCode(ed.questDeck(record));
+    (navigator.clipboard ? navigator.clipboard.writeText(code) : Promise.reject()).catch(() => {});
+    const old = b.innerHTML;
+    b.innerHTML = '\u2713 <span>Copied</span>';
+    setTimeout(() => { b.innerHTML = old; }, 900);
+    return true;
+  }
+  if (q('[data-mdview]')) { pm.notesPreview = !pm.notesPreview; render(); return true; }
+  if ((b = q('[data-md]'))) { mdToolbar(b.dataset.md); return true; }
+  return false;
+}
+// Notes toolbar: inserts the markdown syntax around the selection or in front of the line; the text is saved when the field is left.
+function mdToolbar(kind) {
+  const ta = main.querySelector('[data-notes]');
+  if (!ta) return;
+  const wrap = (a, z) => { const s0 = ta.selectionStart, e0 = ta.selectionEnd; ta.setRangeText(a + ta.value.slice(s0, e0) + z, s0, e0, 'end'); if (s0 === e0) ta.setSelectionRange(s0 + a.length, s0 + a.length); ta.focus(); };
+  const line = prefix => { const s0 = ta.selectionStart, e0 = ta.selectionEnd, v = ta.value, a = v.lastIndexOf('\n', s0 - 1) + 1; let z = v.indexOf('\n', e0); if (z < 0) z = v.length; ta.setRangeText(v.slice(a, z).split('\n').map(l => prefix + l).join('\n'), a, z, 'end'); ta.focus(); };
+  if (kind === 'b') wrap('**', '**'); else if (kind === 'i') wrap('*', '*'); else if (kind === 'h') line('# '); else if (kind === 'ul') line('- '); else if (kind === 'todo') line('- [ ] ');
+}
+document.addEventListener('keydown', e => {
+  const ta = e.target.closest?.('[data-notes]');
+  if (!ta) return;
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'b' || e.key === 'i')) { e.preventDefault(); const m = e.key === 'b' ? '**' : '*', s0 = ta.selectionStart, e0 = ta.selectionEnd; ta.setRangeText(m + ta.value.slice(s0, e0) + m, s0, e0, 'end'); if (s0 === e0) ta.setSelectionRange(s0 + m.length, s0 + m.length); }
+  else if (e.key === 'Enter' && !e.shiftKey) {                     // continue a list; an empty item ends it
+    const v = ta.value, a = v.lastIndexOf('\n', ta.selectionStart - 1) + 1, m = v.slice(a, ta.selectionStart).match(/^(\s*[-*]\s+(\[[ xX]\]\s+)?)(.*)/);
+    if (m) { e.preventDefault(); if (!m[3]) ta.setRangeText('', a, ta.selectionStart, 'end'); else ta.setRangeText(`\n${m[1].replace(/\[[xX]\]/, '[ ]')}`, ta.selectionStart, ta.selectionEnd, 'end'); }
+  }
+});
+
 // Playmat clicks: flip a played card, the + and - of XP, gold and inherited perks, click on a number to type a value.
 const HUD_KEY = { xp: 'xp', gold: 'gold', inh: 'inh' };
 main.addEventListener('click', e => {
@@ -1442,6 +1509,10 @@ main.addEventListener('click', e => {
   if (e.target.closest?.('[data-modalclose]') || e.target.matches?.('.pm .mmodal')) { pm.modal = null; render(); return; }
   const mf = e.target.closest?.('[data-matflip]');
   if (mf) { pm.matSide = pm.matSide === 'back' ? 'front' : 'back'; render(); return; }
+  const jt = e.target.closest?.('[data-jtab]');
+  if (jt) { pm.jtab = jt.dataset.jtab; render(); return; }
+  const jc = pmChar();
+  if (jc && journalClick(e, jc)) return;
   const cp = e.target.closest?.('[data-code]');
   if (cp) {
     (navigator.clipboard ? navigator.clipboard.writeText(cp.dataset.code) : Promise.reject()).catch(() => {});

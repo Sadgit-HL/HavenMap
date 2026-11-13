@@ -5,6 +5,10 @@ import { handList, zoneOf } from '../scripts/campaign/record.js';
 import { tokenDefs, TOKEN_IMAGE_DIR } from '../scripts/campaign/classTokens.js';
 import { BGG_ICON_GROUPS } from '../scripts/campaign/bggIcons.js';
 import { BANNERS, BANNER_ICON_DIR } from '../scripts/campaign/bggBanners.js';
+import { holdStatus } from '../scripts/campaign/edit.js';
+import { BATTLE_GOALS } from '../scripts/games/battle_goals.js';
+import { PERSONAL_QUESTS } from '../scripts/games/gh2_quests.js';
+import { GH2_PQ } from '../scripts/games/gh2_pq_text.js';
 
 // XP needed for level 1 to 9 (the rulebook table as the mockup uses it; to be checked against the rulebook, handover section 6).
 export const XP_STEPS = [0, 45, 95, 150, 210, 275, 350, 440, 540];
@@ -110,6 +114,7 @@ export function cardsPost(c, { pretty, cardById }) {
 // ---- the dock (buttons that open the modals) and the modals ----
 const ICON = d => `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 const DOCK = [
+  ['journal', 'Journal', 'Battle goals, personal quest and notes (tabs in one modal)', ICON('<path d="M6 3h11a2 2 0 0 1 2 2v14H8a2 2 0 0 1-2-2z"/><path d="M6 17a2 2 0 0 0 2 2M10 8h6M10 12h6"/>')],
   ['mat', 'Character mat', 'Character mat, front and back', ICON('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M9 5v14"/>')],
   ['enh', 'Enhancements', 'Enhancement table (editable)', ICON('<path d="M4 18h16M6 18v-3h12v3M8 15c0-3 1-5 4-6V6h5v3H12"/>')],
   ['codes', 'BGG codes', 'Copy a forum post code', ICON('<rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2"/>')],
@@ -134,6 +139,9 @@ function modalHtml(c, X, S) {
       <div class="bnrsec"><h3>Class banners</h3><p class="bnrnote" data-bnrnote>Click a class to copy its <b>banner image</b> code.</p><div class="bnrgrid">${banners}</div></div>
       <div class="codelist">${custom}</div>
       <div class="addrow"><input data-code-label placeholder="Label" aria-label="Label"><input data-code-text placeholder="Code to copy" aria-label="Code" style="flex:2"><button type="button" class="btn6" data-codeadd>Add</button></div>`;
+  } else if (S.modal === 'journal') {
+    title = 'Journal'; big = ' jbox';
+    body = journalBody(c, X, S);
   } else if (S.modal === 'enh') {
     title = 'Enhancements';
     const rows = (S.enh || []).map(({ e, i }) => `<tr><td>${esc(e.card)}</td><td>${esc(e.top ?? '\u2013')}</td><td>${esc(e.bottom ?? '\u2013')}</td><td><input class="enhprice" type="number" min="0" max="9999" inputmode="numeric" value="${e.price ?? ''}" placeholder="gold" data-enhprice="${i}" aria-label="Price of ${esc(e.card)}"> <button type="button" class="delx" data-enhdel="${i}" aria-label="Remove ${esc(e.card)}">&times;</button></td></tr>`).join('');
@@ -147,4 +155,87 @@ function modalHtml(c, X, S) {
       <div class="hlist">${rows.length ? rows.slice(0, 300).map(e => { const d = new Date(e.t); return `<div class="hrow"><time>${d.toLocaleDateString([], { day: '2-digit', month: '2-digit' })} ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</time><span class="hc">${esc(e.kind)}</span><span>${esc(e.d)}${e.u ? `<small>${esc(e.u)}</small>` : ''}</span></div>`; }).join('') : '<div class="hempty">No changes recorded for this character yet.</div>'}</div>`;
   } else return '';
   return `<div class="mmodal" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="mmodalbox${big}"><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2>${esc(title)}</h2>${body}</div></div>`;
+}
+
+// ---- the journal: battle goals, personal quest, notes ----
+const DICE = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg>';
+const STATUS = { deck: 'In deck', mine: 'Mine', other: 'Other player', done: 'Completed' };
+const cap = t => String(t).replace(/-/g, ' ').replace(/^./, m => m.toUpperCase());
+const questNo = slug => slug.slice(2);
+
+// BGG roll codes over the cards still in the deck (ids = position in the list, 1 based): three goals, or one quest.
+export const goalRollCode = deck => (deck.length ? `3custom${deck.length}{${deck.map(sl => BATTLE_GOALS.findIndex(g => g.slug === sl) + 1).join(';')}}` : '');
+export const questRollCode = deck => (deck.length ? `1custom${deck.length}{${deck.map(sl => Number(questNo(sl))).join(';')}}` : '');
+
+// Markdown of the notes (headings, bold, italic, code, lists, to do items with a clickable box); the text is escaped first.
+const mdInline = (t, esc) => esc(t).replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/\*([^*]+)\*/g, '<i>$1</i>');
+export function mdRender(src, esc) {
+  let out = '', list = false, n = -1;
+  const close = () => { if (list) { out += '</ul>'; list = false; } };
+  String(src).split('\n').forEach(line => {
+    n++;
+    let m;
+    if ((m = line.match(/^(#{1,3})\s+(.*)/))) { close(); const l = m[1].length + 2; out += `<h${l}>${mdInline(m[2], esc)}</h${l}>`; }
+    else if ((m = line.match(/^\s*[-*]\s+\[([ xX])\]\s+(.*)/))) { if (!list) { out += '<ul>'; list = true; } out += `<li class="td"><label><input type="checkbox" data-mdline="${n}"${m[1] !== ' ' ? ' checked' : ''}> ${mdInline(m[2], esc)}</label></li>`; }
+    else if ((m = line.match(/^\s*[-*]\s+(.*)/))) { if (!list) { out += '<ul>'; list = true; } out += `<li>${mdInline(m[1], esc)}</li>`; }
+    else if (!line.trim()) close();
+    else { close(); out += `<p>${mdInline(line, esc)}</p>`; }
+  });
+  close();
+  return out;
+}
+
+function journalBody(c, X, S) {
+  const { esc } = X, cid = esc(c.id);
+  const tabs = [['goal', 'Battle goals'], ['quest', 'Personal quest'], ['notes', 'Notes']];
+  const tab = tabs.some(t => t[0] === S.jtab) ? S.jtab : 'goal';
+  const head = `<div class="seg jtabs" role="tablist" aria-label="Journal section">${tabs.map(([k, l]) => `<button type="button" data-jtab="${k}" aria-pressed="${k === tab}">${l}</button>`).join('')}</div>`;
+  const roll = (k, code) => `<button type="button" class="btn6 rollbtn" data-roll="${k}" data-code-text="${esc(code)}"${code ? '' : ' disabled'} title="${code ? 'Copy the GeekRoller code over the cards still in the deck' : 'Nothing left in the deck'}">${DICE}<span>BGG code for roll</span></button>`;
+  const statusSel = (attr, slug, st) => `<select ${attr} data-slug="${slug}" aria-label="Status">${Object.keys(STATUS).map(k => `<option value="${k}"${k === st ? ' selected' : ''}>${STATUS[k]}</option>`).join('')}</select>`;
+
+  if (tab === 'goal') {
+    const st = sl => holdStatus(S.bgs, c.id, sl), deck = BATTLE_GOALS.filter(g => st(g.slug) === 'deck').map(g => g.slug);
+    const goal = sl => BATTLE_GOALS.find(g => g.slug === sl);
+    const card = (g, tag, cls = '') => `<${tag} class="bgcard${cls}"${tag === 'button' ? ` type="button" data-bgkeep="${g.slug}"` : ''}><b>${esc(cap(g.slug))}</b>${esc(g.t)}<br><small>${g.chk} checkmark${g.chk > 1 ? 's' : ''}</small></${tag}>`;
+    const mine = BATTLE_GOALS.find(g => ['mine', 'done'].includes(st(g.slug)))?.slug;
+    const cur = c.bgo ? null : (goal(S.bgv) ? S.bgv : mine || null);
+    const strip = `<div class="pqdeck" title="Click a goal to show it"><span class="pqdl">${deck.length} of ${BATTLE_GOALS.length} in deck</span>${BATTLE_GOALS.map((g, i) => `<button type="button" class="pqchip st-${st(g.slug)}${g.slug === cur ? ' cur' : ''}" data-bggo="${g.slug}" title="${esc(cap(g.slug))}: ${STATUS[st(g.slug)]}">${i + 1}</button>`).join('')}</div>`;
+    let main;
+    if (c.bgo) main = `<p class="mrow">Pick one to keep:</p><div class="bgcards">${c.bgo.map(sl => card(goal(sl), 'button')).join('')}</div><div class="pqrow"><button type="button" class="btn6" data-bgdraw data-char="${cid}"${deck.length < 3 ? ' disabled' : ''}>Draw again</button><button type="button" class="btn6" data-bgcancel data-char="${cid}">Cancel</button></div>`;
+    else if (cur) main = `<div class="bgcards">${card(goal(cur), 'div', ` kept${st(cur) === 'done' ? ' done' : ''}`)}</div><div class="pqrow"><label for="bgst">Status</label>${statusSel('id="bgst" data-bgst', cur, st(cur))}<button type="button" class="btn6" data-bgdrop data-slug="${cur}" data-char="${cid}">Return to deck</button></div>`;
+    else main = '<p class="mrow">No goal drawn for this scenario yet.</p>';
+    return `${head}<div class="jtab" data-jpane="goal">${strip}${main}<div class="pqrow"><button type="button" class="btn6" data-bgdraw data-char="${cid}"${deck.length < 3 || c.bgo ? ' disabled' : ''}>Draw three goals</button>${roll('bg', goalRollCode(deck))}<button type="button" class="btn6" data-bgreset title="New scenario: all goals back in the deck">Return all to deck</button></div></div>`;
+  }
+
+  if (tab === 'quest') {
+    const st = sl => holdStatus(S.pq, c.id, sl), deck = PERSONAL_QUESTS.filter(q => st(q.slug) === 'deck').map(q => q.slug);
+    const nameOf = sl => GH2_PQ[sl]?.name || sl;
+    const img = sl => `<img src="${esc(X.pqImg(sl))}" alt="Personal quest ${esc(sl)}">`;
+    if (c.pqo) return `${head}<div class="jtab" data-jpane="quest"><p class="mrow">Pick one to keep:</p><div class="pqoffer">${c.pqo.map(sl => `<button type="button" class="pqpick" data-pqkeep="${sl}" title="Keep ${esc(sl)} ${esc(nameOf(sl))}">${img(sl)}<span>${questNo(sl)} ${esc(nameOf(sl))}</span></button>`).join('')}</div><div class="pqrow"><button type="button" class="btn6" data-pqdraw data-char="${cid}"${deck.length < 2 ? ' disabled' : ''}>Draw again</button><button type="button" class="btn6" data-pqcancel data-char="${cid}">Cancel</button></div></div>`;
+    const heldMine = PERSONAL_QUESTS.find(q => ['mine', 'done'].includes(st(q.slug)))?.slug;
+    const cur = PERSONAL_QUESTS.some(q => q.slug === S.pqv) ? S.pqv : (heldMine || PERSONAL_QUESTS[0].slug);
+    const q = GH2_PQ[cur] || { name: cur, reqs: [] };
+    const held = ['mine', 'done'].includes(st(cur));
+    const cnt = (c.pqc && c.pqc[cur]) || [];
+    const done = i => (cnt[i] || 0) >= q.reqs[i].n, open = i => q.reqs[i].after.every(done);
+    const all = q.reqs.length && q.reqs.every((r, i) => done(i));
+    const reqs = q.reqs.map((r, i) => {
+      const off = !held || !open(i);
+      const ctl = r.n > 1
+        ? `<span class="pqc"><span class="sp"><b>${Math.min(cnt[i] || 0, r.n)} / ${r.n}</b><span class="spc"><button type="button" data-pqreq="${i}" data-slug="${cur}" data-char="${cid}" data-d="1" aria-label="Increase"${off || done(i) ? ' disabled' : ''}>${UP}</button><button type="button" data-pqreq="${i}" data-slug="${cur}" data-char="${cid}" data-d="-1" aria-label="Decrease"${off || !(cnt[i] || 0) ? ' disabled' : ''}>${DN}</button></span></span></span>`
+        : `<span class="pqc"><label class="pqcheck"><input type="checkbox" data-pqchk="${i}" data-slug="${cur}" data-char="${cid}"${done(i) ? ' checked' : ''}${off ? ' disabled' : ''}> done</label></span>`;
+      return `<div class="pqreq${open(i) ? '' : ' locked'}${done(i) ? ' done' : ''}"><span class="pqt">${esc(r.t)}</span>${ctl}</div>`;
+    }).join('');
+    const strip = `<div class="pqdeck" title="Click a quest to show it"><span class="pqdl">${deck.length} of ${PERSONAL_QUESTS.length} in deck</span>${PERSONAL_QUESTS.map(x => `<button type="button" class="pqchip st-${st(x.slug)}${x.slug === cur ? ' cur' : ''}" data-pqgo="${x.slug}" title="${esc(x.slug)} ${esc(nameOf(x.slug))}: ${STATUS[st(x.slug)]}">${questNo(x.slug)}</button>`).join('')}</div>`;
+    return `${head}<div class="jtab" data-jpane="quest"><div class="pqdock"><div class="pqcard">${img(cur)}</div><div class="pqside">${strip}
+      <div class="pqrow"><label for="pqsel">Quest</label><select id="pqsel" data-pqsel>${PERSONAL_QUESTS.map(x => `<option value="${x.slug}"${x.slug === cur ? ' selected' : ''}>${x.slug} ${esc(nameOf(x.slug))}</option>`).join('')}</select></div>
+      <h4>${esc(q.name)}${all ? ' <span class="chip info">Complete</span>' : ''}</h4>
+      <div class="pqrow"><label for="pqst">Status</label>${statusSel('id="pqst" data-pqst', cur, st(cur))}</div>
+      ${held ? '' : '<p class="mrow">Set the status to Mine to count the requirements.</p>'}${reqs}
+      <div class="pqrow"><button type="button" class="btn6" data-pqdraw data-char="${cid}"${deck.length < 2 ? ' disabled' : ''}>Draw two Personal Quests</button>${roll('pq', questRollCode(deck))}</div></div></div></div>`;
+  }
+
+  return `${head}<div class="jtab notespane" data-jpane="notes"><div class="mdbar"><button type="button" class="btn6" data-md="b" title="Bold (Ctrl+B)"${S.notesPreview ? ' disabled' : ''}><b>B</b></button><button type="button" class="btn6" data-md="i" title="Italic (Ctrl+I)"${S.notesPreview ? ' disabled' : ''}><i>I</i></button><button type="button" class="btn6" data-md="h" title="Heading"${S.notesPreview ? ' disabled' : ''}>H</button><button type="button" class="btn6" data-md="ul" title="Bullet list"${S.notesPreview ? ' disabled' : ''}>&bull; List</button><button type="button" class="btn6" data-md="todo" title="Checkbox"${S.notesPreview ? ' disabled' : ''}>&#9744; Todo</button><button type="button" class="btn6 mdview" data-mdview aria-pressed="${!!S.notesPreview}">${S.notesPreview ? 'Edit' : 'Preview'}</button></div>
+    <textarea class="notesarea" data-notes data-char="${cid}" placeholder="Notes for this character (markdown: **bold**, *italic*, # heading, - list, - [ ] todo)"${S.notesPreview ? ' hidden' : ''}>${esc(c.notes || '')}</textarea>
+    <div class="mdprev"${S.notesPreview ? '' : ' hidden'} data-mdprev data-char="${cid}">${mdRender(c.notes || '', esc) || '<p class="mrow">Nothing yet.</p>'}</div></div>`;
 }
