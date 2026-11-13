@@ -1,0 +1,205 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Context menus: every element with a menu</title>
+<style>
+:root{--bg:#16130f;--panel:#231d17;--line:#3a3026;--text:#ecdfc8;--muted:#a89a82;--accent:#c7a44a;--danger:#e08a7a}
+*{box-sizing:border-box}
+body{margin:0;padding:18px;background:#0e0c09;color:var(--text);font:13px/1.35 system-ui,Segoe UI,Roboto,sans-serif}
+h1{font-size:17px;margin:0 0 6px}
+p.d{color:var(--muted);max-width:980px;margin:0 0 10px}
+.how{color:var(--muted);max-width:980px;margin:0 0 16px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:rgba(0,0,0,.25)}
+.how b{color:var(--text)}
+.bar{display:flex;gap:8px;align-items:center;margin:0 0 14px}
+button.tool{font:inherit;font-size:12px;padding:6px 12px;border-radius:7px;border:1px solid var(--line);background:#2d2519;color:var(--text);cursor:pointer}
+button.tool:hover{background:#3a2f1e;color:var(--accent)}
+.blk{display:grid;grid-template-columns:260px 300px 1fr;gap:18px;align-items:start;padding:14px;margin-bottom:14px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#221c14,#1a150f)}
+.blk h2{font-size:14px;margin:0 0 4px;color:var(--accent)}
+.blk .sel{font:11px ui-monospace,Consolas,monospace;color:var(--muted);word-break:break-all;margin-bottom:8px}
+.blk .share{font-size:11px;color:var(--muted)}
+.note{font-size:12px;color:var(--muted);margin:0}
+.note b{color:var(--text)}
+
+/* the element (preview only) */
+.pv{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.pv .cardph{width:104px;height:146px;border-radius:6px;background:linear-gradient(180deg,#5a4b33,#2f261a);border:1px solid #6b5a3c;display:flex;align-items:center;justify-content:center;color:#e9d9ae;font-size:11px;text-align:center;padding:6px;box-shadow:0 2px 6px rgba(0,0,0,.5)}
+.pv .cardph.down{background:linear-gradient(180deg,#2b2318,#1d170f)}
+.pv .tile{width:120px;height:92px;border-radius:8px;border:1px solid #6b5a3c;background:linear-gradient(180deg,#3b3122,#241d13);display:flex;align-items:center;justify-content:center;color:#e9d9ae;font-size:12px;text-align:center;padding:6px}
+.pv .pile{position:relative;width:104px;height:146px}
+.pv .pile i{position:absolute;left:0;top:0;width:104px;height:146px;border-radius:6px;border:1px solid #6b5a3c;background:#2b2318}
+.pv .pile i:nth-child(2){transform:translate(3px,-3px);background:#332a1d}
+.pv .pile i:nth-child(3){transform:translate(6px,-6px);background:#3b3122}
+.pv .pile span{position:absolute;left:0;right:0;bottom:-22px;text-align:center;font-size:11px;color:var(--muted)}
+.pv .sp{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:#2d2519}
+.pv .sp b{min-width:34px;text-align:center;font-size:18px}
+.pv .sp span.lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.pv .sp span.btn{width:26px;height:26px;border-radius:6px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.pv .mod{width:130px;height:90px;border-radius:6px;border:1px solid #6b5a3c;background:linear-gradient(180deg,#4a3f2e,#2b2318);display:flex;align-items:center;justify-content:center;color:#e9d9ae;font-size:13px;font-weight:700}
+
+/* the open menu (same look as campaign/ctxmenu.js, but editable) */
+.menu{background:#17120b;border:1px solid #3a3026;border-radius:10px;padding:5px;box-shadow:0 14px 36px rgba(0,0,0,.65);font:13px system-ui,Segoe UI,Roboto,sans-serif;color:#ecdfc8;width:280px}
+.menu .mh{padding:6px 10px 3px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.row{display:flex;align-items:center;gap:4px;padding:2px 2px;border-radius:7px}
+.row:hover{background:rgba(255,255,255,.03)}
+.row input.lbl{flex:1;min-width:0;background:#120e09;color:#ecdfc8;border:1px solid transparent;border-radius:6px;padding:6px 8px;font:inherit}
+.row input.lbl:focus{outline:none;border-color:var(--accent);background:#1d1812}
+.row.danger input.lbl{color:var(--danger)}
+.row.header input.lbl{text-transform:uppercase;letter-spacing:.08em;font-size:10.5px;color:var(--muted);font-weight:600}
+.row.sep{padding:6px 10px}
+.row.sep span{flex:1;height:1px;background:#3a3026}
+.row .kind{font-size:10px;color:var(--muted);width:44px;text-align:center;text-transform:uppercase;letter-spacing:.05em;flex:none}
+.row .del{flex:none;width:26px;height:26px;border:1px solid transparent;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font:inherit;font-size:16px;line-height:1}
+.row .del:hover{border-color:#7a3a30;color:#f0a090;background:#3a1f1a}
+.adds{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;padding-top:6px;border-top:1px solid #3a3026}
+.adds button{font:inherit;font-size:11.5px;padding:5px 8px;border-radius:6px;border:1px dashed #6b5a3c;background:transparent;color:var(--accent);cursor:pointer}
+.adds button:hover{background:rgba(199,164,74,.1)}
+
+#out{display:none;margin-top:18px;width:100%;min-height:220px;background:#0b0907;color:#cdbd98;border:1px solid var(--line);border-radius:8px;padding:10px;font:12px ui-monospace,Consolas,monospace;white-space:pre;overflow:auto}
+#out.on{display:block}
+.foot{margin-top:6px;color:var(--muted);font-size:12px}
+@media (max-width:1100px){.blk{grid-template-columns:1fr}}
+</style>
+
+<h1>Context menus: every element that has one</h1>
+<p class="d">Seven menus in the playmat, plus the card menu that the &#8943; button opens. Each is shown open next to its element. Every entry is editable text.</p>
+<div class="how">
+  <b>How to use:</b> change the text of any entry, press <b>&times;</b> to delete it, and use the dashed buttons at the bottom of a menu to add an action, a header or a separator. When you are done, press <b>Export entries</b> at the bottom and send me the JSON (or describe the changes in words). I will then rewire the functions in <code>app.js</code>. Renaming an entry only changes the text; the function it runs stays the same, unless you tell me otherwise.
+</div>
+<div class="bar"><button class="tool" id="exp">Export entries</button><button class="tool" id="reset">Reset to the current code</button></div>
+<div id="root"></div>
+<pre id="out"></pre>
+
+<script>
+// Model of every menu, as it is in campaign/app.js today (registerMenu calls and the card menu).
+// kind: 'a' action (label, run), 'h' header, 's' separator. danger = red text. Disabled rules are in the notes, not in the entries.
+const ZONES = ['Active area', 'Hand', 'Play slot 1', 'Play slot 2', 'Discard pile', 'Lost pile'];
+const act = (label, extra = {}) => ({ k: 'a', label, ...extra });
+const MENUS = [
+  { id: 'card-hand', title: 'Card: hand', sel: '.pm .fan6 .ac', header: 'Example card',
+    preview: '<div class="cardph">Example card</div>',
+    note: '<b>Shared by:</b> hand cards, active-area cards, play-area cards and the &#8943; button on each card (it opens this same menu). <b>Rules:</b> Enlarge is disabled for a face-down play card. "Add marker or sticker" is not shown for play-area cards. Play slots are disabled when a card comes from the active area or the discard. "Move to start" and "Move to end" only appear for hand cards.',
+    entries: [act('Enlarge'), act('Add marker or sticker'), { k: 's' }, { k: 'h', label: 'Move to' },
+      act('Active area'), act('Play slot 1'), act('Play slot 2'), act('Discard pile'), act('Lost pile'), { k: 's' },
+      act('Move to start'), act('Move to end')] },
+  { id: 'card-active', title: 'Card: active area', sel: '.pm .activelist .ac', header: 'Example card',
+    preview: '<div class="cardph">Active card</div>',
+    note: 'Same menu as the hand card. From the active area, the play slots are disabled, and the list has no "Move to start/end" entries.',
+    entries: [act('Enlarge'), act('Add marker or sticker'), { k: 's' }, { k: 'h', label: 'Move to' },
+      act('Hand'), act('Play slot 1'), act('Play slot 2'), act('Discard pile'), act('Lost pile')] },
+  { id: 'card-play', title: 'Card: play area', sel: '.pm .flipcard', header: 'Example card',
+    preview: '<div class="cardph down">Face-down card (back)</div>',
+    note: 'Play-area cards have no "Add marker or sticker". Enlarge is disabled while the card is face down, so the first entry is greyed out then.',
+    entries: [act('Enlarge'), { k: 's' }, { k: 'h', label: 'Move to' },
+      act('Hand'), act('Active area'), act('Play slot 1'), act('Play slot 2'), act('Discard pile'), act('Lost pile')] },
+  { id: 'item', title: 'Item', sel: '.pm .it[data-itemstate]', header: 'Example item',
+    preview: '<div class="tile">Example item</div>',
+    note: 'Only one entry. Items with a state (in use, consumed, etc.) can be reached this way too.',
+    entries: [act('Add marker')] },
+  { id: 'pile', title: 'Discard pile / lost pile', sel: '.pm .pile6', header: 'Discard pile',
+    preview: '<div class="pile"><i></i><i></i><i></i><span>Discard pile</span></div>',
+    note: '"Recover top card" is disabled when the pile is empty. "Move whole pile" asks for confirmation before it runs and shows the count in the label (the number is filled in by the code).',
+    entries: [act('Recover top card to hand'), act('Move whole pile to hand', { danger: true })] },
+  { id: 'counter', title: 'Counter (gold, XP, perks, tokens)', sel: '.pm .sp', header: 'Gold',
+    preview: '<div class="sp"><span class="btn">&minus;</span><b>12</b><span class="btn">+</span><span class="lbl">Gold</span></div>',
+    note: 'The +/- steps apply to the value. The minus steps are disabled when the value is below their step. "Reset to 0" is disabled at 0 and asks for confirmation on the character counters. The level has no menu.',
+    entries: [act('+10'), act('+5'), act('+1'), act('−1'), act('−5'), act('−10'), { k: 's' }, act('Reset to 0', { danger: true })] },
+  { id: 'modifier', title: 'Attack modifier card', sel: '.pm .amdtile', header: 'Attack modifier card',
+    preview: '<div class="mod">+1</div>',
+    note: 'One entry. It is disabled when the card has no enlarged picture.',
+    entries: [act('Enlarge')] },
+];
+
+const root = document.getElementById('root');
+const state = {};   // id -> cloned entries (so edits are kept while the page is open)
+const titles = {};  // id -> the header line of the menu (the element's name)
+for (const m of MENUS) { state[m.id] = m.entries.map(e => ({ ...e })); titles[m.id] = m.header; }
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function renderAll() {
+  root.innerHTML = '';
+  for (const m of MENUS) {
+    const blk = document.createElement('section');
+    blk.className = 'blk';
+    blk.dataset.id = m.id;
+    blk.innerHTML = `
+      <div>
+        <h2>${esc(m.title)}</h2>
+        <div class="sel">${esc(m.sel)}</div>
+      </div>
+      <div class="pv">${m.preview}</div>
+      <div>
+        <div class="menu">
+          <div class="mh" contenteditable="true" spellcheck="false" data-h>${esc(titles[m.id])}</div>
+          <div class="list"></div>
+          <div class="adds">
+            <button type="button" data-add="a">+ Add entry</button>
+            <button type="button" data-add="h">+ Add header</button>
+            <button type="button" data-add="s">+ Add separator</button>
+          </div>
+        </div>
+        <p class="note" style="margin-top:10px">${m.note}</p>
+      </div>`;
+    root.appendChild(blk);
+    drawList(blk, m.id);
+  }
+}
+
+function drawList(blk, id) {
+  const list = blk.querySelector('.list');
+  list.innerHTML = '';
+  state[id].forEach((e, i) => {
+    const row = document.createElement('div');
+    if (e.k === 's') {
+      row.className = 'row sep';
+      row.innerHTML = `<span></span><button type="button" class="del" data-del="${i}" title="Delete" aria-label="Delete separator">&times;</button>`;
+    } else {
+      row.className = 'row' + (e.k === 'h' ? ' header' : '') + (e.danger ? ' danger' : '');
+      row.innerHTML = `<input class="lbl" type="text" value="${esc(e.label)}" data-i="${i}" aria-label="Entry text">
+        <button type="button" class="del" data-del="${i}" title="Delete" aria-label="Delete entry">&times;</button>`;
+    }
+    list.appendChild(row);
+  });
+}
+
+root.addEventListener('input', e => {
+  const hd = e.target.closest('.mh');
+  if (hd) { titles[hd.closest('.blk').dataset.id] = hd.textContent.trim(); return; }
+  const inp = e.target.closest('input.lbl');
+  if (!inp) return;
+  const id = inp.closest('.blk').dataset.id;
+  state[id][Number(inp.dataset.i)].label = inp.value;
+});
+root.addEventListener('click', e => {
+  const blk = e.target.closest('.blk');
+  if (!blk) return;
+  const id = blk.dataset.id;
+  const del = e.target.closest('[data-del]');
+  if (del) { state[id].splice(Number(del.dataset.del), 1); drawList(blk, id); return; }
+  const add = e.target.closest('[data-add]');
+  if (add) {
+    const k = add.dataset.add;
+    if (k === 's') state[id].push({ k: 's' });
+    else state[id].push({ k, label: k === 'h' ? 'Header' : 'New entry' });
+    drawList(blk, id);
+    const last = blk.querySelector('.list .row:last-child input');
+    if (last) last.focus();
+  }
+});
+
+document.getElementById('exp').addEventListener('click', () => {
+  const out = {};
+  for (const m of MENUS) {
+    out[m.id] = { element: m.title, selector: m.sel, header: titles[m.id], entries: state[m.id].map(e => e.k === 's' ? { separator: true } : e.k === 'h' ? { header: e.label } : { label: e.label, ...(e.danger ? { danger: true } : {}) }) };
+  }
+  const pre = document.getElementById('out');
+  pre.textContent = JSON.stringify(out, null, 2);
+  pre.classList.add('on');
+  pre.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+});
+document.getElementById('reset').addEventListener('click', () => {
+  for (const m of MENUS) { state[m.id] = m.entries.map(e => ({ ...e })); titles[m.id] = m.header; }
+  renderAll();
+});
+
+renderAll();
+</script>

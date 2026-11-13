@@ -166,7 +166,6 @@ export function playmatHtml(c, X, S = {}) {
       <div class="counters">${tokens}</div>
       <div class="grp"><small>BGG code</small><span class="bggseg"><button type="button" class="bggb" data-bgg="turn" data-char="${cid}" title="Copy BGG code" aria-label="Copy BGG code: Turn">${DOC}<span>Turn</span></button><button type="button" class="bggb" data-bgg="cards" data-char="${cid}" title="Copy BGG code" aria-label="Copy BGG code: Cards">${CARDS_ICON}<span>Cards</span></button></span></div>
       <div class="sep"></div>
-      ${settingsHtml(ST, S.setOpen)}
     </header>
     <section class="shelf6" aria-label="Items"><h4>Items <span class="itbar"><span>${c.items.length}</span><button type="button" class="btn6" data-itemssort="${cid}" title="Sort by slot" aria-label="Sort by slot">Slot</button><button type="button" class="btn6 equipbtn" data-itemsedit="${cid}" title="Equip items" aria-label="Equip items"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1-4 11-11a2 2 0 0 1 3 3L8 19z"/><path d="M14 7l3 3"/></svg></button></span></h4>${items}</section>
     <section class="board6">
@@ -199,7 +198,7 @@ export function cardsPost(c, { pretty, cardById }) {
 
 // ---- display settings (the gear of the top bar; kept in this browser by the page) ----
 export const SET_DEFAULT = { layout: 'spread', zoom: 'hover', zones: { active: '', play: '', hand: '', piles: '', items: '' }, size: 'm', delay: 'off', dock: 'left', inib: true, autosort: false, reduce: false };
-const SET_ENUM = { layout: ['spread', 'fan'], zoom: ['hover', 'click'], size: ['s', 'm', 'l'], delay: ['off', 'short', 'long'], dock: ['left', 'right'] };
+const SET_ENUM = { layout: ['spread', 'fan'], zoom: ['hover', 'click'], size: ['s', 'm', 'l', 'xl'], delay: ['off', 'short', 'long'], dock: ['left', 'right'] };
 export function cleanSettings(o) {
   const s = JSON.parse(JSON.stringify(SET_DEFAULT));
   if (typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches) s.zoom = 'click';          // touch: there is no hover
@@ -209,17 +208,22 @@ export function cleanSettings(o) {
   for (const k of ['inib', 'autosort', 'reduce']) if (typeof o[k] === 'boolean') s[k] = o[k];
   return s;
 }
-function settingsHtml(st, open) {
+// Display settings: the body of the Settings popup in the top bar (one place for all settings). Kept in this browser by the page.
+export function displaySettingsHtml(st) {
   const set = st && st.layout ? st : SET_DEFAULT;
   const seg = (name, opts) => `<span class="seg" data-set="${name}">${opts.map(([v, l]) => `<button type="button" data-v="${v}" aria-pressed="${set[name] === v}">${l}</button>`).join('')}</span>`;
   const row = (label, inner) => `<div class="setrow"><label>${label}</label>${inner}</div>`;
   const zone = (z, label) => `<div class="setrow"><label for="setz-${z}">${label}</label><select id="setz-${z}" data-zone="${z}">${[['', 'Default'], ['hover', 'Hover'], ['click', 'Click']].map(([v, l]) => `<option value="${v}"${set.zones[z] === v ? ' selected' : ''}>${l}</option>`).join('')}</select></div>`;
   const chk = (flag, label) => `<label class="chk"><span>${label}</span><input type="checkbox" data-flag="${flag}"${set[flag] ? ' checked' : ''}></label>`;
-  return `<span class="setwrap"><button type="button" class="btn6 gear" data-setbtn title="Display settings" aria-label="Display settings" aria-expanded="${!!open}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>${open ? `<div class="setpop">
+  return `<div class="setgrp">Hand and cards</div>
     ${row('Hand layout', seg('layout', [['spread', 'Spread'], ['fan', 'Fan']]))}${row('Card zoom', seg('zoom', [['hover', 'Hover'], ['click', 'Click']]))}
     <details><summary>Zoom per zone</summary>${zone('active', 'Active')}${zone('play', 'Play area')}${zone('hand', 'Hand')}${zone('items', 'Items')}${zone('piles', 'Discard &amp; lost')}</details>
-    ${row('Zoom size', seg('size', [['s', 'S'], ['m', 'M'], ['l', 'L']]))}${row('Hover delay', seg('delay', [['off', 'Off'], ['short', 'Short'], ['long', 'Long']]))}${row('Docked preview', seg('dock', [['left', 'Left'], ['right', 'Right']]))}
-    <hr>${chk('inib', 'Initiative badge on cards')}${chk('autosort', 'Auto-sort hand by initiative')}${chk('reduce', 'Reduce motion')}<button type="button" class="btn6" data-setreset>Reset</button></div>` : ''}</span>`;
+    ${row('Zoom size', seg('size', [['s', 'S'], ['m', 'M'], ['l', 'L'], ['xl', 'XL']]))}
+    <div class="setgrp">Preview and timing</div>
+    ${row('Hover delay', seg('delay', [['off', 'Off'], ['short', 'Short'], ['long', 'Long']]))}${row('Docked preview', seg('dock', [['left', 'Left'], ['right', 'Right']]))}
+    <div class="setgrp">Other</div>
+    ${chk('inib', 'Initiative badge on cards')}${chk('autosort', 'Auto-sort hand by initiative')}${chk('reduce', 'Reduce motion')}
+    <div class="setfoot"><button type="button" class="btn6" data-setreset>Reset display settings</button></div>`;
 }
 
 // ---- the dock (buttons that open the modals) and the modals ----
@@ -253,7 +257,7 @@ export function modalHtml(c, X, S) {
       <div class="addrow"><input data-code-label placeholder="Label" aria-label="Label"><input data-code-text placeholder="Code to copy" aria-label="Code" style="flex:2"><button type="button" class="btn6" data-codeadd>Add</button></div>`;
   } else if (S.modal === 'journal') {
     title = 'Journal'; big = ' jbox';
-    body = journalBody(c, X, S);
+    body = `<div class="chedit jedit">${journalBody(c, X, S)}</div>`;
   } else if (S.modal === 'item') {
     const it = c.items.find(x => String(x.id) === String(S.itemId)), item = it && X.itemById.get(it.id);
     if (!it) return '';
@@ -373,7 +377,7 @@ export function modalHtml(c, X, S) {
 
 // ---- the journal: battle goals, personal quest, notes ----
 const DICE = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg>';
-const STATUS = { deck: 'In deck', mine: 'Mine', other: 'Other player', done: 'Completed' };
+const STATUS = { deck: 'In deck', mine: 'Mine', other: 'Other player', done: 'Completed', disc: 'Discarded' };
 const cap = t => String(t).replace(/-/g, ' ').replace(/^./, m => m.toUpperCase());
 const questNo = slug => slug.slice(2);
 
@@ -405,29 +409,38 @@ function journalBody(c, X, S) {
   const tab = tabs.some(t => t[0] === S.jtab) ? S.jtab : 'goal';
   const head = `<div class="seg jtabs" role="tablist" aria-label="Journal section">${tabs.map(([k, l]) => `<button type="button" data-jtab="${k}" aria-pressed="${k === tab}">${l}</button>`).join('')}</div>`;
   const roll = (k, code) => `<button type="button" class="btn6 rollbtn" data-roll="${k}" data-code-text="${esc(code)}"${code ? '' : ' disabled'} title="${code ? 'Copy the GeekRoller code over the cards still in the deck' : 'Nothing left in the deck'}">${DICE}<span>BGG code for roll</span></button>`;
-  const statusSel = (attr, slug, st) => `<select ${attr} data-slug="${slug}" aria-label="Status">${Object.keys(STATUS).map(k => `<option value="${k}"${k === st ? ' selected' : ''}>${STATUS[k]}</option>`).join('')}</select>`;
+  const label = k => (k === 'mine' ? esc(c.name) : STATUS[k]);                                     // held by this character: shown with the name
+  const statusSel = (attr, slug, st) => `<select ${attr} data-slug="${slug}" aria-label="Status">${Object.keys(STATUS).map(k => `<option value="${k}"${k === st ? ' selected' : ''}>${label(k)}</option>`).join('')}</select>`;
 
   if (tab === 'goal') {
     const st = sl => holdStatus(S.bgs, c.id, sl), deck = BATTLE_GOALS.filter(g => st(g.slug) === 'deck').map(g => g.slug);
+    // From this character's view only its own goals show as held; goals held by other players and discarded goals both look discarded, so nobody can see who holds which goal
+    const seen = sl => (['mine', 'done', 'deck'].includes(st(sl)) ? st(sl) : 'disc');
     const goal = sl => BATTLE_GOALS.find(g => g.slug === sl);
     const card = (g, tag, cls = '') => `<${tag} class="bgcard${cls}"${tag === 'button' ? ` type="button" data-bgkeep="${g.slug}"` : ''}><b>${esc(cap(g.slug))}</b>${esc(g.t)}<br><small>${g.chk} checkmark${g.chk > 1 ? 's' : ''}</small></${tag}>`;
     const mine = BATTLE_GOALS.find(g => ['mine', 'done'].includes(st(g.slug)))?.slug;
     const cur = c.bgo ? null : (goal(S.bgv) ? S.bgv : mine || null);
-    const strip = `<div class="pqdeck" title="Click a goal to show it"><span class="pqdl">${deck.length} of ${BATTLE_GOALS.length} in deck</span>${BATTLE_GOALS.map((g, i) => `<button type="button" class="pqchip st-${st(g.slug)}${g.slug === cur ? ' cur' : ''}" data-bggo="${g.slug}" title="${esc(cap(g.slug))}: ${STATUS[st(g.slug)]}">${i + 1}</button>`).join('')}</div>`;
+    const strip = `<div class="pqdeck" title="Click a goal to show it"><span class="pqdl">${deck.length} of ${BATTLE_GOALS.length} in deck</span>${BATTLE_GOALS.map((g, i) => `<button type="button" class="pqchip st-${seen(g.slug)}${g.slug === cur ? ' cur' : ''}" data-bggo="${g.slug}" title="${esc(cap(g.slug))}: ${label(seen(g.slug))}">${i + 1}</button>`).join('')}</div>`;
     let main;
     if (c.bgo) main = `<p class="mrow">Pick one to keep:</p><div class="bgcards">${c.bgo.map(sl => card(goal(sl), 'button')).join('')}</div><div class="pqrow"><button type="button" class="btn6" data-bgdraw data-char="${cid}"${deck.length < 3 ? ' disabled' : ''}>Draw again</button><button type="button" class="btn6" data-bgcancel data-char="${cid}">Cancel</button></div>`;
+    else if (cur && seen(cur) === 'disc') main = '<p class="mrow">Discarded.</p>';
     else if (cur) main = `<div class="bgcards">${card(goal(cur), 'div', ` kept${st(cur) === 'done' ? ' done' : ''}`)}</div><div class="pqrow"><label for="bgst">Status</label>${statusSel('id="bgst" data-bgst', cur, st(cur))}<button type="button" class="btn6" data-bgdrop data-slug="${cur}" data-char="${cid}">Return to deck</button></div>`;
     else main = '<p class="mrow">No goal drawn for this scenario yet.</p>';
-    return `${head}<div class="jtab" data-jpane="goal">${strip}${main}<div class="pqrow"><button type="button" class="btn6" data-bgdraw data-char="${cid}"${deck.length < 3 || c.bgo ? ' disabled' : ''}>Draw three goals</button>${roll('bg', goalRollCode(deck))}<button type="button" class="btn6" data-bgreset title="New scenario: all goals back in the deck">Return all to deck</button></div></div>`;
+    return `${head}<div class="jtab" data-jpane="goal"><section class="cesec"><h4>Deck</h4>${strip}</section><section class="cesec"><h4>This scenario</h4>${main}</section><div class="chfoot"><button type="button" class="btn6" data-bgreset title="New scenario: all goals back in the deck">Return all to deck</button>${roll('bg', goalRollCode(deck))}<button type="button" class="btn6 jprimary" data-bgdraw data-char="${cid}"${deck.length < 3 || c.bgo ? ' disabled' : ''}>Draw three goals</button></div></div>`;
   }
 
   if (tab === 'quest') {
     const st = sl => holdStatus(S.pq, c.id, sl), deck = PERSONAL_QUESTS.filter(q => st(q.slug) === 'deck').map(q => q.slug);
     const nameOf = sl => GH2_PQ[sl]?.name || sl;
     const img = sl => `<img src="${esc(X.pqImg(sl))}" alt="Personal quest ${esc(sl)}">`;
-    if (c.pqo) return `${head}<div class="jtab" data-jpane="quest"><p class="mrow">Pick one to keep:</p><div class="pqoffer">${c.pqo.map(sl => `<button type="button" class="pqpick" data-pqkeep="${sl}" title="Keep ${esc(sl)} ${esc(nameOf(sl))}">${img(sl)}<span>${questNo(sl)} ${esc(nameOf(sl))}</span></button>`).join('')}</div><div class="pqrow"><button type="button" class="btn6" data-pqdraw data-char="${cid}"${deck.length < 2 ? ' disabled' : ''}>Draw again</button><button type="button" class="btn6" data-pqcancel data-char="${cid}">Cancel</button></div></div>`;
-    const heldMine = PERSONAL_QUESTS.find(q => ['mine', 'done'].includes(st(q.slug)))?.slug;
-    const cur = PERSONAL_QUESTS.some(q => q.slug === S.pqv) ? S.pqv : (heldMine || PERSONAL_QUESTS[0].slug);
+    // The same view rule as the battle goals: quests held by other players and discarded ones look discarded
+    // a quest another character has active shows as Active (no name); other held and discarded quests show as discarded
+    const otherActive = sl => { const e = S.pq?.[sl]; return !!e && e.st === 'mine' && e.c !== c.id; };
+    const seen = sl => (otherActive(sl) ? 'other' : ['mine', 'done', 'deck', 'locked'].includes(st(sl)) ? st(sl) : 'disc');
+    const LABEL = { deck: 'Unlocked', locked: 'Locked', mine: 'Active', other: 'Active', done: 'Completed', disc: 'Discarded' };
+    const active = PERSONAL_QUESTS.find(q => st(q.slug) === 'mine')?.slug || null;
+    if (c.pqo) return `${head}<div class="jtab" data-jpane="quest"><p class="mrow">Pick one to keep:</p><div class="pqoffer">${c.pqo.map(sl => `<button type="button" class="pqpick" data-pqkeep="${sl}" title="Keep ${esc(sl)} ${esc(nameOf(sl))}">${img(sl)}<span>${questNo(sl)} ${esc(nameOf(sl))}</span></button>`).join('')}</div><div class="pqrow"><button type="button" class="btn6 jprimary" data-pqdraw data-char="${cid}"${deck.length < 2 ? ' disabled' : ''}>Draw again</button><button type="button" class="btn6" data-pqcancel data-char="${cid}">Cancel</button></div></div>`;
+    const cur = PERSONAL_QUESTS.some(q => q.slug === S.pqv) ? S.pqv : (active || PERSONAL_QUESTS[0].slug);
     const q = GH2_PQ[cur] || { name: cur, reqs: [] };
     const held = ['mine', 'done'].includes(st(cur));
     const cnt = (c.pqc && c.pqc[cur]) || [];
@@ -440,16 +453,22 @@ function journalBody(c, X, S) {
         : `<span class="pqc"><label class="pqcheck"><input type="checkbox" data-pqchk="${i}" data-slug="${cur}" data-char="${cid}"${done(i) ? ' checked' : ''}${off ? ' disabled' : ''}> done</label></span>`;
       return `<div class="pqreq${open(i) ? '' : ' locked'}${done(i) ? ' done' : ''}"><span class="pqt">${esc(r.t)}</span>${ctl}</div>`;
     }).join('');
-    const strip = `<div class="pqdeck" title="Click a quest to show it"><span class="pqdl">${deck.length} of ${PERSONAL_QUESTS.length} in deck</span>${PERSONAL_QUESTS.map(x => `<button type="button" class="pqchip st-${st(x.slug)}${x.slug === cur ? ' cur' : ''}" data-pqgo="${x.slug}" title="${esc(x.slug)} ${esc(nameOf(x.slug))}: ${STATUS[st(x.slug)]}">${questNo(x.slug)}</button>`).join('')}</div>`;
-    return `${head}<div class="jtab" data-jpane="quest"><div class="pqdock"><div class="pqcard">${img(cur)}</div><div class="pqside">${strip}
-      <div class="pqrow"><label for="pqsel">Quest</label><select id="pqsel" data-pqsel>${PERSONAL_QUESTS.map(x => `<option value="${x.slug}"${x.slug === cur ? ' selected' : ''}>${x.slug} ${esc(nameOf(x.slug))}</option>`).join('')}</select></div>
-      <h4>${esc(q.name)}${all ? ' <span class="chip info">Complete</span>' : ''}</h4>
-      <div class="pqrow"><label for="pqst">Status</label>${statusSel('id="pqst" data-pqst', cur, st(cur))}</div>
-      ${held ? '' : '<p class="mrow">Set the status to Mine to count the requirements.</p>'}${reqs}
-      <div class="pqrow"><button type="button" class="btn6" data-pqdraw data-char="${cid}"${deck.length < 2 ? ' disabled' : ''}>Draw two Personal Quests</button>${roll('pq', questRollCode(deck))}</div></div></div></div>`;
+    const strip = `<div class="pqdeck" title="Click a quest to show it"><span class="pqdl">${deck.length} of ${PERSONAL_QUESTS.length} unlocked</span>${PERSONAL_QUESTS.map(x => `<button type="button" class="pqchip st-${seen(x.slug)}${x.slug === cur ? ' cur' : ''}" data-pqgo="${x.slug}" title="${esc(x.slug)}${seen(x.slug) === 'locked' ? ': Locked' : ` ${esc(nameOf(x.slug))}: ${esc(LABEL[seen(x.slug)])}`}">${questNo(x.slug)}</button>`).join('')}</div>`;
+    const blocked = !!active && active !== cur && !held;                                   // one active quest per character
+    const sel = `<select id="pqst" data-pqst data-slug="${cur}" aria-label="Status">${['deck', 'locked', ...(blocked ? [] : ['mine']), 'done'].map(k => `<option value="${k}"${k === st(cur) ? ' selected' : ''}>${esc(LABEL[k])}</option>`).join('')}</select>`;
+    const hint = blocked ? `<p class="mrow">${esc(c.name)} already has ${esc(active)} active. Set it to Unlocked first.</p>` : held ? '' : `<p class="mrow">Set the status to ${esc(c.name)} to count the requirements.</p>`;
+    // a locked quest shows nothing but its status (to unlock it): no picture, name or requirements
+    const shown = seen(cur) === 'disc'
+      ? '<p class="mrow">Discarded.</p>'
+      : seen(cur) === 'other'
+        ? '<div class="pqdock"><div class="pqside"><div class="pqrow"><label>Status</label><span class="pqstatic">Active</span></div></div></div>'
+      : st(cur) === 'locked'
+        ? `<div class="pqdock"><div class="pqcard"><div class="pqlocked">Locked</div></div><div class="pqside"><div class="pqrow"><label for="pqst">Status</label>${sel}</div></div></div>`
+        : `<div class="pqdock"><div class="pqcard">${img(cur)}</div><div class="pqside"><h4>${esc(q.name)}${all ? ' <span class="chip info">Complete</span>' : ''}</h4><div class="pqrow"><label for="pqst">Status</label>${sel}</div>${hint}${reqs}</div></div>`;
+    return `${head}<div class="jtab" data-jpane="quest"><section class="cesec"><h4>Quests</h4>${strip}</section><section class="cesec"><h4>This quest</h4>${shown}</section><div class="chfoot">${roll('pq', questRollCode(deck))}<button type="button" class="btn6 jprimary" data-pqdraw data-char="${cid}"${deck.length < 2 || active ? ' disabled' : ''}${active ? ` title="${esc(c.name)} already has an active quest"` : ''}>Draw two Personal Quests</button></div></div>`;
   }
 
-  return `${head}<div class="jtab notespane" data-jpane="notes"><div class="mdbar"><button type="button" class="btn6" data-md="b" title="Bold (Ctrl+B)"${S.notesPreview ? ' disabled' : ''}><b>B</b></button><button type="button" class="btn6" data-md="i" title="Italic (Ctrl+I)"${S.notesPreview ? ' disabled' : ''}><i>I</i></button><button type="button" class="btn6" data-md="h" title="Heading"${S.notesPreview ? ' disabled' : ''}>H</button><button type="button" class="btn6" data-md="ul" title="Bullet list"${S.notesPreview ? ' disabled' : ''}>&bull; List</button><button type="button" class="btn6" data-md="todo" title="Checkbox"${S.notesPreview ? ' disabled' : ''}>&#9744; Todo</button><button type="button" class="btn6 mdview" data-mdview aria-pressed="${!!S.notesPreview}">${S.notesPreview ? 'Edit' : 'Preview'}</button></div>
+  return `${head}<div class="jtab notespane" data-jpane="notes"><section class="cesec notesec"><h4>Notes</h4><div class="mdbar"><button type="button" class="btn6" data-md="b" title="Bold (Ctrl+B)"${S.notesPreview ? ' disabled' : ''}><b>B</b></button><button type="button" class="btn6" data-md="i" title="Italic (Ctrl+I)"${S.notesPreview ? ' disabled' : ''}><i>I</i></button><button type="button" class="btn6" data-md="h" title="Heading"${S.notesPreview ? ' disabled' : ''}>H</button><button type="button" class="btn6" data-md="ul" title="Bullet list"${S.notesPreview ? ' disabled' : ''}>&bull; List</button><button type="button" class="btn6" data-md="todo" title="Checkbox"${S.notesPreview ? ' disabled' : ''}>&#9744; Todo</button><button type="button" class="btn6 mdview" data-mdview aria-pressed="${!!S.notesPreview}">${S.notesPreview ? 'Edit' : 'Preview'}</button></div>
     <textarea class="notesarea" data-notes data-char="${cid}" placeholder="Notes for this character (markdown: **bold**, *italic*, # heading, - list, - [ ] todo)"${S.notesPreview ? ' hidden' : ''}>${esc(c.notes || '')}</textarea>
-    <div class="mdprev"${S.notesPreview ? '' : ' hidden'} data-mdprev data-char="${cid}">${mdRender(c.notes || '', esc) || '<p class="mrow">Nothing yet.</p>'}</div></div>`;
+    <div class="mdprev"${S.notesPreview ? '' : ' hidden'} data-mdprev data-char="${cid}">${mdRender(c.notes || '', esc) || '<p class="mrow">Nothing yet.</p>'}</div></section></div>`;
 }

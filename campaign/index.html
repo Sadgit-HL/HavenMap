@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HavenMap Campaign</title>
 <link rel="stylesheet" href="../scripts/amd/amd.css">
-<link rel="stylesheet" href="style.css?v=122">
-<link rel="stylesheet" href="playmat.css?v=3">
+<link rel="stylesheet" href="style.css?v=126">
+<link rel="stylesheet" href="playmat.css?v=11">
 <link rel="stylesheet" href="phone.css?v=1">
 </head>
 <body>
@@ -20,18 +20,27 @@
 </header>
 <main id="main"></main>
 <div class="modal" id="settingsModal" hidden>
-  <div class="modalbox">
+  <div class="modalbox settingsbox" role="dialog" aria-labelledby="settingsTitle">
     <button type="button" class="modalx" id="settingsClose" aria-label="Close">&times;</button>
-    <h3>Your name</h3>
-    <div class="modalrows"><input id="userName" type="text" class="txt" maxlength="40" placeholder="Shown in the History tab" aria-label="Your name"></div>
-    <h3 style="margin-top:14px">Campaign file</h3>
-    <div class="modalrows" style="flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px">
-      <label class="btn">Load file <input id="file" type="file" accept="application/json,.json" hidden></label>
-      <button id="export" type="button" class="btn">Export</button>
-      <button id="clear" type="button" class="btn">Clear</button>
-    </div>
+    <h3 id="settingsTitle">Settings</h3>
+    <section class="setsec">
+      <div class="setgrp">Profile</div>
+      <div class="modalrows"><input id="userName" type="text" class="txt" maxlength="40" placeholder="Shown in the History tab" aria-label="Your name"></div>
+    </section>
+    <section class="setsec">
+      <div class="setgrp">Campaign file</div>
+      <div class="modalrows" style="flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px">
+        <label class="btn">Load file <input id="file" type="file" accept="application/json,.json" hidden></label>
+        <button id="export" type="button" class="btn">Export</button>
+        <button id="clear" type="button" class="btn">Clear</button>
+      </div>
+    </section>
+    <section class="setsec">
+      <div class="setgrp">Mercenary playmat display</div>
+      <div class="pm setpanel" id="displaySettings"></div>
+    </section>
   </div>
 </div>
-<script type="module" src="app.js?v=133"></script>
+<script type="module" src="app.js?v=141"></script>
 </body>
 </html>

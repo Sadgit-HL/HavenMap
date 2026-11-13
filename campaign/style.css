@@ -267,6 +267,12 @@ button.evchip { cursor:pointer; }
 .modalrow input { width:18px; height:18px; accent-color:var(--accent); }
 .modalfoot { display:flex; justify-content:flex-end; margin-top:12px; }
 .modalbox.wide { width:min(420px,100%); }
+.modalbox.settingsbox { width:min(440px,100%); }
+.setsec + .setsec { margin-top:12px; padding-top:10px; border-top:1px solid var(--line); }
+.setgrp { font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin:10px 0 6px; }
+.setsec > .setgrp:first-child { margin-top:0; }
+.setpanel .setgrp:first-child { margin-top:0; }
+.setfoot { display:flex; justify-content:flex-end; margin-top:4px; }
 .modalx { position:absolute; top:8px; right:8px; width:26px; height:26px; display:flex; align-items:center; justify-content:center; background:none; border:none; border-radius:6px; color:var(--muted); font-size:20px; line-height:1; cursor:pointer; }
 .modaledit { position:absolute; top:8px; right:40px; width:26px; height:26px; padding:0; display:flex; align-items:center; justify-content:center; }
 #scnModal h3 { margin-right:80px; }
@@ -600,7 +606,7 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); }
 .pm[data-zhand="hover"] .amv .stk:hover .stkface, .pm[data-zhand="hover"] .amv .mini:hover .stkface, .pm .amv .stk.zoomed .stkface, .pm .amv .mini.zoomed .stkface { transform: scale(var(--hz, 2.4)); box-shadow: 0 16px 40px rgba(0,0,0,.8); }
 .pm[data-zhand="hover"] .amv .stk:hover .stkface, .pm[data-zhand="hover"] .amv .mini:hover .stkface { transition-delay: var(--hdelay, 0s); }
 .pm .amv .area, .pm .amv .stacks, .pm .amv .minis { overflow: visible; }
-.pm .amv .stk:hover .edge { visibility: hidden; }
+.pm .amv .stk:hover .edge, .pm .amv .stk:hover .nb, .pm .amv .stk.zoomed .nb { visibility: hidden; }
 /* the active area is as high as the Top and Bottom strips */
 .pm .amv .amstrip { height: 78px; min-height: 0; }
 .pm .amv .amactive { flex: 0 0 78px; height: 78px; min-height: 0; }
@@ -711,3 +717,17 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); }
 
 /* no black box behind the modifier card pictures (the card art has rounded, transparent corners) */
 .pm .amv .pc, .pm .amv .amslot, .pm .amcell .pc, .pm .amcell .amslot { background: transparent; }
+
+/* Roll code and BGG code buttons: variant 7 (embossed, mockups/roll-buttons.html) */
+.pm .hud .bggseg .bggb, .pm .hud .bggseg .bggb + .bggb, .pm .amv .amcode { border: 1px solid #2b2318; background: #4a3f2e; color: #e5d3a8; font-weight: 700; box-shadow: inset 0 1px 2px rgba(0,0,0,.5), inset 0 -1px 0 rgba(255,235,180,.08); transition: background .14s, color .14s; }
+.pm .hud .bggseg .bggb:hover, .pm .hud .bggseg .bggb + .bggb:hover, .pm .amv .amcode:hover:not(:disabled) { background: #534735; color: #f0e0b8; border-color: #2b2318; }
+.pm .hud .bggseg .bggb:active, .pm .hud .bggseg .bggb + .bggb:active, .pm .amv .amcode:active { transform: none; box-shadow: inset 0 2px 4px rgba(0,0,0,.6); }
+.pm .hud .bggseg .bggb svg, .pm .hud .bggseg .bggb + .bggb svg { color: #e5d3a8; }
+.pm .amv .amcode.copied { background: #4a5a3c; border-color: #2b3a25; color: #d6e8c6; box-shadow: inset 0 1px 2px rgba(0,0,0,.5); }
+
+/* while a card is dragged, the play board does not stay raised over the piles (the hovered card kept it on top, so the discard and lost piles could not be dropped on) */
+.pm .board6:has(.dragging) { z-index: auto !important; }
+
+/* equip items dialog: the Owned / Equipped badge sits so that its lower edge meets the top edge of the card (card border 2px, badge 20px tall) */
+.pm .itgroups .pcard .cbadge { top: -22px; }
+.pm .itgroups .pcard { margin-top: 22px; }

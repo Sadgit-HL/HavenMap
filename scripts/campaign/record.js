@@ -43,7 +43,7 @@ Record fields (all optional on load, defaults filled by normalize):
                     notes = { "road:4": "text" }   free note on a card
   evlog             finished events [{ kind, id, opt, votes, rnd?, closed?, place }]
   decks             { bg, tre, mp }                 battle goals drawn, treasures claimed, med packs
-  bgs, pq           battle goals of the current scenario and personal quests that are out of the deck: { slug: { st: 'mine'|'done', c: charId|null } }
+  bgs, pq           battle goals of the current scenario and personal quests that are out of the deck: { slug: { st: 'mine'|'done'|'disc'|'locked', c: charId|null } }   (disc = discarded from this scenario's deck; locked = a personal quest not unlocked yet; no entry = unlocked, in the deck)
                     (c = the character who holds it, null = a player who is not in the app; a slug that is not listed is in the deck)
   enh, retired      enhancement log [{ cls, card, top, bottom, price? }] (top and bottom = what was added, price = gold paid), retired characters
   log               edit history, oldest first: [{ t: epoch ms, u: user, tab, kind, d }] (scripts/campaign/changelog.js), the last 1000 kept

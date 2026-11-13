@@ -9,12 +9,13 @@ import { BATTLE_GOALS } from '../scripts/games/battle_goals.js';
 import { escapeHtml as esc } from '../scripts/escape.js';
 import { localStore } from '../scripts/campaign/store.js';
 import { cardImageUrl, itemImageUrl, eventImageUrl, matImageUrl, pqImageUrl, cardBackUrl } from '../scripts/campaign/cardImages.js';
-import { playmatHtml, XP_STEPS, turnPost, cardsPost, goalRollCode, questRollCode, cleanSettings } from './playmat.js';
+import { playmatHtml, XP_STEPS, turnPost, cardsPost, goalRollCode, questRollCode, cleanSettings, displaySettingsHtml } from './playmat.js';
 import { tokenDefs, markerTokens, MARK_STICKERS } from '../scripts/campaign/classTokens.js';
 import { bannerUrl, bannerCode } from '../scripts/campaign/bggBanners.js';
 import { GH2_PQ } from '../scripts/games/gh2_pq_text.js';
 import { morphInto } from './morph.js';
 import { registerMenu, openMenuFor } from './ctxmenu.js';
+import { ask, notify } from './dialog.js';
 import { phoneHtml } from './phone.js';
 import {
   validate, prosperityLevel, handOf, handList, zoneOf, CARD_ZONES, shopCopies, itemsInUse, ownsItem, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE, ownedCards, cardLevel, pendingPicks,
@@ -462,7 +463,7 @@ function portraitStyle(c, size) {
 }
 // What the playmat remembers while the page is open: the open modal, the mat side, the history filter. Saved BGG codes of the user are kept
 // in this browser (not in the campaign record).
-const pm = { modal: null, matSide: 'front', histKind: 'all', jtab: 'goal', bgv: null, pqv: null, notesPreview: false, amd: {}, amZoom: null, setOpen: false, dtab: 'hand', hsel: {}, hsArmed: false, itemId: null, isel: {}, ptab: 'cards', sheet: null, mkKey: null, mkSel: null, pileZ: null, cf: null, mkIdx: -1, chMenu: false, hview: 'hand', amEdit: false };   // amd = draw state per character (not saved)
+const pm = { modal: null, matSide: 'front', histKind: 'all', jtab: 'goal', bgv: null, pqv: null, notesPreview: false, amd: {}, amZoom: null, dtab: 'hand', hsel: {}, hsArmed: false, itemId: null, isel: {}, ptab: 'cards', sheet: null, mkKey: null, mkSel: null, pileZ: null, cf: null, mkIdx: -1, chMenu: false, hview: 'hand', amEdit: false };   // amd = draw state per character (not saved)
 const CODES_KEY = 'havenmap.campaign.codes';
 // Display settings of the playmat (gear in the top bar), kept in this browser.
 // Narrow screens get the phone view (campaign/phone.js) instead of the playmat.
@@ -478,7 +479,7 @@ const matSlug = c => String(matImageUrl(c.cls, 'front')).split('/').pop().replac
 const pmState = c => ({
   modal: pm.modal, matSide: pm.matSide, histKind: pm.histKind, jtab: pm.jtab, bgv: pm.bgv, pqv: pm.pqv, notesPreview: pm.notesPreview,
   bgs: record.bgs, pq: record.pq,
-  itemId: pm.itemId, mkKey: pm.mkKey, mkIdx: pm.mkIdx, chars: subTabList(), chMenu: pm.chMenu, pileZ: pm.pileZ, cf: pm.cf, players: record.players, classChips: classTraits({ ...c, cls: pm.cf?.cls || c.cls }).map(t => chip(t)).join(''), classOpts: pm.modal === 'char' ? charClassOptions(c) : [], mkSel: mkSelOf(c), set: pmset, setOpen: pm.setOpen, ptab: pm.ptab, sheet: pm.sheet,
+  itemId: pm.itemId, mkKey: pm.mkKey, mkIdx: pm.mkIdx, chars: subTabList(), chMenu: pm.chMenu, pileZ: pm.pileZ, cf: pm.cf, players: record.players, classChips: classTraits({ ...c, cls: pm.cf?.cls || c.cls }).map(t => chip(t)).join(''), classOpts: pm.modal === 'char' ? charClassOptions(c) : [], mkSel: mkSelOf(c), set: pmset, ptab: pm.ptab, sheet: pm.sheet,
   items: pm.modal === 'items' ? { pool: ITEMS.filter(i => record.items.unl.includes(i.id) && ownsItem(c, i.id)), isel: pm.isel[c.id] || [] } : null,
   deck: pm.modal === 'deck' ? { cards: CARDS.filter(k => k.cls === classByName(c.cls)?.i).sort((a, b) => cardLevel(a.id) - cardLevel(b.id) || (a.ini ?? 1e9) - (b.ini ?? 1e9)), hsel: pm.hsel[c.id] || [], armed: pm.hsArmed } : null,
   amd: pm.modal === 'amd' || pm.modal === 'amdpile' ? drawState(c, pm.amd[c.id]) : null, hview: pm.hview, amEdit: pm.amEdit, amv: pm.hview === 'amd' ? drawState(c, pm.amd[c.id]) : null, amZoom: pm.modal === 'amd' ? pm.amZoom : null,
@@ -1247,11 +1248,6 @@ function phoneClick(e) {
 // Display settings: the gear, the segmented choices, Reset, and click zoom (zones set to Click).
 function setClick(e) {
   const q = sel => e.target.closest?.(sel);
-  if (q('[data-setbtn]')) { pm.setOpen = !pm.setOpen; render(); return true; }
-  const sg = q('.setpop .seg button');
-  if (sg) { pmset[sg.parentElement.dataset.set] = sg.dataset.v; saveSet(); render(); return true; }
-  if (q('[data-setreset]')) { pmset = cleanSettings(null); saveSet(); render(); return true; }
-  if (pm.setOpen && !q('.setwrap')) { pm.setOpen = false; render(); }
   const zoomed = main.querySelectorAll('.pm .zoomed');
   const el = q('.pm .fan6 .ac, .pm .activelist .ac, .pm .flipcard.is-front, .pm .shelf6 .it, .pm .amv .stk, .pm .amv .mini');
   if (!el) { zoomed.forEach(x => x.classList.remove('zoomed')); return false; }
@@ -1260,8 +1256,7 @@ function setClick(e) {
     const was = el.classList.contains('zoomed');
     zoomed.forEach(x => x.classList.remove('zoomed'));
     if (was) return false;
-    const w = el.querySelector('.stkface').getBoundingClientRect().width;
-    if (w > 0) el.style.setProperty('--hz', HOVER_H() / w);
+    el.style.setProperty('--hz', zoomScale(el));
     el.classList.add('zoomed');
     return true;
   }
@@ -1272,7 +1267,7 @@ function setClick(e) {
   if (was && isItem) { zoomed.forEach(x => x.classList.remove('zoomed')); return false; }               // a second tap on a zoomed item opens it
   if (was && coarse.matches && el.classList.contains('flipcard')) { el.classList.remove('zoomed'); flipPlayed(el); return true; }   // touch has no double click: the second tap flips
   zoomed.forEach(x => x.classList.remove('zoomed'));
-  if (!was) { const h = el.getBoundingClientRect().height; if (h > 0) el.style.setProperty('--hz', HOVER_H() / h); el.classList.add('zoomed'); }
+  if (!was) { el.style.setProperty('--hz', zoomScale(el)); el.classList.add('zoomed'); }
   return true;                                                                                           // a click zooms; a played card flips on a double click
 }
 
@@ -1621,26 +1616,31 @@ function flipPlayed(f) {
   setTimeout(() => commit(ed.flipPlayCard(record, char, Number(slot))), 560);
 }
 // Context menu of the playmat (right click, long press): cards, piles, counters, deck cards. Each action calls the same edit functions as the normal UI.
-const ZONE_LABEL = { hand: 'Hand', active: 'Active area', play1: 'Play slot 1', play2: 'Play slot 2', discard: 'Discard pile', lost: 'Lost pile' };
+const ZONE_LABEL = { hand: 'Hand', active: 'Active area', play1: 'Play slot 1', play2: 'Play slot 2', discard: 'Discard', lost: 'Lost' };
 registerMenu({
   sel: '.pm .fan6 .ac, .pm .activelist .ac, .pm .flipcard',
   title: el => el.title || 'Card',
   actions: el => {
     const c = record?.chars.find(x => x.id === el.dataset.char), id = Number(el.dataset.card);
     if (!c || !c.deck.includes(id)) return [];
-    const from = zoneOf(c, id), down = el.classList.contains('flipcard') && !el.classList.contains('is-front');
-    const list = [{ label: 'Enlarge', disabled: down, run: () => { const h = el.getBoundingClientRect().height; if (h > 0) el.style.setProperty('--hz', HOVER_H() / h); main.querySelectorAll('.pm .zoomed').forEach(x => x.classList.remove('zoomed')); el.classList.add('zoomed'); } },
-      { sep: true }, { header: 'Move to' }];
-    for (const z of CARD_ZONES.filter(z => z !== from)) {
-      const slotRule = z.startsWith('play') && from !== 'hand' && !from.startsWith('play');                // only hand cards enter a play slot
-      list.push({ label: ZONE_LABEL[z], disabled: slotRule, run: () => commit(ed.moveCard(record, c.id, id, z)) });
+    const from = zoneOf(c, id), hand = from === 'hand', flip = el.classList.contains('flipcard');
+    const down = flip && !el.classList.contains('is-front');
+    const zoom = { label: 'Zoom', disabled: down, run: () => { el.style.setProperty('--hz', zoomScale(el)); main.querySelectorAll('.pm .zoomed').forEach(x => x.classList.remove('zoomed')); el.classList.add('zoomed'); } };
+    const marker = { label: 'Add marker or sticker', run: () => openMarkers(`c:${id}`) };   // not for cards in the play area
+    const moves = CARD_ZONES.filter(z => z !== from).map(z => ({
+      label: ZONE_LABEL[z],
+      disabled: z.startsWith('play') && from !== 'hand' && !from.startsWith('play'),                       // only hand cards enter a play slot
+      run: () => commit(ed.moveCard(record, c.id, id, z)),
+    }));
+    if (hand) {
+      const hand0 = handList(c);
+      return [{ header: 'Move to' }, ...moves, { sep: true },
+        { label: 'Move to start', run: () => commit(ed.moveCard(record, c.id, id, 'hand', { before: hand0[0] })) },
+        { label: 'Move to end', run: () => commit(ed.moveCard(record, c.id, id, 'hand', { before: null })) },
+        { sep: true }, zoom, marker];
     }
-    if (from === 'hand') {
-      const hand = handList(c);
-      list.push({ sep: true }, { label: 'Move to start', run: () => commit(ed.moveCard(record, c.id, id, 'hand', { before: hand[0] })) }, { label: 'Move to end', run: () => commit(ed.moveCard(record, c.id, id, 'hand', { before: null })) });
-    }
-    if (!el.classList.contains('flipcard')) list.splice(1, 0, { label: 'Add marker or sticker', run: () => openMarkers(`c:${id}`) });     // not for cards in the play area
-    return list;
+    if (flip) return [zoom, { sep: true }, { header: 'Move to' }, ...moves];
+    return [zoom, marker, { sep: true }, { header: 'Move to' }, ...moves];
   },
 });
 registerMenu({
@@ -1650,17 +1650,56 @@ registerMenu({
 });
 registerMenu({
   sel: '.pm .pile6',
-  title: el => (el.dataset.pile === 'lost' ? 'Lost pile' : 'Discard pile'),
+  title: el => (el.dataset.pile === 'lost' ? 'Lost' : 'Discard'),
   actions: el => {
     const c = record?.chars.find(x => x.id === el.dataset.char);
     if (!c) return [];
     const key = el.dataset.pile, ids = (key === 'lost' ? c.lost : c.disc).filter(id => c.deck.includes(id));
     return [
       { label: 'Recover top card to hand', disabled: !ids.length, run: () => commit(ed.moveCard(record, c.id, ids.at(-1), 'hand')) },
-      { label: `Move whole pile to hand (${ids.length})`, disabled: !ids.length, danger: true, run: () => {
-        if (!confirm(`Move all ${ids.length} cards from the ${key === 'lost' ? 'lost' : 'discard'} pile to the hand?`)) return;
+      { label: `Move whole pile to hand (${ids.length})`, disabled: !ids.length, danger: true, run: async () => {
+        const where = key === 'lost' ? 'lost' : 'discard';
+        if (!await ask({ title: 'Move cards to hand', text: `Move all ${ids.length} cards from the ${where} pile to the hand?`, ok: 'Move all', danger: true })) return;
         let r = record; for (const id of [...ids].reverse()) r = ed.moveCard(r, c.id, id, 'hand'); commit(r);
       } },
+    ];
+  },
+});
+// Modifier discard: the same menu as the ability discard pile (recover the top card, move the whole pile), back into the deck.
+function amdPileMenu() {
+  const c = pmChar();
+  if (!c) return [];
+  const st = pm.amd[c.id] || {}, pile = drawState(c, st).pile;
+  const n = pile.length;
+  return [
+    { label: 'Recover top card to deck', disabled: !n, run: () => amdDo(c, 'ret', pile[0].key) },
+    { label: `Move whole pile to deck (${n})`, disabled: !n, danger: true, run: async () => {
+      if (!await ask({ title: 'Move cards to deck', text: `Move all ${n} cards from the discard to the deck?`, ok: 'Move all', danger: true })) return;
+      let s = st;
+      for (const t of pile) s = amdAct(c, s, 'ret', t.key);
+      pm.amd[c.id] = s;
+      addLog('Cards', 'Modifier deck', `${c.name}: moved the whole discard (${n} cards) back to the deck`);
+      render();
+    } },
+  ];
+}
+registerMenu({
+  sel: '.pm .amv .discarea',
+  title: () => 'Modifier discard',
+  actions: amdPileMenu,
+});
+// Ability discard / lost modal: each card can be moved to the hand or to the other pile (the pile it is in is greyed out).
+registerMenu({
+  sel: '.pm .pilelist .pcell[data-pcard]',
+  title: el => el.title || 'Card',
+  actions: el => {
+    const c = pmChar(), id = Number(el.dataset.pcard);
+    if (!c || !c.deck.includes(id)) return [];
+    const from = pm.pileZ === 'lost' ? 'lost' : 'discard';
+    return [
+      { header: 'Move to' },
+      { label: 'Hand', run: () => commit(ed.moveCard(record, c.id, id, 'hand')) },
+      { label: 'Lost', disabled: from === 'lost', run: () => commit(ed.moveCard(record, c.id, id, 'lost')) },
     ];
   },
 });
@@ -1673,13 +1712,13 @@ registerMenu({
     const hud = b.dataset.hud, key = HUD_KEY[hud] || b.dataset.tk;
     const cur = hud ? c[key] || 0 : c.tok?.[key] || 0, set = v => commit(hud ? ed.setCharacter(record, c.id, key, v) : ed.setToken(record, c.id, key, v));
     return [{ label: '+10', run: () => set(cur + 10) }, { label: '+5', run: () => set(cur + 5) }, { label: '+1', run: () => set(cur + 1) }, { label: '\u22121', disabled: cur < 1, run: () => set(Math.max(0, cur - 1)) }, { label: '\u22125', disabled: cur < 1, run: () => set(Math.max(0, cur - 5)) }, { label: '\u221210', disabled: cur < 1, run: () => set(Math.max(0, cur - 10)) }, { sep: true },
-      { label: 'Reset to 0', danger: true, disabled: !cur, run: () => { if (hud && !confirm('Reset this value to 0?')) return; set(0); } }];
+      { label: 'Reset to 0', danger: true, disabled: !cur, run: async () => { if (hud && !await ask({ title: 'Reset value', text: 'Reset this value to 0?', ok: 'Reset', danger: true })) return; set(0); } }];
   },
 });
 registerMenu({
   sel: '.pm .amdtile',
   title: el => el.title || 'Attack modifier card',
-  actions: el => { const z = el.querySelector('[data-amzoom]'); return [{ label: 'Enlarge', disabled: !z, run: () => { pm.amZoom = z.dataset.amzoom; render(); } }]; },
+  actions: el => { const z = el.querySelector('[data-amzoom]'); return [{ label: 'Zoom', disabled: !z, run: () => { pm.amZoom = z.dataset.amzoom; render(); } }]; },
 });
 main.addEventListener('dblclick', e => {
   const f = e.target.closest?.('.pm .flipcard.is-front[data-slot]');
@@ -1688,8 +1727,6 @@ main.addEventListener('dblclick', e => {
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && pm.modal) { pm.modal = null; render(); } });
 main.addEventListener('change', e => {
   if (e.target.matches?.('[data-histkind]')) { pm.histKind = e.target.value; render(); }
-  else if (e.target.matches?.('[data-flag]')) { pmset[e.target.dataset.flag] = e.target.checked; saveSet(); render(); }
-  else if (e.target.matches?.('select[data-zone]')) { pmset.zones[e.target.dataset.zone] = e.target.value; saveSet(); render(); }
   else if (e.target.matches?.('[data-mastery]')) commit(ed.setMastery(record, e.target.dataset.char, Number(e.target.dataset.mastery), e.target.checked));
   else if (e.target.matches?.('[data-mkprice]')) commit(ed.setMarkPrice(record, e.target.dataset.char, e.target.dataset.mkprice, e.target.value));
   else if (e.target.matches?.('[data-enhprice]')) commit(ed.setEnhancementPrice(record, Number(e.target.dataset.enhprice), e.target.value));
@@ -1722,7 +1759,7 @@ function journalClick(e, c) {
   if ((b = q('[data-bgkeep]'))) { pm.bgv = b.dataset.bgkeep; commit(ed.keepBattleGoal(record, c.id, b.dataset.bgkeep)); return true; }
   if (q('[data-bgcancel]')) { commit(ed.clearOffer(record, c.id, 'bgo')); return true; }
   if ((b = q('[data-bgdrop]'))) { commit(ed.setBattleGoalStatus(record, c.id, b.dataset.slug, 'deck')); pm.bgv = null; return true; }
-  if (q('[data-bgreset]')) { if (confirm('A new scenario: put every battle goal back into the deck?')) commit(ed.returnAllBattleGoals(record)); return true; }
+  if (q('[data-bgreset]')) { ask({ title: 'New scenario', text: 'Put every battle goal back into the deck?', ok: 'Put back' }).then(yes => { if (yes && record) commit(ed.returnAllBattleGoals(record)); }); return true; }
   if ((b = q('[data-pqgo]'))) { pm.pqv = b.dataset.pqgo; render(); return true; }
   if (q('[data-pqdraw]')) { commit(ed.offerQuests(record, c.id, pick(ed.questDeck(record), 2))); return true; }
   if ((b = q('[data-pqkeep]'))) { pm.pqv = b.dataset.pqkeep; commit(ed.keepQuest(record, c.id, b.dataset.pqkeep)); return true; }
@@ -1914,7 +1951,7 @@ main.addEventListener('change', e => {
 
 // Deck modal: hovering a card of the pool or the hand selection shows it large, docked beside the modal, with its tokens and stickers.
 // Large previews docked beside the open modal, on the side set in the display settings (the other side when there is no room). Returns the width used.
-const previewW = () => Math.min(({ s: 270, m: 340, l: 420 })[pmset.size] || 340, (innerHeight - 40) * 5 / 7);
+const previewW = () => Math.min(({ s: 270, m: 340, l: 420, xl: 500 })[pmset.size] || 340, (innerHeight - 40) * 5 / 7);
 function dockPreview(el, w) {
   const box = main.querySelector('.pm .mmodalbox'), rect = box ? box.getBoundingClientRect() : { left: 0, right: 0 };
   const roomL = rect.left - 36, roomR = innerWidth - rect.right - 36;
@@ -2041,7 +2078,7 @@ function showPileZoom(cell) {                                                   
   const z = main.querySelector('[data-pilezoom]'), tk = main.querySelector('[data-pilezoomtk]');
   if (!z) return;
   if (!cell) { z.hidden = true; if (tk) tk.hidden = true; return; }
-  z.src = cell.src; z.style.setProperty('--pzh', `${HOVER_H()}px`); dockPreview(z, HOVER_H() * 5 / 7); z.hidden = false;
+  const ph = pileZoomH(cell); z.src = cell.src; z.style.setProperty('--pzh', `${ph}px`); dockPreview(z, ph * 5 / 7); z.hidden = false;
   if (!tk) return;
   const rc = z.getBoundingClientRect();
   Object.assign(tk.style, { left: `${rc.left}px`, top: `${rc.top}px`, width: `${rc.width}px`, height: `${rc.height}px` });
@@ -2219,15 +2256,29 @@ main.addEventListener('click', e => {
   const sb = e.target.closest?.('[data-handsort]');
   if (sb) { commit(ed.sortHand(record, sb.dataset.char, sb.dataset.handsort)); return; }
 });
-// Hover zoom: every card zooms to the same absolute height whatever its resting size (the CSS scales by --hz).
-const HOVER_H = () => ({ s: 260, m: 320, l: 400 })[pmset.size] || 320;
+// Zoom (hover, click, the card menu, the pile preview). Every card is zoomed to the same height, a share of the window height for the
+// zoom size (S, M, L, XL), so the zoomed cards look alike whatever their resting size. A card that is already that big still grows a little
+// (ZOOM_MIN) and never gets smaller; a zoomed card stays inside the window. Tune the shares in ZOOM_H.
+const ZOOM_H = { s: 0.28, m: 0.35, l: 0.44, xl: 0.52 }, ZOOM_MIN = 1.15, ZOOM_MARGIN = 24;
+const zoomShare = () => ZOOM_H[pmset.size] || ZOOM_H.m;
+function zoomScale(el) {
+  const am = el.matches?.('.stk, .mini'), face = am ? el.querySelector('.stkface') : el;
+  const w = face.offsetWidth, h = face.offsetHeight;                                                          // layout size: a transform does not change it
+  if (!w || !h) return 1;
+  const target = zoomShare() * innerHeight;                                                                   // zoomed height of an ability card
+  const want = Math.max(ZOOM_MIN, am ? (target * 5 / 7) / w : target / h);                                    // modifier cards are landscape: same width as an ability card
+  const fit = Math.min((innerHeight - 2 * ZOOM_MARGIN) / h, (innerWidth - 2 * ZOOM_MARGIN) / w);
+  return Math.max(1, Math.min(want, fit));
+}
+function pileZoomH(cell) {
+  const h = cell.offsetHeight || 230;
+  return Math.max(h * ZOOM_MIN, Math.min(zoomShare() * innerHeight, innerHeight - 2 * ZOOM_MARGIN));
+}
 main.addEventListener('mouseover', e => {
   const el = e.target.closest?.('.pm .fan6 .ac, .pm .activelist .ac, .pm .flipcard, .pm .shelf6 .it, .pm .amv .stk, .pm .amv .mini');
   if (!el || (el.classList.contains('flipcard') && !el.classList.contains('is-front'))) return;
   if (e.relatedTarget && el.contains(e.relatedTarget)) return;
-  const am = el.matches('.stk, .mini'), r = (am ? el.querySelector('.stkface') : el).getBoundingClientRect();     // modifier cards are landscape: zoom to the same width as an ability card is high
-  const d = am ? r.width : r.height;
-  if (d > 0) el.style.setProperty('--hz', HOVER_H() / d);
+  el.style.setProperty('--hz', zoomScale(el));
 });
 // Hold a + or - of the playmat to repeat it (the repeat clicks the button under the pointer, which survives the re-render).
 (() => {
@@ -2248,7 +2299,7 @@ main.addEventListener('submit', e => {
   e.preventDefault();
   const f = new FormData(e.target);
   const next = ed.addCharacter(record, { cls: f.get('cls'), name: f.get('name') });
-  if (next === record) { alert('That character could not be added.'); return; }
+  if (next === record) { notify('Cannot add character', 'That character could not be added.'); return; }
   sub = next.chars.at(-1).id;
   commit(next);
 });
@@ -2306,7 +2357,27 @@ const userInput = document.getElementById('userName');
 try { userInput.value = localStorage.getItem(USER_KEY) || ''; } catch { /* ignore */ }
 userInput.addEventListener('change', () => { try { localStorage.setItem(USER_KEY, userInput.value.trim()); } catch { /* ignore */ } });
 const settingsModal = document.getElementById('settingsModal');
-const openSettings = () => { settingsModal.hidden = false; };
+const displayBox = document.getElementById('displaySettings');
+// The Settings popup: profile, campaign file and the playmat's display settings (one place; the display settings are kept in this browser).
+const renderDisplay = () => {
+  const wasOpen = displayBox.querySelector('details')?.open;   // keep the per-zone list open while a value changes
+  displayBox.innerHTML = displaySettingsHtml(pmset);
+  if (wasOpen) displayBox.querySelector('details').open = true;
+};
+const openSettings = () => { renderDisplay(); settingsModal.hidden = false; };
+settingsModal.addEventListener('click', e => {
+  const sg = e.target.closest?.('.setpanel .seg button');
+  if (sg) pmset[sg.parentElement.dataset.set] = sg.dataset.v;
+  else if (e.target.closest?.('[data-setreset]')) pmset = cleanSettings(null);
+  else return;
+  saveSet(); renderDisplay(); render();
+});
+settingsModal.addEventListener('change', e => {
+  if (e.target.matches?.('.setpanel [data-flag]')) pmset[e.target.dataset.flag] = e.target.checked;
+  else if (e.target.matches?.('.setpanel select[data-zone]')) pmset.zones[e.target.dataset.zone] = e.target.value;
+  else return;
+  saveSet(); renderDisplay(); render();
+});
 const closeSettings = () => { settingsModal.hidden = true; };
 document.getElementById('settingsOpen').addEventListener('click', openSettings);
 document.getElementById('settingsClose').addEventListener('click', closeSettings);
@@ -2321,7 +2392,7 @@ document.getElementById('file').addEventListener('change', async e => {
     history.length = 0;
     record = next;
     await localStore.save(record);
-  } catch (err) { alert('Could not read the file: ' + err.message); }
+  } catch (err) { await notify('Could not read the file', err.message); }
   e.target.value = '';
   render();
   closeSettings();
@@ -2336,7 +2407,8 @@ document.getElementById('export').addEventListener('click', () => {
   closeSettings();
 });
 document.getElementById('clear').addEventListener('click', async () => {
-  if (!record || !confirm('Remove the campaign from this browser? Export it first if you need it.')) return;
+  if (!record) return;
+  if (!await ask({ title: 'Clear campaign', text: 'Remove the campaign from this browser? Export it first if you need it.', ok: 'Remove', danger: true })) return;
   await localStore.clear();
   record = null;
   history.length = 0;

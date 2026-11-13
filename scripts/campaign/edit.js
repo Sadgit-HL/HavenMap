@@ -593,12 +593,13 @@ export function moveCard(r, cid, cardId, dest, opts = {}) {
 
 const BG_SLUGS = new Set(BATTLE_GOALS.map(g => g.slug));
 const PQ_SLUGS = new Set(PERSONAL_QUESTS.map(q => q.slug));
-export const CARD_STATUS = ['deck', 'mine', 'other', 'done'];     // a goal or quest: in the deck, held by this character, held by another player, completed
+export const CARD_STATUS = ['deck', 'mine', 'other', 'done', 'disc', 'locked'];     // a goal or quest: in the deck, held by this character, held by another player, completed, discarded (out of this scenario's deck)
 
 // Where a goal or quest of the campaign (map = r.bgs or r.pq) is as seen from one character.
 export function holdStatus(map, cid, slug) {
   const e = map?.[slug];
   if (!e) return 'deck';
+  if (e.st === 'disc' || e.st === 'locked') return e.st;
   if (e.c !== cid) return 'other';
   return e.st === 'done' ? 'done' : 'mine';
 }
@@ -622,15 +623,35 @@ function setStatus(r, cid, mapKey, slugs, slug, status) {
   if (!c || !slugs.has(slug) || !CARD_STATUS.includes(status) || holdStatus(r[mapKey], cid, slug) === status) return r;
   return edit(r, x => {
     if (status === 'deck') delete x[mapKey][slug];
+    else if (status === 'disc') x[mapKey][slug] = { st: 'disc', c: null };
+    else if (status === 'locked') x[mapKey][slug] = { st: 'locked', c: null };
     else x[mapKey][slug] = { st: status === 'done' ? 'done' : 'mine', c: status === 'other' ? null : cid };
   });
 }
 export const offerBattleGoals = (r, cid, slugs) => offer(r, cid, 'bgo', slugs, goalDeck(r), 3);
-export const keepBattleGoal = (r, cid, slug) => keep(r, cid, 'bgo', 'bgs', slug);
-export const setBattleGoalStatus = (r, cid, slug, status) => setStatus(r, cid, 'bgs', BG_SLUGS, slug, status);
-export const offerQuests = (r, cid, slugs) => offer(r, cid, 'pqo', slugs, questDeck(r), 2);
-export const keepQuest = (r, cid, slug) => keep(r, cid, 'pqo', 'pq', slug);
-export const setQuestStatus = (r, cid, slug, status) => setStatus(r, cid, 'pq', PQ_SLUGS, slug, status);
+// Keeping one of the drawn goals: the others of the draw go to the discard (they are not in the deck until a new scenario).
+export function keepBattleGoal(r, cid, slug) {
+  const c = r.chars.find(x => x.id === cid);
+  if (!c || !Array.isArray(c.bgo) || !c.bgo.includes(slug) || r.bgs[slug]) return r;
+  return edit(r, x => {
+    const cc = x.chars.find(y => y.id === cid);
+    for (const sl of cc.bgo) if (sl !== slug && !x.bgs[sl]) x.bgs[sl] = { st: 'disc', c: null };
+    x.bgs[slug] = { st: 'mine', c: cid };
+    cc.bgo = null;
+  });
+}
+export const setBattleGoalStatus = (r, cid, slug, status) => (status === 'locked' ? r : setStatus(r, cid, 'bgs', BG_SLUGS, slug, status));
+export const offerQuests = (r, cid, slugs) => (activeQuest(r, cid) ? r : offer(r, cid, 'pqo', slugs, questDeck(r), 2));
+// A character has at most one active quest (status mine).
+export const activeQuest = (r, cid) => PERSONAL_QUESTS.find(q => holdStatus(r.pq, cid, q.slug) === 'mine')?.slug ?? null;
+export const keepQuest = (r, cid, slug) => (activeQuest(r, cid) ? r : keep(r, cid, 'pqo', 'pq', slug));
+export function setQuestStatus(r, cid, slug, status) {
+  if (!['deck', 'locked', 'mine', 'done'].includes(status)) return r;                  // quests have no discard
+  const now = holdStatus(r.pq, cid, slug), a = activeQuest(r, cid);
+  if ((status === 'mine' || status === 'done') && now === 'locked') return r;          // unlock first
+  if (status === 'mine' && a && a !== slug) return r;                                  // one active quest per character
+  return setStatus(r, cid, 'pq', PQ_SLUGS, slug, status);
+}
 
 // Drop the goals or quests that were drawn and not kept ('bgo' or 'pqo').
 export function clearOffer(r, cid, field) {

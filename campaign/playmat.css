@@ -176,7 +176,7 @@
 .pm .btn6{background:#2d2519;color:var(--text);border:1px solid var(--line);border-radius:7px;padding:3px 10px;font:inherit;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
 .pm .btn6:hover{border-color:var(--accent);color:var(--accent)}
 .pm .fan6{position:absolute;left:12px;right:12px;top:32px;bottom:8px;display:grid;grid-template-columns:repeat(7,max-content);grid-auto-rows:calc(34cqh - 28px);gap:4px;justify-content:center}
-.pm .fan6 .ac{height:100%;width:auto;aspect-ratio:5/7;cursor:grab;transition:transform .14s,box-shadow .14s}
+.pm .fan6 .ac{height:100%;width:auto;aspect-ratio:5/7;cursor:grab;transition:transform .26s cubic-bezier(.2,.8,.2,1),box-shadow .26s ease-out}
 .pm .fan6 .ac:active{cursor:grabbing}
 .pm .fan6 .ac{transform-origin:50% 100%}
 .pm[data-zhand=hover] .fan6 .ac:hover, .pm .fan6 .ac.zoomed{transform:scale(var(--hz,1.85));z-index:35;box-shadow:0 16px 40px rgba(0,0,0,.8)}
@@ -186,8 +186,8 @@
 .pm .pini{font-size:11px;color:var(--accent);border:1px solid var(--accent);border-radius:9px;padding:0 6px}
 .pm .hand6[data-layout=fan] .fan6{display:flex;justify-content:center;align-items:center;left:0;right:0;top:30px;bottom:0;padding:16px 10px 0}
 .pm .hand6[data-layout=fan] .fan6{container-type:size;--fw:min(calc(90cqh * 5 / 7),calc((100cqw - 24px) / 7.35));--adv:max(calc(var(--fw) * .45),calc((100cqw - 24px - 1.5 * var(--fw)) / 13))}
-.pm .hand6[data-layout=fan] .fan6 .ac{height:auto;width:var(--fw);margin:0 calc((var(--adv) - var(--fw)) / 2);transform-origin:50% 160%;transform:rotate(calc((var(--i) - 6.5) * 1deg))}
-.pm[data-zhand=hover] .hand6[data-layout=fan] .fan6 .ac:hover, .pm .hand6[data-layout=fan] .fan6 .ac.zoomed{transform:translateY(-30%) scale(var(--hz,1.45));z-index:35}
+.pm .hand6[data-layout=fan] .fan6 .ac{height:auto;width:var(--fw);margin:0 calc((var(--adv) - var(--fw)) / 2);transform-origin:50% 160%;--rot:calc((var(--i) - 6.5) * 1deg);transform:translateY(0) rotate(var(--rot)) scale(1);will-change:transform}
+.pm[data-zhand=hover] .hand6[data-layout=fan] .fan6 .ac:hover, .pm .hand6[data-layout=fan] .fan6 .ac.zoomed{transform:translateY(-30%) rotate(0deg) scale(var(--hz,1.45));z-index:35}
 .pm .board6{grid-column:2 / span 2;grid-row:2}
 .pm .piles6{grid-column:3;grid-row:2;align-self:start;height:32%;z-index:3;display:grid;grid-template-rows:1fr 1fr;gap:8px;min-height:0}
 .pm .board6 .toprow{margin-right:124px}
@@ -288,18 +288,17 @@
 .pm .fan6 .ac>img{border-radius:inherit}
 .pm .fan6 .inib{left:8px;top:-15px;height:16px;min-width:28px;padding:0 6px;border-radius:8px 8px 0 0;border-bottom:0;font-size:11px;line-height:1}
 .pm[data-motion=reduce] *, .pm[data-motion=reduce] *::before, .pm[data-motion=reduce] *::after{transition:none!important;animation:none!important}
-.pm .setpop label.chk{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted);cursor:pointer}
-.pm .setpop label.chk input{accent-color:var(--accent);width:15px;height:15px}
-.pm .setpop hr{border:0;border-top:1px solid var(--line);margin:0;width:100%}
+.pm .setpanel label.chk{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted);cursor:pointer}
+.pm .setpanel label.chk input{accent-color:var(--accent);width:15px;height:15px}
+.pm .setpanel hr{border:0;border-top:1px solid var(--line);margin:0;width:100%}
 .pm .sortgrp{display:inline-flex;gap:4px}
-.pm .setwrap{position:relative;flex-shrink:0}
-.pm .setpop{position:absolute;right:0;top:calc(100% + 8px);z-index:150;width:280px;background:var(--panel);border:1px solid var(--accent);border-radius:10px;padding:12px 14px;box-shadow:0 14px 40px rgba(0,0,0,.7);display:flex;flex-direction:column;gap:10px}
-.pm .setpop[hidden]{display:none}
+.pm .setpanel{display:flex;flex-direction:column;gap:10px}
+.pm .setpanel[hidden]{display:none}
 .pm .setrow{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted)}
-.pm .setpop details summary{font-size:12px;color:var(--muted);cursor:pointer}
-.pm .setpop details .setrow{margin-top:8px}
-.pm .setpop select{background:#2d2519;color:var(--text);border:1px solid var(--line);border-radius:6px;font:inherit;font-size:12px;padding:2px 6px}
-.pm .setpop .btn6{align-self:flex-end}
+.pm .setpanel details summary{font-size:12px;color:var(--muted);cursor:pointer}
+.pm .setpanel details .setrow{margin-top:8px}
+.pm .setpanel select{background:#2d2519;color:var(--text);border:1px solid var(--line);border-radius:6px;font:inherit;font-size:12px;padding:2px 6px}
+.pm .setpanel .btn6{align-self:flex-end}
 .pm .bgg-icons{display:flex;flex-direction:column;gap:12px}
 .pm .bgg-block h4{margin:0 0 6px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .pm .bgg-row{display:flex;flex-wrap:wrap;gap:6px}
@@ -340,6 +339,7 @@
 .pm .pqchip.st-mine{background:var(--accent);color:#1b150c;border-color:var(--accent)}
 .pm .pqchip.st-other{border-color:var(--info);color:var(--info)}
 .pm .pqchip.st-done{border-color:var(--ok);color:var(--ok);text-decoration:line-through}
+.pm .pqchip.st-disc{border:1px dashed #b4533f;background:rgba(180,83,63,.22);color:#f0b8a8;text-decoration:line-through;text-decoration-thickness:1.5px;opacity:.9}
 .pm .pqchip.cur{outline:2px solid var(--text);outline-offset:1px}
 .pm .pqreq{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;margin:6px 0;border:1px solid var(--line);border-radius:8px;background:#1c1711}
 .pm .pqreq.locked{opacity:.45}
@@ -426,7 +426,6 @@
 .pm .hud .bggb{border:0;background:transparent;color:var(--text);padding:6px 11px;display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:13px;cursor:pointer;transition:background .12s,color .12s}
 .pm .hud .bggb+.bggb{border-left:1px solid var(--line)}
 .pm .hud .bggb:hover{background:#3a2f1e;color:var(--accent)}
-.pm .hud .gear{width:36px;height:36px;padding:0;justify-content:center;border-radius:9px}
 .pm .bnrgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(66px,1fr));gap:6px;max-height:190px;overflow:auto;padding:2px}
 .pm .bnrtile{display:flex;flex-direction:column;align-items:center;gap:2px;background:#1c1711;border:1px solid var(--line);border-radius:8px;padding:5px 2px 3px;color:var(--muted);font:inherit;font-size:10px;line-height:1.1;cursor:pointer;position:relative}
 .pm .bnrtile img{width:40px;height:40px;object-fit:contain}
@@ -446,3 +445,40 @@
 .pm[data-dock=right] .pcbig{left:auto;right:max(12px,calc(50vw - 378px - var(--zw,340px)))}
 .pm .pcbig{left:max(12px,calc(50vw - 378px - var(--zw,340px)))}.pm .amslot{display:block}
 .oldsheet{margin-top:14px}.oldsheet>summary{cursor:pointer;color:var(--muted);padding:6px 2px}
+
+/* Journal: the same look as the Edit character popup (hero, sections, footer buttons); the scrolling content stays inside the fixed box */
+.pm .jbox .chedit.jedit { flex: 1; min-height: 0; }
+.pm .jbox .jtabs { display: flex; margin-bottom: 0; }
+.pm .jbox .jtabs button { flex: 1; padding: 6px 8px; }
+.pm .jbox .jtab { display: flex; flex-direction: column; gap: 12px; }
+.pm .jbox .jtab[hidden] { display: none; }
+.pm .jbox .pqcheck input[type=checkbox], .pm .jbox .chedit input[type=checkbox] { height: auto; width: 15px; padding: 0; accent-color: var(--accent); }
+.pm .jbox .chedit label.pqcheck { flex-direction: row; align-items: center; }
+.pm .jbox .jprimary { background: var(--accent); color: #120f0b; border-color: var(--accent); font-weight: 800; }
+.pm .jbox .chfoot .btn6 { padding: 7px 14px; font-size: 13px; }
+.pm .jbox .pqdeck { gap: 5px; margin-bottom: 0; }
+.pm .jbox .pqchip { min-width: 30px; height: 26px; }
+.pm .jbox .pqdock { gap: 16px; }
+.pm .jbox .pqreq { background: rgba(0,0,0,.2); }
+.pm .jbox .notespane { gap: 12px; }
+.pm .jbox .notespane .notesec { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.pm .jbox .notespane .notesarea { flex: 1; min-height: 160px; height: auto; }
+.pm .jbox .notespane .mdprev { flex: 1; min-height: 160px; }
+
+/* Journal sized to its content: the box grows with the tab, up to 90% of the window; long tabs scroll inside it */
+.pm .jbox { height: auto; max-height: 90vh; }
+.pm .jbox .notespane .notesarea, .pm .jbox .notespane .mdprev { min-height: 260px; }
+
+.pm .jbox .pqchip.st-locked { opacity: .4; border-style: dotted; }
+.pm .jbox .pqchip.st-deck { color: var(--text); }
+.pm .pqlocked { aspect-ratio: 5 / 7; width: 100%; display: flex; align-items: center; justify-content: center; border: 1px dashed #6b5a3c; border-radius: 10px; background: #1c1711; color: var(--muted); font-size: 15px; letter-spacing: .08em; text-transform: uppercase; line-height: 1.2; }
+.pm .pqstatic { padding: 6px 10px; border: 1px solid var(--info); border-radius: 8px; color: var(--info); font-size: 13px; }
+/* Journal: the top edge stays put when the tab changes (the box grows or shrinks at the bottom only) */
+.pm .mmodal:has(.jbox) { align-items: flex-start; padding-top: 6vh; }
+
+/* Journal buttons: the same look as the BGG code buttons (Turn, Cards) in the character bar; the primary button is not highlighted */
+.pm .jbox .btn6, .pm .jbox .btn6.jprimary { border: 1px solid #2b2318; border-radius: 10px; background: #4a3f2e; color: #e5d3a8; font: inherit; font-size: 13px; font-weight: 700; padding: 7px 14px; box-shadow: inset 0 1px 2px rgba(0,0,0,.5), inset 0 -1px 0 rgba(255,235,180,.08); transition: background .14s, color .14s; }
+.pm .jbox .btn6:hover:not(:disabled), .pm .jbox .btn6.jprimary:hover:not(:disabled) { background: #534735; color: #f0e0b8; }
+.pm .jbox .btn6:active:not(:disabled) { transform: translateY(1px); box-shadow: inset 0 2px 4px rgba(0,0,0,.6); }
+.pm .jbox .btn6:disabled { opacity: .45; cursor: not-allowed; }
+.pm .jbox .btn6 svg { color: #e5d3a8; }

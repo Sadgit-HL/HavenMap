@@ -1,0 +1,136 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Roll and BGG code buttons: 10 variants</title>
+<style>
+:root{--bg:#16130f;--panel:#231d17;--line:#3a3026;--text:#ecdfc8;--muted:#a89a82;--accent:#c7a44a}
+*{box-sizing:border-box}
+body{margin:0;padding:18px;background:#0e0c09;color:var(--text);font:13px/1.35 system-ui,Segoe UI,sans-serif}
+h1{font-size:17px;margin:0 0 6px}
+p.d{color:var(--muted);max-width:980px;margin:0 0 14px}
+.sheet{display:flex;flex-direction:column;gap:8px;max-width:980px}
+.head,.row{display:grid;grid-template-columns:150px auto auto auto 1fr;align-items:center;gap:14px;padding:10px 14px;border-radius:10px}
+.head{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-bottom:2px}
+.row{background:linear-gradient(180deg,#2a2217,#201910);border:1px solid var(--line)}
+.row .name{font-weight:700;color:var(--text)}
+.row .name small{display:block;font-weight:400;color:var(--muted);font-size:11px;margin-top:2px}
+.row .note{color:var(--muted);font-size:11px}
+.cur{opacity:.9}
+
+/* shared button shape: vars set per variant */
+.rb{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 13px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;
+  border:1px solid var(--bd);border-radius:var(--r,10px);background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--fg);box-shadow:var(--sh,none);
+  transition:background .14s,color .14s,border-color .14s,box-shadow .14s;backdrop-filter:var(--bl,none);-webkit-backdrop-filter:var(--bl,none)}
+.rb svg{display:block;flex:none;color:currentColor}
+.rb:hover{background:linear-gradient(180deg,var(--hbg1),var(--hbg2));color:var(--hfg,var(--fg));border-color:var(--hbd,var(--bd))}
+.rb:active{transform:translateY(1px);box-shadow:none}
+.rb:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* 1 outline ink */
+.v1{--bg1:transparent;--bg2:transparent;--bd:#6f5e3a;--fg:#d9c58f;--hbg1:rgba(199,164,74,.08);--hbg2:rgba(199,164,74,.08);--hbd:#8f7a4a;--hfg:#ecd9a4}
+/* 2 smoked bronze */
+.v2{--bg1:#2f271b;--bg2:#241e15;--bd:#55462b;--fg:#d8c28e;--sh:inset 0 1px 0 rgba(255,235,180,.06),0 2px 4px rgba(0,0,0,.35);--hbg1:#3a3022;--hbg2:#2c2519;--hbd:#6b5a36;--hfg:#ecd9a4}
+/* 3 muted ochre, flat */
+.v3{--bg1:#6e5e32;--bg2:#6e5e32;--bd:#5a4c28;--fg:#f0e4c6;--sh:0 1px 2px rgba(0,0,0,.4);--hbg1:#7a6837;--hbg2:#7a6837;--hbd:#6b5b30}
+/* 4 stone tile */
+.v4{--bg1:#3a3026;--bg2:#3a3026;--bd:#4d4031;--fg:#e6d8b8;--sh:inset 0 1px 0 rgba(255,255,255,.05);--hbg1:#463b2f;--hbg2:#463b2f;--hbd:#5e5040;--hfg:var(--accent)}
+/* 5 brass pill */
+.v5{--bg1:#574623;--bg2:#433619;--bd:#7d6a3c;--fg:#eadcb6;--r:999px;--sh:0 1px 2px rgba(0,0,0,.35);--hbg1:#5f4e27;--hbg2:#4b3c1d;--hbd:#8f7b47}
+/* 6 ghost with underline */
+.v6{--bg1:transparent;--bg2:transparent;--bd:transparent;--fg:#c9b78a;--hbg1:rgba(255,255,255,.04);--hbg2:rgba(255,255,255,.04);--hbd:transparent;--hfg:var(--accent)}
+.v6.rb{border-radius:0;border-bottom:1px solid #6f5e3a;padding:0 4px}
+/* 7 embossed */
+.v7{--bg1:#4a3f2e;--bg2:#4a3f2e;--bd:#2b2318;--fg:#e5d3a8;--sh:inset 0 1px 2px rgba(0,0,0,.5),inset 0 -1px 0 rgba(255,235,180,.08);--hbg1:#534735;--hbg2:#534735;--hbd:#2b2318;--hfg:#f0e0b8}
+/* 8 dark glass */
+.v8{--bg1:rgba(18,15,11,.7);--bg2:rgba(18,15,11,.7);--bd:rgba(199,164,74,.3);--fg:#d8c28e;--bl:blur(4px);--hbg1:rgba(30,25,17,.85);--hbg2:rgba(30,25,17,.85);--hbd:rgba(199,164,74,.55);--hfg:#ecd9a4}
+/* 9 muted olive gold */
+.v9{--bg1:#5f5230;--bg2:#4d4226;--bd:#7a6a3f;--fg:#efe3c4;--sh:0 1px 0 #2a2212,0 2px 6px rgba(0,0,0,.35);--hbg1:#6a5b35;--hbg2:#554929;--hbd:#8a7a4b}
+/* 10 soft segment: one shared bar, thin dividers */
+.v10{--bg1:transparent;--bg2:transparent;--bd:transparent;--fg:#cdbd98;--r:0;--hbg1:rgba(255,255,255,.05);--hbg2:rgba(255,255,255,.05);--hbd:transparent;--hfg:var(--accent);padding:0 12px;height:30px}
+.seg10{grid-column:2 / span 3;justify-self:start;display:inline-flex;border:1px solid #4a3d28;border-radius:9px;overflow:hidden;background:#2d2519}
+.seg10 .rb+.rb{border-left:1px solid #4a3d28}
+.seg10 .rb{border-radius:0}
+
+/* current, for reference */
+.cur-bgb{border:1px solid #a98d42;border-radius:10px;background:linear-gradient(180deg,#a68a3d,#85702e);color:#1b150c;font-weight:800;box-shadow:0 1px 0 #4a3b14;height:32px;padding:0 12px;font-size:13px;display:inline-flex;align-items:center;gap:6px}
+.cur-amc{border:2px solid #f0d68a;border-radius:12px;background:linear-gradient(180deg,#d9bb62,#a98826);color:#1b150c;font-weight:800;box-shadow:0 3px 0 #6a5316,0 6px 14px rgba(0,0,0,.45);height:40px;padding:0 12px;display:inline-flex;align-items:center;gap:6px;font-size:14px}
+.cur-amc svg,.cur-bgb svg{display:block}
+
+.hint{margin-top:16px;color:var(--muted);font-size:11px}
+</style>
+
+<h1>Roll and BGG code buttons</h1>
+<p class="d">Ten variants of the three buttons in the merc tab: <b>Turn</b> and <b>Cards</b> (BGG code, top bar) and <b>Roll code</b> (modifier deck). Each variant is one row, the three buttons side by side at the size they have in the tab. The first row is the current look for comparison. Hover any button to see its hover state; they are all live.</p>
+
+<div class="sheet">
+  <div class="head"><span>Variant</span><span>Turn</span><span>Cards</span><span>Roll code</span><span>Notes</span></div>
+
+  <div class="row cur">
+    <div class="name">Current<small>reference, not a variant</small></div>
+    <span class="cur-bgb"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg>Turn</span>
+    <span class="cur-bgb"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="12" height="16" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v13"/></svg>Cards</span>
+    <span class="cur-amc"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg>Roll code</span>
+    <div class="note">Gold gradient, heavy shadow: too bright.</div>
+  </div>
+</div>
+
+<div class="sheet" style="margin-top:10px">
+  <div class="row"><div class="name">1 &middot; Outline ink<small>no fill, thin gold line</small></div>
+    <span class="rb v1"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg>Turn</span>
+    <span class="rb v1"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="12" height="16" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v13"/></svg>Cards</span>
+    <span class="rb v1"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg>Roll code</span>
+    <div class="note">Quietest option. Reads as a control, not a call to action.</div></div>
+
+  <div class="row"><div class="name">2 &middot; Smoked bronze<small>dark gradient, inner top light</small></div>
+    <span class="rb v2"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg>Turn</span>
+    <span class="rb v2"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="12" height="16" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v13"/></svg>Cards</span>
+    <span class="rb v2"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg>Roll code</span>
+    <div class="note">Closest to the tab's dark panels. Fits the table.</div></div>
+
+  <div class="row"><div class="name">3 &middot; Muted ochre, flat<small>one colour, small shadow</small></div>
+    <span class="rb v3"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg>Turn</span>
+    <span class="rb v3"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="12" height="16" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v13"/></svg>Cards</span>
+    <span class="rb v3"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg>Roll code</span>
+    <div class="note">Simplest to build. Keeps the gold, drops the gradient.</div></div>
+
+  <div class="row"><div class="name">4 &middot; Stone tile<small>grey-brown, neutral text</small></div>
+    <span class="rb v4"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg>Turn</span>
+    <span class="rb v4"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="12" height="16" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v13"/></svg>Cards</span>
+    <span class="rb v4"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg>Roll code</span>
+    <div class="note">Hover turns the label gold: the only accent colour is used for feedback.</div></div>
+
+  <div class="row"><div class="name">5 &middot; Brass pill<small>rounded, muted brass gradient</small></div>
+    <span class="rb v5"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg>Turn</span>
+    <span class="rb v5"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="12" height="16" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v13"/></svg>Cards</span>
+    <span class="rb v5"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg>Roll code</span>
+    <div class="note">Friendlier shape; the pill reads as a tag, so it suits the BGG buttons better.</div></div>
+
+  <div class="row"><div class="name">6 &middot; Ghost underline<small>text plus a thin rule</small></div>
+    <span class="rb v6"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg>Turn</span>
+    <span class="rb v6"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="12" height="16" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v13"/></svg>Cards</span>
+    <span class="rb v6"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg>Roll code</span>
+    <div class="note">Almost no weight. Could read as a link, so it fits secondary actions best.</div></div>
+
+  <div class="row"><div class="name">7 &middot; Embossed<small>pressed-in look, light text</small></div>
+    <span class="rb v7"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg>Turn</span>
+    <span class="rb v7"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="12" height="16" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v13"/></svg>Cards</span>
+    <span class="rb v7"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg>Roll code</span>
+    <div class="note">Looks like a physical key. Needs no extra colour at all.</div></div>
+
+  <div class="row"><div class="name">8 &middot; Dark glass<small>translucent, gold hairline</small></div>
+    <span class="rb v8"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg>Turn</span>
+    <span class="rb v8"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="12" height="16" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v13"/></svg>Cards</span>
+    <span class="rb v8"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg>Roll code</span>
+    <div class="note">Sits on any background. The blur needs browser support; falls back to the flat tint.</div></div>
+
+  <div class="row"><div class="name">9 &middot; Muted olive gold<small>the gold, desaturated and darker</small></div>
+    <span class="rb v9"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg>Turn</span>
+    <span class="rb v9"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="12" height="16" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v13"/></svg>Cards</span>
+    <span class="rb v9"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg>Roll code</span>
+    <div class="note">Keeps the family colour of the current look, at lower brightness.</div></div>
+
+  <div class="row"><div class="name">10 &middot; Segmented bar<small>one grouped control, dividers</small></div>
+    <span class="seg10"><span class="rb v10"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg>Turn</span><span class="rb v10"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="12" height="16" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v13"/></svg>Cards</span><span class="rb v10"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg>Roll code</span></span>
+    <div class="note">Groups the three as one control, like the BGG bar used to be. Shown as a unit; the Roll code is the same button.</div></div>
+</div>
+
+<p class="hint">Mockup only, not wired into the app. Colours use the palette of the campaign page (--accent #c7a44a, --line #3a3026). Pick a number and the chosen variant is applied to the hud and the modifier deck in campaign/style.css.</p>
