@@ -31,7 +31,7 @@ function morphChildren(parent, source, pool) {
       while (next < oldKids.length && !(oldKids[next].nodeType === nk.nodeType && oldKids[next].nodeName === nk.nodeName)) next++;
       if (next < oldKids.length) ex = oldKids[next++];
     }
-    if (ex && ex.nodeType === 1) { syncAttributes(ex, nk); morphChildren(ex, nk, pool); out.push(ex); }
+    if (ex && ex.nodeType === 1) { syncAttributes(ex, nk); if (!ex.hasAttribute('data-keep')) morphChildren(ex, nk, pool); out.push(ex); }
     else if (ex) { if (ex.nodeValue !== nk.nodeValue) ex.nodeValue = nk.nodeValue; out.push(ex); }
     else out.push(nk);
   }

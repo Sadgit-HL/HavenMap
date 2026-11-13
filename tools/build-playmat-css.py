@@ -24,7 +24,8 @@ shelf6 it itbar itbadge board6 toprow zone zlabel activelist ac inib pini slot6 
 hand6 hbar hctl sortgrp btn6 fan6 piles6 pile6 pilecard pilerow6 hint tk tkh ctr target seg setwrap
 dock mbtn mmodal mmodalbox mmodalx matflip codelist coderow bgg-icons bgg-row bgg-block bgg-ic bnrsec bnrgrid bnrtile bnrnote bnrnoimg
 histbar hlist hrow hz ha hm hempty delx addrow mrow enhtable enhprice enhempty
-jbox jtab jtabs pqdock pqcard pqside pqreq pqc pqcheck pqdeck pqdl pqchip pqrow pqoffer pqpick bgcards bgcard mdbar mdprev mdview notesarea notespane rollbtn'''.split())
+jbox jtab jtabs pqdock pqcard pqside pqreq pqc pqcheck pqdeck pqdl pqchip pqrow pqoffer pqpick bgcards bgcard mdbar mdprev mdview notesarea notespane rollbtn
+amdgrid amdtile amcard amfoot amdbar amdbtns pcbig'''.split())
 
 def split_rules(text):
     """Top level rules as (prelude, body); at-rule bodies are kept as text."""
@@ -86,6 +87,8 @@ EXTRA = """
 .pm .fan6 .ac.ins-before{box-shadow:-5px 0 0 var(--accent)}.pm .fan6 .ac.ins-after{box-shadow:5px 0 0 var(--accent)}
 .pm .edv{cursor:text}.pm .edin{width:64px}
 .pm .mmodal{z-index:300}.pm .hrow small{color:var(--muted);margin-left:6px}.pm .matflip img{max-width:100%;cursor:pointer}
+.pm .amdtile.real .pc{--pc-width:88px}.pm .amdbox .amdgrid{margin-top:8px}
+.pm .pcbig{left:max(12px,calc(50vw - 378px - var(--zw,340px)))}.pm .amcard{cursor:zoom-in}.pm .amslot{display:block}
 .oldsheet{margin-top:14px}.oldsheet>summary{cursor:pointer;color:var(--muted);padding:6px 2px}
 """
 
