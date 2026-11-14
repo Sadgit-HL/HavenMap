@@ -100,6 +100,10 @@ Most modals are a stack of bordered sections under a footer:
 Use this for every new modal. The journal, the Edit character popup, Perks and masteries, Enhancements, BGG codes and History all use it.
 Start the content straight with the first section: no portrait, no header block, no intro line (decision of 2026-11-14 in the perks modal).
 
+Page sections (Overview cards and headings) use the same heading style as the popup sections: 11px, uppercase, accent.
+Exception: the Overview Party card edits its numbers in place (pencil turns the fields on). Every other editable group opens a popup.
+An empty list shows one muted line (`.emptyline`), for example "No stickers yet.". Tables sit in `.tablewrap`, which scrolls sideways.
+
 ### 5.4 Lists and rows
 
 - Rows that can be toggled (perks, quests, goals): a card-like row, 1px line border, 10px radius, `#1c1711` fill, gold border when on,

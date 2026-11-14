@@ -178,6 +178,10 @@ tabsEl.addEventListener('click', e => {
 function table(head, rows) {
   return `<table><tr>${head.map(h => `<th>${h}</th>`).join('')}</tr>${rows.join('')}</table>`;
 }
+// Overview tables: the box scrolls sideways on a phone instead of widening the page; the header is a small muted label.
+const ovTable = (head, rows) => `<div class="tablewrap">${table(head, rows).replace('<table>', '<table class="ovtable">')}</div>`;
+// Empty state of an Overview list: one muted line.
+const noneText = t => `<p class="emptyline">${esc(t)}</p>`;
 
 // A card value with a round pencil button to its right that opens the modal for it.
 const editPill = (attr, label, v) => `<span class="stepper"><b>${esc(v)}</b><button type="button" class="editbtn editicon secedit" ${attr} title="Edit ${esc(label.toLowerCase())}" aria-label="Edit ${esc(label.toLowerCase())}">${PENCIL}</button></span>`;
@@ -187,7 +191,7 @@ const editPill = (attr, label, v) => `<span class="stepper"><b>${esc(v)}</b><but
 function classChip(r, name) {
   const lower = String(name).toLowerCase();
   const played = r.chars.filter(c => String(c.cls).toLowerCase() === lower);
-  if (!played.length) return chip(name, classKnown(name) ? '' : 'warn');
+  if (!played.length) return classKnown(name) ? chip(name) : chip(`${name} (unknown)`, 'warn');
   const who = played.map(c => r.players.find(p => p.seat === c.seat)?.name).filter(Boolean);
   const label = who.length ? `${name}: ${who.join(', ')}` : `${name} (${played.map(c => c.name).join(', ')})`;
   return `<span class="chip ok" title="${esc(`Active: ${played.map(c => c.name).join(', ')}`)}">${esc(label)}</span>`;
@@ -195,7 +199,7 @@ function classChip(r, name) {
 
 function overview(r) {
   const { counts, days, avgDays } = scenarioCounts(r);
-  const repBar = v => `<div class="bar"><i style="left:${((20 - Math.max(-10, Math.min(20, v))) / 30) * 97}%"></i></div>`;
+  const repBar = v => `<div class="bar" role="img" title="${esc(v)}" aria-label="Value ${esc(v)}"><i style="left:${((20 - Math.max(-10, Math.min(20, v))) / 30) * 97}%"></i></div>`;
   const rep = (label, key) => kv(label, esc(r.rep[key])) + repBar(r.rep[key]);
   // Average level is derived from the mercenaries' own levels (not entered by hand); Normal difficulty is that
   // average level halved and rounded up (scenarioLevel adds the diff modifier on top, clamped 0..7).
@@ -216,11 +220,11 @@ function overview(r) {
   <h2>Campaign Stickers${modalBtn('data-stk-open', 'campaign stickers')}</h2>${r.stk.length ? `<div class="stickers">${r.stk.map(s => {
     const st = STICKERS.find(x => x.name.toLowerCase() === String(s).toLowerCase());
     return st ? `<figure class="sticker"><img src="${esc(st.img)}" alt="" loading="lazy"><figcaption>${esc(st.name)}</figcaption></figure>` : chip(s, 'warn');
-  }).join('')}</div>` : none}
+  }).join('')}</div>` : noneText('No stickers yet.')}
   <h2>Unlocked Classes (${r.cls.length}/${availableSet(r).size})${modalBtn('data-cls-open', 'unlocked classes')}</h2><div class="chips">${r.cls.map(c => classChip(r, c)).join('')}</div>
-  <h2>Retired Characters${modalBtn('data-ret-open', 'retired characters')}</h2>${r.retired.length ? table(['Class', 'Player', 'Name', 'Lv', 'Perks', 'Masteries'],
-    r.retired.map(x => `<tr><td>${esc(x.cls)}</td><td>${esc(x.player ?? '')}</td><td>${esc(x.name ?? '')}</td><td>${esc(x.lv ?? '')}</td><td>${esc(x.perks ?? '')}</td><td>${esc(x.masteries ?? '')}</td></tr>`)) : none}
-  <h2>Players${modalBtn('data-pl-open', 'players')}</h2>${r.players.length ? `<div class="chips">${r.players.map(p => chip(p.name)).join('')}</div>` : none}
+  <h2>Retired Characters${modalBtn('data-ret-open', 'retired characters')}</h2>${r.retired.length ? ovTable(['Class', 'Player', 'Name', 'Lv', 'Perks', 'Masteries', ''],
+    r.retired.map(x => `<tr><td>${esc(x.cls)}</td><td>${esc(x.player ?? '')}</td><td>${esc(x.name ?? '')}</td><td>${esc(x.lv ?? '')}</td><td>${esc(x.perks ?? '')}</td><td>${esc(x.masteries ?? '')}</td><td class="rowact"><button type="button" class="editbtn editicon secedit" data-ret-open title="Edit retired characters" aria-label="Edit retired characters">${PENCIL}</button></td></tr>`)) : noneText('No retired characters yet.')}
+  <h2>Players${modalBtn('data-pl-open', 'players')}</h2>${r.players.length ? `<div class="chips">${r.players.map(p => chip(p.name)).join('')}</div>` : noneText('No players yet.')}
   </div>`;
 }
 
@@ -234,7 +238,7 @@ function historyPage(r) {
     const list = log.filter(e => e.tab === tabName).reverse();
     if (!list.length) return '';
     const rows = list.slice(0, HISTORY_SHOWN).map(e => `<tr><td class="nowrap">${esc(when(e.t))}</td><td>${esc(e.u)}</td><td>${esc(e.kind)}</td><td>${esc(e.d)}</td></tr>`);
-    return `<h2>${esc(tabName)} <span class="hint">(${list.length})</span></h2>${table(['Time', 'User', 'Type', 'Change'], rows)}${list.length > HISTORY_SHOWN ? `<p class="hint">The latest ${HISTORY_SHOWN} of ${list.length} edits are shown.</p>` : ''}`;
+    return `<h2>${esc(tabName)} <span class="hint">(${list.length})</span></h2>${table(['Time', 'User', 'Type', 'Change'], rows)}`;
   }).join('');
   return groups;
 }

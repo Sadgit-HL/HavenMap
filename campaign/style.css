@@ -316,11 +316,20 @@ button.evchip { cursor:pointer; }
 .plrow .txt { flex:1; min-width:0; }
 .pladd { margin-top:10px; padding-top:8px; border-top:1px solid var(--line); }
 /* Overview dividers: card headers and rows, and a rule above every section heading */
-.overview .card h3 { padding-bottom:5px; margin-bottom:5px; border-bottom:1px solid var(--accent); }
+.overview .card h3 { margin:0 0 6px; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); }
 .overview .card .kv + .kv { border-top:1px solid var(--line); padding-top:3px; margin-top:1px; }
 .overview .card .kv + .bar { margin-bottom:4px; }
-.overview > h2 { margin:22px 0 10px; padding-top:14px; border-top:1px solid var(--line); }
+.overview > h2 { margin:22px 0 10px; padding-top:14px; border-top:1px solid var(--line); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); }
 .overview > .grid + h2 { margin-top:18px; }
+/* Overview: stickers as tiles, tables that scroll sideways on a phone, one muted line for an empty list */
+.overview .sticker { width:110px; padding:6px; border:1px solid var(--line); border-radius:8px; background:#1c1711; }
+.overview .sticker img { border:0; border-radius:6px; }
+.overview .sticker figcaption { color:var(--text); }
+.tablewrap { overflow-x:auto; max-width:100%; }
+.ovtable th { position:static; background:none; font-size:11px; letter-spacing:.05em; text-transform:uppercase; }
+.ovtable td { vertical-align:middle; }
+.ovtable th:last-child, .ovtable td.rowact { width:44px; text-align:right; }
+.emptyline { margin:6px 0 12px; color:var(--muted); font-size:13px; }
 
 /* prosperity track modal */
 .modalbox.ptmodal { width:min(760px,100%); padding:10px 12px; }
