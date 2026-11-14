@@ -1626,7 +1626,7 @@ registerMenu({
     const from = zoneOf(c, id), hand = from === 'hand', flip = el.classList.contains('flipcard');
     const down = flip && !el.classList.contains('is-front');
     const zoom = { label: 'Zoom', disabled: down, run: () => { el.style.setProperty('--hz', zoomScale(el)); main.querySelectorAll('.pm .zoomed').forEach(x => x.classList.remove('zoomed')); el.classList.add('zoomed'); } };
-    const marker = { label: 'Add marker or sticker', run: () => openMarkers(`c:${id}`) };   // not for cards in the play area
+    const marker = { label: 'Edit marker or sticker', run: () => openMarkers(`c:${id}`) };   // not for cards in the play area
     const moves = CARD_ZONES.filter(z => z !== from).map(z => ({
       label: ZONE_LABEL[z],
       disabled: z.startsWith('play') && from !== 'hand' && !from.startsWith('play'),                       // only hand cards enter a play slot

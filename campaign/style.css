@@ -695,6 +695,34 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); }
 .pm .chedit .ce-danger { background: #b4533f; color: #fff; border-color: #d17a66; font-weight: 800; }
 @media (max-width: 520px) { .pm .chedit .cegrid { grid-template-columns: 1fr; } }
 
+/* Perks and masteries modal: the Edit character look (hero, bordered sections, footer). Perk rows and mastery toggles are the same cards as the rest of the popup */
+.pm .mmodalbox.sbox { width: min(760px, 100%); padding: 18px 22px 16px; }
+.pm .sedit .cesec h4 { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.pm .sedit .cesec h4 span { color: var(--text); text-transform: none; letter-spacing: 0; font-size: 12px; font-weight: 600; }
+.pm .sedit .perklist { gap: 6px; }
+.pm .sedit .am-perk { gap: 10px; min-height: 50px; padding: 6px 10px; border-radius: 10px; background: #1c1711; border: 1px solid var(--line); transition: border-color .14s, background .14s; }
+.pm .sedit .am-perk:hover { border-color: #6b5a3c; }
+.pm .sedit .am-perk.is-on { border-color: var(--accent); background: rgba(199,164,74,.1); }
+.pm .sedit .am-perk.is-partial { border-style: dashed; }
+.pm .sedit .am-perk-boxes { gap: 4px; }
+.pm .sedit .am-perk-check { width: 22px; height: 22px; border-radius: 6px; font-size: 13px; }
+.pm .sedit .am-perk-cards { gap: 5px; }
+.pm .sedit .am-perk-cards .pc { --pc-width: 50px; border-radius: 6px; }
+.pm .sedit .am-perk-text { font-size: 13px; line-height: 1.35; color: var(--text); }
+.pm .sedit .am-perk-gone { font-size: 12px; }
+.pm .sedit .am-perk-tag { font-size: 11px; padding: 1px 8px; border: 1px solid var(--line); border-radius: 999px; background: #2d2519; }
+.pm .sedit .pkmast { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 6px; }
+.pm .sedit .pkmast .mrow { grid-column: 1 / -1; margin: 2px 0; }
+.pm .sedit .pkmast label.pkm { flex-direction: row; align-items: center; gap: 8px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 10px; background: #1c1711; color: var(--muted); font-size: 13px; cursor: pointer; transition: border-color .14s, background .14s; }
+.pm .sedit .pkmast label.pkm:hover { border-color: #6b5a3c; }
+.pm .sedit .pkmast label.pkm.on { border-color: var(--accent); background: rgba(199,164,74,.1); color: var(--text); }
+.pm .sedit .pkmast label.pkm input[type=checkbox] { height: auto; width: 15px; padding: 0; margin: 0; flex: none; accent-color: var(--accent); }
+@media (max-width: 520px) { .pm .mmodalbox.sbox { padding: 14px 14px 12px; } .pm .sedit .am-perk { flex-wrap: wrap; } }
+/* Enhancements, BGG codes and History use the same popup look as the perks modal */
+.pm .sedit .bnrnote { margin: 0 0 8px; color: var(--muted); font-size: 12px; }
+.pm .sedit .histbar { margin: 0 0 8px; }
+.pm .sedit .hlist { background: #120f0b; }
+
 /* Items tab: owner chips and the give menu */
 .itemwith { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
 .itemwith .chip { display: inline-flex; align-items: center; gap: 4px; }

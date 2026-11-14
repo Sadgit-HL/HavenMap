@@ -247,14 +247,16 @@ export function modalHtml(c, X, S) {
     const side = S.matSide === 'back' ? 'back' : 'front';
     body = `<div class="matflip"><img src="${esc(X.matUrl(c.cls, side))}" alt="${esc(c.cls)} mat, ${side}" data-matflip role="button" tabindex="0" title="Click to flip"></div>`;
   } else if (S.modal === 'codes') {
-    title = 'BGG forum codes';
+    title = 'BGG forum codes'; big = ' sbox';
     const icons = BGG_ICON_GROUPS.map(g => `<div class="bgg-block"><h4>${esc(g.h)}</h4><div class="bgg-row">${g.icons.map(i => `<button type="button" class="bgg-ic" data-code="${esc(i.c)}" title="${esc(i.n)}: copy ${esc(i.c)}" aria-label="Copy ${esc(i.n)} icon code"><img src="${esc(i.img)}" alt="${esc(i.n)}"${i.inv ? ' class="inv"' : ''}></button>`).join('')}</div></div>`).join('');
     const banners = BANNERS.map(b => `<button type="button" class="bnrtile" data-bnr="${b.slug}" title="Copy the ${esc(b.name)} banner code">${b.icon ? `<img src="${BANNER_ICON_DIR}${encodeURIComponent(b.icon)}.webp" alt="">` : '<span class="bnrnoimg">?</span>'}<span>${esc(b.name)}</span></button>`).join('');
     const custom = (S.customCodes || []).map((k, i) => `<div class="coderow"><div><b style="margin:0">${esc(k.label)}</b></div><span><button type="button" class="btn6" data-code="${esc(k.text)}">Copy</button> <button type="button" class="delx" data-codedel="${i}" aria-label="Remove ${esc(k.label)}">&times;</button></span></div>`).join('');
-    body = `<div class="codelist"><h3 style="margin-top:0">Icons <span>click to copy</span></h3><div class="bgg-icons">${icons}</div></div>
-      <div class="bnrsec"><h3>Class banners</h3><p class="bnrnote" data-bnrnote>Click a class to copy its <b>banner image</b> code.</p><div class="bnrgrid">${banners}</div></div>
-      <div class="codelist">${custom}</div>
-      <div class="addrow"><input data-code-label placeholder="Label" aria-label="Label"><input data-code-text placeholder="Code to copy" aria-label="Code" style="flex:2"><button type="button" class="btn6" data-codeadd>Add</button></div>`;
+    body = `<div class="chedit sedit">
+      <section class="cesec"><h4>Icons <span>click to copy</span></h4><div class="bgg-icons">${icons}</div></section>
+      <section class="cesec"><h4>Class banners</h4><p class="bnrnote" data-bnrnote>Click a class to copy its <b>banner image</b> code.</p><div class="bnrgrid">${banners}</div></section>
+      <section class="cesec"><h4>Own codes</h4>${custom ? `<div class="codelist">${custom}</div>` : ''}
+        <div class="addrow"><input data-code-label placeholder="Label" aria-label="Label"><input data-code-text placeholder="Code to copy" aria-label="Code" style="flex:2"><button type="button" class="btn6" data-codeadd>Add</button></div></section>
+      <div class="chfoot"><button type="button" class="btn6" data-modalclose>Close</button></div></div>`;
   } else if (S.modal === 'journal') {
     title = 'Journal'; big = ' jbox';
     body = `<div class="chedit jedit">${journalBody(c, X, S)}</div>`;
@@ -290,7 +292,7 @@ export function modalHtml(c, X, S) {
     body = deckBodyHtml(c, X, S, esc);
     extra = '<div class="pcbig" data-poolbig hidden></div>' + PVX;
   } else if (S.modal === 'perks') {
-    title = 'Perks & masteries'; big = ' big';
+    title = 'Perks & masteries'; big = ' sbox';
     const perks = perkList(c.cls), on = i => c.pk.perks.includes(i), mask = i => c.pk.boxes[i] || 0;
     const slot = (i, side, j) => `<span class="amslot" data-keep data-perkcard="${i}.${side}.${j}"></span>`;
     const rows = groupPerks(perks).map(g => {
@@ -308,9 +310,14 @@ export function modalHtml(c, X, S) {
       const tag = repeated ? `×${g.members.length}` : p.boxes > 1 ? `all ${p.boxes}` : '';
       return `<div class="am-perk${done ? ' is-on' : ''}${partial ? ' is-partial' : ''}"${boxes.length === 1 ? ` data-perkrow="${boxes[0].perk}.0"` : ''}><span class="am-perk-boxes">${btns}</span><span class="am-perk-cards">${cards}</span>${txt ? `<span class="am-perk-text${nCards ? ' am-perk-note' : ''}">${perkTextHtml(txt)}</span>` : ''}${tag ? `<span class="am-perk-tag">${tag}</span>` : ''}</div>`;
     }).join('');
-    const ms = MASTERIES[c.cls] || [];
-    body = `<h3>Perks <span>${c.pk.perks.length} of ${perks.length}</span></h3><div class="perklist am-perklist">${rows || `<p class="mrow">No perk data for ${esc(c.cls)}.</p>`}</div>
-      <h3>Masteries <span>${c.pk.ms.filter(i => i < ms.length).length} of ${ms.length}</span></h3><div class="perklist">${ms.map((t, i) => `<label class="perkrow${c.pk.ms.includes(i) ? ' on' : ''}"><input type="checkbox" data-mastery="${i}" data-char="${esc(c.id)}"${c.pk.ms.includes(i) ? ' checked' : ''}><span>${esc(t)}</span></label>`).join('') || '<p class="mrow">No masteries for this class.</p>'}</div>`;
+    const ms = MASTERIES[c.cls] || [], msOn = c.pk.ms.filter(i => i < ms.length).length;
+    // same layout as the Journal popup: no portrait or header, bordered sections, footer. Changes apply at once (no save button).
+    body = `<div class="chedit sedit">
+      <section class="cesec"><h4>Perks <span>${c.pk.perks.length} of ${perks.length}</span></h4>
+        <div class="perklist am-perklist">${rows || `<p class="mrow">No perk data for ${esc(c.cls)}.</p>`}</div></section>
+      <section class="cesec"><h4>Masteries <span>${msOn} of ${ms.length}</span></h4>
+        <div class="pkmast">${ms.map((t, i) => `<label class="pkm${c.pk.ms.includes(i) ? ' on' : ''}"><input type="checkbox" data-mastery="${i}" data-char="${esc(c.id)}"${c.pk.ms.includes(i) ? ' checked' : ''}><span>${esc(t)}</span></label>`).join('') || '<p class="mrow">No masteries for this class.</p>'}</div></section>
+      <div class="chfoot"><button type="button" class="btn6" data-modalclose>Close</button></div></div>`;
     extra = '<div class="pcbig" data-perkbig hidden></div>' + PVX;
   } else if (S.modal === 'amd') {
     title = 'Attack modifier deck'; big = ' amdbox';
@@ -324,7 +331,7 @@ export function modalHtml(c, X, S) {
     body = `<div class="amdbar"><span class="mrow" style="margin:0">${A.total} in deck &middot; ${A.disc} in discard</span><span class="amdbtns"><button type="button" class="btn6" data-code="${esc(code)}" title="Copy GeekRoller code" aria-label="Copy GeekRoller code"${code ? '' : ' disabled'}><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg></button><button type="button" class="btn6" data-amact="shuffle" title="Shuffle deck now (the discard goes back)" aria-label="Shuffle deck now"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M10.59 9.17 5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg></button></span></div>
       <div class="amdgrid">${tiles}${specials}</div>${S.amZoom ? `<div class="pcbig" style="--zw:340px"><div class="amslot" data-keep data-amslot="${esc(S.amZoom)}" data-big></div></div>` : ''}`;
   } else if (S.modal === 'enh') {
-    title = 'Enhancements';
+    title = 'Enhancements'; big = ' sbox';
     const rows = (S.enh || []).map(({ e, i }) => `<tr><td>${esc(e.card)}</td><td>${esc(e.top ?? '\u2013')}</td><td>${esc(e.bottom ?? '\u2013')}</td><td><input class="enhprice" type="number" min="0" max="9999" inputmode="numeric" value="${e.price ?? ''}" placeholder="gold" data-enhprice="${i}" aria-label="Price of ${esc(e.card)}"> <button type="button" class="delx" data-enhdel="${i}" aria-label="Remove ${esc(e.card)}">&times;</button></td></tr>`).join('');
     // rows derived from the stickers placed on cards (top = upper half of the card, bottom = lower half)
     const derived = Object.entries(c.mk || {}).filter(([k, l]) => k.startsWith('c:') && l.some(m => m.s)).map(([k, l]) => {
@@ -333,14 +340,18 @@ export function modalHtml(c, X, S) {
       return { k, name: X.pretty(card?.slug ?? k.slice(2)), top: part(true), bottom: part(false) };
     }).sort((a, b) => a.name.localeCompare(b.name));
     const drows = derived.map(d => `<tr><td>${esc(d.name)}</td><td>${esc(d.top)}</td><td>${esc(d.bottom)}</td><td><input class="enhprice" type="number" min="0" max="9999" inputmode="numeric" value="${c.mp?.[d.k] ?? ''}" placeholder="gold" data-mkprice="${d.k}" data-char="${esc(c.id)}" aria-label="Price of ${esc(d.name)}"></td></tr>`).join('');
-    body = `<table class="enhtable"><thead><tr><th>Card</th><th>Top</th><th>Bottom</th><th>Price</th></tr></thead><tbody>${rows}${drows}${rows || drows ? '' : '<tr><td colspan="4" class="enhempty">No enhancements logged for this class.</td></tr>'}</tbody></table>
-      <div class="addrow"><input data-enh-card list="enh-cards" placeholder="Card" aria-label="Card"><datalist id="enh-cards">${(S.enhCards || []).map(n => `<option value="${esc(n)}">`).join('')}</datalist><input data-enh-top placeholder="Top" aria-label="Top"><input data-enh-bottom placeholder="Bottom" aria-label="Bottom"><input data-enh-price placeholder="Gold" aria-label="Price" style="width:70px" inputmode="numeric"><button type="button" class="btn6" data-enhadd data-char="${esc(c.id)}">Add</button></div>`;
+    body = `<div class="chedit sedit">
+      <section class="cesec"><h4>Enhancements</h4><table class="enhtable"><thead><tr><th>Card</th><th>Top</th><th>Bottom</th><th>Price</th></tr></thead><tbody>${rows}${drows}${rows || drows ? '' : '<tr><td colspan="4" class="enhempty">No enhancements logged for this class.</td></tr>'}</tbody></table></section>
+      <section class="cesec"><h4>Add enhancement</h4>
+        <div class="addrow"><input data-enh-card list="enh-cards" placeholder="Card" aria-label="Card"><datalist id="enh-cards">${(S.enhCards || []).map(n => `<option value="${esc(n)}">`).join('')}</datalist><input data-enh-top placeholder="Top" aria-label="Top"><input data-enh-bottom placeholder="Bottom" aria-label="Bottom"><input data-enh-price placeholder="Gold" aria-label="Price" style="width:70px" inputmode="numeric"><button type="button" class="btn6" data-enhadd data-char="${esc(c.id)}">Add</button></div></section>
+      <div class="chfoot"><button type="button" class="btn6" data-modalclose>Close</button></div></div>`;
   } else if (S.modal === 'history') {
-    title = 'History'; big = ' big';
+    title = 'History'; big = ' sbox';
     const log = S.log || [], kinds = [...new Set(log.map(e => e.kind))].sort(), f = S.histKind || 'all';
     const rows = log.filter(e => f === 'all' || e.kind === f);
-    body = `<div class="histbar"><label for="histfilter">Show</label><select id="histfilter" data-histkind><option value="all">All</option>${kinds.map(k => `<option${k === f ? ' selected' : ''}>${esc(k)}</option>`).join('')}</select><span class="hn">${rows.length} entries</span></div>
-      <div class="hlist">${rows.length ? rows.slice(0, 300).map(e => { const d = new Date(e.t); return `<div class="hrow"><time>${d.toLocaleDateString([], { day: '2-digit', month: '2-digit' })} ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</time><span class="hc">${esc(e.kind)}</span><span>${esc(e.d)}${e.u ? `<small>${esc(e.u)}</small>` : ''}</span></div>`; }).join('') : '<div class="hempty">No changes recorded for this character yet.</div>'}</div>`;
+    body = `<div class="chedit sedit"><section class="cesec"><h4>Changes</h4><div class="histbar"><label for="histfilter">Show</label><select id="histfilter" data-histkind><option value="all">All</option>${kinds.map(k => `<option${k === f ? ' selected' : ''}>${esc(k)}</option>`).join('')}</select><span class="hn">${rows.length} entries</span></div>
+      <div class="hlist">${rows.length ? rows.slice(0, 300).map(e => { const d = new Date(e.t); return `<div class="hrow"><time>${d.toLocaleDateString([], { day: '2-digit', month: '2-digit' })} ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</time><span class="hc">${esc(e.kind)}</span><span>${esc(e.d)}${e.u ? `<small>${esc(e.u)}</small>` : ''}</span></div>`; }).join('') : '<div class="hempty">No changes recorded for this character yet.</div>'}</div></section>
+      <div class="chfoot"><button type="button" class="btn6" data-modalclose>Close</button></div></div>`;
   } else if (S.modal === 'char') {
     title = 'Edit character';
     const f = S.cf || { name: c.name, seat: c.seat ?? '', cls: c.cls, special: c.special || [] };

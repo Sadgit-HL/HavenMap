@@ -1896,7 +1896,7 @@ function nextPost() {   // initiative = initiative of the card in play slot 1 (i
     actions: el => {
       const s = srcOf(el); if (!s) return [];
       const handle = s.el.querySelector(':scope > .tkh');
-      const list = [{ label: 'Enlarge', run: () => enlarge(s.el), disabled: !s.up }, { label: 'Add marker or sticker', run: () => handle && handle.click(), disabled: !handle }, { sep: true }, { header: 'Move to' }];
+      const list = [{ label: 'Enlarge', run: () => enlarge(s.el), disabled: !s.up }, { label: 'Edit marker or sticker', run: () => handle && handle.click(), disabled: !handle }, { sep: true }, { header: 'Move to' }];
       ZONES.filter(z => z[0] !== s.zone).forEach(z => list.push({ label: z[1], run: () => moveCard(s, z[0]) }));
       if (s.zone === 'hand') list.push({ sep: true }, { label: 'Move to start', run: () => { hand.insertBefore(s.el, hand.firstChild); reindexHand() } }, { label: 'Move to end', run: () => { hand.appendChild(s.el); reindexHand() } });
       return list;
