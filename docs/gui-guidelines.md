@@ -101,7 +101,7 @@ Use this for every new modal. The journal, the Edit character popup, Perks and m
 Start the content straight with the first section: no portrait, no header block, no intro line (decision of 2026-11-14 in the perks modal).
 
 Page sections (Overview cards and headings) use the same heading style as the popup sections: 11px, uppercase, accent.
-Exception: the Overview Party card edits its numbers in place (pencil turns the fields on). Every other editable group opens a popup.
+Every editable group opens a popup from its pencil, including the Overview Party card. Pencils never switch a page or card into an inline edit mode.
 An empty list shows one muted line (`.emptyline`), for example "No stickers yet.". Tables sit in `.tablewrap`, which scrolls sideways.
 
 ### 5.4 Lists and rows

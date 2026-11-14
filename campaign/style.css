@@ -321,6 +321,11 @@ button.evchip { cursor:pointer; }
 .overview .card .kv + .bar { margin-bottom:4px; }
 .overview > h2 { margin:22px 0 10px; padding-top:14px; border-top:1px solid var(--line); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); }
 .overview > .grid + h2 { margin-top:18px; }
+/* Reputation marker: its value beside it (flipped to the left near the right end) */
+.overview .bar i b { position:absolute; left:6px; top:-4px; font-size:11px; line-height:1; font-weight:700; color:var(--accent); white-space:nowrap; font-style:normal; }
+.overview .bar i b.flip { left:auto; right:6px; }
+.partybox { width:min(420px,100%); }
+.partybox .partyedit { margin-top:10px; padding-top:8px; border-top:1px solid var(--line); }
 /* Overview: stickers as tiles, tables that scroll sideways on a phone, one muted line for an empty list */
 .overview .sticker { width:110px; padding:6px; border:1px solid var(--line); border-radius:8px; background:#1c1711; }
 .overview .sticker img { border:0; border-radius:6px; }

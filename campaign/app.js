@@ -48,7 +48,6 @@ let record = null;
 let tab = 'Overview';              // top-level tab
 let sub = '';                      // sub-tab under Mercenaries: a character id or 'add'
 const editPages = new Set();        // pages (top-level tabs) currently in edit mode; each page has its own Edit button
-const editSections = new Set();     // Overview sections in edit mode (party); Overview has no page-wide edit. Stickers and classes open a modal instead
 let editing = false;               // derived in render(): is the visible page being edited
 let imgMode = 'hover';                 // card images: 'hover' (preview under the pointer) or 'always' (shown in the lists)
 const history = [];                                   // earlier records for undo, newest last
@@ -109,10 +108,7 @@ const signed = n => (n == null ? null : n >= 0 ? `+${n}` : String(n));
 const num = (act, key, value, { min, max, id = '', width = 56 } = {}) =>
   `<input type="number" class="num" style="width:${width}px" data-act="${act}" data-key="${esc(key)}" data-id="${esc(id)}" value="${esc(value ?? '')}"${min !== undefined ? ` min="${min}"` : ''}${max !== undefined ? ` max="${max}"` : ''}>`;
 const val = (editable, shown, input) => (editing && editable ? input : esc(shown));
-// Overview: each section has its own pencil; sval shows the input only while that section is being edited.
-const secBtn = (key, label) => `<button type="button" class="editbtn editicon secedit" data-secedit="${key}" aria-pressed="${editSections.has(key)}" aria-label="${editSections.has(key) ? 'Stop editing' : 'Edit'} ${esc(label)}" title="${editSections.has(key) ? 'Stop editing' : 'Edit'} ${esc(label)}">${PENCIL}</button>`;
 const modalBtn = (attr, label) => `<button type="button" class="editbtn editicon secedit" ${attr} aria-label="Edit ${esc(label)}" title="Edit ${esc(label)}">${PENCIL}</button>`;
-const sval = (key, shown, input) => (editSections.has(key) ? input : esc(shown));
 
 // --- shell: history, save, tabs --------------------------------------------------------------------------
 
@@ -197,20 +193,28 @@ function classChip(r, name) {
   return `<span class="chip ok" title="${esc(`Active: ${played.map(c => c.name).join(', ')}`)}">${esc(label)}</span>`;
 }
 
+// Average level of the party: derived from the mercenaries' own levels, else the stored value.
+const partyAvg = r => (r.chars.length ? r.chars.reduce((s, c) => s + (c.lv || 0), 0) / r.chars.length : r.party.avg);
+const avgText = avg => (Number.isInteger(avg) ? avg : avg.toFixed(2));
+
 function overview(r) {
   const { counts, days, avgDays } = scenarioCounts(r);
-  const repBar = v => `<div class="bar" role="img" title="${esc(v)}" aria-label="Value ${esc(v)}"><i style="left:${((20 - Math.max(-10, Math.min(20, v))) / 30) * 97}%"></i></div>`;
+  // The marker shows its value next to it; near the right end the label goes to the left of the marker.
+  const repBar = v => {
+    const pct = ((20 - Math.max(-10, Math.min(20, v))) / 30) * 97, flip = pct > 80;
+    return `<div class="bar" role="img" title="${esc(v)}" aria-label="Value ${esc(v)}"><i style="left:${pct}%"><b class="${flip ? 'flip' : ''}">${esc(v)}</b></i></div>`;
+  };
   const rep = (label, key) => kv(label, esc(r.rep[key])) + repBar(r.rep[key]);
   // Average level is derived from the mercenaries' own levels (not entered by hand); Normal difficulty is that
   // average level halved and rounded up (scenarioLevel adds the diff modifier on top, clamped 0..7).
-  const avg = r.chars.length ? r.chars.reduce((s, c) => s + (c.lv || 0), 0) / r.chars.length : r.party.avg;
+  const avg = partyAvg(r);
   return `
   <div class="overview">
   <div class="grid">
-    <div class="card"><h3>Party${secBtn('party', 'party')}</h3>${kv('Ø Character level', esc(Number.isInteger(avg) ? avg : avg.toFixed(2)))}
+    <div class="card"><h3>Party${modalBtn('data-party-open', 'party')}</h3>${kv('Ø Character level', esc(avgText(avg)))}
       ${kv('Normal difficulty', esc(Math.ceil(avg / 2)))}
-      ${kv('Difficulty', sval('party', r.party.diff > 0 ? `+${r.party.diff}` : String(r.party.diff), num('party', 'diff', r.party.diff, { min: -2, max: 4 })))}
-      ${kv('Inspiration', sval('party', r.party.insp, num('party', 'insp', r.party.insp, { min: 0, max: 99 })))}
+      ${kv('Difficulty', esc(r.party.diff > 0 ? `+${r.party.diff}` : String(r.party.diff)))}
+      ${kv('Inspiration', esc(r.party.insp))}
       ${kv('Enhancements', esc(r.enh.length))}</div>
     <div class="card"><h3>Prosperity</h3>${kv('Prosperity level', esc(prosperityLevel(r.pros)))}${kv('Prosperity checks', editPill('data-pros-open', 'Prosperity checks', r.pros))}${kv('Great Oak sanctuary', editPill('data-don-open', 'Great Oak sanctuary', r.don))}${kv('Imbuement', editPill('data-imb-open', 'Imbuement', r.imb))}</div>
     <div class="card"><h3>Reputation${modalBtn('data-rep-open', 'reputation')}</h3>${rep('Demons', 'demons')}${rep('Merchants', 'merchants')}${rep('City Guard', 'guard')}</div>
@@ -1112,6 +1116,34 @@ main.addEventListener('click', e => {
   renderRepModal();
 });
 
+// --- party modal: the Party card numbers. Difficulty and inspiration are edited here; the level figures are derived -----------
+let partyModal = false;
+const partyRoot = document.createElement('div');
+document.body.appendChild(partyRoot);
+function renderPartyModal() {
+  if (!partyModal || !record) { partyModal = false; partyRoot.innerHTML = ''; return; }
+  const keep = partyRoot.querySelector('.modalbox')?.scrollTop || 0;
+  const avg = partyAvg(record);
+  partyRoot.innerHTML = `<div class="modal" id="partyModal" role="dialog" aria-modal="true" aria-labelledby="partyTitle"><div class="modalbox partybox">
+    <button type="button" class="modalx" data-party-close aria-label="Close">&times;</button>
+    <h3 id="partyTitle">Party</h3>
+    ${kv('Ø Character level', esc(avgText(avg)))}
+    ${kv('Normal difficulty', esc(Math.ceil(avg / 2)))}
+    ${kv('Enhancements', esc(record.enh.length))}
+    <div class="partyedit">${kv('Difficulty', num('party', 'diff', record.party.diff, { min: -2, max: 4 }))}${kv('Inspiration', num('party', 'insp', record.party.insp, { min: 0, max: 99 }))}</div></div></div>`;
+  partyRoot.querySelector('.modalbox').scrollTop = keep;
+}
+function closePartyModal() { partyModal = false; renderPartyModal(); }
+partyRoot.addEventListener('click', e => {
+  if (e.target.id === 'partyModal' || e.target.closest('[data-party-close]')) closePartyModal();
+});
+partyRoot.addEventListener('change', e => { if (e.target.dataset.act === 'party') apply(e.target); });
+main.addEventListener('click', e => {
+  if (!e.target.closest('[data-party-open]')) return;
+  partyModal = true;
+  renderPartyModal();
+});
+
 // --- retired characters modal: add, edit and remove the retirements -------------------------------------------------------
 let retModal = false;
 const retRoot = document.createElement('div');
@@ -1184,6 +1216,7 @@ document.addEventListener('keydown', e => {
   else if (checkModals.some(m => m.open)) checkModals.find(m => m.open).close();
   else if (plModal) closePlModal();
   else if (prosModal) closeProsModal();
+  else if (partyModal) closePartyModal();
   else if (repModal) closeRepModal();
   else if (retModal) closeRetModal();
   else if (view.scnSel != null) closeScnModal();
@@ -1200,7 +1233,7 @@ function render() {
   if (!flowPage) view.flowFull = false;
   main.classList.toggle('wide', flowPage || (tab === 'Mercenaries' && currentSub() !== 'add'));                // the flowchart may use the whole window width
   document.body.classList.toggle('noscroll', !!view.flowFull);
-  editing = tab === 'Overview' ? editSections.size > 0 : tab === 'Mercenaries' ? false : editPages.has(tab);
+  editing = tab === 'Overview' || tab === 'Mercenaries' ? false : editPages.has(tab);
   saveView();
   const issues = validate(record);
   // The Items and Events pages carry their own pencil button (in the filter row / tab row). Scenarios has no page-wide
@@ -1213,6 +1246,7 @@ function render() {
   renderPlModal();
   renderProsModal();
   renderRepModal();
+  renderPartyModal();
   renderRetModal();
   renderScnModal();
   const html = pagebar + (issues.length ? `<div class="issues">${issues.length} issue(s): ${esc(issues.slice(0, 5).join('; '))}</div>` : '') + body;
@@ -2335,12 +2369,6 @@ main.addEventListener('keydown', e => {                      // an option of the
   if ((e.key === 'Enter' || e.key === ' ') && e.target.matches?.('[data-flow]')) { e.preventDefault(); view.scnSel = Number(e.target.dataset.flow); render(); }
 });
 main.addEventListener('click', e => {
-  const sec = e.target.closest('[data-secedit]')?.dataset.secedit;
-  if (sec) {
-    if (editSections.has(sec)) editSections.delete(sec); else editSections.add(sec);
-    render();
-    return;
-  }
   if (!e.target.closest('[data-pageedit]')) return;
   if (editPages.has(tab)) editPages.delete(tab); else editPages.add(tab);
   render();
@@ -2417,7 +2445,6 @@ document.getElementById('clear').addEventListener('click', async () => {
   record = null;
   history.length = 0;
   editPages.clear();
-  editSections.clear();
   render();
   closeSettings();
 });
