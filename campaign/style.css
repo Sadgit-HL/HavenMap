@@ -123,6 +123,20 @@ ul.tiles .cardrow.ins-before { box-shadow:inset 3px 0 0 var(--accent); } ul.tile
 .bgtile p { margin:0 0 6px; font-size:13px; line-height:1.4; flex:1; }
 .bgtile .badge { align-self:flex-start; }
 .itemtile.locked .cardpic { opacity:.4; filter:grayscale(1); }
+/* Cards tab: enhancement stickers drawn over the card picture (toggle in the filter bar) */
+.stkwrap { position:relative; }
+.stkwrap .tk { position:absolute; width:var(--tkw,14.6%); aspect-ratio:1; transform:translate(-50%,-50%); pointer-events:none; z-index:6; }
+.stkwrap .tk img { display:block; width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 1px 3px rgba(0,0,0,.9)); }
+/* toggle chip: pill with a check box, gold when on; the native checkbox stays in the DOM (visually hidden) for keyboard and screen readers */
+.ctoggle { position:relative; display:inline-flex; align-items:center; gap:7px; padding:4px 11px 4px 7px; border:1px solid var(--line); border-radius:999px; background:#2d2519; color:var(--muted); font-size:13px; line-height:1.2; cursor:pointer; user-select:none; transition:border-color .12s, color .12s, background .12s; }
+.ctoggle:hover { border-color:#6b5a3c; color:var(--text); }
+.ctoggle:active { transform:translateY(1px); }
+.ctoggle:has(input:focus-visible) { box-shadow:0 0 0 2px rgba(199,164,74,.25); }
+.ctoggle input { position:absolute; width:1px; height:1px; margin:0; opacity:0; pointer-events:none; }
+.ctbox { display:inline-grid; place-items:center; width:16px; height:16px; border:1.5px solid #6b5a3c; border-radius:4px; background:#1c1711; color:transparent; transition:background .12s, border-color .12s, color .12s; }
+.ctbox svg { width:12px; height:12px; }
+.ctoggle:has(input:checked) { border-color:var(--accent); background:rgba(199,164,74,.1); color:var(--accent); }
+.ctoggle:has(input:checked) .ctbox { background:var(--accent); border-color:var(--accent); color:#16130f; }
 .itemtile figcaption { display:flex; align-items:center; justify-content:space-between; gap:4px; font-size:12px; }
 .itemtile .cname { flex:1; min-width:0; line-height:1.15; }
 .itemtile .cname input { margin-right:4px; }
@@ -299,19 +313,22 @@ button.evchip { cursor:pointer; }
 .sticker img { display:block; width:100%; max-height:110px; object-fit:contain; margin:0 auto 4px; border-radius:6px; border:1px solid var(--line); }
 .stickers .chip { align-self:center; }
 .secedit { display:inline-flex; align-items:center; justify-content:center; padding:2px 6px; margin-left:8px; vertical-align:middle; }
-/* checkbox-list modals (stickers, classes): compact rows, one section per group */
-.modalbox.modalwide { width:min(1000px,100%); }
-.modalgrid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:8px 16px; align-items:start; }
-.modalbox:has(.modalgrid) { padding:10px 12px; }
-.modalbox:has(.modalgrid) h3 { margin-bottom:6px; }
-.modalhead, .modalsec .modalrow { display:grid; grid-template-columns:minmax(0,1fr) repeat(var(--nc, 1), 54px); align-items:center; }
-.modalhead { border-bottom:1px solid var(--accent); padding:0 4px 2px; margin-bottom:2px; }
-.modalhead h4 { margin:0; font-size:13px; color:var(--accent); min-width:0; line-height:1.15; }
-.modalhc { display:flex; flex-direction:column; align-items:center; gap:1px; cursor:pointer; width:54px; min-width:0; }
-.modalhc small { font-size:10px; color:var(--muted); line-height:1; }
-.modalsec .modalrows { gap:0; }
-.modalsec .modalrow { gap:0; padding:1px 4px; font-size:13px; line-height:1.25; }
-.modalsec .modalrow input, .modalhc input { justify-self:center; width:16px; height:16px; margin:0; accent-color:var(--accent); }
+/* tile modals (campaign stickers, classes): 760px box, one section per group, a grid of tiles that turn gold when on */
+.modalbox.modalwide { width:min(760px,100%); padding:10px 12px; }
+.modalwide h3 { margin-bottom:6px; }
+.modalhead { display:flex; align-items:center; justify-content:space-between; gap:8px; border-bottom:1px solid var(--line); padding-bottom:4px; }
+.modalhead h4 { margin:0; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); min-width:0; }
+.modalhc { display:flex; align-items:center; gap:4px; cursor:pointer; font-size:12px; color:var(--muted); }
+.modalhc input { width:15px; height:15px; margin:0; accent-color:var(--accent); }
+.ntiles { display:grid; grid-template-columns:repeat(auto-fill, minmax(190px, 1fr)); gap:6px; }
+.ntile { display:flex; flex-direction:column; align-items:center; gap:4px; padding:6px; border:1px solid var(--line); border-radius:8px; background:#1c1711; font-size:13px; text-align:center; cursor:pointer; transition:border-color .12s, color .12s; }
+.ntile:hover { border-color:#6b5a3c; }
+.ntile.on { border-color:var(--accent); background:rgba(199,164,74,.1); }
+.ntile img { display:block; width:100%; max-height:110px; object-fit:contain; border-radius:6px; }
+.ntile > input { width:16px; height:16px; margin:0; accent-color:var(--accent); }
+.ntname { line-height:1.25; overflow-wrap:anywhere; }
+.ntchk { display:flex; align-items:center; gap:4px; font-size:12px; color:var(--muted); cursor:pointer; }
+.ntchk input { width:15px; height:15px; margin:0; accent-color:var(--accent); }
 .plrow { display:flex; gap:8px; align-items:center; margin:3px 0; }
 .plrow .txt { flex:1; min-width:0; }
 .pladd { margin-top:10px; padding-top:8px; border-top:1px solid var(--line); }
@@ -438,7 +455,11 @@ body.noscroll { overflow:hidden; }
 .pm .chlist button:hover, .pm .chlist button[aria-current] { background: #2d2519; }
 .pm .chlist button[aria-current] { color: var(--accent); }
 /* the character row above the top bar is gone: the playmat takes its height */
-main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); }
+main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); min-height: 420px; }
+/* top bar stays on one line; below 1400px the BGG buttons show their icon only (title and aria-label stay) */
+.pm .hud { flex-wrap: nowrap; }
+.pm .hud .xp { flex: 0 1 240px; min-width: 120px; }
+@media (max-width: 1400px) { .pm .hud .bggb > span { display: none; } .pm .hud .bggb { padding: 5px 8px; } }
 
 .pm .hud .who, .pm .hud .portrait { cursor: pointer; }
 .pm .hud .who:hover .chname span { color: var(--accent); }
@@ -504,16 +525,16 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); }
 .pm .hbar .cnt { font-size: 12px; color: var(--muted); }
 .pm .hbar .cnt b { color: var(--text); }
 .pm .hbar [data-amedit][aria-pressed="true"] { background: var(--accent); color: #120f0b; border-color: var(--accent); font-weight: 700; }
-.pm .amv { position: absolute; left: 12px; right: 12px; top: 36px; bottom: 8px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(200px, 30%); gap: 10px; z-index: 2; }
-.pm .amv .area { border: 1px solid var(--line); border-radius: 10px; background: rgba(18,15,11,.7); padding: 8px 10px; overflow: auto; min-height: 0; display: flex; flex-direction: column; }
+.pm .amv { container-type: size; position: absolute; left: 12px; right: 12px; top: 36px; bottom: 8px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(200px, 30%); gap: 10px; z-index: 2; }
+.pm .amv .area { --stkw: var(--cu, 100px); border: 1px solid var(--line); border-radius: 10px; background: rgba(18,15,11,.7); padding: 8px 10px; overflow: auto; min-height: 0; display: flex; flex-direction: column; }
 .pm .amv .area > h5 { margin: 0 0 6px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); flex: none; }
 .pm .amv .area.drop { outline: 2px dashed var(--accent); outline-offset: -4px; background: rgba(40,32,20,.8); }
 .pm .amv .stacks { display: flex; flex-wrap: wrap; gap: 14px 14px; align-content: flex-start; flex: 1; padding-top: 8px; overflow: auto; }
-.pm .amv .stk { position: relative; width: 104px; flex: none; cursor: grab; user-select: none; -webkit-user-select: none; margin-top: 9px; }
+.pm .amv .stk { position: relative; width: var(--stkw); flex: none; cursor: grab; user-select: none; -webkit-user-select: none; margin-top: 9px; }
 .pm .amv .stk .stkface { display: block; position: relative; z-index: 1; }
-.pm .amv .stk .pc, .pm .amv .stk .amslot { --pc-width: 104px; border: 1px solid var(--line); border-radius: 5px; overflow: hidden; display: block; }
+.pm .amv .stk .pc, .pm .amv .stk .amslot { --pc-width: var(--stkw); border: 1px solid var(--line); border-radius: 5px; overflow: hidden; display: block; }
 .pm .amv .stk img { display: block; max-width: 100%; pointer-events: none; }
-.pm .amv .stk .edge { position: absolute; left: 0; top: 0; width: 104px; height: 68px; border-radius: 5px; background: #2b2219; border: 1px solid #6b5a3c; box-shadow: 0 1px 3px rgba(0,0,0,.7); }
+.pm .amv .stk .edge { position: absolute; left: 0; top: 0; width: var(--stkw); height: calc(var(--stkw) * .65); border-radius: 5px; background: #2b2219; border: 1px solid #6b5a3c; box-shadow: 0 1px 3px rgba(0,0,0,.7); }
 .pm .amv .stk .nb { position: absolute; right: -6px; top: -9px; z-index: 3; min-width: 22px; height: 22px; padding: 0 5px; border-radius: 99px; background: var(--accent); color: #120f0b; font-weight: 800; font-size: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px #000; }
 .pm .amv .stkctl { display: flex; align-items: center; justify-content: center; gap: 4px; margin-top: 5px; position: relative; z-index: 2; }
 .pm .amv .stkctl button { width: 26px; height: 26px; border: 1px solid var(--line); background: #2d2519; color: var(--text); border-radius: 6px; cursor: pointer; font-weight: 800; }
@@ -534,9 +555,9 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); }
 .pm .amv .stacks { padding: 16px 14px 6px 8px; }
 .pm .amv .stk .nb { right: -8px; top: -11px; }
 /* modifier cards 25% larger (104 -> 130 px wide) */
-.pm .amv .stk { width: 130px; }
-.pm .amv .stk .pc, .pm .amv .stk .amslot { --pc-width: 130px; }
-.pm .amv .stk .edge { width: 130px; height: 85px; }
+.pm .amv .stk { width: var(--stkw); }
+.pm .amv .stk .pc, .pm .amv .stk .amslot { --pc-width: var(--stkw); }
+.pm .amv .stk .edge { width: var(--stkw); height: calc(var(--stkw) * .65); }
 
 /* modifier discard: one top card, as wide as from the second play slot to the right edge */
 .pm .amv { --ch: calc(32cqh - 36px); grid-template-columns: minmax(0, 1fr) calc(128px + var(--ch) * 5 / 7); }
@@ -773,3 +794,51 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); }
 /* equip items dialog: the Owned / Equipped badge sits so that its lower edge meets the top edge of the card (card border 2px, badge 20px tall) */
 .pm .itgroups .pcard .cbadge { top: -22px; }
 .pm .itgroups .pcard { margin-top: 22px; }
+
+/* Journal: the same look as the Edit character popup (hero, sections, footer buttons); the scrolling content stays inside the fixed box */
+.pm .jbox .chedit.jedit { flex: 1; min-height: 0; }
+.pm .jbox .jtabs { display: flex; margin-bottom: 0; }
+.pm .jbox .jtabs button { flex: 1; padding: 6px 8px; }
+.pm .jbox .jtab { display: flex; flex-direction: column; gap: 12px; }
+.pm .jbox .jtab[hidden] { display: none; }
+.pm .jbox .pqcheck input[type=checkbox], .pm .jbox .chedit input[type=checkbox] { height: auto; width: 15px; padding: 0; accent-color: var(--accent); }
+.pm .jbox .chedit label.pqcheck { flex-direction: row; align-items: center; }
+.pm .jbox .jprimary { background: var(--accent); color: #120f0b; border-color: var(--accent); font-weight: 800; }
+.pm .jbox .chfoot .btn6 { padding: 7px 14px; font-size: 13px; }
+.pm .jbox .pqdeck { gap: 5px; margin-bottom: 0; }
+.pm .jbox .pqchip { min-width: 30px; height: 26px; }
+.pm .jbox .pqdock { gap: 16px; }
+.pm .jbox .pqreq { background: rgba(0,0,0,.2); }
+.pm .jbox .notespane { gap: 12px; }
+.pm .jbox .notespane .notesec { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.pm .jbox .notespane .notesarea { flex: 1; min-height: 160px; height: auto; }
+.pm .jbox .notespane .mdprev { flex: 1; min-height: 160px; }
+
+/* Journal sized to its content: the box grows with the tab, up to 90% of the window; long tabs scroll inside it */
+.pm .jbox { height: auto; max-height: 90vh; }
+.pm .jbox .notespane .notesarea, .pm .jbox .notespane .mdprev { min-height: 260px; }
+
+.pm .jbox .pqchip.st-locked { opacity: .4; border-style: dotted; }
+.pm .jbox .pqchip.st-deck { color: var(--text); }
+.pm .pqlocked { aspect-ratio: 5 / 7; width: 100%; display: flex; align-items: center; justify-content: center; border: 1px dashed #6b5a3c; border-radius: 10px; background: #1c1711; color: var(--muted); font-size: 15px; letter-spacing: .08em; text-transform: uppercase; line-height: 1.2; }
+.pm .pqstatic { padding: 6px 10px; border: 1px solid var(--info); border-radius: 8px; color: var(--info); font-size: 13px; }
+/* Journal: the top edge stays put when the tab changes (the box grows or shrinks at the bottom only) */
+.pm .mmodal:has(.jbox) { align-items: flex-start; padding-top: 6vh; }
+
+/* Journal buttons: the same look as the BGG code buttons (Turn, Cards) in the character bar; the primary button is not highlighted */
+.pm .jbox .btn6, .pm .jbox .btn6.jprimary { border: 1px solid #2b2318; border-radius: 10px; background: #4a3f2e; color: #e5d3a8; font: inherit; font-size: 13px; font-weight: 700; padding: 7px 14px; box-shadow: inset 0 1px 2px rgba(0,0,0,.5), inset 0 -1px 0 rgba(255,235,180,.08); transition: background .14s, color .14s; }
+.pm .jbox .btn6:hover:not(:disabled), .pm .jbox .btn6.jprimary:hover:not(:disabled) { background: #534735; color: #f0e0b8; }
+.pm .jbox .btn6:active:not(:disabled) { transform: translateY(1px); box-shadow: inset 0 2px 4px rgba(0,0,0,.6); }
+.pm .jbox .btn6:disabled { opacity: .45; cursor: not-allowed; }
+.pm .jbox .btn6 svg { color: #e5d3a8; }
+
+/* Modifiers view: a stack or a placed card held for touch drag (the same look as the hand cards) */
+.pm .amv .stk.armed, .pm .amv .mini.armed { outline: 2px solid var(--accent); }
+.pm .amv .stk.dragging, .pm .amv .mini.dragging { opacity: .35; }
+
+/* Popups of the campaign page (players, retired characters, prosperity, reputation): the playmat popup pattern (sections, footer) */
+.chedit { display:flex; flex-direction:column; gap:12px; }
+.chedit .cesec { display:flex; flex-direction:column; gap:8px; padding:10px 12px 12px; border:1px solid var(--line); border-radius:10px; background:rgba(0,0,0,.18); }
+.chedit .cesec h4 { margin:0; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); }
+.chedit .chfoot { display:flex; justify-content:flex-end; gap:10px; margin-top:2px; }
+.chedit .cesec .modalrows { display:flex; flex-direction:column; gap:6px; }

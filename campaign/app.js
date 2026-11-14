@@ -9,7 +9,7 @@ import { BATTLE_GOALS } from '../scripts/games/battle_goals.js';
 import { escapeHtml as esc } from '../scripts/escape.js';
 import { localStore } from '../scripts/campaign/store.js';
 import { cardImageUrl, itemImageUrl, eventImageUrl, matImageUrl, pqImageUrl, cardBackUrl } from '../scripts/campaign/cardImages.js';
-import { playmatHtml, XP_STEPS, turnPost, cardsPost, goalRollCode, questRollCode, cleanSettings, displaySettingsHtml } from './playmat.js';
+import { playmatHtml, markersHtml, XP_STEPS, turnPost, cardsPost, goalRollCode, questRollCode, cleanSettings, displaySettingsHtml } from './playmat.js';
 import { tokenDefs, markerTokens, MARK_STICKERS } from '../scripts/campaign/classTokens.js';
 import { bannerUrl, bannerCode } from '../scripts/campaign/bggBanners.js';
 import { GH2_PQ } from '../scripts/games/gh2_pq_text.js';
@@ -51,7 +51,7 @@ const editPages = new Set();        // pages (top-level tabs) currently in edit 
 let editing = false;               // derived in render(): is the visible page being edited
 let imgMode = 'hover';                 // card images: 'hover' (preview under the pointer) or 'always' (shown in the lists)
 const history = [];                                   // earlier records for undo, newest last
-const view = { flowFull: false, scnView: 'table', flowShow: 'progress', flowLane: '', flowZoom: 'm', scnSel: null, scnStatus: '', scnSearch: '', scnSort: { col: '', dir: 1 }, itemSlot: '', itemSearch: '', itemShow: 'unlocked', itemView: 'list', itemSize: 'm', itemSort: { col: '', dir: 1 }, cardType: 'abilities', cardSlot: '', cardChk: '', cardKind: 'city', cardSide: 'front', cardDeck: '', cardMon: '', cardMLv: '', cardShow: 'unlocked', cardCls: '', cardLv: '', cardSearch: '', cardSize: 's' };   // itemView: 'list' | 'grid'
+const view = { flowFull: false, scnView: 'table', flowShow: 'progress', flowLane: '', flowZoom: 'm', scnSel: null, scnStatus: '', scnSearch: '', scnSort: { col: '', dir: 1 }, itemSlot: '', itemSearch: '', itemShow: 'unlocked', itemView: 'list', itemSize: 'm', itemSort: { col: '', dir: 1 }, cardType: 'abilities', cardSlot: '', cardChk: '', cardKind: 'city', cardSide: 'front', cardDeck: '', cardMon: '', cardMLv: '', cardShow: 'unlocked', cardCls: '', cardLv: '', cardSearch: '', cardSize: 's', cardStk: true };   // itemView: 'list' | 'grid'
 
 // Level order of ability cards: 1, X (the level 1.1 cards), 2 ... 9, then M (mastery).
 const lvRank = lv => (lv === 'X' ? 1.5 : lv === 'M' ? 99 : Number(lv));
@@ -64,7 +64,7 @@ const ICON_CHECK = '<svg viewBox="0 0 24 24" width="16" height="16" fill="curren
 const ITEM_SIZES = { s: 150, m: 188, l: 250 };      // minimum tile width in px for the item grid
 // Filter and view settings are kept in this browser (not the search texts: a stale search would hide rows after a reload).
 const VIEW_KEY = 'havenmap.campaign.view';
-const VIEW_SAVED = ['scnView', 'flowShow', 'flowLane', 'flowZoom', 'scnStatus', 'scnSort', 'itemSlot', 'itemShow', 'itemView', 'itemSize', 'itemSort', 'cardType', 'cardSlot', 'cardKind', 'cardSide', 'cardDeck', 'cardMon', 'cardMLv', 'cardShow', 'cardCls', 'cardLv', 'cardSize'];
+const VIEW_SAVED = ['scnView', 'flowShow', 'flowLane', 'flowZoom', 'scnStatus', 'scnSort', 'itemSlot', 'itemShow', 'itemView', 'itemSize', 'itemSort', 'cardType', 'cardSlot', 'cardKind', 'cardSide', 'cardDeck', 'cardMon', 'cardMLv', 'cardShow', 'cardCls', 'cardLv', 'cardSize', 'cardStk'];
 function saveView() {
   try { localStorage.setItem(VIEW_KEY, JSON.stringify(Object.fromEntries(VIEW_SAVED.map(k => [k, view[k]])))); } catch { /* ignore */ }
 }
@@ -92,6 +92,7 @@ function loadView() {
     if (typeof v.cardCls === 'string') view.cardCls = v.cardCls;
     if (typeof v.cardLv === 'string') view.cardLv = v.cardLv;
     if (v.cardSize in ITEM_SIZES) view.cardSize = v.cardSize;
+    if (typeof v.cardStk === 'boolean') view.cardStk = v.cardStk;
     if (v.itemSort && typeof v.itemSort.col === 'string' && (v.itemSort.dir === 1 || v.itemSort.dir === -1)) view.itemSort = { col: v.itemSort.col, dir: v.itemSort.dir };
     if (v.scnSort && typeof v.scnSort.col === 'string' && (v.scnSort.dir === 1 || v.scnSort.dir === -1)) view.scnSort = { col: v.scnSort.col, dir: v.scnSort.dir };
   } catch { /* ignore */ }
@@ -441,6 +442,14 @@ function cardPicture(card, id) {
   const name = pretty(card?.slug ?? id);
   return url ? `<img class="cardpic" src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false">` : `<div class="noimg">${esc(name)}</div>`;
 }
+// Enhancement stickers on a card (key 'c:<id>' or 'i:<id>') from every character's markers, drawn over the card when the Cards tab shows them.
+function stkMarks(key) {
+  if (!view.cardStk) return '';
+  return markersHtml(record.chars.flatMap(c => (c.mk?.[key] || []).filter(m => m.s)));
+}
+function stkToggle() {
+  return `<label class="ctoggle"><input type="checkbox" id="cardStk" ${view.cardStk ? 'checked' : ''}><span class="ctbox" aria-hidden="true">${ICON_CHECK}</span><span>Stickers</span></label>`;
+}
 
 // Traits the class brings that are not on the sheet's list yet, the species (Vermling, Quatryl, ...) among them. Events check
 // them like traits.
@@ -490,7 +499,7 @@ const pmState = c => ({
   itemId: pm.itemId, mkKey: pm.mkKey, mkIdx: pm.mkIdx, chars: subTabList(), chMenu: pm.chMenu, pileZ: pm.pileZ, cf: pm.cf, players: record.players, classChips: classTraits({ ...c, cls: pm.cf?.cls || c.cls }).map(t => chip(t)).join(''), classOpts: pm.modal === 'char' ? charClassOptions(c) : [], mkSel: mkSelOf(c), set: pmset, ptab: pm.ptab, sheet: pm.sheet,
   items: pm.modal === 'items' ? { pool: ITEMS.filter(i => record.items.unl.includes(i.id) && ownsItem(c, i.id)), isel: pm.isel[c.id] || [] } : null,
   deck: pm.modal === 'deck' ? { cards: CARDS.filter(k => k.cls === classByName(c.cls)?.i).sort((a, b) => cardLevel(a.id) - cardLevel(b.id) || (a.ini ?? 1e9) - (b.ini ?? 1e9)), hsel: pm.hsel[c.id] || [], armed: pm.hsArmed } : null,
-  amd: pm.modal === 'amd' || pm.modal === 'amdpile' ? drawState(c, pm.amd[c.id]) : null, hview: pm.hview, amEdit: pm.amEdit, amv: pm.hview === 'amd' ? drawState(c, pm.amd[c.id]) : null, amZoom: pm.modal === 'amd' ? pm.amZoom : null,
+  amd: pm.modal === 'amd' || pm.modal === 'amdpile' ? drawState(c, pm.amd[c.id]) : null, hview: pm.hview, amEdit: pm.amEdit, amv: pm.hview === 'amd' || pm.ptab === 'amd' ? drawState(c, pm.amd[c.id]) : null, amZoom: pm.modal === 'amd' ? pm.amZoom : null,
   customCodes: pm.modal === 'codes' ? loadCodes() : [],
   enh: pm.modal === 'enh' ? record.enh.map((e, i) => ({ e, i })).filter(x => x.e.cls === c.cls) : [],
   enhCards: pm.modal === 'enh' ? CARDS.filter(k => k.cls === classByName(c.cls)?.i).map(k => pretty(k.slug)) : [],
@@ -737,11 +746,11 @@ function cardsPage(r) {
       && (!view.cardSlot || i.slot === view.cardSlot)
       && (!q || pretty(i.slug).toLowerCase().includes(q) || String(i.id).toLowerCase() === q));
     const filters = `<div class="filters">${typeSel}${showSel}<select id="cardSlot"><option value="">All slots</option>${slots.map(sl => `<option ${view.cardSlot === sl ? 'selected' : ''}>${esc(sl)}</option>`).join('')}</select>
-      <input id="cardSearch" type="search" placeholder="Item name or number" value="${esc(view.cardSearch)}"></div>`;
+      <input id="cardSearch" type="search" placeholder="Item name or number" value="${esc(view.cardSearch)}">${stkToggle()}</div>`;
     return filters + sizeBar(rows.length) + (rows.length ? `<div class="itemgrid" style="--tile-min:${ITEM_SIZES[view.cardSize]}px">${rows.map(i => {
       const url = itemImageUrl(i), name = pretty(i.slug);
       const pic = url ? `<img class="cardpic" src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false">` : `<div class="noimg">${esc(name)}</div>`;
-      return `<figure class="itemtile"${url ? ` data-img="${esc(url)}"` : ''} title="${esc(`${i.id} ${name}`)}">${pic}
+      return `<figure class="itemtile"${url ? ` data-img="${esc(url)}"` : ''} title="${esc(`${i.id} ${name}`)}"><div class="stkwrap">${pic}${stkMarks(`i:${i.id}`)}</div>
         <figcaption><span class="cname">${esc(name)}</span><span class="badge">${esc(i.id)}</span></figcaption></figure>`;
     }).join('')}</div>` : none);
   }
@@ -770,12 +779,12 @@ function cardsPage(r) {
   const filters = `<div class="filters">${typeSel}${showSel}
     <select id="cardCls"><option value="">All classes</option>${classes.map(c => `<option value="${esc(c.name)}" ${view.cardCls === c.name ? 'selected' : ''}>${esc(c.name)}${open.has(c.name.toLowerCase()) ? '' : ' (locked)'}</option>`).join('')}</select>
     <select id="cardLv"><option value="">All levels</option>${levels.map(l => `<option value="${esc(l)}" ${view.cardLv === l ? 'selected' : ''}>${l === 'M' ? 'Pack' : `Level ${esc(l)}`}</option>`).join('')}</select>
-    <input id="cardSearch" type="search" placeholder="Name or levels, e.g. 1-3" title="Search by name; a range like 1-3 lists levels 1, X, 2 and 3" value="${esc(view.cardSearch)}"></div>`;
+    <input id="cardSearch" type="search" placeholder="Name or levels, e.g. 1-3" title="Search by name; a range like 1-3 lists levels 1, X, 2 and 3" value="${esc(view.cardSearch)}">${stkToggle()}</div>`;
   const bar = sizeBar(rows.length);
   if (!classes.length) return filters + '<div class="empty">No classes unlocked yet.</div>';
   return filters + bar + (rows.length ? `<div class="itemgrid" style="--tile-min:${ITEM_SIZES[view.cardSize]}px">${rows.map(c => {
     const url = cardImageUrl(c), name = pretty(c.slug);
-    return `<figure class="itemtile"${url ? ` data-img="${esc(url)}"` : ''} title="${esc(`${byIdx.get(c.cls).name}: ${name}`)}">${cardPicture(c, c.id)}
+    return `<figure class="itemtile"${url ? ` data-img="${esc(url)}"` : ''} title="${esc(`${byIdx.get(c.cls).name}: ${name}`)}"><div class="stkwrap">${cardPicture(c, c.id)}${stkMarks(`c:${c.id}`)}</div>
       <figcaption><span class="cname">${esc(name)}</span><span class="badge" title="${c.ini != null ? 'Initiative ' + c.ini : ''}">${esc(lvLabel(c.lv))}${c.ini != null ? ` &middot; ${c.ini}` : ''}</span></figcaption></figure>`;
   }).join('')}</div>` : none);
 }
@@ -879,7 +888,13 @@ function checkModal({ id, title, openAttr, cols, items, set, setGroup }) {
   const m = { open: false, focus: '' };
   const multi = cols.length > 1;
   const box = (t, c) => `<input type="checkbox" data-ck="${esc(t.name)}" data-col="${esc(c.key)}" aria-label="${esc(multi ? `${t.name}: ${c.label}` : t.name)}" ${t.on[c.key] ? 'checked' : ''}>`;
-  const row = t => `<label class="modalrow"><span>${esc(t.name)}</span>${cols.map(c => box(t, c)).join('')}</label>`;
+  // Tile: gold when any of its boxes is on. One column: the whole tile is the toggle. Several columns: one small toggle per column.
+  const tile = t => {
+    const on = cols.some(c => t.on[c.key]);
+    const pic = t.img ? `<img src="${esc(t.img)}" alt="" loading="lazy">` : '';
+    if (!multi) return `<label class="ntile${on ? ' on' : ''}">${pic}<span class="ntname">${esc(t.name)}</span>${box(t, cols[0])}</label>`;
+    return `<div class="ntile${on ? ' on' : ''}">${pic}<span class="ntname">${esc(t.name)}</span>${cols.map(c => `<label class="ntchk">${box(t, c)}<small>${esc(c.label)}</small></label>`).join('')}</div>`;
+  };
   // Section header: group name and count; with setGroup, a labelled checkbox per column that switches the whole group.
   const head = (g, mine) => `<div class="modalhead"><h4>${esc(g)} (${mine.length})</h4>${setGroup ? cols.map(c => `<label class="modalhc"><small>${esc(c.label)}</small><input type="checkbox" data-gk="${esc(g)}" data-col="${esc(c.key)}" data-all="${mine.every(t => t.on[c.key]) ? 1 : 0}" data-some="${mine.some(t => t.on[c.key]) ? 1 : 0}" aria-label="${esc(`${g}: all ${c.label}`)}"></label>`).join('') : ''}</div>`;
   m.render = () => {
@@ -888,11 +903,11 @@ function checkModal({ id, title, openAttr, cols, items, set, setGroup }) {
     const groups = [...new Set(list.map(t => t.group ?? title))];
     const secs = groups.map(g => {
       const mine = list.filter(t => (t.group ?? title) === g);
-      return `<section class="modalsec">${head(g, mine)}<div class="modalrows">${mine.map(row).join('')}</div></section>`;
+      return `<section class="cesec">${head(g, mine)}<div class="ntiles">${mine.map(tile).join('')}</div></section>`;
     }).join('');
-    root.innerHTML = `<div class="modal" id="${id}" role="dialog" aria-modal="true" aria-labelledby="${id}Title"><div class="modalbox${groups.length > 1 ? ' modalwide' : ''}" style="--nc:${cols.length}">
+    root.innerHTML = `<div class="modal" id="${id}" role="dialog" aria-modal="true" aria-labelledby="${id}Title"><div class="modalbox modalwide" style="--nc:${cols.length}">
       <button type="button" class="modalx" data-ck-close aria-label="Close">&times;</button>
-      <h3 id="${id}Title">${esc(title)}</h3><div class="modalgrid">${secs}</div></div></div>`;
+      <h3 id="${id}Title">${esc(title)}</h3><div class="chedit">${secs}<div class="chfoot"><button type="button" class="btn" data-ck-close>Close</button></div></div></div></div>`;
     for (const h of root.querySelectorAll('[data-gk]')) {
       h.checked = h.dataset.all === '1';
       h.indeterminate = h.dataset.all !== '1' && h.dataset.some === '1';
@@ -923,7 +938,7 @@ checkModal({
   items: () => {
     const have = lower(record.stk), known = new Set(STICKERS.map(t => t.name.toLowerCase()));
     const extra = record.stk.filter(n => !known.has(String(n).toLowerCase()));
-    return [...STICKERS.map(t => t.name), ...extra].map(name => ({ name, on: { on: have.has(String(name).toLowerCase()) } }));
+    return [...STICKERS.map(t => t.name), ...extra].map(name => ({ name, img: STICKERS.find(t => t.name === name)?.img, on: { on: have.has(String(name).toLowerCase()) } }));
   },
   set: (r, n, _k, on) => (on ? ed.addSticker(r, n) : ed.removeSticker(r, n)),
 });
@@ -946,11 +961,15 @@ function renderPlModal() {
   const keep = plRoot.querySelector('[data-pl-new]');
   const draft = keep ? keep.value : '';
   const hadFocus = keep && document.activeElement === keep;
-  plRoot.innerHTML = `<div class="modal" id="plModal" role="dialog" aria-modal="true" aria-labelledby="plTitle"><div class="modalbox">
+  plRoot.innerHTML = `<div class="modal" id="plModal" role="dialog" aria-modal="true" aria-labelledby="plTitle"><div class="modalbox plbox">
     <button type="button" class="modalx" data-pl-close aria-label="Close">&times;</button>
     <h3 id="plTitle">Players</h3>
-    <div class="modalrows">${record.players.map(p => `<div class="plrow"><input type="text" class="txt" maxlength="40" data-pl-seat="${esc(p.seat)}" value="${esc(p.name)}" aria-label="Player name, seat ${esc(p.seat + 1)}"><button type="button" class="chip" data-pl-del="${esc(p.seat)}" title="Remove this player">Remove</button></div>`).join('') || '<div class="empty">no players yet</div>'}</div>
-    <div class="plrow pladd"><input type="text" class="txt" maxlength="40" placeholder="New player" data-pl-new value="${esc(draft)}" aria-label="New player name"><button type="button" class="chip" data-pl-add>Add</button></div></div></div>`;
+    <div class="chedit">
+      <section class="cesec"><h4>Players</h4>
+        <div class="modalrows">${record.players.map(p => `<div class="plrow"><input type="text" class="txt" maxlength="40" data-pl-seat="${esc(p.seat)}" value="${esc(p.name)}" aria-label="Player name, seat ${esc(p.seat + 1)}"><button type="button" class="chip" data-pl-del="${esc(p.seat)}" title="Remove this player">Remove</button></div>`).join('') || noneText('No players yet.')}</div></section>
+      <section class="cesec"><h4>Add player</h4>
+        <div class="plrow"><input type="text" class="txt" maxlength="40" placeholder="New player" data-pl-new value="${esc(draft)}" aria-label="New player name"><button type="button" class="chip" data-pl-add>Add</button></div></section>
+      <div class="chfoot"><button type="button" class="btn" data-pl-close>Close</button></div></div></div></div>`;
   if (hadFocus || !keep) plRoot.querySelector('[data-pl-new]').focus();
 }
 function closePlModal() { plModal = false; renderPlModal(); }
@@ -1045,7 +1064,8 @@ function renderProsModal() {
   prosRoot.innerHTML = `<div class="modal" id="prosModal" role="dialog" aria-modal="true" aria-labelledby="prosTitle"><div class="modalbox modalwide ptmodal">
     <button type="button" class="modalx" data-pros-close aria-label="Close">&times;</button>
     <h3 id="prosTitle">${esc(title)}</h3>
-    ${body}</div></div>`;
+    <div class="chedit">${body}
+      <div class="chfoot"><button type="button" class="btn" data-pros-close>Close</button></div></div></div></div>`;
   prosRoot.querySelector('.modalbox').scrollTop = keep;
 }
 function closeProsModal() { prosModal = false; renderProsModal(); }
@@ -1099,7 +1119,8 @@ function renderRepModal() {
   repRoot.innerHTML = `<div class="modal" id="repModal" role="dialog" aria-modal="true" aria-labelledby="repTitle"><div class="modalbox modalwide ptmodal repmodal">
     <button type="button" class="modalx" data-rep-close aria-label="Close">&times;</button>
     <h3 id="repTitle">Reputation</h3>
-    ${secs}${any ? `<div class="ptnotes repany">${any}</div>` : ''}</div></div>`;
+    <div class="chedit">${secs}${any ? `<div class="ptnotes repany">${any}</div>` : ''}
+      <div class="chfoot"><button type="button" class="btn" data-rep-close>Close</button></div></div></div></div>`;
   repRoot.querySelector('.modalbox').scrollTop = keep;
 }
 function closeRepModal() { repModal = false; renderRepModal(); }
@@ -1162,9 +1183,12 @@ function renderRetModal() {
     <button type="button" class="modalx" data-ret-close aria-label="Close">&times;</button>
     <h3 id="retTitle">Retired Characters</h3>
     <datalist id="retPlayers">${record.players.map(p => `<option value="${esc(p.name)}">`).join('')}</datalist>
-    ${record.retired.length ? '<div class="retrow rethead"><span>Class</span><span>Player</span><span>Name</span><span>Lv</span><span>Perks</span><span>Masteries</span><span></span></div>' : ''}
-    <div class="modalrows">${rows || '<div class="empty">no retired characters yet</div>'}</div>
-    <div class="modalfoot" style="justify-content:flex-start"><button type="button" class="chip" data-ret-add>+ Add retired character</button></div></div></div>`;
+    <div class="chedit">
+      <section class="cesec"><h4>Retired characters</h4>
+        ${record.retired.length ? '<div class="retrow rethead"><span>Class</span><span>Player</span><span>Name</span><span>Lv</span><span>Perks</span><span>Masteries</span><span></span></div>' : ''}
+        <div class="modalrows">${rows || noneText('No retired characters yet.')}</div>
+        <div><button type="button" class="chip" data-ret-add>+ Add retired character</button></div></section>
+      <div class="chfoot"><button type="button" class="btn" data-ret-close>Close</button></div></div></div></div>`;
   retRoot.querySelector('.modalbox').scrollTop = keep;
 }
 function closeRetModal() { retModal = false; renderRetModal(); }
@@ -1223,6 +1247,16 @@ document.addEventListener('keydown', e => {
   else if (view.flowFull) { view.flowFull = false; render(); }
 });
 
+// The playmat's card unit (--cu on .pm), measured from the stage: 14% of its height or 12% of its width, whichever is smaller,
+// between 60 and 160 px. Every card size on the playmat (Modifiers view, modifier modal) is derived from it.
+function sizePlaymat() {
+  const pm = main.querySelector('.pm'), st = pm?.querySelector('.stage6');
+  if (!st) return;
+  const { width, height } = st.getBoundingClientRect();
+  pm.style.setProperty('--cu', `${Math.round(Math.min(160, Math.max(60, Math.min(height * 0.14, width * 0.12))))}px`);
+}
+window.addEventListener('resize', sizePlaymat);
+
 function render() {
   renderTabs();
   if (!record) {
@@ -1252,8 +1286,9 @@ function render() {
   const html = pagebar + (issues.length ? `<div class="issues">${issues.length} issue(s): ${esc(issues.slice(0, 5).join('; '))}</div>` : '') + body;
   // The playmat is redrawn in place (campaign/morph.js): cards keep their picture and hover state, so a drop or a flip does not flicker.
   if (tab === 'Mercenaries' && !editing && main.querySelector('.pm')) morphInto(main, html); else main.innerHTML = html;
+  sizePlaymat();
   if (tab === 'Cards' && view.cardType === 'am') hydrateAm();
-  if (pm.modal === 'amd' || pm.modal === 'amdpile' || pm.hview === 'amd') hydrateAmdModal();
+  if (pm.modal === 'amd' || pm.modal === 'amdpile' || pm.hview === 'amd' || pm.ptab === 'amd') hydrateAmdModal();
   if (pm.modal === 'perks') hydratePerkCards();
 }
 
@@ -2343,6 +2378,7 @@ main.addEventListener('submit', e => {
 });
 main.addEventListener('change', e => {
   if (evChange(e)) return;
+  if (e.target.id === 'cardStk') { view.cardStk = e.target.checked; render(); return; }
   const k = { flowShow: 'flowShow', flowLane: 'flowLane', scnStatus: 'scnStatus', itemSlot: 'itemSlot', itemShow: 'itemShow', cardType: 'cardType', cardKind: 'cardKind', cardSide: 'cardSide', cardDeck: 'cardDeck', cardMon: 'cardMon', cardMLv: 'cardMLv', cardSlot: 'cardSlot', cardChk: 'cardChk', cardShow: 'cardShow', cardCls: 'cardCls', cardLv: 'cardLv' }[e.target.id];
   if (k) { view[k] = e.target.value; render(); return; }
   if (editing && e.target.dataset.act && e.target.tagName !== 'BUTTON') apply(e.target);
@@ -2469,11 +2505,11 @@ document.getElementById('clear').addEventListener('click', async () => {
   const LISTS = ['top', 'bot', 'act'], ZONE = { deck: 'pool', disc: 'disc', top: 'top', bot: 'bot', act: 'act' };
   const clear = () => main.querySelectorAll('.amv .drop').forEach(x => x.classList.remove('drop'));
   const zoneOf = e => e.target.closest?.('.amv [data-amdrop]');
+  const dragOf = st => { const mini = st.classList.contains('mini'); return { k: st.dataset.k, from: mini ? st.dataset.z : ZONE[st.dataset.z], idx: mini ? Number(st.dataset.i) : undefined }; };
   main.addEventListener('dragstart', e => {
     const st = e.target.closest?.('.amv .stk[data-k], .amv .mini[data-k]');
     if (!st || pm.amEdit) return;
-    const mini = st.classList.contains('mini');
-    drag = { k: st.dataset.k, from: mini ? st.dataset.z : ZONE[st.dataset.z], idx: mini ? Number(st.dataset.i) : undefined };
+    drag = dragOf(st);
     // the drag image is one card painted onto a canvas from the layer images already on screen (a cloned element can come out as a black silhouette)
     const face = st.querySelector('.stkface'), fr = face?.getBoundingClientRect();
     if (fr && fr.width) {
@@ -2501,20 +2537,63 @@ document.getElementById('clear').addEventListener('click', async () => {
     clear();
     if (ok(a)) { e.preventDefault(); a.classList.add('drop'); }
   });
-  main.addEventListener('drop', e => {
-    const a = zoneOf(e), c = pmChar();
+  // one drop for the mouse and for touch: the zone, the place among the stack when dropped on a card of the same list
+  const doDrop = (a, x, target) => {
+    const c = pmChar();
     clear();
-    if (c && ok(a)) {
-      e.preventDefault();
-      const to = ZONE[a.dataset.amdrop], m = e.target.closest('.amv .mini');
-      let at;
-      if (m && m.dataset.z === to) { const r = m.getBoundingClientRect(); at = Number(m.dataset.i) + (e.clientX > r.left + r.width / 2 ? 1 : 0); }
-      const d = drag; drag = null;
-      amdDo(c, 'move', d.k, { from: d.from, to, idx: d.idx, at });
-    }
-    drag = null;
+    if (!c || !ok(a)) { drag = null; return; }
+    const to = ZONE[a.dataset.amdrop], m = target?.closest?.('.amv .mini');
+    let at;
+    if (m && m.dataset.z === to) { const r = m.getBoundingClientRect(); at = Number(m.dataset.i) + (x > r.left + r.width / 2 ? 1 : 0); }
+    const d = drag; drag = null;
+    amdDo(c, 'move', d.k, { from: d.from, to, idx: d.idx, at });
+  };
+  main.addEventListener('drop', e => {
+    const a = zoneOf(e);
+    if (ok(a)) e.preventDefault();
+    doDrop(a, e.clientX, e.target);
   });
   main.addEventListener('dragend', () => { clear(); drag = null; });
+  // Touch and pen: HTML5 drag events do not fire on touch. Hold a stack or a placed card, then move it; the same drop rules as the mouse.
+  let t = null;
+  const zoneAt = (x, y) => document.elementFromPoint(x, y)?.closest?.('.amv [data-amdrop]');
+  main.addEventListener('pointerdown', e => {
+    if (e.pointerType === 'mouse' || e.button || pm.modal || pm.amEdit || e.target.closest('button, .pp')) return;   // the phone moves cards by bottom sheet, not by drag
+    const st = e.target.closest?.('.amv .stk[data-k], .amv .mini[data-k]');
+    if (!st) return;
+    t = { st, x: e.clientX, y: e.clientY, id: e.pointerId, ghost: null, armed: false };
+    t.timer = setTimeout(() => { if (t && t.st === st) { t.armed = true; st.classList.add('armed'); navigator.vibrate?.(8); } }, 220);
+  });
+  main.addEventListener('touchmove', e => { if (t && t.armed) e.preventDefault(); }, { passive: false });
+  main.addEventListener('pointermove', e => {
+    if (!t || e.pointerId !== t.id) return;
+    if (!t.ghost) {
+      if (Math.hypot(e.clientX - t.x, e.clientY - t.y) < 10) return;
+      if (!t.armed) { clearTimeout(t.timer); t = null; return; }                        // moved before the hold: let the page scroll
+      const r = t.st.getBoundingClientRect(), g = t.st.cloneNode(true);
+      g.classList.remove('armed', 'dragging');
+      g.style.cssText = `position:fixed;left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;margin:0;z-index:600;pointer-events:none;opacity:.92;box-shadow:0 12px 30px rgba(0,0,0,.7)`;
+      t.dx = t.x - r.left; t.dy = t.y - r.top;
+      document.body.appendChild(g);
+      t.ghost = g; t.st.classList.add('dragging'); drag = dragOf(t.st);
+    }
+    e.preventDefault();
+    t.ghost.style.left = `${e.clientX - t.dx}px`; t.ghost.style.top = `${e.clientY - t.dy}px`;
+    clear();
+    const z = zoneAt(e.clientX, e.clientY);
+    if (ok(z)) z.classList.add('drop');
+  });
+  const end = e => {
+    if (!t || e.pointerId !== t.id) return;
+    const d = t; t = null; clearTimeout(d.timer); d.st.classList.remove('armed', 'dragging');
+    if (!d.ghost) return;
+    d.ghost.remove();
+    const swallow = ev => { ev.stopImmediatePropagation(); ev.preventDefault(); };
+    document.addEventListener('click', swallow, true); setTimeout(() => document.removeEventListener('click', swallow, true), 50);
+    if (e.type === 'pointerup') { const z = zoneAt(e.clientX, e.clientY); doDrop(z, e.clientX, document.elementFromPoint(e.clientX, e.clientY)); }
+    else { clear(); drag = null; }
+  };
+  main.addEventListener('pointerup', end); main.addEventListener('pointercancel', end);
 })();
 
 // Space switches the hand and the modifier deck (not while typing, on a button or link, or with a modal open).

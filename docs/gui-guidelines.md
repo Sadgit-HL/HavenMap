@@ -59,6 +59,9 @@ Hard-coded values that appear often and should be reused: `#b4533f` (warning bor
   modal; it does not change the page.
 - **Overview and other tabs**: cards in a grid (`minmax(230px, 1fr)`) with a `h2` per group and a pencil button for each editable group.
 - New tabs should use the same card, chip, table and button styles so that the page reads as one thing.
+- **Playmat card size.** Card sizes on the playmat derive from `--cu`, set on `.pm` by `sizePlaymat()` in `campaign/app.js`: 14% of the stage
+  height or 12% of its width, whichever is smaller, between 60 and 160 px. Use `var(--cu)` for new card sizes on the playmat, with a fallback.
+  Do not size cards from `vw` or `vh`: the window is not the space the card has to fit.
 
 ## 5. Components
 
@@ -193,14 +196,18 @@ An empty list shows one muted line (`.emptyline`), for example "No stickers yet.
 6. Empty states: one muted line, no help text.
 7. Hover and click zoom for any card, same settings as the playmat.
 8. Context menu entries only for actions that also exist in the normal UI, in the order of section 5.7.
-9. Test at 1440x900 and at a phone width. Check that no horizontal scroll appears.
+9. Test at 1440x900 and at a phone width. Check that no horizontal scroll appears. For the playmat, also run the test matrix in
+   `docs/HANDOVER.md` section 19.4.
 10. Bump the cache version of the changed CSS and JS (`index.html`, `?v=`) and tell the owner to hard refresh (Ctrl+F5) for module files.
 
 ## 8. Known gaps (2026-11-14)
 
-- The phone view does not yet have the Modifiers view, the hand editor of the playmat or the class change.
-- Some older modals of the campaign page (players, retired characters, prosperity, reputation) use `.modal`/`.modalbox` from `style.css` and
-  not the playmat popup pattern of section 5.3. Move them when they are next edited.
-- The generated `campaign/playmat.css` (`tools/build-playmat-css.py`) holds rules for the modal pieces too. The rules added by hand for the
-  perks, enhancements, codes and history popups are in `campaign/style.css`, under the `.sbox` and `.sedit` classes.
-- Touch drag of modifier cards uses HTML5 drag events, so it works with the mouse only.
+- Phone: the Modifiers tab reuses the playmat markup (`amViewHtml`). Its stack sizes are the desktop ones and it has not been checked at phone width.
+- Touch drag of modifier cards uses pointer events (hold, then move), like the hand cards. It has not been tried on a real touch screen.
+- The hand fan and the active zone still size their cards from their own containers, not from `--cu`. Move them when the layout is tested
+  (`docs/HANDOVER.md` section 19).
+- The campaign page popups (players, retired characters, prosperity, reputation) follow section 5.3. Stickers and classes use the tile grid
+  of section 5.4 since 2026-11-14.
+- `campaign/playmat.css` is maintained by hand. `tools/build-playmat-css.py` refuses to run without `--force`: the mockup and the live page disagree
+  (`.setpop` against `.setpanel`), so a run would break the live settings panel.
+- None of the 2026-11-14 layout changes has been tested in a browser at the sizes of section 19.4.

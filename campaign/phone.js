@@ -4,11 +4,11 @@
 // scripts/campaign/edit.js, like the playmat does.
 import { handList, zoneOf, pendingPicks } from '../scripts/campaign/record.js';
 import { tokenDefs, TOKEN_IMAGE_DIR } from '../scripts/campaign/classTokens.js';
-import { modalHtml, XP_STEPS, levelOfXp, markersHtml } from './playmat.js';
+import { modalHtml, amViewHtml, XP_STEPS, levelOfXp, markersHtml } from './playmat.js';
 
 const UP = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>';
 const DN = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
-export const PHONE_MODALS = [['amd', 'Attack modifiers'], ['perks', 'Perks &amp; masteries'], ['journal', 'Journal'], ['mat', 'Character mat'], ['codes', 'BGG codes'], ['enh', 'Enhancements'], ['history', 'History'], ['deck', 'Deck &amp; card pool']];
+export const PHONE_MODALS = [['perks', 'Perks &amp; masteries'], ['journal', 'Journal'], ['mat', 'Character mat'], ['codes', 'BGG codes'], ['enh', 'Enhancements'], ['history', 'History'], ['deck', 'Deck &amp; card pool']];
 export const PHONE_ZONES = [['play1', 'Play slot 1'], ['play2', 'Play slot 2'], ['active', 'Active'], ['hand', 'Hand'], ['discard', 'Discard'], ['lost', 'Lost']];
 const ZONE_NAME = { play1: 'play slot 1', play2: 'play slot 2' };
 
@@ -53,6 +53,9 @@ export function phoneHtml(c, X, S = {}) {
       <h4>Active <span>${active.length}</span></h4>${strip(active)}
       <h4>Hand <span class="hbtns"><span style="align-self:center">${hand.length}${c.hand ? ` of ${c.hand}` : ''}</span><button type="button" class="sm" data-psort="ini" title="Sort by initiative">Ini</button><button type="button" class="sm" data-psort="lvl" title="Sort by level">Lvl</button></span></h4>${strip(hand)}
       <div class="piles">${pileBtn('discard', 'Discard')}${pileBtn('lost', 'Lost')}</div>`;
+  } else if (tab === 'amd') {
+    // the modifier deck of the playmat (Modifiers view), in the phone's own tab: the same markup and buttons
+    view = S.amv ? amViewHtml(S.amv, esc, !!S.amEdit) : '';
   } else if (tab === 'items') {
     const tiles = c.items.map(it => {
       const item = X.itemById.get(it.id), nm = X.pretty(item?.slug ?? it.id), s = it.s || 0;
@@ -86,7 +89,7 @@ export function phoneHtml(c, X, S = {}) {
     <div class="xpbar"><b style="width:${pct}%"></b></div>
     ${tokens ? `<div class="toks">${tokens}</div>` : ''}
     <main class="body">${view}</main>
-    <nav class="nav">${[['cards', 'Cards'], ['items', 'Items'], ['info', 'Info']].map(([t, l]) => `<button type="button" data-ptab="${t}"${tab === t ? ' aria-current="page"' : ''}>${l}</button>`).join('')}<button type="button" class="menu" data-pmenu aria-label="Open menu">&#9776;${pendingPicks(c) ? '<span class="pdot"></span>' : ''}</button></nav>
+    <nav class="nav">${[['cards', 'Cards'], ['amd', 'Modifiers'], ['items', 'Items'], ['info', 'Info']].map(([t, l]) => `<button type="button" data-ptab="${t}"${tab === t ? ' aria-current="page"' : ''}>${l}</button>`).join('')}<button type="button" class="menu" data-pmenu aria-label="Open menu">&#9776;${pendingPicks(c) ? '<span class="pdot"></span>' : ''}</button></nav>
     ${sheet ? `<div class="sheetwrap" data-sheetclose-bg><div class="sheet">${sheet}</div></div>` : ''}
     ${modalHtml(c, X, S)}</div>`;
 }

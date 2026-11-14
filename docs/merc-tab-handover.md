@@ -316,3 +316,9 @@ It was tested in headless Edge (Playwright, `channel: 'msedge'`, test records bu
 - The initiative numbers were read by eye from the images; a wrong digit is possible (contact sheets are not kept in the repo).
 - Hand to Locked in the hand editor removes a level-up pick with one click (Undo of the page restores it).
 - Touch devices: drag of modifier cards uses HTML5 drag events (mouse only); click and second click work.
+
+### 10.5 Layout update (2026-11-14)
+
+- The top bar stays on one line; below 1400px the BGG buttons show their icon only.
+- The playmat's card sizes come from one unit, `--cu` (set by `sizePlaymat()` in `campaign/app.js`). The Modifiers view and the modifier modal use it.
+- The hand fan and the active zone still use their own container sizes. The test matrix and open items are in `docs/HANDOVER.md` section 19.

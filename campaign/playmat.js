@@ -42,7 +42,7 @@ function markPanel(c, S, esc, key, stickers = true) {
 
 // X = helpers of the page: { esc, pretty, cardById, itemById, cardImageUrl, itemImageUrl, cardBackUrl, portraitStyle, traitChips, playerName }
 // The modifier deck in the place of the hand: deck stacks and a discard area (stack = cards of one kind), Edit adds steppers and a pinned palette.
-function amViewHtml(A, esc, edit) {
+export function amViewHtml(A, esc, edit) {
   const stack = (t, n, zone, sp) => {
     const layers = Math.max(1, Math.min(n, 4)), edges = Array.from({ length: layers - 1 }, (_, i) => `<span class="edge" style="left:${(layers - 1 - i) * 3}px;top:${-(layers - 1 - i) * 3}px"></span>`).join('');
     const face = sp ? `<img src="${esc(t.img)}" alt="${esc(t.label)}" draggable="false">` : `<span class="amslot" data-keep data-amslot="${esc(t.key)}"></span>`;

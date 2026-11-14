@@ -474,3 +474,47 @@ Scenario flowchart: wide page (the 1100 px cap is lifted), chart sizes S, M, L, 
 ### 18.6 Mercenaries tab redesign
 
 Mockups are in `campaign/mockups/` (generator `tools/merc-mockups/`), decisions and next steps in `merc-tab-handover.md`.
+
+## 19. Update 2026-11-14: GUI guidelines applied, playmat card sizing
+
+### 19.1 What changed (commit of 2026-11-14)
+
+- **Stickers and Classes modals** (`checkModal` in `campaign/app.js`): tile grid (`.ntiles`, `.ntile`), 760px box, footer Close. A class tile
+  turns gold when either Available or Unlocked is on; to make gold mean Unlocked only, change the `some` in the tile function.
+- **Cards tab, Ability cards and Items:** "Stickers" toggle (`cardStk`, saved with the other Cards filters, on by default). It draws the
+  enhancement stickers (markers with `s: 1`) over the card picture. Markers come from every character's `mk` map (`c:<id>` and `i:<id>`),
+  because the Cards tab is campaign-wide. The toggle is a pill chip (`.ctoggle`) with a visually hidden native checkbox.
+- **Playmat top bar:** the `.hud` stays on one line. Below 1400px the BGG buttons show their icon only; `title` and `aria-label` stay.
+  The cause of the earlier wrap was not confirmed from the CSS.
+- **Playmat height:** the active rule `main .pm:not(.pp) .stage6` (`style.css`) has a 420px floor. The older `min-height` values of 640
+  and 700px (`playmat.css`) are overridden there. The phone keeps its own rules.
+- **Card unit:** `sizePlaymat()` in `campaign/app.js` measures the stage after each render and on resize, and sets `--cu` on `.pm`.
+  The Modifiers view cards (`.pm .amv .area`, `--stkw`) and the modifier modal cards (`.pm .mmodalbox.amdbox`, `--amw`) use it.
+- **Also in this commit, from earlier uncommitted work:** the phone Modifiers tab (`phone.js`, `phone.css`, `amViewHtml` exported), and the
+  `--force` guard in `tools/build-playmat-css.py`. The guidelines' known-gaps list was updated in the same commit.
+
+### 19.2 Cache versions
+
+`campaign/index.html`: `app.js?v=148`, `style.css?v=138`, `playmat.css?v=14`. `phone.css?v=2` is unchanged. Tell the owner to hard refresh (Ctrl+F5).
+
+### 19.3 Not verified
+
+None of the 2026-11-14 layout changes has been run in a browser. The size ratios (14% height, 12% width, 60 to 160 px) are estimates.
+
+### 19.4 Test matrix (next step)
+
+Sizes: 1280x720, 1366x768, 1920x1080, 2560x1440, each at 100% and at the browser zoom that matches Windows scaling. For example, 1366x768 at
+150% zoom is about 911x512 CSS pixels, and 1920x1080 at 125% is about 1536x864. Check at each size:
+- the top bar is one line;
+- Modifiers view cards and modal cards fit inside the green area, and are neither tiny nor overflowing;
+- the Stickers and Classes tile modals close with Escape, overlay click and the footer Close;
+- the Cards tab Stickers toggle shows and hides stickers on the card pictures.
+
+How to run it: DevTools device toolbar (`Ctrl+Shift+M`) with custom sizes, plus `Ctrl+=`/`Ctrl+-` for zoom. A Playwright script that saves one
+screenshot per case was offered but not written.
+
+### 19.5 Open
+
+- Move the hand fan and the active zone onto `--cu`, or decide to keep them container-based.
+- Card-size setting (auto, S, M, L) in the display settings, so the user can override the automatic size. Proposed, not built.
+- Phone width: the Modifiers tab and the tile modals are not checked.
