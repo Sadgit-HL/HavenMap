@@ -1,3 +1,4 @@
+import { imageFile } from './images.js';
 import {
   uiState, subscribeUI,
   toggleSection, openAddPanel, closeAddPanel, setAddTab,
@@ -1358,5 +1359,5 @@ function summonByMercenary(mercenary) {
 function hint(text) { return `<div class="sp-hint">${text}</div>`; }
 
 function condImg(name) {
-  return `images/common/conditions/${name.toLowerCase().replace(/ /g, '_')}.png`;
+  return `${imageFile(`images/common/conditions/${name.toLowerCase().replace(/ /g, '_')}`, '')}`;
 }

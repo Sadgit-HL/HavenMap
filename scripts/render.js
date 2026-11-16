@@ -1,3 +1,4 @@
+import { imageFile } from './images.js';
 // SVG rendering engine — reads from state, redraws all layers.
 
 import { hexCenter, imagePos, buildGridPath, colLabel, footprintHexes, COLS, ROWS, HEX_W, HEX_H } from './hex.js';
@@ -262,7 +263,7 @@ function svgConditions(conditions, col, row) {
     const iconX      = borderX - size * 0.9;
 
     const img = document.createElementNS(SVG_NS, 'image');
-    img.setAttribute('href', `images/common/conditions/${cond.toLowerCase().replace(/ /g, '_')}.png`);
+    img.setAttribute('href', `${imageFile(`images/common/conditions/${cond.toLowerCase().replace(/ /g, '_')}`, '')}`);
     img.setAttribute('x', iconX);
     img.setAttribute('y', iconY);
     img.setAttribute('width', size);
@@ -454,7 +455,7 @@ function drawRoleIcon(layer, col, row, role, dy = 0, dx = 0) {
   const ix = cx - ICON_SIZE / 2 + dx;
   const iy = cy + HEX_H / 2 - ICON_SIZE + dy;
   const img = document.createElementNS(SVG_NS, 'image');
-  img.setAttribute('href', `images/common/icons/${file}`);
+  img.setAttribute('href', imageFile('images/common/icons/' + file, '') ?? '');
   img.setAttribute('x', ix);
   img.setAttribute('y', iy);
   img.setAttribute('width', ICON_SIZE);

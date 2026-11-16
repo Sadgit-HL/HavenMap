@@ -1,4 +1,7 @@
-// Where the attack-modifier card art lives, resolved relative to this module so any page of any
-// app (perks viewer, HavenMap, campaign) can import the card code without caring about its own URL.
-export const ASSET_BASE = new URL('../../images/common/attack_mods', import.meta.url).href;
-export const PERK_ICON_BASE = new URL('../../images/common/perk-icons', import.meta.url).href;
+// Where the attack-modifier and perk-icon images are, resolved from this module (scripts/amd/ is two folders below the root).
+import { imageHref } from '../images.js';
+const ROOT = new URL('../../', import.meta.url).href;
+// One layer of an attack-modifier card, e.g. amImg('frames/p0') or amImg('icons/center/poison').
+export const amImg = rel => imageHref('images/common/attack_mods/' + rel, ROOT);
+// A perk icon, e.g. perkIcon('wound').
+export const perkIcon = token => imageHref('images/common/perk-icons/' + token, ROOT);

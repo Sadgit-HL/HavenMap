@@ -1,9 +1,11 @@
+import { imageFile } from '../images.js';
 // Class banners for the BGG codes modal: one wide banner image per class in the group's asset repository (wh_banners/<slug>.jpg),
 // copied as an [inlineimg] code. The grid shows the square class icons from this repository.
 export const BANNER_BASE = 'https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_banners/';
 export const bannerUrl = slug => `${BANNER_BASE}${slug}.jpg`;
 export const bannerCode = slug => `[inlineimg]${bannerUrl(slug)}[/inlineimg]`;
-export const BANNER_ICON_DIR = '../images/common/attack_mods/class_icons/';
+// The square class icon of a banner (images/common/attack_mods/class_icons/<name>); the BGG code uses bannerUrl (public address).
+export const bannerIcon = name => imageFile('images/common/attack_mods/class_icons/' + name, '../');
 // slug, display name (when it differs from the slug), icon file name (when it differs from the display name)
 export const BANNERS = [
   ['anaphi'], ['banner-spear', 'Banner Spear'], ['berserker'], ['bladeswarm'], ['blinkblade'], ['boneshaper'], ['bruiser'], ['cassandra'], ['cragheart'],

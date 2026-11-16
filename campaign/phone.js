@@ -3,7 +3,7 @@
 // and bottom sheets instead of dragging: tap a card, pick a zone. The page (app.js) wires the clicks to the edit functions of
 // scripts/campaign/edit.js, like the playmat does.
 import { handList, zoneOf, pendingPicks } from '../scripts/campaign/record.js';
-import { tokenDefs, TOKEN_IMAGE_DIR } from '../scripts/campaign/classTokens.js';
+import { tokenDefs, tokenImage } from '../scripts/campaign/classTokens.js';
 import { modalHtml, amViewHtml, XP_STEPS, levelOfXp, markersHtml } from './playmat.js';
 
 const UP = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>';
@@ -41,7 +41,7 @@ export function phoneHtml(c, X, S = {}) {
     return `<button type="button" class="pile" data-ppile="${z}"><div><span>${label}</span><b>${a.length}</b></div>${top != null ? `<div class="top1"><img src="${esc(X.cardImageUrl(cardOf(top)) || '')}" alt="${esc(nameOf(top))}"></div>` : ''}</button>`;
   };
   const tokens = tokenDefs(c.cls).map(d => {
-    const v = c.tok?.[d.k] || 0, img = (n, l) => `<img src="${TOKEN_IMAGE_DIR}${n}.png" alt="${esc(l)}" draggable="false">`;
+    const v = c.tok?.[d.k] || 0, img = (n, l) => `<img src="${esc(tokenImage(n) ?? '')}" alt="${esc(l)}" draggable="false">`;
     if (d.states) return `<span class="ctr" title="${esc(d.l)}: ${esc(d.states[v])}"><button type="button" data-tk="${d.k}" data-char="${cid}" style="width:auto;height:auto;padding:2px;background:none;border:0" aria-label="${esc(d.l)}: ${esc(d.states[v])}">${img(d.imgs[v], `${d.l} ${d.states[v]}`)}</button></span>`;
     return `<span class="ctr" title="${esc(d.l)}">${img(d.img, d.l)}<span class="sp"><b>${v}</b><span class="spc"><button type="button" data-tk="${d.k}" data-char="${cid}" data-d="1" aria-label="Increase ${esc(d.l)}">${UP}</button><button type="button" data-tk="${d.k}" data-char="${cid}" data-d="-1" aria-label="Decrease ${esc(d.l)}"${v ? '' : ' disabled'}>${DN}</button></span></span></span>`;
   }).join('');

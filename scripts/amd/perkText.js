@@ -3,7 +3,7 @@
 // inline. Icon files live in images/common/perk-icons/<token>.png (Frosthaven-style variants where
 // FrosthavenAssistant has them). A token without an icon is shown as its plain word, so nothing
 // disappears silently. Style: .pt-icon in scripts/amd/amd.css.
-import { PERK_ICON_BASE as ICON_BASE } from './paths.js?v=2';
+import { perkIcon } from './paths.js?v=3';
 import { escapeHtml as esc } from '../escape.js';
 
 // Tokens that have an icon file. Keep in sync with the folder; tools/check-perk-icons.mjs verifies it
@@ -23,7 +23,7 @@ export function perkTextHtml(text) {
   return esc(text || '').replace(/%(\w+)%/g, (_, tok) => {
     const word = WORD[tok] || tok;
     return PERK_ICON_TOKENS.has(tok)
-      ? `<img class="pt-icon" src="${ICON_BASE}/${tok}.png" alt="${word}" title="${word}">`
+      ? `<img class="pt-icon" src="${perkIcon(tok) ?? ''}" alt="${word}" title="${word}">`
       : `<em class="pt-word">${esc(word)}</em>`;
   });
 }

@@ -1,3 +1,4 @@
+import { imageFile } from '../scripts/images.js';
 // Campaign view with a simple edit mode. Edits go through scripts/campaign/edit.js (pure functions returning a new
 // record); every change is saved to the browser at once and can be undone. Session start/commit, voting and the
 // server come later (docs/campaign-schema.md section 10).
@@ -8,7 +9,7 @@ import { SCENARIOS, STICKERS } from '../scripts/games/gh2_scenarios.js';
 import { BATTLE_GOALS } from '../scripts/games/battle_goals.js';
 import { escapeHtml as esc } from '../scripts/escape.js';
 import { localStore } from '../scripts/campaign/store.js';
-import { cardImageUrl, itemImageUrl, eventImageUrl, matImageUrl, pqImageUrl, cardBackUrl, battleGoalImageUrl } from '../scripts/campaign/cardImages.js';
+import { cardImageUrl, itemImageUrl, eventImageUrl, matImageUrl, pqImageUrl, cardBackUrl, battleGoalImageUrl, matSlugOf } from '../scripts/campaign/cardImages.js';
 import { playmatHtml, markersHtml, XP_STEPS, turnPost, cardsPost, goalRollCode, questRollCode, cleanSettings, displaySettingsHtml } from './playmat.js';
 import { tokenDefs, markerTokens, MARK_STICKERS } from '../scripts/campaign/classTokens.js';
 import { bannerUrl, bannerCode } from '../scripts/campaign/bggBanners.js';
@@ -41,7 +42,7 @@ import { characterTraits } from '../scripts/campaign/outcomes.js';
 import { SPECIAL_TRAITS, specialName } from '../scripts/campaign/traits.js';
 import { eventsHtml, evInit, evClick, evChange, evSubmit, evOutside, evDragStart, evDragOver, evDrop, evDragEnd } from './eventsView.js?v=38';
 
-const PAGE_TABS = ['Overview', 'Scenarios', 'Mercenaries', 'Items', 'Events', 'Cards', 'Resources', 'History'];
+const PAGE_TABS = ['Overview', 'Mercenaries', 'Items', 'Events', 'Scenarios', 'Resources', 'Cards', 'History'];
 const main = document.getElementById('main');
 const tabsEl = document.getElementById('tabs');
 const undoBtn = document.getElementById('undo');
@@ -278,7 +279,7 @@ async function copyRollerCode(btn, code) {
   const orig = btn.innerHTML, origTitle = btn.title;
   try {
     await navigator.clipboard.writeText(code);
-    btn.innerHTML = ICON_CHECK;
+    btn.innerHTML = btn.classList.contains('rollbtn') ? '✓ <span>Copied</span>' : ICON_CHECK;
     btn.title = 'Copied the GeekRoller code';
   } catch {
     btn.title = 'Copy failed';
@@ -298,7 +299,8 @@ const RANDOM_ITEM_IDS = [81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94,
 function itemRollerCode(r) {
   return rollerCodeOf(ITEMS.filter(i => RANDOM_ITEM_IDS.includes(i.id) && !r.items.unl.includes(i.id)).map(i => i.id));
 }
-const itemRollerBtn = r => rollerBtn('data-itemroll', 'Item Design', itemRollerCode(r), 'No item designs left to gain');
+// The same button as the merc tab's roll buttons (dice icon and label, copies the code and shows Copied).
+const itemRollerBtn = r => { const code = itemRollerCode(r); return `<button type="button" class="btn6 rollbtn" data-itemroll ${code ? '' : 'disabled'} title="${code ? 'Copy the GeekRoller code for a random item design' : 'No item designs left to gain'}">${ICON_DICE}<span>BGG code for roll</span></button>`; };
 
 // Scenario state counts and pacing, shown on Overview. A scenario missing from r.scn is Locked (setScenarioState
 // deletes the key when a scenario is set back to Locked), so the Locked count is the total minus the other three, not
@@ -468,7 +470,7 @@ const PORTRAIT_FOCUS = {};
 fetch('../scripts/games/portrait-focus.json').then(r => (r.ok ? r.json() : {})).then(j => { Object.assign(PORTRAIT_FOCUS, j); if (record && tab === 'Mercenaries') render(); }).catch(() => {});
 function portraitStyle(c, size) {
   const url = matImageUrl(c.cls, 'front');
-  const f = PORTRAIT_FOCUS[String(url).split('/').pop().replace(/\.[a-z]+$/i, '')];
+  const f = PORTRAIT_FOCUS[matSlugOf(c.cls)];
   if (!f) return `background-image:url(${url});background-size:cover;background-position:center`;
   const bw = size / f.w;
   return `background-image:url(${url});background-size:${bw}px auto;background-position:${-f.u * bw}px ${-f.t * bw}px`;
@@ -487,7 +489,7 @@ let pmset = (() => { try { return cleanSettings(JSON.parse(localStorage.getItem(
 const saveSet = () => { try { localStorage.setItem(SET_KEY, JSON.stringify(pmset)); } catch { /* ignore */ } };
 const loadCodes = () => { try { const a = JSON.parse(localStorage.getItem(CODES_KEY) || '[]'); return Array.isArray(a) ? a : []; } catch { return []; } };
 const saveCodes = a => { try { localStorage.setItem(CODES_KEY, JSON.stringify(a)); } catch { /* ignore */ } };
-const matSlug = c => String(matImageUrl(c.cls, 'front')).split('/').pop().replace(/\.[a-z]+$/i, '');
+const matSlug = c => matSlugOf(c.cls);   // the class slug, as the portrait focus table and the banner files name it
 const pmState = c => ({
   modal: pm.modal, matSide: pm.matSide, histKind: pm.histKind, jtab: pm.jtab, bgv: pm.bgv, pqv: pm.pqv, notesPreview: pm.notesPreview,
   bgs: record.bgs, pq: record.pq,
@@ -502,7 +504,7 @@ const pmState = c => ({
 });
 const playmatCtx = {
   matUrl: (cls, side) => matImageUrl(cls, side),
-  pqImg: slug => `../images/common/personal_quests/${slug}.png`,
+  pqImg: slug => pqImageUrl({ slug }) ?? '',
   bgImg: battleGoalImageUrl,
   esc, pretty, cardById, itemById, cardImageUrl, itemImageUrl, cardBackUrl, portraitStyle,
   playerName: c => (record.players.find(p => p.seat === c.seat)?.name ?? ''),
@@ -635,7 +637,7 @@ function cardsPage(r) {
     // Fixed card widths (a stretching grid made S and M look the same): S 200, M 300 (the picture's own width), L 420 px.
     const w = { s: 200, m: 300, l: 420 }[view.cardSize];
     return filters + sizeBar(rows.length) + (rows.length ? `<div class="itemgrid" style="grid-template-columns:repeat(auto-fill,minmax(min(${w}px,100%),${w}px))">${rows.map(({ m, l }) => {
-      const url = new URL(`../images/gh2/monsters/stats/${m.title.replace(/ /g, '_').toLowerCase()}_${l}.png`, import.meta.url).href;
+      const url = imageFile(`images/gh2/monsters/stats/${m.title.replace(/ /g, '_').toLowerCase()}_${l}`, '../');
       const name = `${pretty(m.title.replace(/ /g, '-'))} level ${l}`;
       return `<figure class="itemtile" data-img="${esc(url)}" data-imgw="450" title="${esc(name)}: Ctrl+hover to enlarge"><img class="cardpic" src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false"><figcaption><span class="cname">${esc(name)}</span>${m.boss ? '<span class="badge">boss</span>' : ''}</figcaption></figure>`;
     }).join('')}</div>` : none);
@@ -662,7 +664,7 @@ function cardsPage(r) {
     const filters = `<div class="filters">${typeSel}<select id="cardDeck"><option value="">All monster decks</option>${decks.map(d => `<option value="${esc(d)}" ${view.cardDeck === d ? 'selected' : ''}>${esc(pretty(d))}</option>`).join('')}</select>
       <input id="cardSearch" type="search" placeholder="Monster name" value="${esc(view.cardSearch)}"></div>`;
     return filters + sizeBar(rows.length) + (rows.length ? `<div class="itemgrid" style="--tile-min:${ITEM_SIZES[view.cardSize] + 90}px">${rows.map(c => {
-      const url = new URL(`../images/gh2/monsters/monster-abilities/gh2-ma-${c.deck}-${c.n}.webp`, import.meta.url).href, name = `${pretty(c.deck)} ${c.n}`;
+      const url = imageFile(`images/gh2/monsters/monster-abilities/gh2-ma-${c.deck}-${c.n}`, '../'), name = `${pretty(c.deck)} ${c.n}`;
       return `<figure class="itemtile" data-img="${esc(url)}" data-imgw="600" title="${esc(name)}: Ctrl+hover to enlarge"><img class="cardpic" src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false"><figcaption><span class="cname">${esc(name)}</span><span class="badge" title="Initiative ${c.init}${c.s ? ', shuffle' : ''}">${esc(c.init)}${c.s ? ' &#8635;' : ''}</span></figcaption></figure>`;
     }).join('')}</div>` : none);
   }
@@ -2496,9 +2498,11 @@ const SHORTCUTS = [
   ]],
 ];
 const renderShortcuts = () => {
+  // one block per group; the blocks flow into two columns (CSS columns), a block never splits
   document.getElementById('keyList').innerHTML = SHORTCUTS.map(([group, rows]) =>
-    `<tr class="keygrp"><td colspan="2">${esc(group)}</td></tr>` +
-    rows.map(([chords, what]) => `<tr><td>${chords.map(ch => ch.map(k => `<kbd>${esc(k)}</kbd>`).join(' + ')).join(' <span class="keyor">or</span> ')}</td><td>${esc(what)}</td></tr>`).join('')
+    `<section class="keygroup"><h4>${esc(group)}</h4><table>` +
+    rows.map(([chords, what]) => `<tr><td>${chords.map(ch => ch.map(k => `<kbd>${esc(k)}</kbd>`).join(' + ')).join(' <span class="keyor">or</span> ')}</td><td>${esc(what)}</td></tr>`).join('') +
+    '</table></section>'
   ).join('');
 };
 renderShortcuts();

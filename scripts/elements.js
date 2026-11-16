@@ -1,3 +1,4 @@
+import { imageFile } from './images.js';
 import { state, patch } from './state.js';
 import { ELEMENTS } from './games/common.js';
 import { endRoundPatch } from './decks.js';
@@ -51,7 +52,7 @@ export function initElements() {
     const tile = document.getElementById(`el-tile-${i}`);
     if (!tile) return;
     const img = document.createElement('img');
-    img.src = `images/common/elements/${key}.png`;
+    img.src = `${imageFile(`images/common/elements/${key}`, '')}`;
     img.alt = label;
     img.className = 'el-img';
     tile.appendChild(img);

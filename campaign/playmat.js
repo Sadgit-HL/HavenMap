@@ -1,10 +1,11 @@
+import { imageFile } from '../scripts/images.js';
 // The playmat of the Mercenaries tab (design: campaign/mockups/merc-6-playmat-v2.html, styles: campaign/playmat.css, generated).
 // playmatHtml() turns one character of the record into the playmat markup; the page (app.js) wires the clicks and drags to the
 // pure edit functions in scripts/campaign/edit.js, so everything done here is saved, undoable and logged in the history.
 import { handList, zoneOf, ownedCards, pendingPicks, cardLevel, SLOT_ORDER, SLOT_LABEL, slotLimits, slotUse, itemFits } from '../scripts/campaign/record.js';
-import { tokenDefs, TOKEN_IMAGE_DIR, markerTokens, MARK_STICKERS, MARK_STICKER_DIR, markLabel } from '../scripts/campaign/classTokens.js';
+import { tokenDefs, tokenImage, stickerImage, markerTokens, MARK_STICKERS, markLabel } from '../scripts/campaign/classTokens.js';
 import { BGG_ICON_GROUPS } from '../scripts/campaign/bggIcons.js';
-import { BANNERS, BANNER_ICON_DIR } from '../scripts/campaign/bggBanners.js';
+import { BANNERS, bannerIcon } from '../scripts/campaign/bggBanners.js';
 import { SPECIAL_TRAITS, specialName } from '../scripts/campaign/traits.js';
 import { holdStatus } from '../scripts/campaign/edit.js';
 import { amdRollCode, perkList, AM_STANDARD } from '../scripts/campaign/amdDeck.js';
@@ -24,16 +25,16 @@ const DN = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="
 
 // S = what the page remembers: { modal, matSide, customCodes, histKind, log } (open modal, mat side, saved codes, history filter and entries).
 // Marker elements for a list [{ k, s?, x, y }]; x and y are percent of the card.
-const REC_ICON = '<img src="../images/common/icons/recover.png" alt="" draggable="false">';
+const REC_ICON = `<img src="${imageFile('images/common/icons/recover', '../')}" alt="" draggable="false">`;
 const STATE_BTN = [REC_ICON.replace('<img ', '<img width="24" height="24" '),
-  '<img src="../images/common/icons/spent.png" alt="" width="24" height="24" draggable="false">', '<img src="../images/common/icons/consumed.png" alt="" width="24" height="24" draggable="false">'];
+  `<img src="${imageFile('images/common/icons/spent', '../')}" alt="" width="24" height="24" draggable="false">`, `<img src="${imageFile('images/common/icons/consumed', '../')}" alt="" width="24" height="24" draggable="false">`];
 const PVX = '<button type="button" class="pvx" data-pvclose aria-label="Close preview">&times;</button>';
 export function markersHtml(list, sel = -1) {
-  return (list || []).map((m, i) => `<div class="tk${i === sel ? ' sel' : ''}" data-i="${i}" style="left:${m.x}%;top:${m.y}%${m.s ? `;--tkw:${m.k === 'hex_attack' ? 12 : 9}%` : ''}"><img src="${m.s ? MARK_STICKER_DIR : TOKEN_IMAGE_DIR}${m.k}.png" alt="${m.k}" draggable="false"></div>`).join('');
+  return (list || []).map((m, i) => `<div class="tk${i === sel ? ' sel' : ''}" data-i="${i}" style="left:${m.x}%;top:${m.y}%${m.s ? `;--tkw:${m.k === 'hex_attack' ? 12 : 9}%` : ''}"><img src="${(m.s ? stickerImage(m.k) : tokenImage(m.k)) ?? ''}" alt="${m.k}" draggable="false"></div>`).join('');
 }
 const pickSize = (k, sticker) => (sticker ? (k === 'hex_attack' ? 36 : 27) : 44);   // same size as placed on the 300 px card
 function markPanel(c, S, esc, key, stickers = true) {
-  const sel = S.mkSel || {}, btn = (k, s) => `<button type="button" style="--sz:${pickSize(k, s)}px" data-mkpick="${k}" data-s="${s ? 1 : 0}" aria-pressed="${sel.k === k && !!sel.s === s}" title="${esc(markLabel(k))}"><img src="${s ? MARK_STICKER_DIR : TOKEN_IMAGE_DIR}${k}.png" alt="${k}" draggable="false"></button>`;
+  const sel = S.mkSel || {}, btn = (k, s) => `<button type="button" style="--sz:${pickSize(k, s)}px" data-mkpick="${k}" data-s="${s ? 1 : 0}" aria-pressed="${sel.k === k && !!sel.s === s}" title="${esc(markLabel(k))}"><img src="${esc((s ? stickerImage(k) : tokenImage(k)) ?? '')}" alt="${k}" draggable="false"></button>`;
   const toks = markerTokens(c.cls);
   const n = c.mk?.[key]?.length || 0, si = S.mkIdx ?? -1, nb = (d, l, t) => `<button type="button" class="btn6" data-mknudge="${d}" aria-label="${t}">${l}</button>`;
   const selRow = si >= 0 && si < n ? `<div class="row"><span>Selected marker</span><span class="nudge">${nb('-2,0', '&larr;', 'Move left')}${nb('0,-2', '&uarr;', 'Move up')}${nb('0,2', '&darr;', 'Move down')}${nb('2,0', '&rarr;', 'Move right')}<button type="button" class="btn6" data-mkremove>Remove</button></span></div>` : '';
@@ -130,7 +131,7 @@ export function playmatHtml(c, X, S = {}) {
   const pct = hi ? Math.max(0, Math.min(100, ((c.xp - lo) / (hi - lo)) * 100)) : 100;
   const sp = (key, label, tag, val) => `<span class="sp"><${tag} class="edv" tabindex="0" data-hud="${key}" data-char="${cid}" title="Click to edit. Type a number, or +N / -N to add or subtract">${val}</${tag}><span class="spc"><button type="button" data-hud="${key}" data-char="${cid}" data-d="1" aria-label="Increase ${label}">${UP}</button><button type="button" data-hud="${key}" data-char="${cid}" data-d="-1" aria-label="Decrease ${label}">${DN}</button></span></span>`;
   const limit = c.hand;
-  const tkImg = (n, l) => `<img src="${TOKEN_IMAGE_DIR}${n}.png" alt="${esc(l)}" draggable="false" style="width:52px;height:52px;object-fit:contain;display:block">`;
+  const tkImg = (n, l) => `<img src="${esc(tokenImage(n) ?? '')}" alt="${esc(l)}" draggable="false" style="width:52px;height:52px;object-fit:contain;display:block">`;
   const tokens = tokenDefs(c.cls).map(d => {
     const v = c.tok?.[d.k] || 0;
     if (d.states) return `<span class="ctr" title="${esc(d.l)}: ${esc(d.states[v])} (click to change)"><button type="button" data-tk="${d.k}" data-char="${cid}" style="width:auto;height:auto;padding:2px;background:none;border:0" aria-label="${esc(d.l)}: ${esc(d.states[v])}">${tkImg(d.imgs[v], `${d.l} ${d.states[v]}`)}</button></span>`;
@@ -139,7 +140,7 @@ export function playmatHtml(c, X, S = {}) {
   const DOC = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg>';
   const DICE = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg>';
   const CARDS_ICON = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="12" height="16" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v13"/></svg>';
-  const ITEM_STATE = ['Available', 'Spent', 'Consumed'], STATE_ICON = [null, '../images/common/icons/spent.png', '../images/common/icons/consumed.png'];
+  const ITEM_STATE = ['Available', 'Spent', 'Consumed'], STATE_ICON = [null, imageFile('images/common/icons/spent', '../'), imageFile('images/common/icons/consumed', '../')];
   const items = c.items.map(it => {
     const item = X.itemById.get(it.id), url = X.itemImageUrl(item), name = X.pretty(item?.slug ?? it.id), s = it.s || 0;
     return `<div class="it${s === 1 ? ' spent' : s === 2 ? ' consumed' : ''}" data-itemstate data-id="${esc(it.id)}" data-char="${cid}" title="${esc(name)}${item?.slot ? ` (${esc(item.slot)})` : ''} \u2014 ${ITEM_STATE[s]}, click to open">${url ? `<img src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false">` : `<div class="noimg">${esc(name)}</div>`}${STATE_ICON[s] ? `<span class="itbadge"><img src="${STATE_ICON[s]}" alt="" draggable="false"></span>` : ''}${marks(`i:${it.id}`)}${handle(`i:${it.id}`)}</div>`;
@@ -254,8 +255,8 @@ export function modalHtml(c, X, S) {
     body = `<div class="matflip"><img src="${esc(X.matUrl(c.cls, side))}" alt="${esc(c.cls)} mat, ${side}" data-matflip role="button" tabindex="0" title="Click to flip"></div>`;
   } else if (S.modal === 'codes') {
     title = 'BGG forum codes'; big = ' sbox';
-    const icons = BGG_ICON_GROUPS.map(g => `<div class="bgg-block"><h4>${esc(g.h)}</h4><div class="bgg-row">${g.icons.map(i => `<button type="button" class="bgg-ic" data-code="${esc(i.c)}" title="${esc(i.n)}: copy ${esc(i.c)}" aria-label="Copy ${esc(i.n)} icon code"><img src="${esc(i.img)}" alt="${esc(i.n)}"${i.inv ? ' class="inv"' : ''}></button>`).join('')}</div></div>`).join('');
-    const banners = BANNERS.map(b => `<button type="button" class="bnrtile" data-bnr="${b.slug}" title="Copy the ${esc(b.name)} banner code">${b.icon ? `<img src="${BANNER_ICON_DIR}${encodeURIComponent(b.icon)}.webp" alt="">` : '<span class="bnrnoimg">?</span>'}<span>${esc(b.name)}</span></button>`).join('');
+    const icons = BGG_ICON_GROUPS.map(g => `<div class="bgg-block"><h4>${esc(g.h)}</h4><div class="bgg-row">${g.icons.map(i => `<button type="button" class="bgg-ic" data-code="${esc(i.c)}" title="${esc(i.n)}: copy ${esc(i.c)}" aria-label="Copy ${esc(i.n)} icon code"><img src="${esc(imageFile(i.img, '../') ?? '')}" alt="${esc(i.n)}"${i.inv ? ' class="inv"' : ''}></button>`).join('')}</div></div>`).join('');
+    const banners = BANNERS.map(b => `<button type="button" class="bnrtile" data-bnr="${b.slug}" title="Copy the ${esc(b.name)} banner code">${b.icon ? `<img src="${esc(bannerIcon(b.icon) ?? '')}" alt="">` : '<span class="bnrnoimg">?</span>'}<span>${esc(b.name)}</span></button>`).join('');
     const custom = (S.customCodes || []).map((k, i) => `<div class="coderow"><div><b style="margin:0">${esc(k.label)}</b></div><span><button type="button" class="btn6" data-code="${esc(k.text)}">Copy</button> <button type="button" class="delx" data-codedel="${i}" aria-label="Remove ${esc(k.label)}">&times;</button></span></div>`).join('');
     body = `<div class="chedit sedit">
       <section class="cesec"><h4>Icons <span>click to copy</span></h4><div class="bgg-icons">${icons}</div></section>
@@ -328,7 +329,7 @@ export function modalHtml(c, X, S) {
   } else if (S.modal === 'amd') {
     title = 'Attack modifier deck'; big = ' amdbox';
     const A = S.amd || { tiles: [], specials: [], faces: [], total: 0, disc: 0 };
-    const DOWN = '<img class="amico" src="../images/common/icons/draw.svg" alt="" draggable="false">', UNDO = REC_ICON.replace('<img ', '<img class="amico" ');
+    const DOWN = `<img class="amico" src="${imageFile('images/common/icons/draw', '../')}" alt="" draggable="false">`, UNDO = REC_ICON.replace('<img ', '<img class="amico" ');
     const tiles = A.tiles.map(t => `<div class="amdtile real${t.n ? '' : ' none'}" title="${esc(t.face)}${t.rolling ? ' (reshuffles the deck)' : ''}"><div class="amcard" data-amzoom="${esc(t.key)}"><div class="amslot" data-keep data-amslot="${esc(t.key)}"></div><b>${t.n}/${t.base}</b></div>
       <div class="amfoot"><button type="button" data-amact="draw" data-key="${esc(t.key)}"${t.n ? '' : ' disabled'} title="Draw one ${esc(t.face)}">${DOWN}</button><button type="button" data-amact="ret" data-key="${esc(t.key)}"${t.d ? '' : ' disabled'} title="Return one ${esc(t.face)} from the discard to the deck" aria-label="Return one ${esc(t.face)}">${UNDO} ${t.d}</button></div></div>`).join('');
     const specials = A.specials.map(sp => `<div class="amdtile real${sp.n ? '' : ' none'}"><div class="amcard"><img src="${esc(sp.img)}" alt="${esc(sp.label)}" draggable="false"><b>${sp.n}</b></div>

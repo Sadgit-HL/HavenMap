@@ -1,3 +1,5 @@
+import { imageFile } from './images.js';
+import { matAddress } from './campaign/cardImages.js';
 // Game data aggregator. Selects a game config based on the ?game= URL param,
 // merges expansion configs with their base game, then builds indices.
 
@@ -54,23 +56,23 @@ function tileUrl(entry, side = '') {
 function hyphenize(s) { return s.replace(/ /g, '-').toLowerCase(); }
 
 export const assetPath = {
-  tile       : (entry, side = '') => `images/${entry.game}/tiles/${tileUrl(entry, side)}.png`,
+  tile       : (entry, side = '') => `${imageFile(`images/${entry.game}/tiles/${tileUrl(entry, side)}`, '')}`,
   overlay    : (entry, opened)    => {
-    if (entry.classOverlay) return `images/common/class_overlays/${entry.img}.png`;
-    if (entry.commonDir) return `images/common/${entry.commonDir}/${entry.img}.png`;
+    if (entry.classOverlay) return `${imageFile(`images/common/class_overlays/${entry.img}`, '')}`;
+    if (entry.commonDir) return `${imageFile(`images/common/${entry.commonDir}/${entry.img}`, '')}`;
     if (entry.game === 'gh2' && entry.hasOpenClose)
-      return `images/gh2/overlays/${entry.img}-${opened ? 'open' : 'close'}.png`;
-    return `images/${entry.game}/overlays/${entry.img}${opened ? '-open' : ''}.png`;
+      return `${imageFile(`images/gh2/overlays/${entry.img}-${opened ? 'open' : 'close'}`, '')}`;
+    return `${imageFile(`images/${entry.game}/overlays/${entry.img}${opened ? '-open' : ''}`, '')}`;
   },
-  monster    : (entry)            => `images/${entry.game}/monsters/hex/${urlize(entry.title)}.png`,
-  monsterCard: (entry, level)     => `images/${entry.game}/monsters/stats/${urlize(entry.title)}_${level}.png`,
-  mercenary  : (title)            => `images/common/mercenaries/${urlize(title)}.png`,
-  mercenaryMat: (title)           => `images/common/mercenary_mats/${urlize(title)}.png`,
-  summon     : (title)            => `images/common/summons/${urlize(title)}.png`,
-  attackMod  : (img)              => `images/common/attack_mods/${img}.webp`,
-  amBack     : ()                 => 'images/common/card_backs/gh-am-m-back.webp',
-  maBack     : ()                 => 'images/common/card_backs/gh-ma-back.webp',
-  abilityCard: (slug, n)          => `images/gh2/monsters/monster-abilities/gh2-ma-${slug}-${n}.webp`,
+  monster    : (entry)            => `${imageFile(`images/${entry.game}/monsters/hex/${urlize(entry.title)}`, '')}`,
+  monsterCard: (entry, level)     => `${imageFile(`images/${entry.game}/monsters/stats/${urlize(entry.title)}_${level}`, '')}`,
+  mercenary  : (title)            => `${imageFile(`images/common/mercenaries/${urlize(title)}`, '')}`,
+  mercenaryMat: (title)           => imageFile(matAddress(title, 'front'), ''),   // the mats of the asset repository (front side)
+  summon     : (title)            => `${imageFile(`images/common/summons/${urlize(title)}`, '')}`,
+  attackMod  : (img)              => `${imageFile(`images/common/attack_mods/${img}`, '')}`,
+  amBack     : ()                 => imageFile('images/common/card_backs/gh-am-m-back', ''),
+  maBack     : ()                 => imageFile('images/common/card_backs/gh-ma-back', ''),
+  abilityCard: (slug, n)          => `${imageFile(`images/gh2/monsters/monster-abilities/gh2-ma-${slug}-${n}`, '')}`,
 };
 
 // ─── Level-dependent stats lookup ───────────────────────────────────────────

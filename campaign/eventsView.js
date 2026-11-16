@@ -40,8 +40,9 @@ function ensureBack() {
     .catch(() => { backLoading = null; });
 }
 
-const IMG_BASE = new URL('../images/events/', import.meta.url).href;
-const imgsHtml = list => (list || []).map(f => `<img class="evimg" src="${IMG_BASE}${esc(f)}" alt="Card artwork" loading="lazy">`).join('');
+import { imageFile } from '../scripts/images.js';
+const eventArt = f => imageFile('images/events/' + f, '../') ?? '';
+const imgsHtml = list => (list || []).map(f => `<img class="evimg" src="${esc(eventArt(f))}" alt="Card artwork" loading="lazy">`).join('');
 const paras = t => String(t || '').split(/\n+/).filter(Boolean).map(p => `<p>${esc(p)}</p>`).join('');
 const seatName = (r, seat) => r.players?.find(p => p.seat === seat)?.name || `Seat ${seat + 1}`;
 

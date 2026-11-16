@@ -1,7 +1,7 @@
 // Layered composition of a decorated (shared) attack-modifier card from images/common/attack_mods.
 // Used by card.js (perk list, apps) and perks/compose.html (comparison page).
 
-import { ASSET_BASE as BASE } from './paths.js?v=2';
+import { amImg } from './paths.js?v=3';
 import { img, layer } from './dom.js';
 const ICON_CATS = ['element', 'condition', 'effect'];
 const SELF_ALLY = new Set(['heal', 'shield']);   // retaliate: plain fist disc, amount drawn beside it
@@ -57,7 +57,7 @@ delete BADGE_IMG['+4'];
 
 function valueBadge(value) {
   if (BADGE_IMG[value]) {
-    return img(`${BASE}/spheres/badge-${BADGE_IMG[value]}.webp`, 'cb-full');
+    return img(`${amImg(`spheres/badge-${BADGE_IMG[value]}`)}`, 'cb-full');
   }
   const bb = NUM_BBOX[value];
   if (!bb) return null;
@@ -72,7 +72,7 @@ function valueBadge(value) {
   num.style.top = pct((VALUE_BADGE.d - nh) / 2, VALUE_BADGE.d);
   num.style.width = pct(nw, VALUE_BADGE.d);
   num.style.height = pct(nh, VALUE_BADGE.d);
-  num.style.backgroundImage = `url(${BASE}/numbers/c-${PLAIN_NUMBER[value]}.webp)`;
+  num.style.backgroundImage = `url(${amImg(`numbers/c-${PLAIN_NUMBER[value]}`)})`;
   num.style.backgroundSize = `${CANVAS.w / w * 100}% ${CANVAS.h / h * 100}%`;
   num.style.backgroundPosition = `${bb[0] / (CANVAS.w - w) * 100}% ${bb[1] / (CANVAS.h - h) * 100}%`;
   wrap.appendChild(num);
@@ -106,10 +106,10 @@ function fitClassIcon(icon, square) {
 function classBadge(cls) {
   if (!cls) return null;
   const g = layer('cb-classgroup');
-  const circle = img(`${BASE}/spheres/class-circle.webp`, 'cb-full');
+  const circle = img(`${amImg(`spheres/class-circle`)}`, 'cb-full');
   const wrap = layer('cb-class');
   box(wrap, CLASS_BADGE);
-  const ic = img(`${BASE}/class_icons/${cls}.webp`);
+  const ic = img(`${amImg(`class_icons/${cls}`)}`);
   ic.onerror = () => ic.remove();
   fitClassIcon(ic, 0.6);
   wrap.appendChild(ic);
@@ -167,8 +167,8 @@ export function compose(card, diag = false) {
   if (!icons.length) {
     // Plain value card (plus3, plus4, plus1flip ...): own frame + centred number.
     frame = PLAIN_FRAME[card.value] || 'p0';
-    layers.push({ src: `${BASE}/frames/${frame}.webp`, label: `frame ${frame}` });
-    if (card.value in PLAIN_NUMBER) layers.push({ src: `${BASE}/numbers/c-${PLAIN_NUMBER[card.value]}.webp`, label: `number ${card.value}` });
+    layers.push({ src: `${amImg(`frames/${frame}`)}`, label: `frame ${frame}` });
+    if (card.value in PLAIN_NUMBER) layers.push({ src: `${amImg(`numbers/c-${PLAIN_NUMBER[card.value]}`)}`, label: `number ${card.value}` });
     note('ok', 'plain card');
   } else {
     const elems = icons.filter(x => x.cat === 'element');
@@ -190,12 +190,12 @@ export function compose(card, diag = false) {
       frame = fname;
     }
     const rot = ROTATE_FRAME.has(card.art.ref) || (elems.length === 3 && icons.length === 3);   // triple: grey (wind) left, green (earth) right
-    layers.push({ src: `${BASE}/frames/${frame}.webp`, label: `frame ${frame}${rot ? ' (rotated 180)' : ''}`, ...(rot && { transform: 'rotate(180deg)' }) });
+    layers.push({ src: `${amImg(`frames/${frame}`)}`, label: `frame ${frame}${rot ? ' (rotated 180)' : ''}`, ...(rot && { transform: 'rotate(180deg)' }) });
 
     if (elems.length === 2 && icons.length === 2) {
       const [a, b] = elems.map(x => x.icon);
       const m = mixedPair(a, b);
-      if (m) layers.push({ src: `${BASE}/icons/center/mixed-elements-${m}.webp`, label: `icon mixed-elements-${m}`, icon: true });
+      if (m) layers.push({ src: `${amImg(`icons/center/mixed-elements-${m}`)}`, label: `icon mixed-elements-${m}`, icon: true });
       else note('warn', `no mixed icon ${a}+${b}`);
     } else {
       for (const ic of icons) {
@@ -207,12 +207,12 @@ export function compose(card, diag = false) {
         if (ic.icon === 'curse' && ic.amount === 2) {
           for (const [px, py] of CURSE2_POS) {
             const dx = (px - 303.5) / 600 * 100, dy = (py - 198.5) / 391 * 100;
-            layers.push({ src: `${BASE}/icons/center/${file}.webp`, label: `icon ${file} x2`, icon: true, transform: `translate(${dx.toFixed(2)}%, ${dy.toFixed(2)}%) scale(${CURSE2_SCALE})`, origin: XF_ORIGIN });
+            layers.push({ src: `${amImg(`icons/center/${file}`)}`, label: `icon ${file} x2`, icon: true, transform: `translate(${dx.toFixed(2)}%, ${dy.toFixed(2)}%) scale(${CURSE2_SCALE})`, origin: XF_ORIGIN });
           }
           note('ok', 'curse 2: two icons');
           continue;
         }
-        const lay = { src: `${BASE}/icons/center/${file}.webp`, label: `icon ${file}`, icon: true };
+        const lay = { src: `${amImg(`icons/center/${file}`)}`, label: `icon ${file}`, icon: true };
         const tri = elems.length === 3 && icons.length === 3 && TRIPLE_POS[ic.icon];
         if (tri) {
           const dx = (tri[0] - 303) / 600 * 100, dy = (tri[1] - 198.5) / 391 * 100;
@@ -225,7 +225,7 @@ export function compose(card, diag = false) {
     if (elems.length === 3 && icons.length === 3) note('ok', '3 elements in a triangle');
     else if (icons.length > 1) note('warn', `${icons.length} icons stacked (layout unknown)`);
   }
-  if (has('rolling')) layers.push({ src: `${BASE}/icons/side/rolling.webp`, label: 'side rolling' });
+  if (has('rolling')) layers.push({ src: `${amImg(`icons/side/rolling`)}`, label: 'side rolling' });
   if (t.some(x => x.amount !== undefined)) note('warn', 'amount: ' + t.filter(x => x.amount !== undefined).map(x => `${x.word}${x.amount}`).join(' '));
   if (t.some(x => x.cat === 'range') && !icons.some(i => i.icon === 'ward')) note('warn', 'range token');
   if (has('convert-to-any')) note('warn', 'convert to any');
@@ -241,7 +241,7 @@ export function compose(card, diag = false) {
     for (const l of layers) {
       if (l.icon) { l.transform = 'translateY(-7.54%) scale(0.73)'; l.origin = XF_ORIGIN; }
     }
-    overlays.push({ img: `${BASE}/icons/small/target-ring.webp`, x: 281, y: 289, w: 40 });
+    overlays.push({ img: `${amImg(`icons/small/target-ring`)}`, x: 281, y: 289, w: 40 });
     if (targetSmall.amount !== undefined) overlays.push({ text: String(targetSmall.amount), x: 323, y: 294, cls: 'cb-digit-white' });
   }
   for (const x of t) {

@@ -3,7 +3,6 @@
 // and the class badge are not drawn here.
 import { PERKS } from '../scripts/games/perks.js?v=10';
 import { compose, stack, addOverlays, withOverlays, withBadges } from '../scripts/amd/compose.js?v=3';
-import { ASSET_BASE as BASE } from '../scripts/amd/paths.js?v=2';
 
 // Distinct shared faces, with the classes that use each.
 const faces = new Map();
@@ -34,7 +33,7 @@ const countEl = document.getElementById('count');
 const entries = [...faces.entries()].sort((a, b) => a[0].localeCompare(b[0]));
 const built = entries.map(([ref, { card, used }]) => {
   const c = compose(card, true);
-  const scan = `${BASE}/shared/${ref}.webp`;
+  const scan = null;   // the reference scans are kept outside the repo (asset-backups); this page shows no scan column
   const urls = c.layers;
 
   const el = document.createElement('div');

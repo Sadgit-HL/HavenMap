@@ -279,7 +279,7 @@ button.evchip { cursor:pointer; }
 .modalrow input { width:18px; height:18px; accent-color:var(--accent); }
 .modalfoot { display:flex; justify-content:flex-end; margin-top:12px; }
 .modalbox.wide { width:min(420px,100%); }
-.modalbox.settingsbox { width:min(440px,100%); }
+.modalbox.settingsbox { width:min(880px,100%); }
 .setsec + .setsec { margin-top:12px; padding-top:10px; border-top:1px solid var(--line); }
 .setgrp { font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin:10px 0 6px; }
 .setsec > .setgrp:first-child { margin-top:0; }
@@ -475,14 +475,14 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); min-height: 420px; }
 .pm .pcell .rec svg { display: block; margin: 0 auto; pointer-events: none; }
 .pm .poolbar [data-pilerecall] svg { display: block; width: 16px; height: 16px; }
 
-/* recover icon (images/common/icons/recover.png is dark, so its buttons get a light plate) */
+/* recover icon (images/common/icons/recover.webp is dark, so its buttons get a light plate) */
 .pm .pcell .rec, .pm .poolbar [data-pilerecall] { background: #efe6d2; }
 .pm .pcell .rec:hover, .pm .poolbar [data-pilerecall]:hover:not(:disabled) { background: #fff; }
 .pm .pcell .rec img { display: block; height: 11px; width: auto; margin: 2px auto 0; pointer-events: none; }
 .pm .poolbar [data-pilerecall] { padding: 3px 8px; }
 .pm .poolbar [data-pilerecall] img { display: block; height: 18px; width: auto; pointer-events: none; }
 .pm .poolbar [data-pilerecall]:disabled img { opacity: .4; }
-.pm .stbtn img[src$="recover.png"] { object-fit: contain; }
+.pm .stbtn img[src$="recover.webp"] { object-fit: contain; }
 .pm .itpanel .seg .stbtn:first-child { background: #efe6d2; }
 
 /* lighter plate for the dark state/recover icons */
@@ -496,7 +496,7 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); min-height: 420px; }
 .pm .itpanel .seg .stbtn:hover, .pm .pcell .rec:hover, .pm .poolbar [data-pilerecall]:hover:not(:disabled) { background: #5e5344; }
 
 /* recover icon: inverted (light card, hue kept red) on the normal dark plate */
-.pm img[src$="recover.png"] { filter: invert(1) hue-rotate(180deg); }
+.pm img[src$="recover.webp"] { filter: invert(1) hue-rotate(180deg); }
 .pm .pcell .rec, .pm .poolbar [data-pilerecall], .pm .itpanel .seg .stbtn:first-child { background: rgba(18,15,11,.88); }
 .pm .pcell .rec:hover, .pm .poolbar [data-pilerecall]:hover:not(:disabled), .pm .itpanel .seg .stbtn:first-child:hover { background: #3a3026; }
 
@@ -851,13 +851,21 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); min-height: 420px; }
 #settingsModal section[hidden] { display: none; }
 
 /* Shortcuts tab of the settings modal */
-.keylist { width:100%; border-collapse:collapse; font-size:13px; }
-.keylist td { padding:6px 4px; border-bottom:1px solid var(--line); vertical-align:top; color:var(--text); }
+.keylist { column-count:2; column-gap:28px; font-size:13px; }
+.keylist .keygroup { break-inside:avoid; margin:0 0 12px; }
+.keylist .keygroup h4 { margin:0 0 4px; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); }
+.keylist table { width:100%; border-collapse:collapse; }
+.keylist td { padding:5px 4px; border-bottom:1px solid var(--line); vertical-align:top; color:var(--text); }
 .keylist td:first-child { white-space:nowrap; width:40%; }
 .keylist td:last-child { color:var(--muted); }
-.keylist .keygrp td { padding:14px 4px 6px; border-bottom:0; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); }
 .keylist kbd { font:inherit; font-size:12px; color:var(--text); background:#2d2519; border:1px solid var(--line); border-bottom-width:2px; border-radius:6px; padding:1px 6px; }
 .keylist .keyor { color:var(--muted); font-size:12px; }
+@media (max-width:560px) { .keylist { column-count:1; } }
 
 /* Settings sits above the playmat (its top bar and modals use z-index up to 410) */
 #settingsModal { z-index: 500; }
+
+/* Roll button of the items filter bar: the merc tab's roll button look (playmat.css .pm .btn6 / .rollbtn) */
+.filters .btn6.rollbtn { background:#2d2519; color:var(--text); border:1px solid var(--line); border-radius:7px; padding:3px 10px; font:inherit; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; }
+.filters .btn6.rollbtn:hover:not(:disabled) { border-color:var(--accent); color:var(--accent); }
+.filters .btn6.rollbtn:disabled { opacity:.45; cursor:not-allowed; }

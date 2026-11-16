@@ -4,7 +4,7 @@
 // composed by compose.js; unique cards use their baked image, class badge included.
 
 import { composedShared, badges, PLAIN_FRAME, PLAIN_NUMBER } from './compose.js?v=3';
-import { ASSET_BASE as BASE } from './paths.js?v=2';
+import { amImg } from './paths.js?v=3';
 import { img, layer } from './dom.js';
 
 // Value -> frame / number file: the plain values of compose.js plus the two shuffle cards.
@@ -24,20 +24,20 @@ function buildShared(card, className) {
 
 function buildBase(card, className, isAdded) {
   const root = layer('pc');
-  root.appendChild(lazyImg(`${BASE}/frames/${FRAME_BY_VALUE[card.value] || 'p0'}.webp`, 'pc-frame'));
+  root.appendChild(lazyImg(`${amImg(`frames/${FRAME_BY_VALUE[card.value] || 'p0'}`)}`, 'pc-frame'));
   // Removed base cards come from the standard deck (no class icon); base cards a perk adds are class cards.
   // Same class badge (circle + sized icon) as the composed shared cards.
   if (isAdded && className) root.appendChild(badges(null, className));
-  if (card.value !== 'null') root.appendChild(lazyImg(`${BASE}/numbers/c-${NUMBER_FILE[card.value]}.webp`, 'pc-full'));
+  if (card.value !== 'null') root.appendChild(lazyImg(`${amImg(`numbers/c-${NUMBER_FILE[card.value]}`)}`, 'pc-full'));
   // x2 and null cards reshuffle the deck: shuffle mark in the bottom-right corner.
-  if (card.value === 'x2' || card.value === 'null') root.appendChild(lazyImg(`${BASE}/spheres/shuffle.webp`, 'pc-full'));
+  if (card.value === 'x2' || card.value === 'null') root.appendChild(lazyImg(`${amImg(`spheres/shuffle`)}`, 'pc-full'));
   return root;
 }
 
 function buildUnique(card) {
   // Already a full baked card image, class badge included.
   const root = layer('pc');
-  root.appendChild(lazyImg(`${BASE}/unique/${card.code}.webp`, 'pc-unique'));
+  root.appendChild(lazyImg(`${amImg(`unique/${card.code}`)}`, 'pc-unique'));
   return root;
 }
 

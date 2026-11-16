@@ -1,3 +1,4 @@
+import { imageFile } from './images.js';
 import { state, patch, subscribe, undo, redo, canUndo, canRedo } from './state.js';
 import { uiState, subscribeUI, setMobilePanel, openAddPanel, closeAddPanel, openMobileDetails, closeMobileDetails, setMobileMoveMode } from './uiState.js';
 import { setZoom, getZoom, resetView, ZOOM_STEP } from './controls.js';
@@ -174,7 +175,7 @@ function elementsHtml() {
         ${ELEMENTS.map(({ key, label, color }, i) => {
           const value = state.elements?.[i] || 0;
           return `<button class="mobile-el-tile" data-mobile-element="${i}" data-state="${value}" title="${label}" style="--el-color:${color}">
-            <img src="images/common/elements/${key}.png" alt="${label}">
+            <img src="${imageFile(`images/common/elements/${key}`, '')}" alt="${label}">
           </button>`;
         }).join('')}
       </div>

@@ -1,3 +1,4 @@
+import { imageFile } from '../images.js';
 // Attack modifier deck of one character: the standard deck plus what the perks taken change (c.pk = { perks: [index], boxes: { index: mask } }).
 // Pure data logic (no DOM), shared by the playmat modal and the checks. Draws, bless and curse are not saved: the page keeps them while it is open.
 import { heroCatalog, heroPerkClass, perkBoxes, perkLabel, perkDelta } from '../amd/heroDeck.js';
@@ -14,8 +15,8 @@ export const AM_STANDARD = [
 ];
 // Bless and curse cards are added by hand (max 10 each) and leave the game when drawn.
 export const AM_SPECIAL = [
-  { key: 'bless', label: 'Bless', face: 'B', max: 10, img: '../images/common/attack_mods/hero/bless.webp' },
-  { key: 'curse', label: 'Curse', face: 'C', max: 10, img: '../images/common/attack_mods/hero/curse.webp' },
+  { key: 'bless', label: 'Bless', face: 'B', max: 10, img: imageFile('images/common/attack_mods/hero/bless', '../') },
+  { key: 'curse', label: 'Curse', face: 'C', max: 10, img: imageFile('images/common/attack_mods/hero/curse', '../') },
 ];
 
 export const perkList = cls => (heroPerkClass(cls)?.perks || []).map((p, index) => ({ ...p, index, boxes: perkBoxes(p), label: perkLabel(p) }));
