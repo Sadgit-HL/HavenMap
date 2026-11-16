@@ -598,7 +598,7 @@ export const CARDS = [
   {"id":2105,"cls":21,"slug":"ink-bomb","lv":1,"ini":80},
   {"id":2106,"cls":21,"slug":"jet-propulsion","lv":1,"ini":34},
   {"id":2107,"cls":21,"slug":"net-shooter","lv":1,"ini":19},
-  {"id":2108,"cls":21,"slug":"potent-potables","lv":1,"ini":73},
+  {"id":2108,"cls":21,"slug":"potent-potables","lv":1,"ini":46},
   {"id":2109,"cls":21,"slug":"reinvigorating-elixir","lv":1,"ini":37},
   {"id":2110,"cls":21,"slug":"restorative-mist","lv":1,"ini":17},
   {"id":2111,"cls":21,"slug":"stun-shot","lv":1,"ini":20},

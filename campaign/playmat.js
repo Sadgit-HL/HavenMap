@@ -16,7 +16,7 @@ import { PERSONAL_QUESTS } from '../scripts/games/gh2_quests.js';
 import { GH2_PQ } from '../scripts/games/gh2_pq_text.js';
 
 // XP needed for level 1 to 9 (the rulebook table as the mockup uses it; to be checked against the rulebook, handover section 6).
-export const XP_STEPS = [0, 45, 95, 150, 210, 275, 350, 440, 540];
+export const XP_STEPS = [0, 45, 95, 150, 210, 275, 345, 420, 500];
 export const levelOfXp = xp => XP_STEPS.reduce((l, t, i) => (xp >= t ? i + 1 : l), 1);
 
 const UP = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>';
