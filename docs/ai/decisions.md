@@ -4,6 +4,8 @@ Dated, newest first within each group. "Owner" marks decisions the owner made. C
 
 ## Architecture and data
 
+- 2026-11-16: `images/` in the repo is the only source of truth for images. It holds the converted set (WebP, organised as `<type>/<edition>/<file>`). The app reaches every image through `scripts/images.js` (`imageFile`), which uses the generated table `scripts/images-index.js`. The remote image hosts are no longer loaded, except the BGG banner codes, which must be a public address. Owner.
+- 2026-11-16: The map sidebar's mercenary mats come from `character-mats/<edition>` (the asset repository art), since the old repo mats were removed. Owner.
 - 2026-11-14: `campaign/playmat.css` is hand-maintained. The generator stays as a reference and refuses to run without `--force`, because the mockup and the live page disagree.
 - 2026-11-13: Playmat card markers are stored per card and item in `chars[].mk`, keyed `c:<card id>` or `i:<item id>`.
 - 2026-11-12: Phone is a separate layout (`phone.js`) with the same data and edit functions. Touch and pen use pointer events for drag.
@@ -28,6 +30,9 @@ Dated, newest first within each group. "Owner" marks decisions the owner made. C
 - 2026-11-16: Item D toggles between available and spent (consumed counts as not spent); L sets consumed. Owner.
 - 2026-11-16: The card images option (Hover or Always) was removed: it had no visible effect, and its bench view was dead code. Owner.
 - 2026-11-16: The settings modal is split into tabs (Profile, Campaign file, Mercenary tab, Shortcuts). Owner.
+- 2026-11-16: Tab order: Overview, Mercenaries, Items, Events, Scenarios, Resources, Cards, History. Owner.
+- 2026-11-16: The Items tab roll button uses the merc tab's roll button style (`btn6 rollbtn`, "BGG code for roll"). The gold roll code tile of the Modifiers view was tried and reverted. Owner.
+- 2026-11-16: The settings modal is 880 px wide and the shortcut list runs in two columns. Owner.
 - 2026-11-14: Shared GUI rules for all campaign tabs (`ui-guidelines.md`). No help text, no tips. Pencils open popups. Owner.
 - 2026-11-12: Moving cards does not need the Edit toggle. Moving cards is play. Owner.
 - 2026-11-12: Phone text and menus use the playmat's modal list (`PHONE_MODALS`). A new feature must say whether it is on the phone.

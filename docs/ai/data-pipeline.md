@@ -59,3 +59,12 @@ Hand-maintained inputs and outputs:
 | Frosthaven and Worldhaven card images | card pictures, unique cards, class art | cleared for this non-profit app by the owner. Crediting the source is advisable |
 | `any2cards/worldhaven` scans | layout reference only, not copied | Cephalofair-licensed, used to verify layout only |
 | Photoshop template (author unknown) | layer art | open. Outside the repo |
+
+## Images under images/ (2026-11-16)
+
+- Layout: `images/<type>/<edition>/<file>.webp` (types such as `character-abilities`, `character-mats`, `character_hexes`, `monster_hexes`, `overlays`; editions `gh2`, `mp`, `fh`, `jotl`, `cs`, `toa`, or `common`). Sub-folders of the source are flattened into the file name. SVG stays SVG.
+- Source of the files: the repo's own images (converted), and the group's asset repository and the worldhaven clone (converted to the sizes in the table above). The conversion pipeline was a scratch script; its output and the manifest are in `tools/images-manifest.json` (source path, destination, status).
+- `tools/generate-image-index.py` writes `scripts/images-index.js` from the manifest: address (repo path or former remote URL, without extension) to file under `images/`. Regenerate it after any change in `images/`.
+- Code asks for images through `imageFile(address, prefix)` (`scripts/images.js`); `prefix` is `'../'` from `campaign/`. Attack-modifier layers use `amImg` and perk icons `perkIcon` (`scripts/amd/paths.js`).
+- Missing and removed: the 43 repo mercenary mats (replaced by `character-mats`), 22 local personal quest copies (the asset-repo copies are kept), summons `longbowman` and `stitched atrocity` and element `wild` (no file in the original repo either).
+- Not yet rewired: the mockups under `campaign/mockups/` (design snapshots, they still point at the old paths).

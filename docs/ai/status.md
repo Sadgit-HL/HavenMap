@@ -16,7 +16,7 @@ Known limits:
 
 ## Campaign page (`campaign/`)
 
-Tabs (`PAGE_TABS` in `campaign/app.js`): Overview, Scenarios, Mercenaries, Items, Events, Cards, Resources, History.
+Tabs (`PAGE_TABS` in `campaign/app.js`, in this order): Overview, Mercenaries, Items, Events, Scenarios, Resources, Cards, History.
 
 - Overview: party, prosperity (checks, Great Oak sanctuary, imbuement), reputation, scenario counts, stickers, unlocked classes, players, retired characters. Popups from pencils.
 - Scenarios: table and flowchart (`scripts/campaign/flow.js`, `flowPage`), state, result, unlock links both ways.
@@ -27,10 +27,12 @@ Tabs (`PAGE_TABS` in `campaign/app.js`): Overview, Scenarios, Mercenaries, Items
 - Resources: links from the workbook (`scripts/games/resources.js`).
 - History: entries from `record.log`, folded small counter changes, undo entries.
 - Storage: browser localStorage only (`scripts/campaign/store.js`, one implementation). JSON Export and Import by hand. Undo 50 steps, Ctrl+Z.
-- Settings modal (cogwheel): four tabs, Profile, Campaign file, Mercenary tab and Shortcuts (`docs/ai/playmat.md`). Object keys on the pointer (D, L, A on cards and items, D on modifier cards) tested in the browser by the owner on 2026-11-16.
+- Settings modal (cogwheel, 880 px wide): shortcuts list in two columns; four tabs, Profile, Campaign file, Mercenary tab and Shortcuts (`docs/ai/playmat.md`). Object keys on the pointer (D, L, A on cards and items, D on modifier cards) tested in the browser by the owner on 2026-11-16.
 - Imported test data: `import/campaign-import.json` (made by `tools/import-campaign-state.py`). The owner decided not to import the live campaign automatically; state is synced by hand.
 
-Recent work (last commits, 2026-11-13 and 2026-11-14): tile modals for stickers and classes, Cards sticker toggle, playmat card unit `--cu`, top bar on one line below 1400 px, context menu for the playmat, perks and enhancements and codes popups, overview rework.
+Recent work (2026-11-16, uncommitted at the time of writing): Frosthaven and Jaws character abilities, mats and battle goal pictures on the Cards tab; journal battle goals with pictures; tab order; settings modal split into tabs, two-column shortcut list; item roll button in the merc tab's roll button style; portrait crops looked up by class slug; marker tokens and stickers resolved through the new image functions (a removed constant had broken markers, fixed); the image rewrite described below.
+
+Earlier work (last commits, 2026-11-13 and 2026-11-14): tile modals for stickers and classes, Cards sticker toggle, playmat card unit `--cu`, top bar on one line below 1400 px, context menu for the playmat, perks and enhancements and codes popups, overview rework.
 
 ## Mercenaries playmat and phone
 
@@ -62,6 +64,7 @@ Recent work (last commits, 2026-11-13 and 2026-11-14): tile modals for stickers 
 
 ## Repo state to be aware of
 
+- Images (2026-11-16): `images/` is now the converted set; the app loads images through `scripts/images.js` from `scripts/images-index.js`. The old remote image hosts are not loaded anymore, except the BGG banner codes. Browser check pending (roadmap 44).
 - Working tree: `docs/` was reorganised on 2026-11-16 (see `README.md`). Nothing is committed yet.
 - Before that, the working tree had an uncommitted edit to the old `docs/HANDOVER.md` that broke the numbering of section 7 ("2. 3. ..."). It is now in `docs/archive/HANDOVER-log.md`.
 - Several docs were CRLF in the working copy and LF in git (`.gitattributes` has `* text=auto`). Git prints warnings; no content change.

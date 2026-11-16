@@ -59,3 +59,13 @@ Open work in priority order. Items marked (owner) need a decision or data from t
 41. Done 2026-11-16: card titles come from the picture file (the name field is sometimes the summon, e.g. "Banner of Hope" for Driving Inspiration). Minor: apostrophes are lost in titles ("The Knifes Edge").
 42. Done 2026-11-16: counts are 27 to 37 per class after the title fix (648 cards).
 43. Frosthaven and Jaws cards are not in the playmat or the campaign records. Decide whether they should be (they would need card ids and the same zone rules). (owner)
+
+## 9. Images in the repo (2026-11-16)
+
+44. Browser check of the image switch: the map, the campaign tabs, the attack modifier deck and the perk icons. Only Node checks were run (every key resolves to a file, 2,045 campaign keys, 916 attack-modifier layers, the map's tiles, overlays, monsters and mercenaries).
+45. BGG banner codes need a public address. They still use the Wordhaven_Assets URL. Decide: GitHub Pages copy of `images/character-banners`, or keep the old address.
+46. The six event images sit in `events/gh2/event_images/` (four levels). Move them up to `events/gh2/`, and update `tools/images-manifest.json` and regenerate the index.
+47. Mockups under `campaign/mockups/` still point at the old image paths. Decide: rewire or retire them.
+48. Browser check of the 2026-11-16 changes, not done yet: tab order, the settings modal width and two-column shortcuts, the items roll button, the marker fix, the portrait crops. Node and headless checks only.
+49. The Mercenaries tab label is still "Mercenaries" (requested as "Mercs"). Decide whether to shorten it.
+50. Scenario roller is still the icon button, unlike the item roller. Decide whether both should use one style.
