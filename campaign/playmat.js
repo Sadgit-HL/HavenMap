@@ -214,15 +214,21 @@ export function displaySettingsHtml(st) {
   const seg = (name, opts) => `<span class="seg" data-set="${name}">${opts.map(([v, l]) => `<button type="button" data-v="${v}" aria-pressed="${set[name] === v}">${l}</button>`).join('')}</span>`;
   const row = (label, inner) => `<div class="setrow"><label>${label}</label>${inner}</div>`;
   const zone = (z, label) => `<div class="setrow"><label for="setz-${z}">${label}</label><select id="setz-${z}" data-zone="${z}">${[['', 'Default'], ['hover', 'Hover'], ['click', 'Click']].map(([v, l]) => `<option value="${v}"${set.zones[z] === v ? ' selected' : ''}>${l}</option>`).join('')}</select></div>`;
-  const chk = (flag, label) => `<label class="chk"><span>${label}</span><input type="checkbox" data-flag="${flag}"${set[flag] ? ' checked' : ''}></label>`;
-  return `<div class="setgrp">Hand and cards</div>
-    ${row('Hand layout', seg('layout', [['spread', 'Spread'], ['fan', 'Fan']]))}${row('Card zoom', seg('zoom', [['hover', 'Hover'], ['click', 'Click']]))}
-    <details><summary>Zoom per zone</summary>${zone('active', 'Active')}${zone('play', 'Play area')}${zone('hand', 'Hand')}${zone('items', 'Items')}${zone('piles', 'Discard &amp; lost')}</details>
-    ${row('Zoom size', seg('size', [['s', 'S'], ['m', 'M'], ['l', 'L'], ['xl', 'XL']]))}
-    <div class="setgrp">Preview and timing</div>
-    ${row('Hover delay', seg('delay', [['off', 'Off'], ['short', 'Short'], ['long', 'Long']]))}${row('Docked preview', seg('dock', [['left', 'Left'], ['right', 'Right']]))}
-    <div class="setgrp">Other</div>
-    ${chk('inib', 'Initiative badge on cards')}${chk('autosort', 'Auto-sort hand by initiative')}${chk('reduce', 'Reduce motion')}
+  const chk = (flag, label) => `<label class="ctoggle setchk"><input type="checkbox" data-flag="${flag}"${set[flag] ? ' checked' : ''}><span class="ctbox" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span><span>${label}</span></label>`;
+  return `<div class="setgrp">Hand</div>
+    ${row('Layout', seg('layout', [['spread', 'Spread'], ['fan', 'Fan']]))}
+    ${chk('autosort', 'Auto-sort by initiative')}
+    <div class="setgrp">Card zoom</div>
+    ${row('Mode', seg('zoom', [['hover', 'Hover'], ['click', 'Click']]))}
+    ${row('Size', seg('size', [['s', 'S'], ['m', 'M'], ['l', 'L'], ['xl', 'XL']]))}
+    ${row('Hover delay', seg('delay', [['off', 'Off'], ['short', 'Short'], ['long', 'Long']]))}
+    <div class="setgrp">Zoom per zone</div>
+    ${zone('active', 'Active')}${zone('play', 'Play area')}${zone('hand', 'Hand')}${zone('items', 'Items')}${zone('piles', 'Discard &amp; lost')}
+    <div class="setgrp">Preview</div>
+    ${row('Docked side', seg('dock', [['left', 'Left'], ['right', 'Right']]))}
+    <div class="setgrp">Cards and motion</div>
+    ${chk('inib', 'Initiative badge on cards')}
+    ${chk('reduce', 'Reduce motion')}
     <div class="setfoot"><button type="button" class="btn6" data-setreset>Reset display settings</button></div>`;
 }
 

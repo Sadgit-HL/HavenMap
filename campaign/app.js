@@ -49,9 +49,8 @@ let tab = 'Overview';              // top-level tab
 let sub = '';                      // sub-tab under Mercenaries: a character id or 'add'
 const editPages = new Set();        // pages (top-level tabs) currently in edit mode; each page has its own Edit button
 let editing = false;               // derived in render(): is the visible page being edited
-let imgMode = 'hover';                 // card images: 'hover' (preview under the pointer) or 'always' (shown in the lists)
 const history = [];                                   // earlier records for undo, newest last
-const view = { flowFull: false, scnView: 'table', flowShow: 'progress', flowLane: '', flowZoom: 'm', scnSel: null, scnStatus: '', scnSearch: '', scnSort: { col: '', dir: 1 }, itemSlot: '', itemSearch: '', itemShow: 'unlocked', itemView: 'list', itemSize: 'm', itemSort: { col: '', dir: 1 }, cardType: 'abilities', cardSlot: '', cardChk: '', cardKind: 'city', cardSide: 'front', cardDeck: '', cardMon: '', cardMLv: '', cardShow: 'unlocked', cardCls: '', cardLv: '', cardSearch: '', cardSize: 's', cardStk: true };   // itemView: 'list' | 'grid'
+const view = { flowFull: false, scnView: 'table', logKind: 'all', flowShow: 'progress', flowLane: '', flowZoom: 'm', scnSel: null, scnStatus: '', scnSearch: '', scnSort: { col: '', dir: 1 }, itemSlot: '', itemSearch: '', itemShow: 'unlocked', itemView: 'list', itemSize: 'm', itemSort: { col: '', dir: 1 }, cardType: 'abilities', cardSlot: '', cardChk: '', cardKind: 'city', cardSide: 'front', cardDeck: '', cardMon: '', cardMLv: '', cardShow: 'unlocked', cardCls: '', cardLv: '', cardSearch: '', cardSize: 's', cardStk: true };   // itemView: 'list' | 'grid'
 
 // Level order of ability cards: 1, X (the level 1.1 cards), 2 ... 9, then M (mastery).
 const lvRank = lv => (lv === 'X' ? 1.5 : lv === 'M' ? 99 : Number(lv));
@@ -64,7 +63,7 @@ const ICON_CHECK = '<svg viewBox="0 0 24 24" width="16" height="16" fill="curren
 const ITEM_SIZES = { s: 150, m: 188, l: 250 };      // minimum tile width in px for the item grid
 // Filter and view settings are kept in this browser (not the search texts: a stale search would hide rows after a reload).
 const VIEW_KEY = 'havenmap.campaign.view';
-const VIEW_SAVED = ['scnView', 'flowShow', 'flowLane', 'flowZoom', 'scnStatus', 'scnSort', 'itemSlot', 'itemShow', 'itemView', 'itemSize', 'itemSort', 'cardType', 'cardSlot', 'cardKind', 'cardSide', 'cardDeck', 'cardMon', 'cardMLv', 'cardShow', 'cardCls', 'cardLv', 'cardSize', 'cardStk'];
+const VIEW_SAVED = ['scnView', 'logKind', 'flowShow', 'flowLane', 'flowZoom', 'scnStatus', 'scnSort', 'itemSlot', 'itemShow', 'itemView', 'itemSize', 'itemSort', 'cardType', 'cardSlot', 'cardKind', 'cardSide', 'cardDeck', 'cardMon', 'cardMLv', 'cardShow', 'cardCls', 'cardLv', 'cardSize', 'cardStk'];
 function saveView() {
   try { localStorage.setItem(VIEW_KEY, JSON.stringify(Object.fromEntries(VIEW_SAVED.map(k => [k, view[k]])))); } catch { /* ignore */ }
 }
@@ -239,13 +238,17 @@ const when = t => new Date(t).toLocaleString(undefined, { dateStyle: 'medium', t
 function historyPage(r) {
   const log = r.log || [];
   if (!log.length) return '<h2>History</h2><div class="empty">No edits recorded yet. Edits made from now on are listed here, by page.</div>';
+  const kinds = [...new Set(log.map(e => e.kind))].sort(), f = kinds.includes(view.logKind) ? view.logKind : 'all';
+  const shown = log.filter(e => f === 'all' || e.kind === f);
+  const bar = `<div class="histbar"><label for="logfilter">Show</label><select id="logfilter" data-logkind><option value="all">All</option>${kinds.map(k => `<option${k === f ? ' selected' : ''}>${esc(k)}</option>`).join('')}</select><span class="hn">${shown.length} entries</span></div>`;
+  if (!shown.length) return `<h2>History</h2>${bar}<div class="empty">No changes of this kind.</div>`;
   const groups = LOG_TABS.map(tabName => {
-    const list = log.filter(e => e.tab === tabName).reverse();
+    const list = shown.filter(e => e.tab === tabName).reverse();
     if (!list.length) return '';
     const rows = list.slice(0, HISTORY_SHOWN).map(e => `<tr><td class="nowrap">${esc(when(e.t))}</td><td>${esc(e.u)}</td><td>${esc(e.kind)}</td><td>${esc(e.d)}</td></tr>`);
     return `<h2>${esc(tabName)} <span class="hint">(${list.length})</span></h2>${table(['Time', 'User', 'Type', 'Change'], rows)}`;
   }).join('');
-  return groups;
+  return bar + groups;
 }
 
 // --- the scenario flowchart -------------------------------------------------------------------------------------------------
@@ -413,20 +416,6 @@ function scenarios(r) {
   }));
 }
 
-function benchList(c) {
-  const bench = [...c.bench].sort(byInitiative);
-  if (imgMode === 'always') {
-    return `<div class="benchgrid">${bench.map(id => {
-      const card = cardById.get(id);
-      return `<figure class="benchcard">${cardPicture(card, id)}<figcaption>${iniTag(card)}${esc(pretty(card?.slug ?? id))}</figcaption></figure>`;
-    }).join('')}</div>`;
-  }
-  return `<div class="chips">${bench.map(id => {
-    const card = cardById.get(id), url = cardImageUrl(card);
-    return `<span class="chip dim"${url ? ` data-img="${esc(url)}"` : ''}>${iniTag(card)}${esc(pretty(card?.slug ?? id))}</span>`;
-  }).join('')}</div>`;
-}
-
 // --- ability cards: the playmat (campaign/playmat.js) shows the zones; helpers for the rest of the page ---------------
 
 // Initiative number shown in front of a card name; a dash when the number is not known for that class yet.
@@ -436,12 +425,6 @@ const iniTag = card => `<span class="ini${card?.ini == null ? ' none' : ''}" tit
 const iniOf = id => cardById.get(id)?.ini ?? Infinity;
 const byInitiative = (a, b) => (iniOf(a) === iniOf(b) ? 0 : iniOf(a) < iniOf(b) ? -1 : 1);
 
-// An <img> that falls back to the card name when the picture is missing (see the 'error' listener below).
-function cardPicture(card, id) {
-  const url = cardImageUrl(card);
-  const name = pretty(card?.slug ?? id);
-  return url ? `<img class="cardpic" src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false">` : `<div class="noimg">${esc(name)}</div>`;
-}
 // Enhancement stickers on a card (key 'c:<id>' or 'i:<id>') from every character's markers, drawn over the card when the Cards tab shows them.
 function stkMarks(key) {
   if (!view.cardStk) return '';
@@ -1455,14 +1438,6 @@ function apply(el) {
   }
 }
 main.addEventListener('click', e => {
-  const m = e.target.closest('[data-imgmode]')?.dataset.imgmode;
-  if (m) {
-    imgMode = m;
-    hidePreview();
-    render();
-    try { localStorage.setItem('havenmap.campaign.cardImages', m); } catch { /* ignore */ }
-    return;
-  }
   const isz = e.target.closest('[data-itemsize]')?.dataset.itemsize;
   if (isz in ITEM_SIZES) {
     view.itemSize = isz;
@@ -1519,7 +1494,6 @@ const preview = document.createElement('img');
 preview.id = 'cardPreview';
 preview.alt = '';
 document.body.appendChild(preview);
-const hoverOn = () => imgMode === 'hover' || tab === 'Items' || tab === 'Cards';   // the item list always previews on Ctrl+hover
 const coarse = matchMedia('(pointer: coarse)');                 // touch: no hover, so a tap shows the picture instead
 let previewUrl = '';
 
@@ -1543,18 +1517,18 @@ const showUnderPointer = () => {
 };
 main.addEventListener('mousemove', e => {
   pointer = { x: e.clientX, y: e.clientY };
-  if (!hoverOn() || coarse.matches) return;
+  if (coarse.matches) return;
   if (e.buttons || !e.ctrlKey) { hidePreview(); return; }
   const el = e.target.closest?.('[data-img]');
   if (el) showPreview(el.dataset.img, e.clientX, e.clientY, Number(el.dataset.imgw) || 300); else hidePreview();
 });
-document.addEventListener('keydown', e => { if (e.key === 'Control' && hoverOn() && !coarse.matches) showUnderPointer(); });
+document.addEventListener('keydown', e => { if (e.key === 'Control' && !coarse.matches) showUnderPointer(); });
 document.addEventListener('keyup', e => { if (e.key === 'Control') hidePreview(); });
 window.addEventListener('blur', hidePreview);
 main.addEventListener('mouseleave', hidePreview);
 main.addEventListener('dragstart', hidePreview);
 main.addEventListener('click', e => {
-  if (!hoverOn() || !coarse.matches || e.target.closest('button')) return;
+  if (!coarse.matches || e.target.closest('button')) return;
   const el = e.target.closest('[data-img]');
   if (el) {
     const w = Math.min(Number(el.dataset.imgw) || 300, innerWidth - 16);
@@ -1719,7 +1693,11 @@ registerMenu({
 registerMenu({
   sel: '.pm .it[data-itemstate]',
   title: el => (el.title || 'Item').split(' — ')[0],
-  actions: el => [{ label: 'Add marker', run: () => openMarkers(`i:${el.dataset.id}`) }],
+  actions: el => {
+    const c = record?.chars.find(x => x.id === el.dataset.char), cur = c?.items.find(x => String(x.id) === el.dataset.id)?.s || 0;
+    const states = c ? [[0, 'Available'], [1, 'Spent'], [2, 'Consumed']].map(([v, label]) => ({ label, disabled: cur === v, run: () => commit(ed.setItemState(record, c.id, el.dataset.id, v)) })) : [];
+    return [...(states.length ? [{ header: 'State' }, ...states, { sep: true }] : []), { label: 'Add marker', run: () => openMarkers(`i:${el.dataset.id}`) }];
+  },
 });
 registerMenu({
   sel: '.pm .pile6',
@@ -1800,6 +1778,7 @@ main.addEventListener('dblclick', e => {
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && pm.modal) { pm.modal = null; render(); } });
 main.addEventListener('change', e => {
   if (e.target.matches?.('[data-histkind]')) { pm.histKind = e.target.value; render(); }
+  else if (e.target.matches?.('[data-logkind]')) { view.logKind = e.target.value; render(); }
   else if (e.target.matches?.('[data-mastery]')) commit(ed.setMastery(record, e.target.dataset.char, Number(e.target.dataset.mastery), e.target.checked));
   else if (e.target.matches?.('[data-mkprice]')) commit(ed.setMarkPrice(record, e.target.dataset.char, e.target.dataset.mkprice, e.target.value));
   else if (e.target.matches?.('[data-enhprice]')) commit(ed.setEnhancementPrice(record, Number(e.target.dataset.enhprice), e.target.value));
@@ -1814,6 +1793,38 @@ main.addEventListener('change', e => {
   else if (e.target.matches?.('[data-mdline]')) {
     const c = pmChar();
     if (c) { const L = (c.notes || '').split('\n'), i = Number(e.target.dataset.mdline); L[i] = L[i].replace(/\[[ xX]\]/, e.target.checked ? '[x]' : '[ ]'); commit(ed.setNotes(record, c.id, L.join('\n'))); }
+  }
+});
+// Keys on the object under the mouse pointer: D, L, A move an ability card; D, L set an item to spent or consumed; D discards a
+// placed attack modifier card. The pointer is read at key press (not on move), so a card that was re-rendered still counts.
+let lastPointer = null;
+document.addEventListener('mousemove', e => { lastPointer = { x: e.clientX, y: e.clientY }; });
+document.addEventListener('keydown', e => {
+  const key = e.key.toLowerCase();
+  if (!['d', 'l', 'a'].includes(key) || e.ctrlKey || e.altKey || e.metaKey || e.shiftKey || e.repeat || pm.modal || !lastPointer) return;
+  if (e.target.closest?.('input, textarea, select, [contenteditable]')) return;
+  const under = document.elementFromPoint(lastPointer.x, lastPointer.y);
+  if (!under || !main.contains(under)) return;
+  const card = under.closest?.('.pm .ac[data-card], .pm .flipcard[data-card]');
+  if (card) {
+    const c = record?.chars.find(x => x.id === card.dataset.char), id = Number(card.dataset.card), dest = { d: 'discard', l: 'lost', a: 'active' }[key];
+    if (!c || !c.deck.includes(id) || zoneOf(c, id) === dest) return;
+    e.preventDefault(); commit(ed.moveCard(record, c.id, id, dest)); return;
+  }
+  const item = under.closest?.('.pm .it[data-itemstate]');
+  if (item && key !== 'a') {
+    const c = record?.chars.find(x => x.id === item.dataset.char);
+    const cur = c?.items.find(x => String(x.id) === item.dataset.id)?.s || 0;
+    const target = key === 'd' ? (cur === 1 ? 0 : 1) : 2;      // D toggles available and spent; L sets consumed
+    if (!c || cur === target) return;
+    e.preventDefault(); commit(ed.setItemState(record, c.id, item.dataset.id, target)); return;
+  }
+  // Attack modifiers: D on a deck stack draws one card to the discard (as a click does); D on a placed card discards it
+  const amd = under.closest?.('.pm .amv .mini[data-k], .pm .amv .stk[data-k][data-z="deck"]'), c = pmChar();
+  if (amd && key === 'd' && c && !pm.amEdit) {
+    e.preventDefault();
+    if (amd.classList.contains('stk')) amdDo(c, 'draw', amd.dataset.k);
+    else amdDo(c, 'move', amd.dataset.k, { from: amd.dataset.z, to: 'disc', idx: Number(amd.dataset.i) });
   }
 });
 main.addEventListener('keydown', e => {
@@ -2428,11 +2439,55 @@ const settingsModal = document.getElementById('settingsModal');
 const displayBox = document.getElementById('displaySettings');
 // The Settings popup: profile, campaign file and the playmat's display settings (one place; the display settings are kept in this browser).
 const renderDisplay = () => {
-  const wasOpen = displayBox.querySelector('details')?.open;   // keep the per-zone list open while a value changes
   displayBox.innerHTML = displaySettingsHtml(pmset);
-  if (wasOpen) displayBox.querySelector('details').open = true;
 };
-const openSettings = () => { renderDisplay(); settingsModal.hidden = false; };
+// Settings tabs: Profile, Campaign file, Mercenary tab. The choice is kept while the page is open.
+let settingsTab = 'profile';
+const showSettingsTab = key => {
+  settingsTab = key;
+  settingsModal.querySelectorAll('[data-stab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.stab === key)));
+  settingsModal.querySelectorAll('[data-spanel]').forEach(s => { s.hidden = s.dataset.spanel !== key; });
+};
+settingsModal.addEventListener('click', e => { const t = e.target.closest?.('[data-stab]'); if (t) showSettingsTab(t.dataset.stab); });
+// Keyboard shortcuts, listed in the Shortcuts tab of the settings. Keep in step with the handlers in app.js and ctxmenu.js.
+// A chord is a list of keys pressed together; alternatives are separate chords.
+const SHORTCUTS = [
+  ['General', [
+    [[['Ctrl', 'Z']], 'Undo, up to 50 steps (not while typing in a field)'],
+    [[['Esc']], 'Close the open popup, modal or menu, one step at a time'],
+    [[['Ctrl', 'hover']], 'Enlarge a card picture (touch: tap it)'],
+  ]],
+  ['Mercenary tab', [
+    [[['Space']], 'Switch between Hand and Modifiers (when nothing is focused)'],
+    [[['Right-click'], ['Menu'], ['Shift', 'F10']], 'Context menu for cards, piles, counters and history rows'],
+    [[['Enter'], ['Space']], 'Flip a played card (when the card is focused)'],
+    [[['Up'], ['Down'], ['Home'], ['End']], 'Move in the context menu; Tab closes it'],
+    [[['D']], 'Ability card under the pointer: move to discard'],
+    [[['L']], 'Ability card under the pointer: move to Lost'],
+    [[['A']], 'Ability card under the pointer: move to active area'],
+    [[['D']], 'Item under the pointer: toggle spent and available'],
+    [[['L']], 'Item under the pointer: mark consumed'],
+    [[['D']], 'Modifier card under the pointer: discard (deck stack: draw one to the discard)'],
+  ]],
+  ['Notes and fields', [
+    [[['Ctrl', 'B']], 'Bold in the notes'],
+    [[['Ctrl', 'I']], 'Italic in the notes'],
+    [[['Enter']], 'Continue a list in the notes; an empty item ends it'],
+    [[['Enter']], 'Save an inline edit'],
+    [[['Esc']], 'Cancel an inline edit'],
+  ]],
+  ['Events and flowchart', [
+    [[['Enter'], ['Space']], 'Choose an event option, or open a scenario in the flowchart'],
+  ]],
+];
+const renderShortcuts = () => {
+  document.getElementById('keyList').innerHTML = SHORTCUTS.map(([group, rows]) =>
+    `<tr class="keygrp"><td colspan="2">${esc(group)}</td></tr>` +
+    rows.map(([chords, what]) => `<tr><td>${chords.map(ch => ch.map(k => `<kbd>${esc(k)}</kbd>`).join(' + ')).join(' <span class="keyor">or</span> ')}</td><td>${esc(what)}</td></tr>`).join('')
+  ).join('');
+};
+renderShortcuts();
+const openSettings = () => { renderDisplay(); showSettingsTab(settingsTab); settingsModal.hidden = false; };
 settingsModal.addEventListener('click', e => {
   const sg = e.target.closest?.('.setpanel .seg button');
   if (sg) pmset[sg.parentElement.dataset.set] = sg.dataset.v;
@@ -2492,8 +2547,6 @@ document.getElementById('clear').addEventListener('click', async () => {
     const t = localStorage.getItem('havenmap.campaign.tab');
     if (PAGE_TABS.includes(t)) tab = t;
     sub = localStorage.getItem('havenmap.campaign.sub') || '';
-    const m = localStorage.getItem('havenmap.campaign.cardImages');
-    if (m === 'hover' || m === 'always') imgMode = m;
     loadView();
   } catch { /* ignore */ }
   render();

@@ -106,8 +106,6 @@ ul.tiles .cardrow.ins-before { box-shadow:inset 3px 0 0 var(--accent); } ul.tile
 .cardrow.tile .tilebar { display:flex; align-items:center; gap:4px; flex-wrap:wrap; }
 .cardpic { width:100%; height:auto; display:block; border-radius:6px; background:#120f0b; min-height:60px; }
 .noimg { display:flex; align-items:center; justify-content:center; min-height:90px; padding:6px; text-align:center; border:1px dashed var(--line); border-radius:6px; color:var(--muted); font-size:12px; }
-.benchgrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:8px; }
-.benchcard { margin:0; } .benchcard figcaption { font-size:11px; color:var(--muted); margin-top:2px; }
 .cardrow.tile .cname { white-space:normal; overflow:visible; }
 
 .ini { display:inline-block; min-width:2ch; margin-right:6px; text-align:right; font-variant-numeric:tabular-nums; font-weight:600; color:var(--accent); }
@@ -842,3 +840,24 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); min-height: 420px; }
 .chedit .cesec h4 { margin:0; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); }
 .chedit .chfoot { display:flex; justify-content:flex-end; gap:10px; margin-top:2px; }
 .chedit .cesec .modalrows { display:flex; flex-direction:column; gap:6px; }
+
+/* History tab filter bar (same look as the playmat's History modal) */
+.histbar { display: flex; gap: 8px; align-items: center; margin: 8px 0; flex-wrap: wrap; }
+.histbar select { background: #1c1711; color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; font: inherit; font-size: 13px; }
+.histbar .hn { color: var(--muted); font-size: 12px; margin-left: auto; }
+
+/* Settings modal tabs: the hidden panel must stay hidden even where a section sets its own display */
+#settingsModal .settabs { margin: 0 0 12px; }
+#settingsModal section[hidden] { display: none; }
+
+/* Shortcuts tab of the settings modal */
+.keylist { width:100%; border-collapse:collapse; font-size:13px; }
+.keylist td { padding:6px 4px; border-bottom:1px solid var(--line); vertical-align:top; color:var(--text); }
+.keylist td:first-child { white-space:nowrap; width:40%; }
+.keylist td:last-child { color:var(--muted); }
+.keylist .keygrp td { padding:14px 4px 6px; border-bottom:0; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); }
+.keylist kbd { font:inherit; font-size:12px; color:var(--text); background:#2d2519; border:1px solid var(--line); border-bottom-width:2px; border-radius:6px; padding:1px 6px; }
+.keylist .keyor { color:var(--muted); font-size:12px; }
+
+/* Settings sits above the playmat (its top bar and modals use z-index up to 410) */
+#settingsModal { z-index: 500; }

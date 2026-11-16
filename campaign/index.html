@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HavenMap Campaign</title>
 <link rel="stylesheet" href="../scripts/amd/amd.css">
-<link rel="stylesheet" href="style.css?v=138">
-<link rel="stylesheet" href="playmat.css?v=14">
+<link rel="stylesheet" href="style.css?v=145">
+<link rel="stylesheet" href="playmat.css?v=16">
 <link rel="stylesheet" href="phone.css?v=2">
 </head>
 <body>
@@ -23,11 +23,17 @@
   <div class="modalbox settingsbox" role="dialog" aria-labelledby="settingsTitle">
     <button type="button" class="modalx" id="settingsClose" aria-label="Close">&times;</button>
     <h3 id="settingsTitle">Settings</h3>
-    <section class="setsec">
+    <nav class="subtabs settabs" role="tablist" aria-label="Settings sections">
+      <button type="button" role="tab" data-stab="profile" aria-selected="true">Profile</button>
+      <button type="button" role="tab" data-stab="file" aria-selected="false">Campaign file</button>
+      <button type="button" role="tab" data-stab="display" aria-selected="false">Mercenary tab</button>
+      <button type="button" role="tab" data-stab="keys" aria-selected="false">Shortcuts</button>
+    </nav>
+    <section class="setsec" data-spanel="profile">
       <div class="setgrp">Profile</div>
       <div class="modalrows"><input id="userName" type="text" class="txt" maxlength="40" placeholder="Shown in the History tab" aria-label="Your name"></div>
     </section>
-    <section class="setsec">
+    <section class="setsec" data-spanel="file" hidden>
       <div class="setgrp">Campaign file</div>
       <div class="modalrows" style="flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px">
         <label class="btn">Load file <input id="file" type="file" accept="application/json,.json" hidden></label>
@@ -35,12 +41,14 @@
         <button id="clear" type="button" class="btn">Clear</button>
       </div>
     </section>
-    <section class="setsec">
-      <div class="setgrp">Mercenary playmat display</div>
+    <section class="setsec" data-spanel="display" hidden>
       <div class="pm setpanel" id="displaySettings"></div>
+    </section>
+    <section class="setsec" data-spanel="keys" hidden>
+      <table class="keylist" id="keyList"></table>
     </section>
   </div>
 </div>
-<script type="module" src="app.js?v=148"></script>
+<script type="module" src="app.js?v=160"></script>
 </body>
 </html>

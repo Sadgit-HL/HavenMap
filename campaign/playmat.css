@@ -288,15 +288,12 @@
 .pm .fan6 .ac>img{border-radius:inherit}
 .pm .fan6 .inib{left:8px;top:-15px;height:16px;min-width:28px;padding:0 6px;border-radius:8px 8px 0 0;border-bottom:0;font-size:11px;line-height:1}
 .pm[data-motion=reduce] *, .pm[data-motion=reduce] *::before, .pm[data-motion=reduce] *::after{transition:none!important;animation:none!important}
-.pm .setpanel label.chk{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted);cursor:pointer}
-.pm .setpanel label.chk input{accent-color:var(--accent);width:15px;height:15px}
+.pm .setpanel label.setchk{display:flex;width:100%;justify-content:flex-start;padding:7px 11px 7px 9px;border-radius:8px;font-size:13px}
 .pm .setpanel hr{border:0;border-top:1px solid var(--line);margin:0;width:100%}
 .pm .sortgrp{display:inline-flex;gap:4px}
 .pm .setpanel{display:flex;flex-direction:column;gap:10px}
 .pm .setpanel[hidden]{display:none}
 .pm .setrow{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted)}
-.pm .setpanel details summary{font-size:12px;color:var(--muted);cursor:pointer}
-.pm .setpanel details .setrow{margin-top:8px}
 .pm .setpanel select{background:#2d2519;color:var(--text);border:1px solid var(--line);border-radius:6px;font:inherit;font-size:12px;padding:2px 6px}
 .pm .setpanel .btn6{align-self:flex-end}
 .pm .bgg-icons{display:flex;flex-direction:column;gap:12px}
