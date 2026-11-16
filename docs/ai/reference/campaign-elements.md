@@ -1,6 +1,8 @@
 # Campaign app: elements and mechanics inventory
 
-Written 2026-11-08 from the group's WHTracker.xlsx (GH2 tabs only); statuses updated the same day after the first campaign page was built (`HANDOVER.md` section 14.7). Scope decision: no automatic import of the current campaign state; the owner syncs it by hand once the mechanics exist. This list is what the campaign app has to cover. For the data shape see `campaign-schema.md`, for the generated ID tables `HANDOVER.md` section 14.
+Status (2026-11-16): the statuses in this file are from 2026-11-08 and are stale. The current state is in `../status.md`.
+
+Written 2026-11-08 from the group's WHTracker.xlsx (GH2 tabs only); statuses updated the same day after the first campaign page was built (see `status.md`). Scope decision: no automatic import of the current campaign state; the owner syncs it by hand once the mechanics exist. This list is what the campaign app has to cover. For the data shape see `campaign-schema.md`, for the generated ID tables `archive/HANDOVER-log.md` section 14.
 
 Legend: **Static** = generated table exists (`scripts/games/`), **App** = already in the map app, **Page** = built on the campaign page (`campaign/`), **Schema** = in `campaign-schema.md`, **New** = found in the workbook, not yet in the schema.
 
@@ -85,7 +87,7 @@ Legend: **Static** = generated table exists (`scripts/games/`), **App** = alread
 
 ## 9. Cross-cutting mechanics
 
-- **GeekRoller codes** everywhere a deck is rolled (battle goals, events, items, enemy decks). The 255 character limit applies (see `HANDOVER.md` section 13.6a).
+- **GeekRoller codes** everywhere a deck is rolled (battle goals, events, items, enemy decks). The 255 character limit applies (see `hero-decks.md`, GeekRoller codes).
 - **BGG images**: icons in posts are BGG image ids; a table from icon to id is needed.
 - **Identity**: four seats, a vote per seat, admin and player tokens (schema section 6).
 - **Immutable session URL** per turn; the campaign record only changes at start and commit.

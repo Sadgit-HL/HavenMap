@@ -4,7 +4,7 @@ Purpose: give every other tab of the campaign page (`campaign/`) the same look a
 Written 2026-11-14 from the code as it stands: `campaign/playmat.js`, `campaign/playmat.css`, `campaign/style.css`, `campaign/ctxmenu.js`,
 `campaign/app.js`, `campaign/phone.js`, `campaign/phone.css`. Where a rule is a recommendation and not yet used everywhere, it says so.
 
-Rules from the owner (`docs/HANDOVER.md` section 9) apply to all tabs: terse, no emoji, no em dashes, no help text in pages or modals unless
+Rules from the owner (`docs/ai/README.md`, working rules) apply to all tabs: terse, no emoji, no em dashes, no help text in pages or modals unless
 asked, confirm before destructive actions, never hand-edit generated files, commit only when asked.
 
 ## 1. Principles
@@ -18,7 +18,7 @@ asked, confirm before destructive actions, never hand-edit generated files, comm
 4. **Nothing is explained on screen.** No help paragraphs, no tutorial text, no "tip" lines. Labels, titles (tooltips) and empty states
    are the only text. A tooltip may say what a control does; it does not repeat the section heading.
 5. **Spoilers stay hidden.** Locked or unseen campaign content is shown as a count or a placeholder, never by name (see
-   `docs/HANDOVER.md` section 7).
+   `docs/ai/campaign-record.md`, spoiler rule).
 6. **Dense but calm.** Many small controls, but one visual language: the same border, radius, gap and gold accent everywhere.
 
 ## 2. Design tokens
@@ -197,7 +197,7 @@ An empty list shows one muted line (`.emptyline`), for example "No stickers yet.
 7. Hover and click zoom for any card, same settings as the playmat.
 8. Context menu entries only for actions that also exist in the normal UI, in the order of section 5.7.
 9. Test at 1440x900 and at a phone width. Check that no horizontal scroll appears. For the playmat, also run the test matrix in
-   `docs/HANDOVER.md` section 19.4.
+   section 9 of this file.
 10. Bump the cache version of the changed CSS and JS (`index.html`, `?v=`) and tell the owner to hard refresh (Ctrl+F5) for module files.
 
 ## 8. Known gaps (2026-11-14)
@@ -205,9 +205,21 @@ An empty list shows one muted line (`.emptyline`), for example "No stickers yet.
 - Phone: the Modifiers tab reuses the playmat markup (`amViewHtml`). Its stack sizes are the desktop ones and it has not been checked at phone width.
 - Touch drag of modifier cards uses pointer events (hold, then move), like the hand cards. It has not been tried on a real touch screen.
 - The hand fan and the active zone still size their cards from their own containers, not from `--cu`. Move them when the layout is tested
-  (`docs/HANDOVER.md` section 19).
+  (section 9 of this file).
 - The campaign page popups (players, retired characters, prosperity, reputation) follow section 5.3. Stickers and classes use the tile grid
   of section 5.4 since 2026-11-14.
 - `campaign/playmat.css` is maintained by hand. `tools/build-playmat-css.py` refuses to run without `--force`: the mockup and the live page disagree
   (`.setpop` against `.setpanel`), so a run would break the live settings panel.
-- None of the 2026-11-14 layout changes has been tested in a browser at the sizes of section 19.4.
+- None of the 2026-11-14 layout changes has been tested in a browser at the sizes of section 9.
+
+## 9. Test matrix for layout changes
+
+Sizes: 1280x720, 1366x768, 1920x1080, 2560x1440, each at 100% and at the browser zoom that matches Windows scaling. Examples: 1366x768 at 150% is about 911x512 CSS pixels; 1920x1080 at 125% is about 1536x864.
+
+Check at each size:
+- the top bar is one line;
+- Modifiers view cards and modal cards fit inside the green area: neither tiny nor overflowing;
+- the Stickers and Classes tile modals close with Escape, overlay click and the footer Close;
+- the Cards tab Stickers toggle shows and hides stickers on the card pictures.
+
+How to run: DevTools device toolbar (Ctrl+Shift+M) with custom sizes, plus Ctrl+= and Ctrl+- for zoom. A Playwright script that saves one screenshot per case was offered but not written.
