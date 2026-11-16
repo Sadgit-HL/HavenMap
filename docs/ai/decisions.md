@@ -33,6 +33,9 @@ Dated, newest first within each group. "Owner" marks decisions the owner made. C
 - 2026-11-16: Tab order: Overview, Mercenaries, Items, Events, Scenarios, Resources, Cards, History. Owner.
 - 2026-11-16: The Items tab roll button uses the merc tab's roll button style (`btn6 rollbtn`, "BGG code for roll"). The gold roll code tile of the Modifiers view was tried and reverted. Owner.
 - 2026-11-16: The settings modal is 880 px wide and the shortcut list runs in two columns. Owner.
+- 2026-11-16: Card tabs keep Ctrl+hover zoom (not the playmat's hover-and-delay zoom). The preview size follows the playmat zoom size setting. Owner.
+- 2026-11-16: Unique attack-modifier cards show the class badge over their baked lower-left badge when a perk adds them. Owner.
+- 2026-11-16: Settings tabs order: Mercenary tab, Campaign file, Profile, Shortcuts. Owner.
 - 2026-11-14: Shared GUI rules for all campaign tabs (`ui-guidelines.md`). No help text, no tips. Pencils open popups. Owner.
 - 2026-11-12: Moving cards does not need the Edit toggle. Moving cards is play. Owner.
 - 2026-11-12: Phone text and menus use the playmat's modal list (`PHONE_MODALS`). A new feature must say whether it is on the phone.

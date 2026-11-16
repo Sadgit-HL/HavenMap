@@ -69,3 +69,5 @@ Open work in priority order. Items marked (owner) need a decision or data from t
 48. Browser check of the 2026-11-16 changes, not done yet: tab order, the settings modal width and two-column shortcuts, the items roll button, the marker fix, the portrait crops. Node and headless checks only.
 49. The Mercenaries tab label is still "Mercenaries" (requested as "Mercs"). Decide whether to shorten it.
 50. Scenario roller is still the icon button, unlike the item roller. Decide whether both should use one style.
+51. Touch preview for the composed attack-modifier cards on the Cards tab is not built (Ctrl+hover only).
+52. Browser check of the zoom changes: Items grid, attack-modifier previews, preview sizes, the trail fix, settings tab order.

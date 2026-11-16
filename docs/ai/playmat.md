@@ -69,6 +69,9 @@ BGG posts: Turn (banner, top action in slot 1, bottom action in slot 2, `XXX` fo
 ## Settings and context menu
 
 - Playmat display settings live in the settings modal (Mercenary tab, `displaySettingsHtml` in `campaign/playmat.js`): Hand (layout Spread or Fan, auto-sort by initiative), Card zoom (mode hover or click, size, hover delay), Zoom per zone, Preview (docked side), Cards and motion (initiative badge, reduce motion). Kept per browser (`havenmap.campaign.pmset`), not in the record.
+- Card zoom on the card tabs (Cards, Items, Monsters, Mats): Ctrl+hover on desktop (tap on touch). The preview width follows the playmat's zoom size setting (S 270, M 340, L 420, XL 500 px, capped by the window height); each tile's `data-imgw` is no longer used. Composed attack-modifier cards (Cards tab, Attack modifiers) get a built card preview (`showAmPreview`), rebuilt only when the hovered card changes. Both previews move with `transform`, which stops a trail behind the pointer.
+- Unique attack-modifier cards (baked images) get the class badge drawn over their lower-left corner when a perk adds them (`buildUnique` in `scripts/amd/card.js`).
+- The settings modal tabs are in the order Mercenary tab, Campaign file, Profile, Shortcuts.
 - The settings modal is 880 px wide (full width on narrow screens). Its Shortcuts tab lists two columns (groups flow into two CSS columns, one column below 560 px).
 - Roll buttons: the Modifiers view's roll code is the gold roll code tile (`.amcode`). The Items tab uses the merc journal style (`.btn6.rollbtn`, "BGG code for roll"), and the scenario roller is an icon button. Copy feedback: "Copied" on the tile or the button label.
 - Portrait crops are looked up by class slug (`matSlugOf` in `scripts/campaign/cardImages.js`), not by the mat's file name. The focus table is `scripts/games/portrait-focus.json`, keyed by slug.
