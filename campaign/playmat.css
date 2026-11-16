@@ -35,7 +35,7 @@
 .pm .hud .stat{display:flex;flex-direction:column;align-items:center;font-size:12px;color:var(--muted)}
 .pm .hud .stat b{font-size:18px;color:var(--text)}
 .pm .hud .counters{margin-left:auto}
-.pm .shelf6{display:grid;grid-template-columns:1fr 1fr;gap:6px;align-content:start;min-height:0}
+.pm .shelf6{display:grid;grid-template-columns:1fr 1fr;gap:6px;align-content:start;min-height:0;overflow-y:auto;overflow-x:hidden}
 .pm .shelf6 h4{grid-column:1/-1;margin:0;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between}
 .pm .itbar{display:flex;align-items:center;gap:6px}
 .pm .itbar .btn6{padding:1px 4px;line-height:1}
@@ -134,7 +134,7 @@
 .pm .itbadge svg{width:10px;height:10px}
 .pm .it.consumed .itbadge{border-color:#c98a8a;color:#c98a8a}
 .pm .board6{display:grid;grid-template-rows:minmax(0,32%) minmax(0,1fr);gap:12px;min-width:0;min-height:0;container-type:size}
-.pm .toprow{--ch:calc(32cqh - 36px);display:grid;grid-template-columns:minmax(0,1fr) calc(var(--ch) * 10 / 7 + 46px);gap:12px;min-height:0}
+.pm .toprow{--ch:max(130px, calc(32cqh - 36px));display:grid;grid-template-columns:minmax(0,1fr) calc(var(--ch) * 10 / 7 + 46px);gap:12px;min-height:0}
 .pm .zone{position:relative;border:2px dashed rgba(236,223,200,.28);border-radius:14px;background:rgba(0,0,0,.2);padding:26px 12px 10px;display:flex;gap:14px;justify-content:center;align-items:stretch;min-height:0}
 .pm .activelist{display:flex;gap:14px;justify-content:center;align-items:stretch;flex:1;min-width:0}
 .pm .activelist .ac{cursor:grab;transition:transform .14s,box-shadow .14s}
@@ -175,7 +175,7 @@
 .pm .seg button[aria-pressed=true]{background:var(--accent);color:#1b150c}
 .pm .btn6{background:#2d2519;color:var(--text);border:1px solid var(--line);border-radius:7px;padding:3px 10px;font:inherit;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
 .pm .btn6:hover{border-color:var(--accent);color:var(--accent)}
-.pm .fan6{position:absolute;left:12px;right:12px;top:32px;bottom:8px;display:grid;grid-template-columns:repeat(7,max-content);grid-auto-rows:calc(34cqh - 28px);gap:4px;justify-content:center}
+.pm .fan6{position:absolute;left:12px;right:12px;top:32px;bottom:8px;display:grid;grid-template-columns:repeat(7,max-content);grid-auto-rows:max(130px, calc(34cqh - 28px));gap:4px;justify-content:center;overflow-y:auto;overflow-x:hidden}
 .pm .fan6 .ac{height:100%;width:auto;aspect-ratio:5/7;cursor:grab;transition:transform .26s cubic-bezier(.2,.8,.2,1),box-shadow .26s ease-out}
 .pm .fan6 .ac:active{cursor:grabbing}
 .pm .fan6 .ac{transform-origin:50% 100%}
@@ -185,11 +185,11 @@
 .pm .fan6 .ac, .pm .activelist .ac, .pm .pile6 .ac{position:relative}
 .pm .pini{font-size:11px;color:var(--accent);border:1px solid var(--accent);border-radius:9px;padding:0 6px}
 .pm .hand6[data-layout=fan] .fan6{display:flex;justify-content:center;align-items:center;left:0;right:0;top:30px;bottom:0;padding:16px 10px 0}
-.pm .hand6[data-layout=fan] .fan6{container-type:size;--fw:min(calc(90cqh * 5 / 7),calc((100cqw - 24px) / 7.35));--adv:max(calc(var(--fw) * .45),calc((100cqw - 24px - 1.5 * var(--fw)) / 13))}
+.pm .hand6[data-layout=fan] .fan6{container-type:size;--fw:max(90px, min(calc(90cqh * 5 / 7),calc((100cqw - 24px) / 7.35)));--adv:max(calc(var(--fw) * .45),calc((100cqw - 24px - 1.5 * var(--fw)) / 13))}
 .pm .hand6[data-layout=fan] .fan6 .ac{height:auto;width:var(--fw);margin:0 calc((var(--adv) - var(--fw)) / 2);transform-origin:50% 160%;--rot:calc((var(--i) - 6.5) * 1deg);transform:translateY(0) rotate(var(--rot)) scale(1);will-change:transform}
 .pm[data-zhand=hover] .hand6[data-layout=fan] .fan6 .ac:hover, .pm .hand6[data-layout=fan] .fan6 .ac.zoomed{transform:translateY(-30%) rotate(0deg) scale(var(--hz,1.45));z-index:35}
 .pm .board6{grid-column:2 / span 2;grid-row:2}
-.pm .piles6{grid-column:3;grid-row:2;align-self:start;height:32%;z-index:3;display:grid;grid-template-rows:1fr 1fr;gap:8px;min-height:0}
+.pm .piles6{grid-column:3;grid-row:2;align-self:start;height:32%;z-index:3;display:grid;grid-template-rows:1fr 1fr;gap:8px;min-height:0;overflow:hidden}
 .pm .board6 .toprow{margin-right:124px}
 .pm .piles6 .pile6{justify-content:flex-start;gap:3px;padding:4px 4px 6px}
 .pm .piles6 .pilecard{flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center}
@@ -219,7 +219,7 @@
 .pm .pilezoomtk[hidden]{display:none}
 .pm .pile6 .ac{height:56%;width:auto;box-shadow:4px 4px 0 -1px #2b2318,8px 8px 0 -2px #241c13}
 .pm .pile6.lost .ac{filter:grayscale(.8) brightness(.7)}
-.pm .dock{display:flex;flex-direction:column;gap:8px;align-items:stretch}
+.pm .dock{display:flex;flex-direction:column;gap:8px;align-items:stretch;min-height:0;overflow-y:auto;overflow-x:hidden}
 .pm .dock .mbtn{flex-direction:column;height:56px;font-size:10px;gap:2px;padding:4px 2px}
 .pm .dock .mbtn svg{width:20px;height:20px}
 .pm .dock .mbtn[data-modal=enh] span{font-size:8.5px;letter-spacing:-.2px}
@@ -433,7 +433,11 @@
 .pm .bnrtile span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 /* campaign page additions (not in the mockup) */
-.pm .stage6{grid-template-columns:150px minmax(0,1fr) 112px 64px;height:calc(100vh - 150px);min-height:640px}
+/* Short viewports (laptop windows under about 790px tall): the board must never force the whole
+   page to grow and scroll, or the HUD and items column scroll out of view with it. Pinned to the
+   viewport (no min-height floor taller than that, overflow:hidden) and each of the four columns
+   below the HUD scrolls on its own when its content needs more room than the row gives it. */
+.pm .stage6{grid-template-columns:150px minmax(0,1fr) 112px 64px;height:calc(100vh - 150px);min-height:420px;overflow:hidden}
 .pm .noimg{display:flex;align-items:center;justify-content:center;text-align:center;padding:6px;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:6px;background:#1c1711;aspect-ratio:5/7}
 .pm .hbar .over-limit{color:#e08a7a}
 .pm .fan6 .ac.ins-before{box-shadow:-5px 0 0 var(--accent)}.pm .fan6 .ac.ins-after{box-shadow:5px 0 0 var(--accent)}

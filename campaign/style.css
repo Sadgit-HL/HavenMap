@@ -558,7 +558,7 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); min-height: 420px; }
 .pm .amv .stk .edge { width: var(--stkw); height: calc(var(--stkw) * .65); }
 
 /* modifier discard: one top card, as wide as from the second play slot to the right edge */
-.pm .amv { --ch: calc(32cqh - 36px); grid-template-columns: minmax(0, 1fr) calc(128px + var(--ch) * 5 / 7); }
+.pm .amv { --ch: max(130px, calc(32cqh - 36px)); grid-template-columns: minmax(0, 1fr) calc(128px + var(--ch) * 5 / 7); }
 .pm .amv .discarea { cursor: pointer; }
 .pm .amv .discarea > h5 b { color: var(--text); font-size: 13px; }
 .pm .amv .discarea .stacks { align-content: center; flex: 1; }
@@ -581,7 +581,7 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); min-height: 420px; }
 .pm .amv .stk.zero .stkface, .pm .amv .stk.zero .edge { opacity: .4; }
 
 /* Modifiers view: roll code button (half) with Shuffle and Edit (other half) above the discard */
-.pm .amv .amside { display: flex; flex-direction: column; gap: 8px; min-height: 0; }
+.pm .amv .amside { display: flex; flex-direction: column; gap: 8px; min-height: 0; overflow-y: auto; overflow-x: hidden; }
 .pm .amv .amctl { flex: 0 0 96px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .pm .amv .amcode { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; border-radius: 12px; border: 2px solid #f0d68a; background: linear-gradient(180deg,#d9bb62,#a98826); color: #1b150c; font: inherit; font-weight: 800; font-size: 14px; cursor: pointer; box-shadow: 0 3px 0 #6a5316, 0 6px 14px rgba(0,0,0,.45); }
 .pm .amv .amcode:active { transform: translateY(2px); box-shadow: 0 1px 0 #6a5316; }
@@ -593,7 +593,7 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); min-height: 420px; }
 .pm .amv .amtools button:hover { background: #3a2f1e; color: var(--accent); }
 .pm .amv .amtools button svg { display: block; pointer-events: none; }
 .pm .amv .amtools button[aria-pressed="true"] { background: var(--accent); color: #120f0b; border-color: var(--accent); }
-.pm .amv .amside .discarea { flex: 1; min-height: 0; }
+.pm .amv .amside .discarea { flex: 1 0 70px; min-height: 70px; }
 .pm .pgrp h3 span { color: var(--muted); font-weight: 600; letter-spacing: 0; }
 .pm .pgrp h3 span.full { color: var(--accent); }
 /* the slot count belongs to the heading text: HEAD (0/1) */
@@ -638,12 +638,23 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); min-height: 420px; }
 .pm[data-zhand="hover"] .amv .stk:hover, .pm[data-zhand="hover"] .amv .mini:hover, .pm .amv .stk.zoomed, .pm .amv .mini.zoomed { z-index: 40; }
 .pm[data-zhand="hover"] .amv .stk:hover .stkface, .pm[data-zhand="hover"] .amv .mini:hover .stkface, .pm .amv .stk.zoomed .stkface, .pm .amv .mini.zoomed .stkface { transform: scale(var(--hz, 2.4)); box-shadow: 0 16px 40px rgba(0,0,0,.8); }
 .pm[data-zhand="hover"] .amv .stk:hover .stkface, .pm[data-zhand="hover"] .amv .mini:hover .stkface { transition-delay: var(--hdelay, 0s); }
-.pm .amv .area, .pm .amv .stacks, .pm .amv .minis { overflow: visible; }
+/* .area/.stacks scroll when perks add enough faces that the deck list no longer fits (was forced to
+   overflow:visible here, which let a hover-zoomed card escape its box but also meant an overfull deck
+   list just got cut off by the page instead of scrolling); the hover zoom still needs to escape, so it
+   switches overflow back to visible only while a card in it is actually zoomed or hovered. */
+.pm .amv .area, .pm .amv .stacks { overflow: auto; }
+.pm .amv .minis { overflow: visible; }
+.pm .amv .area:has(.stk.zoomed, .mini.zoomed), .pm .amv .stacks:has(.stk.zoomed) { overflow: visible; }
+.pm[data-zhand="hover"] .amv .area:has(.stk:hover, .mini:hover), .pm[data-zhand="hover"] .amv .stacks:has(.stk:hover) { overflow: visible; }
 .pm .amv .stk:hover .edge, .pm .amv .stk:hover .nb, .pm .amv .stk.zoomed .nb { visibility: hidden; }
-/* the active area is as high as the Top and Bottom strips */
 .pm .amv .amstrip { height: 78px; min-height: 0; }
 .pm .amv .amactive { flex: 0 0 78px; height: 78px; min-height: 0; }
 .pm .amv .amstrip .minis, .pm .amv .amactive .minis { overflow: visible; }
+/* Top and Bottom (the deck's amrow strips) at half height: smaller cards than the Active strip, which keeps its size. */
+.pm .amv .amrow .amstrip { height: 39px; }
+.pm .amv .amrow .amstrip .minis { min-height: 26px; }
+.pm .amv .amrow .mini { width: 40px; }
+.pm .amv .amrow .mini .pc, .pm .amv .amrow .mini .amslot { --pc-width: 40px; }
 /* the active area lines up with the Top and Bottom strips (the deck area's padding and border sit around the strips) */
 .pm .amv .amactive { margin-bottom: 10px; }
 
