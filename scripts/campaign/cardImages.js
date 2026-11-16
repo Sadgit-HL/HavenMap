@@ -12,6 +12,7 @@ const classByIndex = new Map(CLASSES.map(c => [c.i, c]));
 
 // URL of a card record from scripts/games/gh2_cards.js ({ cls, slug }), or null when the class is unknown.
 export function cardImageUrl(card) {
+  if (card?.img) return card.img;                                     // Frosthaven and Jaws cards carry their own picture URL (scripts/games/wh_cards.js)
   const cls = card && classByIndex.get(card.cls);
   if (!cls) return null;
   const slug = encodeURIComponent(card.slug.replace(/[‐-―]/g, '-'));   // some slugs hold a typographic hyphen, the files do not
@@ -39,9 +40,10 @@ export function eventImageUrl(kind, id) {
 }
 
 // Character mats: wh_character_mats/<front|back>/<class>.png, the class name lower case with hyphens (silent-knife.png); the
-// one exception is Plague Herald (plagueherald.png). Checked: both sides exist for all 22 classes of the campaign.
+// exceptions: Plague Herald (plagueherald.png) and H.I.V.E. (hive.png). Checked: both sides exist for the 22 GH2 classes and the
+// 21 Frosthaven and Jaws classes (the asset repository has the Frosthaven and Jaws mats too).
 export const MAT_IMAGE_BASE = CARD_IMAGE_BASE.replace('wh_character_ability_cards/', 'wh_character_mats/');
-const MAT_SLUG = { 'plague herald': 'plagueherald' };
+const MAT_SLUG = { 'plague herald': 'plagueherald', 'h.i.v.e.': 'hive' };
 export function matImageUrl(className, side = 'front') {
   const n = String(className || '').toLowerCase();
   if (!n || (side !== 'front' && side !== 'back')) return null;
@@ -57,3 +59,11 @@ export const pqImageUrl = quest => (quest?.slug ? `${PQ_IMAGE_BASE}${encodeURICo
 const BACK_DIR = '../images/common/card_backs/';
 const CARD_BACKS = {berserker:'gh2-berserker-back.jpeg',bladeswarm:'gh2-bladeswarm-back.jpeg',doomstalker:'gh2-doomstalker-back.jpeg',elementalist:'gh2-elementalist-back.jpeg',plagueherald:'gh2-plagueherald-back.jpeg',quartermaster:'gh2-quartermaster-back.jpeg',sawbones:'gh2-sawbones-back.jpeg',soothsinger:'gh2-soothsinger-back.jpeg',soultether:'gh2-soultether-back.jpeg',sunkeeper:'gh2-sunkeeper-back.jpeg',wildfury:'gh2-wildfury-back.jpeg',anaphi:'mp-anaphi-back.jpeg',cassandra:'mp-cassandra-back.jpeg',hail:'mp-hail-back.jpeg',satha:'mp-satha-back.jpeg',bruiser:'gh-bruiser-back.png',cragheart:'gh-cragheart-back.png',mindthief:'gh-mindthief-back.png',nightshroud:'gh-nightshroud-back.png',spellweaver:'gh-spellweaver-back.png',tinkerer:'gh-tinkerer-back.jpg',bannerspear:'fh-bn-back.png',blinkblade:'fh-bb-back.png',boneshaper:'fh-bo-back.png',coral:'fh-cr-back.png',deathwalker:'fh-dw-back.png',deepwraith:'fh-dt-back.png',demolitionist:'jl-de-demolitionist-card-back.png',drifter:'fh-df-back.png',frozenfist:'fh-ff-back.png',geminate:'fh-ge-back.png','h.i.v.e.':'fh-hv-back.png',hatchet:'jl-ha-back.png',astral:'fh-if-back.png',metalmosaic:'fh-me-back.png',painconduit:'fh-pc-back.png',pyroclast:'fh-py-back.png',redguard:'jl-rg-Red-Guard-Card-Back.png',shattersong:'fh-sh-back.png',snowdancer:'fh-sd-back.png',trapper:'fh-ta-back.png',voidwarden:'jl-vw-voidwarden-card-back.png',silentknife:'gh-scoundrel-back.png',infuser:'fh-if-back.png',crashingtide:'fh-cr-back.png',hive:'fh-hv-back.png'};
 export const cardBackUrl = cls => BACK_DIR + (CARD_BACKS[String(cls || '').toLowerCase().replace(/ /g, '')] || 'ability-back-placeholder.png');
+
+// Battle goal pictures: the Frosthaven set in worldhaven's repository (any2cards/worldhaven, images/battle-goals/frosthaven/fh-<slug>.png).
+// The file for "pincushion" is spelled "pincusion".
+export const BG_IMAGE_BASE = 'https://raw.githubusercontent.com/any2cards/worldhaven/master/images/battle-goals/frosthaven/';
+const BG_FILE = { pincushion: 'pincusion' };
+export function battleGoalImageUrl(slug) {
+  return slug ? `${BG_IMAGE_BASE}fh-${BG_FILE[slug] || slug}.png` : null;
+}

@@ -8,7 +8,7 @@ import { SCENARIOS, STICKERS } from '../scripts/games/gh2_scenarios.js';
 import { BATTLE_GOALS } from '../scripts/games/battle_goals.js';
 import { escapeHtml as esc } from '../scripts/escape.js';
 import { localStore } from '../scripts/campaign/store.js';
-import { cardImageUrl, itemImageUrl, eventImageUrl, matImageUrl, pqImageUrl, cardBackUrl } from '../scripts/campaign/cardImages.js';
+import { cardImageUrl, itemImageUrl, eventImageUrl, matImageUrl, pqImageUrl, cardBackUrl, battleGoalImageUrl } from '../scripts/campaign/cardImages.js';
 import { playmatHtml, markersHtml, XP_STEPS, turnPost, cardsPost, goalRollCode, questRollCode, cleanSettings, displaySettingsHtml } from './playmat.js';
 import { tokenDefs, markerTokens, MARK_STICKERS } from '../scripts/campaign/classTokens.js';
 import { bannerUrl, bannerCode } from '../scripts/campaign/bggBanners.js';
@@ -23,6 +23,7 @@ import {
 import * as ed from '../scripts/campaign/edit.js';
 import { describeChange, foldLog, LOG_TABS, LOG_MAX } from '../scripts/campaign/changelog.js';
 import { CLASSES } from '../scripts/games/gh2_classes.js';
+import { WH_CLASSES, WH_CARDS } from '../scripts/games/wh_cards.js';
 import { ALL_CLASSES, classKnown } from '../scripts/campaign/classList.js';
 import { availableSet, PROSPERITY_START } from '../scripts/campaign/record.js';
 import { REPUTATION_SECTIONS } from '../scripts/games/gh2_reputation.js';
@@ -53,9 +54,14 @@ const history = [];                                   // earlier records for und
 const view = { flowFull: false, scnView: 'table', logKind: 'all', flowShow: 'progress', flowLane: '', flowZoom: 'm', scnSel: null, scnStatus: '', scnSearch: '', scnSort: { col: '', dir: 1 }, itemSlot: '', itemSearch: '', itemShow: 'unlocked', itemView: 'list', itemSize: 'm', itemSort: { col: '', dir: 1 }, cardType: 'abilities', cardSlot: '', cardChk: '', cardKind: 'city', cardSide: 'front', cardDeck: '', cardMon: '', cardMLv: '', cardShow: 'unlocked', cardCls: '', cardLv: '', cardSearch: '', cardSize: 's', cardStk: true };   // itemView: 'list' | 'grid'
 
 // Level order of ability cards: 1, X (the level 1.1 cards), 2 ... 9, then M (mastery).
-const lvRank = lv => (lv === 'X' ? 1.5 : lv === 'M' ? 99 : Number(lv));
-const lvLabel = lv => (lv === 'M' ? 'Pack' : String(lv));      // the Sawbones medical pack cards
+const lvRank = lv => ({ X: 1.5, M: 99, a: 1.1, b: 1.2 }[lv] ?? Number(lv));   // a and b: the Jaws of the Lion level A and B cards
+const lvLabel = lv => ({ M: 'Pack', a: 'A', b: 'B' }[lv] ?? String(lv));      // the Sawbones medical pack cards
 const cardById = new Map(CARDS.map(c => [c.id, c]));
+// Ability cards on the Cards tab: the GH2 tables above plus the Frosthaven and Jaws of the Lion classes (worldhaven data,
+// scripts/games/wh_cards.js, classes from index 101 on, card ids from 100000 on). Other tabs keep the GH2 tables only.
+const ABILITY_CLASSES = [...CLASSES, ...WH_CLASSES.map((c, k) => ({ i: 101 + k, code: '', name: c.name, src: c.edition }))];
+const whClassIndex = new Map(WH_CLASSES.map((c, k) => [c.name, 101 + k]));
+const ABILITY_CARDS = [...CARDS, ...WH_CARDS.map((c, k) => ({ id: 100000 + k, cls: whClassIndex.get(c.c), slug: c.slug, lv: c.lv, ini: c.ini, img: c.img }))];
 const FULLSCREEN_ICON = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const PENCIL = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2 2 0 0 1 3 0l0 0a2 2 0 0 1 0 3L8 19z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M14 7l3 3" stroke="currentColor" stroke-width="2"/></svg>';
 const ICON_DICE = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg>';
@@ -425,6 +431,12 @@ const iniTag = card => `<span class="ini${card?.ini == null ? ' none' : ''}" tit
 const iniOf = id => cardById.get(id)?.ini ?? Infinity;
 const byInitiative = (a, b) => (iniOf(a) === iniOf(b) ? 0 : iniOf(a) < iniOf(b) ? -1 : 1);
 
+// An <img> that falls back to the card name when the picture is missing (see the 'error' listener below).
+function cardPicture(card, id) {
+  const url = cardImageUrl(card);
+  const name = pretty(card?.slug ?? id);
+  return url ? `<img class="cardpic" src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false">` : `<div class="noimg">${esc(name)}</div>`;
+}
 // Enhancement stickers on a card (key 'c:<id>' or 'i:<id>') from every character's markers, drawn over the card when the Cards tab shows them.
 function stkMarks(key) {
   if (!view.cardStk) return '';
@@ -491,6 +503,7 @@ const pmState = c => ({
 const playmatCtx = {
   matUrl: (cls, side) => matImageUrl(cls, side),
   pqImg: slug => `../images/common/personal_quests/${slug}.png`,
+  bgImg: battleGoalImageUrl,
   esc, pretty, cardById, itemById, cardImageUrl, itemImageUrl, cardBackUrl, portraitStyle,
   playerName: c => (record.players.find(p => p.seat === c.seat)?.name ?? ''),
   traitChips: c => `${(c.traits || []).map(t => chip(t)).join('')}${classTraits(c).map(t => chip(t)).join('')}${(c.special || []).map(t => chip(specialName(t), 'info')).join('')}`,
@@ -604,7 +617,7 @@ function hydrateAm() {
 // The card browser: ability cards of the classes the campaign has unlocked; the Show filter switches to all classes.
 // With "unlocked" the other classes are never listed or matched by a search, so the page cannot reveal them. Filters: class, level, name. Ctrl+hover (tap on touch) enlarges a card.
 function cardsPage(r) {
-  const typeSel = `<select id="cardType" aria-label="Card type">${[['abilities', 'Ability cards'], ['am', 'Attack modifiers'], ['goals', 'Battle goals'], ['mats', 'Character mats'], ['events', 'Events'], ['items', 'Items'], ['monsters', 'Monster abilities'], ['stats', 'Monster stat cards'], ['pq', 'Personal quests']].map(([v, l]) => `<option value="${v}" ${view.cardType === v ? 'selected' : ''}>${l}</option>`).join('')}</select>`;
+  const typeSel = `<select id="cardType" aria-label="Card type">${[['abilities', 'Character abilities'], ['am', 'Attack modifiers'], ['goals', 'Battle goals'], ['mats', 'Character mats'], ['events', 'Events'], ['items', 'Items'], ['monsters', 'Monster abilities'], ['stats', 'Monster stat cards'], ['pq', 'Personal quests']].map(([v, l]) => `<option value="${v}" ${view.cardType === v ? 'selected' : ''}>${l}</option>`).join('')}</select>`;
   const showSel = `<select id="cardShow">${[['unlocked', { items: 'Unlocked items', goals: 'Drawn goals', events: 'Discarded events', am: 'Unlocked classes', mats: 'Unlocked classes' }[view.cardType] || 'Unlocked classes'], ['all', { items: 'All items', goals: 'All goals', events: 'All events' }[view.cardType] || 'All classes']].map(([v, l]) => `<option value="${v}" ${view.cardShow === v ? 'selected' : ''}>${l}</option>`).join('')}</select>`;
   const sizeBar = n => `<div class="imgmode viewmode" role="group" aria-label="Tile size">${[['s', 'S'], ['m', 'M'], ['l', 'L']].map(([k, l]) => `<button type="button" data-cardsize="${k}" aria-pressed="${view.cardSize === k}" title="Tile size ${l}">${l}</button>`).join('')}<span class="ctrlhint">${n} cards &middot; hold Ctrl over a card to enlarge it</span></div>`;
   if (view.cardType === 'stats') {
@@ -656,7 +669,7 @@ function cardsPage(r) {
   if (view.cardType === 'mats') {
     // Character mats of the campaign's classes, front or back (the back shows the hit points and the like).
     const mine = new Set(r.cls.map(n => n.toLowerCase()));
-    const classes = CLASSES.filter(c => view.cardShow === 'all' || mine.has(c.name.toLowerCase())).sort((a, b) => a.name.localeCompare(b.name));
+    const classes = ABILITY_CLASSES.filter(c => view.cardShow === 'all' || mine.has(c.name.toLowerCase())).sort((a, b) => a.name.localeCompare(b.name));
     const q = view.cardSearch.trim().toLowerCase();
     const rows = classes.filter(c => (!view.cardCls || c.name === view.cardCls) && (!q || c.name.toLowerCase().includes(q)));
     if (view.cardCls && !classes.some(c => c.name === view.cardCls)) view.cardCls = '';
@@ -712,15 +725,17 @@ function cardsPage(r) {
     }).join('')}</div>` : (view.cardShow === 'all' ? none : '<div class="empty">No events discarded yet. Choose "All events" to see every card.</div>'));
   }
   if (view.cardType === 'goals') {
-    // Battle goals have no pictures: a text card each. "Unlocked" means the goals drawn so far (r.decks.bg).
+    // Battle goal pictures from worldhaven (Frosthaven set, used for every edition). "Unlocked" means the goals drawn so far (r.decks.bg).
     const q = view.cardSearch.trim().toLowerCase();
     const rows = BATTLE_GOALS.filter(g => (view.cardShow === 'all' || r.decks.bg.includes(g.id))
       && (!view.cardChk || String(g.chk) === view.cardChk)
       && (!q || pretty(g.slug).toLowerCase().includes(q) || String(g.t || '').toLowerCase().includes(q)));
     const filters = `<div class="filters">${typeSel}${showSel}<select id="cardChk"><option value="">Any checkmarks</option>${[1, 2].map(n => `<option value="${n}" ${view.cardChk === String(n) ? 'selected' : ''}>${n} checkmark${n > 1 ? 's' : ''}</option>`).join('')}</select>
       <input id="cardSearch" type="search" placeholder="Goal name or text" value="${esc(view.cardSearch)}"></div>`;
-    return filters + `<div class="imgmode viewmode"><span class="ctrlhint">${rows.length} goals</span></div>` + (rows.length ? `<div class="itemgrid" style="--tile-min:${{ s: 190, m: 230, l: 280 }[view.cardSize]}px">${rows.map(g =>
-      `<figure class="itemtile bgtile" title="${esc(pretty(g.slug))}"><h4>${esc(pretty(g.slug))}</h4><p>${esc(g.t || '')}</p><span class="badge">${'&#10003;'.repeat(g.chk)}</span></figure>`).join('')}</div>` : none);
+    return filters + sizeBar(rows.length) + (rows.length ? `<div class="itemgrid" style="--tile-min:${ITEM_SIZES[view.cardSize]}px">${rows.map(g => {
+      const url = battleGoalImageUrl(g.slug), name = pretty(g.slug);
+      return `<figure class="itemtile" data-img="${esc(url)}" data-imgw="450" title="${esc(name)}: Ctrl+hover to enlarge"><img class="cardpic" src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false"><figcaption><span class="cname">${esc(name)}</span><span class="badge" title="Checkmarks">${'&#10003;'.repeat(g.chk)}</span></figcaption></figure>`;
+    }).join('')}</div>` : none);
   }
   if (view.cardType === 'items') {
     const slots = [...new Set(ITEMS.map(i => i.slot).filter(Boolean))].sort();
@@ -739,10 +754,10 @@ function cardsPage(r) {
   }
   const open = new Set(r.cls.map(n => n.toLowerCase()));
   const all = view.cardShow === 'all';
-  const classes = CLASSES.filter(c => all || open.has(c.name.toLowerCase())).sort((a, b) => a.name.localeCompare(b.name));
+  const classes = ABILITY_CLASSES.filter(c => all || open.has(c.name.toLowerCase())).sort((a, b) => a.name.localeCompare(b.name));
   const byIdx = new Map(classes.map(c => [c.i, c]));
   if (view.cardCls && !classes.some(c => c.name === view.cardCls)) view.cardCls = '';
-  const scope = CARDS.filter(c => byIdx.has(c.cls) && (!view.cardCls || byIdx.get(c.cls).name === view.cardCls));
+  const scope = ABILITY_CARDS.filter(c => byIdx.has(c.cls) && (!view.cardCls || byIdx.get(c.cls).name === view.cardCls));
   if (view.cardLv && !scope.some(c => String(c.lv) === view.cardLv)) view.cardLv = '';
   // The search box takes a name and/or a level range such as "1-3" (levels 1, X, 2, 3; X is 1.5, Pack or M is last).
   let q = view.cardSearch.trim().toLowerCase(), range = null;
@@ -752,16 +767,16 @@ function cardsPage(r) {
     range = [Math.min(rank(rm[1]), rank(rm[2])), Math.max(rank(rm[1]), rank(rm[2]))];
     q = (q.slice(0, rm.index) + ' ' + q.slice(rm.index + rm[0].length)).trim();
   }
-  const rows = CARDS.filter(c => byIdx.has(c.cls)
+  const rows = ABILITY_CARDS.filter(c => byIdx.has(c.cls)
     && (!view.cardCls || byIdx.get(c.cls).name === view.cardCls)
     && (!view.cardLv || String(c.lv) === view.cardLv)
     && (!range || (lvRank(c.lv) >= range[0] && lvRank(c.lv) <= range[1]))
     && (!q || pretty(c.slug).toLowerCase().includes(q))).sort((a, b) => byIdx.get(a.cls).name.localeCompare(byIdx.get(b.cls).name) || lvRank(a.lv) - lvRank(b.lv) || (a.ini ?? 1e9) - (b.ini ?? 1e9) || a.slug.localeCompare(b.slug));
   // Levels offered: those of the classes in scope, so Pack (the Sawbones medical pack) appears only for All classes or Sawbones.
-  const levels = [...new Set(CARDS.filter(c => byIdx.has(c.cls) && (!view.cardCls || byIdx.get(c.cls).name === view.cardCls)).map(c => String(c.lv)))].sort((a, b) => lvRank(a) - lvRank(b));
+  const levels = [...new Set(ABILITY_CARDS.filter(c => byIdx.has(c.cls) && (!view.cardCls || byIdx.get(c.cls).name === view.cardCls)).map(c => String(c.lv)))].sort((a, b) => lvRank(a) - lvRank(b));
   const filters = `<div class="filters">${typeSel}${showSel}
     <select id="cardCls"><option value="">All classes</option>${classes.map(c => `<option value="${esc(c.name)}" ${view.cardCls === c.name ? 'selected' : ''}>${esc(c.name)}${open.has(c.name.toLowerCase()) ? '' : ' (locked)'}</option>`).join('')}</select>
-    <select id="cardLv"><option value="">All levels</option>${levels.map(l => `<option value="${esc(l)}" ${view.cardLv === l ? 'selected' : ''}>${l === 'M' ? 'Pack' : `Level ${esc(l)}`}</option>`).join('')}</select>
+    <select id="cardLv"><option value="">All levels</option>${levels.map(l => `<option value="${esc(l)}" ${view.cardLv === l ? 'selected' : ''}>${l === 'M' ? 'Pack' : `Level ${esc(lvLabel(l))}`}</option>`).join('')}</select>
     <input id="cardSearch" type="search" placeholder="Name or levels, e.g. 1-3" title="Search by name; a range like 1-3 lists levels 1, X, 2 and 3" value="${esc(view.cardSearch)}">${stkToggle()}</div>`;
   const bar = sizeBar(rows.length);
   if (!classes.length) return filters + '<div class="empty">No classes unlocked yet.</div>';
