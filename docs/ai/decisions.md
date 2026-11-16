@@ -43,6 +43,8 @@ Dated, newest first within each group. "Owner" marks decisions the owner made. C
 
 ## Content and rules (as implemented; check against the books when in doubt)
 
+- 2026-11-16: Frosthaven and Jaws character mats come from the group's asset repository (`wh_character_mats`), same URL rule as the GH2 mats (H.I.V.E. is `hive.png`). Owner.
+- 2026-11-16: Frosthaven and Jaws of the Lion ability cards come from any2cards/worldhaven, pictures hotlinked, for the Cards tab only. Owner, for now. Initiative: worldhaven first, Secretariat numbers for the 29 gaps; the worldhaven values were checked against the card art where the two differ. Card titles come from the picture file: the source name is sometimes the summon the card creates.
 - 2026-11-13: All 649 GH2 ability cards have an initiative value (from card images).
 - 2026-11-12: Four Frosthaven classes named only by icon in the Secretariat data are matched as drill = Metal Mosaic, kelp = Deepwraith, prism = H.I.V.E. Owner confirmed.
 - 2026-11-12: Metal Mosaic pressure runs 0 to 3. Owner confirmed.

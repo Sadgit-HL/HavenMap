@@ -53,7 +53,7 @@ Code: `campaign/playmat.js` (markup, modals, dock, settings), `campaign/playmat.
 | Modal | What it does |
 |---|---|
 | Perks and masteries | perk rows from the class perk list, taken perks change the deck at once; multi-box perks count when all boxes are ticked; masteries from `scripts/games/masteries.js` (Jaws of the Lion has none) |
-| Journal | three tabs: Battle goals (3 drawn, keep 1; roll code `3custom<n>{ids}`), Personal quest (2 drawn, keep 1; quests shared by the party: `bgs`, `pq` in the record), Notes (markdown, toolbar, preview) |
+| Journal | three tabs: Battle goals (3 drawn, keep 1; roll code `3custom<n>{ids}`; pictures from worldhaven, laid out like the quest tab), Personal quest (2 drawn, keep 1; quests shared by the party: `bgs`, `pq` in the record), Notes (markdown, toolbar, preview) |
 | Character mat | front and back, click to flip |
 | BGG codes | icon codes in blocks (General, Conditions, Elements, Loot, Terrain, Class specific), class banner codes (`[inlineimg]url[/inlineimg]`), user's own codes (localStorage `havenmap.campaign.codes`) |
 | Enhancements | the class's enhancement log (`r.enh`), add with card and top, bottom or gold, price per row, remove |

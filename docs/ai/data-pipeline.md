@@ -13,6 +13,7 @@ Rule: never hand-edit a file marked GENERATED. Fix the generator (or its input t
 | `scripts/games/masteries.js` | `tools/extract-masteries.py` | Secretariat data |
 | `scripts/games/gh2_pq_text.js` | `tools/extract-pq-text.py` | Secretariat gh2e data |
 | `scripts/games/perks.js` | `tools/extract-perks.mjs` (+ `perks-decode.mjs`) | FrosthavenAssistant clone at `asset-backups/amd/FrosthavenAssistant` |
+| `scripts/games/wh_cards.js` (Frosthaven and Jaws ability cards, Cards tab) | `tools/extract-worldhaven-cards.py` | `data/character-ability-cards.js` of the worldhaven clone (`D:\github\worldhaven`, any2cards/worldhaven). Initiative gaps filled from the Secretariat fh and jotl decks (numbers only) |
 | `scripts/campaign/bggIcons.js` | `tools/extract-bgg-icons.py` | the BGG codes list in `campaign/mockups/merc-6-playmat-v2.html` |
 | `campaign/mockups/*.html`, `mock.css` | `tools/merc-mockups/gen-merc-mockups.mjs` | run with `MERC_MOCKUP_OUT="<repo>/campaign/mockups/" node ...`. Later hand edits in `merc-6` exist (see `status.md`): check the diff before regenerating |
 | `asset-backups/campaign-import.json`, copy in `import/` | `tools/import-campaign-state.py` | `WHTracker.xlsx`. Test data only; the owner syncs state by hand |
@@ -53,6 +54,8 @@ Hand-maintained inputs and outputs:
 | Gloomhaven Secretariat (AGPL-3.0) | unlock links, initiative numbers, event text, prosperity, reputation, masteries, PQ text, treasures, monster decks | open. Only facts are used, but the licence is unresolved |
 | FrosthavenAssistant (AGPLv3) | perk data, layered art reference, unique card scans | open |
 | Card DB text (WHTracker.xlsx, group's own) | static tables | open |
+| worldhaven card images (any2cards/worldhaven, Cephalofair scans printed "used with permission") | Frosthaven and Jaws ability cards and battle goals on the Cards tab, hotlinked from `raw.githubusercontent.com/any2cards/worldhaven` | open: hotlinked for now, owner to decide hosting and licence |
+| Frosthaven and Jaws character mats | Cards tab, from the group's asset repository (`wh_character_mats`) | same as the other asset repository pictures |
 | Frosthaven and Worldhaven card images | card pictures, unique cards, class art | cleared for this non-profit app by the owner. Crediting the source is advisable |
 | `any2cards/worldhaven` scans | layout reference only, not copied | Cephalofair-licensed, used to verify layout only |
 | Photoshop template (author unknown) | layer art | open. Outside the repo |

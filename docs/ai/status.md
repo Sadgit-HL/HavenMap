@@ -23,7 +23,7 @@ Tabs (`PAGE_TABS` in `campaign/app.js`): Overview, Scenarios, Mercenaries, Items
 - Mercenaries: the playmat (`campaign/playmat.js`), up to four characters, see `playmat.md`. Includes hand, play slots, active area, piles, modifier deck view, journal, perks and masteries, enhancements, BGG codes, history, markers, edit character, phone view below 700 px (`campaign/phone.js`).
 - Items: table and cards, unlock and shop copies, give and return to characters, equip with slot limits.
 - Events: city and road decks, piles (top, deck, bottom, out, locked), per-seat voting, outcome checks against traits and reputation, redirects, placement rules (`scripts/campaign/events.js`, `outcomes.js`, `campaign/eventsView.js`).
-- Cards: browser for ability cards, attack modifiers, battle goals, mats, events (fronts), items, monster abilities and stat cards, personal quests.
+- Cards: browser for character abilities, attack modifiers, battle goals (pictures from worldhaven since 2026-11-16), mats, events (fronts), items, monster abilities and stat cards, personal quests. Ability cards include the Frosthaven and Jaws of the Lion classes since 2026-11-16 (689 cards, pictures hotlinked from any2cards/worldhaven, initiative from worldhaven with gaps filled from the Secretariat). Character mats for the same classes (front and back, from the asset repository) since 2026-11-16. Attack modifiers are still GH2 only, and the playmat and campaign records do not use the new cards.
 - Resources: links from the workbook (`scripts/games/resources.js`).
 - History: entries from `record.log`, folded small counter changes, undo entries.
 - Storage: browser localStorage only (`scripts/campaign/store.js`, one implementation). JSON Export and Import by hand. Undo 50 steps, Ctrl+Z.

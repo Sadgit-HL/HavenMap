@@ -51,3 +51,11 @@ Open work in priority order. Items marked (owner) need a decision or data from t
 36. Licence of the Secretariat data (AGPL-3.0), FrosthavenAssistant data (AGPLv3), the Card DB text and the Frosthaven images. Images are cleared for non-profit use by the owner. The rest is unchecked.
 37. Co-author line on commits. The old handover recorded a conflict between an earlier repo rule and the global CLAUDE.md. Current behaviour: follow the global CLAUDE.md (no line). Get a decision.
 38. Whether `campaign/mockups/` should stay in the repo or be trimmed. It holds about 650 KB of card thumbnails from the group's card scans.
+
+## 8. Cards tab: Frosthaven and Jaws follow-ups (2026-11-16)
+
+39. Licence and hosting of the worldhaven card and battle goal pictures (hotlinked from raw.githubusercontent.com for now). Decide: keep hotlinking, copy to a Pages site, or drop. (owner)
+40. Done 2026-11-16 for character mats (front and back, from the asset repository). Attack modifiers for Frosthaven and Jaws are still open (worldhaven has them). Scope decision for attack modifiers. (owner)
+41. Done 2026-11-16: card titles come from the picture file (the name field is sometimes the summon, e.g. "Banner of Hope" for Driving Inspiration). Minor: apostrophes are lost in titles ("The Knifes Edge").
+42. Done 2026-11-16: counts are 27 to 37 per class after the title fix (648 cards).
+43. Frosthaven and Jaws cards are not in the playmat or the campaign records. Decide whether they should be (they would need card ids and the same zone rules). (owner)
