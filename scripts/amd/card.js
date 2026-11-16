@@ -34,15 +34,17 @@ function buildBase(card, className, isAdded) {
   return root;
 }
 
-function buildUnique(card) {
-  // Already a full baked card image, class badge included.
+function buildUnique(card, className, isAdded) {
+  // A baked card image. Its lower-left badge is not the class of the card (Mercenary Pack cards show a potion, Anaphi's
+  // class icon is a ribbon), so the class badge is drawn over it, as on the other cards a perk adds.
   const root = layer('pc');
   root.appendChild(lazyImg(`${amImg(`unique/${card.code}`)}`, 'pc-unique'));
+  if (isAdded && className) root.appendChild(badges(null, className));
   return root;
 }
 
 export function buildCard(card, className, isAdded = false) {
   if (card.kind === 'base') return buildBase(card, className, isAdded);
-  if (card.kind === 'unique') return buildUnique(card);
+  if (card.kind === 'unique') return buildUnique(card, className, isAdded);
   return buildShared(card, className);
 }

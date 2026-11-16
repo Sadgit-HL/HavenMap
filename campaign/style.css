@@ -869,3 +869,8 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); min-height: 420px; }
 .filters .btn6.rollbtn { background:#2d2519; color:var(--text); border:1px solid var(--line); border-radius:7px; padding:3px 10px; font:inherit; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; }
 .filters .btn6.rollbtn:hover:not(:disabled) { border-color:var(--accent); color:var(--accent); }
 .filters .btn6.rollbtn:disabled { opacity:.45; cursor:not-allowed; }
+
+/* Ctrl+hover preview of a composed attack-modifier card (app.js showAmPreview) */
+#amPreview { position:fixed; left:0; top:0; z-index:50; pointer-events:none; display:none; --pc-width:300px; will-change:transform; }
+#amPreview.show { display:block; }
+#cardPreview { left:0; top:0; will-change:transform; }

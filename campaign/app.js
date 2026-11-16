@@ -569,7 +569,7 @@ function items(r) {
       const pic = url ? `<img class="cardpic" src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false">` : `<div class="noimg secretpic">${unl ? esc(name) : editing ? `#${esc(i.id)}` : '?'}</div>`;
       const w = holders(i.id);
       const tog = editing ? `<button type="button" class="chip" data-act="itemToggle" data-id="${esc(i.id)}" title="${unl ? 'Lock this item' : 'Unlock this item'}">${unl ? 'Lock' : 'Unlock'}</button>` : '';
-      return `<figure class="itemtile${unl ? '' : ' locked'}" title="${unl ? esc(`${i.id} ${name}`) : esc(String(i.id))}">${pic}
+      return `<figure class="itemtile${unl ? '' : ' locked'}"${url ? ` data-img="${esc(url)}" data-imgw="300"` : ''} title="${unl ? esc(`${i.id} ${name}`) : esc(String(i.id))}">${pic}
         <figcaption><span class="cname">${esc(name)}</span>${tog || `<span class="badge">${unl ? `${esc(shopCopies(r, i))}/${esc(i.n)}` : 'locked'}</span>`}</figcaption>${!secret && unl ? `<div class="itemwith">${ownerChips(i)}${giveMenu(i)}</div>` : ''}</figure>`;
     }).join('')}</div>` : none);
   }
@@ -696,7 +696,7 @@ function cardsPage(r) {
     const add = (card, className, isAdded, label, sub) => {
       if (q && !`${label} ${sub}`.toLowerCase().includes(q)) return;
       amSlots.push({ card, className, isAdded });
-      tiles.push(`<figure class="itemtile amtile" title="${esc(`${sub}: ${label}`)}"><div data-am="${amSlots.length - 1}"></div><figcaption><span class="cname">${esc(label)}</span><span class="badge">${esc(sub)}</span></figcaption></figure>`);
+      tiles.push(`<figure class="itemtile amtile" data-amzoom="${amSlots.length - 1}" title="${esc(`${sub}: ${label}`)}" style="cursor:zoom-in"><div data-am="${amSlots.length - 1}"></div><figcaption><span class="cname">${esc(label)}</span><span class="badge">${esc(sub)}</span></figcaption></figure>`);
     };
     if (!view.cardCls || view.cardCls === '*') for (const [v, n] of AM_STANDARD) add({ kind: 'base', value: v }, null, false, v === 'null' ? 'Miss' : v, `Standard ×${n}`);
     if (view.cardCls !== '*') for (const c of classes) {
@@ -1514,7 +1514,23 @@ document.body.appendChild(preview);
 const coarse = matchMedia('(pointer: coarse)');                 // touch: no hover, so a tap shows the picture instead
 let previewUrl = '';
 
-function hidePreview() { preview.classList.remove('show'); previewUrl = ''; }
+// Composed attack-modifier cards have no single picture: Ctrl+hover shows a built card at the same size as the other pictures.
+const amPreview = document.createElement('div');
+amPreview.id = 'amPreview';
+document.body.appendChild(amPreview);
+let amPreviewIdx = -1;
+function showAmPreview(idx, x, y) {
+  const s = amSlots[idx];
+  if (!s) return false;
+  if (idx !== amPreviewIdx) { amPreview.replaceChildren(buildCard(s.card, s.className, s.isAdded)); amPreviewIdx = idx; }   // rebuild only for another card: moving the pointer must not repaint the layers
+  const w = Math.min(previewW(), innerWidth - 16), h = w * 0.66;     // a card is 600x391
+  amPreview.style.setProperty('--pc-width', `${w}px`);
+  const left = x + 18 + w > innerWidth ? Math.max(8, x - 18 - w) : x + 18, top = Math.max(8, Math.min(y - 20, innerHeight - h - 8));
+  amPreview.style.transform = `translate3d(${left}px, ${top}px, 0)`;
+  amPreview.classList.add('show');
+  return true;
+}
+function hidePreview() { preview.classList.remove('show'); amPreview.classList.remove('show'); previewUrl = ''; }
 function showPreview(url, x, y, width = 300) {
   if (url !== previewUrl) { preview.src = url; previewUrl = url; }
   const w = Math.min(width, innerWidth - 16);       // data-imgw: a card with small print is shown larger (character mats: 600, their full size)
@@ -1523,21 +1539,25 @@ function showPreview(url, x, y, width = 300) {
   const h = preview.naturalHeight ? (preview.naturalHeight / preview.naturalWidth) * w : 420;
   const left = x + 18 + w > innerWidth ? Math.max(8, x - 18 - w) : x + 18;
   const top = Math.max(8, Math.min(y - 20, innerHeight - h - 8));
-  preview.style.left = `${left}px`;
-  preview.style.top = `${top}px`;
+  preview.style.transform = `translate3d(${left}px, ${top}px, 0)`;   // transform, not left/top: moving it does not leave a trail
 }
 // Hover mode: the picture shows under the pointer only while Ctrl is held (so it does not pop up while moving cards).
 let pointer = { x: 0, y: 0 };
 const showUnderPointer = () => {
-  const el = document.elementFromPoint(pointer.x, pointer.y)?.closest('[data-img]');
-  if (el && main.contains(el)) showPreview(el.dataset.img, pointer.x, pointer.y, Number(el.dataset.imgw) || 300); else hidePreview();
+  const under = document.elementFromPoint(pointer.x, pointer.y);
+  const el = under?.closest('[data-img]'), am = under?.closest('[data-amzoom]');
+  if (el && main.contains(el)) showPreview(el.dataset.img, pointer.x, pointer.y, previewW());
+  else if (am && main.contains(am) && showAmPreview(Number(am.dataset.amzoom), pointer.x, pointer.y)) return;
+  else hidePreview();
 };
 main.addEventListener('mousemove', e => {
   pointer = { x: e.clientX, y: e.clientY };
   if (coarse.matches) return;
   if (e.buttons || !e.ctrlKey) { hidePreview(); return; }
-  const el = e.target.closest?.('[data-img]');
-  if (el) showPreview(el.dataset.img, e.clientX, e.clientY, Number(el.dataset.imgw) || 300); else hidePreview();
+  const el = e.target.closest?.('[data-img]'), am = e.target.closest?.('[data-amzoom]');
+  if (el) showPreview(el.dataset.img, e.clientX, e.clientY, previewW());
+  else if (am && showAmPreview(Number(am.dataset.amzoom), e.clientX, e.clientY)) return;
+  else hidePreview();
 });
 document.addEventListener('keydown', e => { if (e.key === 'Control' && !coarse.matches) showUnderPointer(); });
 document.addEventListener('keyup', e => { if (e.key === 'Control') hidePreview(); });
@@ -1548,7 +1568,7 @@ main.addEventListener('click', e => {
   if (!coarse.matches || e.target.closest('button')) return;
   const el = e.target.closest('[data-img]');
   if (el) {
-    const w = Math.min(Number(el.dataset.imgw) || 300, innerWidth - 16);
+    const w = Math.min(previewW(), innerWidth - 16);
     showPreview(el.dataset.img, innerWidth / 2 - w / 2 - 18, 40, w);     // showPreview adds 18px to x
     e.preventDefault();                                                 // a tap shows the picture; the link to the full image is for the mouse
     e.stopPropagation();

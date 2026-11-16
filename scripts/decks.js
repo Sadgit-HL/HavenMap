@@ -8,7 +8,7 @@
 import { state, patch } from './state.js';
 import { DECKS, deckSlugFor, assetPath } from './data.js';
 import { uiState, subscribeUI } from './uiState.js';
-import { buildCard } from './amd/card.js?v=5';
+import { buildCard } from './amd/card.js?v=6';
 import { createHoverPreview, previewImage } from './hoverPreview.js';
 import { perkTextHtml, perkRuleNote } from './amd/perkText.js';
 import { escapeHtml as esc } from './escape.js';
