@@ -62,7 +62,7 @@ Invariant: every card of `deck` sits in exactly one place: `lost`, `disc`, `play
 
 ## Derived values (not stored)
 
-`scenarioLevel` (GH2 rule unverified), `prosperityLevel` (`PROSPERITY_START`), average level, days played, scenario counts, hand list, zone of a card (`zoneOf`), owned cards and pending picks (`ownedCards`, `pendingPicks`), item slot use and fit (`slotLimits`, `slotUse`, `itemFits`), shop copies (`shopCopies`), unlocked-by links (`unlockedBy`).
+`scenarioLevel` (`ceil(avg / 2) + difficulty`, matches the Secretariat base formula; rulebook not checked), `prosperityLevel` (`PROSPERITY_START`), average level, days played, scenario counts, hand list, zone of a card (`zoneOf`), owned cards and pending picks (`ownedCards`, `pendingPicks`), item slot use and fit (`slotLimits`, `slotUse`, `itemFits`), shop copies (`shopCopies`), unlocked-by links (`unlockedBy`).
 
 ## Functions
 

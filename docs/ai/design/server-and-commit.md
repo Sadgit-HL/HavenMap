@@ -1,6 +1,6 @@
 # Design: campaign server, session start and commit, BBCode
 
-Status: designed, not built. Blocked on the hosting decision (`roadmap.md` items 24 to 31). The record shape that a server would store is `campaign-record.md`; the older draft record in `archive/campaign-schema-draft.md` is superseded.
+Status: designed, not built. Blocked on the hosting decision (`roadmap.md` items 22 to 29). The record shape that a server would store is `campaign-record.md`; the older draft record in `archive/campaign-schema-draft.md` is superseded.
 
 ## Layers
 

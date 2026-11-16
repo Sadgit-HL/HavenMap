@@ -172,6 +172,7 @@ An empty list shows one muted line (`.emptyline`), for example "No stickers yet.
 
 - Escape closes the open modal or preview first. One Escape, one step back.
 - Space switches between hand and modifier deck when nothing is focused and no modal is open.
+- Object keys act on the object under the mouse pointer, not on focus: D, L and A on ability cards, D and L on items, D on attack modifier cards. A pointer-based key does not need Tab focus, so the cards do not take focus. Every new key goes into the Shortcuts tab (`SHORTCUTS` in `campaign/app.js`).
 - Every control reachable by Tab, with a visible gold focus ring (`box-shadow: 0 0 0 2px rgba(199,164,74,.25)`).
 - Dialogs: `role="dialog" aria-modal="true" aria-label` on the box.
 

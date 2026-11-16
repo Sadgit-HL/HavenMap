@@ -27,6 +27,7 @@ Tabs (`PAGE_TABS` in `campaign/app.js`): Overview, Scenarios, Mercenaries, Items
 - Resources: links from the workbook (`scripts/games/resources.js`).
 - History: entries from `record.log`, folded small counter changes, undo entries.
 - Storage: browser localStorage only (`scripts/campaign/store.js`, one implementation). JSON Export and Import by hand. Undo 50 steps, Ctrl+Z.
+- Settings modal (cogwheel): four tabs, Profile, Campaign file, Mercenary tab and Shortcuts (`docs/ai/playmat.md`). Object keys on the pointer (D, L, A on cards and items, D on modifier cards) tested in the browser by the owner on 2026-11-16.
 - Imported test data: `import/campaign-import.json` (made by `tools/import-campaign-state.py`). The owner decided not to import the live campaign automatically; state is synced by hand.
 
 Recent work (last commits, 2026-11-13 and 2026-11-14): tile modals for stickers and classes, Cards sticker toggle, playmat card unit `--cu`, top bar on one line below 1400 px, context menu for the playmat, perks and enhancements and codes popups, overview rework.

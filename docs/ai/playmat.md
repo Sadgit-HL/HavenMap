@@ -44,7 +44,7 @@ Code: `campaign/playmat.js` (markup, modals, dock, settings), `campaign/playmat.
 ## Modifier deck (Modifiers view in the hand bar)
 
 - Deck stacks, Top and Bottom strips, roll code panel, discard pile (top card, modal), active area. Space toggles Hand and Modifiers when nothing is focused.
-- Draws, returns, shuffle, bless and curse are session state (`pm.amd[charId]`), not saved in the record. Known gap (`roadmap.md` item 10).
+- Draws, returns, shuffle, bless and curse are session state (`pm.amd[charId]`), not saved in the record. Known gap (`roadmap.md` item 8).
 - Deck follows the taken perks (`c.pk`) via `scripts/campaign/amdDeck.js`. Roll codes: `1custom<n>{faces}` for the pool; `Top: X` and `Bottom: X` when a known card is placed.
 - Every move writes a History line.
 
@@ -68,7 +68,9 @@ BGG posts: Turn (banner, top action in slot 1, bottom action in slot 2, `XXX` fo
 
 ## Settings and context menu
 
-- Settings (cogwheel): hand layout Spread or Fan, zoom hover or click per zone, zoom size, hover delay, preview side, deck card click, initiative badge, auto-sort of the hand, reduced motion. Kept per browser (`havenmap.campaign.pmset`), not in the record.
+- Playmat display settings live in the settings modal (Mercenary tab, `displaySettingsHtml` in `campaign/playmat.js`): Hand (layout Spread or Fan, auto-sort by initiative), Card zoom (mode hover or click, size, hover delay), Zoom per zone, Preview (docked side), Cards and motion (initiative badge, reduce motion). Kept per browser (`havenmap.campaign.pmset`), not in the record.
+- The settings modal has four tabs: Profile (your name), Campaign file (load, export, clear), Mercenary tab, and Shortcuts (generated from the `SHORTCUTS` list in `campaign/app.js`; update it when a shortcut changes).
+- Keys on the object under the mouse pointer (not focus), read at key press from the last mouse position: ability card D (discard), L (Lost), A (active area); item D (toggle spent and available), L (consumed); attack modifier D (on a placed card: discard; on a deck stack: draw one to the discard, as a click does). Ignored in edit mode for attack modifiers. The item context menu has a State section with the same three states.
 - Context menu (`ctxmenu.js`): right click, Menu key, Shift+F10, long press on touch and pen. Cards: enlarge, marker, move to hand, active area, play slots (hand cards only), discard, lost, start and end of hand. Piles: recover top, move whole pile. Counters: +5, -5, reset. Every entry calls the same function as the normal UI.
 
 ## Phone view

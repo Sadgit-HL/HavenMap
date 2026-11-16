@@ -24,6 +24,10 @@ Dated, newest first within each group. "Owner" marks decisions the owner made. C
 
 ## Interaction and UI
 
+- 2026-11-16: Object keys (D, L, A on ability cards; D, L on items; D on attack modifier cards) act on the object under the mouse pointer, not on focus. The objects are not Tab stops. Owner.
+- 2026-11-16: Item D toggles between available and spent (consumed counts as not spent); L sets consumed. Owner.
+- 2026-11-16: The card images option (Hover or Always) was removed: it had no visible effect, and its bench view was dead code. Owner.
+- 2026-11-16: The settings modal is split into tabs (Profile, Campaign file, Mercenary tab, Shortcuts). Owner.
 - 2026-11-14: Shared GUI rules for all campaign tabs (`ui-guidelines.md`). No help text, no tips. Pencils open popups. Owner.
 - 2026-11-12: Moving cards does not need the Edit toggle. Moving cards is play. Owner.
 - 2026-11-12: Phone text and menus use the playmat's modal list (`PHONE_MODALS`). A new feature must say whether it is on the phone.
@@ -46,7 +50,7 @@ Dated, newest first within each group. "Owner" marks decisions the owner made. C
 - 2026-11-09: Item 116 is excluded from prosperity level 1. Owner.
 - 2026-11-08: Items 169 and 170 slots were swapped in the workbook and are corrected in the generator.
 - 2026-11-08: Prosperity level thresholds come from the sheet (`PROSPERITY_START`). Imbuement +1P box pattern (every 5th box) is unverified against the Secretariat.
-- 2026-11-08: Scenario level uses the Gloomhaven rule (half average level rounded up plus difficulty). Unverified for GH2.
+- 2026-11-08: Scenario level uses the Gloomhaven rule (half average level rounded up plus difficulty). Matches the Secretariat base formula (2026-11-16); rulebook not checked.
 - 2026-11-08: Silent Knife uses the Gloomhaven 1st edition Scoundrel card back as a stand-in (no GH2e back exists in any repo).
 
 ## Process
