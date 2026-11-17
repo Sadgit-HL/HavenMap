@@ -4,6 +4,7 @@ Dated, newest first within each group. "Owner" marks decisions the owner made. C
 
 ## Architecture and data
 
+- 2026-11-17: The app is named HavenTracker (map and campaign tracking). Visible names change: the campaign page title now, the map page title and heading when the map is not in use. Kept as they are: the GitHub repository name and its Pages address (a rename would break the map links in the forum), the localStorage keys `havenmap.*` (a rename would lose saved data), folder names and local addresses. Owner.
 - 2026-11-16: `images/` in the repo is the only source of truth for images. It holds the converted set (WebP, organised as `<type>/<edition>/<file>`). The app reaches every image through `scripts/images.js` (`imageFile`), which uses the generated table `scripts/images-index.js`. The remote image hosts are no longer loaded, except the BGG banner codes, which must be a public address. Owner.
 - 2026-11-16: The map sidebar's mercenary mats come from `character-mats/<edition>` (the asset repository art), since the old repo mats were removed. Owner.
 - 2026-11-14: `campaign/playmat.css` is hand-maintained. The generator stays as a reference and refuses to run without `--force`, because the mockup and the live page disagree.

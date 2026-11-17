@@ -7,6 +7,8 @@ Open work in priority order. Items marked (owner) need a decision or data from t
 1. Browser-test the 2026-11-14 layout changes at the sizes in `ui-guidelines.md` section 9. Scope: top bar on one line, modifier and modal card sizes, tile modals close (Escape, overlay, footer), Stickers toggle.
 2. Commit a test set. The Node checks for `edit.js`, `record.js`, `events.js`, `outcomes.js`, `amdDeck.js`, `flow.js` and `changelog.js` existed only in temporary folders. Put them under `tools/tests/` and say how to run them.
 
+- Rename to HavenTracker, map side (when the map is free): `index.html` title and heading. Repository rename only together with the move away from URL links (`design/map-integration.md`). See `decisions.md` 2026-11-17.
+
 ## 2. Playmat and phone gaps
 
 4. Phone: check the touch layout (2026-11-17) on a real phone, upright and sideways: page sheet, bottom sheets, long press preview, hold and move of modifier cards. Tested only with Playwright touch emulation.
