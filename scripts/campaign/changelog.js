@@ -5,13 +5,14 @@
 import { SCN_STATE_NAME, availableSet, zoneOf } from './record.js';
 import { CARDS } from '../games/gh2_cards.js';
 import { tokenDefs } from './classTokens.js';
-import { perkList } from './amdDeck.js';
+import { perkList, drawState, amOwner } from './amdDeck.js';
+import { monOf, monsterById, deckState, deckCard } from './monsters.js';
 import { MASTERIES } from '../games/masteries.js';
 import { BATTLE_GOALS } from '../games/battle_goals.js';
 import { GH2_PQ } from '../games/gh2_pq_text.js';
 import { ALL_CLASSES } from './classList.js';
 
-export const LOG_TABS = ['Overview', 'Scenarios', 'Mercenaries', 'Items', 'Events', 'Cards', 'Resources'];
+export const LOG_TABS = ['Overview', 'Scenarios', 'Mercenaries', 'Monsters', 'Items', 'Events', 'Cards', 'Resources'];
 export const LOG_MAX = 1000;                       // entries kept in the record
 
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
@@ -49,7 +50,7 @@ const FACTION = { demons: 'Demons', merchants: 'Merchants', guard: 'City Guard' 
 const SCN_FIELD = { l: 'level', p: 'party size', ch: 'chests', d: 'date' };
 const CHAR_FIELD = { lv: 'level', xp: 'XP', cls: 'class', name: 'name' };
 const HANDLED = new Set(['ver', 'log', 'v', 'evlog', 'name', 'players', 'party', 'rep', 'pros', 'imb', 'don', 'stk', 'cls', 'avail',
-  'scn', 'chars', 'items', 'events', 'decks', 'enh', 'retired', 'resLinks', 'bgs', 'pq']);
+  'scn', 'chars', 'items', 'events', 'decks', 'enh', 'retired', 'resLinks', 'bgs', 'pq', 'mon']);
 
 // Counters that change by small steps (XP, gold, tokens, quest counts) are folded: a change of the same counter by the same user within
 // `windowMs` of an earlier entry is merged into it ("Sam: gold 42 to 47 (+5)"), and the entry is dropped when the counter ends where it began.
@@ -249,6 +250,7 @@ export function describeChange(a, b) {
   for (const k of keys(a.resLinks, b.resLinks)) {
     if (a.resLinks?.[k] !== b.resLinks?.[k]) add('Resources', 'Link', `${k.replace('|', ' / ')} ${b.resLinks?.[k] ? 'set' : 'cleared'}`);
   }
+  if (!same(a.mon, b.mon)) describeMonsters(monOf(a), monOf(b), add);
   for (const k of keys(a, b)) if (!HANDLED.has(k) && !same(a[k], b[k])) add('Overview', 'Other', `${k} changed`);
   return out;
 }
@@ -274,4 +276,35 @@ function describeEvents(a, b, rec, add) {
   }
   for (const k of keys(a.marks, b.marks)) if (!same(a.marks?.[k], b.marks?.[k])) add('Events', 'Event box', `${k}: ticked boxes ${fmt(a.marks?.[k] || [])} to ${fmt(b.marks?.[k] || [])}`);
   for (const k of keys(a.notes, b.notes)) if (a.notes?.[k] !== b.notes?.[k]) add('Events', 'Event note', `${k}: note ${b.notes?.[k] ? 'edited' : 'removed'}`);
+}
+
+// Monsters tab: level, round, types, ability decks (cards drawn, discarded, returned, shuffles), the modifier decks (cards drawn,
+// bless and curse, edits, imbuement).
+function describeMonsters(a, b, add) {
+  const name = id => monsterById(id)?.title.replace(/\b\w/g, ch => ch.toUpperCase()) || `#${id}`;
+  const deckName = slug => slug.replace(/-/g, ' ').replace(/\b\w/g, ch => ch.toUpperCase());
+  if (a.lvl !== b.lvl) add('Monsters', 'Level', `Monster level ${a.lvl ?? 'auto'} to ${b.lvl ?? 'auto'}`);
+  if (a.round !== b.round) add('Monsters', 'Round', `Round ${a.round} to ${b.round}`);
+  const t = diffList(a.types, b.types);
+  t.add.forEach(id => add('Monsters', 'Monster type', `Added ${name(id)}`));
+  t.del.forEach(id => add('Monsters', 'Monster type', `Removed ${name(id)}`));
+  for (const slug of keys(a.decks, b.decks)) {
+    const x = deckState(a, slug), y = deckState(b, slug), card = n => `card ${n} (initiative ${deckCard(slug, n)?.init ?? '?'})`;
+    if (!b.decks[slug] && a.decks[slug]) { add('Monsters', 'Ability deck', `${deckName(slug)}: deck shuffled`); continue; }
+    y.active.filter(n => !x.active.includes(n)).forEach(n => add('Monsters', 'Ability deck', `${deckName(slug)}: drew ${card(n)}`));
+    y.deck.filter(n => !x.deck.includes(n)).forEach(n => add('Monsters', 'Ability deck', `${deckName(slug)}: ${card(n)} back to the deck`));
+    y.discard.filter(n => !x.discard.includes(n) && !x.active.includes(n)).forEach(n => add('Monsters', 'Ability deck', `${deckName(slug)}: ${card(n)} discarded`));
+  }
+  for (const g of ['m', 'a']) {
+    const sa = a.am[g] || {}, sb = b.am[g] || {};
+    if (same(sa, sb)) continue;
+    const deck = g === 'm' ? 'Monster modifier deck' : 'Ally modifier deck';
+    const da = drawState(amOwner(g, sa), sa), db = drawState(amOwner(g, sb), sb);
+    const drawn = db.tiles.filter(tb => tb.d > (da.tiles.find(ta => ta.key === tb.key)?.d || 0)).map(x => x.face);
+    if ((sa.imb || 0) !== (sb.imb || 0)) add('Monsters', 'Modifier deck', `${deck}: imbuement ${sa.imb || 0} to ${sb.imb || 0}`);
+    else if (drawn.length) add('Monsters', 'Modifier deck', `${deck}: drew ${drawn.join(', ')} (${db.total} left)`);
+    else if (db.disc === 0 && da.disc > 0) add('Monsters', 'Modifier deck', `${deck}: shuffled`);
+    else for (const s of ['bless', 'curse']) if ((sa[s] || 0) !== (sb[s] || 0)) add('Monsters', 'Modifier deck', `${deck}: ${s} cards ${sa[s] || 0} to ${sb[s] || 0}`);
+    if (!same(sa.adj, sb.adj)) add('Monsters', 'Modifier deck', `${deck}: cards edited (${db.total} in the deck)`);
+  }
 }

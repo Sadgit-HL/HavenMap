@@ -9,7 +9,8 @@ import { SCN_STATE, availableSet, CARD_ZONES, zoneOf, handList, cardLevel, owned
 import { CARDS } from '../games/gh2_cards.js';
 import { SPECIAL_TRAITS } from './traits.js';
 import { tokenDefs, markerTokens, MARK_STICKERS } from './classTokens.js';
-import { perkList } from './amdDeck.js';
+import { perkList, amdAct, amOwner, drawState } from './amdDeck.js';
+import { MON_MAX, monOf, monsterById, deckCards, deckState, deckNeedsShuffle, monSlugs } from './monsters.js';
 import { MASTERIES } from '../games/masteries.js';
 import { BATTLE_GOALS } from '../games/battle_goals.js';
 import { PERSONAL_QUESTS } from '../games/gh2_quests.js';
@@ -905,4 +906,79 @@ export function setMarkPrice(r, cid, key, price) {
   if (!c || !/^c:\d+$/.test(key) || (raw !== '' && (p === null || p < 0))) return r;
   if ((c.mp?.[key] ?? null) === (p === null ? null : Math.min(p, 9999))) return r;
   return edit(r, x => { const ch = x.chars.find(y => y.id === cid); ch.mp = ch.mp || {}; if (p === null) delete ch.mp[key]; else ch.mp[key] = Math.min(p, 9999); });
+}
+
+// --- Monsters tab (scripts/campaign/monsters.js): level, round, monster types, ability decks, the monster and ally modifier decks ---------
+
+const monEdit = (r, fn) => edit(r, x => { x.mon = structuredClone(monOf(x)); fn(x.mon); });
+// Level 0..7, or null for the scenario level of the party.
+export function monSetLevel(r, value) {
+  const n = value === null || value === '' ? null : toInt(value);
+  return monEdit(r, m => { m.lvl = n === null ? null : clamp(n, 0, 7); });
+}
+export function monAddType(r, id) {
+  const t = monsterById(id), cur = monOf(r);
+  if (!t || cur.types.includes(t.id) || cur.types.length >= MON_MAX) return r;
+  return monEdit(r, m => { m.types.push(t.id); });
+}
+// A removed type takes its ability deck state along, unless another chosen type shares the deck.
+export function monRemoveType(r, id) {
+  if (!monOf(r).types.includes(Number(id))) return r;
+  return monEdit(r, m => {
+    m.types = m.types.filter(x => x !== Number(id));
+    const keep = new Set(monSlugs(m));
+    for (const k of Object.keys(m.decks)) if (!keep.has(k)) delete m.decks[k];
+  });
+}
+// Ability deck: draw (deck to active), back (active or discard to the deck: undo a draw or a misclick), discard (active to discard), shuffle.
+export function monDeck(r, slug, kind, n) {
+  if (!deckCards(slug).length) return r;
+  const cur = deckState(monOf(r), slug), c = Number(n);
+  let next;
+  if (kind === 'draw') { if (!cur.deck.includes(c)) return r; next = { deck: cur.deck.filter(x => x !== c), active: [...cur.active, c], discard: cur.discard }; }
+  else if (kind === 'back') { if (!cur.active.includes(c) && !cur.discard.includes(c)) return r; next = { deck: [...cur.deck, c].sort((a, b) => a - b), active: cur.active.filter(x => x !== c), discard: cur.discard.filter(x => x !== c) }; }
+  else if (kind === 'discard') { if (!cur.active.includes(c)) return r; next = { deck: cur.deck, active: cur.active.filter(x => x !== c), discard: [...cur.discard, c] }; }
+  else if (kind === 'shuffle') next = null;
+  else return r;
+  const full = next && next.deck.length === deckCards(slug).length;
+  return monEdit(r, m => { if (next && !full) m.decks[slug] = next; else delete m.decks[slug]; });
+}
+// Modifier deck g ('m' monsters, 'a' allies): the actions of amdDeck.js amdAct (draw, ret, add, rem, shuffle, plus, minus, move).
+export function monAm(r, g, kind, key, opts = {}) {
+  if (g !== 'm' && g !== 'a') return r;
+  const st = monOf(r).am[g] || {}, next = amdAct(amOwner(g, st), st, kind, key, opts);
+  if (JSON.stringify(next) === JSON.stringify(st)) return r;
+  return monEdit(r, m => { m.am[g] = next; });
+}
+// Monster imbuement 0, 1 or 2 (changes the cards of the monster deck).
+export function monImbue(r, level) {
+  const n = toInt(level);
+  if (n === null) return r;
+  return monEdit(r, m => { m.am.m = { ...(m.am.m || {}), imb: clamp(n, 0, 2) }; });
+}
+// End of round: drawn ability cards go to the discard; a deck with a shuffle card drawn, or with nothing left to draw, is shuffled; a
+// modifier deck with x2 or Miss in its discard, or with nothing left to draw, is shuffled. The round counts up.
+export function monEndRound(r) {
+  return monEdit(r, m => {
+    for (const slug of Object.keys(m.decks)) {
+      const ds = deckState(m, slug);
+      if (deckNeedsShuffle(slug, ds)) delete m.decks[slug];
+      else if (ds.active.length) m.decks[slug] = { deck: ds.deck, active: [], discard: [...ds.discard, ...ds.active] };
+    }
+    for (const g of ['m', 'a']) {
+      const st = m.am[g];
+      if (!st) continue;
+      const d = drawState(amOwner(g, st), st);
+      if (d.pool === 0 || d.tiles.some(t => t.shuffle && t.d > 0)) m.am[g] = amdAct(amOwner(g, st), st, 'shuffle');
+    }
+    m.round = (m.round || 1) + 1;
+  });
+}
+// New scenario: round 1, every ability deck and modifier deck shuffled (bless and curse removed, placed cards back); the chosen types,
+// the level, the imbuement and the hand edits of the modifier decks stay.
+export function monNewScenario(r) {
+  return monEdit(r, m => {
+    m.round = 1; m.decks = {};
+    for (const g of ['m', 'a']) if (m.am[g]) { const { imb, adj } = m.am[g]; m.am[g] = { ...(imb ? { imb } : {}), ...(adj ? { adj } : {}) }; }
+  });
 }

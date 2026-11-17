@@ -45,7 +45,7 @@ function markPanel(c, S, esc, key, stickers = true) {
 export function amViewHtml(A, esc, edit) {
   const stack = (t, n, zone, sp) => {
     const layers = Math.max(1, Math.min(n, 4)), edges = Array.from({ length: layers - 1 }, (_, i) => `<span class="edge" style="left:${(layers - 1 - i) * 3}px;top:${-(layers - 1 - i) * 3}px"></span>`).join('');
-    const face = sp ? `<img src="${esc(t.img)}" alt="${esc(t.label)}" draggable="false">` : `<span class="amslot" data-keep data-amslot="${esc(t.key)}"></span>`;
+    const face = sp || t.img ? `<img src="${esc(t.img)}" alt="${esc(t.label ?? t.face)}" draggable="false">` : `<span class="amslot" data-keep data-amslot="${esc(t.key)}"></span>`;   // a picture: specials, and the monster and ally decks
     const ctl = edit && zone === 'deck' ? `<span class="stkctl"><button type="button" data-amact="${sp ? 'rem' : 'minus'}" data-key="${esc(t.key)}"${n < 1 ? ' disabled' : ''} aria-label="One less">-</button><output>${n}</output><button type="button" data-amact="${sp ? 'add' : 'plus'}" data-key="${esc(t.key)}"${sp && n >= t.max ? ' disabled' : ''} aria-label="One more">+</button></span>` : '';
     return `<div class="stk${n < 1 ? ' zero' : ''}" data-k="${esc(t.key)}" data-z="${zone}" draggable="${!edit}" title="${esc(t.face)}${n > 1 ? ` x${n}` : ''}">${edges}<span class="stkface">${face}</span>${n > 1 && !edit ? `<span class="nb">${n}</span>` : ''}${ctl}</div>`;
   };

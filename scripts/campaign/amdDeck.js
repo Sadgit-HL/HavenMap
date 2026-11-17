@@ -19,13 +19,34 @@ export const AM_SPECIAL = [
   { key: 'curse', label: 'Curse', face: 'C', max: 10, img: imageFile('images/common/attack_mods/hero/curse', '../') },
 ];
 
+// The monster deck and the ally deck (Monsters tab, scripts/campaign/monsters.js): whole-card pictures, no class and no perks. The
+// monster deck can be imbued (level 2 includes level 1), as in the map app (scripts/attackMods.js). An owner object
+// { group: 'm' | 'a', imb } stands in for the character in deckOf, drawState and amdAct.
+const amPic = k => imageFile(`images/common/attack_mods/${k}`, '../');
+const STD_PIC = { p0: 'plus0', p1: 'plus1', m1: 'minus1', p2: 'plus2', m2: 'minus2', x2: 'x2', miss: 'miss' };
+const IMBUE_CARDS = [
+  { key: 'i2m', face: '+2 Muddle', value: '+2', pic: 'plus2muddle' }, { key: 'i0p', face: '+0 Poison', value: '+0', pic: 'plus0poison' },
+  { key: 'i3', face: '+3', value: '+3', pic: 'plus3' }, { key: 'i1h', face: '+1 Heal1', value: '+1', pic: 'plus1heal1' },
+  { key: 'i1c', face: '+1 Curse', value: '+1', pic: 'plus1curse' }, { key: 'i0w', face: '+0 Wound', value: '+0', pic: 'plus0wound' },
+];
+export const IMBUE = { 1: { m1: -3, p1: 3, i2m: 1, i0p: 1 }, 2: { m2: -1, p0: -2, i3: 1, i1h: 2, i1c: 1, i0w: 1 } };
+const groupCatalog = g => [
+  ...AM_STANDARD.map(t => ({ ...t, img: amPic(`${g === 'a' ? 'ally' : 'monster'}/${STD_PIC[t.key]}`) })),
+  ...(g === 'm' ? IMBUE_CARDS.map(t => ({ key: t.key, face: t.face, value: t.value, count: 0, shuffle: false, extra: true, img: amPic(`imbuement/${t.pic}`) })) : []),
+];
+const groupSpecial = g => AM_SPECIAL.map(s => (g === 'm' ? { ...s, img: amPic(`monster/${s.key}`) } : s));
+export const amOwner = (g, st = {}) => ({ group: g === 'a' ? 'a' : 'm', imb: g === 'a' ? 0 : Math.max(0, Math.min(2, st.imb || 0)) });
+const catalogOf = c => (c.group ? groupCatalog(c.group) : heroCatalog(c.cls, AM_STANDARD));
+const specialOf = c => (c.group ? groupSpecial(c.group) : AM_SPECIAL);
+
 export const perkList = cls => (heroPerkClass(cls)?.perks || []).map((p, index) => ({ ...p, index, boxes: perkBoxes(p), label: perkLabel(p) }));
 
 // Cards of the class, each with the count in the full deck: [{ key, face, card, rolling, extra, base }] (base 0 = not in the deck).
 export function deckOf(c, adj = {}) {
-  const catalog = heroCatalog(c.cls, AM_STANDARD), perks = perkList(c.cls);
+  const catalog = catalogOf(c), perks = c.group ? [] : perkList(c.cls);
   const counts = Object.fromEntries(catalog.map(t => [t.key, t.extra ? 0 : t.count]));
   for (const i of c.pk?.perks || []) if (perks[i]) for (const [k, n] of Object.entries(perkDelta(perks[i]))) counts[k] = (counts[k] || 0) + n;
+  for (let l = 1; l <= (c.imb || 0); l++) for (const [k, n] of Object.entries(IMBUE[l])) counts[k] = (counts[k] || 0) + n;
   return catalog.map(t => ({ ...t, base: Math.max(0, (counts[t.key] || 0) + (adj?.[t.key] || 0)) })).filter(t => t.base > 0);
 }
 
@@ -45,7 +66,7 @@ export function drawState(c, st = {}) {
     total += n; disc += d;
     tiles.push({ ...t, n, d });
   }
-  const specials = AM_SPECIAL.map(s => ({ ...s, c: Math.max(0, Math.min(s.max, st[s.key] || 0)) })).map(s => ({ ...s, n: Math.max(0, s.c - (placed[s.key] || 0)) }));
+  const specials = specialOf(c).map(s => ({ ...s, c: Math.max(0, Math.min(s.max, st[s.key] || 0)) })).map(s => ({ ...s, n: Math.max(0, s.c - (placed[s.key] || 0)) }));
   for (const s of specials) { for (let i = 0; i < s.n; i++) faces.push(s.face); total += s.n; }
   // the discard, most recent first: pile = [tile...] one entry per card, top = the tile of the last discarded card
   const left = Object.fromEntries(tiles.map(t => [t.key, t.d])), byK = new Map(tiles.map(t => [t.key, t])), pile = [];
@@ -58,7 +79,7 @@ export function drawState(c, st = {}) {
   const pool = total;
   total += lists.top.length + lists.bot.length;
   const have = new Set(tiles.map(t => t.key)), std = new Set(AM_STANDARD.map(t => t.key));
-  const missing = heroCatalog(c.cls, AM_STANDARD).filter(t => std.has(t.key) && !have.has(t.key));
+  const missing = catalogOf(c).filter(t => (c.group || std.has(t.key)) && !have.has(t.key));   // edit mode lists them (monsters: the imbuement cards too)
   return { tiles, specials, missing, pile, top: pile[0] || null, topList: lists.top, botList: lists.bot, actList: lists.act, pool, faces, total, disc };
 }
 

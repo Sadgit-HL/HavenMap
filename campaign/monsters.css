@@ -1,0 +1,90 @@
+/* Monsters tab (campaign/monstersView.js): the felt of the playmat, a bar with level, round and End of round, the modifier deck band
+   (the playmat's Modifiers view in a box of fixed height, so its container-unit layout applies as on the playmat), and a grid of up to
+   eight monster panels (stat card, drawn ability card, the eight cards of the deck). The root is .pm.mon, so the playmat's styles apply. */
+.pm.mon { display:flex; flex-direction:column; gap:12px; padding:12px; border-radius:12px; min-height:calc(100vh - 90px); background:radial-gradient(ellipse at 50% 30%, #2b3a2c 0%, #1a2519 70%, #121a12 100%); }
+
+/* ---- bar ---- */
+.pm.mon .monbar { display:flex; flex-wrap:wrap; align-items:center; gap:10px 22px; padding:8px 12px; border:1px solid var(--line); border-radius:12px; background:linear-gradient(180deg, #2a2219, #211b15); box-shadow:0 4px 14px rgba(0,0,0,.35); }
+.pm.mon .monfield { display:inline-flex; align-items:center; gap:8px; }
+.pm.mon .lab { font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.pm.mon .sp { display:inline-flex; align-items:stretch; height:36px; border:1px solid #4a3d28; border-radius:9px; overflow:hidden; background:#2d2519; }
+.pm.mon .sp b { min-width:38px; display:flex; align-items:center; justify-content:center; padding:0 6px; font-size:18px; font-variant-numeric:tabular-nums; }
+.pm.mon .spc { display:flex; flex-direction:column; border-left:1px solid #4a3d28; }
+.pm.mon .spc button { flex:1; width:28px; padding:0; border:0; background:transparent; color:var(--muted); cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.pm.mon .spc button:hover:not(:disabled) { background:#3a2f1e; color:var(--text); }
+.pm.mon .spc button:disabled { opacity:.3; cursor:default; }
+.pm.mon .monround { min-width:30px; text-align:center; font-size:18px; font-variant-numeric:tabular-nums; }
+.pm.mon .monacts { margin-left:auto; display:flex; gap:8px; }
+.pm.mon .btn6 { min-height:32px; padding:0 12px; }
+.pm.mon .btn6:hover:not(:disabled) { border-color:var(--accent); color:var(--accent); }
+.pm.mon .btn6.monend { border-color:#a98d42; background:linear-gradient(180deg, #a68a3d, #85702e); color:#1b150c; font-weight:700; }
+.pm.mon .btn6.monend:hover { color:#1b150c; background:linear-gradient(180deg, #b79a47, #92793a); }
+
+/* ---- modifier deck band ---- */
+.pm.mon .monam { padding:8px 10px 10px; border:1px solid var(--line); border-radius:12px; background:rgba(18,15,11,.45); }
+.pm.mon .monamhd { display:flex; flex-wrap:wrap; align-items:center; gap:8px 16px; margin-bottom:8px; }
+.pm.mon .tog { display:inline-flex; overflow:hidden; border:1px solid var(--line); border-radius:9px; background:#2d2519; }
+.pm.mon .tog button { padding:5px 14px; border:0; background:transparent; color:var(--text); font:inherit; font-size:12px; cursor:pointer; }
+.pm.mon .tog button[aria-pressed="true"] { background:var(--accent); color:#120f0b; font-weight:700; }
+html.phone .pm.mon .tog button { padding:9px 16px; }
+.pm.mon .monimb { display:inline-flex; align-items:center; gap:8px; }
+.pm.mon .monamv { position:relative; height:clamp(300px, 44vh, 460px); }
+.pm.mon .monamv .amv { top:0; left:0; right:0; bottom:0; }
+.pm.mon .amv .discarea { cursor:default; }
+
+/* ---- monster panels ---- */
+.pm.mon .mongrid { display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 290px), 1fr)); gap:12px; align-items:start; }
+.pm.mon .mpanel { display:flex; flex-direction:column; gap:8px; min-width:0; padding:10px; border:1px solid var(--line); border-radius:12px; background:linear-gradient(180deg, #2a2219, #211b15); box-shadow:0 4px 14px rgba(0,0,0,.4); }
+.pm.mon .mpanel.boss { border-color:rgba(199,164,74,.6); }
+.pm.mon .mhd { display:flex; align-items:center; gap:8px; min-width:0; }
+.pm.mon .mhd h3 { margin:0; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:15px; }
+.pm.mon .mcount { color:var(--muted); font-size:12px; font-variant-numeric:tabular-nums; }
+.pm.mon .mshared { padding:0 7px; border:1px solid rgba(199,164,74,.4); border-radius:999px; color:var(--accent); font-size:11px; white-space:nowrap; }
+.pm.mon .mdot { flex:none; width:8px; height:8px; border-radius:50%; background:var(--accent); }
+.pm.mon .mtools { margin-left:auto; display:flex; gap:4px; flex:none; }
+.pm.mon .mtools .btn6 { width:32px; height:32px; min-height:0; padding:0; justify-content:center; }
+.pm.mon .mtools .btn6:disabled { opacity:.4; cursor:default; }
+.pm.mon .mstat img { display:block; width:100%; border-radius:6px; box-shadow:0 2px 8px rgba(0,0,0,.5); }
+.pm.mon .mact { display:flex; gap:8px; }
+.pm.mon .mab { position:relative; padding:0; overflow:hidden; border:1px solid var(--line); border-radius:8px; background:#120f0b; aspect-ratio:600 / 400; -webkit-touch-callout:none; user-select:none; }
+.pm.mon .mab img { display:block; width:100%; height:100%; object-fit:cover; pointer-events:none; }
+.pm.mon .mab.big { flex:1 1 0; min-width:0; box-shadow:0 4px 12px rgba(0,0,0,.55); }
+.pm.mon .mab.big.back { display:flex; align-items:center; justify-content:center; outline:2px solid var(--accent); outline-offset:-7px; background:radial-gradient(circle at 50% 40%, #4a3a22 0%, #2a2014 70%); color:var(--accent); font-size:26px; font-weight:700; }
+.pm.mon .mini6 { position:absolute; left:4px; top:4px; padding:0 6px; border-radius:9px; background:rgba(18,15,11,.85); color:var(--accent); font-size:11px; font-weight:800; }
+.pm.mon .mini6.s::after { content:' \21BB'; }
+.pm.mon .mdisc { position:absolute; right:5px; bottom:5px; width:30px; height:30px; display:flex; align-items:center; justify-content:center; border:1px solid var(--line); border-radius:15px; background:rgba(18,15,11,.88); color:var(--text); cursor:pointer; }
+.pm.mon .mdisc:hover { border-color:var(--accent); color:var(--accent); }
+.pm.mon .mrow { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:5px; }
+.pm.mon .mab.sm { cursor:pointer; }
+.pm.mon .mab.sm:hover { border-color:var(--accent); }
+.pm.mon .mab.sm.active { outline:2px solid var(--accent); outline-offset:1px; }
+.pm.mon .mab.sm.discard { opacity:.3; filter:grayscale(.6); }
+.pm.mon .madd { align-items:center; justify-content:center; min-height:180px; border-style:dashed; background:rgba(18,15,11,.35); box-shadow:none; }
+.pm.mon .madd label { display:flex; flex-direction:column; align-items:center; gap:8px; }
+.pm.mon .madd select { height:36px; max-width:100%; padding:0 10px; border:1px solid var(--line); border-radius:8px; background:#2d2519; color:var(--text); font:inherit; }
+
+/* ---- phone (html.phone, campaign/touch.css): the modifier deck stacked as in the phone view, one panel a row ---- */
+html.phone .pm.mon { gap:10px; padding:8px; border-radius:0; min-height:0; }
+@media (max-width: 700px) {
+  html.phone .pm.mon .monacts { margin-left:0; width:100%; }
+  html.phone .pm.mon .monacts .btn6 { flex:1; min-height:40px; justify-content:center; }
+  html.phone .pm.mon .spc button { width:36px; }
+  html.phone .pm.mon .monamv { height:auto; }
+  html.phone .pm.mon .amv { position:static; container-type:inline-size; display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1fr); grid-template-rows:none; gap:10px; inset:auto; }
+  html.phone .pm.mon .amv .amside { display:contents; }
+  html.phone .pm.mon .amv .amctl { grid-column:1 / -1; order:1; display:grid; grid-template-columns:minmax(0, 1fr) 52px 52px; gap:8px; height:56px; flex:none; }
+  html.phone .pm.mon .amv .amtools { display:contents; }
+  html.phone .pm.mon .amv .amtools button { width:auto; height:auto; }
+  html.phone .pm.mon .amv .deckarea { grid-column:1 / -1; order:2; overflow:visible; padding:0; }
+  html.phone .pm.mon .amv .deckarea .stacks { --stkw:calc((100cqw - 66px) / 4); overflow:visible; flex:none; padding:12px 6px 4px 4px; gap:14px; }
+  html.phone .pm.mon .amv .amrow { flex-direction:column; gap:6px; }
+  html.phone .pm.mon .amv .amrow .amstrip { flex:none; --striph:56px; }
+  html.phone .pm.mon .amv .amside .discarea { order:3; min-height:120px; --stkw:min(110px, calc(50cqw - 40px)); overflow:visible; padding:8px; }
+  html.phone .pm.mon .amv .amside .amactive { order:4; --striph:120px; height:auto; min-height:120px; flex-direction:column; align-items:stretch; }
+}
+html.phone .pm.mon .mtools .btn6 { width:38px; height:38px; }
+html.phone .pm.mon .mrow { gap:6px; }
+html.phone .pm.mon .amv .amhd { min-width:0; }
+html.phone .pm.mon .amv .amstats { flex:1 1 100%; min-width:0; flex-wrap:wrap; }
+@media (max-height: 500px) { html.phone .pm.mon .monamv { height:300px; } }
+html.phone .pm.mon .mongrid, html.phone .pm.mon .monam { min-width:0; }

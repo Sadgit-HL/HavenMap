@@ -19,8 +19,10 @@ import { morphInto } from './morph.js';
 import { registerMenu, openMenuFor } from './ctxmenu.js';
 import { ask, notify } from './dialog.js';
 import { phoneHtml } from './phone.js';
+import { monstersHtml } from './monstersView.js';
+import { monOf, deckState as monDeckState } from '../scripts/campaign/monsters.js';
 import {
-  normalize, validate, prosperityLevel, handOf, handList, zoneOf, CARD_ZONES, shopCopies, itemsInUse, ownsItem, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE, ownedCards, cardLevel, pendingPicks,
+  normalize, validate, prosperityLevel, scenarioLevel, handOf, handList, zoneOf, CARD_ZONES, shopCopies, itemsInUse, ownsItem, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE, ownedCards, cardLevel, pendingPicks,
 } from '../scripts/campaign/record.js';
 import * as ed from '../scripts/campaign/edit.js';
 import { describeChange, foldLog, LOG_TABS, LOG_MAX } from '../scripts/campaign/changelog.js';
@@ -44,7 +46,7 @@ import { characterTraits } from '../scripts/campaign/outcomes.js';
 import { SPECIAL_TRAITS, specialName } from '../scripts/campaign/traits.js';
 import { eventsHtml, evInit, evClick, evChange, evSubmit, evOutside, evDragStart, evDragOver, evDrop, evDragEnd } from './eventsView.js?v=39';
 
-const PAGE_TABS = ['Overview', 'Mercenaries', 'Items', 'Events', 'Scenarios', 'Resources', 'Cards', 'History'];
+const PAGE_TABS = ['Overview', 'Mercenaries', 'Monsters', 'Items', 'Events', 'Scenarios', 'Resources', 'Cards', 'History'];
 const main = document.getElementById('main');
 const tabsEl = document.getElementById('tabs');
 const undoBtn = document.getElementById('undo');
@@ -1431,16 +1433,16 @@ function render() {
   }
   const flowPage = tab === 'Scenarios' && view.scnView === 'flow';
   if (!flowPage) view.flowFull = false;
-  main.classList.toggle('wide', flowPage || (tab === 'Mercenaries' && currentSub() !== 'add'));                // the flowchart may use the whole window width
+  main.classList.toggle('wide', flowPage || tab === 'Monsters' || (tab === 'Mercenaries' && currentSub() !== 'add'));                // the flowchart may use the whole window width
   document.body.classList.toggle('noscroll', !!view.flowFull);
   editing = tab === 'Overview' || tab === 'Mercenaries' ? false : editPages.has(tab);
   saveView();
   const issues = validate(record);
   // The Items and Events pages carry their own pencil button (in the filter row / tab row). Scenarios has no page-wide
   // edit mode at all: every row (table or flowchart) opens the scenario modal, which carries its own pencil button.
-  const noPagebar = tab === 'Overview' || tab === 'Items' || tab === 'Events' || tab === 'Cards' || tab === 'Scenarios' || tab === 'Resources' || tab === 'History' || tab === 'Mercenaries';   // the Mercenaries tab is the playmat: no page pencil
+  const noPagebar = tab === 'Monsters' || tab === 'Overview' || tab === 'Items' || tab === 'Events' || tab === 'Cards' || tab === 'Scenarios' || tab === 'Resources' || tab === 'History' || tab === 'Mercenaries';   // the Mercenaries tab is the playmat: no page pencil
   const pagebar = noPagebar ? '' : `<div class="pagebar"><button type="button" class="editbtn editicon" data-pageedit aria-pressed="${editing}" aria-label="${editing ? 'Stop editing this page' : `Edit ${esc(tab.toLowerCase())}`}" title="${editing ? 'Stop editing this page' : `Edit ${esc(tab.toLowerCase())}`}">${PENCIL}</button></div>`;
-  const body = { Overview: overview, Scenarios: scenarios, Mercenaries: mercenaries, Items: items, Events: events, Cards: cardsPage, Resources: resources, History: historyPage }[tab](record);
+  const body = { Overview: overview, Scenarios: scenarios, Mercenaries: mercenaries, Monsters: r => monstersHtml(r, monView, esc), Items: items, Events: events, Cards: cardsPage, Resources: resources, History: historyPage }[tab](record);
   renderModal();
   checkModals.forEach(m => m.render());
   renderPlModal();
@@ -1657,7 +1659,7 @@ main.addEventListener('click', e => {
 // --- card preview: one floating picture for every tab (campaign/preview.js) ---
 const coarse = matchMedia('(pointer: coarse)');
 // Playmat cards with a preview, and the cards whose long press opens the context menu (which has Zoom) instead of pinning.
-const PM_PREVIEW = '.pp .ac[data-card], .pm .fan6 .ac, .pm .activelist .ac, .pm .flipcard.is-front, .pm .shelf6 .it, .pm .amv .stk, .pm .amv .mini, .pm .pilelist .pcell, .pm .mmodal .pcard, .pm .am-perk-cards .pc';
+const PM_PREVIEW = '.mon .mab:not(.back), .mon .mstat, .pp .ac[data-card], .pm .fan6 .ac, .pm .activelist .ac, .pm .flipcard.is-front, .pm .shelf6 .it, .pm .amv .stk, .pm .amv .mini, .pm .pilelist .pcell, .pm .mmodal .pcard, .pm .am-perk-cards .pc';
 const MENU_CARDS = '.pm .fan6 .ac, .pm .activelist .ac, .pm .flipcard, .pm .it, .pm .pilelist .pcell[data-pcard]';
 const cardPreview = createPreview({
   selector: `[data-img], [data-amzoom], ${PM_PREVIEW}`,
@@ -2220,6 +2222,58 @@ main.addEventListener('click', e => {
   if (hc && !q('.rec, .tk') && hc.dataset.pcard) { e.stopImmediatePropagation(); hidePreview(); commit(ed.moveCard(record, c.id, Number(hc.dataset.pcard), 'hand')); return; }
 }, true);
 
+// A button with a roll code (data-code): copy it; the icon (and the label of the big roll button) turns into a checkmark for a moment.
+function copyCodeButton(cp) {
+  (navigator.clipboard ? navigator.clipboard.writeText(cp.dataset.code) : Promise.reject()).catch(() => {});
+  if (cp.classList.contains('amcode')) {
+    const lb = cp.querySelector('.lbl'), ic = cp.querySelector('svg'), old = lb.textContent, oldIc = ic.outerHTML;
+    ic.outerHTML = '<svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor" aria-hidden="true"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';   // the same checkmark as the other roll buttons
+    cp.classList.add('copied'); lb.textContent = 'Copied';
+    setTimeout(() => { cp.classList.remove('copied'); lb.textContent = old; cp.querySelector('svg').outerHTML = oldIc; }, 1500);
+    return;
+  }
+  const old = cp.innerHTML;
+  cp.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
+  setTimeout(() => { cp.innerHTML = old; }, 900);
+}
+
+// Monsters tab (campaign/monstersView.js): every click inside it is handled here and goes no further, so the playmat's handlers (which act
+// on the selected character) never see it. Which modifier deck is shown and its edit mode are kept while the page is open.
+const monView = { amg: 'm', amEdit: false };
+main.addEventListener('click', async e => {
+  const q = s => e.target.closest?.(s);
+  if (!q('.mon') || !record) return;
+  e.stopImmediatePropagation();
+  const g = monView.amg === 'a' ? 'a' : 'm', d = sel => q(sel)?.dataset;
+  if (q('[data-monlv]')) { const m = monOf(record); commit(ed.monSetLevel(record, (m.lvl ?? scenarioLevel(record.party)) + Number(d('[data-monlv]').monlv))); return; }
+  if (q('[data-monlvauto]')) { commit(ed.monSetLevel(record, null)); return; }
+  if (q('[data-monend]')) { commit(ed.monEndRound(record)); return; }
+  if (q('[data-monnew]')) { if (await ask({ title: 'New scenario', text: 'Shuffle every ability deck and both modifier decks and start at round 1?', ok: 'Start' })) commit(ed.monNewScenario(record)); return; }
+  if (q('[data-monamg]')) { monView.amg = d('[data-monamg]').monamg === 'a' ? 'a' : 'm'; monView.amEdit = false; render(); return; }
+  if (q('[data-monimb]')) { commit(ed.monImbue(record, Number(d('[data-monimb]').monimb))); return; }
+  if (q('[data-mremove]')) { commit(ed.monRemoveType(record, Number(d('[data-mremove]').mremove))); return; }
+  if (q('[data-mshuffle]')) { commit(ed.monDeck(record, d('[data-mshuffle]').mshuffle, 'shuffle')); return; }
+  if (q('[data-code]')) { copyCodeButton(q('[data-code]')); return; }
+  if (q('[data-mcode]')) { const b = q('[data-mcode]'); if (!b.disabled) copyRollerCode(b, b.dataset.mcode); return; }
+  if (q('[data-mdisc]')) { const x = d('[data-mdisc]'); commit(ed.monDeck(record, x.mslug, 'discard', Number(x.mdisc))); return; }
+  const card = q('.mab[data-mcard]');
+  if (card) { const n = Number(card.dataset.mcard), slug = card.dataset.mslug; commit(ed.monDeck(record, slug, monDeckState(monOf(record), slug).deck.includes(n) ? 'draw' : 'back', n)); return; }
+  if (q('.amv [data-amedit]')) { monView.amEdit = !monView.amEdit; render(); return; }
+  const amb = q('.amv button[data-amact]');
+  if (amb) { if (!amb.disabled) commit(ed.monAm(record, g, amb.dataset.amact, amb.dataset.key, amOpts(amb.dataset))); return; }
+  if (monView.amEdit) return;
+  const stk = q('.amv .stk[data-k][data-z="deck"]');
+  if (stk && !q('.stkctl')) { commit(ed.monAm(record, g, 'draw', stk.dataset.k)); return; }
+  const mini = q('.amv .mini[data-k]');
+  if (mini) { commit(ed.monAm(record, g, 'move', mini.dataset.k, { from: mini.dataset.z, to: 'disc', idx: Number(mini.dataset.i) })); return; }
+}, true);
+main.addEventListener('change', e => {
+  const sel = e.target.closest?.('.mon [data-monadd]');
+  if (!sel || !sel.value) return;
+  e.stopImmediatePropagation();
+  commit(ed.monAddType(record, Number(sel.value)));
+}, true);
+
 // Attack modifier deck action: changes the session state and writes a history line (the deck state is not part of the record, so the line is added directly).
 function addLog(tabName, kind, d) {
   const e = { t: Date.now(), u: userName(), tab: tabName, kind, d };
@@ -2292,21 +2346,7 @@ main.addEventListener('click', e => {
   const jc = pmChar();
   if (jc && journalClick(e, jc)) return;
   const cp = e.target.closest?.('[data-code]');
-  if (cp?.classList.contains('amcode')) {                                   // the big roll code button: label turns into Copied
-    (navigator.clipboard ? navigator.clipboard.writeText(cp.dataset.code) : Promise.reject()).catch(() => {});
-    const lb = cp.querySelector('.lbl'), ic = cp.querySelector('svg'), old = lb.textContent, oldIc = ic.outerHTML;
-    ic.outerHTML = '<svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor" aria-hidden="true"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';   // the same checkmark as the other roll buttons
-    cp.classList.add('copied'); lb.textContent = 'Copied';
-    setTimeout(() => { cp.classList.remove('copied'); lb.textContent = old; cp.querySelector('svg').outerHTML = oldIc; }, 1500);
-    return;
-  }
-  if (cp) {
-    (navigator.clipboard ? navigator.clipboard.writeText(cp.dataset.code) : Promise.reject()).catch(() => {});
-    const old = cp.innerHTML;
-    cp.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
-    setTimeout(() => { cp.innerHTML = old; }, 900);
-    return;
-  }
+  if (cp) { copyCodeButton(cp); return; }
   const bt = e.target.closest?.('[data-bnr]');
   if (bt) {
     (navigator.clipboard ? navigator.clipboard.writeText(bannerCode(bt.dataset.bnr)) : Promise.reject()).catch(() => {});
@@ -2682,7 +2722,7 @@ document.getElementById('clear').addEventListener('click', async () => {
   const dragOf = st => { const mini = st.classList.contains('mini'); return { k: st.dataset.k, from: mini ? st.dataset.z : ZONE[st.dataset.z], idx: mini ? Number(st.dataset.i) : undefined }; };
   main.addEventListener('dragstart', e => {
     const st = e.target.closest?.('.amv .stk[data-k], .amv .mini[data-k]');
-    if (!st || pm.amEdit) return;
+    if (!st || st.closest('.amv.editing')) return;
     drag = dragOf(st);
     // the drag image is one card painted onto a canvas from the layer images already on screen (a cloned element can come out as a black silhouette)
     const face = st.querySelector('.stkface'), fr = face?.getBoundingClientRect();
@@ -2713,14 +2753,15 @@ document.getElementById('clear').addEventListener('click', async () => {
   });
   // one drop for the mouse and for touch: the zone, the place among the stack when dropped on a card of the same list
   const doDrop = (a, x, target) => {
-    const c = pmChar();
+    const c = pmChar(), g = a?.closest?.('[data-amg]')?.dataset.amg;     // g: the monster or ally deck of the Monsters tab
     clear();
-    if (!c || !ok(a)) { drag = null; return; }
+    if ((!c && !g) || !ok(a)) { drag = null; return; }
     const to = ZONE[a.dataset.amdrop], m = target?.closest?.('.amv .mini');
     let at;
     if (m && m.dataset.z === to) { const r = m.getBoundingClientRect(); at = Number(m.dataset.i) + (x > r.left + r.width / 2 ? 1 : 0); }
     const d = drag; drag = null;
-    amdDo(c, 'move', d.k, { from: d.from, to, idx: d.idx, at });
+    if (g) commit(ed.monAm(record, g, 'move', d.k, { from: d.from, to, idx: d.idx, at }));
+    else amdDo(c, 'move', d.k, { from: d.from, to, idx: d.idx, at });
   };
   main.addEventListener('drop', e => {
     const a = zoneOf(e);
@@ -2732,7 +2773,7 @@ document.getElementById('clear').addEventListener('click', async () => {
   let t = null;
   const zoneAt = (x, y) => document.elementFromPoint(x, y)?.closest?.('.amv [data-amdrop]');
   main.addEventListener('pointerdown', e => {
-    if (e.pointerType === 'mouse' || e.button || pm.modal || pm.amEdit || e.target.closest('button')) return;   // the phone too: hold and move a modifier card (holding still shows the preview)
+    if (e.pointerType === 'mouse' || e.button || pm.modal || e.target.closest('button, .amv.editing')) return;   // the phone too: hold and move a modifier card (holding still shows the preview)
     const st = e.target.closest?.('.amv .stk[data-k], .amv .mini[data-k]');
     if (!st) return;
     t = { st, x: e.clientX, y: e.clientY, id: e.pointerId, ghost: null, armed: false };

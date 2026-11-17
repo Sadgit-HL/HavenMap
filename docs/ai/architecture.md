@@ -8,9 +8,9 @@
 | `scripts/state.js` | map state, `mapVersion` 5.0.0, migration chain, URL hash codec |
 | `scripts/attackMods.js`, `scripts/decks.js` | attack modifier decks and the deck panel |
 | `scripts/amd/` | app-agnostic card rendering and hero deck model (see `hero-decks.md`) |
-| `scripts/campaign/` | campaign logic, no DOM: `record.js`, `edit.js`, `events.js`, `outcomes.js`, `flow.js`, `amdDeck.js`, `changelog.js`, `store.js`, `classMap.js`, `classList.js`, `classTokens.js`, `traits.js`, `cardImages.js`, `bggIcons.js`, `bggBanners.js` |
+| `scripts/campaign/` | campaign logic, no DOM: `record.js`, `edit.js`, `events.js`, `outcomes.js`, `flow.js`, `amdDeck.js`, `changelog.js`, `store.js`, `classMap.js`, `classList.js`, `classTokens.js`, `traits.js`, `cardImages.js`, `bggIcons.js`, `bggBanners.js`, `monsters.js` (Monsters tab), `sync.js` (shared campaign) |
 | `scripts/games/` | static tables. `gh2_*.js`, `battle_goals.js`, `masteries.js`, `perks.js` etc. are GENERATED (see `data-pipeline.md`) |
-| `campaign/` | the campaign page: `index.html`, `app.js` (the page), `playmat.js` and `playmat.css` (Mercenaries tab), `phone.js` and `phone.css` (phone view), `touch.css` (touch layout of all pages), `preview.js` (card preview), `eventsView.js`, `ctxmenu.js`, `morph.js`, `dialog.js`, `mockups/` (static design files) |
+| `campaign/` | the campaign page: `index.html`, `app.js` (the page), `playmat.js` and `playmat.css` (Mercenaries tab), `phone.js` and `phone.css` (phone view), `touch.css` (touch layout of all pages), `preview.js` (card preview), `monstersView.js` and `monsters.css` (Monsters tab), `eventsView.js`, `ctxmenu.js`, `morph.js`, `dialog.js`, `mockups/` (static design files) |
 | `perks/` | standalone perks viewer and the compose dev page |
 | `images/` | art. `images/common/` is shared; `images/gh2/` monster art; `images/events/` event artwork |
 | `tools/` | generators and art pipeline (Python, Node, one ExtendScript). `tools/merc-mockups/` generates mockups |
