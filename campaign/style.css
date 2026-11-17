@@ -627,6 +627,11 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); min-height: 420px; }
 .pm .amv .amcode.amdraw img { display: block; }
 .pm .amv .amrow { flex: none; display: flex; gap: 8px; }
 .pm .amv .amrow .amstrip { flex: 1 1 0; min-width: 0; }
+.pm .amv .amstats { flex: none; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; font-size: 12px; color: var(--muted); }
+.pm .amv .amstats .lab { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+.pm .amv .amstats b { font-weight: 600; color: inherit; }
+.pm .amv .amstats i { font-style: normal; opacity: .8; }
+.pm .amv .amstats .odd.zero { opacity: .45; }
 
 /* Hand editor */
 .pm .hbar [data-handedit] svg { display: block; pointer-events: none; }
