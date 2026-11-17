@@ -2239,7 +2239,7 @@ function copyCodeButton(cp) {
 
 // Monsters tab (campaign/monstersView.js): every click inside it is handled here and goes no further, so the playmat's handlers (which act
 // on the selected character) never see it. Which modifier deck is shown and its edit mode are kept while the page is open.
-const monView = { amg: 'm', amEdit: false };
+const monView = { amg: 'm', amEdit: false, amOpen: false };   // amOpen: the modifier dock shows the full deck view
 main.addEventListener('click', async e => {
   const q = s => e.target.closest?.(s);
   if (!q('.mon') || !record) return;
@@ -2258,6 +2258,9 @@ main.addEventListener('click', async e => {
   if (q('[data-mdisc]')) { const x = d('[data-mdisc]'); commit(ed.monDeck(record, x.mslug, 'discard', Number(x.mdisc))); return; }
   const card = q('.mab[data-mcard]');
   if (card) { const n = Number(card.dataset.mcard), slug = card.dataset.mslug; commit(ed.monDeck(record, slug, monDeckState(monOf(record), slug).deck.includes(n) ? 'draw' : 'back', n)); return; }
+  if (q('[data-monamopen]')) { const open = monView.amOpen || monView.amEdit; monView.amOpen = !open; if (open) monView.amEdit = false; render(); return; }
+  if (q('[data-mamdraw]')) { commit(ed.monAm(record, g, 'draw', d('[data-mamdraw]').mamdraw)); return; }
+  if (q('.monamhd [data-amact="shuffle"]')) { commit(ed.monAm(record, g, 'shuffle')); return; }
   if (q('.amv [data-amedit]')) { monView.amEdit = !monView.amEdit; render(); return; }
   const amb = q('.amv button[data-amact]');
   if (amb) { if (!amb.disabled) commit(ed.monAm(record, g, amb.dataset.amact, amb.dataset.key, amOpts(amb.dataset))); return; }
