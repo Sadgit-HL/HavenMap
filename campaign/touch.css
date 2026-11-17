@@ -65,6 +65,9 @@ button.mrow:active { background:rgba(199,164,74,.1); }
 /* ---- Item sheet ------------------------------------------------------------------------------------------------------------------ */
 .itemsheet .isbody { display:flex; gap:14px; align-items:flex-start; }
 .itemsheet .isbody img { width:42%; max-width:180px; border-radius:8px; flex:none; }
+.itemsheet .isbody:has(.ispair) { flex-wrap:wrap; }
+.itemsheet .ispair { display:flex; gap:8px; width:100%; }
+.itemsheet .ispair img { width:calc(50% - 4px); max-width:180px; }
 .itemsheet .isfacts { flex:1; min-width:0; font-size:14px; }
 .itemsheet .isfacts .kv { padding:5px 0; border-bottom:1px solid rgba(58,48,38,.75); }
 .itemsheet h4 { margin:16px 0 8px; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); }

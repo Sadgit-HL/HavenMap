@@ -2,7 +2,7 @@
 // passed in is never changed), so callers can keep history for undo and the server can later use `ver` for
 // optimistic locking. Invalid input is clamped or ignored, never thrown. Pure data logic, no DOM, no storage.
 import { SCENARIOS, STICKERS } from '../games/gh2_scenarios.js';
-import { ITEMS } from '../games/gh2_items.js';
+import { ITEMS } from './itemList.js';
 import { CLASSES } from '../games/gh2_classes.js';
 import { ALL_CLASSES } from './classList.js';
 import { SCN_STATE, availableSet, CARD_ZONES, zoneOf, handList, cardLevel, ownedCards, pendingPicks, classByName, SLOT_ORDER, itemFits, itemsInUse, ownsItem } from './record.js';

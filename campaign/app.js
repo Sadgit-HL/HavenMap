@@ -3,14 +3,14 @@ import { imageFile } from '../scripts/images.js';
 // record); every change is saved to the browser at once and can be undone. Session start/commit, voting and the
 // server come later (docs/campaign-schema.md section 10).
 import { CARDS } from '../scripts/games/gh2_cards.js';
-import { ITEMS } from '../scripts/games/gh2_items.js';
+import { ITEMS } from '../scripts/campaign/itemList.js';
 import { TREASURES } from '../scripts/games/gh2_treasures.js';
 import { SCENARIOS, STICKERS } from '../scripts/games/gh2_scenarios.js';
 import { BATTLE_GOALS } from '../scripts/games/battle_goals.js';
 import { escapeHtml as esc } from '../scripts/escape.js';
 import { localStore } from '../scripts/campaign/store.js';
 import { api, loadConn, saveConn, clearConn, loadCache, saveCache, parseInvite, inviteUrl, merge3, same } from '../scripts/campaign/sync.js';
-import { cardImageUrl, itemImageUrl, eventImageUrl, matImageUrl, pqImageUrl, cardBackUrl, battleGoalImageUrl, matSlugOf } from '../scripts/campaign/cardImages.js';
+import { cardImageUrl, itemImageUrl, itemBackUrl, eventImageUrl, matImageUrl, pqImageUrl, cardBackUrl, battleGoalImageUrl, matSlugOf } from '../scripts/campaign/cardImages.js';
 import { playmatHtml, markersHtml, XP_STEPS, turnPost, cardsPost, goalRollCode, questRollCode, cleanSettings, displaySettingsHtml } from './playmat.js';
 import { tokenDefs, markerTokens, MARK_STICKERS } from '../scripts/campaign/classTokens.js';
 import { bannerUrl, bannerCode } from '../scripts/campaign/bggBanners.js';
@@ -40,7 +40,7 @@ import { heroCatalog, heroPerkClass } from '../scripts/amd/heroDeck.js';
 import { PERSONAL_QUESTS } from '../scripts/games/gh2_quests.js';
 import ghConfig from '../scripts/games/gh.js';
 import { GH_DECKS } from '../scripts/games/gh_decks.js';
-import { buildFlow, LANES, laneOf } from '../scripts/campaign/flow.js?v=2';
+import { buildFlow, LANES, laneOf } from '../scripts/campaign/flow.js?v=3';
 import { RESOURCES, RESOURCE_GAMES } from '../scripts/games/resources.js';
 import { characterTraits } from '../scripts/campaign/outcomes.js';
 import { SPECIAL_TRAITS, specialName } from '../scripts/campaign/traits.js';
@@ -464,21 +464,63 @@ function flowPage(r) {
     ${zoomBtns}${fsBtn}
     ${scenarioRollerBtn(r)}</div>`;
   if (!g.nodes.length) return filters + scnViewToggle() + '<div class="empty">No scenarios to show yet.</div>';
+  const legend = `<span class="flegend">${[1, 2, 0, 3].map(i => `<span class="spill s${i}">${SCN_STATE_NAME[i]}</span>`).join('')}</span>`;
   const lanes = g.lanes.map((l, i) => `<rect class="flane${i % 2 ? ' alt' : ''}" x="0" y="${l.y}" width="${g.width}" height="${l.h}"/><text class="flabel" x="8" y="${l.y + 18}">${esc(l.name)}</text>`).join('');
-  const edges = g.edges.map(e => `<path class="fedge${st(e.from) === 2 ? ' on' : ''}" d="${e.d}" marker-end="url(#farrow)"/>`).join('');
+  const edges = g.edges.map(e => `<path class="fedge${st(e.from) === 2 ? ' on' : ''}" data-from="${e.from}" data-to="${e.to}" d="${e.d}" marker-end="url(#farrow)"/>`).join('');
   const nodes = g.nodes.map(n => {
     const s = byN.get(n.n), hide = masked(n.n), name = String(s.name || '');
-    const label = hide ? '?' : name.length > 17 ? name.slice(0, 16) + '…' : name;
-    const midY = n.h / 2 + 4;
-    return `<g class="fnode s${st(n.n)}${hide ? ' mask' : ''}${view.scnSel === n.n ? ' sel' : ''}" data-flow="${n.n}" tabindex="0" role="button" transform="translate(${n.x},${n.y})"><title>${hide ? 'Locked' : esc(`${s.n} ${name}`)}</title>
-      <rect width="${n.w}" height="${n.h}" rx="6"/>${hide ? `<text class="fq" x="${n.w / 2}" y="${n.h / 2 + 6}" text-anchor="middle">?</text>`
-        : `<text class="fname" x="6" y="${midY}"><tspan class="fnum">${esc(s.n)}</tspan> ${esc(label)}</text>`}</g>`;
+    const lines = hide ? [] : flowLines(name), tx = 44, iy = n.h / 2 - 6;
+    const text = hide ? `<text class="fq" x="${(tx + n.w - 22) / 2}" y="${n.h / 2 + 6}" text-anchor="middle">?</text>`
+      : `<text class="fname">${lines.map((l, i) => `<tspan x="${tx}" y="${n.h / 2 + 4 + (i - (lines.length - 1) / 2) * 14}">${esc(l)}</tspan>`).join('')}</text>`;
+    return `<g class="fnode s${st(n.n)}${hide ? ' mask' : ''}${view.scnSel === n.n ? ' sel' : ''}" data-flow="${n.n}" tabindex="0" role="button" transform="translate(${n.x},${n.y})"><title>${hide ? 'Locked' : esc(`${s.n} ${name} (${SCN_STATE_NAME[st(n.n)]})`)}</title>
+      <rect class="fbox" width="${n.w}" height="${n.h}" rx="7"/><rect class="fbadge" x="6" y="${n.h / 2 - 10}" width="32" height="20" rx="5"/><text class="fnum" x="22" y="${n.h / 2 + 4}" text-anchor="middle">${hide ? '?' : esc(s.n)}</text>
+      ${text}<g class="ficon" transform="translate(${n.w - 18},${iy})">${FLOW_ICON[hide ? 0 : st(n.n)]}</g></g>`;
   }).join('');
   const svg = `<svg class="flowsvg" width="${Math.round(g.width * z)}" height="${Math.round(g.height * z)}" viewBox="0 0 ${g.width} ${g.height}" role="img" aria-label="Scenario flowchart">
-    <defs><marker id="farrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="farrowhead"/></marker></defs>${lanes}${edges}${nodes}</svg>`;
-  if (full) return `<div class="flowwrap full"><div class="flowfsbar">${zoomBtns}${fsBtn}${scenarioRollerBtn(r)}</div>${svg}</div>`;
-  return filters + scnViewToggle() + `<div class="flowwrap">${svg}</div>`;
+    <defs><marker id="farrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="farrowhead"/></marker><marker id="farrowp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="farrowhead pth"/></marker></defs>${lanes}${edges}${nodes}</svg>`;
+  if (full) return `<div class="flowwrap full"><div class="flowfsbar">${zoomBtns}${fsBtn}${scenarioRollerBtn(r)}${legend}</div>${svg}</div>`;
+  return filters.replace(/<\/div>$/, `${legend}</div>`) + scnViewToggle() + `<div class="flowwrap">${svg}</div>`;
 }
+// A scenario name in at most two lines of about 17 characters (word wrap; the second line is cut with an ellipsis).
+function flowLines(name, max = 17) {
+  const lines = [''];
+  for (const w of name.split(/\s+/).filter(Boolean)) {
+    const cur = lines[lines.length - 1];
+    if (!cur || `${cur} ${w}`.length <= max) lines[lines.length - 1] = cur ? `${cur} ${w}` : w;
+    else lines.push(w);
+  }
+  if (lines.length > 2) lines.splice(1, lines.length - 1, lines.slice(1).join(' '));
+  return lines.map(l => (l.length > max ? `${l.slice(0, max - 1)}\u2026` : l));
+}
+// State icons right in a box (12x12, currentColor = the state colour): locked, unlocked (available), completed, locked out.
+const FLOW_ICON = [
+  '<rect x="2" y="5.5" width="8" height="6" rx="1.2" fill="currentColor"/><path d="M3.8 5.5V4a2.2 2.2 0 0 1 4.4 0v1.5" fill="none" stroke="currentColor" stroke-width="1.4"/>',
+  '<circle cx="6" cy="6" r="4.5" fill="currentColor"/>',
+  '<path d="M1.5 6.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  '<path d="M2 2l8 8M10 2l-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+];
+// Path highlight: the chain of scenarios that unlocked scenario n (all the way back) and the scenarios it unlocks; the rest fades.
+// Shown while a box is hovered or focused, else for the selected scenario (the open modal); n null clears it.
+function flowHighlight(n) {
+  const svg = main.querySelector('.flowsvg');
+  if (!svg) return;
+  svg.querySelectorAll('.fnode.pth, .fedge.pth').forEach(el => el.classList.remove('pth'));
+  svg.classList.toggle('hl', n != null);
+  if (n == null) return;
+  const k = String(n), edges = [...svg.querySelectorAll('.fedge')], on = new Set([k]), todo = [k];
+  while (todo.length) { const t = todo.pop(); for (const e of edges) if (e.dataset.to === t && !on.has(e.dataset.from)) { on.add(e.dataset.from); todo.push(e.dataset.from); } }
+  const back = new Set(on);
+  for (const e of edges) {
+    if (back.has(e.dataset.to) && back.has(e.dataset.from)) e.classList.add('pth');
+    else if (e.dataset.from === k) { e.classList.add('pth'); on.add(e.dataset.to); }
+  }
+  svg.querySelectorAll('.fnode').forEach(g => g.classList.toggle('pth', on.has(g.dataset.flow)));
+}
+const flowRest = () => flowHighlight(view.scnSel);
+main.addEventListener('mouseover', e => { const g = e.target.closest?.('.flowsvg .fnode'); if (g) flowHighlight(g.dataset.flow); });
+main.addEventListener('mouseout', e => { if (e.target.closest?.('.flowsvg .fnode') && !e.relatedTarget?.closest?.('.flowsvg .fnode')) flowRest(); });
+main.addEventListener('focusin', e => { const g = e.target.closest?.('.flowsvg .fnode'); if (g) flowHighlight(g.dataset.flow); });
+main.addEventListener('focusout', e => { if (e.target.closest?.('.flowsvg .fnode')) flowRest(); });
 
 // Details of the selected scenario, shown in a modal (scnModalRoot below) so it's reachable regardless of scroll
 // position or chart height.
@@ -671,6 +713,8 @@ function addTab(r) {
   </div>`;
 }
 
+// A flip item: the preview shows its back beside the front (data-imgb, read by the card preview below).
+const backAttr = i => { const b = itemBackUrl(i); return b ? ` data-imgb="${esc(b)}"` : ''; };
 function items(r) {
   const slots = [...new Set(ITEMS.map(i => i.slot).filter(Boolean))].sort();
   const rows = ITEMS.filter(i => {
@@ -703,7 +747,7 @@ function items(r) {
       const pic = url ? `<img class="cardpic" src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false">` : `<div class="noimg secretpic">${unl ? esc(name) : editing ? `#${esc(i.id)}` : '?'}</div>`;
       const w = holders(i.id);
       const tog = editing ? `<button type="button" class="chip" data-act="itemToggle" data-id="${esc(i.id)}" title="${unl ? 'Lock this item' : 'Unlock this item'}">${unl ? 'Lock' : 'Unlock'}</button>` : '';
-      return `<figure class="itemtile${unl ? '' : ' locked'}"${url ? ` data-img="${esc(url)}" data-imgw="300"` : ''} title="${unl ? esc(`${i.id} ${name}`) : esc(String(i.id))}">${pic}
+      return `<figure class="itemtile${unl ? '' : ' locked'}"${url ? ` data-img="${esc(url)}" data-imgw="300"${backAttr(i)}` : ''} title="${unl ? esc(`${i.id} ${name}`) : esc(String(i.id))}">${pic}
         <figcaption><span class="cname">${esc(name)}</span>${tog || `<span class="badge">${unl ? `${esc(shopCopies(r, i))}/${esc(i.n)}` : 'locked'}</span>`}</figcaption>${!secret && unl ? `<div class="itemwith">${ownerChips(i)}${giveMenu(i)}</div>` : ''}</figure>`;
     }).join('')}</div>` : none);
   }
@@ -732,7 +776,7 @@ function items(r) {
     const unlCell = editing ? `<input type="checkbox" data-act="itemUnl" data-id="${esc(i.id)}" ${unl ? 'checked' : ''}>` : unl ? '<span class="tick" aria-label="unlocked">&#10003;</span>' : '<span class="tick no" aria-label="locked">&ndash;</span>';
     const usedCell = unl ? esc(itemsInUse(r, i)) : '';   // calculated from the character tabs, not editable
     const pic = (unl || editing) && itemImageUrl(i);   // locked items stay hidden for players
-    return `<tr class="${unl ? '' : 's0'}"${pic ? ` data-img="${esc(pic)}"` : ''}><td>${esc(i.id)}</td><td>${unl ? esc(pretty(i.slug)) : 'Locked item'}</td><td>${esc(i.slot ?? '')}</td><td>${esc(i.kind === 'qm' ? 'QM' : i.kind)}</td>
+    return `<tr class="${unl ? '' : 's0'}"${pic ? ` data-img="${esc(pic)}"${backAttr(i)}` : ''}><td>${esc(i.id)}</td><td>${unl ? esc(pretty(i.slug)) : 'Locked item'}</td><td>${esc(i.slot ?? '')}</td><td>${esc(i.kind === 'qm' ? 'QM' : i.cls ? `${i.kind}, ${i.cls}` : i.kind)}</td>
       <td>${unlCell}</td><td>${esc(i.n)}</td><td>${usedCell}</td><td>${unl ? esc(shopCopies(r, i)) : ''}</td><td>${unl ? `<span class="itemwith">${ownerChips(i)}${giveMenu(i)}</span>` : ''}</td></tr>`;
   }));
 }
@@ -754,11 +798,11 @@ function itemSheet(r, ownerChips) {
   if (!i) return '';
   const unl = r.items.unl.includes(i.id);
   if (!unl && !editing) return '';
-  const url = itemImageUrl(i), name = unl ? pretty(i.slug) : 'Locked item';
+  const url = itemImageUrl(i), back = itemBackUrl(i), name = unl ? pretty(i.slug) : 'Locked item';
   const takers = unl && shopCopies(r, i) > 0 ? r.chars.filter(c => !ownsItem(c, i.id)) : [];
   return `<div class="modal" id="itemSheet" role="dialog" aria-modal="true" aria-labelledby="itemSheetTitle"><div class="modalbox itemsheet">
     <button type="button" class="modalx" data-itemclose aria-label="Close">&times;</button><h3 id="itemSheetTitle">${esc(name)}</h3>
-    <div class="isbody">${url ? `<img src="${esc(url)}" alt="" draggable="false">` : ''}<div class="isfacts">${kv('Number', esc(i.id))}${kv('Slot', esc(i.slot ?? ''))}${kv('Type', esc(i.kind === 'qm' ? 'QM' : i.kind ?? ''))}${kv('Copies', esc(i.n))}${unl ? kv('In use', esc(itemsInUse(r, i))) + kv('In the shop', esc(shopCopies(r, i))) : ''}</div></div>
+    <div class="isbody">${url && back ? `<div class="ispair"><img src="${esc(url)}" alt="" draggable="false"><img src="${esc(back)}" alt="" draggable="false"></div>` : url ? `<img src="${esc(url)}" alt="" draggable="false">` : ''}<div class="isfacts">${kv('Number', esc(i.id))}${kv('Slot', esc(i.slot ?? ''))}${kv('Type', esc(i.kind === 'qm' ? 'QM' : i.cls ? `${i.kind}, ${i.cls}` : i.kind ?? ''))}${kv('Copies', esc(i.n))}${unl ? kv('In use', esc(itemsInUse(r, i))) + kv('In the shop', esc(shopCopies(r, i))) : ''}</div></div>
     ${unl ? `<h4>With</h4><div class="itemwith">${ownerChips(i) || '<span class="hint">Nobody</span>'}</div>` : ''}
     ${takers.length ? `<h4>Give to</h4><div class="isgive">${takers.map(c => `<button type="button" data-giveto="${esc(c.id)}|${esc(i.id)}">${esc(c.name)}</button>`).join('')}</div>` : ''}
     ${editing ? `<div class="isedit"><button type="button" class="btn" data-act="itemToggle" data-id="${esc(i.id)}">${unl ? 'Lock this item' : 'Unlock this item'}</button></div>` : ''}
@@ -913,7 +957,7 @@ function cardsPage(r) {
     return filters + sizeBar(rows.length) + (rows.length ? `<div class="itemgrid" style="--tile-min:${ITEM_SIZES[view.cardSize]}px">${rows.map(i => {
       const url = itemImageUrl(i), name = pretty(i.slug);
       const pic = url ? `<img class="cardpic" src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false">` : `<div class="noimg">${esc(name)}</div>`;
-      return `<figure class="itemtile"${url ? ` data-img="${esc(url)}"` : ''} title="${esc(`${i.id} ${name}`)}"><div class="stkwrap">${pic}${stkMarks(`i:${i.id}`)}</div>
+      return `<figure class="itemtile"${url ? ` data-img="${esc(url)}"${backAttr(i)}` : ''} title="${esc(`${i.id} ${name}`)}"><div class="stkwrap">${pic}${stkMarks(`i:${i.id}`)}</div>
         <figcaption><span class="cname">${esc(name)}</span><span class="badge">${esc(i.id)}</span></figcaption></figure>`;
     }).join('')}</div>` : none);
   }
@@ -1457,6 +1501,7 @@ function render() {
   if (tab === 'Cards' && view.cardType === 'am') hydrateAm();
   if (pm.modal === 'amd' || pm.modal === 'amdpile' || pm.hview === 'amd' || pm.ptab === 'amd') hydrateAmdModal();
   if (pm.modal === 'perks') hydratePerkCards();
+  if (flowPage && view.scnSel != null) flowRest();
 }
 
 // Phone view: tabs, the menu, bottom sheets, tap a card to move it, tap a played card to flip it.
@@ -1670,6 +1715,10 @@ const cardPreview = createPreview({
     if (el.matches('[data-amzoom]')) {                                                                   // a composed attack modifier card: built, no single picture
       const s = amSlots[Number(el.dataset.amzoom)];
       return s ? { key: `am:${el.dataset.amzoom}`, make: () => buildCard(s.card, s.className, s.isAdded), ar: 600 / 391 } : null;
+    }
+    if (el.dataset.imgb) {                                                                              // a flip item: front and back side by side, each as tall as a single card
+      const pair = [el.dataset.img, el.dataset.imgb], ar = (2 * 196 + 6) / 300;
+      return { key: pair.join('|'), ar, scale: ar, make: () => { const d = document.createElement('div'); d.className = 'cpvpair'; d.append(...pair.map(u => Object.assign(document.createElement('img'), { src: u, alt: '', draggable: false }))); return d; } };
     }
     return { key: el.dataset.img, url: el.dataset.img, scale: Number(el.dataset.imgw) >= 600 ? 1.3 : 1 };   // character mats: small print, larger
   },

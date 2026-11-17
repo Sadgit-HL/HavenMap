@@ -44667,6 +44667,426 @@
     555,
     641
    ]
+  },
+  {
+   "group": "items solo fh",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/fh/248.webp",
+   "dst": "items/fh/248.webp",
+   "status": "ok",
+   "bytes": 17588,
+   "size": [
+    196,
+    300
+   ],
+   "from": "any2cards/worldhaven images/items/frosthaven/248-264/fh-248-wanderers-club.png"
+  },
+  {
+   "group": "items solo fh",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/fh/249.webp",
+   "dst": "items/fh/249.webp",
+   "status": "ok",
+   "bytes": 18220,
+   "size": [
+    196,
+    300
+   ],
+   "from": "any2cards/worldhaven images/items/frosthaven/248-264/fh-249-recalibration-trigger.png"
+  },
+  {
+   "group": "items solo fh",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/fh/250.webp",
+   "dst": "items/fh/250.webp",
+   "status": "ok",
+   "bytes": 17170,
+   "size": [
+    196,
+    300
+   ],
+   "from": "any2cards/worldhaven images/items/frosthaven/248-264/fh-250-spear-of-justice.png"
+  },
+  {
+   "group": "items solo fh",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/fh/251.webp",
+   "dst": "items/fh/251.webp",
+   "status": "ok",
+   "bytes": 13822,
+   "size": [
+    196,
+    300
+   ],
+   "from": "any2cards/worldhaven images/items/frosthaven/248-264/fh-251-soul-urn.png"
+  },
+  {
+   "group": "items solo fh",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/fh/252.webp",
+   "dst": "items/fh/252.webp",
+   "status": "ok",
+   "bytes": 17422,
+   "size": [
+    196,
+    300
+   ],
+   "from": "any2cards/worldhaven images/items/frosthaven/248-264/fh-252-black-earth-codex.png"
+  },
+  {
+   "group": "items solo fh",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/fh/253.webp",
+   "dst": "items/fh/253.webp",
+   "status": "ok",
+   "bytes": 15206,
+   "size": [
+    196,
+    300
+   ],
+   "from": "any2cards/worldhaven images/items/frosthaven/248-264/fh-253-mask-of-duality.png"
+  },
+  {
+   "group": "items solo fh",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/fh/253b.webp",
+   "dst": "items/fh/253b.webp",
+   "status": "ok",
+   "bytes": 16452,
+   "size": [
+    196,
+    300
+   ],
+   "from": "any2cards/worldhaven images/items/frosthaven/248-264/fh-253-mask-of-duality-back.png"
+  },
+  {
+   "group": "items solo fh",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/fh/254.webp",
+   "dst": "items/fh/254.webp",
+   "status": "ok",
+   "bytes": 14642,
+   "size": [
+    196,
+    300
+   ],
+   "from": "any2cards/worldhaven images/items/frosthaven/248-264/fh-254-ancestral-blade.png"
+  },
+  {
+   "group": "items solo fh",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/fh/255.webp",
+   "dst": "items/fh/255.webp",
+   "status": "ok",
+   "bytes": 16430,
+   "size": [
+    196,
+    300
+   ],
+   "from": "any2cards/worldhaven images/items/frosthaven/248-264/fh-255-mountains-heart.png"
+  },
+  {
+   "group": "items solo fh",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/fh/256.webp",
+   "dst": "items/fh/256.webp",
+   "status": "ok",
+   "bytes": 13234,
+   "size": [
+    196,
+    300
+   ],
+   "from": "any2cards/worldhaven images/items/frosthaven/248-264/fh-256-sonorous-shard.png"
+  },
+  {
+   "group": "items solo fh",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/fh/257.webp",
+   "dst": "items/fh/257.webp",
+   "status": "ok",
+   "bytes": 18170,
+   "size": [
+    196,
+    300
+   ],
+   "from": "any2cards/worldhaven images/items/frosthaven/248-264/fh-257-sly-camouflage.png"
+  },
+  {
+   "group": "items solo fh",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/fh/258.webp",
+   "dst": "items/fh/258.webp",
+   "status": "ok",
+   "bytes": 18046,
+   "size": [
+    196,
+    300
+   ],
+   "from": "any2cards/worldhaven images/items/frosthaven/248-264/fh-258-skull-of-agony.png"
+  },
+  {
+   "group": "items solo fh",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/fh/259.webp",
+   "dst": "items/fh/259.webp",
+   "status": "ok",
+   "bytes": 15888,
+   "size": [
+    196,
+    300
+   ],
+   "from": "any2cards/worldhaven images/items/frosthaven/248-264/fh-259-storm-carving.png"
+  },
+  {
+   "group": "items solo fh",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/fh/259b.webp",
+   "dst": "items/fh/259b.webp",
+   "status": "ok",
+   "bytes": 16078,
+   "size": [
+    196,
+    300
+   ],
+   "from": "any2cards/worldhaven images/items/frosthaven/248-264/fh-259-storm-carving-back.png"
+  },
+  {
+   "group": "items solo fh",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/fh/260.webp",
+   "dst": "items/fh/260.webp",
+   "status": "ok",
+   "bytes": 15432,
+   "size": [
+    196,
+    300
+   ],
+   "from": "any2cards/worldhaven images/items/frosthaven/248-264/fh-260-freezing-orb.png"
+  },
+  {
+   "group": "items solo fh",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/fh/261.webp",
+   "dst": "items/fh/261.webp",
+   "status": "ok",
+   "bytes": 15324,
+   "size": [
+    196,
+    300
+   ],
+   "from": "any2cards/worldhaven images/items/frosthaven/248-264/fh-261-energized-module.png"
+  },
+  {
+   "group": "items solo fh",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/fh/262.webp",
+   "dst": "items/fh/262.webp",
+   "status": "ok",
+   "bytes": 15742,
+   "size": [
+    196,
+    300
+   ],
+   "from": "any2cards/worldhaven images/items/frosthaven/248-264/fh-262-exhaust-boots.png"
+  },
+  {
+   "group": "items solo fh",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/fh/262b.webp",
+   "dst": "items/fh/262b.webp",
+   "status": "ok",
+   "bytes": 16494,
+   "size": [
+    196,
+    300
+   ],
+   "from": "any2cards/worldhaven images/items/frosthaven/248-264/fh-262-exhaust-boots-back.png"
+  },
+  {
+   "group": "items solo fh",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/fh/263.webp",
+   "dst": "items/fh/263.webp",
+   "status": "ok",
+   "bytes": 16012,
+   "size": [
+    196,
+    300
+   ],
+   "from": "any2cards/worldhaven images/items/frosthaven/248-264/fh-263-warlords-skull.png"
+  },
+  {
+   "group": "items solo fh",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/fh/264.webp",
+   "dst": "items/fh/264.webp",
+   "status": "ok",
+   "bytes": 16308,
+   "size": [
+    196,
+    300
+   ],
+   "from": "any2cards/worldhaven images/items/frosthaven/248-264/fh-264-spiraled-medallion.png"
+  },
+  {
+   "group": "items solo mp",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/mp/AN.webp",
+   "dst": "items/mp/AN.webp",
+   "status": "ok",
+   "bytes": 18990,
+   "size": [
+    196,
+    300
+   ],
+   "from": "owner's Worldhaven folder characters/mp/character_solo_items (tools/prep-mp-solo-items.py)"
+  },
+  {
+   "group": "items solo mp",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/mp/SA.webp",
+   "dst": "items/mp/SA.webp",
+   "status": "ok",
+   "bytes": 18840,
+   "size": [
+    196,
+    300
+   ],
+   "from": "owner's Worldhaven folder characters/mp/character_solo_items (tools/prep-mp-solo-items.py)"
+  },
+  {
+   "group": "items solo mp",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/mp/SAb.webp",
+   "dst": "items/mp/SAb.webp",
+   "status": "ok",
+   "bytes": 19244,
+   "size": [
+    196,
+    300
+   ],
+   "from": "owner's Worldhaven folder characters/mp/character_solo_items (tools/prep-mp-solo-items.py)"
+  },
+  {
+   "group": "items solo mp",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/mp/CS.webp",
+   "dst": "items/mp/CS.webp",
+   "status": "ok",
+   "bytes": 17232,
+   "size": [
+    196,
+    300
+   ],
+   "from": "owner's Worldhaven folder characters/mp/character_solo_items (tools/prep-mp-solo-items.py)"
+  },
+  {
+   "group": "items solo mp",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/mp/CSb.webp",
+   "dst": "items/mp/CSb.webp",
+   "status": "ok",
+   "bytes": 17730,
+   "size": [
+    196,
+    300
+   ],
+   "from": "owner's Worldhaven folder characters/mp/character_solo_items (tools/prep-mp-solo-items.py)"
+  },
+  {
+   "group": "items solo mp",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/mp/HL.webp",
+   "dst": "items/mp/HL.webp",
+   "status": "ok",
+   "bytes": 11926,
+   "size": [
+    196,
+    300
+   ],
+   "from": "owner's Worldhaven folder characters/mp/character_solo_items (tools/prep-mp-solo-items.py)"
+  },
+  {
+   "group": "items solo mp",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/mp/HLb.webp",
+   "dst": "items/mp/HLb.webp",
+   "status": "ok",
+   "bytes": 14604,
+   "size": [
+    196,
+    300
+   ],
+   "from": "owner's Worldhaven folder characters/mp/character_solo_items (tools/prep-mp-solo-items.py)"
+  },
+  {
+   "group": "items back gh2",
+   "src": "D:/github/Wordhaven_Assets/wh_items/gh2/054b.png",
+   "dst": "items/gh2/054b.webp",
+   "status": "ok",
+   "bytes": 13202,
+   "size": [
+    196,
+    300
+   ],
+   "from": "Sadgit-HL/Wordhaven_Assets wh_items/gh2/054b.png"
+  },
+  {
+   "group": "items back gh2",
+   "src": "D:/github/Wordhaven_Assets/wh_items/gh2/072b.png",
+   "dst": "items/gh2/072b.webp",
+   "status": "ok",
+   "bytes": 15442,
+   "size": [
+    196,
+    300
+   ],
+   "from": "Sadgit-HL/Wordhaven_Assets wh_items/gh2/072b.png"
+  },
+  {
+   "group": "items back gh2",
+   "src": "D:/github/Wordhaven_Assets/wh_items/gh2/074b.png",
+   "dst": "items/gh2/074b.webp",
+   "status": "ok",
+   "bytes": 13560,
+   "size": [
+    196,
+    300
+   ],
+   "from": "Sadgit-HL/Wordhaven_Assets wh_items/gh2/74b.png"
+  },
+  {
+   "group": "items back gh2",
+   "src": "D:/github/Wordhaven_Assets/wh_items/gh2/080b.png",
+   "dst": "items/gh2/080b.webp",
+   "status": "ok",
+   "bytes": 12672,
+   "size": [
+    196,
+    300
+   ],
+   "from": "Sadgit-HL/Wordhaven_Assets wh_items/gh2/80b.png"
+  },
+  {
+   "group": "items back gh2",
+   "src": "D:/github/Wordhaven_Assets/wh_items/gh2/100b.png",
+   "dst": "items/gh2/100b.webp",
+   "status": "ok",
+   "bytes": 12454,
+   "size": [
+    196,
+    300
+   ],
+   "from": "Sadgit-HL/Wordhaven_Assets wh_items/gh2/100b.png"
+  },
+  {
+   "group": "items back gh2",
+   "src": "D:/github/Wordhaven_Assets/wh_items/gh2/116b.png",
+   "dst": "items/gh2/116b.webp",
+   "status": "ok",
+   "bytes": 13564,
+   "size": [
+    196,
+    300
+   ],
+   "from": "Sadgit-HL/Wordhaven_Assets wh_items/gh2/116b.png"
+  },
+  {
+   "group": "items back gh2",
+   "src": "D:/github/Wordhaven_Assets/wh_items/gh2/128b.png",
+   "dst": "items/gh2/128b.webp",
+   "status": "ok",
+   "bytes": 16180,
+   "size": [
+    196,
+    300
+   ],
+   "from": "Sadgit-HL/Wordhaven_Assets wh_items/gh2/128b.png"
+  },
+  {
+   "group": "items back gh2",
+   "src": "D:/github/Wordhaven_Assets/wh_items/gh2/162b.png",
+   "dst": "items/gh2/162b.webp",
+   "status": "ok",
+   "bytes": 18396,
+   "size": [
+    196,
+    300
+   ],
+   "from": "Sadgit-HL/Wordhaven_Assets wh_items/gh2/162b.png"
   }
  ],
  "missing": []

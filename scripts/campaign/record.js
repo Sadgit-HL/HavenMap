@@ -4,7 +4,7 @@
 import { CLASSES } from '../games/gh2_classes.js';
 import { ALL_CLASSES } from './classList.js';
 import { CARDS } from '../games/gh2_cards.js';
-import { ITEMS } from '../games/gh2_items.js';
+import { ITEMS } from './itemList.js';
 import { SCENARIOS } from '../games/gh2_scenarios.js';
 
 export const RECORD_VERSION = 1;

@@ -26,12 +26,19 @@ export function cardImageUrl(card) {
 }
 
 // Item card fronts: wh_items/gh2/<id>.png, the id zero-padded to three digits (001.png) and the quartermaster
-// items as QM1.png. The back is <id>b.png (not used). Checked against all 179 URLs in the workbook's Card DB.
+// items as QM1.png. Checked against all 179 URLs in the workbook's Card DB.
 export const ITEM_IMAGE_BASE = CARD_IMAGE_BASE.replace('wh_character_ability_cards/', 'wh_items/gh2/');
+const itemAddress = (item, side = '') => {
+  if (item.ed) return `images/items/${item.ed}/${item.id}${side}`;         // Frosthaven and Mercenary Pack solo items (scripts/games/solo_items.js)
+  const id = typeof item.id === 'number' ? String(item.id).padStart(3, '0') : encodeURIComponent(String(item.id));
+  return `${ITEM_IMAGE_BASE}${id}${side}.png`;
+};
+// The back of a flip item (<id>b), or null: only flip items have a back picture under images/ (the eight GH2E ones from
+// tools/convert-item-backs.py, the solo items from tools/extract-solo-items.py), so its presence is the flag.
+export const itemBackUrl = item => (item ? local(itemAddress(item, 'b')) : null);
 export function itemImageUrl(item) {
   if (!item) return null;
-  const id = typeof item.id === 'number' ? String(item.id).padStart(3, '0') : encodeURIComponent(String(item.id));
-  return local(`${ITEM_IMAGE_BASE}${id}.png`);
+  return local(itemAddress(item));
 }
 
 // Event card fronts: wh_events/gh2_events/<ce|re>/<C|R>-<number, 3 digits>.png (C-001.png). The outcome faces are C-001a.png,

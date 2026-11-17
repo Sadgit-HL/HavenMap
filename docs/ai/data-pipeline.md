@@ -14,6 +14,8 @@ Rule: never hand-edit a file marked GENERATED. Fix the generator (or its input t
 | `scripts/games/gh2_pq_text.js` | `tools/extract-pq-text.py` | Secretariat gh2e data |
 | `scripts/games/perks.js` | `tools/extract-perks.mjs` (+ `perks-decode.mjs`) | FrosthavenAssistant clone at `asset-backups/amd/FrosthavenAssistant` |
 | `scripts/games/wh_cards.js` (Frosthaven and Jaws ability cards, Cards tab) | `tools/extract-worldhaven-cards.py` | `data/character-ability-cards.js` of the worldhaven clone (`D:\github\worldhaven`, any2cards/worldhaven). Initiative gaps filled from the Secretariat fh and jotl decks (numbers only) |
+| `scripts/games/solo_items.js` (solo items of the Frosthaven and Mercenary Pack classes, merged with `gh2_items.js` in `scripts/campaign/itemList.js`; `back` marks flip items); writes `images/items/fh|mp/<id>.webp` and `<id>b.webp` (backs) and their manifest records | `tools/prep-mp-solo-items.py` (Mercenary Pack pictures: straighten, crop, improve), then `tools/extract-solo-items.py`, then `tools/generate-image-index.py` | Secretariat `data/solo/items.json` and `data/fh/label/spoiler/en.json`; worldhaven `images/items/frosthaven/248-264`; the owner's Worldhaven folder `characters/mp/character_solo_items` (Hail scans, photographs of the other cards) |
+| `images/items/gh2/<id>b.webp`: backs of the eight GH2E flip items (54, 72, 74, 80, 100, 116, 128, 162), and their manifest records. The app shows a back wherever one exists (`itemBackUrl` in `scripts/campaign/cardImages.js`) | `tools/convert-item-backs.py`, then `tools/generate-image-index.py` | `Wordhaven_Assets/wh_items/gh2/<id>b.png` (74 and 80 as `74b.png`, `80b.png`). The flip list was checked by template matching the flip icon on all fronts |
 | `scripts/campaign/bggIcons.js` | `tools/extract-bgg-icons.py` | the BGG codes list in `campaign/mockups/merc-6-playmat-v2.html` |
 | `campaign/mockups/*.html`, `mock.css` | `tools/merc-mockups/gen-merc-mockups.mjs` | run with `MERC_MOCKUP_OUT="<repo>/campaign/mockups/" node ...`. Later hand edits in `merc-6` exist (see `status.md`): check the diff before regenerating |
 | `asset-backups/campaign-import.json`, copy in `import/` | `tools/import-campaign-state.py` | `WHTracker.xlsx`. Test data only; the owner syncs state by hand |
@@ -58,6 +60,7 @@ Hand-maintained inputs and outputs:
 | Frosthaven and Jaws character mats | Cards tab, from the group's asset repository (`wh_character_mats`) | same as the other asset repository pictures |
 | Frosthaven and Worldhaven card images | card pictures, unique cards, class art | cleared for this non-profit app by the owner. Crediting the source is advisable |
 | `any2cards/worldhaven` scans | layout reference only, not copied | Cephalofair-licensed, used to verify layout only |
+| Mercenary Pack solo item pictures (owner's Worldhaven folder: Hail scans, photographs of the other cards) | `images/items/mp/` | same as the other asset repository pictures |
 | Photoshop template (author unknown) | layer art | open. Outside the repo |
 
 ## Images under images/ (2026-11-16)

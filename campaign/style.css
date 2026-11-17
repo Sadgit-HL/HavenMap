@@ -104,6 +104,8 @@ ul.tiles .cardrow.ins-before { box-shadow:inset 3px 0 0 var(--accent); } ul.tile
 #cardPreview > img, #cardPreview .cpvcard > img { display:block; width:100%; height:100%; object-fit:contain; }
 #cardPreview .cpvcard { position:relative; width:100%; height:100%; }
 #cardPreview .cpvclone { transform-origin:0 0; }
+#cardPreview .cpvpair { display:flex; gap:6px; width:100%; height:100%; background:#000; }
+#cardPreview .cpvpair img { flex:1 1 0; min-width:0; height:100%; object-fit:contain; }
 #cardPreview .pc { border:0; }
 #cardPreview.pm .shelf6.cpvclone { display:block; overflow:visible; padding:0; gap:0; min-height:0; }
 #cardPreview.pm .shelf6.cpvclone .it { position:relative; }
@@ -309,10 +311,21 @@ button.evchip { cursor:pointer; }
 .fedge { fill:none; stroke:#5a4c3a; stroke-width:1.5; } .fedge.on { stroke:var(--ok); }
 .farrowhead { fill:#8a7860; }
 .fnode { cursor:pointer; outline:none; }
-.fnode rect { fill:var(--panel); stroke:var(--line); stroke-width:1.5; }
-.fnode.s1 rect { stroke:var(--info); } .fnode.s2 rect { stroke:var(--ok); fill:#22301f; } .fnode.s3 rect { stroke:var(--bad); fill:#2e1d19; }
-.fnode.mask rect { stroke-dasharray:4 3; } .fnode:hover rect, .fnode:focus-visible rect, .fnode.sel rect { stroke:var(--accent); stroke-width:2.5; }
-.fnum { fill:var(--muted); font-size:10px; } .fname { fill:var(--text); font-size:12px; } .fq { fill:var(--muted); font-size:18px; }
+/* boxes: number badge, name in up to two lines, state icon right (currentColor = the state colour, .s0 to .s3); unlocked (available) stands out */
+.fnode .fbox { fill:var(--panel); stroke:var(--line); stroke-width:1.5; }
+.fnode .fbadge { fill:#120f0b; stroke:var(--line); stroke-width:1; }
+.fnode.s1 .fbox { stroke:var(--info); stroke-width:2.5; fill:#1b2430; } .fnode.s1 .fbadge { stroke:var(--info); }
+.fnode.s2 .fbox { stroke:var(--ok); fill:#22301f; } .fnode.s3 .fbox { stroke:var(--bad); fill:#2e1d19; } .fnode.s3 { opacity:.75; }
+.fnode.mask .fbox { stroke-dasharray:4 3; fill:#17130e; } .fnode.mask { color:var(--muted); }
+.fnode:hover .fbox, .fnode:focus-visible .fbox, .fnode.sel .fbox { stroke:var(--accent); stroke-width:2.5; }
+.fnum { fill:var(--text); font-size:12px; font-weight:700; } .fname { fill:var(--text); font-size:12.5px; } .fq { fill:var(--muted); font-size:18px; }
+.fnode.mask .fnum { fill:var(--muted); }
+/* path highlight (flowHighlight in app.js) */
+.flowsvg.hl .fnode:not(.pth) { opacity:.22; } .flowsvg.hl .fedge:not(.pth) { opacity:.12; }
+.flowsvg .fedge.pth { stroke:var(--accent); stroke-width:2.5; marker-end:url(#farrowp); } .farrowhead.pth { fill:var(--accent); }
+.fnode, .fedge { transition:opacity .12s; }
+.flegend { display:inline-flex; flex-wrap:wrap; gap:6px; align-items:center; }
+.flowfsbar .flegend { margin-left:4px; }
 .stickers { display:flex; flex-wrap:wrap; gap:10px; align-items:flex-start; }
 .sticker { margin:0; width:110px; text-align:center; font-size:12px; }
 .sticker img { display:block; width:100%; max-height:110px; object-fit:contain; margin:0 auto 4px; border-radius:6px; border:1px solid var(--line); }
