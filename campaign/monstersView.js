@@ -1,5 +1,5 @@
 // The Monsters tab: the monster types of the running scenario with their ability decks and stat cards, and the two attack modifier decks
-// (monsters, allies), in the look of the Mercenaries playmat (class pm, styles in campaign/monsters.css). The state is record.mon
+// (monsters, allies) below them, in the look of the Mercenaries playmat (class pm, styles in campaign/monsters.css). The state is record.mon
 // (scripts/campaign/monsters.js); app.js wires the clicks to the edit functions of scripts/campaign/edit.js.
 import { imageFile } from '../scripts/images.js';
 import { MONSTERS, MON_MAX, monOf, monsterById, deckSlug, deckCards, deckState, deckNeedsShuffle, deckRollCode } from '../scripts/campaign/monsters.js';
@@ -23,11 +23,11 @@ export function monstersHtml(r, V, esc) {
   const m = monOf(r), lvl = m.lvl ?? scenarioLevel(r.party || {}), g = V.amg === 'a' ? 'a' : 'm', st = m.am[g] || {};
   const A = drawState(amOwner(g, st), st);
 
-  const bar = `<header class="monbar">
+  const bar = `<div class="monbar">
     <span class="monfield"><span class="lab">Monster level</span><span class="sp"><b>${lvl}</b><span class="spc"><button type="button" data-monlv="1" aria-label="Raise the monster level"${lvl >= 7 ? ' disabled' : ''}>${UP}</button><button type="button" data-monlv="-1" aria-label="Lower the monster level"${lvl <= 0 ? ' disabled' : ''}>${DN}</button></span></span>${m.lvl === null ? '' : '<button type="button" class="btn6" data-monlvauto title="Back to the scenario level of the party">Party level</button>'}</span>
     <span class="monfield"><span class="lab">Round</span><b class="monround">${m.round}</b></span>
     <span class="monacts"><button type="button" class="btn6" data-monnew title="Shuffle every deck and start at round 1">New scenario</button><button type="button" class="btn6 monend" data-monend title="Drawn ability cards to the discard, shuffle the decks that need it, next round">End of round</button></span>
-  </header>`;
+  </div>`;
 
   const tog = `<span class="tog" role="group" aria-label="Modifier deck">${[['m', 'Monsters'], ['a', 'Allies']].map(([k, l]) => `<button type="button" data-monamg="${k}" aria-pressed="${g === k}">${l}</button>`).join('')}</span>`;
   const imb = g === 'm' && V.amEdit ? `<span class="monimb"><span class="lab">Imbuement</span><span class="tog" role="group" aria-label="Imbuement">${[0, 1, 2].map(n => `<button type="button" data-monimb="${n}" aria-pressed="${(st.imb || 0) === n}">${n ? `Level ${n}` : 'None'}</button>`).join('')}</span></span>` : '';
@@ -48,8 +48,8 @@ export function monstersHtml(r, V, esc) {
     }).join('');
     const code = deckRollCode(slug, ds);
     return `<article class="mpanel${t.boss ? ' boss' : ''}" data-mtype="${t.id}">
-      <header class="mhd"><h3>${esc(title(t.title))}</h3>${shared ? '<span class="mshared" title="Shares the ability deck with another chosen type">shared deck</span>' : ''}<span class="mcount" title="Cards left in the deck">${ds.deck.length}/${cards.length}</span>${deckNeedsShuffle(slug, ds) ? '<i class="mdot" title="Shuffles at end of round"></i>' : ''}
-        <span class="mtools"><button type="button" class="btn6" data-mcode="${esc(code)}"${code ? '' : ' disabled'} title="Copy GeekRoller code" aria-label="Copy GeekRoller code">${DICE}</button><button type="button" class="btn6" data-mshuffle="${slug}" title="Shuffle the deck now" aria-label="Shuffle the deck now">${SHUFFLE}</button><button type="button" class="btn6" data-mremove="${t.id}" title="Remove ${esc(title(t.title))}" aria-label="Remove ${esc(title(t.title))}">${CLOSE}</button></span></header>
+      <div class="mhd"><h3>${esc(title(t.title))}</h3>${shared ? '<span class="mshared" title="Shares the ability deck with another chosen type">shared deck</span>' : ''}<span class="mcount" title="Cards left in the deck">${ds.deck.length}/${cards.length}</span>${deckNeedsShuffle(slug, ds) ? '<i class="mdot" title="Shuffles at end of round"></i>' : ''}
+        <span class="mtools"><button type="button" class="btn6" data-mcode="${esc(code)}"${code ? '' : ' disabled'} title="Copy GeekRoller code" aria-label="Copy GeekRoller code">${DICE}</button><button type="button" class="btn6" data-mshuffle="${slug}" title="Shuffle the deck now" aria-label="Shuffle the deck now">${SHUFFLE}</button><button type="button" class="btn6" data-mremove="${t.id}" title="Remove ${esc(title(t.title))}" aria-label="Remove ${esc(title(t.title))}">${CLOSE}</button></span></div>
       <div class="mstat" data-img="${esc(statUrl(t, lvl))}"><img src="${esc(statUrl(t, lvl))}" alt="${esc(`${title(t.title)} level ${lvl}`)}" loading="lazy" draggable="false"></div>
       <div class="mact">${big}</div>
       <div class="mrow">${row}</div>
@@ -58,5 +58,5 @@ export function monstersHtml(r, V, esc) {
   const chosen = new Set(m.types);
   const add = m.types.length < MON_MAX ? `<article class="mpanel madd"><label><span class="lab">Add monster</span><select data-monadd aria-label="Add a monster type"><option value="">Choose...</option>${
     ['Monsters', 'Bosses'].map((grp, i) => `<optgroup label="${grp}">${MONSTERS.filter(x => !!x.boss === !!i && !chosen.has(x.id)).map(x => `<option value="${x.id}">${esc(title(x.title))}</option>`).join('')}</optgroup>`).join('')}</select></label></article>` : '';
-  return `<div class="pm mon">${bar}${amd}<section class="mongrid">${m.types.map(panel).join('')}${add}</section></div>`;
+  return `<div class="pm mon">${bar}<section class="mongrid">${m.types.map(panel).join('')}${add}</section>${amd}</div>`;
 }
