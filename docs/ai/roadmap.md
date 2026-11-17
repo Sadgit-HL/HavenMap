@@ -29,7 +29,7 @@ Open work in priority order. Items marked (owner) need a decision or data from t
 
 ## 4. Campaign server and session flow (blocked on hosting decision)
 
-22. Decide the backend (owner). Proposed: Cloudflare Worker with KV, behind the `store.js` interface, with an admin JSON export. See `decisions.md`.
+22. Backend decided and deployed 2026-11-17 (`decisions.md`, `server/README.md`): Cloudflare Worker with KV at `https://api.penultimate.de/`. Next: a server store behind the `store.js` interface, invite links for the player tokens, the first upload of the campaign record.
 23. Server: campaign GET and PUT with `ver` check, token auth (128-bit tokens, hashes stored, roles admin, player, read-only). Tokens never in the public thread.
 24. Session start from the campaign page: scenario level, one hero per character, fresh `sid`, open the map with the `campaign` block. Design: `design/server-and-commit.md`.
 25. Map side: a panel for result, battle goals, items found; write the session result into the URL state.

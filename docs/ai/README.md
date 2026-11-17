@@ -17,13 +17,14 @@ Start here. Read in this order, then only the file for the area you touch.
 | `data-pipeline.md` | generated files, their generators and sources, regeneration rules, licences |
 | `design/server-and-commit.md` | designed, not built: server, tokens, session start and commit, BBCode |
 | `design/map-integration.md` | proposed, not built: the map as a campaign tab, map state per turn on the server, short forum posts |
+| `../../server/README.md` | the deployed API: Cloudflare Worker, KV, Netlify relay, `api.penultimate.de`, how to update |
 | `reference/` | stable lookup tables: GeekRoller codes, class tokens, face catalog, workbook element inventory |
 | `../archive/` | superseded docs kept for history (old handover log, first drafts, old mockup notes) |
 
 ## Project in brief
 
 - HavenMap: browser helper for a Gloomhaven 2e / Frosthaven play-by-forum campaign with four players. Hex map with monsters, heroes and attack modifier decks, plus a campaign page (`campaign/`) that tracks the whole campaign.
-- Vanilla ES modules, no build step, no npm dependencies. Campaign state lives in the browser (localStorage). No server exists yet.
+- Vanilla ES modules, no build step, no npm dependencies. Campaign state lives in the browser (localStorage). A server is deployed (`server/README.md`, `https://api.penultimate.de/`) but the page does not use it yet.
 - Repo: `C:\Users\hansen\ai\games\HavenMap\HavenMap` (branch `main`, remote `Sadgit-HL/HavenMap`). Work in the parent folder `C:\Users\hansen\ai\games\HavenMap` is outside git.
 
 ## Run and check
