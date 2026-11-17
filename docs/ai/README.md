@@ -16,6 +16,7 @@ Start here. Read in this order, then only the file for the area you touch.
 | `ui-guidelines.md` | visual and interaction rules for every campaign tab. Follow it for any UI change |
 | `data-pipeline.md` | generated files, their generators and sources, regeneration rules, licences |
 | `design/server-and-commit.md` | designed, not built: server, tokens, session start and commit, BBCode |
+| `design/map-integration.md` | proposed, not built: the map as a campaign tab, map state per turn on the server, short forum posts |
 | `reference/` | stable lookup tables: GeekRoller codes, class tokens, face catalog, workbook element inventory |
 | `../archive/` | superseded docs kept for history (old handover log, first drafts, old mockup notes) |
 

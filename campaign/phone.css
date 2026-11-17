@@ -1,6 +1,6 @@
 /* The phone view of the Mercenaries tab (design: campaign/mockups/merc-7-phone-v2.html). Hand written, scoped under .pp (the .pm variables and
    the modal styles of playmat.css apply as well). */
-.pp{display:flex;flex-direction:column;height:calc(100dvh - 90px);min-height:480px;background:var(--bg);position:relative;overflow:hidden;border-radius:10px}
+.pp{display:flex;flex-direction:column;height:calc(100dvh - var(--hdrh,56px));min-height:0;background:var(--bg);position:relative;overflow:hidden}
 .pp .top{display:flex;gap:10px;align-items:center;padding:8px 12px;background:var(--panel);border-bottom:1px solid var(--line)}
 .pp .top .portrait{width:44px;height:44px;border-radius:50%;border:2px solid var(--accent);flex:none;background-repeat:no-repeat}
 .pp .top b{font-size:16px}.pp .top .sub{font-size:11px;color:var(--muted)}.pp .top .who{min-width:0}
@@ -45,3 +45,64 @@
 .pp .mmodalbox{max-width:100vw}
 .pp .flip:not(.up)>.tk{display:none}
 .pp .stats{display:flex;flex-direction:column;gap:10px}.pp .statrow{display:flex;align-items:center;gap:12px}.pp .statrow>span:first-child{flex:1}.pp .statrow small{color:var(--muted)}
+/* 2026-11-17: the page's main rule (centered, max width) must not apply to the view's own main; the rows keep their height */
+.pp .body{margin:0;max-width:none}.pp .body>*{flex:none}
+.pp .top .who{display:flex;flex-direction:column;align-items:flex-start;min-width:0;padding:4px 2px;background:none;border:0;color:var(--text);font:inherit;text-align:left;cursor:pointer}
+.pp .top .who b{display:flex;align-items:center;gap:4px;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pp .top .who b svg{color:var(--accent);flex:none}
+.pp .top .pedit{width:36px;height:36px;flex:none;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:8px;background:#2d2519;color:var(--text);cursor:pointer}
+.pp .chpick{display:grid;gap:8px}.pp .chpick button{height:48px;padding:0 14px;border:1px solid var(--line);border-radius:10px;background:#2d2519;color:var(--text);font:inherit;font-size:15px;text-align:left;cursor:pointer}
+.pp .chpick button[aria-current]{border-color:var(--accent);color:var(--accent);background:#3a2f1e}
+.pp .ac,.pp .ac img{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+/* play area: a played card at most 170 px wide; an empty slot is a low box with its number */
+.pp .slot .ac{width:min(100%,170px)}
+.pp .slot .empty{aspect-ratio:auto;height:84px;font-size:34px;font-weight:700;color:rgba(236,223,200,.18)}
+/* phone held sideways (500 px high or less): the tabs as a rail at the left, a lower top bar, smaller cards */
+@media (max-height:500px){
+  html.phone .pagebtn{flex-direction:row;align-items:center;min-height:38px}html.phone .pagebtn .pbcamp{display:none}
+  html.phone header .actions button{height:36px;min-width:36px}
+  .pp{display:grid;grid-template-columns:76px minmax(0,1fr);grid-template-rows:auto auto auto minmax(0,1fr)}
+  .pp>.top,.pp>.xpbar,.pp>.toks,.pp>.body{grid-column:2}
+  .pp>.nav{grid-column:1;grid-row:1/-1;display:flex;flex-direction:column;border-top:0;border-right:1px solid var(--line);padding:0 0 0 env(safe-area-inset-left)}
+  .pp .nav button{flex:1;padding:0 4px}.pp .nav button[aria-current]{border-top:0;box-shadow:inset 3px 0 0 var(--accent)}.pp .nav .menu{border-left:0;border-top:1px solid var(--line)}
+  .pp .top{padding:4px 10px}.pp .top .portrait{width:36px;height:36px}.pp .toks img{width:32px;height:32px}
+  .pp .slot .ac{width:min(100%,120px)}.pp .slot .empty{height:60px}.pp .strip .ac{width:96px}.pp .pile{height:64px}
+  .pp .body:has(>.pzplay){display:grid;grid-template-columns:minmax(0,5fr) minmax(0,4fr) minmax(0,2fr);grid-template-areas:'play act piles' 'hand hand hand';align-items:start;gap:10px}
+  .pp .pzplay{grid-area:play}.pp .pzact{grid-area:act}.pp .pzhand{grid-area:hand}.pp .body>.piles{grid-area:piles;grid-template-columns:1fr;margin-top:21px}
+  .pp .pz{display:flex;flex-direction:column;gap:6px;min-width:0}.pp .pzact .strip .ac{width:72px}.pp .pzact .strip.empty{height:60px;display:flex;align-items:center}
+}
+.pp .pz{display:flex;flex-direction:column;gap:8px;min-width:0}
+/* Modifiers tab: draw controls, the deck (four stacks a row), Top and Bottom, then the discard and the active cards side by side.
+   Tap a stack: draw that card; hold and move a card: place it (Top, Bottom, Active, Discard); hold still: the preview. */
+.pp .amv{position:static;container-type:inline-size;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;inset:auto}
+.pp .amv .amside{display:contents}
+.pp .amv .amctl{grid-column:1/-1;order:1;flex:none;height:64px;grid-template-columns:minmax(0,1fr) 52px 52px;display:grid}
+.pp .amv .amtools{display:contents}
+.pp .amv .amcode{flex-direction:row;gap:10px;font-size:15px}.pp .amv .amcode svg{width:26px;height:26px}.pp .amv .amcode.amdraw img{width:28px;height:auto}
+.pp .amv .deckarea{grid-column:1/-1;order:2;overflow:visible;padding:0;--stkw:calc((100cqw - 66px) / 4)}
+.pp .amv .stacks{overflow:visible;gap:14px 14px;padding:12px 6px 4px 4px}
+.pp .amv .amrow{flex-direction:column;gap:6px}.pp .amv .amrow .amstrip{flex:none}.pp .amv .amstrip{height:64px}.pp .amv .mini{width:56px}.pp .amv .mini .pc,.pp .amv .mini .amslot{--pc-width:56px}
+.pp .amv .discarea{order:3;min-height:130px;--stkw:min(110px,calc(50cqw - 40px));overflow:visible;padding:8px}
+.pp .amv .amactive{order:4;flex:none;min-height:130px;justify-content:flex-start}.pp .amv .amactive .minis{flex-wrap:wrap;overflow:visible}
+.pp .amv .stkctl button{flex-basis:40px;min-height:36px}
+.pp .amv .stk,.pp .amv .mini{-webkit-touch-callout:none;touch-action:pan-y}
+@media (max-height:500px){
+  .pp .amv{grid-template-columns:minmax(0,1fr) 220px;align-items:start}
+  .pp .amv .deckarea{grid-column:1;grid-row:1/span 3;--stkw:calc((100cqw - 220px - 100px) / 6)}
+  .pp .amv .amctl{grid-column:2;grid-row:1}.pp .amv .discarea{grid-column:2;grid-row:2;min-height:100px}.pp .amv .amactive{grid-column:2;grid-row:3;min-height:80px}
+  .pp .amv .amrow{flex-direction:row}
+}
+/* Items tab: the item pictures, three a row; a spent or consumed item is dimmed with a label */
+.pp .itl{grid-template-columns:repeat(auto-fill,minmax(104px,1fr))}
+.pp .it{padding:0;aspect-ratio:208/300}.pp .it img{width:100%;height:100%;object-fit:contain;display:block}
+.pp .it .itname{display:flex;align-items:center;justify-content:center;height:100%;padding:8px;text-align:center}
+.pp .it.spent,.pp .it.consumed{opacity:1;text-decoration:none}.pp .it.spent img{filter:brightness(.55)}.pp .it.consumed img{filter:grayscale(1) brightness(.4)}
+.pp .it .itst{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-12deg);padding:2px 10px;border:2px solid var(--accent);border-radius:6px;background:rgba(18,15,11,.8);color:var(--accent);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.pp .it.consumed .itst{border-color:#c98a8a;color:#c98a8a}
+/* Info tab: steppers as [-] value [+] with touch-size buttons */
+.pp .statrow .sp{display:flex;align-items:center;gap:6px}.pp .statrow .spc{display:contents}
+.pp .statrow .spc button{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:8px;background:#2d2519;color:var(--text)}
+.pp .statrow .spc button:first-child{order:2}.pp .statrow .spc button:last-child{order:0}.pp .statrow .edv{order:1;min-width:52px;text-align:center;font-size:18px}
+.pp .statrow .spc button svg{width:16px;height:16px}
+.pp .statrow .spc button:first-child svg{transform:none}
+.pp .hbtns .sm{min-height:34px;padding:0 12px}
+

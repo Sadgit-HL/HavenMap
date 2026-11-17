@@ -31,6 +31,7 @@ import { REPUTATION_SECTIONS } from '../scripts/games/gh2_reputation.js';
 import { PROSPERITY_SECTIONS, PROSPERITY_ITEMS, IMBUEMENT_SECTIONS } from '../scripts/games/gh2_prosperity.js';
 import { frontOf as eventFront, EVENT_TABLE } from '../scripts/campaign/events.js';
 import { buildCard } from '../scripts/amd/card.js';
+import { createPreview, SHARE } from './preview.js';
 import { deckOf, drawState, amdAct, perkList } from '../scripts/campaign/amdDeck.js';
 import { heroCatalog, heroPerkClass } from '../scripts/amd/heroDeck.js';
 import { PERSONAL_QUESTS } from '../scripts/games/gh2_quests.js';
@@ -40,19 +41,21 @@ import { buildFlow, LANES, laneOf } from '../scripts/campaign/flow.js?v=2';
 import { RESOURCES, RESOURCE_GAMES } from '../scripts/games/resources.js';
 import { characterTraits } from '../scripts/campaign/outcomes.js';
 import { SPECIAL_TRAITS, specialName } from '../scripts/campaign/traits.js';
-import { eventsHtml, evInit, evClick, evChange, evSubmit, evOutside, evDragStart, evDragOver, evDrop, evDragEnd } from './eventsView.js?v=38';
+import { eventsHtml, evInit, evClick, evChange, evSubmit, evOutside, evDragStart, evDragOver, evDrop, evDragEnd } from './eventsView.js?v=39';
 
 const PAGE_TABS = ['Overview', 'Mercenaries', 'Items', 'Events', 'Scenarios', 'Resources', 'Cards', 'History'];
 const main = document.getElementById('main');
 const tabsEl = document.getElementById('tabs');
 const undoBtn = document.getElementById('undo');
+const pageBtn = document.getElementById('pageBtn'), pageSheetEl = document.getElementById('pageSheet');
+let pageSheet = false;   // the page menu of the phone header is open
 let record = null;
 let tab = 'Overview';              // top-level tab
 let sub = '';                      // sub-tab under Mercenaries: a character id or 'add'
 const editPages = new Set();        // pages (top-level tabs) currently in edit mode; each page has its own Edit button
 let editing = false;               // derived in render(): is the visible page being edited
 const history = [];                                   // earlier records for undo, newest last
-const view = { flowFull: false, scnView: 'table', logKind: 'all', flowShow: 'progress', flowLane: '', flowZoom: 'm', scnSel: null, scnStatus: '', scnSearch: '', scnSort: { col: '', dir: 1 }, itemSlot: '', itemSearch: '', itemShow: 'unlocked', itemView: 'list', itemSize: 'm', itemSort: { col: '', dir: 1 }, cardType: 'abilities', cardSlot: '', cardChk: '', cardKind: 'city', cardSide: 'front', cardDeck: '', cardMon: '', cardMLv: '', cardShow: 'unlocked', cardCls: '', cardLv: '', cardSearch: '', cardSize: 's', cardStk: true };   // itemView: 'list' | 'grid'
+const view = { flowFull: false, scnView: 'table', logKind: 'all', flowShow: 'progress', flowLane: '', flowZoom: 'm', scnSel: null, scnStatus: '', scnSearch: '', scnSort: { col: '', dir: 1 }, itemSlot: '', itemSearch: '', itemShow: 'unlocked', itemView: 'list', itemSel: null, itemSize: 'm', itemSort: { col: '', dir: 1 }, cardType: 'abilities', cardSlot: '', cardChk: '', cardKind: 'city', cardSide: 'front', cardDeck: '', cardMon: '', cardMLv: '', cardShow: 'unlocked', cardCls: '', cardLv: '', cardSearch: '', cardSize: 's', cardStk: true };   // itemView: 'list' | 'grid'
 
 // Level order of ability cards: 1, X (the level 1.1 cards), 2 ... 9, then M (mastery).
 const lvRank = lv => ({ X: 1.5, M: 99, a: 1.1, b: 1.2 }[lv] ?? Number(lv));   // a and b: the Jaws of the Lion level A and B cards
@@ -167,20 +170,35 @@ function renderTabs() {
     `<button type="button" role="tab" aria-selected="${t === tab}" data-tab="${esc(t)}">${esc(t)}</button>`).join('');
   document.getElementById('title').textContent = record?.name ? `Campaign: ${record.name}` : 'Campaign';
   undoBtn.disabled = !history.length;
+  // phone header: the page name opens a sheet with every page (touch.css)
+  pageBtn.innerHTML = `<span class="pbcamp">${esc(record?.name || 'Campaign')}</span><span class="pbtab">${esc(tab)}<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>`;
+  pageBtn.setAttribute('aria-expanded', String(pageSheet));
+  pageSheetEl.hidden = !pageSheet;
+  pageSheetEl.innerHTML = pageSheet ? `<div class="bsheet" role="dialog" aria-modal="true" aria-label="Pages"><div class="bsgrab" aria-hidden="true"></div><div class="pagelist">${PAGE_TABS.map(t => `<button type="button" data-tab="${esc(t)}"${t === tab ? ' aria-current="page"' : ''}>${esc(t)}</button>`).join('')}</div></div>` : '';
 }
-tabsEl.addEventListener('click', e => {
-  const t = e.target.closest('[data-tab]')?.dataset.tab;
-  if (!t || !PAGE_TABS.includes(t)) return;
-  tab = t;
+function selectTab(t) {
+  if (!PAGE_TABS.includes(t)) return;
+  tab = t; pageSheet = false;
   render();
   try { localStorage.setItem('havenmap.campaign.tab', t); } catch { /* ignore */ }
+}
+tabsEl.addEventListener('click', e => selectTab(e.target.closest('[data-tab]')?.dataset.tab));
+pageBtn.addEventListener('click', () => { pageSheet = !pageSheet; renderTabs(); });
+pageSheetEl.addEventListener('click', e => {
+  const t = e.target.closest('[data-tab]')?.dataset.tab;
+  if (t) selectTab(t); else if (e.target === pageSheetEl) { pageSheet = false; renderTabs(); }
 });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && pageSheet) { pageSheet = false; renderTabs(); e.stopImmediatePropagation(); } }, true);
+// the header height, for layouts that fill the rest of the window (the phone view of the Mercenaries tab)
+new ResizeObserver(() => document.documentElement.style.setProperty('--hdrh', `${document.querySelector('body > header').offsetHeight}px`)).observe(document.querySelector('body > header'));
 
 // --- views ----------------------------------------------------------------------------------------------
 
 function table(head, rows) {
   return `<table><tr>${head.map(h => `<th>${h}</th>`).join('')}</tr>${rows.join('')}</table>`;
 }
+// Data tables of the list pages (Items, Scenarios): the shared table look of style.css (.dtable), columns by the class.
+const dataTable = (cls, head, rows) => table(head, rows).replace('<table>', `<table class="dtable ${cls}">`);
 // Overview tables: the box scrolls sideways on a phone instead of widening the page; the header is a small muted label.
 const ovTable = (head, rows) => `<div class="tablewrap">${table(head, rows).replace('<table>', '<table class="ovtable">')}</div>`;
 // Empty state of an Overview list: one muted line.
@@ -204,6 +222,11 @@ function classChip(r, name) {
 const partyAvg = r => (r.chars.length ? r.chars.reduce((s, c) => s + (c.lv || 0), 0) / r.chars.length : r.party.avg);
 const avgText = avg => (Number.isInteger(avg) ? avg : avg.toFixed(2));
 
+// A scenario count with its share of all scenarios: label, bar, count and percentage in one row.
+const scnRow = (label, n, total, cls) => {
+  const pct = total ? Math.round((n / total) * 100) : 0;
+  return `<div class="kv scnrow ${cls}" title="${esc(n)} of ${esc(total)} scenarios ${esc(label.toLowerCase())}"><span>${esc(label)}</span><span class="scnbar" role="progressbar" aria-label="${esc(label)} scenarios" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><i style="width:${pct}%"></i></span><span class="scnn">${esc(n)}</span><span class="scnpct">${pct}%</span></div>`;
+};
 function overview(r) {
   const { counts, days, avgDays } = scenarioCounts(r);
   // The marker shows its value next to it; near the right end the label goes to the left of the marker.
@@ -225,17 +248,19 @@ function overview(r) {
       ${kv('Enhancements', esc(r.enh.length))}</div>
     <div class="card"><h3>Prosperity</h3>${kv('Prosperity level', esc(prosperityLevel(r.pros)))}${kv('Prosperity checks', editPill('data-pros-open', 'Prosperity checks', r.pros))}${kv('Great Oak sanctuary', editPill('data-don-open', 'Great Oak sanctuary', r.don))}${kv('Imbuement', editPill('data-imb-open', 'Imbuement', r.imb))}</div>
     <div class="card"><h3>Reputation${modalBtn('data-rep-open', 'reputation')}</h3>${rep('Demons', 'demons')}${rep('Merchants', 'merchants')}${rep('City Guard', 'guard')}</div>
-    <div class="card"><h3>Scenarios</h3>${[2, 1, 0, 3].map(i => kv(SCN_STATE_NAME[i], esc(counts[i] || 0))).join('')}${kv('Total', esc(SCENARIOS.length))}
+    <div class="card"><h3>Scenarios</h3>${[[SCN_STATE.COMPLETED, 'done'], [SCN_STATE.UNLOCKED, 'open'], [SCN_STATE.LOCKED, 'shut']].map(([i, cls]) => scnRow(SCN_STATE_NAME[i], counts[i] || 0, SCENARIOS.length, cls)).join('')}${kv(SCN_STATE_NAME[SCN_STATE.LOCKED_OUT], esc(counts[SCN_STATE.LOCKED_OUT] || 0))}${kv('Total', esc(SCENARIOS.length))}
       ${kv('Days played', esc(days))}${kv('Ø Days/scenario', esc(avgDays))}</div>
   </div>
-  <h2>Campaign Stickers${modalBtn('data-stk-open', 'campaign stickers')}</h2>${r.stk.length ? `<div class="stickers">${r.stk.map(s => {
-    const st = STICKERS.find(x => x.name.toLowerCase() === String(s).toLowerCase());
-    return st ? `<figure class="sticker"><img src="${esc(st.img)}" alt="" loading="lazy"><figcaption>${esc(st.name)}</figcaption></figure>` : chip(s, 'warn');
-  }).join('')}</div>` : noneText('No stickers yet.')}
-  <h2>Unlocked Classes (${r.cls.length}/${availableSet(r).size})${modalBtn('data-cls-open', 'unlocked classes')}</h2><div class="chips">${r.cls.map(c => classChip(r, c)).join('')}</div>
-  <h2>Retired Characters${modalBtn('data-ret-open', 'retired characters')}</h2>${r.retired.length ? ovTable(['Class', 'Player', 'Name', 'Lv', 'Perks', 'Masteries', ''],
-    r.retired.map(x => `<tr><td>${esc(x.cls)}</td><td>${esc(x.player ?? '')}</td><td>${esc(x.name ?? '')}</td><td>${esc(x.lv ?? '')}</td><td>${esc(x.perks ?? '')}</td><td>${esc(x.masteries ?? '')}</td><td class="rowact"><button type="button" class="editbtn editicon secedit" data-ret-open title="Edit retired characters" aria-label="Edit retired characters">${PENCIL}</button></td></tr>`)) : noneText('No retired characters yet.')}
-  <h2>Players${modalBtn('data-pl-open', 'players')}</h2>${r.players.length ? `<div class="chips">${r.players.map(p => chip(p.name)).join('')}</div>` : noneText('No players yet.')}
+  <div class="ovgrid">
+    <section class="card ovwide"><h3>Unlocked classes <span class="ovcount">${r.cls.length} of ${availableSet(r).size}</span>${modalBtn('data-cls-open', 'unlocked classes')}</h3><div class="chips">${r.cls.map(c => classChip(r, c)).join('')}</div></section>
+    <section class="card"><h3>Players${modalBtn('data-pl-open', 'players')}</h3>${r.players.length ? `<div class="chips">${r.players.map(p => chip(p.name)).join('')}</div>` : noneText('No players yet.')}</section>
+    <section class="card ovwide"><h3>Retired characters${modalBtn('data-ret-open', 'retired characters')}</h3>${r.retired.length ? ovTable(['Class', 'Player', 'Name', '<span class="num">Lv</span>', '<span class="num">Perks</span>', '<span class="num">Masteries</span>'],
+      r.retired.map(x => `<tr><td>${esc(x.cls)}</td><td>${esc(x.player ?? '')}</td><td>${esc(x.name ?? '')}</td><td class="num">${esc(x.lv ?? '')}</td><td class="num">${esc(x.perks ?? '')}</td><td class="num">${esc(x.masteries ?? '')}</td></tr>`)) : noneText('No retired characters yet.')}</section>
+    <section class="card"><h3>Campaign stickers${modalBtn('data-stk-open', 'campaign stickers')}</h3>${r.stk.length ? `<div class="stickers">${r.stk.map(s => {
+      const st = STICKERS.find(x => x.name.toLowerCase() === String(s).toLowerCase());
+      return st ? `<figure class="sticker"><img src="${esc(st.img)}" alt="" loading="lazy"><figcaption>${esc(st.name)}</figcaption></figure>` : chip(s, 'warn');
+    }).join('')}</div>` : noneText('No stickers yet.')}</section>
+  </div>
   </div>`;
 }
 
@@ -244,18 +269,18 @@ const HISTORY_SHOWN = 20;                           // entries listed per page
 const when = t => new Date(t).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
 function historyPage(r) {
   const log = r.log || [];
-  if (!log.length) return '<h2>History</h2><div class="empty">No edits recorded yet. Edits made from now on are listed here, by page.</div>';
+  if (!log.length) return '<div class="empty">No edits recorded yet. Edits made from now on are listed here, by page.</div>';
   const kinds = [...new Set(log.map(e => e.kind))].sort(), f = kinds.includes(view.logKind) ? view.logKind : 'all';
   const shown = log.filter(e => f === 'all' || e.kind === f);
-  const bar = `<div class="histbar"><label for="logfilter">Show</label><select id="logfilter" data-logkind><option value="all">All</option>${kinds.map(k => `<option${k === f ? ' selected' : ''}>${esc(k)}</option>`).join('')}</select><span class="hn">${shown.length} entries</span></div>`;
-  if (!shown.length) return `<h2>History</h2>${bar}<div class="empty">No changes of this kind.</div>`;
+  const bar = `<div class="histbar filters"><label for="logfilter">Show</label><select id="logfilter" data-logkind><option value="all">All</option>${kinds.map(k => `<option${k === f ? ' selected' : ''}>${esc(k)}</option>`).join('')}</select><span class="hn">${shown.length} entries</span></div>`;
+  if (!shown.length) return `${bar}<div class="empty">No changes of this kind.</div>`;
   const groups = LOG_TABS.map(tabName => {
     const list = shown.filter(e => e.tab === tabName).reverse();
     if (!list.length) return '';
     const rows = list.slice(0, HISTORY_SHOWN).map(e => `<tr><td class="nowrap">${esc(when(e.t))}</td><td>${esc(e.u)}</td><td>${esc(e.kind)}</td><td>${esc(e.d)}</td></tr>`);
-    return `<h2>${esc(tabName)} <span class="hint">(${list.length})</span></h2>${table(['Time', 'User', 'Type', 'Change'], rows)}`;
+    return `<section class="card histcard"><h3>${esc(tabName)} <span class="ovcount">${list.length}</span></h3>${dataTable('histtable', ['Time', 'User', 'Type', 'Change'], rows)}</section>`;
   }).join('');
-  return bar + groups;
+  return bar + `<div class="histpage">${groups}</div>`;
 }
 
 // --- the scenario flowchart -------------------------------------------------------------------------------------------------
@@ -264,7 +289,8 @@ function historyPage(r) {
 // Chart sizes: fixed scales, and 'fit' = as wide as the box (computed in flowchart()). Fullscreen (view.flowFull) shows the chart over the whole window.
 const FLOW_ZOOM = { s: 0.6, m: 0.85, l: 1.2, xl: 1.6, xxl: 2, fit: 0 };
 const FLOW_ZOOM_LABEL = { s: 'S', m: 'M', l: 'L', xl: 'XL', xxl: 'XXL', fit: 'Fit' };
-const scnViewToggle = () => `<div class="imgmode viewmode" role="group" aria-label="Scenario view">${[['table', 'Table'], ['flow', 'Flowchart']].map(([v, l]) => `<button type="button" data-scnview="${v}" aria-pressed="${view.scnView === v}">${l}</button>`).join('')}</div>`;
+// The row below the toolbar (as on the Cards tab): the view switch and, for the table, the number of scenarios listed.
+const scnViewToggle = n => `<div class="imgmode viewmode" role="group" aria-label="Scenario view">${[['table', isPhone() ? 'List' : 'Table'], ['flow', 'Flowchart']].map(([v, l]) => `<button type="button" data-scnview="${v}" aria-pressed="${view.scnView === v}">${l}</button>`).join('')}${n == null ? '' : `<span class="ctrlhint">${n} scenarios</span>`}</div>`;
 // GeekRoller code builder/button/copy, shared by every "random X" roller (scenario, item, ...): one face per
 // candidate, e.g. 1custom5{1;9;10;13;17}. The roll itself happens on BGG, same as the attack-modifier decks'
 // "Copy GeekRoller code" button (scripts/decks.js) -- this just builds and copies the code, it never picks itself.
@@ -331,12 +357,12 @@ function flowPage(r) {
   const masked = n => st(n) === 0;
   const zoomBtns = `<div class="imgmode viewmode" role="group" aria-label="Chart size">${Object.entries(FLOW_ZOOM_LABEL).map(([k, l]) => `<button type="button" data-flowzoom="${k}" aria-pressed="${view.flowZoom === k}" title="Chart size ${l}${k === 'fit' ? ' (as wide as the window)' : ''}">${l}</button>`).join('')}</div>`;
   const fsBtn = `<button type="button" class="editbtn editicon" data-flowfull aria-pressed="${!!full}" title="${full ? 'Exit fullscreen' : 'Fullscreen'}" aria-label="${full ? 'Exit fullscreen' : 'Fullscreen'}">${FULLSCREEN_ICON}</button>`;
-  const filters = `<div class="filters">${scnViewToggle()}
+  const filters = `<div class="filters">
     <select id="flowShow">${[['progress', 'Progress and next steps'], ['all', 'All scenarios']].map(([v, l]) => `<option value="${v}" ${view.flowShow === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
     <select id="flowLane"><option value="">All storylines</option>${LANES.map(l => `<option ${view.flowLane === l ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>
     ${zoomBtns}${fsBtn}
     ${scenarioRollerBtn(r)}</div>`;
-  if (!g.nodes.length) return filters + '<div class="empty">No scenarios to show yet.</div>';
+  if (!g.nodes.length) return filters + scnViewToggle() + '<div class="empty">No scenarios to show yet.</div>';
   const lanes = g.lanes.map((l, i) => `<rect class="flane${i % 2 ? ' alt' : ''}" x="0" y="${l.y}" width="${g.width}" height="${l.h}"/><text class="flabel" x="8" y="${l.y + 18}">${esc(l.name)}</text>`).join('');
   const edges = g.edges.map(e => `<path class="fedge${st(e.from) === 2 ? ' on' : ''}" d="${e.d}" marker-end="url(#farrow)"/>`).join('');
   const nodes = g.nodes.map(n => {
@@ -350,7 +376,7 @@ function flowPage(r) {
   const svg = `<svg class="flowsvg" width="${Math.round(g.width * z)}" height="${Math.round(g.height * z)}" viewBox="0 0 ${g.width} ${g.height}" role="img" aria-label="Scenario flowchart">
     <defs><marker id="farrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="farrowhead"/></marker></defs>${lanes}${edges}${nodes}</svg>`;
   if (full) return `<div class="flowwrap full"><div class="flowfsbar">${zoomBtns}${fsBtn}${scenarioRollerBtn(r)}</div>${svg}</div>`;
-  return filters + `<div class="flowwrap">${svg}</div>`;
+  return filters + scnViewToggle() + `<div class="flowwrap">${svg}</div>`;
 }
 
 // Details of the selected scenario, shown in a modal (scnModalRoot below) so it's reachable regardless of scroll
@@ -409,13 +435,17 @@ function scenarios(r) {
   const sortTh = (k, l) => `<button type="button" class="sortbtn" data-scnsort="${k}" title="Sort by ${esc(l.toLowerCase())}">${esc(l)}${col === k ? (dir > 0 ? ' &#9650;' : ' &#9660;') : ''}</button>`;
   const head = [sortTh('n', '#'), sortTh('name', 'Name'), sortTh('area', 'Area'), sortTh('state', 'State'), sortTh('l', 'Lv'),
     sortTh('p', '# Mercenaries'), sortTh('ch', 'Chests'), sortTh('d', 'Date (completed)'), 'Unlocks', 'Unlocked by'];
-  const filters = `<div class="filters">${scnViewToggle()}
+  const filters = `<div class="filters">
     <select id="scnStatus"><option value="">All states</option>${SCN_STATE_NAME.map((n, i) => `<option value="${i}" ${view.scnStatus === String(i) ? 'selected' : ''}>${n}</option>`).join('')}</select>
     <input id="scnSearch" type="search" placeholder="Search number, name, area" value="${esc(view.scnSearch)}">
-    ${scenarioRollerBtn(r)}</div>`;
-  return filters + table(head, rows.map(s => {
+    <span class="tbend">${scenarioRollerBtn(r)}</span></div>`;
+  if (isPhone()) return filters + scnViewToggle(rows.length) + (rows.length ? `<div class="mlist">${rows.map(s => {
+    const x = r.scn[String(s.n)] || { s: 0 }, sub = [s.area, x.d].filter(Boolean).map(esc).join(' &middot; ');
+    return `<button type="button" class="mrow" data-flow="${s.n}"><span class="mnum">${esc(s.n)}</span><span class="mmain"><b>${esc(s.name)}</b>${sub ? `<small>${sub}</small>` : ''}</span><span class="spill s${x.s}">${SCN_STATE_NAME[x.s]}</span></button>`;
+  }).join('')}</div>` : none);
+  return filters + scnViewToggle(rows.length) + dataTable('scntable', head, rows.map(s => {
     const x = r.scn[String(s.n)] || { s: 0 };
-    return `<tr class="rowlink" data-flow="${s.n}" tabindex="0"><td>${esc(s.n)}</td><td>${esc(s.name)}</td><td>${esc(s.area ?? '')}</td><td class="s${x.s}">${SCN_STATE_NAME[x.s]}</td>
+    return `<tr class="rowlink" data-flow="${s.n}" tabindex="0"><td>${esc(s.n)}</td><td>${esc(s.name)}</td><td>${esc(s.area ?? '')}</td><td><span class="spill s${x.s}">${SCN_STATE_NAME[x.s]}</span></td>
       <td>${esc(signed(x.l) ?? '')}</td>
       <td>${esc(x.p ?? '')}</td>
       <td>${esc((x.ch || []).join(', '))}</td>
@@ -461,7 +491,7 @@ function mercenaries(r) {
   const cur = currentSub();
   const bar = `<nav class="subtabs" role="tablist">${subTabList().map(t =>
     `<button type="button" role="tab" aria-selected="${t.id === cur}" data-sub="${esc(t.id)}"${t.title ? ` title="${esc(t.title)}"` : ''}>${esc(t.label)}</button>`).join('')}</nav>`;
-  if (cur !== 'add' && !isPhone()) return characterTab(r, cur);                    // on the playmat the character is switched from the name in the top bar
+  if (cur !== 'add') return characterTab(r, cur);                                  // the character is switched from the name in the top bar (playmat and phone)
   return `<div class="subbar">${bar}</div>` + (cur === 'add' ? addTab(r) : characterTab(r, cur));
 }
 
@@ -480,10 +510,13 @@ function portraitStyle(c, size) {
 const pm = { modal: null, matSide: 'front', histKind: 'all', jtab: 'goal', bgv: null, pqv: null, notesPreview: false, amd: {}, amZoom: null, dtab: 'hand', hsel: {}, hsArmed: false, itemId: null, isel: {}, ptab: 'cards', sheet: null, mkKey: null, mkSel: null, pileZ: null, cf: null, mkIdx: -1, chMenu: false, hview: 'hand', amEdit: false };   // amd = draw state per character (not saved)
 const CODES_KEY = 'havenmap.campaign.codes';
 // Display settings of the playmat (gear in the top bar), kept in this browser.
-// Narrow screens get the phone view (campaign/phone.js) instead of the playmat.
-const phoneMQ = window.matchMedia('(max-width: 700px)');
+// Phones (700 px wide or less, or 500 px high or less: a phone held sideways) get the touch layout: the phone view of the Mercenaries
+// tab (campaign/phone.js) instead of the playmat, the page menu in the header, modals as bottom sheets (campaign/touch.css, html.phone).
+const phoneMQ = window.matchMedia('(max-width: 700px), (max-height: 500px)');
 const isPhone = () => phoneMQ.matches;
-phoneMQ.addEventListener?.('change', () => { if (record && tab === 'Mercenaries') render(); });
+const markPhone = () => document.documentElement.classList.toggle('phone', isPhone());
+markPhone();
+phoneMQ.addEventListener?.('change', () => { markPhone(); pageSheet = false; pm.sheet = null; if (record) render(); });
 const SET_KEY = 'havenmap.campaign.pmset';
 let pmset = (() => { try { return cleanSettings(JSON.parse(localStorage.getItem(SET_KEY) || 'null')); } catch { return cleanSettings(null); } })();
 const saveSet = () => { try { localStorage.setItem(SET_KEY, JSON.stringify(pmset)); } catch { /* ignore */ } };
@@ -548,13 +581,13 @@ function items(r) {
     if (q && !(r.items.unl.includes(i.id) && pretty(i.slug).toLowerCase().includes(q) || String(i.id).toLowerCase() === q)) return false;
     return true;
   });
+  const viewToggle = `<div class="imgmode viewmode" role="group" aria-label="Items view">${
+    [['list', isPhone() ? 'List' : 'Table'], ['grid', 'Cards']].map(([m, l]) => `<button type="button" data-itemview="${m}" aria-pressed="${view.itemView === m}">${l}</button>`).join('')}${view.itemView === 'grid' ? `<span class="sizesel">${[['s', 'S'], ['m', 'M'], ['l', 'L']].map(([k, l]) => `<button type="button" data-itemsize="${k}" aria-pressed="${view.itemSize === k}" title="Tile size ${l}">${l}</button>`).join('')}</span>` : ''}<span class="ctrlhint">${rows.length} items</span></div>`;
   const filters = `<div class="filters"><select id="itemSlot"><option value="">All slots</option>${slots.map(s => `<option ${view.itemSlot === s ? 'selected' : ''}>${esc(s)}</option>`).join('')}</select>
     <select id="itemShow">${[['all', 'All items'], ['unlocked', 'Unlocked'], ['shop', 'In the shop']].map(([v, l]) => `<option value="${v}" ${view.itemShow === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
     <input id="itemSearch" type="search" placeholder="Search item name" value="${esc(view.itemSearch)}">
-    ${itemRollerBtn(r)}
-    <button type="button" class="editbtn editicon" data-pageedit aria-pressed="${editing}" aria-label="${editing ? 'Stop editing items' : 'Edit items'}" title="${editing ? 'Stop editing items' : 'Edit items'}">${PENCIL}</button></div>`;
-  const viewToggle = `<div class="imgmode viewmode" role="group" aria-label="Items view">${
-    [['list', 'Table'], ['grid', 'Cards']].map(([m, l]) => `<button type="button" data-itemview="${m}" aria-pressed="${view.itemView === m}">${l}</button>`).join('')}${view.itemView === 'grid' ? `<span class="sizesel">${[['s', 'S'], ['m', 'M'], ['l', 'L']].map(([k, l]) => `<button type="button" data-itemsize="${k}" aria-pressed="${view.itemSize === k}" title="Tile size ${l}">${l}</button>`).join('')}</span>` : ''}<span class="ctrlhint">${rows.length} items${view.itemView === 'list' ? ' · hold Ctrl over a row for the card' : ''}</span></div>`;
+    <span class="tbend">${itemRollerBtn(r)}
+    <button type="button" class="editbtn editicon" data-pageedit aria-pressed="${editing}" aria-label="${editing ? 'Stop editing items' : 'Edit items'}" title="${editing ? 'Stop editing items' : 'Edit items'}">${PENCIL}</button></span></div>`;
   const holders = id => r.chars.filter(c => ownsItem(c, id)).map(c => c.name).join(', ');
   // who owns an item (a chip per owner; x takes the copy back to the shop) and the menu that gives a copy to a character
   const ownerChips = i => r.chars.filter(c => ownsItem(c, i.id)).map(c => `<span class="chip">${esc(c.name)}<button type="button" class="chx" data-returnitem="${esc(c.id)}|${esc(i.id)}" aria-label="Take ${esc(pretty(i.slug))} back from ${esc(c.name)}" title="Back to the shop">&times;</button></span>`).join('');
@@ -592,14 +625,43 @@ function items(r) {
   if (SORT[col]) rows.sort((x, y) => dir * cmp(SORT[col](x), SORT[col](y)) || cmp(SORT.id(x), SORT.id(y)));
   const head = [['id', '#'], ['name', 'Item'], ['slot', 'Slot'], ['kind', 'Type'], ['unl', 'Unlocked'], ['n', 'Copies'], ['used', 'In use'], ['shop', 'In shop'], ['with', 'With']]
     .map(([k, l]) => `<button type="button" class="sortbtn" data-itemsort="${k}" title="Sort by ${esc(l.toLowerCase())}">${l}${col === k ? (dir > 0 ? ' &#9650;' : ' &#9660;') : ''}</button>`);
-  return filters + viewToggle + table(head, rows.map(i => {
+  if (isPhone()) return filters + viewToggle + itemRows(r, rows) + itemSheet(r, ownerChips);
+  return filters + viewToggle + dataTable('itemtable', head, rows.map(i => {
     const unl = r.items.unl.includes(i.id);
-    const unlCell = editing ? `<input type="checkbox" data-act="itemUnl" data-id="${esc(i.id)}" ${unl ? 'checked' : ''}>` : `<input type="checkbox" disabled ${unl ? 'checked' : ''} aria-label="${unl ? 'unlocked' : 'locked'}">`;
+    const unlCell = editing ? `<input type="checkbox" data-act="itemUnl" data-id="${esc(i.id)}" ${unl ? 'checked' : ''}>` : unl ? '<span class="tick" aria-label="unlocked">&#10003;</span>' : '<span class="tick no" aria-label="locked">&ndash;</span>';
     const usedCell = unl ? esc(itemsInUse(r, i)) : '';   // calculated from the character tabs, not editable
     const pic = (unl || editing) && itemImageUrl(i);   // locked items stay hidden for players
     return `<tr class="${unl ? '' : 's0'}"${pic ? ` data-img="${esc(pic)}"` : ''}><td>${esc(i.id)}</td><td>${unl ? esc(pretty(i.slug)) : 'Locked item'}</td><td>${esc(i.slot ?? '')}</td><td>${esc(i.kind === 'qm' ? 'QM' : i.kind)}</td>
       <td>${unlCell}</td><td>${esc(i.n)}</td><td>${usedCell}</td><td>${unl ? esc(shopCopies(r, i)) : ''}</td><td>${unl ? `<span class="itemwith">${ownerChips(i)}${giveMenu(i)}</span>` : ''}</td></tr>`;
   }));
+}
+
+// Phone: the items as rows (number, name, slot and copies in the shop, who has it); a tap opens the item sheet. A locked item has no
+// name and opens only in edit mode (to unlock it).
+function itemRows(r, rows) {
+  if (!rows.length) return none;
+  return `<div class="mlist">${rows.map(i => {
+    const unl = r.items.unl.includes(i.id), open = unl || editing, who = r.chars.filter(c => ownsItem(c, i.id)).map(c => c.name).join(', ');
+    const sub = unl ? `${esc(i.slot ?? '')} &middot; ${esc(shopCopies(r, i))} of ${esc(i.n)} in the shop` : 'Locked';
+    return `<${open ? 'button type="button"' : 'div'} class="mrow${unl ? '' : ' s0'}"${open ? ` data-itemsel="${esc(i.id)}"` : ''}><span class="mnum">${esc(i.id)}</span><span class="mmain"><b>${unl ? esc(pretty(i.slug)) : 'Locked item'}</b><small>${sub}</small></span>${who ? `<span class="mend">${esc(who)}</span>` : ''}</${open ? 'button' : 'div'}>`;
+  }).join('')}</div>`;
+}
+// Phone: the sheet of one item: picture, numbers, owners (x takes a copy back), a button per character to give a copy, Lock or Unlock
+// in edit mode.
+function itemSheet(r, ownerChips) {
+  const i = view.itemSel == null ? null : ITEMS.find(x => String(x.id) === String(view.itemSel));
+  if (!i) return '';
+  const unl = r.items.unl.includes(i.id);
+  if (!unl && !editing) return '';
+  const url = itemImageUrl(i), name = unl ? pretty(i.slug) : 'Locked item';
+  const takers = unl && shopCopies(r, i) > 0 ? r.chars.filter(c => !ownsItem(c, i.id)) : [];
+  return `<div class="modal" id="itemSheet" role="dialog" aria-modal="true" aria-labelledby="itemSheetTitle"><div class="modalbox itemsheet">
+    <button type="button" class="modalx" data-itemclose aria-label="Close">&times;</button><h3 id="itemSheetTitle">${esc(name)}</h3>
+    <div class="isbody">${url ? `<img src="${esc(url)}" alt="" draggable="false">` : ''}<div class="isfacts">${kv('Number', esc(i.id))}${kv('Slot', esc(i.slot ?? ''))}${kv('Type', esc(i.kind === 'qm' ? 'QM' : i.kind ?? ''))}${kv('Copies', esc(i.n))}${unl ? kv('In use', esc(itemsInUse(r, i))) + kv('In the shop', esc(shopCopies(r, i))) : ''}</div></div>
+    ${unl ? `<h4>With</h4><div class="itemwith">${ownerChips(i) || '<span class="hint">Nobody</span>'}</div>` : ''}
+    ${takers.length ? `<h4>Give to</h4><div class="isgive">${takers.map(c => `<button type="button" data-giveto="${esc(c.id)}|${esc(i.id)}">${esc(c.name)}</button>`).join('')}</div>` : ''}
+    ${editing ? `<div class="isedit"><button type="button" class="btn" data-act="itemToggle" data-id="${esc(i.id)}">${unl ? 'Lock this item' : 'Unlock this item'}</button></div>` : ''}
+  </div></div>`;
 }
 
 function events(r) { return eventsHtml(r); }
@@ -617,11 +679,11 @@ function hydrateAm() {
 }
 
 // The card browser: ability cards of the classes the campaign has unlocked; the Show filter switches to all classes.
-// With "unlocked" the other classes are never listed or matched by a search, so the page cannot reveal them. Filters: class, level, name. Ctrl+hover (tap on touch) enlarges a card.
+// With "unlocked" the other classes are never listed or matched by a search, so the page cannot reveal them. Filters: class, level, name. Cards get the shared card preview (campaign/preview.js).
 function cardsPage(r) {
   const typeSel = `<select id="cardType" aria-label="Card type">${[['abilities', 'Character abilities'], ['am', 'Attack modifiers'], ['goals', 'Battle goals'], ['mats', 'Character mats'], ['events', 'Events'], ['items', 'Items'], ['monsters', 'Monster abilities'], ['stats', 'Monster stat cards'], ['pq', 'Personal quests']].sort((a, b) => a[1].localeCompare(b[1])).map(([v, l]) => `<option value="${v}" ${view.cardType === v ? 'selected' : ''}>${l}</option>`).join('')}</select>`;
   const showSel = `<select id="cardShow">${[['unlocked', { items: 'Unlocked items', goals: 'Drawn goals', events: 'Discarded events', am: 'Unlocked classes', mats: 'Unlocked classes' }[view.cardType] || 'Unlocked classes'], ['all', { items: 'All items', goals: 'All goals', events: 'All events' }[view.cardType] || 'All classes']].map(([v, l]) => `<option value="${v}" ${view.cardShow === v ? 'selected' : ''}>${l}</option>`).join('')}</select>`;
-  const sizeBar = n => `<div class="imgmode viewmode" role="group" aria-label="Tile size">${[['s', 'S'], ['m', 'M'], ['l', 'L']].map(([k, l]) => `<button type="button" data-cardsize="${k}" aria-pressed="${view.cardSize === k}" title="Tile size ${l}">${l}</button>`).join('')}<span class="ctrlhint">${n} cards &middot; hold Ctrl over a card to enlarge it</span></div>`;
+  const sizeBar = n => `<div class="imgmode viewmode" role="group" aria-label="Tile size">${[['s', 'S'], ['m', 'M'], ['l', 'L']].map(([k, l]) => `<button type="button" data-cardsize="${k}" aria-pressed="${view.cardSize === k}" title="Tile size ${l}">${l}</button>`).join('')}<span class="ctrlhint">${n} cards</span></div>`;
   if (view.cardType === 'stats') {
     // Monster stat cards of the 50 Gloomhaven 2nd Edition monsters, one picture per monster level 0 to 7 (300x162, so the tiles are wider
     // than for other cards). No unlocked state for monsters: no Show filter. A search matches the monster name.
@@ -639,7 +701,7 @@ function cardsPage(r) {
     return filters + sizeBar(rows.length) + (rows.length ? `<div class="itemgrid" style="grid-template-columns:repeat(auto-fill,minmax(min(${w}px,100%),${w}px))">${rows.map(({ m, l }) => {
       const url = imageFile(`images/gh2/monsters/stats/${m.title.replace(/ /g, '_').toLowerCase()}_${l}`, '../');
       const name = `${pretty(m.title.replace(/ /g, '-'))} level ${l}`;
-      return `<figure class="itemtile" data-img="${esc(url)}" data-imgw="450" title="${esc(name)}: Ctrl+hover to enlarge"><img class="cardpic" src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false"><figcaption><span class="cname">${esc(name)}</span>${m.boss ? '<span class="badge">boss</span>' : ''}</figcaption></figure>`;
+      return `<figure class="itemtile" data-img="${esc(url)}" data-imgw="450" title="${esc(name)}"><img class="cardpic" src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false"><figcaption><span class="cname">${esc(name)}</span>${m.boss ? '<span class="badge">boss</span>' : ''}</figcaption></figure>`;
     }).join('')}</div>` : none);
   }
   if (view.cardType === 'pq') {
@@ -650,7 +712,7 @@ function cardsPage(r) {
     const filters = `<div class="filters">${typeSel}<input id="cardSearch" type="search" placeholder="Quest number" value="${esc(view.cardSearch)}"></div>`;
     return filters + sizeBar(rows.length) + (rows.length ? `<div class="itemgrid" style="--tile-min:${ITEM_SIZES[view.cardSize]}px">${rows.map(p => {
       const url = pqImageUrl(p), name = `Personal quest ${p.id}`;
-      return `<figure class="itemtile" data-img="${esc(url)}" data-imgw="440" title="${esc(name)}: Ctrl+hover to enlarge"><img class="cardpic" src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false"><figcaption><span class="cname">${esc(name)}</span></figcaption></figure>`;
+      return `<figure class="itemtile" data-img="${esc(url)}" data-imgw="440" title="${esc(name)}"><img class="cardpic" src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false"><figcaption><span class="cname">${esc(name)}</span></figcaption></figure>`;
     }).join('')}</div>` : none);
   }
   if (view.cardType === 'monsters') {
@@ -665,7 +727,7 @@ function cardsPage(r) {
       <input id="cardSearch" type="search" placeholder="Monster name" value="${esc(view.cardSearch)}"></div>`;
     return filters + sizeBar(rows.length) + (rows.length ? `<div class="itemgrid" style="--tile-min:${ITEM_SIZES[view.cardSize] + 90}px">${rows.map(c => {
       const url = imageFile(`images/gh2/monsters/monster-abilities/gh2-ma-${c.deck}-${c.n}`, '../'), name = `${pretty(c.deck)} ${c.n}`;
-      return `<figure class="itemtile" data-img="${esc(url)}" data-imgw="600" title="${esc(name)}: Ctrl+hover to enlarge"><img class="cardpic" src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false"><figcaption><span class="cname">${esc(name)}</span><span class="badge" title="Initiative ${c.init}${c.s ? ', shuffle' : ''}">${esc(c.init)}${c.s ? ' &#8635;' : ''}</span></figcaption></figure>`;
+      return `<figure class="itemtile" data-img="${esc(url)}" data-imgw="600" title="${esc(name)}"><img class="cardpic" src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false"><figcaption><span class="cname">${esc(name)}</span><span class="badge" title="Initiative ${c.init}${c.s ? ', shuffle' : ''}">${esc(c.init)}${c.s ? ' &#8635;' : ''}</span></figcaption></figure>`;
     }).join('')}</div>` : none);
   }
   if (view.cardType === 'mats') {
@@ -682,7 +744,7 @@ function cardsPage(r) {
     const w = { s: 300, m: 450, l: 600 }[view.cardSize];
     return filters + sizeBar(rows.length) + (rows.length ? `<div class="itemgrid" style="grid-template-columns:repeat(auto-fill,minmax(min(${w}px,100%),${w}px))">${rows.map(c => {
       const url = matImageUrl(c.name, view.cardSide);
-      return `<figure class="itemtile" data-img="${esc(url)}" data-imgw="600" title="${esc(c.name)}: click to open the full image, Ctrl+hover to enlarge"><a href="${esc(url)}" target="_blank" rel="noopener noreferrer"><img class="cardpic" src="${esc(url)}" alt="${esc(c.name)}" loading="lazy" draggable="false"></a><figcaption><span class="cname">${esc(c.name)}</span></figcaption></figure>`;
+      return `<figure class="itemtile" data-img="${esc(url)}" data-imgw="600" title="${esc(c.name)}"><a href="${esc(url)}" target="_blank" rel="noopener noreferrer"><img class="cardpic" src="${esc(url)}" alt="${esc(c.name)}" loading="lazy" draggable="false"></a><figcaption><span class="cname">${esc(c.name)}</span></figcaption></figure>`;
     }).join('')}</div>` : none);
   }
   if (view.cardType === 'am') {
@@ -696,7 +758,7 @@ function cardsPage(r) {
     const add = (card, className, isAdded, label, sub) => {
       if (q && !`${label} ${sub}`.toLowerCase().includes(q)) return;
       amSlots.push({ card, className, isAdded });
-      tiles.push(`<figure class="itemtile amtile" data-amzoom="${amSlots.length - 1}" title="${esc(`${sub}: ${label}`)}" style="cursor:zoom-in"><div data-am="${amSlots.length - 1}"></div><figcaption><span class="cname">${esc(label)}</span><span class="badge">${esc(sub)}</span></figcaption></figure>`);
+      tiles.push(`<figure class="itemtile amtile" data-amzoom="${amSlots.length - 1}" title="${esc(`${sub}: ${label}`)}"><div data-am="${amSlots.length - 1}"></div><figcaption><span class="cname">${esc(label)}</span><span class="badge">${esc(sub)}</span></figcaption></figure>`);
     };
     if (!view.cardCls || view.cardCls === '*') for (const [v, n] of AM_STANDARD) add({ kind: 'base', value: v }, null, false, v === 'null' ? 'Miss' : v, `Standard ×${n}`);
     if (view.cardCls !== '*') for (const c of classes) {
@@ -736,7 +798,7 @@ function cardsPage(r) {
       <input id="cardSearch" type="search" placeholder="Goal name or text" value="${esc(view.cardSearch)}"></div>`;
     return filters + sizeBar(rows.length) + (rows.length ? `<div class="itemgrid" style="--tile-min:${ITEM_SIZES[view.cardSize]}px">${rows.map(g => {
       const url = battleGoalImageUrl(g.slug), name = pretty(g.slug);
-      return `<figure class="itemtile" data-img="${esc(url)}" data-imgw="450" title="${esc(name)}: Ctrl+hover to enlarge"><img class="cardpic" src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false"><figcaption><span class="cname">${esc(name)}</span><span class="badge" title="Checkmarks">${'&#10003;'.repeat(g.chk)}</span></figcaption></figure>`;
+      return `<figure class="itemtile" data-img="${esc(url)}" data-imgw="450" title="${esc(name)}"><img class="cardpic" src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false"><figcaption><span class="cname">${esc(name)}</span><span class="badge" title="Checkmarks">${'&#10003;'.repeat(g.chk)}</span></figcaption></figure>`;
     }).join('')}</div>` : none);
   }
   if (view.cardType === 'items') {
@@ -818,15 +880,14 @@ function treasureEffectText(effect) {
 // Overview's "Treasures claimed" card (same r.decks.tre list). Always clickable -- claiming is a live play action,
 // not a structural edit, so it does not need the page's edit mode. A dense grid, not a table: one row per
 // treasure would be 79 lines tall for very little content per row.
+// Treasure index: the claimed treasures with their effect (a click on the tick undoes the claim), then the unclaimed numbers as a
+// grid of small buttons (a click claims). Unclaimed effects stay hidden.
 function treasureList(r) {
   const claimed = n => r.decks.tre.includes(n);
-  const cells = TREASURES.map(t => {
-    const got = claimed(t.n);
-    const pill = `<button type="button" class="pill ${got ? 'ok' : 'dim'}" data-trclaim="${t.n}" title="${got ? 'Claimed -- click to undo' : 'Mark claimed'}">${got ? '✓ Claimed' : 'Claim'}</button>`;
-    const effect = got ? esc(treasureEffectText(t.effect)) : '<span class="hint">?</span>';
-    return `<div class="trcell"><b>${esc(t.n)}</b><span class="treffect">${effect}</span>${pill}</div>`;
-  }).join('');
-  return `<h2>Treasure Index (${r.decks.tre.length}/${TREASURES.length} claimed)</h2><div class="treasuregrid">${cells}</div>`;
+  const got = TREASURES.filter(t => claimed(t.n)), open = TREASURES.filter(t => !claimed(t.n));
+  const rows = got.map(t => `<div class="trrow"><b>${esc(t.n)}</b><span class="treffect">${esc(treasureEffectText(t.effect))}</span><button type="button" class="pill ok" data-trclaim="${t.n}" title="Claimed: click to undo" aria-label="Treasure ${esc(t.n)} claimed, undo">&#10003;</button></div>`).join('');
+  const nums = open.map(t => `<button type="button" class="trnum" data-trclaim="${t.n}" title="Mark treasure ${esc(t.n)} claimed">${esc(t.n)}</button>`).join('');
+  return `<section class="card trcard"><h3>Treasure index <span class="ovcount">${got.length} of ${TREASURES.length} claimed</span></h3>${rows ? `<div class="trrows">${rows}</div>` : ''}${nums ? `<h4 class="trsub">Not claimed</h4><div class="trnums">${nums}</div>` : ''}</section>`;
 }
 
 // Links of the group's workbook "Resources" sheet (scripts/games/resources.js): one row per document, one column per game.
@@ -837,9 +898,13 @@ function resources(r) {
     if (editing) return `<input type="text" class="txt" style="width:100%" placeholder="(none)" data-act="resLink" data-key="${esc(game)}" data-id="${esc(x.title)}" value="${esc(u ?? '')}">`;
     return u ? `<a class="chip" href="${esc(u)}" target="_blank" rel="noopener noreferrer">Open</a>` : '';
   };
-  const heading = `<div class="pagebar" style="justify-content:space-between;align-items:center"><h2 style="margin:0">Resources</h2><button type="button" class="editbtn editicon" data-pageedit aria-pressed="${editing}" aria-label="${editing ? 'Stop editing resource links' : 'Edit resource links'}" title="${editing ? 'Stop editing resource links' : 'Edit resource links'}">${PENCIL}</button></div>`;
-  return treasureList(r) + heading + table(['', ...RESOURCE_GAMES.map(([, l]) => esc(l))], RESOURCES.map(x =>
-    `<tr><td>${esc(x.title)}${x.note ? ` <span class="hint" title="${esc(x.note)}">(note)</span>` : ''}</td>${RESOURCE_GAMES.map(([k]) => `<td>${cell(x, k)}</td>`).join('')}</tr>`));
+  const heading = `<h3>Documents<button type="button" class="editbtn editicon" data-pageedit aria-pressed="${editing}" aria-label="${editing ? 'Stop editing resource links' : 'Edit resource links'}" title="${editing ? 'Stop editing resource links' : 'Edit resource links'}">${PENCIL}</button></h3>`;
+  if (isPhone() && !editing) return `<div class="respage">${treasureList(r)}<section class="card">${heading}<div class="mlist">${RESOURCES.map(x => {   // phone: a row per document, a link per game
+    const links = RESOURCE_GAMES.filter(([k]) => url(x, k)).map(([k, l]) => `<a class="chip" href="${esc(url(x, k))}" target="_blank" rel="noopener noreferrer">${esc(l)}</a>`).join('');
+    return `<div class="mrow resrow"><span class="mmain"><b>${esc(x.title)}</b>${links ? `<span class="reslinks">${links}</span>` : ''}</span></div>`;
+  }).join('')}</div></section></div>`;
+  return `<div class="respage">${treasureList(r)}<section class="card">${heading}` + dataTable('restable', ['Document', ...RESOURCE_GAMES.map(([, l]) => esc(l))], RESOURCES.map(x =>
+    `<tr><td>${esc(x.title)}${x.note ? ` <span class="hint" title="${esc(x.note)}">(note)</span>` : ''}</td>${RESOURCE_GAMES.map(([k]) => `<td>${cell(x, k)}</td>`).join('')}</tr>`)) + '</section></div>';
 }
 
 // --- render and events ------------------------------------------------------------------------------------
@@ -1244,6 +1309,7 @@ document.addEventListener('keydown', e => {
   else if (repModal) closeRepModal();
   else if (retModal) closeRetModal();
   else if (view.scnSel != null) closeScnModal();
+  else if (view.itemSel != null && tab === 'Items') { view.itemSel = null; render(); }
   else if (view.flowFull) { view.flowFull = false; render(); }
 });
 
@@ -1299,6 +1365,7 @@ function phoneClick(e) {
   const c = pmChar();
   if (q('[data-ptab]')) { pm.ptab = q('[data-ptab]').dataset.ptab; pm.sheet = null; render(); return true; }
   if (q('[data-pmenu]')) { pm.sheet = { kind: 'menu' }; render(); return true; }
+  if (q('[data-pchars]')) { pm.sheet = { kind: 'chars' }; render(); return true; }
   if (q('[data-sheetclose]') || t.matches?.('.pp .sheetwrap')) { pm.sheet = null; render(); return true; }
   if (!c) return false;
   const to = q('[data-pto]');
@@ -1318,31 +1385,7 @@ function phoneClick(e) {
   return false;
 }
 
-// Display settings: the gear, the segmented choices, Reset, and click zoom (zones set to Click).
-function setClick(e) {
-  const q = sel => e.target.closest?.(sel);
-  const zoomed = main.querySelectorAll('.pm .zoomed');
-  const el = q('.pm .fan6 .ac, .pm .activelist .ac, .pm .flipcard.is-front, .pm .shelf6 .it, .pm .amv .stk, .pm .amv .mini');
-  if (!el) { zoomed.forEach(x => x.classList.remove('zoomed')); return false; }
-  if (el.matches('.stk, .mini')) {                                                                       // modifier cards: zone setting of the hand; a click zooms, a second click acts
-    if ((pmset.zones.hand || pmset.zoom) !== 'click' || q('.stkctl')) return false;
-    const was = el.classList.contains('zoomed');
-    zoomed.forEach(x => x.classList.remove('zoomed'));
-    if (was) return false;
-    el.style.setProperty('--hz', zoomScale(el));
-    el.classList.add('zoomed');
-    return true;
-  }
-  const isItem = el.classList.contains('it'), z = isItem ? 'items' : el.classList.contains('flipcard') ? 'play' : el.closest('.activelist') ? 'active' : 'hand';
-  if ((pmset.zones[z] || pmset.zoom) !== 'click') return false;
-  if (isItem && q('.tkh')) return false;                                                                 // the handle opens the item
-  const was = el.classList.contains('zoomed');
-  if (was && isItem) { zoomed.forEach(x => x.classList.remove('zoomed')); return false; }               // a second tap on a zoomed item opens it
-  if (was && coarse.matches && el.classList.contains('flipcard')) { el.classList.remove('zoomed'); flipPlayed(el); return true; }   // touch has no double click: the second tap flips
-  zoomed.forEach(x => x.classList.remove('zoomed'));
-  if (!was) { el.style.setProperty('--hz', zoomScale(el)); el.classList.add('zoomed'); }
-  return true;                                                                                           // a click zooms; a played card flips on a double click
-}
+// Display settings: the gear, the segmented choices and Reset.
 
 // Items: click an item to open it (state), the pencil opens the equip dialog, Slot sorts the shelf.
 function itemClick(e, c) {
@@ -1468,6 +1511,11 @@ main.addEventListener('click', e => {
   if (fz) { view.flowZoom = fz; render(); return; }
   const fn = e.target.closest('[data-flow]')?.dataset.flow;
   if (fn) { view.scnSel = Number(fn); render(); return; }
+  const isel = e.target.closest('[data-itemsel]')?.dataset.itemsel;
+  if (isel != null) { view.itemSel = isel; render(); return; }
+  if (e.target.closest('[data-itemclose]') || e.target.id === 'itemSheet') { view.itemSel = null; render(); return; }
+  const gt = e.target.closest('[data-giveto]')?.dataset.giveto;
+  if (gt) { const [cid, id] = gt.split('|'); commit(ed.giveItem(record, cid, id)); return; }
   const scnRollBtn = e.target.closest('[data-scnroll]');
   if (scnRollBtn) { copyRollerCode(scnRollBtn, scenarioRollerCode(record)); return; }
   const itemRollBtn = e.target.closest('[data-itemroll]');
@@ -1502,79 +1550,53 @@ main.addEventListener('click', e => {
   }
   const t = e.target.closest('[data-sub]')?.dataset.sub;
   if (!t) return;
-  sub = t; pm.chMenu = false;
+  sub = t; pm.chMenu = false; pm.sheet = null;
   render();
   try { localStorage.setItem('havenmap.campaign.sub', t); } catch { /* ignore */ }
 });
-// --- card image preview (hover mode) ----------------------------------------------------------------------------
-const preview = document.createElement('img');
-preview.id = 'cardPreview';
-preview.alt = '';
-document.body.appendChild(preview);
-const coarse = matchMedia('(pointer: coarse)');                 // touch: no hover, so a tap shows the picture instead
-let previewUrl = '';
-
-// Composed attack-modifier cards have no single picture: Ctrl+hover shows a built card at the same size as the other pictures.
-const amPreview = document.createElement('div');
-amPreview.id = 'amPreview';
-document.body.appendChild(amPreview);
-let amPreviewIdx = -1;
-function showAmPreview(idx, x, y) {
-  const s = amSlots[idx];
-  if (!s) return false;
-  if (idx !== amPreviewIdx) { amPreview.replaceChildren(buildCard(s.card, s.className, s.isAdded)); amPreviewIdx = idx; }   // rebuild only for another card: moving the pointer must not repaint the layers
-  const w = Math.min(previewW(), innerWidth - 16), h = w * 0.66;     // a card is 600x391
-  amPreview.style.setProperty('--pc-width', `${w}px`);
-  const left = x + 18 + w > innerWidth ? Math.max(8, x - 18 - w) : x + 18, top = Math.max(8, Math.min(y - 20, innerHeight - h - 8));
-  amPreview.style.transform = `translate3d(${left}px, ${top}px, 0)`;
-  amPreview.classList.add('show');
-  return true;
-}
-function hidePreview() { preview.classList.remove('show'); amPreview.classList.remove('show'); previewUrl = ''; }
-function showPreview(url, x, y, width = 300) {
-  if (url !== previewUrl) { preview.src = url; previewUrl = url; }
-  const w = Math.min(width, innerWidth - 16);       // data-imgw: a card with small print is shown larger (character mats: 600, their full size)
-  preview.style.width = `${w}px`;
-  preview.classList.add('show');
-  const h = preview.naturalHeight ? (preview.naturalHeight / preview.naturalWidth) * w : 420;
-  const left = x + 18 + w > innerWidth ? Math.max(8, x - 18 - w) : x + 18;
-  const top = Math.max(8, Math.min(y - 20, innerHeight - h - 8));
-  preview.style.transform = `translate3d(${left}px, ${top}px, 0)`;   // transform, not left/top: moving it does not leave a trail
-}
-// Hover mode: the picture shows under the pointer only while Ctrl is held (so it does not pop up while moving cards).
-let pointer = { x: 0, y: 0 };
-const showUnderPointer = () => {
-  const under = document.elementFromPoint(pointer.x, pointer.y);
-  const el = under?.closest('[data-img]'), am = under?.closest('[data-amzoom]');
-  if (el && main.contains(el)) showPreview(el.dataset.img, pointer.x, pointer.y, previewW());
-  else if (am && main.contains(am) && showAmPreview(Number(am.dataset.amzoom), pointer.x, pointer.y)) return;
-  else hidePreview();
-};
-main.addEventListener('mousemove', e => {
-  pointer = { x: e.clientX, y: e.clientY };
-  if (coarse.matches) return;
-  if (e.buttons || !e.ctrlKey) { hidePreview(); return; }
-  const el = e.target.closest?.('[data-img]'), am = e.target.closest?.('[data-amzoom]');
-  if (el) showPreview(el.dataset.img, e.clientX, e.clientY, previewW());
-  else if (am && showAmPreview(Number(am.dataset.amzoom), e.clientX, e.clientY)) return;
-  else hidePreview();
+// --- card preview: one floating picture for every tab (campaign/preview.js) ---
+const coarse = matchMedia('(pointer: coarse)');
+// Playmat cards with a preview, and the cards whose long press opens the context menu (which has Zoom) instead of pinning.
+const PM_PREVIEW = '.pp .ac[data-card], .pm .fan6 .ac, .pm .activelist .ac, .pm .flipcard.is-front, .pm .shelf6 .it, .pm .amv .stk, .pm .amv .mini, .pm .pilelist .pcell, .pm .mmodal .pcard, .pm .am-perk-cards .pc';
+const MENU_CARDS = '.pm .fan6 .ac, .pm .activelist .ac, .pm .flipcard, .pm .it, .pm .pilelist .pcell[data-pcard]';
+const cardPreview = createPreview({
+  selector: `[data-img], [data-amzoom], ${PM_PREVIEW}`,
+  settings: () => pmset,
+  longPress: el => !el.matches(MENU_CARDS),
+  resolve: (el, pin) => {
+    const host = el.closest('.pm');
+    if (host) return pmPreview(el, host, pin);
+    if (el.matches('[data-amzoom]')) {                                                                   // a composed attack modifier card: built, no single picture
+      const s = amSlots[Number(el.dataset.amzoom)];
+      return s ? { key: `am:${el.dataset.amzoom}`, make: () => buildCard(s.card, s.className, s.isAdded), ar: 600 / 391 } : null;
+    }
+    return { key: el.dataset.img, url: el.dataset.img, scale: Number(el.dataset.imgw) >= 600 ? 1.3 : 1 };   // character mats: small print, larger
+  },
+  tapPins: el => !el.closest('.pm'),
 });
-document.addEventListener('keydown', e => { if (e.key === 'Control' && !coarse.matches) showUnderPointer(); });
-document.addEventListener('keyup', e => { if (e.key === 'Control') hidePreview(); });
-window.addEventListener('blur', hidePreview);
-main.addEventListener('mouseleave', hidePreview);
-main.addEventListener('dragstart', hidePreview);
-main.addEventListener('click', e => {
-  if (!coarse.matches || e.target.closest('button')) return;
-  const el = e.target.closest('[data-img]');
-  if (el) {
-    const w = Math.min(previewW(), innerWidth - 16);
-    showPreview(el.dataset.img, innerWidth / 2 - w / 2 - 18, 40, w);     // showPreview adds 18px to x
-    e.preventDefault();                                                 // a tap shows the picture; the link to the full image is for the mouse
-    e.stopPropagation();
-  } else hidePreview();
-});
-preview.addEventListener('click', hidePreview);
+const hidePreview = () => cardPreview.hide();
+// Ctrl held: the fan zooms in place at once; with "Show on: Ctrl+hover" it zooms only then (playmat.css, .ctrlheld).
+const ctrlHeld = on => document.documentElement.classList.toggle('ctrlheld', on);
+document.addEventListener('keydown', e => { if (e.key === 'Control') ctrlHeld(true); });
+document.addEventListener('keyup', e => { if (e.key === 'Control') ctrlHeld(false); });
+window.addEventListener('blur', () => ctrlHeld(false));
+// Playmat content: ability cards are their picture with the tokens and stickers laid over it; items a copy with their state badge;
+// attack modifier cards their picture or a copy of the built card. The fan zooms in place (playmat.css); a pin shows the preview.
+function pmPreview(el, host, pin) {
+  if (el.matches('.hand6[data-layout=fan] .ac') && !pin) return null;
+  if (el.matches('.it')) return { key: `it:${el.outerHTML}`, clone: el, wrap: 'shelf6', scope: 'pm' };
+  if (el.matches('.stk, .mini, .amcell, .am-perk-cards .pc')) {
+    const face = el.querySelector('.stkface') || el, first = face.firstElementChild;                    // a single picture, or a built card of layered pictures
+    if (first?.tagName === 'IMG' && !el.matches('.pc')) return { key: `am:${first.src}`, url: first.src, scope: 'pm' };
+    const slot = el.matches('.pc') ? el : face.querySelector('.amslot, .pc');
+    if (!slot?.firstElementChild) return null;
+    return { key: `am:${slot.innerHTML}`, ar: 600 / 391, scope: 'pm', make: () => { const n = slot.cloneNode(true); n.removeAttribute('data-amslot'); n.removeAttribute('data-keep'); n.style.removeProperty('--pc-width'); return n; } };
+  }
+  const img = el.querySelector('.face.front img') || el.querySelector(':scope > img, :scope > .acf > img');
+  if (!img) return null;
+  const tks = [...el.querySelectorAll('.tk')];
+  return { key: `c:${img.src}|${tks.map(t => t.outerHTML).join('')}`, url: img.src, scope: 'pm', extra: () => tks.map(t => t.cloneNode(true)) };
+}
 // A picture that fails to load (the asset repository lacks a few cards) becomes the card name.
 main.addEventListener('error', e => {
   const img = e.target;
@@ -1661,7 +1683,7 @@ main.addEventListener('drop', e => {
       if (Math.hypot(e.clientX - t.x, e.clientY - t.y) < 10) return;
       if (!t.armed) { clearTimeout(t.timer); t = null; return; }                        // moved before the hold: let the page scroll
       const r = t.el.getBoundingClientRect(), g = t.el.cloneNode(true);
-      g.classList.add('touchghost'); g.classList.remove('zoomed', 'dragging');
+      g.classList.add('touchghost'); g.classList.remove('dragging');
       g.style.cssText = `position:fixed;left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;margin:0;z-index:600;pointer-events:none;transform:none;opacity:.92;box-shadow:0 12px 30px rgba(0,0,0,.7)`;
       t.dx = t.x - r.left; t.dy = t.y - r.top;
       (main.querySelector('.pm') || document.body).appendChild(g);
@@ -1709,7 +1731,7 @@ registerMenu({
     if (!c || !c.deck.includes(id)) return [];
     const from = zoneOf(c, id), hand = from === 'hand', flip = el.classList.contains('flipcard');
     const down = flip && !el.classList.contains('is-front');
-    const zoom = { label: 'Zoom', disabled: down, run: () => { el.style.setProperty('--hz', zoomScale(el)); main.querySelectorAll('.pm .zoomed').forEach(x => x.classList.remove('zoomed')); el.classList.add('zoomed'); } };
+    const zoom = { label: 'Zoom', disabled: down, run: () => cardPreview.show(el, true) };
     const marker = { label: 'Edit marker or sticker', run: () => openMarkers(`c:${id}`) };   // not for cards in the play area
     const moves = CARD_ZONES.filter(z => z !== from).map(z => ({
       label: ZONE_LABEL[z],
@@ -1733,7 +1755,7 @@ registerMenu({
   actions: el => {
     const c = record?.chars.find(x => x.id === el.dataset.char), cur = c?.items.find(x => String(x.id) === el.dataset.id)?.s || 0;
     const states = c ? [[0, 'Available'], [1, 'Spent'], [2, 'Consumed']].map(([v, label]) => ({ label, disabled: cur === v, run: () => commit(ed.setItemState(record, c.id, el.dataset.id, v)) })) : [];
-    return [...(states.length ? [{ header: 'State' }, ...states, { sep: true }] : []), { label: 'Add marker', run: () => openMarkers(`i:${el.dataset.id}`) }];
+    return [...(states.length ? [{ header: 'State' }, ...states, { sep: true }] : []), { label: 'Zoom', run: () => cardPreview.show(el, true) }, { label: 'Add marker', run: () => openMarkers(`i:${el.dataset.id}`) }];
   },
 });
 registerMenu({
@@ -1807,10 +1829,6 @@ registerMenu({
   sel: '.pm .amdtile',
   title: el => el.title || 'Attack modifier card',
   actions: el => { const z = el.querySelector('[data-amzoom]'); return [{ label: 'Zoom', disabled: !z, run: () => { pm.amZoom = z.dataset.amzoom; render(); } }]; },
-});
-main.addEventListener('dblclick', e => {
-  const f = e.target.closest?.('.pm .flipcard.is-front[data-slot]');
-  if (f && (pmset.zones.play || pmset.zoom) === 'click') { f.classList.remove('zoomed'); flipPlayed(f); }
 });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && pm.modal) { pm.modal = null; render(); } });
 main.addEventListener('change', e => {
@@ -1941,11 +1959,11 @@ main.addEventListener('click', e => {
   const q = sel => e.target.closest?.(sel), c = pmChar();
   if (!c) return;
   const more = q('[data-cardmore]');
-  if (more) { e.stopImmediatePropagation(); e.preventDefault(); const card = more.parentElement, r = more.getBoundingClientRect(); openMenuFor(card, r.right, r.bottom); return; }
+  if (more) { e.stopImmediatePropagation(); e.preventDefault(); const card = more.closest('.ac') || more.parentElement, r = more.getBoundingClientRect(); openMenuFor(card, r.right, r.bottom); return; }
   const h = q('.pm .tkh, .pm .opts [data-mkopen]');
   if (h) { e.stopImmediatePropagation(); e.preventDefault(); openMarkers(h.dataset.mkopen); return; }
-  const hc = q('.pm .fan6 .ac, .pm .activelist .ac');                                                    // hover zoom: no handle, a click opens the card modal
-  if (hc && !pm.modal && !q('.tk, .inib') && (pmset.zones[hc.closest('.activelist') ? 'active' : 'hand'] || pmset.zoom) === 'hover') { e.stopImmediatePropagation(); openMarkers(`c:${hc.dataset.card}`); return; }
+  const hc = q('.pm .fan6 .ac, .pm .activelist .ac');                                                    // a click opens the card modal
+  if (hc && !pm.modal && !q('.tk, .inib')) { e.stopImmediatePropagation(); openMarkers(`c:${hc.dataset.card}`); return; }
   if (!q('.pm .mmodal')) return;
   const pick = q('[data-mkpick]');
   if (pick) { e.stopImmediatePropagation(); if (!mkBlock) { pm.mkSel = { k: pick.dataset.mkpick, s: Number(pick.dataset.s) }; render(); } return; }
@@ -2070,110 +2088,18 @@ main.addEventListener('change', e => {
   }
 });
 
-// Deck modal: hovering a card of the pool or the hand selection shows it large, docked beside the modal, with its tokens and stickers.
 // Large previews docked beside the open modal, on the side set in the display settings (the other side when there is no room). Returns the width used.
 const previewW = () => Math.min(({ s: 270, m: 340, l: 420, xl: 500 })[pmset.size] || 340, (innerHeight - 40) * 5 / 7);
 function dockPreview(el, w) {
   const box = main.querySelector('.pm .mmodalbox'), rect = box ? box.getBoundingClientRect() : { left: 0, right: 0 };
   const roomL = rect.left - 36, roomR = innerWidth - rect.right - 36;
-  let right = pmset.dock === 'right';
+  let right = pmset.place === 'right';
   if ((right ? roomR : roomL) < 140 && (right ? roomL : roomR) > (right ? roomR : roomL)) right = !right;
   const room = right ? roomR : roomL, ww = Math.max(120, Math.min(w, room));
   const left = room < 120 ? Math.max(18, rect.left + 18) : right ? Math.min(innerWidth - ww - 18, rect.right + 18) : Math.max(18, rect.left - ww - 18);
   el.style.left = `${left}px`; el.style.right = 'auto';
   return ww;
 }
-const hoverDelayMs = () => ({ short: 150, long: 400 })[pmset.delay] || 0;   // same values as --hdelay of the playmat
-let poolTimer = 0, poolShown = null, pileTimer = 0;
-function showPoolBig(card) {
-  const big = main.querySelector('[data-poolbig]');
-  if (!big) return;
-  big.style.setProperty('--zw', `${dockPreview(big, previewW())}px`);
-  const img = card.querySelector(':scope > img').cloneNode();
-  img.className = 'port';
-  const wrap = document.createElement('div');
-  wrap.style.position = 'relative'; wrap.appendChild(img);
-  card.querySelectorAll(':scope > .tk').forEach(t => wrap.appendChild(t.cloneNode(true)));
-  big.replaceChildren(wrap); big.hidden = false;
-}
-document.addEventListener('mouseover', e => {
-  const big = main.querySelector('[data-poolbig]');
-  if (!big) return;
-  const card = e.target.closest?.('.pm .pcard');
-  clearTimeout(poolTimer);
-  if (!card || !card.querySelector(':scope > img')) { big.hidden = true; return; }
-  if (pmset.zoom !== 'hover') return;
-  if (card === poolShown && !big.hidden) return;
-  big.hidden = true;
-  poolTimer = setTimeout(() => { poolShown = card; showPoolBig(card); }, hoverDelayMs());                      // the hover delay setting applies here too
-});
-// Touch and pen: a tap picks a card, so a long press shows it large (a tap elsewhere hides it again).
-(() => {
-  let timer = 0, shown = 0;
-  document.addEventListener('pointerdown', e => {
-    clearTimeout(timer);
-    const big = main.querySelector('[data-poolbig]');
-    if (!big || e.pointerType === 'mouse') return;
-    big.hidden = true;
-    const card = e.target.closest?.('.pm .pcard');
-    if (card && card.querySelector(':scope > img') && !e.target.closest('button')) timer = setTimeout(() => { showPoolBig(card); shown = Date.now(); }, 450);
-  });
-  ['pointermove', 'pointerup', 'pointercancel'].forEach(n => document.addEventListener(n, e => { if (n !== 'pointermove' || e.pointerType !== 'mouse') clearTimeout(timer); }));
-  document.addEventListener('click', e => { if (shown && Date.now() - shown < 900 && e.target.closest?.('.pm .pcard')) { shown = 0; e.stopImmediatePropagation(); e.preventDefault(); } }, true);
-})();
-
-// Click zoom in the hand editor (zoom setting Click): a click on a card shows it large, docked beside the modal; the badge keeps its own click.
-main.addEventListener('click', e => {
-  const big = main.querySelector('[data-poolbig]');
-  if (!big || pmset.zoom !== 'click') return;
-  const card = e.target.closest?.('.pm .mmodal .pcard');
-  if (!card || e.target.closest('button') || !card.querySelector(':scope > img')) { if (!e.target.closest('.pvx')) big.hidden = true; return; }
-  e.stopImmediatePropagation();
-  if (!big.hidden && poolShown === card) { big.hidden = true; poolShown = null; return; }
-  poolShown = card; showPoolBig(card);
-}, true);
-
-// Visible close button for the large previews (touch screens; CSS shows it while a preview is open).
-main.addEventListener('click', e => {
-  if (!e.target.closest?.('[data-pvclose]')) return;
-  e.stopImmediatePropagation();
-  main.querySelectorAll('[data-poolbig], [data-perkbig], [data-pilezoom], [data-pilezoomtk]').forEach(x => { x.hidden = true; });
-}, true);
-
-// Perks modal: like the pile modal. Hover zoom: a perk card shows large beside the modal while the pointer is on it (hover delay applies).
-// Click zoom: a click shows it, any other click (or Escape) closes it.
-let perkTimer = 0;
-function showPerkBig(pc) {
-  const big = main.querySelector('[data-perkbig]');
-  if (!big) return;
-  if (!pc) { big.hidden = true; return; }
-  const clone = pc.cloneNode(true);
-  const w = dockPreview(big, previewW());
-  clone.style.setProperty('--pc-width', `${w}px`);
-  big.style.setProperty('--zw', `${w}px`);
-  big.replaceChildren(clone); big.hidden = false;
-}
-main.addEventListener('click', e => {
-  const big = main.querySelector('[data-perkbig]');
-  if (!big) return;
-  const pc = e.target.closest?.('.pm .am-perk-cards .pc');
-  if (!pc) { big.hidden = true; return; }
-  if (pmset.zoom !== 'click') return;
-  e.stopImmediatePropagation();
-  showPerkBig(pc);
-}, true);
-document.addEventListener('mouseover', e => {
-  const big = main.querySelector('[data-perkbig]');
-  if (!big) return;
-  clearTimeout(perkTimer);
-  const pc = e.target.closest?.('.pm .am-perk-cards .pc');
-  if (pmset.zoom !== 'hover') return;
-  if (!pc) { if (!big.hidden) big.hidden = true; return; }
-  if (!big.hidden && big.firstChild && big.firstChild.innerHTML === pc.innerHTML) return;
-  big.hidden = true;
-  perkTimer = setTimeout(() => showPerkBig(pc), hoverDelayMs());
-});
-document.addEventListener('keydown', e => { const b = main.querySelector('[data-perkbig]'); if (e.key === 'Escape' && b && !b.hidden) { b.hidden = true; e.stopImmediatePropagation(); } }, true);
 
 // Pile modal: click a pile to list its cards; Recover brings one card (or all) back to the hand; the card under the pointer is shown large.
 main.addEventListener('click', e => {
@@ -2190,32 +2116,9 @@ main.addEventListener('click', e => {
   }
   const pile = q('.pm .pile6');
   if (pile && !pm.modal && !q('.tkh')) { e.stopImmediatePropagation(); pm.pileZ = pile.dataset.pile === 'lost' ? 'lost' : 'disc'; pm.modal = 'pile'; render(); return; }
-  const hc = q('.pm .pcell');                                                                         // hover zoom: no Recover tab, a click recovers the card
-  if (hc && !q('.rec, .tk') && (pmset.zones.piles || pmset.zoom) === 'hover' && hc.dataset.pcard) { e.stopImmediatePropagation(); showPileZoom(null); commit(ed.moveCard(record, c.id, Number(hc.dataset.pcard), 'hand')); return; }
-  const cell = q('.pm .pcell > img');
-  if (cell && (pmset.zones.piles || pmset.zoom) === 'click') { e.stopImmediatePropagation(); const z = main.querySelector('[data-pilezoom]'); if (z) { const hide = !z.hidden && z.src === cell.src; showPileZoom(hide ? null : cell); } }
+  const hc = q('.pm .pcell');                                                                         // a click recovers the card
+  if (hc && !q('.rec, .tk') && hc.dataset.pcard) { e.stopImmediatePropagation(); hidePreview(); commit(ed.moveCard(record, c.id, Number(hc.dataset.pcard), 'hand')); return; }
 }, true);
-function showPileZoom(cell) {                                                                          // cell = the .pcell > img to show, or null to hide
-  const z = main.querySelector('[data-pilezoom]'), tk = main.querySelector('[data-pilezoomtk]');
-  if (!z) return;
-  if (!cell) { z.hidden = true; if (tk) tk.hidden = true; return; }
-  const ph = pileZoomH(cell); z.src = cell.src; z.style.setProperty('--pzh', `${ph}px`); dockPreview(z, ph * 5 / 7); z.hidden = false;
-  if (!tk) return;
-  const rc = z.getBoundingClientRect();
-  Object.assign(tk.style, { left: `${rc.left}px`, top: `${rc.top}px`, width: `${rc.width}px`, height: `${rc.height}px` });
-  tk.replaceChildren(...[...cell.parentElement.querySelectorAll(':scope > .tk')].map(t => t.cloneNode(true)));
-  tk.hidden = false;
-}
-document.addEventListener('mouseover', e => {
-  const img = e.target.closest?.('.pm .pcell > img'), z = main.querySelector('[data-pilezoom]');
-  if (!z) return;
-  clearTimeout(pileTimer);
-  if (!img) { if (z.src && (pmset.zones.piles || pmset.zoom) === 'hover') showPileZoom(null); return; }
-  if ((pmset.zones.piles || pmset.zoom) !== 'hover') return;
-  if (!z.hidden && z.src === img.src) return;
-  showPileZoom(null);
-  pileTimer = setTimeout(() => showPileZoom(img), hoverDelayMs());
-});
 
 // Attack modifier deck action: changes the session state and writes a history line (the deck state is not part of the record, so the line is added directly).
 function addLog(tabName, kind, d) {
@@ -2263,7 +2166,6 @@ main.addEventListener('click', e => {
     render(); return;
   }
   if (e.target.closest?.('[data-modalclose]') || e.target.matches?.('.pm .mmodal')) { pm.modal = null; pm.amZoom = null; render(); return; }
-  if (setClick(e)) return;
   const dch = pmChar();
   if (dch && (deckClick(e, dch) || itemClick(e, dch))) return;
   const pb = e.target.closest?.('[data-perkbox]') || e.target.closest?.('[data-perkrow]');
@@ -2277,7 +2179,7 @@ main.addEventListener('click', e => {
   const mini = e.target.closest?.('.pm .amv .mini[data-k]');
   if (mini && stc && !pm.amEdit) { amdDo(stc, 'move', mini.dataset.k, { from: mini.dataset.z, to: 'disc', idx: Number(mini.dataset.i) }); return; }
   const amcl = e.target.closest?.('.pm .amcell');
-  if (amcl && stc && !e.target.closest('.rec') && (pmset.zones.piles || pmset.zoom) === 'hover') { amdDo(stc, 'ret', amcl.dataset.amcell); return; }
+  if (amcl && stc && !e.target.closest('.rec')) { amdDo(stc, 'ret', amcl.dataset.amcell); return; }
   const amb = e.target.closest?.('button[data-amact]'), amc = pmChar();
   if (amb && amc) { if (!amb.disabled) amdDo(amc, amb.dataset.amact, amb.dataset.key, amOpts(amb.dataset)); return; }
   const amz = e.target.closest?.('[data-amzoom]');
@@ -2377,11 +2279,11 @@ main.addEventListener('click', e => {
   const sb = e.target.closest?.('[data-handsort]');
   if (sb) { commit(ed.sortHand(record, sb.dataset.char, sb.dataset.handsort)); return; }
 });
-// Zoom (hover, click, the card menu, the pile preview). Every card is zoomed to the same height, a share of the window height for the
-// zoom size (S, M, L, XL), so the zoomed cards look alike whatever their resting size. A card that is already that big still grows a little
-// (ZOOM_MIN) and never gets smaller; a zoomed card stays inside the window. Tune the shares in ZOOM_H.
-const ZOOM_H = { s: 0.28, m: 0.35, l: 0.44, xl: 0.52 }, ZOOM_MIN = 1.15, ZOOM_MARGIN = 24;
-const zoomShare = () => ZOOM_H[pmset.size] || ZOOM_H.m;
+// In-place zoom of the fan (the other cards use the card preview, campaign/preview.js). A fan card is zoomed to the height of the
+// preview (SHARE of the window height for the size S, M, L, XL). A card that is already that big still grows a little
+// (ZOOM_MIN) and never gets smaller; a zoomed card stays inside the window.
+const ZOOM_MIN = 1.15, ZOOM_MARGIN = 24;
+const zoomShare = () => SHARE[pmset.size] || SHARE.m;                                 // the same size as the card preview
 function zoomScale(el) {
   const am = el.matches?.('.stk, .mini'), face = am ? el.querySelector('.stkface') : el;
   const w = face.offsetWidth, h = face.offsetHeight;                                                          // layout size: a transform does not change it
@@ -2391,13 +2293,9 @@ function zoomScale(el) {
   const fit = Math.min((innerHeight - 2 * ZOOM_MARGIN) / h, (innerWidth - 2 * ZOOM_MARGIN) / w);
   return Math.max(1, Math.min(want, fit));
 }
-function pileZoomH(cell) {
-  const h = cell.offsetHeight || 230;
-  return Math.max(h * ZOOM_MIN, Math.min(zoomShare() * innerHeight, innerHeight - 2 * ZOOM_MARGIN));
-}
 main.addEventListener('mouseover', e => {
-  const el = e.target.closest?.('.pm .fan6 .ac, .pm .activelist .ac, .pm .flipcard, .pm .shelf6 .it, .pm .amv .stk, .pm .amv .mini');
-  if (!el || (el.classList.contains('flipcard') && !el.classList.contains('is-front'))) return;
+  const el = e.target.closest?.('.pm .hand6[data-layout=fan] .fan6 .ac');                                // the fan zooms in place: its size
+  if (!el) return;
   if (e.relatedTarget && el.contains(e.relatedTarget)) return;
   el.style.setProperty('--hz', zoomScale(el));
 });
@@ -2478,7 +2376,7 @@ const displayBox = document.getElementById('displaySettings');
 const renderDisplay = () => {
   displayBox.innerHTML = displaySettingsHtml(pmset);
 };
-// Settings tabs: Profile, Campaign file, Mercenary tab. The choice is kept while the page is open.
+// Settings tabs: Display, Campaign file, Profile, Shortcuts. The choice is kept while the page is open.
 let settingsTab = 'profile';
 const showSettingsTab = key => {
   settingsTab = key;
@@ -2487,24 +2385,25 @@ const showSettingsTab = key => {
 };
 settingsModal.addEventListener('click', e => { const t = e.target.closest?.('[data-stab]'); if (t) showSettingsTab(t.dataset.stab); });
 // Keyboard shortcuts, listed in the Shortcuts tab of the settings. Keep in step with the handlers in app.js and ctxmenu.js.
-// A chord is a list of keys pressed together; alternatives are separate chords.
+// A row is [chords, what]: a chord is a list of keys pressed together, alternatives are separate chords. A pointer row is
+// { obj, keys: [[key, what], ...] }: the keys that act on the object under the mouse pointer.
 const SHORTCUTS = [
   ['General', [
-    [[['Ctrl', 'Z']], 'Undo, up to 50 steps (not while typing in a field)'],
-    [[['Esc']], 'Close the open popup, modal or menu, one step at a time'],
-    [[['Ctrl', 'hover']], 'Enlarge a card picture (touch: tap it)'],
+    [[['Ctrl', 'Z']], 'Undo, up to 50 steps (not in a text field)'],
+    [[['Esc']], 'Close the popup, modal, menu or preview, one step at a time'],
+    [[['Ctrl']], 'Card preview at once, without the hover delay'],
+    [[['Z']], 'Pin the card preview; Z or Esc closes it (touch: long press)'],
   ]],
-  ['Mercenary tab', [
-    [[['Space']], 'Switch between Hand and Modifiers (when nothing is focused)'],
-    [[['Right-click'], ['Menu'], ['Shift', 'F10']], 'Context menu for cards, piles, counters and history rows'],
-    [[['Enter'], ['Space']], 'Flip a played card (when the card is focused)'],
+  ['Mercenaries', [
+    [[['Space']], 'Switch between Hand and Modifiers (nothing focused)'],
+    [[['Right-click'], ['Menu'], ['Shift', 'F10']], 'Context menu of a card, pile, counter or history row'],
     [[['Up'], ['Down'], ['Home'], ['End']], 'Move in the context menu; Tab closes it'],
-    [[['D']], 'Ability card under the pointer: move to discard'],
-    [[['L']], 'Ability card under the pointer: move to Lost'],
-    [[['A']], 'Ability card under the pointer: move to active area'],
-    [[['D']], 'Item under the pointer: toggle spent and available'],
-    [[['L']], 'Item under the pointer: mark consumed'],
-    [[['D']], 'Modifier card under the pointer: discard (deck stack: draw one to the discard)'],
+    [[['Enter'], ['Space']], 'Flip the focused played card'],
+  ]],
+  ['Under the pointer', [
+    { obj: 'Ability card', keys: [['D', 'Discard'], ['L', 'Lost'], ['A', 'Active area']] },
+    { obj: 'Item', keys: [['D', 'Spent or available'], ['L', 'Consumed']] },
+    { obj: 'Modifier card', keys: [['D', 'Discard (deck: draw one)']] },
   ]],
   ['Notes and fields', [
     [[['Ctrl', 'B']], 'Bold in the notes'],
@@ -2514,19 +2413,19 @@ const SHORTCUTS = [
     [[['Esc']], 'Cancel an inline edit'],
   ]],
   ['Events and flowchart', [
-    [[['Enter'], ['Space']], 'Choose an event option, or open a scenario in the flowchart'],
+    [[['Enter'], ['Space']], 'Choose an event option, or open a scenario'],
   ]],
 ];
 const renderShortcuts = () => {
-  // one block per group; the blocks flow into two columns (CSS columns), a block never splits
-  document.getElementById('keyList').innerHTML = SHORTCUTS.map(([group, rows]) =>
-    `<section class="keygroup"><h4>${esc(group)}</h4><table>` +
-    rows.map(([chords, what]) => `<tr><td>${chords.map(ch => ch.map(k => `<kbd>${esc(k)}</kbd>`).join(' + ')).join(' <span class="keyor">or</span> ')}</td><td>${esc(what)}</td></tr>`).join('') +
-    '</table></section>'
-  ).join('');
+  // one panel per group; the panels flow into one or two columns (CSS columns), a panel never splits
+  const kbd = k => `<kbd>${esc(k)}</kbd>`;
+  const row = r => r.obj
+    ? `<div class="krow setline kobj"><span class="kname">${esc(r.obj)}</span><span class="kacts">${r.keys.map(([k, w]) => `<span class="kact">${kbd(k)} ${esc(w)}</span>`).join('')}</span></div>`
+    : `<div class="krow setline"><span class="kkeys">${r[0].map(ch => `<span class="kchord">${ch.map(kbd).join('<span class="kplus">+</span>')}</span>`).join('<span class="keyor">or</span>')}</span><span class="kwhat">${esc(r[1])}</span></div>`;
+  document.getElementById('keyList').innerHTML = SHORTCUTS.map(([group, rows]) => `<section class="keygroup setcard"><h4>${esc(group)}</h4>${rows.map(row).join('')}</section>`).join('');
 };
 renderShortcuts();
-const openSettings = () => { renderDisplay(); showSettingsTab(settingsTab); settingsModal.hidden = false; };
+const openSettings = () => { renderDisplay(); showSettingsTab(isPhone() && settingsTab === 'keys' ? 'display' : settingsTab); settingsModal.hidden = false; };   // the phone has no Shortcuts tab
 settingsModal.addEventListener('click', e => {
   const sg = e.target.closest?.('.setpanel .seg button');
   if (sg) pmset[sg.parentElement.dataset.set] = sg.dataset.v;
@@ -2536,7 +2435,6 @@ settingsModal.addEventListener('click', e => {
 });
 settingsModal.addEventListener('change', e => {
   if (e.target.matches?.('.setpanel [data-flag]')) pmset[e.target.dataset.flag] = e.target.checked;
-  else if (e.target.matches?.('.setpanel select[data-zone]')) pmset.zones[e.target.dataset.zone] = e.target.value;
   else return;
   saveSet(); renderDisplay(); render();
 });
@@ -2650,7 +2548,7 @@ document.getElementById('clear').addEventListener('click', async () => {
   let t = null;
   const zoneAt = (x, y) => document.elementFromPoint(x, y)?.closest?.('.amv [data-amdrop]');
   main.addEventListener('pointerdown', e => {
-    if (e.pointerType === 'mouse' || e.button || pm.modal || pm.amEdit || e.target.closest('button, .pp')) return;   // the phone moves cards by bottom sheet, not by drag
+    if (e.pointerType === 'mouse' || e.button || pm.modal || pm.amEdit || e.target.closest('button')) return;   // the phone too: hold and move a modifier card (holding still shows the preview)
     const st = e.target.closest?.('.amv .stk[data-k], .amv .mini[data-k]');
     if (!st) return;
     t = { st, x: e.clientX, y: e.clientY, id: e.pointerId, ghost: null, armed: false };

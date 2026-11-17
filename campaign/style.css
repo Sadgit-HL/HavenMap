@@ -98,9 +98,16 @@ ul.tiles .cardrow.ins-before { box-shadow:inset 3px 0 0 var(--accent); } ul.tile
 .imgmode { display:flex; align-items:center; gap:4px; color:var(--muted); font-size:12px; }
 .imgmode button { background:transparent; color:var(--muted); border:1px solid var(--line); border-radius:6px; padding:3px 10px; font:inherit; cursor:pointer; }
 .imgmode button[aria-pressed="true"] { color:var(--text); border-color:var(--accent); background:#2d2519; }
-#cardPreview { position:fixed; z-index:50; width:300px; border-radius:10px; box-shadow:0 8px 28px rgba(0,0,0,.7); pointer-events:none; display:none; background:#000; }
-#cardPreview.show { display:block; }
-@media (pointer:coarse) { #cardPreview { pointer-events:auto; } }
+/* card preview (campaign/preview.js): one floating picture for every tab; it ignores the pointer, a pinned one closes on a click */
+#cardPreview { position:fixed; left:0; top:0; z-index:1000; pointer-events:none; will-change:transform; border-radius:10px; overflow:hidden; background:#000; box-shadow:0 10px 32px rgba(0,0,0,.75); }
+#cardPreview[hidden] { display:none; }
+#cardPreview > img, #cardPreview .cpvcard > img { display:block; width:100%; height:100%; object-fit:contain; }
+#cardPreview .cpvcard { position:relative; width:100%; height:100%; }
+#cardPreview .cpvclone { transform-origin:0 0; }
+#cardPreview .pc { border:0; }
+#cardPreview.pm .shelf6.cpvclone { display:block; overflow:visible; padding:0; gap:0; min-height:0; }
+#cardPreview.pm .shelf6.cpvclone .it { position:relative; }
+#cardPreview.pinned { pointer-events:auto; cursor:zoom-out; box-shadow:0 0 0 2px #c7a44a, 0 10px 32px rgba(0,0,0,.75); }
 .zone ul.tiles { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:6px; }
 .cardrow.tile { flex-direction:column; align-items:stretch; gap:4px; padding:4px; margin:0; }
 .cardrow.tile .tilebar { display:flex; align-items:center; gap:4px; flex-wrap:wrap; }
@@ -339,6 +346,16 @@ button.evchip { cursor:pointer; }
 /* Reputation marker: its value beside it (flipped to the left near the right end) */
 .overview .bar i b { position:absolute; left:6px; top:-4px; font-size:11px; line-height:1; font-weight:700; color:var(--accent); white-space:nowrap; font-style:normal; }
 .overview .bar i b.flip { left:auto; right:6px; }
+/* Scenarios card: Completed, Unlocked and Locked with a bar of their share of all scenarios */
+.overview .kv.scnrow { display:grid; grid-template-columns:5.6em minmax(40px,1fr) 2.2em 3em; align-items:center; gap:8px; }
+.overview .scnbar { height:8px; border-radius:4px; background:#33291d; overflow:hidden; box-shadow:inset 0 1px 2px rgba(0,0,0,.5); }
+.overview .scnbar i { display:block; height:100%; border-radius:4px; }
+.overview .scnrow.done .scnbar i { background:linear-gradient(90deg,#a98826,var(--accent)); }
+.overview .scnrow.open .scnbar i { background:#7fb069; }
+.overview .scnrow.shut .scnbar i { background:#6b5a3c; }
+.overview .scnrow .scnn { text-align:right; color:var(--text); font-variant-numeric:tabular-nums; }
+.overview .scnrow .scnpct { text-align:right; color:var(--muted); font-size:12px; font-variant-numeric:tabular-nums; }
+.overview .scnrow.done .scnpct { color:var(--accent); }
 .partybox { width:min(420px,100%); }
 .partybox .partyedit { margin-top:10px; padding-top:8px; border-top:1px solid var(--line); }
 /* Overview: stickers as tiles, tables that scroll sideways on a phone, one muted line for an empty list */
@@ -438,9 +455,6 @@ body.noscroll { overflow:hidden; }
   .pm .fan6 .ac.ins-after { box-shadow: 10px 0 0 var(--accent); }
 }
 
-.pm .pvx { display: none; position: fixed; top: 12px; right: 12px; width: 44px; height: 44px; border-radius: 50%; background: rgba(18,15,11,.92); border: 2px solid var(--accent); color: var(--accent); font-size: 26px; line-height: 1; z-index: 700; cursor: pointer; }
-@media (pointer: coarse) {
-  .pm .mmodal:has([data-poolbig]:not([hidden]), [data-perkbig]:not([hidden]), [data-pilezoom]:not([hidden])) .pvx { display: block; }
 }
 
 /* character switcher in the playmat top bar */
@@ -543,11 +557,11 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); min-height: 420px; }
 
 /* Modifiers view: the deck lies on the table (no box); the discard looks like the ability card piles */
 .pm .amv .deckarea { border: 2px dashed transparent; background: transparent; }
-.pm .amv .discarea { border: 2px dashed rgba(236,223,200,.28); border-radius: 12px; background: rgba(0,0,0,.2); align-items: center; }
+.pm .amv .discarea { border: 2px dashed var(--accent); border-radius: 12px; background: rgba(199,164,74,.14); align-items: center; }   /* the frame of the ability card piles (.pile6.target) */
 .pm .amv .discarea > h5 { margin: 0 0 4px; font-size: 11px; letter-spacing: .1em; }
 .pm .amv .discarea .stacks { justify-content: center; }
 .pm .amv .area.drop { outline: 0; }
-.pm .amv .discarea.drop { border-color: var(--accent); background: rgba(199,164,74,.14); }
+.pm .amv .discarea.drop { border-color: var(--accent); background: rgba(199,164,74,.26); }
 .pm .amv .deckarea.drop { border-color: var(--accent); background: rgba(199,164,74,.08); }
 .pm .amv .stk.lift .nb, .pm .amv .stk.lift .edge { visibility: hidden; }
 .pm .amv .stacks { padding: 16px 14px 6px 8px; }
@@ -637,21 +651,10 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); min-height: 420px; }
 .pm .hbar [data-handedit] svg { display: block; pointer-events: none; }
 .pm .hbar [data-handedit] { padding: 4px 7px; display: inline-flex; align-items: center; }
 
-/* modifier cards: zoom like the ability cards (zone setting of the hand), growing upwards from the lower edge */
 .pm .amv .stk, .pm .amv .mini { position: relative; }
-.pm .amv .stkface { transition: transform .14s, box-shadow .14s; transform-origin: 50% 100%; }
-.pm[data-zhand="hover"] .amv .stk:hover, .pm[data-zhand="hover"] .amv .mini:hover, .pm .amv .stk.zoomed, .pm .amv .mini.zoomed { z-index: 40; }
-.pm[data-zhand="hover"] .amv .stk:hover .stkface, .pm[data-zhand="hover"] .amv .mini:hover .stkface, .pm .amv .stk.zoomed .stkface, .pm .amv .mini.zoomed .stkface { transform: scale(var(--hz, 2.4)); box-shadow: 0 16px 40px rgba(0,0,0,.8); }
-.pm[data-zhand="hover"] .amv .stk:hover .stkface, .pm[data-zhand="hover"] .amv .mini:hover .stkface { transition-delay: var(--hdelay, 0s); }
-/* .area/.stacks scroll when perks add enough faces that the deck list no longer fits (was forced to
-   overflow:visible here, which let a hover-zoomed card escape its box but also meant an overfull deck
-   list just got cut off by the page instead of scrolling); the hover zoom still needs to escape, so it
-   switches overflow back to visible only while a card in it is actually zoomed or hovered. */
+/* the deck scrolls when perks add enough faces; a card under the pointer is shown by the card preview, which no box clips */
 .pm .amv .area, .pm .amv .stacks { overflow: auto; }
 .pm .amv .minis { overflow: visible; }
-.pm .amv .area:has(.stk.zoomed, .mini.zoomed), .pm .amv .stacks:has(.stk.zoomed) { overflow: visible; }
-.pm[data-zhand="hover"] .amv .area:has(.stk:hover, .mini:hover), .pm[data-zhand="hover"] .amv .stacks:has(.stk:hover) { overflow: visible; }
-.pm .amv .stk:hover .edge, .pm .amv .stk:hover .nb, .pm .amv .stk.zoomed .nb { visibility: hidden; }
 .pm .amv .amstrip { height: 78px; min-height: 0; }
 .pm .amv .amactive { flex: 0 0 78px; height: 78px; min-height: 0; }
 .pm .amv .amstrip .minis, .pm .amv .amactive .minis { overflow: visible; }
@@ -663,13 +666,62 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); min-height: 420px; }
 /* the active area lines up with the Top and Bottom strips (the deck area's padding and border sit around the strips) */
 .pm .amv .amactive { margin-bottom: 10px; }
 
-/* a zoomed card always lies above everything else on the page (the containers that form stacking contexts are lifted while one of their cards is zoomed) */
-.pm .amv:has(.stk:hover, .mini:hover, .zoomed) { z-index: 60; }
-.pm .board6:has(.ac:hover, .flipcard:hover, .stk:hover, .mini:hover, .zoomed) { z-index: 250; }
-.pm .shelf6:has(.it:hover, .zoomed) { position: relative; z-index: 250; }
-/* zoomed modifier cards: no frame around the card */
-.pm[data-zhand="hover"] .amv .stk:hover .pc, .pm[data-zhand="hover"] .amv .stk:hover .amslot, .pm[data-zhand="hover"] .amv .mini:hover .pc, .pm[data-zhand="hover"] .amv .mini:hover .amslot,
-.pm .amv .stk.zoomed .pc, .pm .amv .stk.zoomed .amslot, .pm .amv .mini.zoomed .pc, .pm .amv .mini.zoomed .amslot { border-color: transparent; }
+:is(.pm[data-fanzoom="on"], .ctrlheld .pm[data-fanzoom="ctrl"]) .board6:has(.hand6[data-layout=fan] .ac:hover) { z-index: 250; }   /* the fan zooms in place: above the shelf and piles */
+/* Modifiers view, responsive layout (2026-11-17). Every size follows the view's own box (container units), so the deck,
+   the Top/Bottom strips and the side column fit on short laptop screens without overlapping.
+   --sidew  side column (draw/roll, discard, active)   --striph  Top, Bottom and Active strip height
+   --btnh   control row height                         --stkw    deck stack width: two rows of stacks fit the height */
+.pm:not(.pp) .amv {
+  --sidew: clamp(200px, 22cqw, 290px);
+  --striph: clamp(40px, 8.5cqh, 58px);
+  --btnh: clamp(34px, 7cqh, 44px);
+  --rowh: 0px;
+  grid-template-columns: minmax(0, 1fr) var(--sidew); grid-template-rows: minmax(0, 1fr); gap: 10px;
+}
+.pm:not(.pp) .amv .deckarea { padding: 6px 8px 8px; gap: 6px; overflow: hidden; }
+.pm:not(.pp) .amv .deckarea .stacks { --stkw: max(52px, min(calc(var(--cu, 100px) * 1.5), calc((100cqh - var(--striph) - var(--edh, 0px) - 96px) / 1.4), calc((100cqw - var(--sidew) - 50px) / var(--perrow, 7) - 20px))); }
+.pm:not(.pp) .amv.editing .deckarea { --edh: 72px; }
+.pm:not(.pp) .amv .amhd { flex: none; display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 18px; min-width: 0; }
+.pm:not(.pp) .amv .amhd > h5 { margin: 0; flex: none; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.pm:not(.pp) .amv .amstats { gap: 2px 10px; font-size: 11.5px; }
+.pm:not(.pp) .amv .stacks { flex: 1 1 0; min-height: 0; gap: 10px 12px; padding: 12px 12px 4px 4px; }
+.pm:not(.pp) .amv .stk { margin-top: 6px; }
+.pm:not(.pp) .amv .stk .nb { min-width: 20px; height: 20px; font-size: 11px; right: -7px; top: -9px; }
+.pm:not(.pp) .amv .stkctl { margin-top: 4px; }
+.pm:not(.pp) .amv .stkctl button { flex-basis: clamp(24px, 30%, 34px); padding: 2px 0; font-size: 17px; }
+.pm:not(.pp) .amv .stkctl output { font-size: 15px; }
+/* Top, Bottom and Active strips: one height; the cards inside are as tall as the strip allows */
+.pm:not(.pp) .amv .amrow { flex: none; gap: 8px; }
+.pm:not(.pp) .amv .amstrip, .pm:not(.pp) .amv .amrow .amstrip, .pm:not(.pp) .amv .amactive { --minw: calc((var(--striph) - 14px) / .65);
+  height: var(--striph); min-height: 0; flex-direction: row; align-items: center; gap: 8px; padding: 3px 8px; margin: 0; }
+.pm:not(.pp) .amv .amstrip .lab, .pm:not(.pp) .amv .amactive .lab { flex: none; width: auto; min-width: 44px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); text-align: left; }
+.pm:not(.pp) .amv .amstrip .minis, .pm:not(.pp) .amv .amrow .amstrip .minis, .pm:not(.pp) .amv .amactive .minis { min-height: 0; height: 100%; gap: 5px; justify-content: flex-start; }
+/* a full strip overlaps its cards like a fanned hand (the later card lies on top) instead of running out of the box */
+.pm:not(.pp) .amv .amstrip .mini, .pm:not(.pp) .amv .amrow .mini, .pm:not(.pp) .amv .amactive .mini { flex: 0 1 var(--minw); width: var(--minw); min-width: 14px; }
+.pm:not(.pp) .amv .minis .mini .stkface { width: var(--minw); }
+.pm:not(.pp) .amv .minis .mini:last-child { flex-shrink: 0; }
+.pm:not(.pp) .amv .minis .mini img { max-width: none; width: var(--minw); }
+.pm:not(.pp) .amv .minis .mini:not(:first-child) .stkface { box-shadow: -2px 0 4px rgba(0,0,0,.6); }
+.pm:not(.pp) .amv .amstrip .mini .pc, .pm:not(.pp) .amv .amstrip .mini .amslot, .pm:not(.pp) .amv .amactive .mini .pc, .pm:not(.pp) .amv .amactive .mini .amslot { --pc-width: var(--minw); }
+/* side column: one control row (draw or roll code, shuffle, edit), the discard takes the rest, Active lines up with Top/Bottom */
+.pm:not(.pp) .amv .amside { gap: 8px; overflow: hidden; padding-bottom: 8px; }
+.pm:not(.pp) .amv .amctl { flex: 0 0 var(--btnh); display: flex; gap: 6px; }
+.pm:not(.pp) .amv .amcode { flex: 1 1 0; min-width: 0; flex-direction: row; gap: 7px; padding: 0 10px; border-radius: 9px; font-size: 13px; }
+.pm:not(.pp) .amv .amcode svg, .pm:not(.pp) .amv .amcode.amdraw img { width: auto; height: calc(var(--btnh) * .52); flex: none; }
+.pm:not(.pp) .amv .amcode .lbl { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pm:not(.pp) .amv .amtools { display: flex; gap: 6px; }
+.pm:not(.pp) .amv .amtools button { width: var(--btnh); height: var(--btnh); border-radius: 9px; }
+.pm:not(.pp) .amv .amside .discarea { --stkw: min(calc(var(--cu, 100px) * 1.3), calc(var(--sidew) - 60px)); flex: 1 1 0; min-height: 0; padding: 4px 8px; }
+.pm:not(.pp) .amv .discarea .stacks { padding: 4px; }
+.pm:not(.pp) .amv .amside .amactive { flex: none; }
+
+/* short screens: the Modifiers view takes the whole board. The Active/Play row and the ability card piles (Discard, Lost) are
+   hidden while the view is open (no ability card can be dropped there in this view). */
+@media (max-height: 820px) {
+  .pm:not(.pp) .board6:has(.amv) { grid-template-rows: minmax(0, 1fr); }
+  .pm:not(.pp) .board6:has(.amv) > .toprow, .pm:not(.pp) .stage6:has(.amv) > .piles6 { display: none; }
+}
+
 /* item state buttons: a full frame for the current state (the segment's clipping cut the first one) */
 .pm .itpanel .seg:has(.stbtn) { overflow: visible; border: 0; background: transparent; padding: 3px; }
 .pm .itpanel .seg .stbtn { border-radius: 8px; border: 1px solid var(--line); }
@@ -867,16 +919,38 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); min-height: 420px; }
 #settingsModal section[hidden] { display: none; }
 
 /* Shortcuts tab of the settings modal */
-.keylist { column-count:2; column-gap:28px; font-size:13px; }
-.keylist .keygroup { break-inside:avoid; margin:0 0 12px; }
-.keylist .keygroup h4 { margin:0 0 4px; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); }
-.keylist table { width:100%; border-collapse:collapse; }
-.keylist td { padding:5px 4px; border-bottom:1px solid var(--line); vertical-align:top; color:var(--text); }
-.keylist td:first-child { white-space:nowrap; width:40%; }
-.keylist td:last-child { color:var(--muted); }
-.keylist kbd { font:inherit; font-size:12px; color:var(--text); background:#2d2519; border:1px solid var(--line); border-bottom-width:2px; border-radius:6px; padding:1px 6px; }
-.keylist .keyor { color:var(--muted); font-size:12px; }
-@media (max-width:560px) { .keylist { column-count:1; } }
+/* Settings modal: every tab is built from the same parts. .setcols: panels in one or two columns by the room there is (.one: a
+   single panel at full width); .setcard: a framed panel with a gold heading; .setline: a label column and the control or text
+   beside it, above each other in a narrow panel. */
+.setcols { container-type:inline-size; column-width:320px; column-count:2; column-gap:14px; font-size:13px; line-height:1.35; }
+.setcols.one { column-count:1; }
+/* .split: a grid instead of columns, so a .tall panel stands alone on the left and the others stack on the right */
+.setcols.split { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); column-gap:14px; align-items:start; }
+.setcols.split > .setcard.tall { grid-row:span 2; }
+.setcard { display:inline-block; width:100%; break-inside:avoid; margin:0 0 14px; padding:8px 12px 4px; border:1px solid var(--line); border-radius:10px; background:rgba(0,0,0,.18); }
+.setcard > h4 { margin:0 0 4px; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); }
+.setline { display:grid; grid-template-columns:9.5rem minmax(0,1fr); gap:4px 12px; align-items:center; min-height:30px; padding:6px 0; border-top:1px solid var(--line); }
+.setcard > h4 + .setline { border-top:0; }
+label.setline { cursor:pointer; }
+.setlab { color:var(--text); }
+.setctl { display:flex; flex-wrap:wrap; align-items:center; gap:6px; min-width:0; }
+.setctl .txt { width:min(100%, 320px); }
+.setctl .ctoggle.setchk { padding:3px; border-radius:7px; }
+.setline.chk { grid-template-columns:minmax(0,1fr) auto; }
+label.setline { font-weight:400; }
+.setfoot { display:flex; justify-content:flex-end; margin-top:-4px; }
+@container (max-width: 400px) { .setline:not(.chk) { grid-template-columns:1fr; } }
+/* Shortcuts tab: a key column that wraps; pointer rows list one object with its keys */
+.keylist .krow { align-items:baseline; min-height:0; padding:5px 0; }
+.keylist .kkeys { display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 5px; }
+.keylist .kchord { display:inline-flex; align-items:baseline; gap:3px; white-space:nowrap; }
+.keylist .kplus, .keylist .keyor { color:var(--muted); font-size:11px; }
+.keylist .kwhat { color:var(--muted); }
+.keylist .kname { color:var(--text); }
+.keylist .kacts { display:flex; flex-wrap:wrap; gap:4px 14px; color:var(--muted); }
+.keylist .kact { white-space:nowrap; }
+.keylist kbd { display:inline-block; min-width:1.9em; text-align:center; font:inherit; font-size:12px; line-height:1.5; color:var(--text); background:#2d2519; border:1px solid var(--line); border-bottom-width:2px; border-radius:6px; padding:0 6px; }
+@container (max-width: 400px) { .keylist .kact { white-space:normal; } }
 
 /* Settings sits above the playmat (its top bar and modals use z-index up to 410) */
 #settingsModal { z-index: 500; }
@@ -887,6 +961,129 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); min-height: 420px; }
 .filters .btn6.rollbtn:disabled { opacity:.45; cursor:not-allowed; }
 
 /* Ctrl+hover preview of a composed attack-modifier card (app.js showAmPreview) */
-#amPreview { position:fixed; left:0; top:0; z-index:50; pointer-events:none; display:none; --pc-width:300px; will-change:transform; }
-#amPreview.show { display:block; }
-#cardPreview { left:0; top:0; will-change:transform; }
+
+/* ===== Page polish (2026-11-17): the shared look of every tab except the Mercenaries playmat =====================================
+   Panels (.card): one surface, radius and shadow. Panel headings: small uppercase gold with the count muted and the pencil at the
+   right end. Overview: four summary panels on top, then a two-column grid of panels (wide: classes and retired; narrow: players and
+   stickers). */
+.card { border-radius:10px; padding:12px 14px; background:linear-gradient(180deg,#261f18,#211b15); box-shadow:inset 0 1px 0 rgba(255,235,180,.04), 0 2px 10px rgba(0,0,0,.28); }
+.overview .card h3 { display:flex; align-items:center; gap:8px; min-height:26px; margin:0 0 8px; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); }
+.overview .card h3 .secedit { margin-left:auto; }
+.overview .card h3 .ovcount { color:var(--muted); letter-spacing:.04em; text-transform:none; font-size:12px; }
+.overview > .grid { gap:12px; }
+.overview .ovgrid { display:grid; grid-template-columns:minmax(0,2fr) minmax(0,1fr); gap:12px; margin-top:12px; align-items:start; }
+.overview .ovgrid > .ovwide { grid-column:1; }
+.overview .ovgrid > :not(.ovwide) { grid-column:2; }
+.overview .ovgrid > :nth-child(1) { grid-row:1; } .overview .ovgrid > :nth-child(2) { grid-row:1; }
+.overview .ovgrid > :nth-child(3) { grid-row:2; } .overview .ovgrid > :nth-child(4) { grid-row:2; }
+@media (max-width: 860px) { .overview .ovgrid { grid-template-columns:1fr; } .overview .ovgrid > * { grid-column:1 !important; grid-row:auto !important; } }
+.overview .chips { gap:6px; }
+.overview .chip { padding:2px 10px; font-size:12px; line-height:1.5; border-radius:999px; }
+.overview .emptyline { margin:2px 0 4px; }
+.overview .ovtable th .num, .overview .ovtable td.num { text-align:right; display:block; }
+.overview .ovtable td.num { display:table-cell; font-variant-numeric:tabular-nums; }
+.overview .ovtable tr:last-child td { border-bottom:0; }
+.overview .stickers { gap:8px; }
+.overview .ovtable th:last-child { width:auto; }
+
+/* Toolbars: every filter row of the pages (Items, Scenarios, Cards, Events) is one framed bar with controls of one height; the
+   view switch first, the actions (roll code, edit) at the right end (.tbend). */
+main .filters { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:0 0 14px; padding:8px; border:1px solid var(--line); border-radius:10px; background:#1c1711; }
+main .filters select, main .filters input[type=search], main .filters input[type=text] { height:32px; padding:0 10px; border-radius:7px; background:#2d2519; border:1px solid var(--line); color:var(--text); font:inherit; font-size:13px; }
+main .filters input[type=search] { flex:0 1 240px; min-width:160px; }
+main .filters select:hover, main .filters input:hover { border-color:#6b5a3c; }
+main .filters select:focus-visible, main .filters input:focus-visible { outline:0; border-color:var(--accent); box-shadow:0 0 0 2px rgba(199,164,74,.25); }
+main .filters .viewmode { margin:0; }
+main .filters .imgmode button { height:32px; padding:0 12px; border-radius:7px; }
+main .filters .tbend { margin-left:auto; display:inline-flex; align-items:center; gap:8px; }
+main .filters .tbend .btn6, main .filters .tbend .editbtn, main .filters > .editbtn { height:32px; min-width:32px; display:inline-flex; align-items:center; justify-content:center; }
+main .filters .ctrlhint { margin-left:6px; }
+main .filters + .viewmode { margin:-6px 0 12px; }
+/* Data tables (Items, Scenarios): a sticky header of small uppercase labels, row hover, numbers right-aligned, state pills; on a
+   phone the less important columns are hidden instead of the table scrolling sideways. */
+.dtable { border-collapse:separate; border-spacing:0; font-size:13px; }
+.dtable th { position:sticky; top:52px; z-index:2; padding:8px 10px; background:#1c1711; border-bottom:1px solid #4a3d28; font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); white-space:nowrap; }
+.dtable th:first-child { border-top-left-radius:8px; } .dtable th:last-child { border-top-right-radius:8px; }
+.dtable td { padding:7px 10px; vertical-align:middle; border-bottom:1px solid rgba(58,48,38,.75); }
+.dtable tr:hover td { background:rgba(199,164,74,.05); }
+.dtable tr.rowlink:hover td, .dtable tr.rowlink:focus-visible td { background:rgba(199,164,74,.09); }
+.dtable tr.rowlink:hover, .dtable tr.rowlink:focus-visible { background:none; }
+.dtable tr.s0 td { color:var(--muted); }
+.dtable input[type=checkbox] { accent-color:var(--accent); width:16px; height:16px; vertical-align:middle; }
+.dtable .chip { border-radius:999px; padding:1px 8px; }
+.itemtable :is(th, td):is(:nth-child(1), :nth-child(6), :nth-child(7), :nth-child(8)) { text-align:right; font-variant-numeric:tabular-nums; }
+.itemtable :is(th, td):nth-child(5) { text-align:center; }
+.itemtable td:nth-child(1), .scntable td:nth-child(1) { color:var(--muted); }
+.scntable :is(th, td):is(:nth-child(1), :nth-child(5), :nth-child(6)) { text-align:right; font-variant-numeric:tabular-nums; }
+.scntable td:nth-child(8) { font-variant-numeric:tabular-nums; white-space:nowrap; }
+.tick { color:var(--accent); font-weight:700; } .tick.no { color:var(--muted); font-weight:400; }
+.spill { display:inline-block; padding:1px 9px; border:1px solid var(--line); border-radius:999px; font-size:12px; line-height:1.5; white-space:nowrap; }
+.spill.s0 { color:var(--muted); }
+.spill.s1 { color:#8fb8e6; border-color:rgba(107,159,212,.5); background:rgba(107,159,212,.1); }
+.spill.s2 { color:#8fcf96; border-color:rgba(108,174,117,.5); background:rgba(108,174,117,.12); }
+.spill.s3 { color:#e08a7a; border-color:rgba(201,96,79,.5); background:rgba(201,96,79,.1); }
+.itemwith .chip { border-radius:999px; padding:1px 4px 1px 9px; color:var(--text); }
+.itemwith .givesel { height:24px; padding:0 8px; border:1px dashed var(--line); border-radius:999px; background:transparent; color:var(--muted); font-size:12px; cursor:pointer; }
+.itemwith .givesel:hover { border-color:var(--accent); color:var(--text); }
+@media (max-width: 640px) {
+  .dtable th { position:static; }
+  .itemtable :is(th, td):is(:nth-child(4), :nth-child(5), :nth-child(6), :nth-child(7)) { display:none; }
+  .scntable :is(th, td):is(:nth-child(3), :nth-child(5), :nth-child(6), :nth-child(7), :nth-child(8), :nth-child(10)) { display:none; }
+  main .filters input[type=search] { flex:1 1 100%; }
+  main .filters .tbend { margin-left:0; }
+}
+.dtable th .sortbtn { font:inherit; letter-spacing:inherit; text-transform:inherit; color:inherit; }
+.dtable th .sortbtn:hover { color:var(--text); }
+.itemwith .chip .chx { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; padding:0; border:0; border-radius:50%; background:transparent; color:var(--muted); font-size:14px; line-height:1; cursor:pointer; }
+.itemwith .chip .chx:hover { background:rgba(201,96,79,.25); color:#e08a7a; }
+
+/* Panel headings on every page (as on the Overview): small uppercase gold, the count muted, the pencil at the right end */
+main .card > h3 { display:flex; align-items:center; gap:8px; min-height:26px; margin:0 0 10px; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); }
+main .card > h3 .editbtn, main .card > h3 .secedit { margin-left:auto; }
+main .card > h3 .ovcount { color:var(--muted); letter-spacing:.04em; text-transform:none; font-size:12px; }
+main .card h2 { margin:0 0 10px; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); }
+/* Events: the deck switch and the voters as one toolbar; the draw action (or the open event) and the piles as panels */
+main .subbar { padding:8px; margin:0 0 14px; border:1px solid var(--line); border-radius:10px; background:#1c1711; }
+main .subbar .subtabs button { height:32px; padding:0 14px; border-radius:7px; }
+main .subbar .seatpill { height:32px; }
+.evpanels { display:grid; grid-template-columns:minmax(0,1fr); gap:12px; }
+.evmain .evdraw { display:flex; justify-content:center; padding:18px 0 10px; }
+.evmain .evdraw .primary { height:40px; padding:0 22px; font-size:14px; font-weight:600; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,.35); }
+.evpilecard .evchips { gap:6px; }
+/* Resources: the treasure index (claimed rows, then the unclaimed numbers) and the documents */
+.respage { display:grid; gap:12px; }
+.trrows { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:0 18px; margin-bottom:10px; }
+.trrow { display:flex; align-items:center; gap:10px; padding:6px 0; border-bottom:1px solid rgba(58,48,38,.75); font-size:13px; }
+.trrow b { min-width:2.2em; text-align:right; color:var(--accent); font-variant-numeric:tabular-nums; }
+.trrow .treffect { flex:1; }
+.trrow .pill { padding:0 9px; height:22px; }
+.trsub { margin:6px 0 8px; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:600; }
+.trnums { display:grid; grid-template-columns:repeat(auto-fill, minmax(38px, 1fr)); gap:5px; }
+.trnum { height:30px; border:1px solid var(--line); border-radius:6px; background:#1c1711; color:var(--muted); font:inherit; font-size:12px; font-variant-numeric:tabular-nums; cursor:pointer; }
+.trnum:hover, .trnum:focus-visible { border-color:var(--accent); color:var(--text); background:#2d2519; outline:0; }
+.restable :is(th, td):not(:first-child) { text-align:center; }
+.restable th { top:52px; }
+.restable td a.chip { border-radius:999px; padding:1px 12px; }
+
+/* History: one panel per page, the table in the shared style */
+.histpage { display:grid; gap:12px; }
+.histtable td:first-child { color:var(--muted); font-variant-numeric:tabular-nums; }
+.histtable td:nth-child(2), .histtable td:nth-child(3) { white-space:nowrap; }
+main .histbar .hn { margin-left:auto; }
+/* Header: the tab bar in one row; on a phone it scrolls sideways instead of wrapping into three rows */
+header nav button { height:32px; padding:0 12px; border-radius:7px; }
+header nav button:not([aria-selected="true"]):hover { border-color:#6b5a3c; }
+header .actions button { height:32px; }
+@media (max-width: 640px) {
+  header { gap:8px; padding:8px 10px; }
+  header h1 { flex:1; }
+  header nav { order:3; flex:1 0 100%; flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; margin:0 -10px; padding:0 10px 2px; }
+  header nav::-webkit-scrollbar { display:none; }
+  header nav button { flex:none; }
+  .restable th { white-space:normal; letter-spacing:.02em; }
+  .respage > .card { overflow-x:auto; }
+  .histtable :is(th, td):nth-child(3) { display:none; }
+}
+.histtable { table-layout:fixed; }
+.histtable th:nth-child(1) { width:170px; } .histtable th:nth-child(2) { width:130px; } .histtable th:nth-child(3) { width:150px; }
+@media (max-width: 640px) { .histtable th:nth-child(1) { width:118px; } .histtable th:nth-child(2) { width:70px; } }

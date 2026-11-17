@@ -39,7 +39,6 @@
 .pm .shelf6 h4{grid-column:1/-1;margin:0;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between}
 .pm .itbar{display:flex;align-items:center;gap:6px}
 .pm .itbar .btn6{padding:1px 4px;line-height:1}
-.pm .pcbig img.nat{aspect-ratio:auto;height:auto;object-fit:contain}
 .pm .slotlim{display:flex;gap:14px;flex-wrap:wrap}
 .pm .slotlim b{color:var(--text)}
 .pm .slotlim .full b{color:var(--accent)}
@@ -47,7 +46,6 @@
 .pm .shelf6 .it:nth-of-type(-n+2){transform-origin:0 0}
 .pm .shelf6 .it:nth-of-type(n+3):nth-of-type(-n+4){transform-origin:0 15%}
 .pm .shelf6 .it:nth-of-type(n+7){transform-origin:0 100%}
-.pm[data-zitems=hover] .shelf6 .it:hover, .pm .shelf6 .it.zoomed{transform:scale(var(--hz,2.2));z-index:20;box-shadow:0 14px 34px rgba(0,0,0,.75)}
 .pm .lvl{cursor:pointer}
 .pm .mbtn{position:relative}
 .pm .pooldot{position:absolute;left:4px;top:4px;min-width:14px;height:14px;padding:0 3px;border-radius:7px;background:var(--accent);color:#120f0b;font:700 10px/14px inherit;text-align:center}
@@ -88,8 +86,7 @@
 .pm .pcard.avail.can:hover{filter:grayscale(.3) brightness(.75)}
 .pm .pcard.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
 .pm .pcard.dis{filter:grayscale(.6) brightness(.5);cursor:not-allowed}
-.pm .pcbig img.port{aspect-ratio:5/7}
-.pm .pcbig .tk img, .pm .pilezoomtk .tk img{width:100%;height:100%;aspect-ratio:auto;object-fit:contain;border-radius:0;box-shadow:none}
+.pm .pcbig .tk img{width:100%;height:100%;aspect-ratio:auto;object-fit:contain;border-radius:0;box-shadow:none}
 .pm .pcard .psel{position:absolute;right:4px;top:4px;width:20px;height:20px;border-radius:50%;border:2px solid var(--accent);background:rgba(18,15,11,.85);color:#120f0b;font-size:13px;font-weight:800;line-height:1;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .pm .pcard .psel[aria-pressed=true]{background:var(--accent)}
 .pm .pcard .psel[aria-pressed=true]::after{content:'';width:9px;height:5px;border-left:2.5px solid #120f0b;border-bottom:2.5px solid #120f0b;transform:rotate(-45deg) translate(1px,-1px)}
@@ -134,26 +131,24 @@
 .pm .itbadge svg{width:10px;height:10px}
 .pm .it.consumed .itbadge{border-color:#c98a8a;color:#c98a8a}
 .pm .board6{display:grid;grid-template-rows:minmax(0,32%) minmax(0,1fr);gap:12px;min-width:0;min-height:0;container-type:size}
-.pm .toprow{--ch:max(130px, calc(32cqh - 36px));display:grid;grid-template-columns:minmax(0,1fr) calc(var(--ch) * 10 / 7 + 46px);gap:12px;min-height:0}
+.pm .toprow{--ch:max(110px, min(calc(32cqh - 36px), calc((100cqw - 300px) * .7)));display:grid;grid-template-columns:minmax(0,1fr) calc(var(--ch) * 10 / 7 + 46px);gap:12px;min-height:0}
 .pm .zone{position:relative;border:2px dashed rgba(236,223,200,.28);border-radius:14px;background:rgba(0,0,0,.2);padding:26px 12px 10px;display:flex;gap:14px;justify-content:center;align-items:stretch;min-height:0}
 .pm .activelist{display:flex;gap:14px;justify-content:center;align-items:stretch;flex:1;min-width:0}
 .pm .activelist .ac{cursor:grab;transition:transform .14s,box-shadow .14s}
 .pm .activelist .ac:active{cursor:grabbing}
 .pm .activelist .ac.dragging{opacity:.35;pointer-events:none}
-.pm[data-zactive=hover] .activelist .ac:hover, .pm .activelist .ac.zoomed{transform:scale(var(--hz,1.35));z-index:20;box-shadow:0 14px 34px rgba(0,0,0,.75)}
 .pm .zone .zlabel{position:absolute;left:14px;top:6px}
 .pm .zone .zlabel b{color:var(--text)}
 .pm .zone.play{border-color:rgba(199,164,74,.55);background:rgba(199,164,74,.07)}
-.pm .slot6{position:relative;display:flex;flex-direction:column;align-items:center;min-height:0;height:100%;border-radius:8px;transition:box-shadow .12s}
+.pm .slot6{position:relative;display:flex;flex-direction:column;align-items:center;min-height:0;height:min(100%, var(--ch, 100%));align-self:center;border-radius:8px;transition:box-shadow .12s}
 .pm .slotcard{height:100%;display:flex;min-height:0}
 .pm .slot6 .slotempty{font-size:30px;font-weight:700;letter-spacing:0;opacity:.55}
 .pm .slotempty{height:100%;aspect-ratio:5/7;width:auto;border:2px dashed rgba(236,223,200,.25);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.1em}
 .pm .flipcard.dragging{opacity:.35;pointer-events:none}
-.pm .zone .ac, .pm .flipcard{height:100%;aspect-ratio:5/7;width:auto}
+.pm .zone .ac, .pm .flipcard{height:min(100%, var(--ch, 100%));aspect-ratio:5/7;width:auto;align-self:center}
 .pm .flipcard{perspective:900px;cursor:pointer;position:relative;transition:transform .14s,box-shadow .14s}
 .pm .flipinner{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .5s}
 .pm .flipcard.is-front .flipinner{transform:rotateY(180deg)}
-.pm[data-zplay=hover] .flipcard.is-front.settled:hover, .pm .flipcard.is-front.zoomed{transform:scale(var(--hz,1.3));z-index:20;box-shadow:0 14px 34px rgba(0,0,0,.75)}
 .pm .flipcard.is-front.settled{perspective:none}
 .pm .flipcard.is-front.settled .flipinner{transition:none;transform:none;transform-style:flat}
 .pm .flipcard.is-front.settled .face.front{transform:none;backface-visibility:visible}
@@ -179,7 +174,6 @@
 .pm .fan6 .ac{height:100%;width:auto;aspect-ratio:5/7;cursor:grab;transition:transform .26s cubic-bezier(.2,.8,.2,1),box-shadow .26s ease-out}
 .pm .fan6 .ac:active{cursor:grabbing}
 .pm .fan6 .ac{transform-origin:50% 100%}
-.pm[data-zhand=hover] .fan6 .ac:hover, .pm .fan6 .ac.zoomed{transform:scale(var(--hz,1.85));z-index:35;box-shadow:0 16px 40px rgba(0,0,0,.8)}
 .pm .fan6 .ac.dragging{opacity:.35;pointer-events:none}
 .pm .inib{position:absolute;left:calc(17% - 3px);top:5px;z-index:2;min-width:22px;height:22px;padding:0 4px;border-radius:11px;background:rgba(18,15,11,.88);border:1.5px solid var(--accent);color:var(--accent);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
 .pm .fan6 .ac, .pm .activelist .ac, .pm .pile6 .ac{position:relative}
@@ -187,7 +181,17 @@
 .pm .hand6[data-layout=fan] .fan6{display:flex;justify-content:center;align-items:center;left:0;right:0;top:30px;bottom:0;padding:16px 10px 0}
 .pm .hand6[data-layout=fan] .fan6{container-type:size;--fw:max(90px, min(calc(90cqh * 5 / 7),calc((100cqw - 24px) / 7.35)));--adv:max(calc(var(--fw) * .45),calc((100cqw - 24px - 1.5 * var(--fw)) / 13))}
 .pm .hand6[data-layout=fan] .fan6 .ac{height:auto;width:var(--fw);margin:0 calc((var(--adv) - var(--fw)) / 2);transform-origin:50% 160%;--rot:calc((var(--i) - 6.5) * 1deg);transform:translateY(0) rotate(var(--rot)) scale(1);will-change:transform}
-.pm[data-zhand=hover] .hand6[data-layout=fan] .fan6 .ac:hover, .pm .hand6[data-layout=fan] .fan6 .ac.zoomed{transform:translateY(-30%) rotate(0deg) scale(var(--hz,1.45));z-index:35}
+:is(.pm[data-fanzoom=on], .ctrlheld .pm[data-fanzoom=ctrl]) .hand6[data-layout=fan] .fan6 .ac:hover{z-index:35}
+/* hand cards: the .ac stays in place as the hover target, its face .acf zooms (in the fan it also turns upright: -rot undoes the .ac rotation) */
+.pm .fan6 .ac{background:transparent;box-shadow:none}
+/* the fan zooms in place and may grow over the Active/Play row (the other zones use the card preview, campaign/preview.js) */
+.pm .hand6[data-layout=fan] .fan6{overflow:visible}
+.pm .fan6 .acf{position:absolute;inset:0;border-radius:inherit;background:#120f0b;box-shadow:0 4px 10px rgba(0,0,0,.5);transform-origin:50% 100%;transition:transform .26s cubic-bezier(.2,.8,.2,1),box-shadow .26s ease-out}
+:is(.pm[data-fanzoom=on], .ctrlheld .pm[data-fanzoom=ctrl]) .hand6[data-layout=fan] .fan6 .ac:hover .acf{box-shadow:0 16px 40px rgba(0,0,0,.8)}
+.pm .hand6[data-layout=fan] .fan6 .acf{transform-origin:50% 160%;transform:rotate(0deg) translateY(0) scale(1)}
+/* the fan zooms in place on hover; with "Show on: Ctrl+hover" only while Ctrl is held (.ctrlheld on <html>, app.js); Ctrl skips the hover delay */
+:is(.pm[data-fanzoom=on], .ctrlheld .pm[data-fanzoom=ctrl]) .hand6[data-layout=fan] .fan6 .ac:hover .acf{transform:rotate(calc(-1 * var(--rot))) translateY(-30%) scale(var(--hz,1.45))}
+.ctrlheld .pm .hand6[data-layout=fan] .fan6 .ac:hover .acf{transition-delay:0s}
 .pm .board6{grid-column:2 / span 2;grid-row:2}
 .pm .piles6{grid-column:3;grid-row:2;align-self:start;height:32%;z-index:3;display:grid;grid-template-rows:1fr 1fr;gap:8px;min-height:0;overflow:hidden}
 .pm .board6 .toprow{margin-right:124px}
@@ -213,10 +217,6 @@
 .pm .pilerow6{position:relative;display:flex;align-items:center;gap:10px;background:#2d2519;border:1px solid var(--line);border-radius:8px;padding:6px 10px}
 .pm .pilerow6 > img{width:34px;height:48px;object-fit:cover;border-radius:4px;cursor:pointer}
 .pm .pilerow6 span{flex:1;font-size:13px}
-.pm .pilezoom{position:fixed;left:max(18px,calc(50vw - 370px));top:50%;transform:translateY(-50%);height:230px;width:auto;aspect-ratio:5/7;object-fit:cover;border-radius:10px;box-shadow:0 20px 50px rgba(0,0,0,.8);pointer-events:none;z-index:210}
-.pm .pilezoom[hidden]{display:none}
-.pm .pilezoomtk{position:fixed;z-index:211;pointer-events:none}
-.pm .pilezoomtk[hidden]{display:none}
 .pm .pile6 .ac{height:56%;width:auto;box-shadow:4px 4px 0 -1px #2b2318,8px 8px 0 -2px #241c13}
 .pm .pile6.lost .ac{filter:grayscale(.8) brightness(.7)}
 .pm .dock{display:flex;flex-direction:column;gap:8px;align-items:stretch;min-height:0;overflow-y:auto;overflow-x:hidden}
@@ -279,13 +279,11 @@
 .pm .notesarea{width:100%;min-height:140px;background:#120f0b;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px;font:inherit;resize:vertical}
 .pm .matflip{display:flex;justify-content:center}
 .pm .matflip img{width:100%;border-radius:8px;border:1px solid var(--line);cursor:pointer}
-.pm .pilezoom{height:var(--pzh,280px)}
-.pm[data-dock=right] .pilezoom{left:auto;right:max(18px,calc(50vw - 370px))}
-.pm[data-zactive=hover] .activelist .ac:hover, .pm[data-zplay=hover] .flipcard.is-front.settled:hover, .pm[data-zhand=hover] .fan6 .ac:hover, .pm[data-zitems=hover] .shelf6 .it:hover{transition-delay:var(--hdelay,0s)}
+.pm[data-zactive=hover] .activelist .ac:hover, .pm[data-zplay=hover] .flipcard.is-front.settled:hover, .pm[data-zhand=hover] .fan6 .ac:hover, .pm[data-fanzoom=on] .fan6 .ac:hover .acf, .pm[data-zitems=hover] .shelf6 .it:hover{transition-delay:var(--hdelay,0s)}
 .pm[data-inib=off] .inib{display:none!important}
 .pm .activelist .inib, .pm .pile6 .inib, .pm .hand6:not([data-layout=fan]) .inib{display:none!important}
 .pm .fan6 .ac{overflow:visible}
-.pm .fan6 .ac>img{border-radius:inherit}
+.pm .fan6 .ac>img, .pm .fan6 .acf>img{border-radius:inherit}
 .pm .fan6 .inib{left:8px;top:-15px;height:16px;min-width:28px;padding:0 6px;border-radius:8px 8px 0 0;border-bottom:0;font-size:11px;line-height:1}
 .pm[data-motion=reduce] *, .pm[data-motion=reduce] *::before, .pm[data-motion=reduce] *::after{transition:none!important;animation:none!important}
 .pm .setpanel label.setchk{display:flex;width:100%;justify-content:flex-start;padding:7px 11px 7px 9px;border-radius:8px;font-size:13px}

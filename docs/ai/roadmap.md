@@ -9,8 +9,8 @@ Open work in priority order. Items marked (owner) need a decision or data from t
 
 ## 2. Playmat and phone gaps
 
-4. Phone: Modifiers view (it still opens the old AMD modal, `PHONE_MODALS`), Edit character, editable gold, XP and inherited perks (currently display only).
-5. Touch: drag of modifier cards on touch screens (pointer events, hold then move) is untried on hardware. Check the long-press context menu on a real touch device.
+4. Phone: check the touch layout (2026-11-17) on a real phone, upright and sideways: page sheet, bottom sheets, long press preview, hold and move of modifier cards. Tested only with Playwright touch emulation.
+5. Touch: check the long-press context menu of the playmat on a real touch device (tablet).
 6. Hand fan and active zone: size from `--cu` instead of their own containers.
 7. Settings: explain or relabel "Reduce motion" (owner note in the old `updates merc site.md`, now archived).
 8. Attack modifier state is session only (draws, top, bottom, active, count edits). Decide whether it belongs in the record (needs a field and a schema note in `campaign-record.md`). (owner)
@@ -33,6 +33,7 @@ Open work in priority order. Items marked (owner) need a decision or data from t
 25. Map side: a panel for result, battle goals, items found; write the session result into the URL state.
 26. Session commit from the campaign page: validate `cid`, unused `sid`, `base` version. Merge XP, gold, items, scenario result and unlocks. Preview before applying. Idempotent. Level-ups, enhancements and card choice stay separate campaign edits.
 27. Event voting is local per deck today. Decide whether votes move to the server with per-seat tokens. (owner)
+27a. Map in the campaign app, map state per turn on the server, posts without URLs: proposed in `design/map-integration.md` (phases 1 to 7, open questions for the owner).
 
 ## 5. BBCode posts
 
@@ -69,5 +70,5 @@ Open work in priority order. Items marked (owner) need a decision or data from t
 48. Browser check of the 2026-11-16 changes, not done yet: tab order, the settings modal width and two-column shortcuts, the items roll button, the marker fix, the portrait crops. Node and headless checks only.
 49. The Mercenaries tab label is still "Mercenaries" (requested as "Mercs"). Decide whether to shorten it.
 50. Scenario roller is still the icon button, unlike the item roller. Decide whether both should use one style.
-51. Touch preview for the composed attack-modifier cards on the Cards tab is not built (Ctrl+hover only).
-52. Browser check of the zoom changes: Items grid, attack-modifier previews, preview sizes, the trail fix, settings tab order.
+51. Touch for the card preview (tap and long press pin it) is not tried on touch hardware.
+52. Card preview (2026-11-17): checked in Playwright at 1366x650 on the Cards and Items tabs and every playmat zone. Not checked: other window sizes by hand, the old attack modifier modal of the phone view (it keeps its own docked zoom, `pm.amZoom`).

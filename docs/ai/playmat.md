@@ -28,6 +28,7 @@ Code: `campaign/playmat.js` (markup, modals, dock, settings), `campaign/playmat.
 - Right: Discard and Lost piles (top card shown, click opens the pile modal).
 - Far right: dock, six modal buttons: Perks and masteries, Journal, Character mat, BGG codes, Enhancements, History. (Attack modifiers are in the hand bar.)
 - Card size: `--cu` set by `sizePlaymat()` in `app.js`, 14% of stage height or 12% of width, 60 to 160 px.
+- Card preview: every playmat card (Spread hand, Active area, face-up play cards, items, Modifiers view, pile, hand editor, item and perks modals) uses the shared card preview of all tabs (see "Card preview" below). Only the Fan zooms in place: each fan card has an inner face `.acf` that zooms, while the `.ac` stays in place as the hover target, so a card zoomed away from the pointer does not flicker. The fan never clips its cards (overflow visible). With "Show on: Ctrl+hover" the fan zooms in place only while Ctrl is held (`data-fanzoom="ctrl"` and the `.ctrlheld` class on `<html>`, set in `app.js`); Ctrl also skips the hover delay. A pinned fan card (Z, context menu Zoom) uses the preview.
 
 ## Zone rules (owner decisions)
 
@@ -47,6 +48,7 @@ Code: `campaign/playmat.js` (markup, modals, dock, settings), `campaign/playmat.
 - Draws, returns, shuffle, bless and curse are session state (`pm.amd[charId]`), not saved in the record. Known gap (`roadmap.md` item 8).
 - Deck follows the taken perks (`c.pk`) via `scripts/campaign/amdDeck.js`. Roll codes: `1custom<n>{faces}` for the pool; `Top: X` and `Bottom: X` when a known card is placed.
 - Every move writes a History line.
+- Layout (2026-11-17, `style.css`, block "Modifiers view, responsive layout"): sizes follow the view's box in container units. Deck stacks are sized so the deck fits two rows (`--perrow` set in `amViewHtml`); Top, Bottom and Active share one strip height (`--striph`), and full strips overlap their cards. Side column: one control row (draw or roll code, shuffle, edit), the discard fills the rest. Below 820 px window height the view takes the whole board: the Active/Play row and the ability card piles (Discard, Lost) are hidden while it is open. Checked in Playwright at 1024x640 to 1920x960 (window inner sizes).
 
 ## Modals and buttons
 
@@ -61,31 +63,34 @@ Code: `campaign/playmat.js` (markup, modals, dock, settings), `campaign/playmat.
 | Edit character | name, player, event traits, class change (restarts the character), portrait |
 | Hand editor (deck modal) | class cards by level with states Locked, Unlocked, Hand; Confirm hand applies it. Level stepper moves XP to the level threshold |
 | Items | state buttons (available, spent, consumed), equip dialog with slot limits (head 1, body 1, legs 1, hands 2, small items half the level rounded up) |
-| Pile modal | recover top or all cards; docked preview |
+| Pile modal | recover top or all cards; a click on a card recovers it |
 | Markers | tokens and stickers on cards and items |
 
 BGG posts: Turn (banner, top action in slot 1, bottom action in slot 2, `XXX` for empty) and Cards for the next round (initiative of slot 1, cards of slots 1 and 2). Template text is fixed in `playmat.js` (`turnPost`, `cardsPost`).
 
 ## Settings and context menu
 
-- Playmat display settings live in the settings modal (Mercenary tab, `displaySettingsHtml` in `campaign/playmat.js`): Hand (layout Spread or Fan, auto-sort by initiative), Card zoom (mode hover or click, size, hover delay), Zoom per zone, Preview (docked side), Cards and motion (initiative badge, reduce motion). Kept per browser (`havenmap.campaign.pmset`), not in the record.
-- Card zoom on the card tabs (Cards, Items, Monsters, Mats): Ctrl+hover on desktop (tap on touch). The preview width follows the playmat's zoom size setting (S 270, M 340, L 420, XL 500 px, capped by the window height); each tile's `data-imgw` is no longer used. Composed attack-modifier cards (Cards tab, Attack modifiers) get a built card preview (`showAmPreview`), rebuilt only when the hovered card changes. Both previews move with `transform`, which stops a trail behind the pointer.
+- Playmat display settings live in the settings modal (Display tab, `displaySettingsHtml` in `campaign/playmat.js`): Hand (layout Spread or Fan, auto-sort by initiative), Card preview (Show on Hover or Ctrl+hover, Position next to the card or docked left or right, Size S to XL, Hover delay), Cards and motion (initiative badge, reduce motion). Kept per browser (`havenmap.campaign.pmset`), not in the record. Older stored settings load: zoom mode and zones are dropped, an old docked side Right becomes Position Right.
+- Card preview (2026-11-17, `campaign/preview.js`, one module for every tab): a floating picture beside the card under the pointer, or docked at a window side. It ignores the pointer (no flicker, never clipped by a scrolling box) and lives in the body, outside the playmat redraw (`morph.js` reuses unkeyed elements of the `.pm`, so a layer inside it was recycled as the next modal). Triggers: hover after the delay (default Short, 150 ms); moving on to the next card shows it at once; Ctrl shows at once; with "Ctrl+hover" only Ctrl shows it. Z pins the card under the pointer; Z again, Esc or a click elsewhere closes it; the context menu Zoom pins too. Touch: a long press pins, except on cards whose long press opens the context menu (use its Zoom); on the card tabs a tap pins. Size: the long edge is a share of the window height (`SHARE`: S .40, M .52, L .64, XL .78), the same for every card kind; character mats 1.3 times. The fan's in-place zoom uses the same size (`zoomScale`). Content: pictures (`data-img`), ability cards with their tokens and stickers laid over the picture, items as a scaled copy with their badges, attack modifier cards as a copy of the built card (`pmPreview` in `app.js`). Clicks never zoom: a click on a card always does its action.
 - Unique attack-modifier cards (baked images) get the class badge drawn over their lower-left corner when a perk adds them (`buildUnique` in `scripts/amd/card.js`).
-- The settings modal tabs are in the order Mercenary tab, Campaign file, Profile, Shortcuts.
+- The settings modal tabs are in the order Display, Campaign file, Profile, Shortcuts. The Display tab was called "Mercenary tab" until 2026-11-17.
 - The settings modal is 880 px wide (full width on narrow screens). Its Shortcuts tab lists two columns (groups flow into two CSS columns, one column below 560 px).
 - Roll buttons: the Modifiers view's roll code is the gold roll code tile (`.amcode`). The Items tab uses the merc journal style (`.btn6.rollbtn`, "BGG code for roll"), and the scenario roller is an icon button. Copy feedback: "Copied" on the tile or the button label.
 - Portrait crops are looked up by class slug (`matSlugOf` in `scripts/campaign/cardImages.js`), not by the mat's file name. The focus table is `scripts/games/portrait-focus.json`, keyed by slug.
 - Markers: sticker and token pictures come from `stickerImage` and `tokenImage` (`scripts/campaign/classTokens.js`).
-- The settings modal has four tabs: Profile (your name), Campaign file (load, export, clear), Mercenary tab, and Shortcuts (generated from the `SHORTCUTS` list in `campaign/app.js`; update it when a shortcut changes).
+- The settings modal has four tabs: Profile (your name), Campaign file (load, export, clear), Display, and Shortcuts (generated from the `SHORTCUTS` list in `campaign/app.js`; update it when a shortcut changes).
 - Keys on the object under the mouse pointer (not focus), read at key press from the last mouse position: ability card D (discard), L (Lost), A (active area); item D (toggle spent and available), L (consumed); attack modifier D (on a placed card: discard; on a deck stack: draw one to the discard, as a click does). Ignored in edit mode for attack modifiers. The item context menu has a State section with the same three states.
 - Context menu (`ctxmenu.js`): right click, Menu key, Shift+F10, long press on touch and pen. Cards: enlarge, marker, move to hand, active area, play slots (hand cards only), discard, lost, start and end of hand. Piles: recover top, move whole pile. Counters: +5, -5, reset. Every entry calls the same function as the normal UI.
 
 ## Phone view
 
-- Used at 700 px wide or less (`phone.js`, `phone.css`). Tabs Cards, Items, Info. Burger menu opens the same modals as the dock.
-- Tap a card for a bottom sheet with zones to move it to; tap a played card to flip; Ini and Lvl sort the hand.
-- XP, gold and inherited perks: display only on the phone.
-- Not on the phone yet: Modifiers view, Edit character, class change (see `roadmap.md`).
+- Used at 700 px wide or less, or 500 px high or less (a phone held sideways): `phone.js`, `phone.css`, same media query as `html.phone` (`touch.css`). Tabs Cards, Modifiers, Items, Info at the bottom (a rail at the left when sideways). Burger menu opens the same modals as the dock.
+- Top bar: the name opens a sheet to switch character or add one; the pencil opens Edit character (bottom sheet).
+- Cards: play area, active, hand, discard and lost. Sideways: play, active and piles in one row, the hand below. Tap a card for a bottom sheet with zones to move it to; tap a played card to flip; long press shows the card preview; Ini and Lvl sort the hand.
+- Modifiers: the playmat's Modifiers view (`amViewHtml`) laid out for the phone (draw controls, four stacks a row, Top and Bottom, discard and active). Tap a stack draws it; hold and move a card places it; holding still shows the preview.
+- Items: the item pictures, spent and consumed labelled; a tap opens the item modal.
+- Info: traits; XP, gold and inherited perks with [-] value [+] steppers.
+- Not on the phone: class change from the hand editor is the same modal as on the playmat, not checked at phone width.
 
 ## History logging
 
@@ -95,6 +100,6 @@ Every edit goes through `commit` and is logged (`changelog.js`). Small counter c
 
 - Touch drag of modifier cards uses pointer events; not tried on touch hardware.
 - Hand fan and active area size from their containers, not `--cu`.
-- Long press and phone view not tested on a real device. The 2026-11-14 layout changes are not browser-tested (see `status.md`).
+- Long press, touch drag and the phone view were tested in Playwright with touch emulation (2026-11-17), not on a real device. The 2026-11-14 layout changes are not browser-tested (see `status.md`).
 - Item and enhancement price shortcuts from the old mockup are not built.
 - Card active marking has no UI.

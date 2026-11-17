@@ -1,0 +1,94 @@
+/* Touch layout of the campaign page (2026-11-17): phones, upright (700 px wide or less) or sideways (500 px high or less). app.js sets
+   html.phone with the same media query that switches the Mercenaries tab to the phone view (campaign/phone.js, phone.css).
+   Rules: one row of header (the page name opens the page menu), controls at least 40 px high, inputs at 16 px (no zoom on focus),
+   modals and menus as bottom sheets, lists as rows instead of wide tables. */
+
+.pagebtn { display:none; }
+
+/* ---- Header: the page name (campaign name above it) opens the page sheet; Undo and Settings at the right ---------------------- */
+html.phone header { position:sticky; top:0; flex-wrap:nowrap; gap:6px; padding:4px 8px 4px 10px; padding-top:max(4px, env(safe-area-inset-top)); }
+html.phone header h1, html.phone header #tabs { display:none; }
+html.phone .pagebtn { display:flex; flex-direction:column; justify-content:center; align-items:flex-start; flex:1; min-width:0; min-height:46px; padding:2px 4px; background:none; border:0; color:var(--text); font:inherit; text-align:left; cursor:pointer; }
+html.phone .pagebtn .pbcamp { max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:11px; color:var(--muted); }
+html.phone .pagebtn .pbtab { display:flex; align-items:center; gap:6px; font-size:18px; font-weight:700; }
+html.phone .pagebtn .pbtab svg { color:var(--accent); }
+html.phone .pagebtn[aria-expanded="true"] .pbtab svg { transform:rotate(180deg); }
+html.phone header .actions { gap:6px; }
+html.phone header .actions button { height:40px; min-width:40px; border-radius:8px; }
+
+/* ---- Bottom sheets: the page menu (and the base for every phone menu) ------------------------------------------------------------ */
+.bsheetwrap { position:fixed; inset:0; z-index:70; display:flex; align-items:flex-end; background:rgba(0,0,0,.55); }
+.bsheetwrap[hidden] { display:none; }
+.bsheet { width:100%; max-height:85dvh; overflow:auto; padding:6px 12px calc(14px + env(safe-area-inset-bottom)); background:var(--panel); border-top:2px solid var(--accent); border-radius:16px 16px 0 0; box-shadow:0 -10px 30px rgba(0,0,0,.6); animation:bsup .18s ease-out; }
+.bsgrab { width:40px; height:4px; margin:4px auto 12px; border-radius:2px; background:var(--line); }
+@keyframes bsup { from { transform:translateY(24px); opacity:.5; } }
+.pagelist { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.pagelist button { height:52px; padding:0 14px; border:1px solid var(--line); border-radius:10px; background:#2d2519; color:var(--text); font:inherit; font-size:15px; text-align:left; cursor:pointer; }
+.pagelist button[aria-current] { border-color:var(--accent); background:#3a2f1e; color:var(--accent); font-weight:600; }
+
+/* ---- Modals of every page and of the playmat open as bottom sheets ------------------------------------------------------------ */
+html.phone .modal, html.phone .pm .mmodal, html.phone .pm .mmodal:has(.jbox) { align-items:flex-end; padding:0; }
+html.phone .modalbox, html.phone .pm .mmodalbox { width:100% !important; max-width:100% !important; max-height:92dvh; border-width:2px 0 0; border-radius:16px 16px 0 0; padding:16px 14px calc(16px + env(safe-area-inset-bottom)); animation:bsup .18s ease-out; }
+html.phone .modalx, html.phone .pm .mmodalx { top:6px; right:6px; width:40px; height:40px; font-size:24px; }
+html.phone .modalbox h3 { margin-right:44px; min-height:28px; }
+
+/* ---- Page content ---------------------------------------------------------------------------------------------------------- */
+html.phone main { padding:10px; }
+html.phone main:has(> .pp) { padding:0; }
+html.phone input:not([type=checkbox]):not([type=radio]):not([type=range]), html.phone select, html.phone textarea { font-size:16px; }
+html.phone main .filters { gap:6px; padding:6px; }
+html.phone main .filters select, html.phone main .filters input[type=search], html.phone main .filters input[type=text] { height:40px; }
+html.phone main .filters select { flex:1 1 0; min-width:0; }
+html.phone main .filters input[type=search] { flex:1 1 150px; min-width:0; }
+html.phone main .filters .rollbtn span { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+html.phone main .filters .tbend { margin-left:auto; }
+html.phone main .filters .tbend .btn6, html.phone main .filters .tbend .editbtn, html.phone main .filters > .editbtn, html.phone main .filters .imgmode button { height:40px; min-width:40px; }
+html.phone .imgmode button, html.phone .subtabs button { min-height:36px; }
+html.phone .editbtn.editicon { min-width:36px; min-height:36px; }
+@media (prefers-reduced-motion: reduce) { .bsheet, html.phone .modalbox, html.phone .pm .mmodalbox { animation:none; } }
+
+/* ---- List rows (Items, Scenarios): number, name with one line of facts, and the state or the owners at the right; a tap opens the
+   sheet of the entry (the item sheet, the scenario modal) ---------------------------------------------------------------------- */
+.mlist { display:flex; flex-direction:column; border:1px solid var(--line); border-radius:10px; overflow:hidden; background:var(--panel); }
+.mrow { display:flex; align-items:center; gap:10px; width:100%; min-height:56px; padding:8px 12px; border:0; border-bottom:1px solid rgba(58,48,38,.75); background:none; color:var(--text); font:inherit; text-align:left; }
+.mlist > .mrow:last-child { border-bottom:0; }
+button.mrow { cursor:pointer; }
+button.mrow:active { background:rgba(199,164,74,.1); }
+.mrow.s0 { color:var(--muted); }
+.mrow .mnum { flex:none; min-width:2.4em; color:var(--muted); font-size:13px; font-variant-numeric:tabular-nums; text-align:right; }
+.mrow .mmain { flex:1; min-width:0; display:flex; flex-direction:column; gap:1px; }
+.mrow .mmain b { font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.mrow .mmain small { color:var(--muted); font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.mrow .mend { flex:none; max-width:38%; color:var(--accent); font-size:12px; text-align:right; }
+.mrow .spill { flex:none; }
+
+/* ---- Item sheet ------------------------------------------------------------------------------------------------------------------ */
+.itemsheet .isbody { display:flex; gap:14px; align-items:flex-start; }
+.itemsheet .isbody img { width:42%; max-width:180px; border-radius:8px; flex:none; }
+.itemsheet .isfacts { flex:1; min-width:0; font-size:14px; }
+.itemsheet .isfacts .kv { padding:5px 0; border-bottom:1px solid rgba(58,48,38,.75); }
+.itemsheet h4 { margin:16px 0 8px; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); }
+.itemsheet .itemwith { display:flex; flex-wrap:wrap; gap:8px; }
+.itemsheet .itemwith .chip { display:inline-flex; align-items:center; gap:4px; height:36px; padding:0 4px 0 14px; font-size:14px; }
+.itemsheet .itemwith .chx { width:30px; height:30px; font-size:18px; }
+.itemsheet .isgive { display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:8px; }
+.itemsheet .isgive button, .itemsheet .isedit .btn { height:44px; border:1px solid var(--line); border-radius:10px; background:#2d2519; color:var(--text); font:inherit; font-size:15px; cursor:pointer; }
+.itemsheet .isedit { margin-top:16px; }
+.itemsheet .isedit .btn { width:100%; }
+
+/* ---- Cards toolbar: two selects a row; Resources: a row per document with a link per game ------------------------------------- */
+html.phone main .filters select { flex:1 1 140px; }
+.resrow .mmain b { white-space:normal; }
+.resrow .reslinks { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+.resrow .reslinks .chip { display:inline-flex; align-items:center; height:32px; padding:0 12px; border-radius:999px; color:var(--text); text-decoration:none; font-size:13px; }
+html.phone .respage .mlist { border:0; background:none; }
+html.phone .trnum { height:38px; }
+html.phone .trrow .pill { height:32px; padding:0 12px; }
+
+/* ---- Settings: no keyboard shortcuts and no hover settings on a phone; touch-size segments and tabs ------------------------------ */
+html.phone .settabs [data-stab="keys"], html.phone .setline.deskonly { display:none; }
+html.phone .settabs { flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; }
+html.phone .settabs button { flex:none; min-height:40px; }
+html.phone .setpanel .seg button { min-height:36px; padding:0 14px; }
+html.phone .setpanel .setline { min-height:48px; }
+html.phone .setfoot .btn6 { min-height:44px; }

@@ -27,8 +27,10 @@ Tabs (`PAGE_TABS` in `campaign/app.js`, in this order): Overview, Mercenaries, I
 - Resources: links from the workbook (`scripts/games/resources.js`).
 - History: entries from `record.log`, folded small counter changes, undo entries.
 - Storage: browser localStorage only (`scripts/campaign/store.js`, one implementation). JSON Export and Import by hand. Undo 50 steps, Ctrl+Z.
-- Settings modal (cogwheel, 880 px wide): shortcuts list in two columns; four tabs, Profile, Campaign file, Mercenary tab and Shortcuts (`docs/ai/playmat.md`). Object keys on the pointer (D, L, A on cards and items, D on modifier cards) tested in the browser by the owner on 2026-11-16.
+- Settings modal (cogwheel, 880 px wide): shortcuts list in two columns; four tabs, Display, Campaign file, Profile and Shortcuts (`docs/ai/playmat.md`). Object keys on the pointer (D, L, A on cards and items, D on modifier cards) tested in the browser by the owner on 2026-11-16.
 - Imported test data: `import/campaign-import.json` (made by `tools/import-campaign-state.py`). The owner decided not to import the live campaign automatically; state is synced by hand.
+
+Work on branch `merc-tab-rework` (2026-11-17, not merged): the Modifiers view layout for short screens (sizes in container units, the view covers the Active/Play row below 820 px window height); the fan zoom without flicker; one card preview for every tab (`campaign/preview.js`), click zoom and zoom zones removed. See `playmat.md` and `decisions.md`.
 
 Recent work (2026-11-16, committed and pushed in `0c8c81f` and `c67d314`, plus the follow-ups below): Frosthaven and Jaws character abilities, mats and battle goal pictures on the Cards tab; journal battle goals with pictures; tab order; settings modal split into tabs, two-column shortcut list; item roll button in the merc tab's roll button style; portrait crops looked up by class slug; marker tokens and stickers resolved through the new image functions (a removed constant had broken markers, fixed); the image rewrite described below. Follow-ups: Items grid tiles and the Cards tab's attack-modifier cards got Ctrl+hover previews; preview sizes follow the playmat zoom setting; trails behind the previews removed (transform positioning); unique attack-modifier cards get the class badge; settings tabs reordered (Mercenary tab, Campaign file, Profile, Shortcuts).
 
@@ -38,7 +40,7 @@ Earlier work (last commits, 2026-11-13 and 2026-11-14): tile modals for stickers
 
 - Built: everything listed under Mercenaries above. Stages a to f of the redesign are done (`docs/archive/merc-tab-handover.md` section 6 has the history).
 - Not browser-tested: the 2026-11-14 layout changes (`ui-guidelines.md` section 8). Long press, touch drag and the phone view were not tested on a real device.
-- Phone: no Modifiers view (the old AMD modal is still used), no class change, no Edit character.
+- Touch layout (2026-11-17): phones upright and sideways, `campaign/touch.css` and the phone view; see `playmat.md` and `ui-guidelines.md` 6.4. Checked with Playwright touch emulation at 390x844 and 844x390, tablet playmat at 768x1024. Not checked on a real device.
 
 ## Not built
 

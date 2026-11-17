@@ -162,26 +162,30 @@ An empty list shows one muted line (`.emptyline`), for example "No stickers yet.
 
 - A click on a card does the main thing (flip, select, toggle). A second click on the same thing undoes it where that makes sense
   (equip, take a perk).
-- Hover zoom or click zoom for cards, set in the display settings (`pmset.zoom`: `hover` or `click`). Hover waits `hoverDelayMs()`. Any
-  new zoomable element uses the same two modes.
+- Every card picture uses the shared card preview (`campaign/preview.js`, `createPreview`): hover with the delay setting, Ctrl at once, Z to pin, long press on touch.
+  A new card element only needs to match the preview selector (`data-img`, or the playmat list in `PM_PREVIEW`). A click never zooms.
 - Numbers on the playmat (XP, gold, inherited perks) are edited with `+` and `-` buttons, or by clicking the number and typing.
 - Drag and drop moves cards between zones (hand, active, discard, lost). Touch and pen use pointer events.
-- Hover-only controls (marker handle) are hidden in hover-zoom mode; the click path is the fallback.
+- Hover-only controls (marker handle) are hidden on the desktop playmat; a click on the card opens the markers instead.
 
 ### 6.3 Keyboard
 
 - Escape closes the open modal or preview first. One Escape, one step back.
+- Z pins the card preview of the card under the pointer; Ctrl shows it without the hover delay.
 - Space switches between hand and modifier deck when nothing is focused and no modal is open.
 - Object keys act on the object under the mouse pointer, not on focus: D, L and A on ability cards, D and L on items, D on attack modifier cards. A pointer-based key does not need Tab focus, so the cards do not take focus. Every new key goes into the Shortcuts tab (`SHORTCUTS` in `campaign/app.js`).
 - Every control reachable by Tab, with a visible gold focus ring (`box-shadow: 0 0 0 2px rgba(199,164,74,.25)`).
 - Dialogs: `role="dialog" aria-modal="true" aria-label` on the box.
+- Settings modal tabs are built from the same parts (`style.css`): `.setcols` (panels in one or two columns; `.one` a single panel, `.split` a grid with a `.tall` panel on the left), `.setcard` (framed panel with a gold heading), `.setline` with `.setlab` and `.setctl` (label column and control; stacked in a narrow panel, except checkbox lines `.chk`).
+- Pages outside the playmat (2026-11-17, block "Page polish" at the end of `style.css`): content sits in panels (`.card` with an `h3` heading: small uppercase gold, count in `.ovcount`, pencil at the right end). Filter rows (`main .filters`) are one framed toolbar with 32 px controls, the view switch first and actions at the right end (`.tbend`). Lists use `dataTable(cls, head, rows)` in `app.js` (`.dtable`: sticky header, row hover, numbers right-aligned by column, state pills `.spill`); on a phone less important columns are hidden by column number instead of scrolling sideways. The header tab bar scrolls sideways on a phone.
 
 ### 6.4 Touch and phone
 
 - Touch uses long press for the context menu. Targets at least 36px high on touch (`.pm .btn6 { min-height: 36px }`).
+- Touch layout (2026-11-17, `campaign/touch.css`): `html.phone` is set by `app.js` at 700 px wide or less, or 500 px high or less. Header: one row, the page name opens a bottom sheet with every page (`#pageSheet`), Undo and Settings at the right. Modals of every page and of the playmat open as bottom sheets. Controls at least 40 px high; inputs at 16 px so phones do not zoom on focus. Items, Scenarios and the Resources documents are list rows (`.mlist`, `.mrow`) that open a sheet (`itemSheet`, the scenario modal). Settings hide the hover-only lines (`.setline.deskonly`) and the Shortcuts tab.
 - Phone view (`phone.js`, `phone.css`) is a separate layout that shows the same data with fewer panels; the modal list there is `PHONE_MODALS`.
   A new feature needs a decision for the phone: include it, or say it is desktop only.
-- Modals on narrow screens take the full width with 16px gutter and no horizontal page scroll.
+- No help text on the phone either (the old "tap to flip, button to move" line was removed).
 
 ### 6.5 Motion
 
@@ -195,7 +199,7 @@ An empty list shows one muted line (`.emptyline`), for example "No stickers yet.
 4. Route every change through `commit`, so Undo and History work.
 5. Show nothing that the player should not know yet. Count, do not name.
 6. Empty states: one muted line, no help text.
-7. Hover and click zoom for any card, same settings as the playmat.
+7. The shared card preview for any card picture (`data-img` on the tile).
 8. Context menu entries only for actions that also exist in the normal UI, in the order of section 5.7.
 9. Test at 1440x900 and at a phone width. Check that no horizontal scroll appears. For the playmat, also run the test matrix in
    section 9 of this file.
@@ -203,7 +207,6 @@ An empty list shows one muted line (`.emptyline`), for example "No stickers yet.
 
 ## 8. Known gaps (2026-11-14)
 
-- Phone: the Modifiers tab reuses the playmat markup (`amViewHtml`). Its stack sizes are the desktop ones and it has not been checked at phone width.
 - Touch drag of modifier cards uses pointer events (hold, then move), like the hand cards. It has not been tried on a real touch screen.
 - The hand fan and the active zone still size their cards from their own containers, not from `--cu`. Move them when the layout is tested
   (section 9 of this file).

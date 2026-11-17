@@ -10,7 +10,7 @@ const keyOf = n => {
 };
 
 function syncAttributes(old, next) {
-  const hz = old.style && old.style.getPropertyValue('--hz');                   // set by the hover zoom, not part of the markup
+  const hz = old.style && old.style.getPropertyValue('--hz');                   // set for the fan's in-place zoom, not part of the markup
   for (const a of [...old.attributes]) {
     if (a.name === 'open' && old.tagName === 'DETAILS') continue;               // keep a section the user opened
     if (!next.hasAttribute(a.name)) old.removeAttribute(a.name);

@@ -8,6 +8,8 @@ Dated, newest first within each group. "Owner" marks decisions the owner made. C
 - 2026-11-16: The map sidebar's mercenary mats come from `character-mats/<edition>` (the asset repository art), since the old repo mats were removed. Owner.
 - 2026-11-14: `campaign/playmat.css` is hand-maintained. The generator stays as a reference and refuses to run without `--force`, because the mockup and the live page disagree.
 - 2026-11-13: Playmat card markers are stored per card and item in `chars[].mk`, keyed `c:<card id>` or `i:<item id>`.
+- 2026-11-17: Touch layout for phones upright and sideways (700 px wide or less, or 500 px high or less): the phone view of the Mercenaries tab, a page menu sheet instead of the tab row, modals as bottom sheets, list rows instead of tables on Items and Scenarios. Tablets keep the playmat. Owner.
+- 2026-11-17: Phone Mercenaries: the name switches character (sheet), the Modifiers view is on the phone, long press shows the card preview and tap keeps the move sheet, hold and move places a modifier card. Owner.
 - 2026-11-12: Phone is a separate layout (`phone.js`) with the same data and edit functions. Touch and pen use pointer events for drag.
 - 2026-11-12: Attack modifier deck on the campaign page follows the perks taken (`chars[].pk`). Draw state stays session only.
 - 2026-11-11: The mockup page 6 renders the real deck and perk data from `scripts/amd/` (ES modules, served over HTTP only).
@@ -33,7 +35,9 @@ Dated, newest first within each group. "Owner" marks decisions the owner made. C
 - 2026-11-16: Tab order: Overview, Mercenaries, Items, Events, Scenarios, Resources, Cards, History. Owner.
 - 2026-11-16: The Items tab roll button uses the merc tab's roll button style (`btn6 rollbtn`, "BGG code for roll"). The gold roll code tile of the Modifiers view was tried and reverted. Owner.
 - 2026-11-16: The settings modal is 880 px wide and the shortcut list runs in two columns. Owner.
-- 2026-11-16: Card tabs keep Ctrl+hover zoom (not the playmat's hover-and-delay zoom). The preview size follows the playmat zoom size setting. Owner.
+- 2026-11-17: The settings tab "Mercenary tab" is renamed "Display" (its card preview settings apply to every tab). Owner.
+- 2026-11-17: One card preview for every tab (`campaign/preview.js`): hover with a delay (default Short), Ctrl at once, Z to pin, long press on touch; beside the card or docked; size a share of the window height. Click zoom and the zoom settings per zone are removed; a click always acts. The Fan keeps its in-place zoom animation; the Spread hand uses the preview. The tile sizes S, M, L of the Cards and Items tabs stay as a view setting. Owner approved the plan. Supersedes the 2026-11-16 decision below.
+- 2026-11-16 (superseded 2026-11-17): Card tabs keep Ctrl+hover zoom (not the playmat's hover-and-delay zoom). The preview size follows the playmat zoom size setting. Owner. The "Show on: Ctrl+hover" setting restores this behaviour.
 - 2026-11-16: Unique attack-modifier cards show the class badge over their baked lower-left badge when a perk adds them. Owner.
 - 2026-11-16: Settings tabs order: Mercenary tab, Campaign file, Profile, Shortcuts. Owner.
 - 2026-11-14: Shared GUI rules for all campaign tabs (`ui-guidelines.md`). No help text, no tips. Pencils open popups. Owner.

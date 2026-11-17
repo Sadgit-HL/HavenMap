@@ -28,7 +28,6 @@ const DN = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="
 const REC_ICON = `<img src="${imageFile('images/common/icons/recover', '../')}" alt="" draggable="false">`;
 const STATE_BTN = [REC_ICON.replace('<img ', '<img width="24" height="24" '),
   `<img src="${imageFile('images/common/icons/spent', '../')}" alt="" width="24" height="24" draggable="false">`, `<img src="${imageFile('images/common/icons/consumed', '../')}" alt="" width="24" height="24" draggable="false">`];
-const PVX = '<button type="button" class="pvx" data-pvclose aria-label="Close preview">&times;</button>';
 export function markersHtml(list, sel = -1) {
   return (list || []).map((m, i) => `<div class="tk${i === sel ? ' sel' : ''}" data-i="${i}" style="left:${m.x}%;top:${m.y}%${m.s ? `;--tkw:${m.k === 'hex_attack' ? 12 : 9}%` : ''}"><img src="${(m.s ? stickerImage(m.k) : tokenImage(m.k)) ?? ''}" alt="${m.k}" draggable="false"></div>`).join('');
 }
@@ -54,7 +53,8 @@ export function amViewHtml(A, esc, edit) {
   const strip = (z, label, list, cls) => `<div class="${cls}" data-amdrop="${z}"><span class="lab">${label}</span><div class="minis">${list.map(t => mini(t, z)).join('')}</div></div>`;
   const ord = k => { const i = AM_STANDARD.findIndex(t => t.key === k); return i < 0 ? 99 : i; };
   const cards = (edit ? [...A.tiles.filter(t => t.n > 0), ...A.missing.map(t => ({ ...t, n: 0 }))].sort((a, b) => ord(a.key) - ord(b.key)) : A.tiles.filter(t => t.n > 0));   // edit: every standard card, also those not in the deck
-  const deck = [...cards.map(t => stack(t, t.n, 'deck', false)), ...A.specials.filter(s => edit || s.n > 0).map(s => stack(s, s.n, 'deck', true))].join('');
+  const deckList = [...cards.map(t => stack(t, t.n, 'deck', false)), ...A.specials.filter(s => edit || s.n > 0).map(s => stack(s, s.n, 'deck', true))];
+  const deck = deckList.join(''), perRow = Math.max(4, Math.ceil(deckList.length / 2));   // the stacks are sized so the deck fits two rows
   const disc = A.top ? stack(A.top, A.disc, 'disc', false) : '';
   const next = A.topList[0] ? { z: 'top', t: A.topList[0] } : !A.pool && A.botList[0] ? { z: 'bot', t: A.botList[0] } : null;   // a known card is drawn next: the button draws it instead of rolling
   const pc = n => `${(100 * n / A.pool).toFixed(1).replace(/\.0$/, '')}%`;
@@ -63,7 +63,7 @@ export function amViewHtml(A, esc, edit) {
   const odds = full.map(t => `<span class="odd${t.n ? '' : ' zero'}"><b>${esc(t.face)}</b> ${t.n}/${t.base} <i>${t.n && A.pool ? pc(t.n) : '0%'}</i></span>`).join('');
   const known = A.topList[0] && numeric(A.topList[0]) ? `<span class="odd">Next: <b>${esc(A.topList[0].face)}</b> known</span>` : '';
   const stats = full.length ? `<div class="amstats" aria-label="Odds of the next random draw and what is left in the deck"><span class="lab">${A.topList[0] ? 'Random draw' : 'Next draw'}</span>${known}${odds}</div>` : '';
-  return `<div class="amv"><div class="area deckarea" data-amdrop="deck"><h5>Deck &middot; <b>${A.pool}</b></h5><div class="stacks">${deck || '<span class="cnt">Empty</span>'}</div><div class="amrow">${strip('top', 'Top', A.topList, 'amstrip')}${strip('bot', 'Bottom', A.botList, 'amstrip')}</div>${stats}</div><div class="amside"><div class="amctl">${next ? `<button type="button" class="amcode amdraw" data-amact="move" data-key="${esc(next.t.key)}" data-from="${next.z}" data-to="disc" data-idx="0" title="Draw the ${next.z === 'top' ? 'top' : 'bottom'} card of the deck" aria-label="Draw ${esc(next.t.face ?? next.t.label)} from the ${next.z === 'top' ? 'top' : 'bottom'} of the deck"><img src="../images/common/icons/draw.svg" width="34" height="32" alt="" draggable="false"><span class="lbl">${next.z === 'top' ? 'Top' : 'Bottom'}: ${esc(next.t.face ?? next.t.label)}</span></button>` : `<button type="button" class="amcode" data-code="${esc(amdRollCode(A.faces))}" title="Copy GeekRoller code" aria-label="Copy GeekRoller code"${A.faces.length ? '' : ' disabled'}><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg><span class="lbl">Roll code</span></button>`}<span class="amtools"><button type="button" data-amact="shuffle" title="Shuffle the discard back into the deck" aria-label="Shuffle the discard back into the deck"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M10.59 9.17 5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg></button><button type="button" data-amedit aria-pressed="${edit}" title="Edit the deck" aria-label="Edit the deck"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1-4 11-11a2 2 0 0 1 3 3L8 19z"/><path d="M14 7l3 3"/></svg></button></span></div><div class="area discarea" data-amdrop="disc" data-ampile title="Open the discard"><h5>Discard &middot; <b>${A.disc}</b></h5><div class="stacks">${disc || '<span class="cnt">Empty</span>'}</div></div>${strip('act', `Active &middot; <b>${A.actList.length}</b>`, A.actList, 'area amactive')}</div></div>`;
+  return `<div class="amv${edit ? ' editing' : ''}"><div class="area deckarea" data-amdrop="deck"><div class="amhd"><h5>Deck &middot; <b>${A.pool}</b></h5>${stats}</div><div class="stacks" style="--perrow:${perRow}">${deck || '<span class="cnt">Empty</span>'}</div><div class="amrow">${strip('top', 'Top', A.topList, 'amstrip')}${strip('bot', 'Bottom', A.botList, 'amstrip')}</div></div><div class="amside"><div class="amctl">${next ? `<button type="button" class="amcode amdraw" data-amact="move" data-key="${esc(next.t.key)}" data-from="${next.z}" data-to="disc" data-idx="0" title="Draw the ${next.z === 'top' ? 'top' : 'bottom'} card of the deck" aria-label="Draw ${esc(next.t.face ?? next.t.label)} from the ${next.z === 'top' ? 'top' : 'bottom'} of the deck"><img src="${imageFile('images/common/icons/draw', '../')}" width="34" height="32" alt="" draggable="false"><span class="lbl">${next.z === 'top' ? 'Top' : 'Bottom'}: ${esc(next.t.face ?? next.t.label)}</span></button>` : `<button type="button" class="amcode" data-code="${esc(amdRollCode(A.faces))}" title="Copy GeekRoller code" aria-label="Copy GeekRoller code"${A.faces.length ? '' : ' disabled'}><svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg><span class="lbl">Roll code</span></button>`}<span class="amtools"><button type="button" data-amact="shuffle" title="Shuffle the discard back into the deck" aria-label="Shuffle the discard back into the deck"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M10.59 9.17 5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg></button><button type="button" data-amedit aria-pressed="${edit}" title="Edit the deck" aria-label="Edit the deck"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1-4 11-11a2 2 0 0 1 3 3L8 19z"/><path d="M14 7l3 3"/></svg></button></span></div><div class="area discarea" data-amdrop="disc" data-ampile title="Open the discard"><h5>Discard &middot; <b>${A.disc}</b></h5><div class="stacks">${disc}</div></div>${strip('act', `Active &middot; <b>${A.actList.length}</b>`, A.actList, 'area amactive')}</div></div>`;
 }
 
 // The hand editor (one view): every card of the class by level. Each card has a state badge on its upper rim: Locked (not in the pool), Unlocked
@@ -106,10 +106,13 @@ export function playmatHtml(c, X, S = {}) {
   const handle = key => `<button type="button" class="tkh" data-mkopen="${key}" data-char="${cid}" title="Tokens" aria-label="Place tokens" draggable="false">${HANDLE}</button>`;
 
   // a card as it lies in the hand, the active area or on a pile
-  const ac = (id, i, withHandle = true) => {
+  // face: the card's contents sit in an inner .acf that does the fan's in-place zoom, while the .ac itself stays in place as the hover
+  // target (a zoomed card moves away from the pointer, which would otherwise end the hover and make it flicker)
+  const ac = (id, i, withHandle = true, face = false) => {
     const card = X.cardById.get(id), url = X.cardImageUrl(card), name = nameOf(id), ini = iniOf(id);
     const inner = url ? `<img src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false">` : `<div class="noimg">${esc(name)}</div>`;
-    return `<div class="ac" draggable="true" data-card="${id}" data-char="${cid}"${ini != null ? ` data-ini="${ini}"` : ''}${i != null ? ` style="--i:${i}"` : ''} title="${esc(name)}">${inner}${ini != null ? `<span class="inib" title="Initiative ${ini}">${ini}</span>` : ''}${marks(`c:${id}`)}${withHandle ? handle(`c:${id}`) + MORE : ''}</div>`;
+    const body = `${inner}${ini != null ? `<span class="inib" title="Initiative ${ini}">${ini}</span>` : ''}${marks(`c:${id}`)}${withHandle ? handle(`c:${id}`) + MORE : ''}`;
+    return `<div class="ac" draggable="true" data-card="${id}" data-char="${cid}"${ini != null ? ` data-ini="${ini}"` : ''}${i != null ? ` style="--i:${i}"` : ''} title="${esc(name)}">${face ? `<div class="acf">${body}</div>` : body}</div>`;
   };
 
   // a face-down or face-up card in a play slot
@@ -129,7 +132,7 @@ export function playmatHtml(c, X, S = {}) {
   for (const id of c.deck) { const z = zoneOf(c, id); if (lists[z]) lists[z].push(id); }
   const active = c.act.filter(id => lists.active.includes(id));
   const hand = handList(c);
-  const top = z => { const a = z === 'discard' ? c.disc : c.lost; const id = a.filter(x => c.deck.includes(x)).at(-1); return id == null ? '<div class="slotempty">Empty</div>' : ac(id, undefined, false); };
+  const top = z => { const a = z === 'discard' ? c.disc : c.lost; const id = a.filter(x => c.deck.includes(x)).at(-1); return id == null ? '<div class="slotempty"></div>' : ac(id, undefined, false); };
   const pile = (z, title, cls) => `<div class="pile6${cls}" data-pile="${z}" data-zone="${z}" data-char="${cid}"><h4>${title} <b>${lists[z].length}</b></h4><div class="pilecard">${top(z)}</div></div>`;
 
   // top bar
@@ -160,8 +163,8 @@ export function playmatHtml(c, X, S = {}) {
   const PEN = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1-4 11-11a2 2 0 0 1 3 3L8 19z"/><path d="M14 7l3 3"/></svg>';
   const heBtn = `<button type="button" class="btn6" data-handedit title="Edit the hand: choose the cards, card pool and level-up picks" aria-label="Edit the hand">${PEN}</button>`;
 
-  const ST = S.set || {}, zm = z => (ST.zones && ST.zones[z]) || ST.zoom || 'hover';
-  return `<div class="pm" data-zactive="${zm('active')}" data-zplay="${zm('play')}" data-zhand="${zm('hand')}" data-zpiles="${zm('piles')}" data-zitems="${zm('items')}" data-inib="${ST.inib === false ? 'off' : 'on'}" data-motion="${ST.reduce ? 'reduce' : 'full'}" data-dock="${ST.dock === 'right' ? 'right' : 'left'}" style="--hdelay:${({ short: 150, long: 400 })[ST.delay] || 0}ms">
+  const ST = S.set || {};
+  return `<div class="pm" data-zactive="hover" data-zplay="hover" data-zhand="hover" data-zpiles="hover" data-zitems="hover" data-fanzoom="${ST.trigger === 'ctrl' ? 'ctrl' : 'on'}" data-inib="${ST.inib === false ? 'off' : 'on'}" data-motion="${ST.reduce ? 'reduce' : 'full'}" data-dock="${ST.place || 'near'}" style="--hdelay:${({ short: 150, long: 400 })[ST.delay] || 0}ms">
   <div class="stage6">
     <header class="hud"><div class="portrait" style="${esc(X.portraitStyle(c, 72))}" role="img" aria-label="Class portrait (cropped from the character mat)"></div>
       <div class="who"><div class="namerow"><h1 class="chsw"><button type="button" class="chname" data-chmenu aria-haspopup="true" aria-expanded="${!!S.chMenu}" title="Switch character">${esc(c.name)} <span aria-hidden="true">&#9662;</span></button>${S.chMenu ? `<span class="chlist" role="menu">${(S.chars || []).map(t => `<button type="button" role="menuitem" data-sub="${esc(t.id)}"${t.id === c.id ? ' aria-current="true"' : ''}>${t.id === 'add' ? '+ Add character' : esc(t.label)}</button>`).join('')}</span>` : ''}</h1><button type="button" class="btn6" data-charedit title="Edit character" aria-label="Edit character"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1-4 11-11a2 2 0 0 1 3 3L8 19z"/><path d="M14 7l3 3"/></svg></button></div><div class="sub">${esc(c.cls)}${X.playerName(c) ? ` &middot; played by ${esc(X.playerName(c))}` : ''}</div><div class="chips">${X.traitChips(c)}</div></div>
@@ -180,7 +183,7 @@ export function playmatHtml(c, X, S = {}) {
         <div class="zone"><span class="zlabel">Active &middot; <b>${active.length}</b></span><div class="activelist" data-zone="active" data-char="${cid}">${active.map(id => ac(id)).join('')}</div></div>
         <div class="zone play"><span class="zlabel">Play area &middot; Initiative <b>${playIni}</b></span>${slotHtml(0)}${slotHtml(1)}</div>
       </div>
-      <div class="hand6" data-hmode="${AMD ? 'amd' : 'hand'}" data-layout="${ST.layout === 'fan' ? 'fan' : 'spread'}"><div class="hbar">${hviewTog}${AMD ? amBar : `<span class="zlabel">Hand &middot; <b class="${limit && hand.length > limit ? 'over-limit' : ''}">${hand.length}</b>${limit ? ` of <span>${esc(limit)}</span>` : ''}</span>${heBtn}<span class="hctl"><span class="sortlab">Sort</span>${`<span class="sortgrp"><button type="button" class="btn6" data-handsort="ini" data-char="${cid}" title="Sort by initiative and keep the hand sorted">Ini</button><button type="button" class="btn6" data-handsort="lvl" data-char="${cid}" title="Sort by level once">Lvl</button></span>`}</span>`}</div>${AMD ? amView : `<div class="fan6" data-zone="hand" data-char="${cid}">${hand.map((id, i) => ac(id, i)).join('')}</div>`}</div>
+      <div class="hand6" data-hmode="${AMD ? 'amd' : 'hand'}" data-layout="${ST.layout === 'fan' ? 'fan' : 'spread'}"><div class="hbar">${hviewTog}${AMD ? amBar : `<span class="zlabel">Hand &middot; <b class="${limit && hand.length > limit ? 'over-limit' : ''}">${hand.length}</b>${limit ? ` of <span>${esc(limit)}</span>` : ''}</span>${heBtn}<span class="hctl"><span class="sortlab">Sort</span>${`<span class="sortgrp"><button type="button" class="btn6" data-handsort="ini" data-char="${cid}" title="Sort by initiative and keep the hand sorted">Ini</button><button type="button" class="btn6" data-handsort="lvl" data-char="${cid}" title="Sort by level once">Lvl</button></span>`}</span>`}</div>${AMD ? amView : `<div class="fan6" data-zone="hand" data-char="${cid}">${hand.map((id, i) => ac(id, i, true, true)).join('')}</div>`}</div>
     </section>
     <section class="piles6">${pile('discard', 'Discard', ' target')}${pile('lost', 'Lost', ' lost target')}</section>
     ${dockHtml(pendingPicks(c))}
@@ -204,14 +207,13 @@ export function cardsPost(c, { pretty, cardById }) {
 }
 
 // ---- display settings (the gear of the top bar; kept in this browser by the page) ----
-export const SET_DEFAULT = { layout: 'spread', zoom: 'hover', zones: { active: '', play: '', hand: '', piles: '', items: '' }, size: 'm', delay: 'off', dock: 'left', inib: true, autosort: false, reduce: false };
-const SET_ENUM = { layout: ['spread', 'fan'], zoom: ['hover', 'click'], size: ['s', 'm', 'l', 'xl'], delay: ['off', 'short', 'long'], dock: ['left', 'right'] };
+export const SET_DEFAULT = { layout: 'spread', size: 'm', delay: 'short', trigger: 'hover', place: 'near', inib: true, autosort: false, reduce: false };
+const SET_ENUM = { layout: ['spread', 'fan'], size: ['s', 'm', 'l', 'xl'], delay: ['off', 'short', 'long'], trigger: ['hover', 'ctrl'], place: ['near', 'left', 'right'] };
 export function cleanSettings(o) {
   const s = JSON.parse(JSON.stringify(SET_DEFAULT));
-  if (typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches) s.zoom = 'click';          // touch: there is no hover
   if (!o || typeof o !== 'object') return s;
   for (const k in SET_ENUM) if (SET_ENUM[k].includes(o[k])) s[k] = o[k];
-  for (const k in s.zones) if (o.zones && ['hover', 'click'].includes(o.zones[k])) s.zones[k] = o.zones[k];
+  if (!SET_ENUM.place.includes(o.place) && o.dock === 'right') s.place = 'right';                       // older settings: the docked side
   for (const k of ['inib', 'autosort', 'reduce']) if (typeof o[k] === 'boolean') s[k] = o[k];
   return s;
 }
@@ -219,23 +221,14 @@ export function cleanSettings(o) {
 export function displaySettingsHtml(st) {
   const set = st && st.layout ? st : SET_DEFAULT;
   const seg = (name, opts) => `<span class="seg" data-set="${name}">${opts.map(([v, l]) => `<button type="button" data-v="${v}" aria-pressed="${set[name] === v}">${l}</button>`).join('')}</span>`;
-  const row = (label, inner) => `<div class="setrow"><label>${label}</label>${inner}</div>`;
-  const zone = (z, label) => `<div class="setrow"><label for="setz-${z}">${label}</label><select id="setz-${z}" data-zone="${z}">${[['', 'Default'], ['hover', 'Hover'], ['click', 'Click']].map(([v, l]) => `<option value="${v}"${set.zones[z] === v ? ' selected' : ''}>${l}</option>`).join('')}</select></div>`;
-  const chk = (flag, label) => `<label class="ctoggle setchk"><input type="checkbox" data-flag="${flag}"${set[flag] ? ' checked' : ''}><span class="ctbox" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span><span>${label}</span></label>`;
-  return `<div class="setgrp">Hand</div>
-    ${row('Layout', seg('layout', [['spread', 'Spread'], ['fan', 'Fan']]))}
-    ${chk('autosort', 'Auto-sort by initiative')}
-    <div class="setgrp">Card zoom</div>
-    ${row('Mode', seg('zoom', [['hover', 'Hover'], ['click', 'Click']]))}
-    ${row('Size', seg('size', [['s', 'S'], ['m', 'M'], ['l', 'L'], ['xl', 'XL']]))}
-    ${row('Hover delay', seg('delay', [['off', 'Off'], ['short', 'Short'], ['long', 'Long']]))}
-    <div class="setgrp">Zoom per zone</div>
-    ${zone('active', 'Active')}${zone('play', 'Play area')}${zone('hand', 'Hand')}${zone('items', 'Items')}${zone('piles', 'Discard &amp; lost')}
-    <div class="setgrp">Preview</div>
-    ${row('Docked side', seg('dock', [['left', 'Left'], ['right', 'Right']]))}
-    <div class="setgrp">Cards and motion</div>
-    ${chk('inib', 'Initiative badge on cards')}
-    ${chk('reduce', 'Reduce motion')}
+  const row = (label, inner, cls = '') => `<div class="setline${cls}"><span class="setlab">${label}</span><span class="setctl">${inner}</span></div>`;
+  const chk = (flag, label) => `<label class="setline chk"><span class="setlab">${label}</span><span class="setctl"><span class="ctoggle setchk"><input type="checkbox" data-flag="${flag}"${set[flag] ? ' checked' : ''}><span class="ctbox" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></span></span></label>`;
+  const card = (title, lines, cls = '') => `<section class="setcard${cls}"><h4>${title}</h4>${lines}</section>`;
+  return `<div class="setcols split">
+    ${card('Card preview', row('Show on', seg('trigger', [['hover', 'Hover'], ['ctrl', 'Ctrl+hover']]), ' deskonly') + row('Position', seg('place', [['near', 'Next to card'], ['left', 'Left'], ['right', 'Right']]), ' deskonly') + row('Size', seg('size', [['s', 'S'], ['m', 'M'], ['l', 'L'], ['xl', 'XL']])) + row('Hover delay', seg('delay', [['off', 'Off'], ['short', 'Short'], ['long', 'Long']]), ' deskonly'), ' tall')}
+    ${card('Hand', row('Layout', seg('layout', [['spread', 'Spread'], ['fan', 'Fan']]), ' deskonly') + chk('autosort', 'Auto-sort by initiative'))}
+    ${card('Cards and motion', chk('inib', 'Initiative badge on cards') + chk('reduce', 'Reduce motion'))}
+    </div>
     <div class="setfoot"><button type="button" class="btn6" data-setreset>Reset display settings</button></div>`;
 }
 
@@ -299,11 +292,9 @@ export function modalHtml(c, X, S) {
       }).join('')}</div></div>`;
     }).join('');
     body = `<div class="poolbar"><span class="grow"></span><button type="button" class="btn6" data-itemclear>Clear</button></div>${groups ? `<div class="itgroups">${groups}</div>` : '<p class="mrow">This character owns no items yet. Give items to the character in the Items tab.</p>'}<div class="poolfoot"><span></span><button type="button" class="btn6" data-itemok data-char="${esc(c.id)}">Confirm items</button></div>`;
-    extra = '<div class="pcbig" data-poolbig hidden></div>' + PVX;
   } else if (S.modal === 'deck') {
     title = 'Hand'; big = ' huge';
     body = deckBodyHtml(c, X, S, esc);
-    extra = '<div class="pcbig" data-poolbig hidden></div>' + PVX;
   } else if (S.modal === 'perks') {
     title = 'Perks & masteries'; big = ' sbox';
     const perks = perkList(c.cls), on = i => c.pk.perks.includes(i), mask = i => c.pk.boxes[i] || 0;
@@ -331,7 +322,6 @@ export function modalHtml(c, X, S) {
       <section class="cesec"><h4>Masteries <span>${msOn} of ${ms.length}</span></h4>
         <div class="pkmast">${ms.map((t, i) => `<label class="pkm${c.pk.ms.includes(i) ? ' on' : ''}"><input type="checkbox" data-mastery="${i}" data-char="${esc(c.id)}"${c.pk.ms.includes(i) ? ' checked' : ''}><span>${esc(t)}</span></label>`).join('') || '<p class="mrow">No masteries for this class.</p>'}</div></section>
       <div class="chfoot"><button type="button" class="btn6" data-modalclose>Close</button></div></div>`;
-    extra = '<div class="pcbig" data-perkbig hidden></div>' + PVX;
   } else if (S.modal === 'amd') {
     title = 'Attack modifier deck'; big = ' amdbox';
     const A = S.amd || { tiles: [], specials: [], faces: [], total: 0, disc: 0 };
@@ -394,7 +384,6 @@ export function modalHtml(c, X, S) {
     const ids = (c[z] || []).filter(id => c.deck.includes(id));
     const cell = id => { const card = X.cardById.get(id), url = X.cardImageUrl(card), name = X.pretty(card?.slug ?? id); return `<div class="pcell" data-pcard="${id}" title="${esc(name)}"><button type="button" class="rec" data-pilerec="${id}" data-char="${esc(c.id)}" title="Recover ${esc(name)}" aria-label="Recover ${esc(name)}">${REC_ICON}</button>${url ? `<img src="${esc(url)}" alt="${esc(name)}" draggable="false">` : `<div class="noimg">${esc(name)}</div>`}${markersHtml(c.mk?.[`c:${id}`])}</div>`; };
     body = `<div class="poolbar"><span>${ids.length} ${ids.length === 1 ? 'card' : 'cards'}</span><span class="grow"></span><button type="button" class="btn6" data-pilerecall="${z}" data-char="${esc(c.id)}" title="Recover all" aria-label="Recover all"${ids.length ? '' : ' disabled'}>${REC_ICON}</button></div><div class="pilelist">${ids.length ? ids.map(cell).join('') : '<p class="mrow">Nothing here.</p>'}</div>`;
-    extra = '<img class="pilezoom" data-pilezoom alt="" hidden><div class="pilezoomtk" data-pilezoomtk hidden></div>' + PVX;
   } else return '';
   return `<div class="mmodal" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="mmodalbox${big}"><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2>${esc(title)}</h2>${body}</div>${extra}</div>`;
 }

@@ -8,6 +8,8 @@ import { modalHtml, amViewHtml, XP_STEPS, levelOfXp, markersHtml } from './playm
 
 const UP = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>';
 const DN = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+const PLUS = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
+const MINUS = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg>';
 export const PHONE_MODALS = [['perks', 'Perks &amp; masteries'], ['journal', 'Journal'], ['mat', 'Character mat'], ['codes', 'BGG codes'], ['enh', 'Enhancements'], ['history', 'History'], ['deck', 'Deck &amp; card pool']];
 export const PHONE_ZONES = [['play1', 'Play slot 1'], ['play2', 'Play slot 2'], ['active', 'Active'], ['hand', 'Hand'], ['discard', 'Discard'], ['lost', 'Lost']];
 const ZONE_NAME = { play1: 'play slot 1', play2: 'play slot 2' };
@@ -31,7 +33,7 @@ export function phoneHtml(c, X, S = {}) {
   const slot = i => {
     const p = c.play[i], k = p && cardOf(p.id), ini = i === 0 ? (p && p.up ? (k?.ini ?? '?') : '?') : null;
     const lab = `<div class="lab">Slot ${i + 1}${ini !== null ? ` &middot; initiative <span class="ini">${ini}</span>` : ''}</div>`;
-    if (!p) return `<div class="slot">${lab}<div class="empty">empty</div></div>`;
+    if (!p) return `<div class="slot">${lab}<div class="empty" aria-label="empty">${i + 1}</div></div>`;
     const url = X.cardImageUrl(k);
     return `<div class="slot">${lab}<div class="ac flip${p.up ? ' up' : ''}" data-card="${p.id}" data-char="${cid}" data-pslot="${i}" title="Tap to flip: ${esc(nameOf(p.id))}"><div class="inner"><div class="face back">${back}</div><div class="face front">${url ? `<img src="${esc(url)}" alt="${esc(nameOf(p.id))}" draggable="false">` : ''}</div></div>${markersHtml(c.mk?.[`c:${p.id}`])}<button type="button" class="more" data-more aria-label="Move ${esc(nameOf(p.id))}">&#8943;</button></div></div>`;
   };
@@ -46,12 +48,12 @@ export function phoneHtml(c, X, S = {}) {
     return `<span class="ctr" title="${esc(d.l)}">${img(d.img, d.l)}<span class="sp"><b>${v}</b><span class="spc"><button type="button" data-tk="${d.k}" data-char="${cid}" data-d="1" aria-label="Increase ${esc(d.l)}">${UP}</button><button type="button" data-tk="${d.k}" data-char="${cid}" data-d="-1" aria-label="Decrease ${esc(d.l)}"${v ? '' : ' disabled'}>${DN}</button></span></span></span>`;
   }).join('');
 
-  const sp = (key, label, aria, val, note = '') => `<div class="statrow"><span>${label}</span><span class="sp"><b class="edv" tabindex="0" data-hud="${key}" data-char="${cid}">${val}</b><span class="spc"><button type="button" data-hud="${key}" data-char="${cid}" data-d="1" aria-label="Increase ${aria}">${UP}</button><button type="button" data-hud="${key}" data-char="${cid}" data-d="-1" aria-label="Decrease ${aria}">${DN}</button></span></span>${note ? `<small>${note}</small>` : ''}</div>`;
+  const sp = (key, label, aria, val, note = '') => `<div class="statrow"><span>${label}</span><span class="sp"><b class="edv" tabindex="0" data-hud="${key}" data-char="${cid}">${val}</b><span class="spc"><button type="button" data-hud="${key}" data-char="${cid}" data-d="1" aria-label="Increase ${aria}">${PLUS}</button><button type="button" data-hud="${key}" data-char="${cid}" data-d="-1" aria-label="Decrease ${aria}">${MINUS}</button></span></span>${note ? `<small>${note}</small>` : ''}</div>`;
   let view = '';
   if (tab === 'cards') {
-    view = `<h4>Play area <span>tap to flip, button to move</span></h4><div class="row2">${slot(0)}${slot(1)}</div>
-      <h4>Active <span>${active.length}</span></h4>${strip(active)}
-      <h4>Hand <span class="hbtns"><span style="align-self:center">${hand.length}${c.hand ? ` of ${c.hand}` : ''}</span><button type="button" class="sm" data-psort="ini" title="Sort by initiative">Ini</button><button type="button" class="sm" data-psort="lvl" title="Sort by level">Lvl</button></span></h4>${strip(hand)}
+    view = `<section class="pz pzplay"><h4>Play area</h4><div class="row2">${slot(0)}${slot(1)}</div></section>
+      <section class="pz pzact"><h4>Active <span>${active.length}</span></h4>${strip(active)}</section>
+      <section class="pz pzhand"><h4>Hand <span class="hbtns"><span style="align-self:center">${hand.length}${c.hand ? ` of ${c.hand}` : ''}</span><button type="button" class="sm" data-psort="ini" title="Sort by initiative">Ini</button><button type="button" class="sm" data-psort="lvl" title="Sort by level">Lvl</button></span></h4>${strip(hand)}</section>
       <div class="piles">${pileBtn('discard', 'Discard')}${pileBtn('lost', 'Lost')}</div>`;
   } else if (tab === 'amd') {
     // the modifier deck of the playmat (Modifiers view), in the phone's own tab: the same markup and buttons
@@ -59,13 +61,14 @@ export function phoneHtml(c, X, S = {}) {
   } else if (tab === 'items') {
     const tiles = c.items.map(it => {
       const item = X.itemById.get(it.id), nm = X.pretty(item?.slug ?? it.id), s = it.s || 0;
-      return `<div class="it${s === 1 ? ' spent' : s === 2 ? ' consumed' : ''}" data-itemstate data-id="${esc(it.id)}" data-char="${cid}" role="button" tabindex="0">${esc(nm)}<small>${esc(item?.slot ?? '')} &middot; ${['available', 'spent', 'consumed'][s]}</small></div>`;
+      const url = item ? X.itemImageUrl(item) : null;
+      return `<div class="it${s === 1 ? ' spent' : s === 2 ? ' consumed' : ''}" data-itemstate data-id="${esc(it.id)}" data-char="${cid}" role="button" tabindex="0" aria-label="${esc(nm)}, ${['available', 'spent', 'consumed'][s]}">${url ? `<img src="${esc(url)}" alt="" loading="lazy" draggable="false">` : `<span class="itname">${esc(nm)}</span>`}${s ? `<span class="itst">${s === 1 ? 'Spent' : 'Consumed'}</span>` : ''}${markersHtml(c.mk?.[`i:${it.id}`])}</div>`;
     }).join('');
     view = `<h4>Items <span class="hbtns"><span style="align-self:center">${c.items.length}</span><button type="button" class="sm" data-itemssort="${cid}">Slot</button><button type="button" class="sm" data-itemsedit="${cid}">Equip</button></span></h4><div class="itl">${tiles || '<div class="note">No items.</div>'}</div>`;
   } else {
     view = `<div class="panel"><h4>Traits</h4><div class="chips">${X.traitChips(c)}</div></div>
       <div class="panel"><h4>Character</h4><div class="stats">${sp('xp', 'XP', 'XP', c.xp ?? 0, hi ? `of ${hi}` : 'max')}${sp('gold', 'Gold', 'gold', c.gold ?? 0)}${sp('inh', 'Inherited perks', 'inherited perks', c.inh ?? 0)}</div></div>
-      <div class="panel"><h4>Open</h4><div class="opts">${PHONE_MODALS.map(([id, l]) => `<button type="button" data-modal="${id}">${l}</button>`).join('')}</div></div>`;
+`;
   }
 
   // the bottom sheet
@@ -79,12 +82,14 @@ export function phoneHtml(c, X, S = {}) {
   } else if (sh && sh.kind === 'pile') {
     const a = piled(sh.z);
     sheet = `<h3>${sh.z === 'lost' ? 'Lost' : 'Discard'} &middot; ${a.length}<button type="button" data-sheetclose aria-label="Close">&times;</button></h3>${a.length ? `<div class="grid">${a.map(card).join('')}</div>` : '<div class="note">empty</div>'}`;
+  } else if (sh && sh.kind === 'chars') {
+    sheet = `<h3>Characters<button type="button" data-sheetclose aria-label="Close">&times;</button></h3><div class="chpick">${(S.chars || []).map(t => `<button type="button" data-sub="${esc(t.id)}"${t.id === c.id ? ' aria-current="true"' : ''}>${t.id === 'add' ? '+ Add character' : esc(t.label)}</button>`).join('')}</div>`;
   } else if (sh && sh.kind === 'menu') {
     sheet = `<h3>Open<button type="button" data-sheetclose aria-label="Close">&times;</button></h3><div class="opts">${PHONE_MODALS.map(([id, l]) => `<button type="button" data-modal="${id}">${l}</button>`).join('')}</div>`;
   }
 
   return `<div class="pm pp" data-zactive="click" data-zplay="click" data-zhand="click" data-zpiles="click" data-zitems="click" data-inib="on" data-motion="full">
-    <header class="top"><div class="portrait" style="${esc(X.portraitStyle(c, 44))}" role="img" aria-label="Class portrait"></div><div class="who"><b>${esc(c.name)}</b> <button type="button" class="sm" data-charedit aria-label="Edit character" title="Edit character">&#9998;</button><div class="sub">${esc(c.cls)}${X.playerName(c) ? ` &middot; played by ${esc(X.playerName(c))}` : ''}</div></div>
+    <header class="top"><div class="portrait" style="${esc(X.portraitStyle(c, 44))}" role="img" aria-label="Class portrait"></div><button type="button" class="who" data-pchars aria-haspopup="dialog"><b>${esc(c.name)}<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></b><span class="sub">${esc(c.cls)}${X.playerName(c) ? ` &middot; ${esc(X.playerName(c))}` : ''}</span></button><button type="button" class="pedit" data-charedit aria-label="Edit character" title="Edit character"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1-4 11-11a2 2 0 0 1 3 3L8 19z"/><path d="M14 7l3 3"/></svg></button>
       <div class="gold"><b>${c.gold ?? 0}</b> gold<br><span class="sub">${c.inh ?? 0} inherited perks &middot; ${c.xp ?? 0} XP</span></div><div class="lvl" role="button" tabindex="0" data-opendeck="pool" title="Level ${lv} (tap for the card pool)">${lv}</div></header>
     <div class="xpbar"><b style="width:${pct}%"></b></div>
     ${tokens ? `<div class="toks">${tokens}</div>` : ''}

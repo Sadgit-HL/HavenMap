@@ -10,7 +10,7 @@
 | `scripts/amd/` | app-agnostic card rendering and hero deck model (see `hero-decks.md`) |
 | `scripts/campaign/` | campaign logic, no DOM: `record.js`, `edit.js`, `events.js`, `outcomes.js`, `flow.js`, `amdDeck.js`, `changelog.js`, `store.js`, `classMap.js`, `classList.js`, `classTokens.js`, `traits.js`, `cardImages.js`, `bggIcons.js`, `bggBanners.js` |
 | `scripts/games/` | static tables. `gh2_*.js`, `battle_goals.js`, `masteries.js`, `perks.js` etc. are GENERATED (see `data-pipeline.md`) |
-| `campaign/` | the campaign page: `index.html`, `app.js` (the page), `playmat.js` and `playmat.css` (Mercenaries tab), `phone.js` and `phone.css` (phone view), `eventsView.js`, `ctxmenu.js`, `morph.js`, `dialog.js`, `mockups/` (static design files) |
+| `campaign/` | the campaign page: `index.html`, `app.js` (the page), `playmat.js` and `playmat.css` (Mercenaries tab), `phone.js` and `phone.css` (phone view), `touch.css` (touch layout of all pages), `preview.js` (card preview), `eventsView.js`, `ctxmenu.js`, `morph.js`, `dialog.js`, `mockups/` (static design files) |
 | `perks/` | standalone perks viewer and the compose dev page |
 | `images/` | art. `images/common/` is shared; `images/gh2/` monster art; `images/events/` event artwork |
 | `tools/` | generators and art pipeline (Python, Node, one ExtendScript). `tools/merc-mockups/` generates mockups |
@@ -47,7 +47,7 @@ Mercenaries tab (the playmat):
 - `campaign/ctxmenu.js`: one shared context menu. Element types register by CSS selector with `HM_CTX.register`-style calls (`registerMenu` in `app.js`).
 - `campaign/playmat.css` is hand-maintained since 2026-11-14 (see `status.md`).
 
-Phone view: `campaign/phone.js` with `phone.css`, used when the window is 700 px or less (`matchMedia` in `app.js`). Same record, same edit functions. Some features are not on the phone yet (`roadmap.md`).
+Phone view: `campaign/phone.js` with `phone.css`, used when the window is 700 px wide or less, or 500 px high or less (`matchMedia` in `app.js`, which also sets `html.phone` for `campaign/touch.css`, the touch layout of the other pages). Same record, same edit functions.
 
 Cache busting: `campaign/index.html` loads `app.js?v=N` and `style.css?v=N`. Module imports under `scripts/` carry no version, so a hard refresh is needed after changes there.
 

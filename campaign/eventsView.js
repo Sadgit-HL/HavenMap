@@ -298,7 +298,7 @@ export function eventsHtml(r) {
   const edit = `<button type="button" class="editbtn editicon" data-pageedit aria-pressed="${api.editing()}" aria-label="${api.editing() ? 'Stop editing events' : 'Edit events'}" title="${api.editing() ? 'Stop editing events' : 'Edit events'}">${PENCIL}</button>`;
   const tabs = `<div class="subbar"><div class="subtabs" role="tablist">${EVENT_KINDS.map(k =>
     `<button type="button" role="tab" aria-selected="${k === kind}" data-ev="kind" data-v="${k}"${open[k] ? ' class="has-open" title="An event is open"' : ''}>${KIND_NAME[k]} (${EVENT_TABLE[k].length - r.events[k].out.length - r.events[k].locked.length} in the deck)${open[k] ? ' &#9679;' : ''}</button>`).join('')}</div><div class="evtools">${pills}${edit}</div></div>`;
-  return tabs + (open[kind] ? openEventHtml(r, kind) : drawHtml(r, kind)) + pilesHtml(r, kind);
+  return tabs + `<div class="evpanels"><section class="card evmain">${open[kind] ? openEventHtml(r, kind) : drawHtml(r, kind)}</section><section class="card evpilecard">${pilesHtml(r, kind)}</section></div>`;
 }
 
 // --- clicks and changes --------------------------------------------------------------------------------------
