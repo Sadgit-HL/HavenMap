@@ -112,8 +112,11 @@ def main():
         elif f in SCANS:
             rgba = cv2.imread(os.path.join(a.src, f), cv2.IMREAD_UNCHANGED)
             ys, xs = np.where(rgba[..., 3] > 200)
-            card = rgba[ys.min():ys.max() + 1, xs.min():xs.max() + 1, :3]
-            cv2.imwrite(os.path.join(a.out, SCANS[f] + '.png'), inset(cv2.resize(card, (W, H), interpolation=cv2.INTER_AREA), 0.018))
+            box = rgba[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
+            # the whole card, nothing cut (the title banner sits close to the top edge): the transparent rounded corners are filled
+            # from the pixels around them
+            card = cv2.inpaint(np.ascontiguousarray(box[..., :3]), ((box[..., 3] <= 200) * 255).astype(np.uint8), 6, cv2.INPAINT_TELEA)
+            cv2.imwrite(os.path.join(a.out, SCANS[f] + '.png'), cv2.resize(card, (W, H), interpolation=cv2.INTER_AREA))
             print(f, '->', SCANS[f])
 
 

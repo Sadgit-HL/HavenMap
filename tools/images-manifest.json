@@ -44669,6 +44669,102 @@
    ]
   },
   {
+   "group": "items back gh2",
+   "src": "D:/github/Wordhaven_Assets/wh_items/gh2/054b.png",
+   "dst": "items/gh2/054b.webp",
+   "status": "ok",
+   "bytes": 13202,
+   "size": [
+    196,
+    300
+   ],
+   "from": "Sadgit-HL/Wordhaven_Assets wh_items/gh2/054b.png"
+  },
+  {
+   "group": "items back gh2",
+   "src": "D:/github/Wordhaven_Assets/wh_items/gh2/072b.png",
+   "dst": "items/gh2/072b.webp",
+   "status": "ok",
+   "bytes": 15442,
+   "size": [
+    196,
+    300
+   ],
+   "from": "Sadgit-HL/Wordhaven_Assets wh_items/gh2/072b.png"
+  },
+  {
+   "group": "items back gh2",
+   "src": "D:/github/Wordhaven_Assets/wh_items/gh2/074b.png",
+   "dst": "items/gh2/074b.webp",
+   "status": "ok",
+   "bytes": 13560,
+   "size": [
+    196,
+    300
+   ],
+   "from": "Sadgit-HL/Wordhaven_Assets wh_items/gh2/74b.png"
+  },
+  {
+   "group": "items back gh2",
+   "src": "D:/github/Wordhaven_Assets/wh_items/gh2/080b.png",
+   "dst": "items/gh2/080b.webp",
+   "status": "ok",
+   "bytes": 12672,
+   "size": [
+    196,
+    300
+   ],
+   "from": "Sadgit-HL/Wordhaven_Assets wh_items/gh2/80b.png"
+  },
+  {
+   "group": "items back gh2",
+   "src": "D:/github/Wordhaven_Assets/wh_items/gh2/100b.png",
+   "dst": "items/gh2/100b.webp",
+   "status": "ok",
+   "bytes": 12454,
+   "size": [
+    196,
+    300
+   ],
+   "from": "Sadgit-HL/Wordhaven_Assets wh_items/gh2/100b.png"
+  },
+  {
+   "group": "items back gh2",
+   "src": "D:/github/Wordhaven_Assets/wh_items/gh2/116b.png",
+   "dst": "items/gh2/116b.webp",
+   "status": "ok",
+   "bytes": 13564,
+   "size": [
+    196,
+    300
+   ],
+   "from": "Sadgit-HL/Wordhaven_Assets wh_items/gh2/116b.png"
+  },
+  {
+   "group": "items back gh2",
+   "src": "D:/github/Wordhaven_Assets/wh_items/gh2/128b.png",
+   "dst": "items/gh2/128b.webp",
+   "status": "ok",
+   "bytes": 16180,
+   "size": [
+    196,
+    300
+   ],
+   "from": "Sadgit-HL/Wordhaven_Assets wh_items/gh2/128b.png"
+  },
+  {
+   "group": "items back gh2",
+   "src": "D:/github/Wordhaven_Assets/wh_items/gh2/162b.png",
+   "dst": "items/gh2/162b.webp",
+   "status": "ok",
+   "bytes": 18396,
+   "size": [
+    196,
+    300
+   ],
+   "from": "Sadgit-HL/Wordhaven_Assets wh_items/gh2/162b.png"
+  },
+  {
    "group": "items solo fh",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/fh/248.webp",
    "dst": "items/fh/248.webp",
@@ -44973,7 +45069,7 @@
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/mp/HL.webp",
    "dst": "items/mp/HL.webp",
    "status": "ok",
-   "bytes": 11926,
+   "bytes": 12262,
    "size": [
     196,
     300
@@ -44985,108 +45081,12 @@
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/items/mp/HLb.webp",
    "dst": "items/mp/HLb.webp",
    "status": "ok",
-   "bytes": 14604,
+   "bytes": 15012,
    "size": [
     196,
     300
    ],
    "from": "owner's Worldhaven folder characters/mp/character_solo_items (tools/prep-mp-solo-items.py)"
-  },
-  {
-   "group": "items back gh2",
-   "src": "D:/github/Wordhaven_Assets/wh_items/gh2/054b.png",
-   "dst": "items/gh2/054b.webp",
-   "status": "ok",
-   "bytes": 13202,
-   "size": [
-    196,
-    300
-   ],
-   "from": "Sadgit-HL/Wordhaven_Assets wh_items/gh2/054b.png"
-  },
-  {
-   "group": "items back gh2",
-   "src": "D:/github/Wordhaven_Assets/wh_items/gh2/072b.png",
-   "dst": "items/gh2/072b.webp",
-   "status": "ok",
-   "bytes": 15442,
-   "size": [
-    196,
-    300
-   ],
-   "from": "Sadgit-HL/Wordhaven_Assets wh_items/gh2/072b.png"
-  },
-  {
-   "group": "items back gh2",
-   "src": "D:/github/Wordhaven_Assets/wh_items/gh2/074b.png",
-   "dst": "items/gh2/074b.webp",
-   "status": "ok",
-   "bytes": 13560,
-   "size": [
-    196,
-    300
-   ],
-   "from": "Sadgit-HL/Wordhaven_Assets wh_items/gh2/74b.png"
-  },
-  {
-   "group": "items back gh2",
-   "src": "D:/github/Wordhaven_Assets/wh_items/gh2/080b.png",
-   "dst": "items/gh2/080b.webp",
-   "status": "ok",
-   "bytes": 12672,
-   "size": [
-    196,
-    300
-   ],
-   "from": "Sadgit-HL/Wordhaven_Assets wh_items/gh2/80b.png"
-  },
-  {
-   "group": "items back gh2",
-   "src": "D:/github/Wordhaven_Assets/wh_items/gh2/100b.png",
-   "dst": "items/gh2/100b.webp",
-   "status": "ok",
-   "bytes": 12454,
-   "size": [
-    196,
-    300
-   ],
-   "from": "Sadgit-HL/Wordhaven_Assets wh_items/gh2/100b.png"
-  },
-  {
-   "group": "items back gh2",
-   "src": "D:/github/Wordhaven_Assets/wh_items/gh2/116b.png",
-   "dst": "items/gh2/116b.webp",
-   "status": "ok",
-   "bytes": 13564,
-   "size": [
-    196,
-    300
-   ],
-   "from": "Sadgit-HL/Wordhaven_Assets wh_items/gh2/116b.png"
-  },
-  {
-   "group": "items back gh2",
-   "src": "D:/github/Wordhaven_Assets/wh_items/gh2/128b.png",
-   "dst": "items/gh2/128b.webp",
-   "status": "ok",
-   "bytes": 16180,
-   "size": [
-    196,
-    300
-   ],
-   "from": "Sadgit-HL/Wordhaven_Assets wh_items/gh2/128b.png"
-  },
-  {
-   "group": "items back gh2",
-   "src": "D:/github/Wordhaven_Assets/wh_items/gh2/162b.png",
-   "dst": "items/gh2/162b.webp",
-   "status": "ok",
-   "bytes": 18396,
-   "size": [
-    196,
-    300
-   ],
-   "from": "Sadgit-HL/Wordhaven_Assets wh_items/gh2/162b.png"
   }
  ],
  "missing": []

@@ -1539,7 +1539,7 @@ function itemClick(e, c) {
   const st = q('[data-itstate]');
   if (st) { commit(ed.setItemState(record, c.id, st.dataset.id, Number(st.dataset.itstate))); return true; }
   const fl = q('[data-itflip]');
-  if (fl) { commit(ed.setItemFlipped(record, c.id, fl.dataset.id, fl.dataset.itflip === '1')); return true; }
+  if (fl) { flipItem(c.id, fl.dataset.id, fl.dataset.itflip === '1'); return true; }
   const sort = q('[data-itemssort]');
   if (sort) { commit(ed.sortItems(record, c.id)); return true; }
   if (q('[data-itemsedit]')) {
@@ -1866,6 +1866,22 @@ main.addEventListener('drop', e => {
 })();
 // Flip a played card with the mockup's animation: turn the card in place first (the page is redrawn from the record, which would cut
 // the animation short), save when it has finished. A card turned face up goes flat afterwards ("settled"), as in the mockup.
+// Flip an item of a character to its back (back true) or front, turned like a played card: the picture (on the shelf, in the phone list
+// and in the item dialog) turns to its edge, shows the other side and turns back; the change is saved when the turn ends. The item's
+// markup stays (badges, markers), only its picture turns (Web Animations, so a redraw in between does not cut it). Reduce motion: at once.
+function flipItem(cid, id, back) {
+  const save = () => commit(ed.setItemFlipped(record, cid, id, back));
+  const item = ITEMS.find(x => String(x.id) === String(id)), to = item && (back ? itemBackUrl(item) : itemImageUrl(item));
+  const sel = `[data-char="${CSS.escape(cid)}"][data-id="${CSS.escape(String(id))}"]`;
+  const tile = main.querySelector(`.it[data-itemstate]${sel}`);
+  const imgs = [tile?.querySelector(':scope > img'), document.querySelector(`.itmodal .itcard[data-mkcard="i:${CSS.escape(String(id))}"] > img`)].filter(Boolean);
+  if (!to || !imgs.length || tile?.dataset.turning || pmset.reduce) { save(); return; }          // the playmat's own Reduce motion setting, as for played cards
+  if (tile) tile.dataset.turning = '1';
+  new Image().src = to;                                                                       // load the other side while the first half runs
+  const turn = (img, a, b, easing) => img.animate([{ transform: `perspective(700px) rotateY(${a}deg)` }, { transform: `perspective(700px) rotateY(${b}deg)` }], { duration: 230, easing }).finished;
+  Promise.all(imgs.map(img => turn(img, 0, 90, 'ease-in').then(() => { img.src = to; return turn(img, -90, 0, 'ease-out'); })))
+    .catch(() => {}).finally(() => { if (tile) delete tile.dataset.turning; save(); });
+}
 function flipPlayed(f) {
   if (f.dataset.flipping) return;
   f.dataset.flipping = '1';
@@ -1912,7 +1928,7 @@ registerMenu({
     const c = record?.chars.find(x => x.id === el.dataset.char), mine = c?.items.find(x => String(x.id) === el.dataset.id), cur = mine?.s || 0;
     const states = c ? [[0, 'Available'], [1, 'Spent'], [2, 'Consumed']].map(([v, label]) => ({ label, disabled: cur === v, run: () => commit(ed.setItemState(record, c.id, el.dataset.id, v)) })) : [];
     const canFlip = c && itemBackUrl(ITEMS.find(x => String(x.id) === el.dataset.id));
-    const flip = canFlip ? [{ label: mine?.f ? 'Flip to the front' : 'Flip to the back', run: () => commit(ed.setItemFlipped(record, c.id, el.dataset.id, !mine?.f)) }] : [];
+    const flip = canFlip ? [{ label: mine?.f ? 'Flip to the front' : 'Flip to the back', run: () => flipItem(c.id, el.dataset.id, !mine?.f) }] : [];
     return [...(states.length ? [{ header: 'State' }, ...states, { sep: true }] : []), ...flip, { label: 'Zoom', run: () => cardPreview.show(el, true) }, { label: 'Add marker', run: () => openMarkers(`i:${el.dataset.id}`) }];
   },
 });
@@ -2028,7 +2044,7 @@ document.addEventListener('keydown', e => {
   if (item && key === 'f') {
     const c = record?.chars.find(x => x.id === item.dataset.char), mine = c?.items.find(x => String(x.id) === item.dataset.id);
     if (!mine || !itemBackUrl(ITEMS.find(x => String(x.id) === item.dataset.id))) return;
-    e.preventDefault(); commit(ed.setItemFlipped(record, c.id, item.dataset.id, !mine.f)); return;
+    e.preventDefault(); flipItem(c.id, item.dataset.id, !mine.f); return;
   }
   if (item && key !== 'a') {
     const c = record?.chars.find(x => x.id === item.dataset.char);
