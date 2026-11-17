@@ -14,6 +14,12 @@ Server of the shared campaign record and the map turns. Design: `docs/ai/design/
 
 Why the relay: web filters on the players' networks (work networks, a mobile carrier) block the new `*.workers.dev` address. They pass an established domain. Cloudflare can serve its own custom domain only when it runs the domain's DNS, and the owner keeps DNS and mail at goneo.
 
+## The page
+
+- `scripts/campaign/sync.js` holds the API address, the invite links (`#join=<cid>.<token>&name=<name>`) and the merge. `campaign/app.js` loads, saves (3 seconds after the last edit) and checks `GET /c/:cid/ver` every minute while the page is visible.
+- Settings, Campaign tab: the admin key (typed in, never stored) unlocks Upload this campaign (creates the campaign and joins this browser with its own player token) and the invite links (create, revoke). A token is shown only once, in the link at creation.
+- Invite links point to the page address they were created on. Create them on `https://sadgit-hl.github.io/HavenMap/campaign/`.
+
 ## Updating
 
 - API: paste `worker.js` into the Worker's code editor in the Cloudflare dashboard and deploy.

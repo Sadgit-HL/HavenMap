@@ -29,11 +29,12 @@ Single page, single module: `campaign/app.js` (about 2600 lines). `PAGE_TABS` li
 
 Data flow:
 
-1. `store.js` loads the record from localStorage key `havenmap.campaign.v1` (the only storage implementation).
+1. Loading: without a server connection, `store.js` loads the record from localStorage key `havenmap.campaign.v1`. With one (an invite link was opened, `havenmap.campaign.server`), the page loads it from the API (`scripts/campaign/sync.js`, `server/README.md`) and keeps a copy with the unsaved edits in `havenmap.campaign.server.cache`.
 2. Every change is a pure function in `scripts/campaign/edit.js`: record in, new record out, `ver` bumped, input clamped.
 3. The page calls `commit(next)` (`campaign/app.js` line 127). It stamps the log via `changelog.js` (`describeChange`), saves, and re-renders.
-4. Undo restores the previous record (50 steps, Ctrl+Z) and logs "Undo: ...".
-5. Pure logic (`events.js`, `outcomes.js`, `amdDeck.js`, `flow.js`, `record.js` derived values) takes the record and returns values. Keep new logic in this form so it can be tested in Node.
+4. Saving: local mode writes to localStorage at once. Shared mode sends the record 3 seconds after the last edit (`PUT` with the server version), checks `/ver` every 60 seconds while the page is visible, and merges the edits of two players (`merge3` in `sync.js`: objects by key, characters by id, the logs combined, the edit counter `ver` as the larger value; a value both changed keeps the other player's value and the page says so).
+5. Undo reverts the user's own last edit (50 steps, Ctrl+Z) and logs "Undo: ...". History entries are `{ before, after }`; changes of other players that arrived since are kept (`merge3(after, before, current)`).
+6. Pure logic (`events.js`, `outcomes.js`, `amdDeck.js`, `flow.js`, `record.js` derived values) takes the record and returns values. Keep new logic in this form so it can be tested in Node.
 
 Rules for new code:
 - Route every change through `edit.js` and `commit`, so Undo and History work.

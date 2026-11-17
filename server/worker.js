@@ -104,6 +104,8 @@ async function route(req, env) {
 
   // GET /c/:cid   the record and its version
   if (p.length === 2 && m === 'GET') { need(user, cid, 'read'); return json(await campaign()); }
+  // GET /c/:cid/ver   only the version (the page checks it every minute; small answer, little traffic through the relay)
+  if (p.length === 3 && p[2] === 'ver' && m === 'GET') { need(user, cid, 'read'); const c = await campaign(); return json({ ver: c.ver, t: c.t, by: c.by }); }
   // PUT /c/:cid   { base, record }   save; 409 when base is not the current version
   if (p.length === 2 && m === 'PUT') {
     need(user, cid, 'player');

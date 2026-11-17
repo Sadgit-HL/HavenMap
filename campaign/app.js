@@ -9,6 +9,7 @@ import { SCENARIOS, STICKERS } from '../scripts/games/gh2_scenarios.js';
 import { BATTLE_GOALS } from '../scripts/games/battle_goals.js';
 import { escapeHtml as esc } from '../scripts/escape.js';
 import { localStore } from '../scripts/campaign/store.js';
+import { api, loadConn, saveConn, clearConn, loadCache, saveCache, parseInvite, inviteUrl, merge3, same } from '../scripts/campaign/sync.js';
 import { cardImageUrl, itemImageUrl, eventImageUrl, matImageUrl, pqImageUrl, cardBackUrl, battleGoalImageUrl, matSlugOf } from '../scripts/campaign/cardImages.js';
 import { playmatHtml, markersHtml, XP_STEPS, turnPost, cardsPost, goalRollCode, questRollCode, cleanSettings, displaySettingsHtml } from './playmat.js';
 import { tokenDefs, markerTokens, MARK_STICKERS } from '../scripts/campaign/classTokens.js';
@@ -19,7 +20,7 @@ import { registerMenu, openMenuFor } from './ctxmenu.js';
 import { ask, notify } from './dialog.js';
 import { phoneHtml } from './phone.js';
 import {
-  validate, prosperityLevel, handOf, handList, zoneOf, CARD_ZONES, shopCopies, itemsInUse, ownsItem, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE, ownedCards, cardLevel, pendingPicks,
+  normalize, validate, prosperityLevel, handOf, handList, zoneOf, CARD_ZONES, shopCopies, itemsInUse, ownsItem, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE, ownedCards, cardLevel, pendingPicks,
 } from '../scripts/campaign/record.js';
 import * as ed from '../scripts/campaign/edit.js';
 import { describeChange, foldLog, LOG_TABS, LOG_MAX } from '../scripts/campaign/changelog.js';
@@ -54,7 +55,7 @@ let tab = 'Overview';              // top-level tab
 let sub = '';                      // sub-tab under Mercenaries: a character id or 'add'
 const editPages = new Set();        // pages (top-level tabs) currently in edit mode; each page has its own Edit button
 let editing = false;               // derived in render(): is the visible page being edited
-const history = [];                                   // earlier records for undo, newest last
+const history = [];                                   // own edits for undo, newest last: { before, after } (records)
 const view = { flowFull: false, scnView: 'table', logKind: 'all', flowShow: 'progress', flowLane: '', flowZoom: 'm', scnSel: null, scnStatus: '', scnSearch: '', scnSort: { col: '', dir: 1 }, itemSlot: '', itemSearch: '', itemShow: 'unlocked', itemView: 'list', itemSel: null, itemSize: 'm', itemSort: { col: '', dir: 1 }, cardType: 'abilities', cardSlot: '', cardChk: '', cardKind: 'city', cardSide: 'front', cardDeck: '', cardMon: '', cardMLv: '', cardShow: 'unlocked', cardCls: '', cardLv: '', cardSearch: '', cardSize: 's', cardStk: true };   // itemView: 'list' | 'grid'
 
 // Level order of ability cards: 1, X (the level 1.1 cards), 2 ... 9, then M (mastery).
@@ -136,19 +137,118 @@ function withLog(from, to, kindPrefix = '') {
 function commit(next) {
   if (next === record) return;
   if (pmset.autosort) for (const c of next.chars) if (c.hord) next = ed.sortHand(next, c.id, 'ini');   // setting: the hand always follows the initiative
-  history.push(record);
-  if (history.length > 50) history.shift();
+  const before = record;
   record = withLog(record, next);
-  localStore.save(record);
+  history.push({ before, after: record });
+  if (history.length > 50) history.shift();
+  persist();
   render();
 }
-// Undo restores the earlier record but keeps the log, adding what was undone as new entries.
+// Undo reverts my last edit but keeps the log, adding what was undone as new entries. Changes of other players that arrived since
+// then stay (a three-way merge: the edit's result as base, the record before it as mine, the current record as theirs).
 function undo() {
   if (!history.length) return;
-  const prev = history.pop();
-  record = withLog(record, prev, 'Undo: ');
-  localStore.save(record);
+  const h = history.pop();
+  const target = same(record, h.after) ? h.before : merge3(h.after, h.before, record);
+  record = withLog(record, target, 'Undo: ');
+  persist();
   render();
+}
+
+// --- shared campaign (scripts/campaign/sync.js, server/README.md) --------------------------------------------------------------
+// Without a connection the record lives in this browser (localStore), as before. With one (an invite link was opened), the record
+// is loaded from the API, every edit is saved a few seconds after the last change, and the page asks for a newer version every
+// minute while it is visible. Edits of two players are merged; a value both changed keeps the other player's value.
+const SYNC_MS = 3000, POLL_MS = 60000, RETRY_MS = 30000;
+let srv = null;                                       // { cid, token, ver, base, timer, busy, again }: base = the record as the server has it
+const syncEl = document.getElementById('syncState');
+function setSync(state) {
+  syncEl.hidden = !srv;
+  if (!srv) return;
+  const [text, tip] = { ok: ['Saved', 'Shared campaign: saved'], pending: ['Saving', 'Shared campaign: saving'], offline: ['Offline', 'Shared campaign: the server cannot be reached; edits are kept in this browser and sent later'] }[state];
+  syncEl.textContent = text; syncEl.title = tip; syncEl.dataset.state = state;
+}
+const cacheSrv = () => { if (srv && record) saveCache({ cid: srv.cid, ver: srv.ver, base: srv.base, record }); };
+function persist() {
+  if (!srv) { localStore.save(record); return; }
+  cacheSrv();
+  clearTimeout(srv.timer);
+  srv.timer = setTimeout(pushNow, SYNC_MS);
+  setSync('pending');
+}
+async function pushNow() {
+  if (!srv) return;
+  if (srv.busy) { srv.again = true; return; }
+  clearTimeout(srv.timer);
+  if (!record || same(record, srv.base)) { setSync('ok'); return; }
+  srv.busy = true;
+  const sent = record;
+  try {
+    const r = await api('PUT', `/c/${srv.cid}`, srv.token, { base: srv.ver, record: sent });
+    if (r.status === 200) { srv.ver = r.data.ver; srv.base = sent; }
+    else if (r.status === 409) { await pullAndMerge(); srv.again = true; }
+    else throw new Error(r.data?.error || `HTTP ${r.status}`);
+    setSync(same(record, srv.base) ? 'ok' : 'pending');
+  } catch {
+    setSync('offline');
+    srv.timer = setTimeout(pushNow, RETRY_MS);
+  } finally {
+    if (srv) { srv.busy = false; cacheSrv(); if (srv.again) { srv.again = false; pushNow(); } }
+  }
+}
+// Load the server's record and merge it with the local edits that are not saved yet.
+async function pullAndMerge() {
+  const r = await api('GET', `/c/${srv.cid}`, srv.token);
+  if (r.status !== 200) throw new Error(r.data?.error || `HTTP ${r.status}`);
+  const remote = normalize(r.data.record), conflicts = [];
+  const merged = !record || !srv.base || same(record, srv.base) ? remote : merge3(srv.base, record, remote, conflicts);
+  srv.base = remote; srv.ver = r.data.ver;
+  if (!same(merged, record)) { record = merged; render(); }
+  cacheSrv();
+  if (conflicts.length) notify('Changed by another player', `${conflicts.length === 1 ? 'One value was' : `${conflicts.length} values were`} changed by you and another player at the same time. Their version was kept.`);
+}
+async function poll() {
+  if (!srv || srv.busy || document.hidden) return;
+  try {
+    const r = await api('GET', `/c/${srv.cid}/ver`, srv.token);
+    if (r.status !== 200) throw new Error();
+    if (r.data.ver !== srv.ver) { await pullAndMerge(); if (!same(record, srv.base)) persist(); }
+    setSync(same(record, srv.base) ? 'ok' : 'pending');
+  } catch { setSync('offline'); }
+}
+setInterval(poll, POLL_MS);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) poll(); });
+// closing the tab: send what is not saved yet (the next start sends it otherwise, from the copy in this browser)
+window.addEventListener('pagehide', () => {
+  if (!srv || !record || srv.busy || same(record, srv.base)) return;
+  const body = { base: srv.ver, record };
+  api('PUT', `/c/${srv.cid}`, srv.token, body, { keepalive: JSON.stringify(body).length < 60000 }).catch(() => {});
+});
+// Start with a connection: the server's record, merged with edits left in this browser's copy. Unreachable: the copy, saved later.
+async function startShared(conn) {
+  srv = { cid: conn.cid, token: conn.token, ver: 0, base: null, timer: 0, busy: false, again: false };
+  const cache = loadCache(conn.cid);
+  try {
+    const r = await api('GET', `/c/${conn.cid}`, conn.token);
+    if (r.status === 401 || r.status === 403 || r.status === 404) {
+      srv = null; clearConn();
+      await notify('Shared campaign', r.status === 404 ? 'The shared campaign was not found. This browser works on its own copy.' : 'The invite of this browser is no longer valid. Ask for a new invite link.');
+      if (cache?.record) { const own = normalize(cache.record); localStore.save(own); return own; }
+      return localStore.load();
+    }
+    if (r.status !== 200) throw new Error();
+    const remote = normalize(r.data.record);
+    srv.ver = r.data.ver; srv.base = remote;
+    if (cache?.base && cache.record && !same(cache.record, cache.base)) { const merged = merge3(normalize(cache.base), normalize(cache.record), remote); setTimeout(persist); return merged; }
+    setSync('ok');
+    return remote;
+  } catch {
+    setSync('offline');
+    srv.timer = setTimeout(poll, RETRY_MS);
+    if (!cache) return null;
+    srv.ver = cache.ver; srv.base = cache.base ? normalize(cache.base) : null;
+    return normalize(cache.record);
+  }
 }
 
 // Sub-tabs under Mercenaries: one per character, then '+' while there is room for another.
@@ -2124,7 +2224,7 @@ main.addEventListener('click', e => {
 function addLog(tabName, kind, d) {
   const e = { t: Date.now(), u: userName(), tab: tabName, kind, d };
   record = { ...record, log: foldLog(record.log || [], [e]).slice(-LOG_MAX) };
-  localStore.save(record);
+  persist();
 }
 const AM_PLACE = { pool: 'the deck', disc: 'the discard', top: 'the top of the deck', bot: 'the bottom of the deck', act: 'the active area' };
 const amOpts = d => ({ from: d.from, to: d.to, idx: d.idx === undefined ? undefined : Number(d.idx), at: d.at === undefined ? undefined : Number(d.at) });
@@ -2425,7 +2525,7 @@ const renderShortcuts = () => {
   document.getElementById('keyList').innerHTML = SHORTCUTS.map(([group, rows]) => `<section class="keygroup setcard"><h4>${esc(group)}</h4>${rows.map(row).join('')}</section>`).join('');
 };
 renderShortcuts();
-const openSettings = () => { renderDisplay(); showSettingsTab(isPhone() && settingsTab === 'keys' ? 'display' : settingsTab); settingsModal.hidden = false; };   // the phone has no Shortcuts tab
+const openSettings = () => { renderDisplay(); renderShare(); showSettingsTab(isPhone() && settingsTab === 'keys' ? 'display' : settingsTab); settingsModal.hidden = false; };   // the phone has no Shortcuts tab
 settingsModal.addEventListener('click', e => {
   const sg = e.target.closest?.('.setpanel .seg button');
   if (sg) pmset[sg.parentElement.dataset.set] = sg.dataset.v;
@@ -2438,20 +2538,97 @@ settingsModal.addEventListener('change', e => {
   else return;
   saveSet(); renderDisplay(); render();
 });
-const closeSettings = () => { settingsModal.hidden = true; };
+const closeSettings = () => { settingsModal.hidden = true; adminKey = ''; adminLink = ''; };
 document.getElementById('settingsOpen').addEventListener('click', openSettings);
 document.getElementById('settingsClose').addEventListener('click', closeSettings);
 settingsModal.addEventListener('click', e => { if (e.target === settingsModal) closeSettings(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !settingsModal.hidden) closeSettings(); });
+
+// Settings, Campaign tab: the shared campaign (status, Leave) and the admin tools (upload, invite links, revoke). The admin key is
+// kept in memory while the settings are open, never stored.
+let adminKey = '', adminLink = '', adminTokens = null;
+const shareBox = document.getElementById('shareBox'), adminBox = document.getElementById('adminBox');
+function renderShare() {
+  document.getElementById('clear').hidden = !!srv;
+  shareBox.innerHTML = srv
+    ? `<div class="setline"><span class="setlab">Campaign</span><span class="setctl"><b>${esc(srv.cid)}</b><span class="hint">${esc(syncEl.textContent || '')}</span><button type="button" class="btn" data-leave>Leave</button></span></div>`
+    : '<div class="setline"><span class="setlab">Campaign</span><span class="setctl"><span class="hint">This browser only</span></span></div>';
+  if (!adminKey) {
+    adminBox.innerHTML = `<form class="setline" data-adminunlock><span class="setlab">Admin key</span><span class="setctl"><input type="password" class="txt" id="adminKeyIn" autocomplete="off"><button type="submit" class="btn">Unlock</button></span></form>`;
+    return;
+  }
+  const lock = '<button type="button" class="btn" data-adminlock>Lock</button>';
+  if (!srv) {
+    adminBox.innerHTML = `<form class="setline" data-upload><span class="setlab">Upload this campaign</span><span class="setctl"><input type="text" class="txt" id="uploadCid" placeholder="campaign id, e.g. gh2e" pattern="[a-z0-9\-]{3,40}" required><button type="submit" class="btn"${record ? '' : ' disabled'}>Upload</button>${lock}</span></form>`;
+    return;
+  }
+  const rows = (adminTokens || []).map(t => `<div class="setline"><span class="setlab">${esc(t.label || '(no name)')}</span><span class="setctl"><span class="hint">${esc(t.role)}</span><button type="button" class="btn" data-revoke="${esc(t.id)}">Revoke</button></span></div>`).join('');
+  adminBox.innerHTML = `${adminTokens ? rows || '<div class="setline"><span class="hint">No invite links yet.</span></div>' : '<div class="setline"><span class="hint">Loading...</span></div>'}
+    <form class="setline" data-invite><span class="setlab">New invite link</span><span class="setctl"><input type="text" class="txt" id="inviteName" placeholder="Player name" maxlength="40" required><button type="submit" class="btn">Create</button>${lock}</span></form>
+    ${adminLink ? `<div class="setline"><span class="setlab">Link</span><span class="setctl"><input type="text" class="txt" id="inviteLink" readonly value="${esc(adminLink)}"><button type="button" class="btn" data-copylink>Copy</button></span></div>` : ''}`;
+  if (!adminTokens) loadTokens();
+}
+async function loadTokens() {
+  try {
+    const r = await api('GET', `/c/${srv.cid}/tokens`, adminKey);
+    if (r.status !== 200) { adminKey = ''; renderShare(); await notify('Admin key', 'The key was not accepted.'); return; }
+    adminTokens = r.data; renderShare();
+  } catch { await notify('Shared campaign', 'The server cannot be reached.'); }
+}
+settingsModal.addEventListener('submit', async e => {
+  const f = e.target;
+  if (f.matches('[data-adminunlock]')) { e.preventDefault(); adminKey = document.getElementById('adminKeyIn').value.trim(); adminTokens = null; adminLink = ''; renderShare(); return; }
+  if (f.matches('[data-upload]')) {
+    e.preventDefault();
+    const cid = document.getElementById('uploadCid').value.trim();
+    try {
+      const r = await api('POST', '/c', adminKey, { cid, record });
+      if (r.status !== 201) { await notify('Upload', r.data?.error || `HTTP ${r.status}`); return; }
+      const t = await api('POST', `/c/${cid}/tokens`, adminKey, { role: 'player', label: userName() });   // this browser joins with its own player token
+      if (t.status !== 201) { await notify('Upload', t.data?.error || `HTTP ${t.status}`); return; }
+      saveConn({ cid, token: t.data.token });
+      srv = { cid, token: t.data.token, ver: r.data.ver, base: record, timer: 0, busy: false, again: false };
+      cacheSrv(); setSync('ok'); adminTokens = null; renderShare();
+    } catch { await notify('Upload', 'The server cannot be reached.'); }
+    return;
+  }
+  if (f.matches('[data-invite]')) {
+    e.preventDefault();
+    const name = document.getElementById('inviteName').value.trim();
+    try {
+      const r = await api('POST', `/c/${srv.cid}/tokens`, adminKey, { role: 'player', label: name });
+      if (r.status !== 201) { await notify('Invite link', r.data?.error || `HTTP ${r.status}`); return; }
+      adminLink = inviteUrl(location.href, srv.cid, r.data.token, name); adminTokens = null; renderShare();
+    } catch { await notify('Invite link', 'The server cannot be reached.'); }
+  }
+});
+settingsModal.addEventListener('click', async e => {
+  if (e.target.closest('[data-adminlock]')) { adminKey = ''; adminLink = ''; adminTokens = null; renderShare(); return; }
+  if (e.target.closest('[data-copylink]')) { const i = document.getElementById('inviteLink'); i.select(); try { await navigator.clipboard.writeText(i.value); e.target.textContent = 'Copied'; } catch { /* selected for Ctrl+C */ } return; }
+  const rv = e.target.closest('[data-revoke]')?.dataset.revoke;
+  if (rv) {
+    if (!await ask({ title: 'Revoke invite link', text: 'The player of this link loses access to the shared campaign.', ok: 'Revoke', danger: true })) return;
+    try { await api('DELETE', `/c/${srv.cid}/tokens/${rv}`, adminKey); } catch { /* shown by the reload */ }
+    adminTokens = null; renderShare(); return;
+  }
+  if (e.target.closest('[data-leave]')) {
+    if (!await ask({ title: 'Leave shared campaign', text: 'This browser keeps a copy of the campaign and stops sharing. You need an invite link to join again.', ok: 'Leave' })) return;
+    await pushNow();
+    clearConn(); clearTimeout(srv?.timer); srv = null; setSync('ok');
+    if (record) localStore.save(record);
+    renderShare();
+  }
+});
 
 document.getElementById('file').addEventListener('change', async e => {
   const f = e.target.files[0];
   if (!f) return;
   try {
     const next = await localStore.importFile(f);
+    if (srv && !await ask({ title: 'Load file', text: 'Replace the shared campaign for all players with this file?', ok: 'Replace', danger: true })) { e.target.value = ''; return; }
     history.length = 0;
     record = next;
-    await localStore.save(record);
+    persist();
   } catch (err) { await notify('Could not read the file', err.message); }
   e.target.value = '';
   render();
@@ -2479,7 +2656,14 @@ document.getElementById('clear').addEventListener('click', async () => {
 
 (async () => {
   evInit({ render, record: () => record, commit, editing: () => editing });
-  record = await localStore.load();
+  const inv = parseInvite(location.hash);                                              // an invite link: join, then clean the address bar
+  if (inv) {
+    saveConn(inv);
+    try { if (inv.name && !(localStorage.getItem(USER_KEY) || '').trim()) { localStorage.setItem(USER_KEY, inv.name); userInput.value = inv.name; } } catch { /* ignore */ }
+    window.history.replaceState(null, '', location.pathname + location.search);
+  }
+  const conn = loadConn();
+  record = conn ? await startShared(conn) : await localStore.load();
   try {
     const t = localStorage.getItem('havenmap.campaign.tab');
     if (PAGE_TABS.includes(t)) tab = t;

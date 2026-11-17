@@ -1087,3 +1087,10 @@ header .actions button { height:32px; }
 .histtable { table-layout:fixed; }
 .histtable th:nth-child(1) { width:170px; } .histtable th:nth-child(2) { width:130px; } .histtable th:nth-child(3) { width:150px; }
 @media (max-width: 640px) { .histtable th:nth-child(1) { width:118px; } .histtable th:nth-child(2) { width:70px; } }
+
+/* Shared campaign: the save state in the header (Saved, Saving, Offline) */
+.syncstate { align-self:center; padding:2px 10px; border:1px solid var(--line); border-radius:999px; font-size:12px; color:var(--muted); white-space:nowrap; }
+.syncstate[hidden] { display:none; }
+.syncstate[data-state="pending"] { color:var(--accent); border-color:rgba(199,164,74,.5); }
+.syncstate[data-state="offline"] { color:#e08a7a; border-color:rgba(201,96,79,.5); }
+html.phone .syncstate { padding:2px 8px; font-size:11px; }
