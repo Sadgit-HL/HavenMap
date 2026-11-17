@@ -682,7 +682,7 @@ const playmatCtx = {
   matUrl: (cls, side) => matImageUrl(cls, side),
   pqImg: slug => pqImageUrl({ slug }) ?? '',
   bgImg: battleGoalImageUrl,
-  esc, pretty, cardById, itemById, cardImageUrl, itemImageUrl, cardBackUrl, portraitStyle,
+  esc, pretty, cardById, itemById, cardImageUrl, itemImageUrl, itemBackUrl, cardBackUrl, portraitStyle,
   playerName: c => (record.players.find(p => p.seat === c.seat)?.name ?? ''),
   traitChips: c => `${(c.traits || []).map(t => chip(t)).join('')}${classTraits(c).map(t => chip(t)).join('')}${(c.special || []).map(t => chip(specialName(t), 'info')).join('')}`,
 };
@@ -1538,6 +1538,8 @@ function itemClick(e, c) {
   const q = sel => e.target.closest?.(sel);
   const st = q('[data-itstate]');
   if (st) { commit(ed.setItemState(record, c.id, st.dataset.id, Number(st.dataset.itstate))); return true; }
+  const fl = q('[data-itflip]');
+  if (fl) { commit(ed.setItemFlipped(record, c.id, fl.dataset.id, fl.dataset.itflip === '1')); return true; }
   const sort = q('[data-itemssort]');
   if (sort) { commit(ed.sortItems(record, c.id)); return true; }
   if (q('[data-itemsedit]')) {
@@ -1734,7 +1736,11 @@ window.addEventListener('blur', () => ctrlHeld(false));
 // attack modifier cards their picture or a copy of the built card. The fan zooms in place (playmat.css); a pin shows the preview.
 function pmPreview(el, host, pin) {
   if (el.matches('.hand6[data-layout=fan] .ac') && !pin) return null;
-  if (el.matches('.it')) return { key: `it:${el.outerHTML}`, clone: el, wrap: 'shelf6', scope: 'pm' };
+  if (el.matches('.it')) {                                                                            // a flip item: its other side beside the copy, the copy as tall as alone
+    const item = ITEMS.find(x => String(x.id) === el.dataset.id), front = itemImageUrl(item), b = itemBackUrl(item);
+    const back = b && (el.classList.contains('flipped') ? front : b);
+    return { key: `it:${el.outerHTML}`, clone: el, wrap: 'shelf6', scope: 'pm', back, scale: back ? (2 * el.offsetWidth + 6) / el.offsetHeight : undefined };
+  }
   if (el.matches('.stk, .mini, .amcell, .am-perk-cards .pc')) {
     const face = el.querySelector('.stkface') || el, first = face.firstElementChild;                    // a single picture, or a built card of layered pictures
     if (first?.tagName === 'IMG' && !el.matches('.pc')) return { key: `am:${first.src}`, url: first.src, scope: 'pm' };
@@ -1903,9 +1909,11 @@ registerMenu({
   sel: '.pm .it[data-itemstate]',
   title: el => (el.title || 'Item').split(' — ')[0],
   actions: el => {
-    const c = record?.chars.find(x => x.id === el.dataset.char), cur = c?.items.find(x => String(x.id) === el.dataset.id)?.s || 0;
+    const c = record?.chars.find(x => x.id === el.dataset.char), mine = c?.items.find(x => String(x.id) === el.dataset.id), cur = mine?.s || 0;
     const states = c ? [[0, 'Available'], [1, 'Spent'], [2, 'Consumed']].map(([v, label]) => ({ label, disabled: cur === v, run: () => commit(ed.setItemState(record, c.id, el.dataset.id, v)) })) : [];
-    return [...(states.length ? [{ header: 'State' }, ...states, { sep: true }] : []), { label: 'Zoom', run: () => cardPreview.show(el, true) }, { label: 'Add marker', run: () => openMarkers(`i:${el.dataset.id}`) }];
+    const canFlip = c && itemBackUrl(ITEMS.find(x => String(x.id) === el.dataset.id));
+    const flip = canFlip ? [{ label: mine?.f ? 'Flip to the front' : 'Flip to the back', run: () => commit(ed.setItemFlipped(record, c.id, el.dataset.id, !mine?.f)) }] : [];
+    return [...(states.length ? [{ header: 'State' }, ...states, { sep: true }] : []), ...flip, { label: 'Zoom', run: () => cardPreview.show(el, true) }, { label: 'Add marker', run: () => openMarkers(`i:${el.dataset.id}`) }];
   },
 });
 registerMenu({
@@ -2000,23 +2008,28 @@ main.addEventListener('change', e => {
     if (c) { const L = (c.notes || '').split('\n'), i = Number(e.target.dataset.mdline); L[i] = L[i].replace(/\[[ xX]\]/, e.target.checked ? '[x]' : '[ ]'); commit(ed.setNotes(record, c.id, L.join('\n'))); }
   }
 });
-// Keys on the object under the mouse pointer: D, L, A move an ability card; D, L set an item to spent or consumed; D discards a
-// placed attack modifier card. The pointer is read at key press (not on move), so a card that was re-rendered still counts.
+// Keys on the object under the mouse pointer: D, L, A move an ability card; D, L set an item to spent or consumed, F flips a flip item
+// (only one with a back picture); D discards a placed attack modifier card. The pointer is read at key press (not on move), so a card that was re-rendered still counts.
 let lastPointer = null;
 document.addEventListener('mousemove', e => { lastPointer = { x: e.clientX, y: e.clientY }; });
 document.addEventListener('keydown', e => {
   const key = e.key.toLowerCase();
-  if (!['d', 'l', 'a'].includes(key) || e.ctrlKey || e.altKey || e.metaKey || e.shiftKey || e.repeat || pm.modal || !lastPointer) return;
+  if (!['d', 'l', 'a', 'f'].includes(key) || e.ctrlKey || e.altKey || e.metaKey || e.shiftKey || e.repeat || pm.modal || !lastPointer) return;
   if (e.target.closest?.('input, textarea, select, [contenteditable]')) return;
   const under = document.elementFromPoint(lastPointer.x, lastPointer.y);
   if (!under || !main.contains(under)) return;
-  const card = under.closest?.('.pm .ac[data-card], .pm .flipcard[data-card]');
+  const card = key === 'f' ? null : under.closest?.('.pm .ac[data-card], .pm .flipcard[data-card]');
   if (card) {
     const c = record?.chars.find(x => x.id === card.dataset.char), id = Number(card.dataset.card), dest = { d: 'discard', l: 'lost', a: 'active' }[key];
     if (!c || !c.deck.includes(id) || zoneOf(c, id) === dest) return;
     e.preventDefault(); commit(ed.moveCard(record, c.id, id, dest)); return;
   }
   const item = under.closest?.('.pm .it[data-itemstate]');
+  if (item && key === 'f') {
+    const c = record?.chars.find(x => x.id === item.dataset.char), mine = c?.items.find(x => String(x.id) === item.dataset.id);
+    if (!mine || !itemBackUrl(ITEMS.find(x => String(x.id) === item.dataset.id))) return;
+    e.preventDefault(); commit(ed.setItemFlipped(record, c.id, item.dataset.id, !mine.f)); return;
+  }
   if (item && key !== 'a') {
     const c = record?.chars.find(x => x.id === item.dataset.char);
     const cur = c?.items.find(x => String(x.id) === item.dataset.id)?.s || 0;
@@ -2593,7 +2606,7 @@ const SHORTCUTS = [
   ]],
   ['Under the pointer', [
     { obj: 'Ability card', keys: [['D', 'Discard'], ['L', 'Lost'], ['A', 'Active area']] },
-    { obj: 'Item', keys: [['D', 'Spent or available'], ['L', 'Consumed']] },
+    { obj: 'Item', keys: [['D', 'Spent or available'], ['L', 'Consumed'], ['F', 'Flip (items with a back)']] },
     { obj: 'Modifier card', keys: [['D', 'Discard (deck: draw one)']] },
   ]],
   ['Notes and fields', [

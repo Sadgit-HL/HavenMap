@@ -731,6 +731,16 @@ export function setItemState(r, cid, itemId, state) {
   return edit(r, x => { x.chars.find(y => y.id === cid).items[i].s = s; });
 }
 
+// Side of a flip item of a character: back true shows its back (f: 1), false its front. Only items with a back picture are flipped
+// (the caller checks; the record keeps the flag either way).
+export function setItemFlipped(r, cid, itemId, back) {
+  const c = r.chars.find(x => x.id === cid);
+  if (!c) return r;
+  const i = c.items.findIndex(it => String(it.id) === String(itemId));
+  if (i < 0 || !!c.items[i].f === !!back) return r;
+  return edit(r, x => { const it = x.chars.find(y => y.id === cid).items[i]; if (back) it.f = 1; else delete it.f; });
+}
+
 // The items a character carries: unlocked items only, one copy each, the copies of the shop and the slot limits respected (what does not fit is
 // dropped, in the order given). Items kept keep their state, new ones start available.
 export function setEquippedItems(r, cid, ids) {

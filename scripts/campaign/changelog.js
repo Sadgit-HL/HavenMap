@@ -223,7 +223,8 @@ export function describeChange(a, b) {
         else {
           const NAME = ['available', 'spent', 'consumed'];
           (c.items || []).forEach((it, i) => { const was = (o.items || []).find(x => x.id === it.id); if (was && was.s !== it.s) add('Mercenaries', 'Item state', `${c.name}: item #${it.id} ${NAME[was.s ?? 0]} to ${NAME[it.s ?? 0]}`); });
-          if (!(c.items || []).some((it, i) => { const was = (o.items || []).find(x => x.id === it.id); return was && was.s !== it.s; })) add('Mercenaries', 'Character items', `${c.name}: items reordered`);
+          (c.items || []).forEach(it => { const was = (o.items || []).find(x => x.id === it.id); if (was && !!was.f !== !!it.f) add('Mercenaries', 'Item state', `${c.name}: item #${it.id} flipped to its ${it.f ? 'back' : 'front'}`); });
+          if (!(c.items || []).some((it, i) => { const was = (o.items || []).find(x => x.id === it.id); return was && (was.s !== it.s || !!was.f !== !!it.f); })) add('Mercenaries', 'Character items', `${c.name}: items reordered`);
         }
       } else if (Array.isArray(o[k]) || Array.isArray(c[k])) {
         add('Mercenaries', 'Character', `${c.name}: ${CHAR_FIELD[k] || k} ${plusMinus(diffList(o[k], c[k])) || 'reordered'}`);

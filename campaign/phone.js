@@ -61,7 +61,7 @@ export function phoneHtml(c, X, S = {}) {
   } else if (tab === 'items') {
     const tiles = c.items.map(it => {
       const item = X.itemById.get(it.id), nm = X.pretty(item?.slug ?? it.id), s = it.s || 0;
-      const url = item ? X.itemImageUrl(item) : null;
+      const back = item ? X.itemBackUrl(item) : null, url = it.f && back ? back : item ? X.itemImageUrl(item) : null;   // a flip item turned over: its back
       return `<div class="it${s === 1 ? ' spent' : s === 2 ? ' consumed' : ''}" data-itemstate data-id="${esc(it.id)}" data-char="${cid}" role="button" tabindex="0" aria-label="${esc(nm)}, ${['available', 'spent', 'consumed'][s]}">${url ? `<img src="${esc(url)}" alt="" loading="lazy" draggable="false">` : `<span class="itname">${esc(nm)}</span>`}${s ? `<span class="itst">${s === 1 ? 'Spent' : 'Consumed'}</span>` : ''}${markersHtml(c.mk?.[`i:${it.id}`])}</div>`;
     }).join('');
     view = `<h4>Items <span class="hbtns"><span style="align-self:center">${c.items.length}</span><button type="button" class="sm" data-itemssort="${cid}">Slot</button><button type="button" class="sm" data-itemsedit="${cid}">Equip</button></span></h4><div class="itl">${tiles || '<div class="note">No items.</div>'}</div>`;

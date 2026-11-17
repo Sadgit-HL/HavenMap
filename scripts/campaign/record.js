@@ -25,8 +25,8 @@ Record fields (all optional on load, defaults filled by normalize):
   stk, cls          sticker labels, unlocked class names
   avail             class names available in this campaign (optional; absent = every class in scripts/campaign/classList.js)
   scn               { "<number>": { s, l?, p?, ch?, d? } }   state, level, party size, chests, date
-  chars             [{ id, cls, name, seat?, lv, xp, gold, inh, traits, special, hand, deck, disc, act, lost, play, hord, tok, bench, own, items:[{id, st, s}], am }]
-                    own = the item ids the character owns (given from the Items tab); items = the owned items that are equipped (slot limits), with their state
+  chars             [{ id, cls, name, seat?, lv, xp, gold, inh, traits, special, hand, deck, disc, act, lost, play, hord, tok, bench, own, items:[{id, st, s, f?}], am }]
+                    own = the item ids the character owns (given from the Items tab); items = the owned items that are equipped (slot limits), with their state (f: 1 = a flip item turned to its back)
                     Every ability card of `deck` is in exactly one place: lost, disc (discard pile, last = top), play, act (active area) or the hand
                     (all the rest). play = [slot 1, slot 2], each null or { id, up } (up = face up); only hand cards enter a slot, slot 1 sets the
                     initiative. hord = manual hand order [cardId] or null (null = sorted by initiative),
@@ -140,7 +140,7 @@ function normalizeChar(c) {
   ch.bgo = Array.isArray(ch.bgo) ? ch.bgo.slice(0, 3) : null;
   ch.pqo = Array.isArray(ch.pqo) ? ch.pqo.slice(0, 2) : null;
   if (!ch.pqc || typeof ch.pqc !== 'object' || Array.isArray(ch.pqc)) ch.pqc = {};
-  ch.items = (Array.isArray(ch.items) ? ch.items : []).map(it => ({ ...it, s: Math.max(0, Math.min(2, Math.trunc(Number(it.s ?? ((it.st || []).some(Boolean) ? 1 : 0))) || 0)) }));
+  ch.items = (Array.isArray(ch.items) ? ch.items : []).map(it => { const o = { ...it, s: Math.max(0, Math.min(2, Math.trunc(Number(it.s ?? ((it.st || []).some(Boolean) ? 1 : 0))) || 0)) }; if (o.f) o.f = 1; else delete o.f; return o; });
   { const seenIt = new Set(); ch.own = [...(Array.isArray(ch.own) ? ch.own : []), ...ch.items.map(it => it.id)].filter(id => !seenIt.has(String(id)) && seenIt.add(String(id))); }   // the equipped items are owned
   ch.notes = typeof ch.notes === 'string' ? ch.notes : '';
   ch.mk = cleanMarks(ch.mk);

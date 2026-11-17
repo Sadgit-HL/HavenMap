@@ -25,6 +25,8 @@ const DN = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="
 
 // S = what the page remembers: { modal, matSide, customCodes, histKind, log } (open modal, mat side, saved codes, history filter and entries).
 // Marker elements for a list [{ k, s?, x, y }]; x and y are percent of the card.
+// Flip of an item (two cards with a curved arrow), on the corner button of a flip item.
+const FLIP_ICON = '<svg viewBox="0 0 24 24" width="100%" height="100%" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 9"/><path d="M20 4v5h-5"/><path d="M20 12a8 8 0 0 1-13.7 5.6L4 15"/><path d="M4 20v-5h5"/></svg>';
 const REC_ICON = `<img src="${imageFile('images/common/icons/recover', '../')}" alt="" draggable="false">`;
 const STATE_BTN = [REC_ICON.replace('<img ', '<img width="24" height="24" '),
   `<img src="${imageFile('images/common/icons/spent', '../')}" alt="" width="24" height="24" draggable="false">`, `<img src="${imageFile('images/common/icons/consumed', '../')}" alt="" width="24" height="24" draggable="false">`];
@@ -40,7 +42,7 @@ function markPanel(c, S, esc, key, stickers = true) {
   return `${selRow}${toks.length ? `<div class="row"><span>Tokens</span><span class="tkpick">${toks.map(k => btn(k, false)).join('')}</span></div>` : ''}${stickers ? `<div class="row"><span>Stickers</span><span class="tkpick" id="stkpick">${MARK_STICKERS.map(k => btn(k, true)).join('')}</span></div>` : ''}`;
 }
 
-// X = helpers of the page: { esc, pretty, cardById, itemById, cardImageUrl, itemImageUrl, cardBackUrl, portraitStyle, traitChips, playerName }
+// X = helpers of the page: { esc, pretty, cardById, itemById, cardImageUrl, itemImageUrl, itemBackUrl, cardBackUrl, portraitStyle, traitChips, playerName }
 // The modifier deck in the place of the hand: deck stacks and a discard area (stack = cards of one kind), Edit adds steppers and a pinned palette.
 export function amViewHtml(A, esc, edit) {
   const stack = (t, n, zone, sp) => {
@@ -151,8 +153,9 @@ export function playmatHtml(c, X, S = {}) {
   const CARDS_ICON = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="12" height="16" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v13"/></svg>';
   const ITEM_STATE = ['Available', 'Spent', 'Consumed'], STATE_ICON = [null, imageFile('images/common/icons/spent', '../'), imageFile('images/common/icons/consumed', '../')];
   const items = c.items.map(it => {
-    const item = X.itemById.get(it.id), url = X.itemImageUrl(item), name = X.pretty(item?.slug ?? it.id), s = it.s || 0;
-    return `<div class="it${s === 1 ? ' spent' : s === 2 ? ' consumed' : ''}" data-itemstate data-id="${esc(it.id)}" data-char="${cid}" title="${esc(name)}${item?.slot ? ` (${esc(item.slot)})` : ''} \u2014 ${ITEM_STATE[s]}, click to open">${url ? `<img src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false">` : `<div class="noimg">${esc(name)}</div>`}${STATE_ICON[s] ? `<span class="itbadge"><img src="${STATE_ICON[s]}" alt="" draggable="false"></span>` : ''}${marks(`i:${it.id}`)}${handle(`i:${it.id}`)}</div>`;
+    const item = X.itemById.get(it.id), back = X.itemBackUrl(item), url = it.f && back ? back : X.itemImageUrl(item), name = X.pretty(item?.slug ?? it.id), s = it.s || 0;
+    const flip = back ? `<button type="button" class="itflip" data-itflip="${it.f ? 0 : 1}" data-id="${esc(it.id)}" data-char="${cid}" title="Flip to the ${it.f ? 'front' : 'back'}" aria-label="Flip ${esc(name)} to the ${it.f ? 'front' : 'back'}" draggable="false">${FLIP_ICON}</button>` : '';
+    return `<div class="it${s === 1 ? ' spent' : s === 2 ? ' consumed' : ''}${it.f && back ? ' flipped' : ''}" data-itemstate data-id="${esc(it.id)}" data-char="${cid}" title="${esc(name)}${item?.slot ? ` (${esc(item.slot)})` : ''}${it.f && back ? ', back' : ''} \u2014 ${ITEM_STATE[s]}, click to open">${url ? `<img src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false">` : `<div class="noimg">${esc(name)}</div>`}${STATE_ICON[s] ? `<span class="itbadge"><img src="${STATE_ICON[s]}" alt="" draggable="false"></span>` : ''}${marks(`i:${it.id}`)}${handle(`i:${it.id}`)}${flip}</div>`;
   }).join('');
 
   // hand or modifiers in the hand's place (same toggle in both views)
@@ -270,8 +273,9 @@ export function modalHtml(c, X, S) {
     const it = c.items.find(x => String(x.id) === String(S.itemId)), item = it && X.itemById.get(it.id);
     if (!it) return '';
     title = X.pretty(item?.slug ?? it.id);
-    const url = X.itemImageUrl(item), st = it.s || 0;
-    body = `<div class="itmodal"><div class="itcard pick" data-mkcard="i:${esc(it.id)}">${url ? `<img src="${esc(url)}" alt="${esc(title)}" draggable="false">` : ''}${markersHtml(c.mk?.[`i:${it.id}`], S.mkIdx)}</div><div class="itpanel"><div class="row"><span>State</span><span class="seg">${['Available', 'Spent', 'Consumed'].map((n, k) => `<button type="button" class="btn6 stbtn" data-itstate="${k}" data-id="${esc(it.id)}" data-char="${esc(c.id)}" aria-pressed="${st === k}" title="${n}" aria-label="${n}">${STATE_BTN[k]}</button>`).join('')}</span></div>${markPanel(c, S, esc, `i:${it.id}`, false)}<div class="row"><button type="button" class="btn6" data-mkclear="i:${esc(it.id)}">Clear all</button></div></div></div>`;
+    const back = X.itemBackUrl(item), url = it.f && back ? back : X.itemImageUrl(item), st = it.s || 0;
+    const side = back ? `<div class="row"><span>Side</span><span class="seg">${['Front', 'Back'].map((n, k) => `<button type="button" class="btn6" data-itflip="${k}" data-id="${esc(it.id)}" data-char="${esc(c.id)}" aria-pressed="${!!it.f === !!k}">${n}</button>`).join('')}</span></div>` : '';
+    body = `<div class="itmodal"><div class="itcard pick" data-mkcard="i:${esc(it.id)}">${url ? `<img src="${esc(url)}" alt="${esc(title)}" draggable="false">` : ''}${markersHtml(c.mk?.[`i:${it.id}`], S.mkIdx)}</div><div class="itpanel"><div class="row"><span>State</span><span class="seg">${['Available', 'Spent', 'Consumed'].map((n, k) => `<button type="button" class="btn6 stbtn" data-itstate="${k}" data-id="${esc(it.id)}" data-char="${esc(c.id)}" aria-pressed="${st === k}" title="${n}" aria-label="${n}">${STATE_BTN[k]}</button>`).join('')}</span></div>${side}${markPanel(c, S, esc, `i:${it.id}`, false)}<div class="row"><button type="button" class="btn6" data-mkclear="i:${esc(it.id)}">Clear all</button></div></div></div>`;
   } else if (S.modal === 'cardmk') {
     const id = Number(String(S.mkKey || '').slice(2)), card = X.cardById.get(id);
     if (!card) return '';

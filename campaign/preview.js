@@ -10,8 +10,8 @@
 //   resolve   (el, pin) -> content or null. The same key keeps the shown content (no reload or repaint). Content is one of
 //               { key, url, extra }   a picture; extra: () -> nodes laid over it (tokens, stickers), sized in % of the card
 //               { key, make, ar }     a built node (attack modifier cards), sized by --pc-width; ar = width / height
-//               { key, clone, wrap }  a copy of the element (an item with its badges), scaled up; wrap: classes of a wrapper so the
-//                                     element's own styles still apply
+//               { key, clone, wrap, back }  a copy of the element (an item with its badges), scaled up; wrap: classes of a wrapper so
+//                                     the element's own styles still apply; back: a picture shown beside it (the back of a flip item)
 //             plus scope (classes for the layer, e.g. 'pm', so the styles of that page part apply; the layer itself stays in the body,
 //             outside the page's redraw) and scale (cards with small print)
 //   settings  () -> { size, delay, trigger: 'hover' | 'ctrl', place: 'near' | 'left' | 'right' }
@@ -86,7 +86,15 @@ export function createPreview({ selector, resolve, settings, tapPins = () => fal
         box.className = `cpvclone ${c.wrap || ''}`;
         Object.assign(box.style, { width: `${nw}px`, height: `${nh}px` });
         box.append(copy);
-        content = { ...c, ar: nw / nh, box, nw };
+        let bw = nw;
+        if (c.back) {                                                                    // the back of a flip item beside it, at the same size
+          const img = Object.assign(document.createElement('img'), { src: c.back, alt: '', draggable: false });
+          Object.assign(img.style, { width: `${nw}px`, height: `${nh}px`, flex: 'none', objectFit: 'contain', borderRadius: '6px' });
+          bw = 2 * nw + 6;
+          Object.assign(box.style, { width: `${bw}px`, display: 'flex', gap: '6px', alignItems: 'flex-start' });
+          box.append(img);
+        }
+        content = { ...c, ar: bw / nh, box, nw: bw };
         layer.replaceChildren(box);
       } else {
         content = c;
