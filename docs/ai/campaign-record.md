@@ -63,7 +63,7 @@ Invariant: every card of `deck` sits in exactly one place: `lost`, `disc`, `play
 
 ## Derived values (not stored)
 
-`scenarioLevel` (`ceil(avg / 2) + difficulty`, matches the Secretariat base formula; rulebook not checked), `prosperityLevel` (`PROSPERITY_START`), average level, days played, scenario counts, hand list, zone of a card (`zoneOf`), owned cards and pending picks (`ownedCards`, `pendingPicks`), item slot use and fit (`slotLimits`, `slotUse`, `itemFits`), shop copies (`shopCopies`), unlocked-by links (`unlockedBy`).
+`scenarioLevel` (`ceil(avg / 2) + difficulty`, matches the Secretariat base formula; rulebook not checked; currently unused), `partyAvg` and `normalDifficulty` (average of the mercenaries' levels, `ceil(avg / 2)` clamped 0..7; Overview, party modal and default level of the Monsters tab), `prosperityLevel` (`PROSPERITY_START`), average level, days played, scenario counts, hand list, zone of a card (`zoneOf`), owned cards and pending picks (`ownedCards`, `pendingPicks`), item slot use and fit (`slotLimits`, `slotUse`, `itemFits`), shop copies (`shopCopies`), unlocked-by links (`unlockedBy`).
 
 ## Functions
 

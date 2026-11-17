@@ -15,6 +15,9 @@
 .pm.mon .spc button { flex:1; width:28px; padding:0; border:0; background:transparent; color:var(--muted); cursor:pointer; display:flex; align-items:center; justify-content:center; }
 .pm.mon .spc button:hover:not(:disabled) { background:#3a2f1e; color:var(--text); }
 .pm.mon .spc button:disabled { opacity:.3; cursor:default; }
+.pm.mon .mondiff { min-width:34px; height:26px; padding:0 8px; display:inline-flex; align-items:center; justify-content:center; border:1px solid var(--line); border-radius:999px; background:#2d2519; color:var(--muted); font:inherit; font-size:13px; font-weight:700; font-variant-numeric:tabular-nums; }
+.pm.mon .mondiff.on { border-color:rgba(199,164,74,.6); color:var(--accent); cursor:pointer; }
+.pm.mon .mondiff.on:hover { background:#3a2f1e; }
 .pm.mon .monround { min-width:30px; text-align:center; font-size:18px; font-variant-numeric:tabular-nums; }
 .pm.mon .monacts { margin-left:auto; display:flex; gap:8px; }
 .pm.mon .btn6 { min-height:32px; padding:0 12px; }
@@ -82,14 +85,28 @@ html.phone .pm.mon .tog button { padding:9px 16px; }
 .pm.mon .mab.sm.active { outline:2px solid var(--accent); outline-offset:1px; }
 .pm.mon .mab.sm.discard { opacity:.3; filter:grayscale(.6); }
 
-/* ---- phone (html.phone, campaign/touch.css): the modifier deck stacked as in the phone view, not docked and always open; one panel a row,
-   the deck cards in two rows ---- */
-html.phone .pm.mon { gap:10px; padding:8px; border-radius:0; min-height:0; }
-html.phone .pm.mon .monam { position:static; box-shadow:none; background:rgba(18,15,11,.45); }
-html.phone .pm.mon .monam:not(.open) .monamv { display:block; }
-html.phone .pm.mon .monam:not(.open) .monamhd { margin-bottom:8px; }
-html.phone .pm.mon .monamhd > :not(.tog):not(.monimb) { display:none; }
+/* ---- phone (html.phone, campaign/touch.css): one panel a row, the deck cards in two rows; Add monster on its own row of the bar. The
+   modifier dock stays at the bottom as a strip in two rows (toggle, counts and buttons; the faces left and the discard). Opened, it is a
+   bottom sheet over the page with the modifier deck stacked as in the phone view. ---- */
+html.phone .pm.mon { gap:10px; padding:8px; border-radius:0; min-height:calc(100dvh - 60px); }
 html.phone .pm.mon .mrow { grid-template-columns:repeat(4, minmax(0, 1fr)); }
+html.phone .pm.mon .monadd { flex:1 1 100%; }
+html.phone .pm.mon .monadd select { flex:1; max-width:none; height:40px; }
+html.phone .pm.mon .monam { margin:0 -8px -8px; padding:6px 8px max(8px, env(safe-area-inset-bottom)); border-radius:12px 12px 0 0; border-bottom:0; }
+html.phone .pm.mon .monam:not(.open) .monamhd { display:grid; grid-template-columns:auto minmax(0, 1fr) auto auto; grid-template-areas:'tog deck shuf x' 'chips chips disc disc'; gap:6px 8px; }
+html.phone .pm.mon .monam:not(.open) .tog button { padding:9px 10px; }
+html.phone .pm.mon .monam:not(.open) .monamhd > .tog { grid-area:tog; }
+html.phone .pm.mon .monam:not(.open) .mamdeck { grid-area:deck; justify-self:start; }
+html.phone .pm.mon .monam:not(.open) .monamhd > .btn6[data-amact] { grid-area:shuf; }
+html.phone .pm.mon .monam:not(.open) .mamtog { grid-area:x; margin-left:0; }
+html.phone .pm.mon .monam:not(.open) .mamchips { grid-area:chips; }
+html.phone .pm.mon .monam:not(.open) .mamdisc { grid-area:disc; justify-self:end; }
+html.phone .pm.mon .monam:not(.open) .mamdisc .lab { display:none; }
+html.phone .pm.mon .monamhd .btn6 { width:40px; min-height:40px; }
+html.phone .pm.mon .mamc, html.phone .pm.mon .mamdisc img, html.phone .pm.mon .mamempty { height:48px; }
+html.phone .pm.mon .mamc:hover { transform:none; }
+html.phone .pm.mon .monam.open { position:fixed; left:0; right:0; bottom:0; z-index:60; max-height:88dvh; overflow-y:auto; overscroll-behavior:contain; margin:0; box-shadow:0 -10px 30px rgba(0,0,0,.7); }
+html.phone .pm.mon .monam.open .monamhd { position:sticky; top:-6px; z-index:2; margin:-6px -8px 8px; padding:8px; background:rgba(24,20,15,.98); border-bottom:1px solid var(--line); }
 @media (max-width: 700px) {
   html.phone .pm.mon .monacts { margin-left:0; width:100%; }
   html.phone .pm.mon .monacts .btn6 { flex:1; min-height:40px; justify-content:center; }

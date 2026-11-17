@@ -176,6 +176,11 @@ export function scenarioLevel(party) {
   return Math.max(0, Math.min(7, Math.ceil((party.avg || 0) / 2) + (party.diff || 0)));
 }
 
+// Average character level, from the mercenaries' own levels (the stored party.avg only when there are none), and the normal difficulty:
+// that average halved and rounded up, clamped 0..7 (Overview tab, party modal, default monster level of the Monsters tab).
+export const partyAvg = r => (r.chars?.length ? r.chars.reduce((s, c) => s + (c.lv || 0), 0) / r.chars.length : (r.party?.avg || 0));
+export const normalDifficulty = r => Math.max(0, Math.min(7, Math.ceil(partyAvg(r) / 2)));
+
 // Prosperity level from checkmarks. The sheet has 90 boxes in two rows of 45; level N starts at box index
 // PROSPERITY_START[N-1] (read from the level numbers above the boxes), so level N is reached by ticking that box.
 export const PROSPERITY_START = [0, 5, 12, 22, 33, 45, 59, 74, 89];

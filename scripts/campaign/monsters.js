@@ -3,7 +3,7 @@
 // record, so every invited player sees the same decks.
 //
 // record.mon = {
-//   lvl:   monster level 0..7, or null = the scenario level of the party (record.js scenarioLevel)
+//   lvl:   monster level 0..7, or null = the normal difficulty of the party (record.js normalDifficulty)
 //   round: round number, counted up by End of round
 //   types: [monster id] up to MON_MAX, in the order added (ids of scripts/games/gh.js, Gloomhaven 2nd edition)
 //   decks: { slug: { deck: [n], active: [n], discard: [n] } }   ability decks; a missing entry is a full deck. Types that share a deck

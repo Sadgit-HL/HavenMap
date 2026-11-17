@@ -22,7 +22,7 @@ import { phoneHtml } from './phone.js';
 import { monstersHtml } from './monstersView.js';
 import { monOf, deckState as monDeckState } from '../scripts/campaign/monsters.js';
 import {
-  normalize, validate, prosperityLevel, scenarioLevel, handOf, handList, zoneOf, CARD_ZONES, shopCopies, itemsInUse, ownsItem, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE, ownedCards, cardLevel, pendingPicks,
+  normalize, validate, prosperityLevel, partyAvg, normalDifficulty, handOf, handList, zoneOf, CARD_ZONES, shopCopies, itemsInUse, ownsItem, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE, ownedCards, cardLevel, pendingPicks,
 } from '../scripts/campaign/record.js';
 import * as ed from '../scripts/campaign/edit.js';
 import { describeChange, foldLog, LOG_TABS, LOG_MAX } from '../scripts/campaign/changelog.js';
@@ -321,7 +321,6 @@ function classChip(r, name) {
 }
 
 // Average level of the party: derived from the mercenaries' own levels, else the stored value.
-const partyAvg = r => (r.chars.length ? r.chars.reduce((s, c) => s + (c.lv || 0), 0) / r.chars.length : r.party.avg);
 const avgText = avg => (Number.isInteger(avg) ? avg : avg.toFixed(2));
 
 // A scenario count with its share of all scenarios: label, bar, count and percentage in one row.
@@ -338,13 +337,13 @@ function overview(r) {
   };
   const rep = (label, key) => kv(label, esc(r.rep[key])) + repBar(r.rep[key]);
   // Average level is derived from the mercenaries' own levels (not entered by hand); Normal difficulty is that
-  // average level halved and rounded up (scenarioLevel adds the diff modifier on top, clamped 0..7).
+  // average level halved and rounded up (record.js normalDifficulty).
   const avg = partyAvg(r);
   return `
   <div class="overview">
   <div class="grid">
     <div class="card"><h3>Party${modalBtn('data-party-open', 'party')}</h3>${kv('Ø Character level', esc(avgText(avg)))}
-      ${kv('Normal difficulty', esc(Math.ceil(avg / 2)))}
+      ${kv('Normal difficulty', esc(normalDifficulty(r)))}
       ${kv('Difficulty', esc(r.party.diff > 0 ? `+${r.party.diff}` : String(r.party.diff)))}
       ${kv('Inspiration', esc(r.party.insp))}
       ${kv('Enhancements', esc(r.enh.length))}</div>
@@ -1316,7 +1315,7 @@ function renderPartyModal() {
     <button type="button" class="modalx" data-party-close aria-label="Close">&times;</button>
     <h3 id="partyTitle">Party</h3>
     ${kv('Ø Character level', esc(avgText(avg)))}
-    ${kv('Normal difficulty', esc(Math.ceil(avg / 2)))}
+    ${kv('Normal difficulty', esc(normalDifficulty(record)))}
     ${kv('Enhancements', esc(record.enh.length))}
     <div class="partyedit">${kv('Difficulty', num('party', 'diff', record.party.diff, { min: -2, max: 4 }))}${kv('Inspiration', num('party', 'insp', record.party.insp, { min: 0, max: 99 }))}</div></div></div>`;
   partyRoot.querySelector('.modalbox').scrollTop = keep;
@@ -2245,7 +2244,7 @@ main.addEventListener('click', async e => {
   if (!q('.mon') || !record) return;
   e.stopImmediatePropagation();
   const g = monView.amg === 'a' ? 'a' : 'm', d = sel => q(sel)?.dataset;
-  if (q('[data-monlv]')) { const m = monOf(record); commit(ed.monSetLevel(record, (m.lvl ?? scenarioLevel(record.party)) + Number(d('[data-monlv]').monlv))); return; }
+  if (q('[data-monlv]')) { const m = monOf(record), nd = normalDifficulty(record), lv = (m.lvl ?? nd) + Number(d('[data-monlv]').monlv); commit(ed.monSetLevel(record, lv === nd ? null : lv)); return; }   // back at normal: follow it again
   if (q('[data-monlvauto]')) { commit(ed.monSetLevel(record, null)); return; }
   if (q('[data-monend]')) { commit(ed.monEndRound(record)); return; }
   if (q('[data-monnew]')) { if (await ask({ title: 'New scenario', text: 'Shuffle every ability deck and both modifier decks and start at round 1?', ok: 'Start' })) commit(ed.monNewScenario(record)); return; }
