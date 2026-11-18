@@ -5,7 +5,7 @@ import { SCENARIOS, STICKERS } from '../games/gh2_scenarios.js';
 import { ITEMS } from './itemList.js';
 import { CLASSES } from '../games/gh2_classes.js';
 import { ALL_CLASSES } from './classList.js';
-import { SCN_STATE, availableSet, CARD_ZONES, zoneOf, handList, cardLevel, ownedCards, pendingPicks, classByName, SLOT_ORDER, itemFits, itemsInUse, ownsItem } from './record.js';
+import { SCN_STATE, availableSet, CARD_ZONES, zoneOf, handList, cardLevel, ownedCards, pendingPicks, handLimit, classByName, SLOT_ORDER, itemFits, itemsInUse, ownsItem } from './record.js';
 import { CARDS } from '../games/gh2_cards.js';
 import { SPECIAL_TRAITS } from './traits.js';
 import { tokenDefs, markerTokens, MARK_STICKERS } from './classTokens.js';
@@ -812,7 +812,7 @@ export function removePoolCard(r, cid, cardId) {
 export function applyHand(r, cid, ids) {
   const c = r.chars.find(x => x.id === cid), own = c && ownedCards(c);
   if (!c) return r;
-  const pick = [...new Set((ids || []).map(Number))].filter(id => own.includes(id)), limit = c.hand || 0;
+  const pick = [...new Set((ids || []).map(Number))].filter(id => own.includes(id)), limit = handLimit(c);
   if (!pick.length || (limit && pick.length > limit)) return r;
   const deck = own.filter(id => pick.includes(id));
   return edit(r, x => {

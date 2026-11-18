@@ -2,7 +2,7 @@ import { imageFile } from '../scripts/images.js';
 // The playmat of the Mercenaries tab (design: campaign/mockups/merc-6-playmat-v2.html, styles: campaign/playmat.css, generated).
 // playmatHtml() turns one character of the record into the playmat markup; the page (app.js) wires the clicks and drags to the
 // pure edit functions in scripts/campaign/edit.js, so everything done here is saved, undoable and logged in the history.
-import { handList, zoneOf, ownedCards, pendingPicks, cardLevel, SLOT_ORDER, SLOT_LABEL, slotLimits, slotUse, itemFits } from '../scripts/campaign/record.js';
+import { handList, handLimit, zoneOf, ownedCards, pendingPicks, cardLevel, SLOT_ORDER, SLOT_LABEL, slotLimits, slotUse, itemFits } from '../scripts/campaign/record.js';
 import { tokenDefs, tokenImage, stickerImage, markerTokens, MARK_STICKERS, markLabel } from '../scripts/campaign/classTokens.js';
 import { BGG_ICON_GROUPS } from '../scripts/campaign/bggIcons.js';
 import { BANNERS, bannerIcon } from '../scripts/campaign/bggBanners.js';
@@ -69,10 +69,10 @@ export function amViewHtml(A, esc, edit) {
 }
 
 // The hand editor (one view): every card of the class by level. Each card has a state badge on its upper rim: Locked (not in the pool), Unlocked
-// (in the pool) or Hand (chosen for the scenario hand, framed). A click on the badge steps to the next state.
+// (in the pool) or Hand (chosen for the scenario hand, framed). A click on the card or its badge steps to the next state.
 function deckBodyHtml(c, X, S, esc) {
   const D = S.deck || { cards: [], hsel: [], armed: false }, owned = new Set(ownedCards(c)), pend = pendingPicks(c), level = c.lv || 1;
-  const nm = k => X.pretty(k.slug), hsel = new Set(D.hsel.filter(id => owned.has(id))), limit = c.hand || 0;      // the hand: each owned card once
+  const nm = k => X.pretty(k.slug), hsel = new Set(D.hsel.filter(id => owned.has(id))), limit = handLimit(c);      // the hand: each owned card once
   const LOCK = '<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
   const tile = k => {
     const own = owned.has(k.id), inHand = own && hsel.has(k.id), lv = cardLevel(k.id), picked = lv >= 2 && lv < 99;
@@ -90,9 +90,9 @@ function deckBodyHtml(c, X, S, esc) {
   const picked = ownedCards(c).filter(id => { const l = cardLevel(id); return l >= 2 && l < 99; });
   const grid = join(groups.map(([k, list]) => { const locked = k !== '1' && Number(k) > level;
     return `<div class="pgrp"><h3>${label(k)}<span>${locked ? `locked until level ${k}` : ''}</span></h3><div class="pgrid">${list.map(tile).join('')}</div></div>`; }));
-  return `<div class="poolbar"><span>Level <span class="sp"><b>${level}</b><span class="spc"><button type="button" data-lvstep="1" aria-label="Level up">${UP}</button><button type="button" data-lvstep="-1" aria-label="Level down">${DN}</button></span></span></span><span>${owned.size} cards in pool</span><span>Hand <b>${hsel.size}${limit ? ` / ${limit}` : ''}</b></span><span class="grow"></span><button type="button" class="btn6" data-poolundo="${picked.at(-1) ?? ''}"${picked.length ? '' : ' disabled'}>Undo last pick</button><button type="button" class="btn6" data-handclear>Clear hand</button></div>
+  return `<div class="poolbar"><span>Level <span class="sp"><b>${level}</b><span class="spc"><button type="button" data-lvstep="1" aria-label="Level up">${UP}</button><button type="button" data-lvstep="-1" aria-label="Level down">${DN}</button></span></span></span><span>${owned.size} cards in pool</span><span class="grow"></span><button type="button" class="btn6" data-poolundo="${picked.at(-1) ?? ''}"${picked.length ? '' : ' disabled'}>Undo last pick</button><button type="button" class="btn6" data-handclear>Clear hand</button></div>
     ${pend ? `<div class="poolbanner">Level up: choose ${pend} new card${pend > 1 ? 's' : ''} of level ${level} or lower.</div>` : ''}${grid}
-    <div class="poolfoot"><span>${hsel.size && limit && hsel.size < limit ? 'Fewer cards than the hand limit' : ''}</span><button type="button" class="btn6" data-handok${hsel.size ? '' : ' disabled'}>${D.armed ? 'Reset scenario cards and apply' : 'Confirm hand'}</button></div>`;
+    <div class="poolfoot"><span>${hsel.size && limit && hsel.size < limit ? 'Fewer cards than the hand limit' : ''}</span><button type="button" class="btn6 handok${limit && hsel.size === limit ? ' full' : ''}" data-handok${hsel.size ? '' : ' disabled'}><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg><span>${D.armed ? 'Reset scenario cards and apply' : 'Confirm hand'}</span><span class="hcnt">${hsel.size}${limit ? ` / ${limit}` : ''}</span></button></div>`;
 }
 
 export function playmatHtml(c, X, S = {}) {
@@ -141,7 +141,7 @@ export function playmatHtml(c, X, S = {}) {
   const lv = c.lv || levelOfXp(c.xp || 0), lo = XP_STEPS[lv - 1] ?? 0, hi = XP_STEPS[lv] ?? null;
   const pct = hi ? Math.max(0, Math.min(100, ((c.xp - lo) / (hi - lo)) * 100)) : 100;
   const sp = (key, label, tag, val) => `<span class="sp"><${tag} class="edv" tabindex="0" data-hud="${key}" data-char="${cid}" title="Click to edit. Type a number, or +N / -N to add or subtract">${val}</${tag}><span class="spc"><button type="button" data-hud="${key}" data-char="${cid}" data-d="1" aria-label="Increase ${label}">${UP}</button><button type="button" data-hud="${key}" data-char="${cid}" data-d="-1" aria-label="Decrease ${label}">${DN}</button></span></span>`;
-  const limit = c.hand;
+  const limit = handLimit(c);
   const tkImg = (n, l) => `<img src="${esc(tokenImage(n) ?? '')}" alt="${esc(l)}" draggable="false" style="width:52px;height:52px;object-fit:contain;display:block">`;
   const tokens = tokenDefs(c.cls).map(d => {
     const v = c.tok?.[d.k] || 0;

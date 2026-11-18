@@ -812,12 +812,22 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); min-height: 420px; }
 /* Hand editor modal: large, one view, a state badge on the upper rim of every card */
 .pm .mmodalbox.huge { width: min(1500px, 97vw); max-height: 94vh; }
 .pm .pgrid { display: flex; flex-wrap: wrap; gap: 16px; }
-.pm .mmodalbox.huge .pcard { width: 150px; margin-top: 8px; overflow: visible; }
+.pm .mmodalbox.huge .pcard { width: 150px; margin-top: 8px; overflow: visible; cursor: pointer; }
 .pm .mmodalbox.huge .pcard > img { border-radius: 6px; }
 .pm .pcard .cbadge { position: absolute; left: 50%; top: -9px; transform: translateX(-50%); z-index: 3; display: inline-flex; align-items: center; gap: 4px; height: 20px; padding: 0 9px; border-radius: 10px; font: inherit; font-size: 11px; font-weight: 800; white-space: nowrap; cursor: pointer; background: rgba(18,15,11,.92); border: 1.5px solid var(--accent); color: var(--accent); }
 .pm .pcard .cbadge.locked { border-color: #6b5a3c; color: var(--muted); }
 .pm .pcard .cbadge.hand { background: var(--accent); color: #120f0b; }
 .pm .pcard .cbadge.off { opacity: .45; cursor: not-allowed; }
+/* Confirm button of the hand editor: the main action, gold, with the hand count */
+.pm .poolfoot .btn6.handok { gap: 9px; padding: 8px 10px 8px 16px; border-radius: 10px; border: 1px solid #f0d68a; background: linear-gradient(180deg, #dcbe66, #a98826); color: #1b150c; font-size: 14px; font-weight: 800; letter-spacing: .02em; box-shadow: 0 2px 0 #6a5316, 0 5px 12px rgba(0,0,0,.45); transition: filter .12s, transform .08s, box-shadow .08s; }
+.pm .poolfoot .btn6.handok:hover:not(:disabled) { filter: brightness(1.08); }
+.pm .poolfoot .btn6.handok:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 0 0 #6a5316, 0 2px 6px rgba(0,0,0,.45); }
+.pm .poolfoot .btn6.handok:focus-visible { outline: 2px solid #f6e3a4; outline-offset: 2px; }
+.pm .poolfoot .btn6.handok .hcnt { min-width: 44px; padding: 2px 8px; border-radius: 99px; background: rgba(27,21,12,.18); border: 1px solid rgba(27,21,12,.3); font-size: 12px; font-variant-numeric: tabular-nums; text-align: center; }
+.pm .poolfoot .btn6.handok.full .hcnt { background: #1b150c; color: #e9cf7a; border-color: #1b150c; }
+.pm .poolfoot .btn6.handok:disabled { opacity: .8; background: #2d2519; border-color: var(--line); color: var(--muted); box-shadow: none; cursor: not-allowed; }
+.pm .poolfoot .btn6.handok:disabled .hcnt { background: transparent; border-color: var(--line); }
+
 .pm .pcard .cbadge svg { display: block; }
 .pm .pcard.locked { filter: none; }
 .pm .pcard.locked > img { filter: grayscale(.8) brightness(.38); }

@@ -148,6 +148,7 @@ export const MERCENARY_STATS = {
   43: { 1: { maxHp: 6 }, 2: { maxHp: 7 }, 3: { maxHp: 8 }, 4: { maxHp: 9 }, 5: { maxHp: 10 }, 6: { maxHp: 11 }, 7: { maxHp: 12 }, 8: { maxHp: 13 }, 9: { maxHp: 14 } }, // Wildfury
   // Mercenary Packs
   1: { 1: { maxHp: 6 }, 2: { maxHp: 7 }, 3: { maxHp: 8 }, 4: { maxHp: 9 }, 5: { maxHp: 10 }, 6: { maxHp: 11 }, 7: { maxHp: 12 }, 8: { maxHp: 13 }, 9: { maxHp: 14 } }, // Anaphi
+  2: { 1: { maxHp: 8 }, 2: { maxHp: 9 }, 3: { maxHp: 11 }, 4: { maxHp: 12 }, 5: { maxHp: 14 }, 6: { maxHp: 15 }, 7: { maxHp: 17 }, 8: { maxHp: 18 }, 9: { maxHp: 20 } }, // Infuser (Secretariat data, added 2026-11-18)
   9: { 1: { maxHp: 6 }, 2: { maxHp: 7 }, 3: { maxHp: 8 }, 4: { maxHp: 9 }, 5: { maxHp: 10 }, 6: { maxHp: 11 }, 7: { maxHp: 12 }, 8: { maxHp: 13 }, 9: { maxHp: 14 } }, // Cassandra
   20: { 1: { maxHp: 8 }, 2: { maxHp: 9 }, 3: { maxHp: 11 }, 4: { maxHp: 12 }, 5: { maxHp: 14 }, 6: { maxHp: 15 }, 7: { maxHp: 17 }, 8: { maxHp: 18 }, 9: { maxHp: 20 } }, // Hail
   30: { 1: { maxHp: 10 }, 2: { maxHp: 12 }, 3: { maxHp: 14 }, 4: { maxHp: 16 }, 5: { maxHp: 18 }, 6: { maxHp: 20 }, 7: { maxHp: 22 }, 8: { maxHp: 24 }, 9: { maxHp: 26 } }, // Satha
@@ -171,7 +172,7 @@ export const MERCENARY_STATS = {
   32: { 1: { maxHp: 8 }, 2: { maxHp: 9 }, 3: { maxHp: 11 }, 4: { maxHp: 12 }, 5: { maxHp: 14 }, 6: { maxHp: 15 }, 7: { maxHp: 17 }, 8: { maxHp: 18 }, 9: { maxHp: 20 } }, // Pain Conduit
   35: { 1: { maxHp: 8 }, 2: { maxHp: 9 }, 3: { maxHp: 11 }, 4: { maxHp: 12 }, 5: { maxHp: 14 }, 6: { maxHp: 15 }, 7: { maxHp: 17 }, 8: { maxHp: 18 }, 9: { maxHp: 20 } }, // Snowdancer
   41: { 1: { maxHp: 6 }, 2: { maxHp: 7 }, 3: { maxHp: 8 }, 4: { maxHp: 9 }, 5: { maxHp: 10 }, 6: { maxHp: 11 }, 7: { maxHp: 12 }, 8: { maxHp: 13 }, 9: { maxHp: 14 } }, // Trapper
-  15: { 1: { maxHp: 7 }, 2: { maxHp: 9 }, 3: { maxHp: 11 }, 4: { maxHp: 12 }, 5: { maxHp: 14 }, 6: { maxHp: 15 }, 7: { maxHp: 17 }, 8: { maxHp: 18 }, 9: { maxHp: 20 } }, // H.I.V.E.
+  15: { 1: { maxHp: 8 }, 2: { maxHp: 9 }, 3: { maxHp: 11 }, 4: { maxHp: 12 }, 5: { maxHp: 14 }, 6: { maxHp: 15 }, 7: { maxHp: 17 }, 8: { maxHp: 18 }, 9: { maxHp: 20 } }, // H.I.V.E.
   44: { 1: { maxHp: 8 }, 2: { maxHp: 9 }, 3: { maxHp: 11 }, 4: { maxHp: 12 }, 5: { maxHp: 14 }, 6: { maxHp: 15 }, 7: { maxHp: 17 }, 8: { maxHp: 18 }, 9: { maxHp: 20 } }, // Shattersong
 };
 

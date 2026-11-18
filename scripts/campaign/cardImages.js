@@ -16,7 +16,7 @@ const classByIndex = new Map(CLASSES.map(c => [c.i, c]));
 
 // URL of a card record from scripts/games/gh2_cards.js ({ cls, slug }), or null when the class is unknown.
 export function cardImageUrl(card) {
-  if (card?.img) return local(card.img);                                     // Frosthaven and Jaws cards carry their own picture URL (scripts/games/wh_cards.js)
+  if (card?.img) return local(card.img);                                     // Frosthaven and Jaws cards carry their own picture address (img in scripts/games/gh2_cards.js)
   const cls = card && classByIndex.get(card.cls);
   if (!cls) return null;
   const slug = encodeURIComponent(card.slug.replace(/[‐-―]/g, '-'));   // some slugs hold a typographic hyphen, the files do not

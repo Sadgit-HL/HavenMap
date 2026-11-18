@@ -198,38 +198,72 @@ def write_module(name, doc, exports):
     print(name, sum(len(v) if hasattr(v, '__len__') else 1 for _, v in exports))
 
 
-# Playable Jaws of the Lion classes (2026-11-18): (class index, code, name as scripts/games/perks.js). The indexes are fixed and
+# Playable classes outside the Card DB: (class index, code, name as scripts/games/perks.js, source edition). The indexes are fixed and
 # kept clear of the Card DB classes (1 to 22), so card ids (index * 100 + n) of saved characters stay valid when the Card DB grows.
-JOTL_CLASSES = [(41, 'de', 'Demolitionist'), (42, 'ha', 'Hatchet'), (43, 'rg', 'Red Guard'), (44, 'vw', 'Voidwarden')]
+# Jaws of the Lion since 2026-11-18 (41 to 44), Frosthaven since 2026-11-18 (51 to 67, alphabetical; codes as the worldhaven folders).
+EXTRA_CLASSES = [(41, 'de', 'Demolitionist', 'jotl'), (42, 'ha', 'Hatchet', 'jotl'), (43, 'rg', 'Red Guard', 'jotl'), (44, 'vw', 'Voidwarden', 'jotl'),
+                 (51, 'bn', 'Banner Spear', 'fh'), (52, 'bb', 'Blinkblade', 'fh'), (53, 'bo', 'Boneshaper', 'fh'), (54, 'cr', 'Crashing Tide', 'fh'),
+                 (55, 'dw', 'Deathwalker', 'fh'), (56, 'dt', 'Deepwraith', 'fh'), (57, 'df', 'Drifter', 'fh'), (58, 'ff', 'Frozen Fist', 'fh'),
+                 (59, 'ge', 'Geminate', 'fh'), (60, 'hv', 'H.I.V.E.', 'fh'), (61, 'if', 'Infuser', 'fh'), (62, 'me', 'Metal Mosaic', 'fh'),
+                 (63, 'pc', 'Pain Conduit', 'fh'), (64, 'py', 'Pyroclast', 'fh'), (65, 'sh', 'Shattersong', 'fh'), (66, 'sd', 'Snowdancer', 'fh'),
+                 (67, 'ta', 'Trapper', 'fh')]
 
-
+# Jaws of the Lion pictures: the updated (GH2E style) cards of the asset repository (tools/convert-jotl-ability-cards.py).
 JOTL_CARD_BASE = 'https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_ability_cards/jotl/'
 
 
-def add_jotl(classes, cards):
-    """Append the Jaws of the Lion classes and their ability cards. Names, levels and initiative come from the worldhaven data through
-    tools/extract-worldhaven-cards.py (load_cards); the pictures are the updated (GH2E style) cards of the asset repository,
-    wh_character_ability_cards/jotl/jl-<code>-<card>.png (converted by tools/convert-jotl-ability-cards.py; their levels and
-    initiatives were checked against these values on 2026-11-18). Cards: level 1, X, then 2 to 9, each by name, as the Card DB
-    orders a class; the tutorial versions of the level 1 cards (levels a and b) are left out."""
+def add_extra_classes(classes, cards):
+    """Append the Jaws of the Lion and Frosthaven classes and their ability cards. Names, levels and initiative come from the worldhaven
+    data through tools/extract-worldhaven-cards.py (load_cards). Pictures: Jaws, the updated cards of the asset repository,
+    wh_character_ability_cards/jotl/jl-<code>-<card>.png (their levels and initiatives were checked against these values on 2026-11-18);
+    Frosthaven, the worldhaven card scans (images/character-abilities/fh). Cards: level 1, X, then 2 to 9, each by name, as the Card DB
+    orders a class; the Jaws tutorial versions of the level 1 cards (levels a and b) are left out."""
     import importlib.util
     spec = importlib.util.spec_from_file_location('whcards', os.path.join(ROOT, 'tools', 'extract-worldhaven-cards.py'))
     wh = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(wh)
     whcards, _, _ = wh.load_cards()
     rank = lambda lv: 1.5 if lv == 'X' else int(lv)
-    for ci, code, name in JOTL_CLASSES:
+    for ci, code, name, src in EXTRA_CLASSES:
         mine = sorted((c for c in whcards if c['c'] == name and c['lv'] not in ('a', 'b')), key=lambda c: (rank(c['lv']), c['slug']))
         if not mine:
             raise SystemExit(f'no worldhaven cards for {name}')
-        classes.append({'i': ci, 'code': code, 'name': name, 'src': 'jotl'})
+        classes.append({'i': ci, 'code': code, 'name': name, 'src': src})
         for n, c in enumerate(mine, start=1):
             row = {'id': ci * 100 + n, 'cls': ci, 'slug': c['slug'], 'lv': 'X' if c['lv'] == 'X' else int(c['lv'])}
             if c['ini'] is not None:
                 row['ini'] = c['ini']
-            row['img'] = f"{JOTL_CARD_BASE}jl-{code}-{c['slug']}.png"
+            row['img'] = f"{JOTL_CARD_BASE}jl-{code}-{c['slug']}.png" if src == 'jotl' else c['img']
             cards.append(row)
         print(f'{name}: {len(mine)} cards')
+
+
+def add_hand_sizes(classes):
+    """hand = the class's hand size (number of cards it takes into a scenario), from the Gloomhaven Secretariat character files
+    (handSize; data/<gh2e|mp|jotl|fh>/character/*.json, matched by the names of its label files). Only the number is used."""
+    base = os.path.dirname(os.path.dirname(DEFAULT_GHS))                  # .../data
+    names, sizes = {}, {}
+    for ed in ('gh2e', 'mp', 'jotl', 'fh'):
+        for part in (('label', 'spoiler', 'en.json'), ('label', 'en.json')):
+            f = os.path.join(base, ed, *part)
+            if os.path.isfile(f):
+                for k, v in ((json.load(open(f, encoding='utf-8')).get('character') or {}).get(ed) or {}).items():
+                    n = v if isinstance(v, str) else v.get('') if isinstance(v, dict) else None
+                    if n:
+                        names.setdefault((ed, k), n)
+        folder = os.path.join(base, ed, 'character')
+        for fn in sorted(os.listdir(folder)) if os.path.isdir(folder) else []:
+            if fn.endswith('.json'):
+                d = json.load(open(os.path.join(folder, fn), encoding='utf-8'))
+                name = names.get((ed, d['name'])) or d['name'].replace('-', ' ')
+                if d.get('handSize'):                                     # Geminate: '7|7', a hand per form; the limit is their sum
+                    sizes[re.sub(r'[^a-z]', '', name.lower())] = sum(int(x) for x in str(d['handSize']).split('|'))
+    for c in classes:
+        h = sizes.get(re.sub(r'[^a-z]', '', c['name'].lower()))
+        if h:
+            c['hand'] = h
+        else:
+            print('no hand size for', c['name'])
 
 
 def level_key(r):
@@ -275,9 +309,10 @@ def main():
         v = ini.get((classes[c['cls'] - 1]['code'], c['slug']))
         if v is not None:
             c['ini'] = v
-    add_jotl(classes, cards)
-    write_module('gh2_classes.js', 'Class index -> code, name and source edition (gh2, mp, jotl). Card ids are class index * 100 + n. '
-                                   'The Jaws of the Lion classes have fixed indexes 41 to 44 (JOTL_CLASSES in the generator).',
+    add_extra_classes(classes, cards)
+    add_hand_sizes(classes)
+    write_module('gh2_classes.js', 'Class index -> code, name, source edition (gh2, mp, jotl) and hand = hand size (from the Secretariat data). Card ids are class index * 100 + n. '
+                                   'The Jaws of the Lion (41 to 44) and Frosthaven (51 to 67) classes have fixed indexes (EXTRA_CLASSES in the generator).',
                  [('CLASSES', classes)])
     write_module('gh2_cards.js', 'Class ability cards: id, class index, slug, level, ini = initiative (only where known: the Secretariat '
                                  'data covers 12 of the 22 classes, tools/card-initiative.json adds more), img = picture address (Jaws of '

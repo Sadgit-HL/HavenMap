@@ -1,6 +1,6 @@
 """Jaws of the Lion ability cards and card backs in the updated (GH2E style) design, from the group's asset repository.
 
-Source: a local clone of Sadgit-HL/Wordhaven_Assets, wh_character_ability_cards/jotl/jl-<code>-<card>.png (400x600; the folder also
+Source: a local clone of Sadgit-HL/Wordhaven_Assets, wh_character_ability_cards/jotl/jl-<code>-<card>.png (400x600, resized to 429x600, see SIZE; the folder also
 holds a few other classes' cards, fc-* and gh-*, which are skipped) and the backs jl-<code>-<class>-card-back.png.
 Output: images/character-abilities/jotl/<code>-<card>.webp and images/card-backs/jotl/<code>-card-back.webp, recorded in
 tools/images-manifest.json with the source path, so tools/generate-image-index.py maps the asset repository address to them.
@@ -20,6 +20,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_SRC = r'D:\github\Wordhaven_Assets'
 MANIFEST = os.path.join(ROOT, 'tools', 'images-manifest.json')
 CARDS_DIR, BACKS_DIR = 'character-abilities/jotl/', 'card-backs/jotl/'
+# The source files are 400x600, but the cards are 5:7 like every other ability card: the pictures are the whole card squeezed
+# horizontally by about 7% (a round token measures 72x79 px). They are resized to 429x600, the Frosthaven card size, so the hand
+# (5:7 boxes) does not clip them and marker positions (percent of the card) line up.
+SIZE = (429, 600)
 
 
 def main():
@@ -35,6 +39,8 @@ def main():
         code, rest = m.groups()
         dst = f'{BACKS_DIR}{code}-card-back.webp' if rest.lower().endswith('card-back') else f'{CARDS_DIR}{code}-{rest}.webp'
         im = Image.open(f'{folder}/{fn}').convert('RGB')
+        if im.size != SIZE:
+            im = im.resize(SIZE, Image.LANCZOS)          # the source is the 5:7 card squeezed to 400x600 (2:3): back to 5:7
         im.save(os.path.join(ROOT, 'images', *dst.split('/')), 'WEBP', quality=85, method=6)
         new[dst] = {'group': 'ability JotL', 'src': f'{folder}/{fn}', 'dst': dst, 'status': 'ok',
                     'bytes': os.path.getsize(os.path.join(ROOT, 'images', *dst.split('/'))), 'size': list(im.size)}

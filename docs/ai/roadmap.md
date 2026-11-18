@@ -64,7 +64,7 @@ Open work in priority order. Items marked (owner) need a decision or data from t
 40. Done 2026-11-16 for character mats (front and back, from the asset repository). Attack modifiers for Frosthaven and Jaws are still open (worldhaven has them). Scope decision for attack modifiers. (owner)
 41. Done 2026-11-16: card titles come from the picture file (the name field is sometimes the summon, e.g. "Banner of Hope" for Driving Inspiration). Minor: apostrophes are lost in titles ("The Knifes Edge").
 42. Done 2026-11-16: counts are 27 to 37 per class after the title fix (648 cards).
-43. Jaws of the Lion: playable in the campaign since 2026-11-18 (owner). Frosthaven cards are still on the Cards tab only; decide whether they should be playable too (they would need card ids, fixed class indexes like Jaws, and the same zone rules). (owner)
+43. Done 2026-11-18: Jaws of the Lion and Frosthaven classes are playable in the campaign (owner). Geminate: one hand limit of 14 (two forms of 7; players handle the split). Class mechanics beyond tokens (traps, shadows and other map tokens) are not represented on the Mercenaries tab (owner). Frosthaven character tokens are generated stand-ins (`tools/make-fh-character-tokens.py`) until real art exists.
 
 ## 9. Images in the repo (2026-11-16)
 

@@ -24,11 +24,16 @@ export const MARKER_TOKENS = {
   demolitionist: ['demolitionist'], doomstalker: ['doomstalker'], elementalist: ['elementalist'], hatchet: ['hatchet'], mindthief: ['mindthief'],
   nightshroud: ['nightshroud'], plagueherald: ['plagueherald'], quartermaster: ['quartermaster'], redguard: ['red_guard'], sawbones: ['sawbones'],
   silentknife: ['silent_knife'], sunkeeper: ['sunkeeper'], soothsinger: ['soothsinger'], soultether: ['soultether'], spellweaver: ['spellweaver'],
-  voidwarden: ['voidwarden'], boneshaper: [1, 2, 3, 4, 5, 6].map(n => `boneshaper_skeleton_${n}`), 
-  hive: ['hive_mode'], anaphi: ['anaphi'],
+  voidwarden: ['voidwarden'], anaphi: ['anaphi'],
+  // Frosthaven: the character token (a stand-in drawn by tools/make-fh-character-tokens.py: no token art exists), plus the H.I.V.E. mode token,
+  // the Geminate's two form tokens (real art) and the Boneshaper's numbered skeletons. Traps, shadows and other map tokens are not markers.
+  bannerspear: ['banner_spear'], blinkblade: ['blinkblade'], boneshaper: ['boneshaper', ...[1, 2, 3, 4, 5, 6].map(n => `boneshaper_skeleton_${n}`)],
+  crashingtide: ['crashing_tide'], deathwalker: ['deathwalker'], deepwraith: ['deepwraith'], drifter: ['drifter'], frozenfist: ['frozen_fist'],
+  geminate: ['geminate_character', 'geminate_melee'], hive: ['hive', 'hive_mode'], infuser: ['infuser'], metalmosaic: ['metal_mosaic'],
+  painconduit: ['pain_conduit'], pyroclast: ['pyroclast'], shattersong: ['shattersong'], snowdancer: ['snowdancer'], trapper: ['trapper'],
   cassandra: ['cassandra'], hail: ['hail'], satha: ['satha'],
 };
-export const markerTokens = cls => MARKER_TOKENS[String(cls || '').toLowerCase().replace(/[ _]/g, '')] || [];
+export const markerTokens = cls => MARKER_TOKENS[String(cls || '').toLowerCase().replace(/[ _.]/g, '')] || [];   // H.I.V.E. -> hive
 export const MARK_STICKERS = ['plus_one', 'hex_attack', 'air', 'earth', 'fire', 'ice', 'light', 'dark', 'wild', 'bless', 'curse', 'poison', 'wound', 'muddle',
   'immobilize', 'stun', 'disarm', 'safeguard', 'jump', 'strengthen', 'regenerate', 'ward'];
 export const stickerImage = name => imageFile('images/common/enhancement_stickers/' + name, '../');

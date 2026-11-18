@@ -2,7 +2,7 @@
 // character record as the playmat in a compact layout with three tabs (Cards, Items, Info), a bottom menu that opens the modals of the playmat,
 // and bottom sheets instead of dragging: tap a card, pick a zone. The page (app.js) wires the clicks to the edit functions of
 // scripts/campaign/edit.js, like the playmat does.
-import { handList, zoneOf, pendingPicks } from '../scripts/campaign/record.js';
+import { handList, handLimit, zoneOf, pendingPicks } from '../scripts/campaign/record.js';
 import { tokenDefs, tokenImage } from '../scripts/campaign/classTokens.js';
 import { modalHtml, amViewHtml, XP_STEPS, levelOfXp, markersHtml } from './playmat.js';
 
@@ -53,7 +53,7 @@ export function phoneHtml(c, X, S = {}) {
   if (tab === 'cards') {
     view = `<section class="pz pzplay"><h4>Play area</h4><div class="row2">${slot(0)}${slot(1)}</div></section>
       <section class="pz pzact"><h4>Active <span>${active.length}</span></h4>${strip(active)}</section>
-      <section class="pz pzhand"><h4>Hand <span class="hbtns"><span style="align-self:center">${hand.length}${c.hand ? ` of ${c.hand}` : ''}</span><button type="button" class="sm" data-psort="ini" title="Sort by initiative">Ini</button><button type="button" class="sm" data-psort="lvl" title="Sort by level">Lvl</button></span></h4>${strip(hand)}</section>
+      <section class="pz pzhand"><h4>Hand <span class="hbtns"><span style="align-self:center">${hand.length}${handLimit(c) ? ` of ${handLimit(c)}` : ''}</span><button type="button" class="sm" data-psort="ini" title="Sort by initiative">Ini</button><button type="button" class="sm" data-psort="lvl" title="Sort by level">Lvl</button></span></h4>${strip(hand)}</section>
       <div class="piles">${pileBtn('discard', 'Discard')}${pileBtn('lost', 'Lost')}</div>`;
   } else if (tab === 'amd') {
     // the modifier deck of the playmat (Modifiers view), in the phone's own tab: the same markup and buttons

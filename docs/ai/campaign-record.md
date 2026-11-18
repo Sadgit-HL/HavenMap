@@ -42,7 +42,7 @@ Events also carry `pend` (open events, one per deck, `{ city?, road? }`), `marks
 | `id`, `cls`, `name`, `seat?` | id (`c1`..), class name, display name, seat |
 | `lv`, `xp`, `gold`, `inh` | level, XP, gold, inherited perks (a number only) |
 | `traits`, `special` | the three class traits; special traits from events (`scripts/campaign/traits.js`) |
-| `hand` | hand size (1 to 20) |
+| `hand` | hand size (1 to 20), optional: absent = the class's hand size (`hand` in `gh2_classes.js`, from the Secretariat data; `handLimit` in `record.js`) |
 | `deck` | ability card ids in the selected deck |
 | `disc`, `lost`, `act` | discard pile (last = top), lost pile, active area |
 | `play` | `[slot 1, slot 2]`, each null or `{ id, up }`. Only hand cards enter a slot; slot 1 sets initiative |

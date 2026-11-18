@@ -224,6 +224,12 @@ export const cardLevel = id => { const lv = CARD_INFO.get(id)?.lv; return lv ===
 export const ownedCards = c => [...new Set([...c.deck, ...c.bench])];
 export const pendingPicks = c => Math.max(0, (c.lv || 1) - 1 - ownedCards(c).filter(id => { const l = cardLevel(id); return l >= 2 && l < 99; }).length);
 
+// Hand size of a character: the number set on the character (chars[].hand), else the class's hand size (gh2_classes.js, from the
+// Secretariat data), else 0 (no limit).
+export function handLimit(c) {
+  return c?.hand || CLASSES.find(k => k.name.toLowerCase() === String(c?.cls || '').toLowerCase())?.hand || 0;
+}
+
 // The hand in display order. hord null = automatic: lowest initiative first, deck order for ties and unknown initiatives.
 // With a manual order (hord) the cards follow it; hand cards missing from hord (new in the deck) come after, by initiative.
 export function handList(c) {
