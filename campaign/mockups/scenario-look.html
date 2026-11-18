@@ -1,0 +1,210 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Scenario tab mockups</title>
+<style>
+:root{--bg:#16130f;--panel:#231d17;--panel2:#2b241b;--line:#3a3026;--text:#ecdfc8;--muted:#a89a82;--accent:#c7a44a;--ok:#6cae75;--bad:#c9604f;--info:#5b8fd1}
+*{box-sizing:border-box}
+body{margin:0;padding:18px;background:#0e0c09;color:var(--text);font:13px/1.35 system-ui,Segoe UI,Roboto,sans-serif}
+h1{font-size:17px;margin:0 0 4px;color:var(--accent)}
+.intro{color:var(--muted);margin:0 0 14px;max-width:1100px}
+.bar{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin:0 0 10px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{background:var(--panel);color:var(--muted);border:0;border-right:1px solid var(--line);padding:6px 12px;font:inherit;cursor:pointer}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed=true]{background:var(--accent);color:#16110a;font-weight:700}
+.bar label{color:var(--muted);font-size:12px;display:inline-flex;gap:6px;align-items:center}
+.note{color:var(--muted);font-size:12px;margin:0 0 10px;max-width:1100px;min-height:2.6em}
+
+/* storyline colours (4): hues from the owner's GH2 Flow sheet, darkened for the dark page */
+.lanes-legend{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.ltag{display:inline-flex;align-items:center;gap:6px;padding:2px 9px 2px 7px;border-radius:99px;font-size:11.5px;font-weight:600;letter-spacing:.02em;background:color-mix(in srgb,var(--lc) 22%,#16130f);border:1px solid color-mix(in srgb,var(--lc) 70%,#16130f);color:color-mix(in srgb,var(--lc) 45%,#f3e8d4)}
+.ltag::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--lc)}
+
+.chart{position:relative;height:620px;overflow:auto;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.chart svg{display:block}
+.lane{fill:#1b160f}.lane.alt{fill:#201a12}
+.nocol .lanetint,.nocol .lstripe{display:none}
+.edge{fill:none;stroke:#6b5a3c;stroke-width:1.6;opacity:.7}
+.edge.on{stroke:#a98f57;opacity:.95}
+.ahead{fill:#6b5a3c}
+.lbanner text{font:700 13px system-ui,Segoe UI,sans-serif;fill:#16110a;letter-spacing:.04em}
+.nocol .lbanner rect{fill:#3a3026!important}.nocol .lbanner text{fill:var(--text)}
+.node{cursor:pointer}
+.node:hover .frame,.node:hover .ring{stroke:var(--accent)!important;stroke-width:3}
+.st1 .ring{stroke:var(--info);stroke-width:2.5}
+.st2 .ring{stroke:var(--ok);stroke-width:2}
+.st3 .ring{stroke:var(--bad);stroke-width:2}
+.st3 image{opacity:.55}
+.dot circle{stroke:#120f0b;stroke-width:1.5}
+.st1 .dot circle{fill:var(--info)}.st2 .dot circle{fill:var(--ok)}.st3 .dot circle{fill:var(--bad)}
+.dot path{fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mask .frame{fill:#17130e;stroke:#4a3d2e;stroke-dasharray:5 4}
+.qm{font:700 26px Georgia,serif;fill:#5a4c3a}
+.ntext{font:600 12.5px system-ui,Segoe UI,sans-serif;fill:var(--text)}
+.nnum{font:800 12px system-ui,Segoe UI,sans-serif;fill:var(--accent)}
+.frame{fill:var(--panel);stroke:var(--line);stroke-width:1.5}
+.band{fill:rgba(14,12,9,.82)}
+
+/* modal (3) */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:50}
+.scrim[hidden]{display:none}
+.mbox{position:relative;width:min(760px,calc(100vw - 32px));max-height:calc(100vh - 40px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.6)}
+.mclose{position:absolute;right:10px;top:10px;z-index:3;width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:rgba(22,19,15,.8);color:var(--text);cursor:pointer;font-size:16px}
+.hero{position:relative;height:200px;overflow:hidden;border-bottom:1px solid var(--line);background:linear-gradient(110deg,color-mix(in srgb,var(--lc) 38%,#16130f) 0%,#1a150f 62%)}
+.hero .blur{position:absolute;right:-40px;top:-60px;width:520px;height:340px;background-size:cover;background-position:center;filter:blur(26px) saturate(.9);opacity:.35}
+.hero .art{position:absolute;right:28px;top:50%;transform:translateY(-50%) rotate(-2deg);max-height:170px;max-width:250px;filter:drop-shadow(0 8px 16px rgba(0,0,0,.6))}
+.hero .tt{position:absolute;left:24px;bottom:22px;right:300px}
+.hero .no{font:800 46px/1 Georgia,serif;color:color-mix(in srgb,var(--lc) 40%,#f3e8d4);opacity:.9}
+.hero h2{margin:4px 0 10px;font:700 24px/1.15 Georgia,serif;color:#f6ead2}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.spill{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:99px;font-size:11.5px;font-weight:700;border:1px solid}
+.spill.s1{color:#a9c6ee;border-color:var(--info);background:rgba(91,143,209,.15)}
+.spill.s2{color:#a8d9ae;border-color:var(--ok);background:rgba(108,174,117,.15)}
+.spill.s3{color:#eaa194;border-color:var(--bad);background:rgba(201,96,79,.15)}
+.mbody{padding:16px 24px 22px;display:grid;grid-template-columns:1fr 1fr;gap:14px 26px}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:6px 10px;align-content:start}
+.kv dt{color:var(--muted);font-size:12px}.kv dd{margin:0;font-weight:600}
+.links h4{margin:0 0 6px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.links + .links{margin-top:12px}
+.schips{display:flex;flex-wrap:wrap;gap:8px}
+.schip{display:flex;align-items:center;gap:8px;padding:4px 10px 4px 4px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);cursor:pointer;border-left:4px solid var(--lc,#555)}
+.schip img{width:52px;height:36px;object-fit:contain}
+.schip .q{width:52px;height:36px;border-radius:6px;background:#17130e;border:1px dashed #4a3d2e;display:flex;align-items:center;justify-content:center;color:#5a4c3a;font:700 18px Georgia,serif}
+.schip b{font-size:12px}.schip span{display:block;font-size:11px;color:var(--muted)}
+.hint{color:var(--muted);font-size:12px}
+/* modal B: side by side */
+.side{display:grid;grid-template-columns:260px 1fr}
+.side .pic{background:radial-gradient(ellipse at 50% 40%,color-mix(in srgb,var(--lc) 30%,#1a150f),#14110c 75%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:26px 18px;border-right:1px solid var(--line);border-top-left-radius:14px;border-bottom-left-radius:14px}
+.side .pic img{max-width:220px;max-height:200px;filter:drop-shadow(0 8px 16px rgba(0,0,0,.6))}
+.side .info{padding:20px 22px}
+.side h2{margin:0 0 8px;font:700 22px/1.15 Georgia,serif;color:#f6ead2}.side h2 small{color:var(--accent);margin-right:8px}
+.side .kv{margin:14px 0}
+</style></head><body>
+<h1>Scenario tab: stickers, scenario page, storyline colours</h1>
+<p class="intro">Real chart layout and sticker art (images/stickers/gh2), invented progress. Click a box to open the scenario modal. Box styles are the options for 1, the modal styles for 3; storyline colours (4) apply to lanes, box edges, tags and link chips, and can be switched off to compare.</p>
+<div class="bar">
+  <span class="seg" id="vBox" aria-label="Box style"><button data-v="A" aria-pressed="true">1A Sticker only</button><button data-v="B">1B Card with thumbnail</button><button data-v="C">1C Sticker with name band</button><button data-v="0">Current</button></span>
+  <span class="seg" id="vModal" aria-label="Modal style"><button data-v="hero" aria-pressed="true">3A Banner</button><button data-v="side">3B Side picture</button></span>
+  <span class="seg" id="vZoom" aria-label="Chart size"><button data-v="0.6">S</button><button data-v="0.8" aria-pressed="true">M</button><button data-v="1">L</button></span>
+  <label><input type="checkbox" id="col" checked> Storyline colours</label>
+  <label><input type="checkbox" id="all"> All scenarios</label>
+</div>
+<p class="note" id="note"></p>
+<div class="lanes-legend" id="legend"></div>
+<div class="chart" id="chart"></div>
+<div class="scrim" id="scrim" hidden><div class="mbox" id="mbox"></div></div>
+
+<script type="module">
+import { SCENARIOS } from '../../scripts/games/gh2_scenarios.js';
+import { buildFlow, laneOf, BOX } from '../../scripts/campaign/flow.js';
+
+const COLOR = { Merchants:'#5fae8a', Demons:'#d0483c', Hail:'#3f80c8', Guards:'#d8b545', 'Voice and Drake':'#b8679a', Other:'#8a8a8a',
+  Sewers:'#6aa84f', 'The Gloom':'#7d6c96', PQ:'#9b3434', Random:'#9a7b2a', Puzzle:'#e09a2a', Events:'#c98e8e' };
+const STATE = ['Locked', 'Available', 'Completed', 'Attempted'];
+const byN = new Map(SCENARIOS.map(s => [s.n, s]));
+// invented progress: completed, available, attempted; the rest locked
+const st = new Map();
+[0, 1, 2, 3, 5, 10, 8, 12, 24].forEach(n => st.set(n, 2));
+[4, 7, 9, 13, 16, 25, 28].forEach(n => st.set(n, 1));
+[6].forEach(n => st.set(n, 3));
+const S = n => st.get(n) || 0;
+const img = s => s?.img ? `../../images/stickers/gh2/${s.img.split('/').pop().replace(/\.png$/, '.webp')}` : '';
+const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+const SIZES = { A: { w: 150, h: 104 }, B: { w: 214, h: 66 }, C: { w: 150, h: 128 }, 0: { w: 172, h: 40 } };
+const NOTES = {
+  A: 'The sticker is the box: its printed number and name are the label. State as a coloured ring and a corner dot; locked boxes stay a blank "?" shape. Storyline colour on the lane tint and banner.',
+  B: 'A card in the app style: sticker thumbnail on the left, number and name as text (searchable, readable at small sizes), storyline stripe on the left edge, state dot.',
+  C: 'Sticker on top, a dark band with number and name below. Taller than 1A; the text stays readable when the chart is small.',
+  0: 'Current boxes, for comparison, with the storyline colours added on lanes and banners.'
+};
+let vBox = 'A', vModal = 'hero', zoom = 0.8;
+
+const ICON = { 1: '<path d="M-3,0 L3,0 M0,-3 L0,3"/>', 2: '<path d="M-3.2,0.2 L-1,2.6 L3.4,-2.4"/>', 3: '<path d="M-2.6,-2.6 L2.6,2.6 M2.6,-2.6 L-2.6,2.6"/>' };
+const dot = (x, y, s) => s ? `<g class="dot" transform="translate(${x},${y})"><circle r="8"/>${ICON[s]}</g>` : '';
+
+function nodeSvg(n) {
+  const s = byN.get(n.n), k = S(n.n), m = k === 0, lc = COLOR[laneOf(s)], { w, h } = n, src = img(s);
+  const cls = `node st${k}${m ? ' mask' : ''}`;
+  const wrap = body => `<g class="${cls}" data-n="${n.n}" transform="translate(${n.x},${n.y})"><title>${m ? 'Locked' : esc(`${s.n} ${s.name} (${STATE[k]})`)}</title>${body}</g>`;
+  if (vBox === 'A') {
+    if (m) return wrap(`<rect class="frame" x="8" y="6" width="${w - 16}" height="${h - 12}" rx="26"/><text class="qm" x="${w / 2}" y="${h / 2 + 9}" text-anchor="middle">?</text>`);
+    return wrap(`<rect class="ring" x="3" y="2" width="${w - 6}" height="${h - 4}" rx="28" fill="${k === 1 ? 'rgba(91,143,209,.10)' : 'none'}" stroke="none"/>
+      <image href="${src}" x="8" y="6" width="${w - 16}" height="${h - 12}" preserveAspectRatio="xMidYMid meet"/>${dot(w - 12, 12, k)}`);
+  }
+  if (vBox === 'B') {
+    const name = m ? '' : esc(s.name);
+    return wrap(`<rect class="frame ring" width="${w}" height="${h}" rx="9"/>
+      <rect class="lstripe" x="0" y="0" width="5" height="${h}" rx="2" fill="${lc}"/>
+      ${m ? `<rect x="12" y="7" width="70" height="${h - 14}" rx="8" fill="#17130e" stroke="#4a3d2e" stroke-dasharray="4 3"/><text class="qm" x="47" y="${h / 2 + 9}" text-anchor="middle">?</text>`
+        : `<image href="${src}" x="10" y="5" width="74" height="${h - 10}" preserveAspectRatio="xMidYMid meet"/>`}
+      <text class="nnum" x="94" y="${h / 2 - 5}">${m ? '' : s.n}</text>
+      <text class="ntext" x="94" y="${h / 2 + 12}">${m ? '<tspan fill="#6b5a3c">Locked</tspan>' : name.length > 18 ? name.slice(0, 17) + '...' : name}</text>${dot(w - 14, 14, k)}`);
+  }
+  if (vBox === 'C') {
+    const bh = 30;
+    if (m) return wrap(`<rect class="frame" width="${w}" height="${h}" rx="10"/><text class="qm" x="${w / 2}" y="${(h - bh) / 2 + 12}" text-anchor="middle">?</text><rect class="band" x="0" y="${h - bh}" width="${w}" height="${bh}" rx="0"/><text class="ntext" x="${w / 2}" y="${h - 10}" text-anchor="middle" fill="#6b5a3c">Locked</text>`);
+    const nm = s.name.length > 17 ? s.name.slice(0, 16) + '...' : s.name;
+    return wrap(`<rect class="frame ring" width="${w}" height="${h}" rx="10"/>
+      <image href="${src}" x="6" y="4" width="${w - 12}" height="${h - bh - 6}" preserveAspectRatio="xMidYMid meet"/>
+      <rect class="band" x="1" y="${h - bh}" width="${w - 2}" height="${bh - 1}"/><rect class="lstripe" x="1" y="${h - bh}" width="${w - 2}" height="3" fill="${lc}"/>
+      <text class="ntext" x="10" y="${h - 10}"><tspan class="nnum">${s.n}</tspan>  ${esc(nm)}</text>${dot(w - 12, 12, k)}`);
+  }
+  // current style
+  const nm = m ? '?' : (s.name.length > 17 ? s.name.slice(0, 16) + '...' : s.name);
+  return wrap(`<rect class="frame ring" width="${w}" height="${h}" rx="7"/><rect class="lstripe" x="0" y="0" width="4" height="${h}" fill="${lc}"/>
+    <rect x="8" y="${h / 2 - 10}" width="32" height="20" rx="5" fill="#120f0b" stroke="#3a3026"/><text class="nnum" x="24" y="${h / 2 + 4}" text-anchor="middle">${m ? '?' : s.n}</text>
+    <text class="ntext" x="46" y="${h / 2 + 4}">${esc(nm)}</text>`);
+}
+
+function draw() {
+  Object.assign(BOX, SIZES[vBox], { colGap: vBox === 'B' ? 40 : 46, rowGap: 12, laneGap: 14, labelW: 46, gridCols: vBox === 'B' ? 5 : 7 });
+  let vis;
+  if (document.getElementById('all').checked) vis = new Set(SCENARIOS.map(s => s.n));
+  else { vis = new Set([...st.keys()]); for (const s of SCENARIOS) if (S(s.n) === 1 || S(s.n) === 2) for (const t of s.unl || []) vis.add(t); }
+  const g = buildFlow(SCENARIOS, vis);
+  const lanes = g.lanes.map((l, i) => `<rect class="lane${i % 2 ? ' alt' : ''}" x="0" y="${l.y}" width="${g.width}" height="${l.h}"/>
+    <rect class="lanetint" x="0" y="${l.y}" width="${g.width}" height="${l.h}" fill="${COLOR[l.name]}" opacity=".07"/>
+    <rect class="lanetint" x="0" y="${l.y}" width="4" height="${l.h}" fill="${COLOR[l.name]}"/>`).join('');
+  // lane banners run upright along the left edge of each lane
+  const labels = g.lanes.map(l => `<g class="lbanner" transform="translate(8,${l.y + 6})"><rect width="24" height="${l.h - 12}" rx="8" fill="${COLOR[l.name]}"/><text transform="translate(16.5,${(l.h - 12) / 2}) rotate(-90)" text-anchor="middle">${esc((l.h > 120 ? l.name : l.name.split(' ')[0]).toUpperCase())}</text></g>`).join('');
+  const edges = g.edges.map(e => `<path class="edge${S(e.from) === 2 ? ' on' : ''}" d="${e.d}" marker-end="url(#ah)"/>`).join('');
+  const nodes = g.nodes.map(nodeSvg).join('');
+  const el = document.getElementById('chart');
+  el.innerHTML = `<svg width="${Math.round((g.width + 20) * zoom)}" height="${Math.round(g.height * zoom)}" viewBox="0 0 ${g.width + 20} ${g.height}"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ahead" d="M0,0 L10,5 L0,10 z"/></marker></defs>${lanes}${edges}${nodes}${labels}</svg>`;
+  el.classList.toggle('nocol', !document.getElementById('col').checked);
+  document.getElementById('note').textContent = NOTES[vBox];
+  document.getElementById('legend').innerHTML = document.getElementById('col').checked ? g.lanes.map(l => `<span class="ltag" style="--lc:${COLOR[l.name]}">${esc(l.name)}</span>`).join('') : '';
+}
+
+const unlockedBy = n => SCENARIOS.filter(s => (s.unl || []).includes(n)).map(s => s.n);
+function chips(list) {
+  if (!list.length) return '<span class="hint">none</span>';
+  return `<div class="schips">${list.map(k => { const s = byN.get(k), m = S(k) === 0;
+    return `<span class="schip" data-n="${k}" style="--lc:${m ? '#4a3d2e' : COLOR[laneOf(s)]}">${m ? '<span class="q">?</span>' : `<img src="${img(s)}" alt="">`}<span><b>${m ? '?' : `${k} ${esc(s.name)}`}</b><span>${STATE[S(k)]}</span></span></span>`; }).join('')}</div>`;
+}
+function openModal(n) {
+  const s = byN.get(n), k = S(n);
+  if (!s || k === 0) return;
+  const lane = laneOf(s), lc = document.getElementById('col').checked ? COLOR[lane] : '#6b5a3c';
+  const facts = `<dl class="kv"><dt>Level</dt><dd>${k === 2 ? '+1' : ''}</dd><dt># Mercenaries</dt><dd>${k === 2 ? '4' : ''}</dd><dt>Completed</dt><dd>${k === 2 ? '2026-10-24' : ''}</dd><dt>Treasure</dt><dd>${k === 2 ? '<span class="hint">12 (taken)</span>' : ''}</dd></dl>`;
+  const links = `<div><div class="links"><h4>Unlocks</h4>${chips(s.unl || [])}</div><div class="links"><h4>Unlocked by</h4>${chips(unlockedBy(n))}</div></div>`;
+  const tags = `<div class="tags"><span class="ltag" style="--lc:${lc}">${esc(lane)}</span><span class="spill s${k}">${STATE[k]}</span></div>`;
+  const box = document.getElementById('mbox');
+  box.style.setProperty('--lc', lc);
+  box.innerHTML = vModal === 'hero'
+    ? `<button class="mclose" data-close aria-label="Close">&#10005;</button><div class="hero"><div class="blur" style="background-image:url('${img(s)}')"></div><img class="art" src="${img(s)}" alt=""><div class="tt"><div class="no">${s.n}</div><h2>${esc(s.name)}</h2>${tags}</div></div><div class="mbody">${facts}${links}</div>`
+    : `<button class="mclose" data-close aria-label="Close">&#10005;</button><div class="side"><div class="pic"><img src="${img(s)}" alt="">${tags}</div><div class="info"><h2><small>${s.n}</small>${esc(s.name)}</h2>${facts}${links}</div></div>`;
+  document.getElementById('scrim').hidden = false;
+}
+
+for (const [id, set] of [['vBox', v => (vBox = v)], ['vModal', v => (vModal = v)], ['vZoom', v => (zoom = +v)]])
+  document.getElementById(id).addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
+    set(b.dataset.v); e.currentTarget.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); draw(); });
+document.getElementById('col').addEventListener('change', draw);
+document.getElementById('all').addEventListener('change', draw);
+document.getElementById('chart').addEventListener('click', e => { const g = e.target.closest('.node'); if (g) openModal(+g.dataset.n); });
+document.getElementById('scrim').addEventListener('click', e => {
+  const c = e.target.closest('.schip'); if (c) { openModal(+c.dataset.n); return; }
+  if (e.target.id === 'scrim' || e.target.closest('[data-close]')) document.getElementById('scrim').hidden = true; });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') document.getElementById('scrim').hidden = true; });
+draw();
+</script></body></html>

@@ -3,9 +3,9 @@
 
 export const SCENARIOS = [
   {"n":0,"name":"Training Course","area":"Guards","img":"https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_stickers/0.png","init":1,"unl":[1]},
-  {"n":1,"name":"Bandit Camp","area":"Intro/Hail","img":"https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_stickers/1.png","init":1,"unl":[2]},
-  {"n":2,"name":"Ruinous Crypt","area":"Intro/Voice and Drake","img":"https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_stickers/2.png","unl":[3]},
-  {"n":3,"name":"Frozen Hollow","area":"Hail","img":"https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_stickers/3.png","unl":[4,5]},
+  {"n":1,"name":"Bandit Camp","area":"Guards","img":"https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_stickers/1.png","init":1,"unl":[2]},
+  {"n":2,"name":"Ruinous Crypt","area":"Guards","img":"https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_stickers/2.png","unl":[3]},
+  {"n":3,"name":"Frozen Hollow","area":"Guards","img":"https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_stickers/3.png","unl":[4,5]},
   {"n":4,"name":"Crypt of the Damned","area":"Demons","img":"https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_stickers/4.png","unl":[6,7]},
   {"n":5,"name":"Forgotten Crypt","area":"Hail","img":"https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_stickers/5.png","unl":[7,9,10,28]},
   {"n":6,"name":"Decaying Crypt","area":"Demons","img":"https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_stickers/6.png","unl":[11]},

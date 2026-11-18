@@ -40,7 +40,7 @@ import { heroCatalog, heroPerkClass } from '../scripts/amd/heroDeck.js';
 import { PERSONAL_QUESTS } from '../scripts/games/gh2_quests.js';
 import ghConfig from '../scripts/games/gh.js';
 import { GH_DECKS } from '../scripts/games/gh_decks.js';
-import { buildFlow, LANES, laneOf } from '../scripts/campaign/flow.js?v=4';
+import { buildFlow, LANES, laneOf, LANE_COLOR } from '../scripts/campaign/flow.js?v=5';
 import { RESOURCES, RESOURCE_GAMES } from '../scripts/games/resources.js';
 import { characterTraits } from '../scripts/campaign/outcomes.js';
 import { SPECIAL_TRAITS, specialName } from '../scripts/campaign/traits.js';
@@ -389,7 +389,7 @@ function historyPage(r) {
 // Layout in scripts/campaign/flow.js. Spoilers: "Progress" draws the scenarios that are unlocked, completed or locked out, plus the
 // locked ones they lead to; locked scenarios are drawn as "?" (name and number only in edit mode), as locked items are.
 // Chart sizes: fixed scales, and 'fit' = as wide as the box (computed in flowchart()). Fullscreen (view.flowFull) shows the chart over the whole window.
-const FLOW_ZOOM = { s: 0.6, m: 0.85, l: 1.2, xl: 1.6, xxl: 2, fit: 0 };
+const FLOW_ZOOM = { s: 0.45, m: 0.65, l: 0.85, xl: 1.1, xxl: 1.4, fit: 0 };
 const FLOW_ZOOM_LABEL = { s: 'S', m: 'M', l: 'L', xl: 'XL', xxl: 'XXL', fit: 'Fit' };
 // The row below the toolbar (as on the Cards tab): the view switch and, for the table, the number of scenarios listed.
 const scnViewToggle = n => `<div class="imgmode viewmode" role="group" aria-label="Scenario view">${[['table', isPhone() ? 'List' : 'Table'], ['flow', 'Flowchart']].map(([v, l]) => `<button type="button" data-scnview="${v}" aria-pressed="${view.scnView === v}">${l}</button>`).join('')}${n == null ? '' : `<span class="ctrlhint">${n} scenarios</span>`}</div>`;
@@ -468,9 +468,10 @@ function flowPage(r) {
     ${scenarioRollerBtn(r)}</div>`;
   if (!g.nodes.length) return filters + scnViewToggle() + '<div class="empty">No scenarios to show yet.</div>';
   const legend = `<span class="flegend">${[1, 2, 0, 3].map(i => `<span class="spill s${i}">${SCN_STATE_NAME[i]}</span>`).join('')}</span>`;
-  const lanes = g.lanes.map((l, i) => `<rect class="flane${i % 2 ? ' alt' : ''}" x="0" y="${l.y}" width="${g.width}" height="${l.h}"/>`).join('');
+  // lanes: a faint tint and a stripe in the storyline colour
+  const lanes = g.lanes.map((l, i) => `<rect class="flane${i % 2 ? ' alt' : ''}" x="0" y="${l.y}" width="${g.width}" height="${l.h}"/><rect x="0" y="${l.y}" width="${g.width}" height="${l.h}" fill="${laneColor(l.name)}" opacity=".07"/><rect x="0" y="${l.y}" width="4" height="${l.h}" fill="${laneColor(l.name)}"/>`).join('');
   // lane names in a top layer; flowSync() keeps each at the left edge of the view and inside its lane while the chart scrolls
-  const labels = `<g class="flabels" aria-hidden="true">${g.lanes.map(l => `<g class="flabelg" data-y="${l.y}" data-h="${l.h}" transform="translate(2,${l.y + 2})"><rect class="flabbg" width="10" height="24" rx="6"/><text class="flabel" x="8" y="17">${esc(l.name)}</text></g>`).join('')}</g>`;
+  const labels = `<g class="flabels" aria-hidden="true">${g.lanes.map(l => `<g class="flabelg" data-y="${l.y}" data-h="${l.h}" transform="translate(2,${l.y + 2})"><rect class="flabbg" width="10" height="24" rx="12" fill="${laneColor(l.name)}"/><text class="flabel" x="8" y="17">${esc(l.name.toUpperCase())}</text></g>`).join('')}</g>`;
   // where the chart opens without a remembered position: the available scenario unlocked most recently (by the completion date
   // of the scenario that unlocks it), else the last completed one
   const done = n => (st(n) === 2 ? r.scn[String(n)]?.d || '' : '');
@@ -481,32 +482,29 @@ function flowPage(r) {
   const mk = Math.min(200 / g.width, 150 / g.height), mini = `<svg class="flowmini" width="${Math.round(g.width * mk)}" height="${Math.round(g.height * mk)}" viewBox="0 0 ${g.width} ${g.height}" preserveAspectRatio="none" role="img" aria-label="Overview of the flowchart" hidden>
     ${g.lanes.map((l, i) => `<rect class="flane${i % 2 ? ' alt' : ''}" x="0" y="${l.y}" width="${g.width}" height="${l.h}"/>`).join('')}${g.nodes.map(n => `<rect class="fmnode s${st(n.n)}${masked(n.n) ? ' mask' : ''}" x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}" rx="10"/>`).join('')}<rect class="fmview" x="0" y="0" width="0" height="0"/></svg>`;
   const edges = g.edges.map(e => `<path class="fedge${st(e.from) === 2 ? ' on' : ''}" data-from="${e.from}" data-to="${e.to}" d="${e.d}" marker-end="url(#farrow)"/>`).join('');
+  // boxes: the sticker art on top, a band with number and name below (a stripe in the storyline colour), the state icon in a
+  // corner dot; locked boxes show a "?" and no art
+  const BAND = 30;
   const nodes = g.nodes.map(n => {
-    const s = byN.get(n.n), hide = masked(n.n), name = String(s.name || '');
-    const lines = hide ? [] : flowLines(name), tx = 44, iy = n.h / 2 - 6;
-    const text = hide ? `<text class="fq" x="${(tx + n.w - 22) / 2}" y="${n.h / 2 + 6}" text-anchor="middle">?</text>`
-      : `<text class="fname">${lines.map((l, i) => `<tspan x="${tx}" y="${n.h / 2 + 4 + (i - (lines.length - 1) / 2) * 14}">${esc(l)}</tspan>`).join('')}</text>`;
+    const s = byN.get(n.n), hide = masked(n.n), name = String(s.name || ''), src = hide ? '' : scnImg(s);
+    const art = hide ? `<text class="fq" x="${n.w / 2}" y="${(n.h - BAND) / 2 + 12}" text-anchor="middle">?</text>`
+      : src ? `<image href="${esc(src)}" x="6" y="5" width="${n.w - 12}" height="${n.h - BAND - 8}" preserveAspectRatio="xMidYMid meet"/>` : '';
+    const label = hide ? '' : `<text class="fname" x="9" y="${n.h - 10}"><tspan class="fnum">${esc(s.n)}</tspan> ${esc(cutText(name, n.n >= 10 ? 17 : 18))}</text>`;
     return `<g class="fnode s${st(n.n)}${hide ? ' mask' : ''}${view.scnSel === n.n ? ' sel' : ''}${flowFound === n.n && !hide ? ' found' : ''}" data-flow="${n.n}" tabindex="0" role="button" transform="translate(${n.x},${n.y})"><title>${hide ? 'Locked' : esc(`${s.n} ${name} (${SCN_STATE_NAME[st(n.n)]})`)}</title>
-      <rect class="fbox" width="${n.w}" height="${n.h}" rx="7"/><rect class="fbadge" x="6" y="${n.h / 2 - 10}" width="32" height="20" rx="5"/><text class="fnum" x="22" y="${n.h / 2 + 4}" text-anchor="middle">${hide ? '?' : esc(s.n)}</text>
-      ${text}<g class="ficon" transform="translate(${n.w - 18},${iy})">${FLOW_ICON[hide ? 0 : st(n.n)]}</g></g>`;
+      <rect class="fbox" width="${n.w}" height="${n.h}" rx="10"/>${art}
+      <path class="fband" d="M1,${n.h - BAND} H${n.w - 1} V${n.h - 10} a9,9 0 0 1 -9,9 H10 a9,9 0 0 1 -9,-9 Z"/>${hide ? '' : `<rect x="1" y="${n.h - BAND}" width="${n.w - 2}" height="3" fill="${laneColor(laneOf(s))}"/>`}${label}
+      <circle class="fdot" cx="${n.w - 13}" cy="13" r="9"/><g class="ficon" transform="translate(${n.w - 19},7)">${FLOW_ICON[hide ? 0 : st(n.n)]}</g></g>`;
   }).join('');
   const svg = `<svg class="flowsvg" width="${Math.round(g.width * z)}" height="${Math.round(g.height * z)}" viewBox="0 0 ${g.width} ${g.height}" role="img" aria-label="Scenario flowchart">
     <defs><marker id="farrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="farrowhead"/></marker><marker id="farrowp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="farrowhead pth"/></marker></defs>${lanes}${edges}${nodes}${labels}</svg>`;
   if (full) return `<div class="flowstage full"><div class="flowwrap full"><div class="flowfsbar">${find}${zoomBtns}${fsBtn}${scenarioRollerBtn(r)}${legend}</div>${svg}</div>${mini}</div>`;
   return filters.replace(/<\/div>$/, `${legend}</div>`) + scnViewToggle() + `<div class="flowstage"><div class="flowwrap">${svg}</div>${mini}</div>`;
 }
-// A scenario name in at most two lines of about 17 characters (word wrap; the second line is cut with an ellipsis).
-function flowLines(name, max = 17) {
-  const lines = [''];
-  for (const w of name.split(/\s+/).filter(Boolean)) {
-    const cur = lines[lines.length - 1];
-    if (!cur || `${cur} ${w}`.length <= max) lines[lines.length - 1] = cur ? `${cur} ${w}` : w;
-    else lines.push(w);
-  }
-  if (lines.length > 2) lines.splice(1, lines.length - 1, lines.slice(1).join(' '));
-  return lines.map(l => (l.length > max ? `${l.slice(0, max - 1)}\u2026` : l));
-}
-// State icons right in a box (12x12, currentColor = the state colour): locked, unlocked (available), completed, locked out.
+const cutText = (t, max) => (t.length > max ? `${t.slice(0, max - 1).trimEnd()}…` : t);
+const laneColor = name => LANE_COLOR[name] || LANE_COLOR.Other;
+// Sticker art of a scenario: the local copy under images/, else the remote address.
+const scnImg = s => (s?.img ? imageFile(s.img, '../') || s.img : '');
+// State icons in the corner dot of a box (12x12, currentColor = the state colour): locked, unlocked (available), completed, locked out.
 const FLOW_ICON = [
   '<rect x="2" y="5.5" width="8" height="6" rx="1.2" fill="currentColor"/><path d="M3.8 5.5V4a2.2 2.2 0 0 1 4.4 0v1.5" fill="none" stroke="currentColor" stroke-width="1.4"/>',
   '<circle cx="6" cy="6" r="4.5" fill="currentColor"/>',
@@ -708,12 +706,18 @@ function flowDetail(r) {
   const n = view.scnSel, s = SCENARIOS.find(x => x.n === n);
   if (!s) return '';
   const x = r.scn[String(n)] || { s: 0 };
-  if (x.s === 0) return '<h3 id="scnModalTitle">Locked scenario</h3>';
-  const cls = k => { const v = r.scn[String(k)]?.s ?? 0; return v === 2 ? 'ok' : v === 1 ? 'info' : 'dim'; };
-  const nm = k => (r.scn[String(k)]?.s ? `${k} ${SCENARIOS.find(y => y.n === k)?.name ?? ''}` : '?');
+  if (x.s === 0) return '<div class="scnlocked"><h3 id="scnModalTitle">Locked scenario</h3></div>';
+  // linked scenarios as sticker chips; a known one opens its own page, a locked one is a "?"
+  const link = k => {
+    const v = r.scn[String(k)]?.s ?? 0, t = SCENARIOS.find(y => y.n === k);
+    if (!v || !t) return `<span class="schip lock"><span class="schq">?</span><span><b>?</b><small>${SCN_STATE_NAME[0]}</small></span></span>`;
+    const src = scnImg(t);
+    return `<button type="button" class="schip" data-scn-go="${k}" style="--lc:${laneColor(laneOf(t))}">${src ? `<img src="${esc(src)}" alt="" loading="lazy">` : '<span class="schq"></span>'}<span><b>${esc(`${k} ${t.name}`)}</b><small>${esc(SCN_STATE_NAME[v])}</small></span></button>`;
+  };
+  const links = list => (list.length ? `<div class="schips">${list.map(link).join('')}</div>` : '');
   const stateRow = editing
     ? kv('State', `<select data-act="scnState" data-id="${esc(s.n)}">${SCN_STATE_NAME.map((name, i) => `<option value="${i}" ${x.s === i ? 'selected' : ''}>${esc(name)}</option>`).join('')}</select>`)
-    : kv('State', `<span class="s${x.s}">${esc(SCN_STATE_NAME[x.s])}</span>`);
+    : '';
   const resultRows = x.s !== 2 ? '' : editing
     ? kv('Level', num('scnRes', 'l', x.l, { min: -2, max: 3, id: s.n, width: 56 }))
       + kv('# Mercenaries', num('scnRes', 'p', x.p, { min: 1, max: 4, id: s.n, width: 56 }))
@@ -724,13 +728,14 @@ function flowDetail(r) {
   const treRow = !treNums.length ? '' : kv('Treasure', `<span class="chips">${treNums.map(tn => editing
     ? `<button type="button" class="chip ${r.decks.tre.includes(tn) ? 'ok' : 'dim'}" data-act="deck" data-key="tre" data-id="${tn}">${tn}</button>`
     : chip(tn, r.decks.tre.includes(tn) ? 'ok' : 'dim')).join('')}</span>`);
-  return `<h3 id="scnModalTitle">${esc(s.n)} ${esc(s.name)}</h3>
-    ${s.img ? `<img class="flowsticker" src="${esc(s.img)}" alt="">` : ''}
-    ${kv('Storyline', esc(laneOf(s)))}${stateRow}
-    ${resultRows}
-    ${treRow}
-    ${kv('Unlocks', (s.unl || []).length ? `<span class="chips">${s.unl.map(k => chip(nm(k), cls(k))).join('')}</span>` : '<span class="hint">no scenario</span>')}
-    ${kv('Unlocked by', unlockedBy(s.n).length ? `<span class="chips">${unlockedBy(s.n).map(k => chip(nm(k), cls(k))).join('')}</span>` : '<span class="hint">no scenario (event, reputation or quest)</span>')}`;
+  const lane = laneOf(s), src = scnImg(s);
+  const facts = stateRow + resultRows + treRow;
+  return `<div class="scnhero" style="--lc:${laneColor(lane)}">${src ? `<div class="scnblur" style="background-image:url('${esc(src)}')"></div><img class="scnart" src="${esc(src)}" alt="">` : ''}
+      <div class="scntt"><div class="scnno">${esc(s.n)}</div><h3 id="scnModalTitle">${esc(s.name)}</h3>
+      <div class="scntags"><span class="ltag" style="--lc:${laneColor(lane)}">${esc(lane)}</span><span class="spill s${x.s}">${esc(SCN_STATE_NAME[x.s])}</span></div></div></div>
+    <div class="scnbody">${facts ? `<div class="scnfacts">${facts}</div>` : ''}<div class="scnlinks">
+      <h4>Unlocks</h4>${links(s.unl || []) || '<span class="hint">no scenario</span>'}
+      <h4>Unlocked by</h4>${links(unlockedBy(s.n)) || '<span class="hint">no scenario (event, reputation or quest)</span>'}</div></div>`;
 }
 
 function scenarios(r) {
@@ -763,8 +768,10 @@ function scenarios(r) {
     <input id="scnSearch" type="search" placeholder="Search number, name, area" value="${esc(view.scnSearch)}">
     <span class="tbend">${scenarioRollerBtn(r)}</span></div>`;
   if (isPhone()) return filters + scnViewToggle(rows.length) + (rows.length ? `<div class="mlist">${rows.map(s => {
-    const x = r.scn[String(s.n)] || { s: 0 }, sub = [s.area, x.d].filter(Boolean).map(esc).join(' &middot; ');
-    return `<button type="button" class="mrow" data-flow="${s.n}"><span class="mnum">${esc(s.n)}</span><span class="mmain"><b>${esc(s.name)}</b>${sub ? `<small>${sub}</small>` : ''}</span><span class="spill s${x.s}">${SCN_STATE_NAME[x.s]}</span></button>`;
+    // phone row: sticker thumbnail (a "?" while locked), number and name, storyline in its colour and the date, state
+    const x = r.scn[String(s.n)] || { s: 0 }, lane = laneOf(s), src = x.s ? scnImg(s) : '';
+    const sub = `<span class="mlane" style="--lc:${laneColor(lane)}">${esc(lane)}</span>${x.d ? ` &middot; ${esc(x.d)}` : ''}`;
+    return `<button type="button" class="mrow scnmrow s${x.s}" data-flow="${s.n}" style="--lc:${laneColor(lane)}">${src ? `<img class="mstk" src="${esc(src)}" alt="" loading="lazy">` : '<span class="mstk schq">?</span>'}<span class="mmain"><b><span class="mnum2">${esc(s.n)}</span> ${esc(s.name)}</b><small>${sub}</small></span><span class="spill s${x.s}">${SCN_STATE_NAME[x.s]}</span></button>`;
   }).join('')}</div>` : none);
   return filters + scnViewToggle(rows.length) + dataTable('scntable', head, rows.map(s => {
     const x = r.scn[String(s.n)] || { s: 0 };
@@ -1607,7 +1614,7 @@ document.body.appendChild(scnModalRoot);
 
 function renderScnModal() {
   if (!record || view.scnSel == null || !SCENARIOS.some(s => s.n === view.scnSel)) { scnModalRoot.innerHTML = ''; return; }
-  scnModalRoot.innerHTML = `<div class="modal" id="scnModal" role="dialog" aria-modal="true" aria-labelledby="scnModalTitle"><div class="modalbox wide">
+  scnModalRoot.innerHTML = `<div class="modal" id="scnModal" role="dialog" aria-modal="true" aria-labelledby="scnModalTitle"><div class="modalbox scnbox">
     <button type="button" class="modalx" data-scn-close aria-label="Close">&times;</button>
     <button type="button" class="editbtn editicon modaledit" data-pageedit aria-pressed="${editing}" aria-label="${editing ? 'Stop editing scenarios' : 'Edit scenarios'}" title="${editing ? 'Stop editing scenarios' : 'Edit scenarios'}">${PENCIL}</button>
     ${flowDetail(record)}</div></div>`;
@@ -1615,6 +1622,8 @@ function renderScnModal() {
 function closeScnModal() { view.scnSel = null; render(); }
 scnModalRoot.addEventListener('click', e => {
   if (e.target.id === 'scnModal' || e.target.closest('[data-scn-close]')) { closeScnModal(); return; }
+  const go = e.target.closest('[data-scn-go]');
+  if (go) { view.scnSel = Number(go.dataset.scnGo); render(); return; }
   if (e.target.closest('[data-pageedit]')) {
     if (editPages.has(tab)) editPages.delete(tab); else editPages.add(tab);
     render();

@@ -61,6 +61,15 @@ button.mrow:active { background:rgba(199,164,74,.1); }
 .mrow .mmain small { color:var(--muted); font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .mrow .mend { flex:none; max-width:38%; color:var(--accent); font-size:12px; text-align:right; }
 .mrow .spill { flex:none; }
+/* scenario rows: storyline stripe at the left, sticker thumbnail, storyline name with a colour dot */
+.scnmrow { border-left:4px solid var(--lc); padding-left:8px; }
+.scnmrow .mstk { flex:none; width:58px; height:42px; object-fit:contain; }
+.scnmrow span.mstk { width:58px; height:42px; font-size:20px; }
+.scnmrow.s0 .mstk { opacity:.6; }
+.scnmrow .mnum2 { color:var(--accent); font-weight:800; }
+.scnmrow.s0 .mnum2 { color:var(--muted); }
+.mlane { display:inline-flex; align-items:center; gap:5px; }
+.mlane::before { content:""; width:7px; height:7px; border-radius:50%; background:var(--lc); }
 
 /* ---- Item sheet ------------------------------------------------------------------------------------------------------------------ */
 .itemsheet .isbody { display:flex; gap:14px; align-items:flex-start; }

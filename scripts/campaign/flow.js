@@ -6,7 +6,8 @@
 
 // Lane order (2026-11-18): the order with the shortest total arrow length on the full chart (local search over the orders,
 // measured with the end points of the arrows): 13170 against 18328 for the earlier order; 12875 once 13 Icecrag Ascent
-// moved to Voice and Drake (still the best order). The lanes without links between lanes (PQ, Random, Puzzle, Events) are
+// moved to Voice and Drake, 12621 with 1, 2 and 3 in Guards (still the best order); 18237 with the sticker boxes (bigger
+// boxes, same best order). The lanes without links between lanes (PQ, Random, Puzzle, Events) are
 // last. "Other" is empty since then and stays as the fallback for a scenario with an unknown area.
 export const LANES = ['Merchants', 'Demons', 'Hail', 'Guards', 'Voice and Drake', 'Other', 'Sewers', 'The Gloom', 'PQ', 'Random', 'Puzzle', 'Events'];
 
@@ -17,7 +18,12 @@ export function laneOf(s) {
   return LANES.includes(p) ? p : 'Other';
 }
 
-export const BOX = { w: 172, h: 40, colGap: 36, rowGap: 8, laneGap: 10, labelW: 100, pad: 8, gridCols: 6 };
+// Storyline colours (2026-11-18): the hues of the owner's GH2 Flow sheet, darkened for the dark page.
+export const LANE_COLOR = { Merchants: '#5fae8a', Demons: '#d0483c', Hail: '#3f80c8', Guards: '#d8b545', 'Voice and Drake': '#b8679a',
+  Other: '#8a8a8a', Sewers: '#6aa84f', 'The Gloom': '#8f7fb0', PQ: '#b85050', Random: '#a3843a', Puzzle: '#e0952a', Events: '#c98e8e' };
+
+// Boxes are sticker cards (sticker art on top, number and name in a band below).
+export const BOX = { w: 150, h: 128, colGap: 46, rowGap: 12, laneGap: 12, labelW: 100, pad: 8, gridCols: 6 };
 
 /*
 buildFlow(scenarios, visible)
