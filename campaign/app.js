@@ -1954,21 +1954,78 @@ main.addEventListener('error', e => {
   img.replaceWith(d);
 }, true);
 
-// Drag and drop of ability cards between the hand, discard and lost areas (works without edit mode: it is play, not setup).
-const dragPayload = e => { try { return JSON.parse(e.dataTransfer.getData('text/plain')); } catch { return null; } };
-main.addEventListener('dragstart', e => {
-  if (evDragStart(e)) return;                    // a card row of the Events tab
-  if (e.target.closest?.('.amv .stk, .amv .mini')) return;   // a modifier card (handled below)
-  const row = e.target.closest?.('.ac[data-card], .flipcard[data-card]');
-  if (!row) { e.preventDefault(); return; }
-  e.dataTransfer.setData('text/plain', JSON.stringify({ char: row.dataset.char, card: Number(row.dataset.card) }));
-  e.dataTransfer.effectAllowed = 'move';
-  row.classList.add('dragging');
-});
-main.addEventListener('dragend', () => {
-  evDragEnd();
-  main.querySelectorAll('.dragging, .over, .ins-before, .ins-after').forEach(el => el.classList.remove('dragging', 'over', 'ins-before', 'ins-after'));
-});
+// Native drag and drop is left to the Events tab rows; playmat cards are dragged with pointer events (below).
+main.addEventListener('dragstart', e => { evDragStart(e); });
+main.addEventListener('dragend', () => { evDragEnd(); });
+
+// Drag ghost of the playmat (ability cards and modifier cards, mouse, touch and pen): an opaque copy of the card that follows the
+// pointer, lifted (shadow, slight tilt), always the same size wherever the drag starts (hand, fan zoom, play slot, pile). The card
+// stays in its place as a dimmed placeholder. A drop fades the ghost out; a cancel (Esc, or a drop outside a zone) flies it back.
+const GHOST_W = { card: 1.5, mod: 1.1 };                     // ghost width in playmat card units (--cu, the card size setting)
+function ghostUnit() { return parseFloat(getComputedStyle(main.querySelector('.pm') || document.body).getPropertyValue('--cu')) || 100; }
+function ghostStart(body, kind, ar, src, x, y) {             // body: the ghost content; ar: height / width; src: the card on the page
+  const w = Math.round(ghostUnit() * GHOST_W[kind]), h = Math.round(w * ar), r = src.getBoundingClientRect();
+  const fx = r.width ? Math.min(1, Math.max(0, (x - r.left) / r.width)) : 0.5, fy = r.height ? Math.min(1, Math.max(0, (y - r.top) / r.height)) : 0.5;
+  const g = document.createElement('div');
+  g.className = 'dragghost';
+  g.style.width = `${w}px`; g.style.height = `${h}px`;
+  const inner = document.createElement('div');
+  inner.className = 'dgi';
+  inner.append(body);
+  g.append(inner);
+  document.body.append(g);
+  document.body.classList.add('pmdragging');
+  window.getSelection?.()?.removeAllRanges();
+  hidePreview();
+  const G = { g, w, h, fx, fy, src };
+  ghostMove(G, x, y);
+  return G;
+}
+function ghostMove(G, x, y) { G.x = x - G.fx * G.w; G.y = y - G.fy * G.h; G.g.style.transform = `translate(${G.x}px,${G.y}px)`; }
+function ghostEnd(G, dropped) {
+  document.body.classList.remove('pmdragging');
+  const g = G.g, done = () => g.remove();
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || !g.animate) { done(); return; }
+  if (dropped) { g.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 120, easing: 'ease-out' }).onfinish = done; return; }
+  const r = G.src.isConnected ? G.src.getBoundingClientRect() : null;   // fly back to the card's place
+  if (!r || !r.width) { done(); return; }
+  const tx = r.left + r.width / 2 - G.w / 2, ty = r.top + r.height / 2 - G.h / 2;
+  g.animate([{ transform: `translate(${G.x}px,${G.y}px)` }, { transform: `translate(${tx}px,${ty}px)`, opacity: 0.6 }], { duration: 220, easing: 'cubic-bezier(.2,.8,.2,1)' }).onfinish = done;
+}
+// Ghost content of an ability card: its picture (the visible side of a played card) with the tokens on it.
+function cardGhostBody(el) {
+  const flip = el.classList.contains('flipcard');
+  const img = flip ? el.querySelector(el.classList.contains('is-front') ? '.face.front img' : '.face.back img') : el.querySelector(':scope > img, :scope > .acf > img');
+  const d = document.createElement('div');
+  d.className = 'dgcard';
+  if (img) d.append(Object.assign(document.createElement('img'), { src: img.src, alt: '', draggable: false }));
+  else d.append(Object.assign(document.createElement('div'), { className: 'noimg', textContent: el.title || '' }));
+  if (!flip || el.classList.contains('is-front')) el.querySelectorAll(':scope .tk').forEach(t => d.append(t.cloneNode(true)));
+  const ar = img?.naturalWidth ? img.naturalHeight / img.naturalWidth : 7 / 5;
+  return { body: d, ar };
+}
+// Ghost content of a modifier card: the card painted onto a canvas from the layer pictures already on screen (a modifier card is a
+// stack of layers; painting keeps the ghost free of the playmat's layout rules).
+function modGhostBody(st) {
+  const face = st.querySelector('.stkface'), fr = face?.getBoundingClientRect();
+  if (!fr?.width) return null;
+  const cv = document.createElement('canvas'), k = (window.devicePixelRatio || 1) * 2;
+  cv.width = Math.round(fr.width * k); cv.height = Math.round(fr.height * k);
+  const ctx = cv.getContext('2d');
+  ctx.scale(k, k);
+  ctx.fillStyle = '#1a1510'; ctx.fillRect(0, 0, fr.width, fr.height);
+  face.querySelectorAll('img').forEach(im => {
+    if (!im.complete || !im.naturalWidth) return;
+    const r = im.getBoundingClientRect();
+    try { ctx.drawImage(im, r.left - fr.left, r.top - fr.top, r.width, r.height); } catch (_) { /* skip the layer */ }
+  });
+  return { body: cv, ar: fr.height / fr.width };
+}
+// After a drag the click that ends it must not act (flip a card, send a modifier card to the discard).
+function swallowNextClick() {
+  const s = ev => { ev.stopImmediatePropagation(); ev.preventDefault(); };
+  document.addEventListener('click', s, true); setTimeout(() => document.removeEventListener('click', s, true), 50);
+}
 // Where in the hand a dropped card goes: in front of the row under the pointer (left half, or upper half in the list view), after it
 // otherwise. Returns { before } for moveCard: a card id, or null for the end of the hand; undefined = not over a card.
 function handDropPlace(e, zone) {
@@ -1981,14 +2038,7 @@ function handDropPlace(e, zone) {
   return { before: next ? Number(next.dataset.card) : null, row, side: 'after' };
 }
 const clearMarks = () => main.querySelectorAll('.ins-before, .ins-after').forEach(el => el.classList.remove('ins-before', 'ins-after'));
-main.addEventListener('dragover', e => {
-  if (evDragOver(e)) return;
-  const zone = e.target.closest?.('[data-zone]');
-  if (!zone) return;
-  e.preventDefault();
-  e.dataTransfer.dropEffect = 'move';
-  markDropZone(e, zone);
-});
+main.addEventListener('dragover', e => { evDragOver(e); });
 function markDropZone(e, zone) {
   main.querySelectorAll('[data-zone].over').forEach(z => { if (z !== zone) z.classList.remove('over'); });
   zone.classList.add('over');
@@ -2005,55 +2055,50 @@ function applyDrop(e, zone, d) {                                  // e: the drop
   // inside the hand, dropping on empty space puts the card at the end; from another zone it just enters the hand
   commit(ed.moveCard(record, d.char, d.card, 'hand', place === undefined && !fromHand ? {} : { before: place === undefined ? null : place }));
 }
-main.addEventListener('drop', e => {
-  if (evDrop(e)) return;
-  const zone = e.target.closest?.('[data-zone]');
-  if (!zone) return;
-  e.preventDefault();
-  applyDrop(e, zone, dragPayload(e));
-});
-// Touch and pen: HTML5 drag events do not fire, so dragging a card by finger is built from pointer events (same drop rules as the mouse).
+main.addEventListener('drop', e => { evDrop(e); });
+// Drag of ability cards between the hand, play slots, active area and piles (play, not setup: no Edit needed). The mouse picks a card
+// up once it moves 5 px; touch and pen hold briefly first, so a quick swipe still scrolls the page.
 (() => {
   let t = null;
   const zoneAt = (x, y) => document.elementFromPoint(x, y)?.closest?.('.pm [data-zone]');
+  const unmark = () => { main.querySelectorAll('[data-zone].over').forEach(x => x.classList.remove('over')); clearMarks(); };
   main.addEventListener('pointerdown', e => {
-    if (e.pointerType === 'mouse' || e.button || pm.modal) return;
+    if (e.button || pm.modal || t) return;
     const el = e.target.closest?.('.pm:not(.pp) .ac[data-card], .pm:not(.pp) .flipcard[data-card]');
     if (!el || e.target.closest('button')) return;
-    t = { el, x: e.clientX, y: e.clientY, id: e.pointerId, ghost: null, armed: false };
-    t.timer = setTimeout(() => { if (t && t.el === el) { t.armed = true; el.classList.add('armed'); navigator.vibrate?.(8); } }, 220);   // hold briefly to pick the card up; a quick swipe scrolls the page
+    const mouse = e.pointerType === 'mouse';
+    t = { el, mouse, x: e.clientX, y: e.clientY, id: e.pointerId, G: null, armed: mouse };
+    if (!mouse) t.timer = setTimeout(() => { if (t && t.el === el) { t.armed = true; el.classList.add('armed'); navigator.vibrate?.(8); } }, 220);
   });
   main.addEventListener('touchmove', e => { if (t && t.armed) e.preventDefault(); }, { passive: false });
-  main.addEventListener('pointermove', e => {
+  window.addEventListener('pointermove', e => {
     if (!t || e.pointerId !== t.id) return;
-    if (!t.ghost) {
-      if (Math.hypot(e.clientX - t.x, e.clientY - t.y) < 10) return;
+    if (!t.G) {
+      if (Math.hypot(e.clientX - t.x, e.clientY - t.y) < (t.mouse ? 5 : 10)) return;
       if (!t.armed) { clearTimeout(t.timer); t = null; return; }                        // moved before the hold: let the page scroll
-      const r = t.el.getBoundingClientRect(), g = t.el.cloneNode(true);
-      g.classList.add('touchghost'); g.classList.remove('dragging');
-      g.style.cssText = `position:fixed;left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;margin:0;z-index:600;pointer-events:none;transform:none;opacity:.92;box-shadow:0 12px 30px rgba(0,0,0,.7)`;
-      t.dx = t.x - r.left; t.dy = t.y - r.top;
-      (main.querySelector('.pm') || document.body).appendChild(g);
-      t.ghost = g; t.el.classList.add('dragging'); hidePreview();
+      const { body, ar } = cardGhostBody(t.el);
+      t.G = ghostStart(body, 'card', ar, t.el, t.x, t.y);
+      t.el.classList.add('dragging');
     }
     e.preventDefault();
-    t.ghost.style.left = `${e.clientX - t.dx}px`; t.ghost.style.top = `${e.clientY - t.dy}px`;
+    ghostMove(t.G, e.clientX, e.clientY);
     const z = zoneAt(e.clientX, e.clientY);
     if (z) markDropZone({ target: document.elementFromPoint(e.clientX, e.clientY), clientX: e.clientX, clientY: e.clientY }, z);
-    else { main.querySelectorAll('[data-zone].over').forEach(x => x.classList.remove('over')); clearMarks(); }
+    else unmark();
   });
-  const end = e => {
-    if (!t || e.pointerId !== t.id) return;
+  const end = (e, cancel) => {
+    if (!t || (e && e.pointerId !== t.id)) return;
     const d = t; t = null; clearTimeout(d.timer); d.el.classList.remove('armed');
-    if (!d.ghost) return;
-    d.ghost.remove(); d.el.classList.remove('dragging');
-    const z = e.type === 'pointerup' ? zoneAt(e.clientX, e.clientY) : null;
-    main.querySelectorAll('[data-zone].over').forEach(x => x.classList.remove('over')); clearMarks();
-    const swallowClick = ev => { ev.stopImmediatePropagation(); ev.preventDefault(); };
-    document.addEventListener('click', swallowClick, true); setTimeout(() => document.removeEventListener('click', swallowClick, true), 50);
-    if (z) applyDrop({ target: document.elementFromPoint(e.clientX, e.clientY), clientX: e.clientX, clientY: e.clientY }, z, { char: d.el.dataset.char, card: Number(d.el.dataset.card) });
+    if (!d.G) return;
+    const z = !cancel && e?.type === 'pointerup' ? zoneAt(e.clientX, e.clientY) : null;
+    const at = z ? { target: document.elementFromPoint(e.clientX, e.clientY), clientX: e.clientX, clientY: e.clientY } : null;
+    unmark(); swallowNextClick();
+    ghostEnd(d.G, !!z);
+    d.el.classList.remove('dragging');
+    if (z) applyDrop(at, z, { char: d.el.dataset.char, card: Number(d.el.dataset.card) });
   };
-  main.addEventListener('pointerup', end); main.addEventListener('pointercancel', end);
+  window.addEventListener('pointerup', e => end(e)); window.addEventListener('pointercancel', e => end(e, true));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && t?.G) { e.preventDefault(); e.stopImmediatePropagation(); end(null, true); } }, true);
 })();
 // Flip a played card with the mockup's animation: turn the card in place first (the page is redrawn from the record, which would cut
 // the animation short), save when it has finished. A card turned face up goes flat afterwards ("settled"), as in the mockup.
@@ -2992,40 +3037,9 @@ document.getElementById('clear').addEventListener('click', async () => {
   let drag = null;
   const LISTS = ['top', 'bot', 'act'], ZONE = { deck: 'pool', disc: 'disc', top: 'top', bot: 'bot', act: 'act' };
   const clear = () => main.querySelectorAll('.amv .drop').forEach(x => x.classList.remove('drop'));
-  const zoneOf = e => e.target.closest?.('.amv [data-amdrop]');
   const dragOf = st => { const mini = st.classList.contains('mini'); return { k: st.dataset.k, from: mini ? st.dataset.z : ZONE[st.dataset.z], idx: mini ? Number(st.dataset.i) : undefined }; };
-  main.addEventListener('dragstart', e => {
-    const st = e.target.closest?.('.amv .stk[data-k], .amv .mini[data-k]');
-    if (!st || st.closest('.amv.editing')) return;
-    drag = dragOf(st);
-    // the drag image is one card painted onto a canvas from the layer images already on screen (a cloned element can come out as a black silhouette)
-    const face = st.querySelector('.stkface'), fr = face?.getBoundingClientRect();
-    if (fr && fr.width) {
-      const k = window.devicePixelRatio || 1, cv = document.createElement('canvas');
-      cv.width = Math.round(fr.width * k); cv.height = Math.round(fr.height * k);
-      Object.assign(cv.style, { position: 'fixed', left: '-400px', top: '0', width: `${fr.width}px`, height: `${fr.height}px`, pointerEvents: 'none' });
-      const ctx = cv.getContext('2d');
-      ctx.scale(k, k);
-      ctx.beginPath(); ctx.roundRect ? ctx.roundRect(0, 0, fr.width, fr.height, 5) : ctx.rect(0, 0, fr.width, fr.height); ctx.clip();
-      ctx.fillStyle = '#1a1510'; ctx.fillRect(0, 0, fr.width, fr.height);
-      face.querySelectorAll('img').forEach(im => {
-        if (!im.complete || !im.naturalWidth) return;
-        const r = im.getBoundingClientRect();
-        try { ctx.drawImage(im, r.left - fr.left, r.top - fr.top, r.width, r.height); } catch (_) { /* skip the layer */ }
-      });
-      document.body.appendChild(cv);
-      e.dataTransfer.setDragImage(cv, fr.width / 2, fr.height / 2);
-      setTimeout(() => cv.remove(), 0);
-    }
-    e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', drag.k);
-  });
   const ok = a => drag && a && (ZONE[a.dataset.amdrop] !== drag.from || LISTS.includes(drag.from));
-  main.addEventListener('dragover', e => {
-    const a = zoneOf(e);
-    clear();
-    if (ok(a)) { e.preventDefault(); a.classList.add('drop'); }
-  });
-  // one drop for the mouse and for touch: the zone, the place among the stack when dropped on a card of the same list
+  // the drop: the zone, the place among the stack when dropped on a card of the same list
   const doDrop = (a, x, target) => {
     const c = pmChar(), g = a?.closest?.('[data-amg]')?.dataset.amg;     // g: the monster or ally deck of the Monsters tab
     clear();
@@ -3037,52 +3051,48 @@ document.getElementById('clear').addEventListener('click', async () => {
     if (g) commit(ed.monAm(record, g, 'move', d.k, { from: d.from, to, idx: d.idx, at }));
     else amdDo(c, 'move', d.k, { from: d.from, to, idx: d.idx, at });
   };
-  main.addEventListener('drop', e => {
-    const a = zoneOf(e);
-    if (ok(a)) e.preventDefault();
-    doDrop(a, e.clientX, e.target);
-  });
-  main.addEventListener('dragend', () => { clear(); drag = null; });
-  // Touch and pen: HTML5 drag events do not fire on touch. Hold a stack or a placed card, then move it; the same drop rules as the mouse.
+  // Drag with pointer events (mouse, touch, pen; the phone too): the mouse picks a stack or a placed card up once it moves 5 px,
+  // touch and pen hold briefly first (holding still shows the preview).
   let t = null;
   const zoneAt = (x, y) => document.elementFromPoint(x, y)?.closest?.('.amv [data-amdrop]');
   main.addEventListener('pointerdown', e => {
-    if (e.pointerType === 'mouse' || e.button || pm.modal || e.target.closest('button, .amv.editing')) return;   // the phone too: hold and move a modifier card (holding still shows the preview)
+    if (e.button || pm.modal || t || e.target.closest('button, .amv.editing')) return;
     const st = e.target.closest?.('.amv .stk[data-k], .amv .mini[data-k]');
     if (!st) return;
-    t = { st, x: e.clientX, y: e.clientY, id: e.pointerId, ghost: null, armed: false };
-    t.timer = setTimeout(() => { if (t && t.st === st) { t.armed = true; st.classList.add('armed'); navigator.vibrate?.(8); } }, 220);
+    const mouse = e.pointerType === 'mouse';
+    t = { st, mouse, x: e.clientX, y: e.clientY, id: e.pointerId, G: null, armed: mouse };
+    if (!mouse) t.timer = setTimeout(() => { if (t && t.st === st) { t.armed = true; st.classList.add('armed'); navigator.vibrate?.(8); } }, 220);
   });
   main.addEventListener('touchmove', e => { if (t && t.armed) e.preventDefault(); }, { passive: false });
-  main.addEventListener('pointermove', e => {
+  window.addEventListener('pointermove', e => {
     if (!t || e.pointerId !== t.id) return;
-    if (!t.ghost) {
-      if (Math.hypot(e.clientX - t.x, e.clientY - t.y) < 10) return;
+    if (!t.G) {
+      if (Math.hypot(e.clientX - t.x, e.clientY - t.y) < (t.mouse ? 5 : 10)) return;
       if (!t.armed) { clearTimeout(t.timer); t = null; return; }                        // moved before the hold: let the page scroll
-      const r = t.st.getBoundingClientRect(), g = t.st.cloneNode(true);
-      g.classList.remove('armed', 'dragging');
-      g.style.cssText = `position:fixed;left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;margin:0;z-index:600;pointer-events:none;opacity:.92;box-shadow:0 12px 30px rgba(0,0,0,.7)`;
-      t.dx = t.x - r.left; t.dy = t.y - r.top;
-      document.body.appendChild(g);
-      t.ghost = g; t.st.classList.add('dragging'); drag = dragOf(t.st);
+      const gb = modGhostBody(t.st);
+      if (!gb) { t = null; return; }
+      t.G = ghostStart(gb.body, 'mod', gb.ar, t.st.querySelector('.stkface') || t.st, t.x, t.y);
+      t.st.classList.add('dragging'); drag = dragOf(t.st);
     }
     e.preventDefault();
-    t.ghost.style.left = `${e.clientX - t.dx}px`; t.ghost.style.top = `${e.clientY - t.dy}px`;
+    ghostMove(t.G, e.clientX, e.clientY);
     clear();
     const z = zoneAt(e.clientX, e.clientY);
     if (ok(z)) z.classList.add('drop');
   });
-  const end = e => {
-    if (!t || e.pointerId !== t.id) return;
-    const d = t; t = null; clearTimeout(d.timer); d.st.classList.remove('armed', 'dragging');
-    if (!d.ghost) return;
-    d.ghost.remove();
-    const swallow = ev => { ev.stopImmediatePropagation(); ev.preventDefault(); };
-    document.addEventListener('click', swallow, true); setTimeout(() => document.removeEventListener('click', swallow, true), 50);
-    if (e.type === 'pointerup') { const z = zoneAt(e.clientX, e.clientY); doDrop(z, e.clientX, document.elementFromPoint(e.clientX, e.clientY)); }
+  const end = (e, cancel) => {
+    if (!t || (e && e.pointerId !== t.id)) return;
+    const d = t; t = null; clearTimeout(d.timer); d.st.classList.remove('armed');
+    if (!d.G) return;
+    swallowNextClick();
+    const z = !cancel && e?.type === 'pointerup' ? zoneAt(e.clientX, e.clientY) : null;
+    ghostEnd(d.G, ok(z));
+    d.st.classList.remove('dragging');
+    if (z) doDrop(z, e.clientX, document.elementFromPoint(e.clientX, e.clientY));
     else { clear(); drag = null; }
   };
-  main.addEventListener('pointerup', end); main.addEventListener('pointercancel', end);
+  window.addEventListener('pointerup', e => end(e)); window.addEventListener('pointercancel', e => end(e, true));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && t?.G) { e.preventDefault(); e.stopImmediatePropagation(); end(null, true); } }, true);
 })();
 
 // Space switches the hand and the modifier deck (not while typing, on a button or link, or with a modal open).

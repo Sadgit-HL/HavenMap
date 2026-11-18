@@ -498,6 +498,18 @@ body.noscroll { overflow:hidden; }
 /* touch drag of playmat cards (pointer events, see app.js): a quick swipe scrolls, a short hold picks the card up */
 .pm:not(.pp) .ac[data-card], .pm:not(.pp) .flipcard[data-card] { touch-action: pan-y; }
 .pm .ac.armed, .pm .flipcard.armed { outline: 2px solid var(--accent); }
+/* drag ghost (ghostStart in app.js): the lifted card under the pointer; the card left behind is a dimmed placeholder */
+.dragghost { position:fixed; left:0; top:0; z-index:2000; pointer-events:none; will-change:transform; }
+.dragghost .dgi { width:100%; height:100%; border-radius:8px; overflow:hidden; background:#1a1510; box-shadow:0 18px 38px rgba(0,0,0,.7), 0 0 0 2px rgba(199,164,74,.85); transform:rotate(3deg) scale(1.04); animation:dglift .14s ease-out both; }
+.dragghost canvas, .dragghost .dgcard { display:block; width:100%; height:100%; position:relative; }
+.dragghost .dgcard > img { display:block; width:100%; height:100%; object-fit:cover; }
+.dragghost .dgcard .noimg { display:flex; align-items:center; justify-content:center; height:100%; padding:8px; text-align:center; color:var(--text); }
+.dragghost .tk { position:absolute; width:var(--tkw,14.6%); aspect-ratio:1; transform:translate(-50%,-50%); }
+.dragghost .tk > img { width:100%; height:100%; display:block; object-fit:contain; filter:drop-shadow(0 1px 3px rgba(0,0,0,.9)); }
+@keyframes dglift { from { transform:rotate(0) scale(1); box-shadow:0 2px 6px rgba(0,0,0,.4), 0 0 0 2px rgba(199,164,74,.85); } }
+@media (prefers-reduced-motion: reduce) { .dragghost .dgi { animation:none; } }
+body.pmdragging, body.pmdragging * { cursor:grabbing !important; user-select:none !important; -webkit-user-select:none !important; }
+.pm .ac.dragging, .pm .flipcard.dragging, .pm .amv .stk.dragging, .pm .amv .mini.dragging { outline:2px dashed rgba(199,164,74,.7); outline-offset:-2px; }
 .pm .enhtable th { position: static; background: none; }
 
 /* touch: bigger hit areas for small controls (the visuals stay the same) */

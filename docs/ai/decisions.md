@@ -33,6 +33,7 @@ Dated, newest first within each group. "Owner" marks decisions the owner made. C
 
 ## Interaction and UI
 
+- 2026-11-18: Playmat drag uses one pointer-event implementation with a custom ghost card (opaque, lifted, fixed size, placeholder left behind, fly back on cancel) for mouse and touch, replacing the browser's native drag image (faint, sized like the source). Owner.
 - 2026-11-18: Scenario tab look: flowchart boxes are sticker cards (sticker art on top, number and name band below; mockup variant 1C), the scenario modal is a page with a sticker banner (variant 3A), and each storyline has a colour (the owner's sheet hues, darkened) used on lanes, lane labels, boxes, tags and link chips. Owner.
 - 2026-11-18: Scenario flowchart: lane labels stay visible at the left edge; the chart opens where it was left, else on the next scenario after the last completed one; an overview map in the corner; lane order for the shortest total arrow length. Owner.
 - 2026-11-18: Scenario flowchart: panning by right-drag (as on the map), left-drag on the background and Space plus drag; the chart has no browser menu. Ctrl+wheel over the chart changes the chart size, not the page zoom. A search field finds scenarios by number or name; only boxes drawn with their name are found (spoiler rule), the found box is centered and marked gold. Owner.

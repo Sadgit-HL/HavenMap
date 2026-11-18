@@ -49,9 +49,9 @@ export function amViewHtml(A, esc, edit) {
     const layers = Math.max(1, Math.min(n, 4)), edges = Array.from({ length: layers - 1 }, (_, i) => `<span class="edge" style="left:${(layers - 1 - i) * 3}px;top:${-(layers - 1 - i) * 3}px"></span>`).join('');
     const face = sp || t.img ? `<img src="${esc(t.img)}" alt="${esc(t.label ?? t.face)}" draggable="false">` : `<span class="amslot" data-keep data-amslot="${esc(t.key)}"></span>`;   // a picture: specials, and the monster and ally decks
     const ctl = edit && zone === 'deck' ? `<span class="stkctl"><button type="button" data-amact="${sp ? 'rem' : 'minus'}" data-key="${esc(t.key)}"${n < 1 ? ' disabled' : ''} aria-label="One less">-</button><output>${n}</output><button type="button" data-amact="${sp ? 'add' : 'plus'}" data-key="${esc(t.key)}"${sp && n >= t.max ? ' disabled' : ''} aria-label="One more">+</button></span>` : '';
-    return `<div class="stk${n < 1 ? ' zero' : ''}" data-k="${esc(t.key)}" data-z="${zone}" draggable="${!edit}" title="${esc(t.face)}${n > 1 ? ` x${n}` : ''}">${edges}<span class="stkface">${face}</span>${n > 1 && !edit ? `<span class="nb">${n}</span>` : ''}${ctl}</div>`;
+    return `<div class="stk${n < 1 ? ' zero' : ''}" data-k="${esc(t.key)}" data-z="${zone}" title="${esc(t.face)}${n > 1 ? ` x${n}` : ''}">${edges}<span class="stkface">${face}</span>${n > 1 && !edit ? `<span class="nb">${n}</span>` : ''}${ctl}</div>`;
   };
-  const mini = (t, z) => `<div class="mini" data-k="${esc(t.key)}" data-z="${z}" data-i="${t.i}" draggable="${!edit}" title="${esc(t.face ?? t.label)}"><span class="stkface">${t.img ? `<img src="${esc(t.img)}" alt="${esc(t.label)}" draggable="false">` : `<span class="amslot" data-keep data-amslot="${esc(t.key)}"></span>`}</span></div>`;
+  const mini = (t, z) => `<div class="mini" data-k="${esc(t.key)}" data-z="${z}" data-i="${t.i}" title="${esc(t.face ?? t.label)}"><span class="stkface">${t.img ? `<img src="${esc(t.img)}" alt="${esc(t.label)}" draggable="false">` : `<span class="amslot" data-keep data-amslot="${esc(t.key)}"></span>`}</span></div>`;
   const strip = (z, label, list, cls) => `<div class="${cls}" data-amdrop="${z}"><span class="lab">${label}</span><div class="minis">${list.map(t => mini(t, z)).join('')}</div></div>`;
   const ord = k => { const i = AM_STANDARD.findIndex(t => t.key === k); return i < 0 ? 99 : i; };
   const cards = (edit ? [...A.tiles.filter(t => t.n > 0), ...A.missing.map(t => ({ ...t, n: 0 }))].sort((a, b) => ord(a.key) - ord(b.key)) : A.tiles.filter(t => t.n > 0));   // edit: every standard card, also those not in the deck
@@ -114,7 +114,7 @@ export function playmatHtml(c, X, S = {}) {
     const card = X.cardById.get(id), url = X.cardImageUrl(card), name = nameOf(id), ini = iniOf(id);
     const inner = url ? `<img src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false">` : `<div class="noimg">${esc(name)}</div>`;
     const body = `${inner}${ini != null ? `<span class="inib" title="Initiative ${ini}">${ini}</span>` : ''}${marks(`c:${id}`)}${withHandle ? handle(`c:${id}`) + MORE : ''}`;
-    return `<div class="ac" draggable="true" data-card="${id}" data-char="${cid}"${ini != null ? ` data-ini="${ini}"` : ''}${i != null ? ` style="--i:${i}"` : ''} title="${esc(name)}">${face ? `<div class="acf">${body}</div>` : body}</div>`;
+    return `<div class="ac" data-card="${id}" data-char="${cid}"${ini != null ? ` data-ini="${ini}"` : ''}${i != null ? ` style="--i:${i}"` : ''} title="${esc(name)}">${face ? `<div class="acf">${body}</div>` : body}</div>`;
   };
 
   // a face-down or face-up card in a play slot
@@ -123,7 +123,7 @@ export function playmatHtml(c, X, S = {}) {
     const p = c.play[i];
     const inner = !p ? `<div class="slotempty">${i + 1}</div>` : (() => {
       const card = X.cardById.get(p.id), url = X.cardImageUrl(card), name = nameOf(p.id), ini = iniOf(p.id);
-      return `<div class="flipcard${p.up ? ' is-front settled' : ''}" draggable="true" data-card="${p.id}" data-char="${cid}" data-slot="${i}"${ini != null ? ` data-ini="${ini}"` : ''} role="button" tabindex="0" title="Click to flip: ${esc(name)}"><div class="flipinner"><div class="face back">${back}</div><div class="face front">${url ? `<img src="${esc(url)}" alt="${esc(name)}" draggable="false">` : `<div class="noimg">${esc(name)}</div>`}</div></div>${marks(`c:${p.id}`)}${MORE}</div>`;
+      return `<div class="flipcard${p.up ? ' is-front settled' : ''}" data-card="${p.id}" data-char="${cid}" data-slot="${i}"${ini != null ? ` data-ini="${ini}"` : ''} role="button" tabindex="0" title="Click to flip: ${esc(name)}"><div class="flipinner"><div class="face back">${back}</div><div class="face front">${url ? `<img src="${esc(url)}" alt="${esc(name)}" draggable="false">` : `<div class="noimg">${esc(name)}</div>`}</div></div>${marks(`c:${p.id}`)}${MORE}</div>`;
     })();
     return `<div class="slot6${i === 0 ? ' first' : ''}" data-slot="${i + 1}" data-zone="play${i + 1}" data-char="${cid}"><div class="slotcard">${inner}</div></div>`;
   };
