@@ -132,6 +132,8 @@ An empty list shows one muted line (`.emptyline`), for example "No stickers yet.
 - The modal opens from the dock or a pencil button. Only one playmat modal is open at a time (`pm.modal`).
 - Keep the scroll position when the modal re-renders (`keep = box.scrollTop`).
 - Previews of a card in a modal are docked beside the box, on the side set in the display settings (`dockPreview`).
+- Windows outside the playmat (`.modalbox`: Overview, Scenarios, Settings) use the same frame since 2026-11-18: 12px corners, 18px 22px padding, deep shadow, title 17px gold, close button 28px. Content goes in `.chedit` with `.cesec` panels (a gold uppercase `h4`, a count in its `span`), fields as `label.cefield` with 34px inputs, and a footer `.chfoot` with the Close button in the journal button look. Several tracks or parts of one thing are tabs (`.subtabs`), as in the Prosperity window.
+- Counters in those windows use the playmat's counter look (`.wsp`, `counter()` in `campaign/app.js`): the value, which can be typed (a number, or +N / -N), and up and down arrows; on phones and touch screens [-] value [+] with 40px buttons. Used for small numbers changed step by step (Party: difficulty, inspiration); rows with many numbers keep plain inputs (retired characters).
 
 ### 5.7 Context menus
 

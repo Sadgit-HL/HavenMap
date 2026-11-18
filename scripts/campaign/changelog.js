@@ -305,7 +305,6 @@ function describeHeroDeck(c, sa, sb) {
 function describeMonsters(a, b, add) {
   const name = id => monsterById(id)?.title.replace(/\b\w/g, ch => ch.toUpperCase()) || `#${id}`;
   const deckName = slug => slug.replace(/-/g, ' ').replace(/\b\w/g, ch => ch.toUpperCase());
-  if (a.lvl !== b.lvl) add('Monsters', 'Level', `Monster level ${a.lvl ?? 'auto'} to ${b.lvl ?? 'auto'}`);
   if (a.round !== b.round) add('Monsters', 'Round', `Round ${a.round} to ${b.round}`);
   const t = diffList(a.types, b.types);
   t.add.forEach(id => add('Monsters', 'Monster type', `Added ${name(id)}`));

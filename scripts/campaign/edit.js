@@ -5,7 +5,7 @@ import { SCENARIOS, STICKERS } from '../games/gh2_scenarios.js';
 import { ITEMS } from './itemList.js';
 import { CLASSES } from '../games/gh2_classes.js';
 import { ALL_CLASSES } from './classList.js';
-import { SCN_STATE, availableSet, CARD_ZONES, zoneOf, handList, cardLevel, ownedCards, pendingPicks, handLimit, classByName, SLOT_ORDER, itemFits, itemsInUse, ownsItem } from './record.js';
+import { SCN_STATE, availableSet, CARD_ZONES, zoneOf, handList, cardLevel, ownedCards, pendingPicks, handLimit, normalDifficulty, classByName, SLOT_ORDER, itemFits, itemsInUse, ownsItem } from './record.js';
 import { CARDS } from '../games/gh2_cards.js';
 import { SPECIAL_TRAITS } from './traits.js';
 import { tokenDefs, markerTokens, MARK_STICKERS } from './classTokens.js';
@@ -922,9 +922,11 @@ export function setMarkPrice(r, cid, key, price) {
 
 const monEdit = (r, fn) => edit(r, x => { x.mon = structuredClone(monOf(x)); fn(x.mon); });
 // Level 0..7, or null for the scenario level of the party.
+// Set the scenario level (Monsters tab, Party window): it is stored as the difficulty (party.diff = level - normal difficulty, -2 .. +4).
+// null or '' = back to the normal difficulty (difficulty 0).
 export function monSetLevel(r, value) {
   const n = value === null || value === '' ? null : toInt(value);
-  return monEdit(r, m => { m.lvl = n === null ? null : clamp(n, 0, 7); });
+  return setParty(r, 'diff', n === null ? 0 : clamp(n, 0, 7) - normalDifficulty(r));
 }
 export function monAddType(r, id) {
   const t = monsterById(id), cur = monOf(r);

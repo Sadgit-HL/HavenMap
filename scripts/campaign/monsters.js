@@ -3,7 +3,7 @@
 // record, so every invited player sees the same decks.
 //
 // record.mon = {
-//   lvl:   monster level 0..7, or null = the normal difficulty of the party (record.js normalDifficulty)
+//   (the monster level is the campaign's scenario level: record.js scenarioLevel, party.diff; mon.lvl before 2026-11-18)
 //   round: round number, counted up by End of round
 //   types: [monster id] up to MON_MAX, in the order added (ids of scripts/games/gh.js, Gloomhaven 2nd edition)
 //   decks: { slug: { deck: [n], active: [n], discard: [n] } }   ability decks; a missing entry is a full deck. Types that share a deck
@@ -34,7 +34,7 @@ export const deckCard = (slug, n) => deckCards(slug).find(c => c.n === n) || nul
 
 export function monOf(r) {
   const m = r?.mon || {};
-  return { lvl: m.lvl ?? null, round: m.round || 1, types: Array.isArray(m.types) ? m.types : [], decks: m.decks || {}, am: m.am || {} };
+  return { round: m.round || 1, types: Array.isArray(m.types) ? m.types : [], decks: m.decks || {}, am: m.am || {} };
 }
 export function deckState(mon, slug) {
   const s = mon.decks?.[slug];

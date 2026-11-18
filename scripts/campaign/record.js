@@ -111,6 +111,11 @@ export function normalize(raw) {
   r.scn = r.scn || {};
   for (const k of ['bgs', 'pq']) r[k] = r[k] && typeof r[k] === 'object' && !Array.isArray(r[k]) ? r[k] : {};
   r.chars = (r.chars || []).map(normalizeChar);
+  // a monster level saved by the Monsters tab before 2026-11-18 (mon.lvl) becomes the difficulty: level minus the normal difficulty
+  if (r.mon && r.mon.lvl != null) {
+    r.party = { ...r.party, diff: Math.max(-2, Math.min(4, Number(r.mon.lvl) - normalDifficulty(r))) };
+    r.mon = { ...r.mon }; delete r.mon.lvl;
+  }
   return r;
 }
 
@@ -176,9 +181,13 @@ export function validate(r) {
 
 // Scenario level: half the average party level (rounded up) plus the difficulty modifier, clamped 0..7.
 // (Gloomhaven rule, using the sheet's own "Average Level" and difficulty value.) Unverified for GH2 2e edge cases.
-export function scenarioLevel(party) {
-  return Math.max(0, Math.min(7, Math.ceil((party.avg || 0) / 2) + (party.diff || 0)));
+// The scenario level (monster level) of the campaign: the normal difficulty plus the difficulty (party.diff), clamped 0..7. One
+// value for the Overview (Party) and the Monsters tab (since 2026-11-18; the Monsters tab had its own level, mon.lvl, before).
+export function scenarioLevel(r) {
+  return Math.max(0, Math.min(7, normalDifficulty(r) + (r.party?.diff || 0)));
 }
+// The scenario levels the difficulty range (-2 .. +4) allows at the party's normal difficulty.
+export const scenarioLevelRange = r => [Math.max(0, normalDifficulty(r) - 2), Math.min(7, normalDifficulty(r) + 4)];
 
 // Average character level, from the mercenaries' own levels (the stored party.avg only when there are none), and the normal difficulty:
 // that average halved and rounded up, clamped 0..7 (Overview tab, party modal, default monster level of the Monsters tab).

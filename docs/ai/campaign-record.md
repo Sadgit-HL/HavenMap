@@ -15,7 +15,7 @@ The record is the one JSON document that holds a campaign. It is what the page s
 |---|---|
 | `v`, `ver` | schema version and revision counter (`RECORD_VERSION` = 1) |
 | `name`, `players` | campaign name; players `[{ seat, name }]` (four seats) |
-| `party` | `insp` (inspiration), `avg` (average level, derived on display), `diff`, `diffName` |
+| `party` | `insp` (inspiration), `avg` (average level, derived on display), `diff` (difficulty -2 to +4: the scenario level is the normal difficulty plus `diff`, clamped 0 to 7, `scenarioLevel` in `record.js`; set from the Overview's Party window and the Monsters tab), `diffName` |
 | `rep` | reputation per faction: `demons`, `merchants`, `guard` (-10 to 20) |
 | `pros`, `imb`, `don` | prosperity checkmarks; imbuement boxes (0 to 80); donation boxes (0 to 100) |
 | `stk`, `cls` | sticker labels; unlocked class names |
@@ -31,7 +31,7 @@ The record is the one JSON document that holds a campaign. It is what the page s
 | `retired` | retired characters |
 | `resLinks` | overrides for the Resources tab links |
 | `log` | edit history `[{ t, u, tab, kind, d }]`, last 1000 kept |
-| `mon` | Monsters tab (`scripts/campaign/monsters.js`): `{ lvl, round, types, decks, am }`. `lvl` 0 to 7 or null (the party's scenario level); `types` up to 8 monster ids (`scripts/games/gh.js`, GH2); `decks` ability deck state per deck slug `{ deck, active, discard }` (missing = full; types that share a deck share the entry); `am` the monster (`m`) and ally (`a`) modifier decks, in the state shape of `amdDeck.js` plus `imb` (monster imbuement 0 to 2) |
+| `mon` | Monsters tab (`scripts/campaign/monsters.js`): `{ round, types, decks, am }` (no level of its own since 2026-11-18: the monster level is the scenario level; a saved `lvl` is turned into `party.diff` on load); `types` up to 8 monster ids (`scripts/games/gh.js`, GH2); `decks` ability deck state per deck slug `{ deck, active, discard }` (missing = full; types that share a deck share the entry); `am` the monster (`m`) and ally (`a`) modifier decks, in the state shape of `amdDeck.js` plus `imb` (monster imbuement 0 to 2) |
 
 Events also carry `pend` (open events, one per deck, `{ city?, road? }`), `marks` (ticked boxes per card) and `notes`.
 

@@ -22,7 +22,7 @@ import { phoneHtml } from './phone.js';
 import { monstersHtml } from './monstersView.js';
 import { monOf, deckState as monDeckState } from '../scripts/campaign/monsters.js';
 import {
-  normalize, validate, prosperityLevel, partyAvg, normalDifficulty, handOf, handList, zoneOf, CARD_ZONES, shopCopies, itemsInUse, ownsItem, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE, ownedCards, cardLevel, pendingPicks, handLimit,
+  normalize, validate, prosperityLevel, partyAvg, normalDifficulty, scenarioLevel, scenarioLevelRange, handOf, handList, zoneOf, CARD_ZONES, shopCopies, itemsInUse, ownsItem, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE, ownedCards, cardLevel, pendingPicks, handLimit,
 } from '../scripts/campaign/record.js';
 import * as ed from '../scripts/campaign/edit.js';
 import { describeChange, foldLog, LOG_TABS, LOG_MAX } from '../scripts/campaign/changelog.js';
@@ -306,8 +306,6 @@ const ovTable = (head, rows) => `<div class="tablewrap">${table(head, rows).repl
 // Empty state of an Overview list: one muted line.
 const noneText = t => `<p class="emptyline">${esc(t)}</p>`;
 
-// A card value with a round pencil button to its right that opens the modal for it.
-const editPill = (attr, label, v) => `<span class="stepper"><b>${esc(v)}</b><button type="button" class="editbtn editicon secedit" ${attr} title="Edit ${esc(label.toLowerCase())}" aria-label="Edit ${esc(label.toLowerCase())}">${PENCIL}</button></span>`;
 
 // A class chip for the Overview. A class a character plays is highlighted and shows its player ("Tinkerer: Guido"), or the
 // character's name in brackets when no player is set ("Cragheart (Shale)").
@@ -344,10 +342,10 @@ function overview(r) {
   <div class="grid">
     <div class="card"><h3>Party${modalBtn('data-party-open', 'party')}</h3>${kv('Ø Character level', esc(avgText(avg)))}
       ${kv('Normal difficulty', esc(normalDifficulty(r)))}
-      ${kv('Difficulty', esc(r.party.diff > 0 ? `+${r.party.diff}` : String(r.party.diff)))}
+      ${kv('Scenario level', `${esc(scenarioLevel(r))}${r.party.diff ? ` <span class="lvdiff">(${esc(signed(r.party.diff))})</span>` : ''}`)}
       ${kv('Inspiration', esc(r.party.insp))}
       ${kv('Enhancements', esc(r.enh.length))}</div>
-    <div class="card"><h3>Prosperity</h3>${kv('Prosperity level', esc(prosperityLevel(r.pros)))}${kv('Prosperity checks', editPill('data-pros-open', 'Prosperity checks', r.pros))}${kv('Great Oak sanctuary', editPill('data-don-open', 'Great Oak sanctuary', r.don))}${kv('Imbuement', editPill('data-imb-open', 'Imbuement', r.imb))}</div>
+    <div class="card"><h3>Prosperity${modalBtn('data-pros-open', 'prosperity')}</h3>${kv('Prosperity level', esc(prosperityLevel(r.pros)))}${kv('Prosperity checks', esc(r.pros))}${kv('Great Oak sanctuary', esc(r.don))}${kv('Imbuement', esc(r.imb))}</div>
     <div class="card"><h3>Reputation${modalBtn('data-rep-open', 'reputation')}</h3>${rep('Demons', 'demons')}${rep('Merchants', 'merchants')}${rep('City Guard', 'guard')}</div>
     <div class="card"><h3>Scenarios</h3>${[[SCN_STATE.COMPLETED, 'done'], [SCN_STATE.UNLOCKED, 'open'], [SCN_STATE.LOCKED, 'shut']].map(([i, cls]) => scnRow(SCN_STATE_NAME[i], counts[i] || 0, SCENARIOS.length, cls)).join('')}${kv(SCN_STATE_NAME[SCN_STATE.LOCKED_OUT], esc(counts[SCN_STATE.LOCKED_OUT] || 0))}${kv('Total', esc(SCENARIOS.length))}
       ${kv('Days played', esc(days))}${kv('Ø Days/scenario', esc(avgDays))}</div>
@@ -1433,7 +1431,7 @@ function trackSection({ title, count, size, attr, sections, unit }) {
     const pill = sections ? Object.entries(sections).filter(([n]) => Number(n) >= from && Number(n) < from + 10).map(([n, sec]) => `<span class="ptpill ${count >= Number(n) ? 'done' : ''}" title="Read when box ${esc(n)} is ticked">Section ${esc(sec)}${count >= Number(n) ? ' &check;' : ''}</span>`).join('') : '';
     rows.push(`<div class="ptrow${sections ? ' ptrows' : ''}">${boxes.join('')}${sections ? `<span class="ptside">${pill}</span>` : ''}</div>`);
   }
-  return `<section class="ptlevel ${count ? 'reached' : ''}"><div class="pthead"><b>${esc(title)}</b><span class="hint">${count} of ${size} &middot; <span class="ptplustag">+1P</span> &times; ${plus}</span></div>
+  return `<section class="cesec"><h4>${esc(title)}<span>${count} of ${size} &middot; <span class="ptplustag">+1P</span> &times; ${plus}</span></h4>
     <div class="ptgrid">${rows.join('')}</div></section>`;
 }
 let prosModal = false;                             // 'pros' | 'don' | 'imb': which track the modal shows
@@ -1467,11 +1465,12 @@ function renderProsModal() {
   const don = trackSection({ title: 'Great Oak sanctuary', count: record.don, size: 100, attr: 'data-donbox', unit: 'Gold' });
   const imb = trackSection({ title: 'Imbuements', count: record.imb, size: 80, attr: 'data-imbox', sections: IMBUEMENT_SECTIONS, unit: 'Imbuement' });
   const mode = prosModal;
-  const title = { pros: 'Prosperity track', don: 'Great Oak sanctuary', imb: 'Imbuements' }[mode];
-  const body = mode === 'don' ? don : mode === 'imb' ? imb : `<p class="ptsum">Level <b>${lvNow}</b> &middot; <b>${pros}</b> of ${last} checkmarks</p>${levels}`;
+  // one window, three tabs: the prosperity track, the Great Oak sanctuary, the imbuements
+  const tabs = `<nav class="subtabs prostabs" role="tablist" aria-label="Prosperity tracks">${[['pros', 'Prosperity'], ['don', 'Great Oak sanctuary'], ['imb', 'Imbuement']].map(([k, l]) => `<button type="button" role="tab" data-prostab="${k}" aria-selected="${mode === k}">${l}</button>`).join('')}</nav>`;
+  const body = tabs + (mode === 'don' ? don : mode === 'imb' ? imb : `<section class="cesec"><h4>Prosperity track<span>level <b>${lvNow}</b> &middot; <b>${pros}</b> of ${last} checkmarks</span></h4>${levels}</section>`);
   prosRoot.innerHTML = `<div class="modal" id="prosModal" role="dialog" aria-modal="true" aria-labelledby="prosTitle"><div class="modalbox modalwide ptmodal">
     <button type="button" class="modalx" data-pros-close aria-label="Close">&times;</button>
-    <h3 id="prosTitle">${esc(title)}</h3>
+    <h3 id="prosTitle">Prosperity</h3>
     <div class="chedit">${body}
       <div class="chfoot"><button type="button" class="btn" data-pros-close>Close</button></div></div></div></div>`;
   prosRoot.querySelector('.modalbox').scrollTop = keep;
@@ -1479,6 +1478,8 @@ function renderProsModal() {
 function closeProsModal() { prosModal = false; renderProsModal(); }
 prosRoot.addEventListener('click', e => {
   if (e.target.id === 'prosModal' || e.target.closest('[data-pros-close]')) { closeProsModal(); return; }
+  const tab = e.target.closest('[data-prostab]')?.dataset.prostab;
+  if (tab) { prosModal = tab; renderProsModal(); prosRoot.querySelector('.modalbox').scrollTop = 0; return; }
   const n = Number(e.target.closest('[data-pbox]')?.dataset.pbox);
   if (n) commit(ed.setProsperity(record, n === record.pros ? n - 1 : n));
   const don = Number(e.target.closest('[data-donbox]')?.dataset.donbox);
@@ -1487,9 +1488,9 @@ prosRoot.addEventListener('click', e => {
   if (imb) commit(ed.setImbuement(record, imb === record.imb ? imb - 1 : imb));
 });
 main.addEventListener('click', e => {
-  const open = e.target.closest('[data-pros-open],[data-don-open],[data-imb-open]');
+  const open = e.target.closest('[data-pros-open]');
   if (!open) return;
-  prosModal = open.hasAttribute('data-don-open') ? 'don' : open.hasAttribute('data-imb-open') ? 'imb' : 'pros';
+  prosModal = 'pros';
   renderProsModal();
 });
 
@@ -1519,7 +1520,7 @@ function renderRepModal() {
       const st = status(rep, e);
       return `<span class="ptpill rep-${st || 'off'}" title="${st === 'ready' ? 'Ready to read' : st === 'wait' ? 'Reputation reached, scenarios still to complete' : 'Reputation not reached yet'}">Section ${esc(e.section)} <small>at ${e.value}${e.requires ? ` &middot; ${need(e)}` : ''}</small>${st === 'ready' ? ' &check;' : ''}</span>`;
     }).join('');
-    return `<section class="ptlevel reached"><div class="pthead"><b>${name}</b><span class="hint">reputation <b>${rep}</b></span></div>
+    return `<section class="cesec"><h4>${name}<span>reputation <b>${rep}</b></span></h4>
       <div class="ptgrid"><div class="ptrow">${boxes.join('')}</div><div class="ptnotes">${pills}</div></div></section>`;
   }).join('');
   const top = Math.max(...REP_FACTIONS.map(([k]) => record.rep[k]));
@@ -1549,6 +1550,19 @@ main.addEventListener('click', e => {
 let partyModal = false;
 const partyRoot = document.createElement('div');
 document.body.appendChild(partyRoot);
+// A counter of a window (the playmat's counter look: the value, up and down arrows; on phones and touch screens [-] value [+]). The value
+// can be typed: a number, or +N / -N to add or subtract. sign: the value is shown with its sign (+2, 0, -1) and a typed +N or -N is the value.
+const SP_UP = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>';
+const SP_DN = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+const counter = (label, key, v, min, max, sign = false, after = '') => `<div class="cefield"><span>${esc(label)}</span><span class="wlv"><span class="wsp"><input type="text" inputmode="numeric" class="wspv" data-party-type="${key}" value="${esc(sign ? signed(v) : v)}" aria-label="${esc(label)}" title="${sign ? 'Type the value, for example +2 or -1' : 'Type a number, or +N / -N'}"><span class="spc"><button type="button" data-party-step="${key}:1" aria-label="${esc(label)} up"${v >= max ? ' disabled' : ''}>${SP_UP}</button><button type="button" data-party-step="${key}:-1" aria-label="${esc(label)} down"${v <= min ? ' disabled' : ''}>${SP_DN}</button></span></span>${after}</span></div>`;
+// The scenario level as on the Monsters tab: the level with up and down arrows, then the difficulty pill (0, +1, -1 ...; not 0: a
+// click goes back to 0). The level is stored as the difficulty (ed.monSetLevel); both places show the same value.
+function levelControl(r) {
+  const lvl = scenarioLevel(r), [lo, hi] = scenarioLevelRange(r), d = r.party.diff || 0, nd = normalDifficulty(r);
+  const pill = d ? `<button type="button" class="wdiff on" data-party-lvauto title="Normal difficulty is level ${nd}: back to normal" aria-label="Difficulty ${esc(signed(d))}, back to normal">${esc(signed(d))}</button>`
+    : `<span class="wdiff" title="Normal difficulty (level ${nd})" aria-label="Normal difficulty">0</span>`;
+  return counter('Scenario level', 'lvl', lvl, lo, hi, false, pill);
+}
 function renderPartyModal() {
   if (!partyModal || !record) { partyModal = false; partyRoot.innerHTML = ''; return; }
   const keep = partyRoot.querySelector('.modalbox')?.scrollTop || 0;
@@ -1556,17 +1570,36 @@ function renderPartyModal() {
   partyRoot.innerHTML = `<div class="modal" id="partyModal" role="dialog" aria-modal="true" aria-labelledby="partyTitle"><div class="modalbox partybox">
     <button type="button" class="modalx" data-party-close aria-label="Close">&times;</button>
     <h3 id="partyTitle">Party</h3>
-    ${kv('Ø Character level', esc(avgText(avg)))}
-    ${kv('Normal difficulty', esc(normalDifficulty(record)))}
-    ${kv('Enhancements', esc(record.enh.length))}
-    <div class="partyedit">${kv('Difficulty', num('party', 'diff', record.party.diff, { min: -2, max: 4 }))}${kv('Inspiration', num('party', 'insp', record.party.insp, { min: 0, max: 99 }))}</div></div></div>`;
+    <div class="chedit">
+      <section class="cesec"><h4>Party</h4>${kv('Ø Character level', esc(avgText(avg)))}${kv('Normal difficulty', esc(normalDifficulty(record)))}${kv('Enhancements', esc(record.enh.length))}</section>
+      <section class="cesec"><h4>Scenario level and inspiration</h4><div class="cegrid">
+        ${levelControl(record)}${counter('Inspiration', 'insp', record.party.insp ?? 0, 0, 99)}</div></section>
+      <div class="chfoot"><button type="button" class="btn" data-party-close>Close</button></div></div></div></div>`;
   partyRoot.querySelector('.modalbox').scrollTop = keep;
 }
 function closePartyModal() { partyModal = false; renderPartyModal(); }
 partyRoot.addEventListener('click', e => {
   if (e.target.id === 'partyModal' || e.target.closest('[data-party-close]')) closePartyModal();
 });
-partyRoot.addEventListener('change', e => { if (e.target.dataset.act === 'party') apply(e.target); });
+partyRoot.addEventListener('click', e => {
+  const b = e.target.closest('[data-party-step]');
+  if (!b || b.disabled) return;
+  const [key, d] = b.dataset.partyStep.split(':');
+  if (key === 'lvl') { commit(ed.monSetLevel(record, scenarioLevel(record) + Number(d))); return; }
+  commit(ed.setParty(record, key, (record.party[key] ?? 0) + Number(d)));
+});
+partyRoot.addEventListener('click', e => { if (e.target.closest('[data-party-lvauto]')) commit(ed.monSetLevel(record, null)); });
+partyRoot.addEventListener('change', e => {
+  const key = e.target.dataset.partyType;
+  if (!key) return;
+  if (key === 'lvl') { const n = Number(String(e.target.value).trim()); if (Number.isInteger(n)) commit(ed.monSetLevel(record, n)); else renderPartyModal(); return; }
+  const t = String(e.target.value).trim(), cur = record.party[key] ?? 0;
+  // +N adds and -N subtracts, except for the difficulty, which is shown with its sign: there +N and -N are the value
+  const relative = key !== 'diff' && /^[+-]\d+$/.test(t);
+  const v = relative ? cur + Number(t) : Number(t);
+  if (Number.isFinite(v) && t !== '') commit(ed.setParty(record, key, v)); else renderPartyModal();
+});
+partyRoot.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.dataset.partyType) e.target.blur(); });
 main.addEventListener('click', e => {
   if (!e.target.closest('[data-party-open]')) return;
   partyModal = true;
@@ -2567,7 +2600,7 @@ main.addEventListener('click', async e => {
   if (!q('.mon') || !record) return;
   e.stopImmediatePropagation();
   const g = monView.amg === 'a' ? 'a' : 'm', d = sel => q(sel)?.dataset;
-  if (q('[data-monlv]')) { const m = monOf(record), nd = normalDifficulty(record), lv = (m.lvl ?? nd) + Number(d('[data-monlv]').monlv); commit(ed.monSetLevel(record, lv === nd ? null : lv)); return; }   // back at normal: follow it again
+  if (q('[data-monlv]')) { commit(ed.monSetLevel(record, scenarioLevel(record) + Number(d('[data-monlv]').monlv))); return; }   // the scenario level, stored as the difficulty
   if (q('[data-monlvauto]')) { commit(ed.monSetLevel(record, null)); return; }
   if (q('[data-monend]')) { commit(ed.monEndRound(record)); return; }
   if (q('[data-monnew]')) { if (await ask({ title: 'New scenario', text: 'Shuffle every ability deck and both modifier decks and start at round 1?', ok: 'Start' })) commit(ed.monNewScenario(record)); return; }

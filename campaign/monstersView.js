@@ -4,7 +4,7 @@
 import { imageFile } from '../scripts/images.js';
 import { MONSTERS, MON_MAX, monOf, monsterById, deckSlug, deckCards, deckState, deckNeedsShuffle, deckRollCode } from '../scripts/campaign/monsters.js';
 import { drawState, amOwner, amdRollCode } from '../scripts/campaign/amdDeck.js';
-import { normalDifficulty } from '../scripts/campaign/record.js';
+import { normalDifficulty, scenarioLevel, scenarioLevelRange } from '../scripts/campaign/record.js';
 import { amViewHtml } from './playmat.js';
 
 const UP = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>';
@@ -22,19 +22,19 @@ const statUrl = (m, lvl) => imageFile(`images/gh2/monsters/stats/${m.title.repla
 
 // V = { amg: 'm' | 'a', amEdit, amOpen }
 export function monstersHtml(r, V, esc) {
-  const m = monOf(r), lvl = m.lvl ?? normalDifficulty(r), g = V.amg === 'a' ? 'a' : 'm', st = m.am[g] || {};
+  const m = monOf(r), lvl = scenarioLevel(r), [lvMin, lvMax] = scenarioLevelRange(r), g = V.amg === 'a' ? 'a' : 'm', st = m.am[g] || {};
   const A = drawState(amOwner(g, st), st);
 
   const chosen = new Set(m.types);
   const add = m.types.length < MON_MAX ? `<label class="monfield monadd"><span class="lab">Add</span><select data-monadd aria-label="Add a monster type"><option value="">Monster...</option>${
     ['Monsters', 'Bosses'].map((grp, i) => `<optgroup label="${grp}">${MONSTERS.filter(x => !!x.boss === !!i && !chosen.has(x.id)).map(x => `<option value="${x.id}">${esc(title(x.title))}</option>`).join('')}</optgroup>`).join('')}</select></label>` : '';
-  // The level follows the normal difficulty of the party (m.lvl null) until changed; the pill right of it shows the difference to
-  // normal (0, +1, -1 ...). Not 0: a click goes back to normal.
+  // The level is the campaign's scenario level (record.js scenarioLevel): the normal difficulty of the party plus the difficulty
+  // (party.diff, also set in the Overview's Party window). The pill shows the difficulty (0, +1, -1 ...); not 0: a click goes back to 0.
   const nd = normalDifficulty(r), bump = lvl - nd, bumpTxt = bump > 0 ? `+${bump}` : String(bump);
   const diff = bump ? `<button type="button" class="mondiff on" data-monlvauto title="Normal difficulty is level ${nd}: back to normal" aria-label="Difficulty ${bumpTxt}, back to normal">${bumpTxt}</button>`
     : `<span class="mondiff" title="Normal difficulty (level ${nd})" aria-label="Normal difficulty">0</span>`;
   const bar = `<div class="monbar">
-    <span class="monfield"><span class="lab">Scenario level</span><span class="sp"><b>${lvl}</b><span class="spc"><button type="button" data-monlv="1" aria-label="Raise the monster level"${lvl >= 7 ? ' disabled' : ''}>${UP}</button><button type="button" data-monlv="-1" aria-label="Lower the monster level"${lvl <= 0 ? ' disabled' : ''}>${DN}</button></span></span>${diff}</span>
+    <span class="monfield"><span class="lab">Scenario level</span><span class="sp"><b>${lvl}</b><span class="spc"><button type="button" data-monlv="1" aria-label="Raise the monster level"${lvl >= lvMax ? ' disabled' : ''}>${UP}</button><button type="button" data-monlv="-1" aria-label="Lower the monster level"${lvl <= lvMin ? ' disabled' : ''}>${DN}</button></span></span>${diff}</span>
     <span class="monfield"><span class="lab">Round</span><b class="monround">${m.round}</b></span>
     ${add}
     <span class="monacts"><button type="button" class="btn6" data-monnew title="Shuffle every deck and start at round 1">New scenario</button><button type="button" class="btn6 monend" data-monend title="Drawn ability cards to the discard, shuffle the decks that need it, next round">End of round</button></span>

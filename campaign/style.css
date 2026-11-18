@@ -278,10 +278,11 @@ button.evchip { cursor:pointer; }
 .evaddmsg { flex:1 1 100%; color:var(--muted); font-size:12px; }
 .evpeek .evboxes { max-width:620px; margin:8px 0 0; }
 .traitedit { margin-left:8px; padding:2px 7px; vertical-align:middle; }
-.modal { position:fixed; inset:0; z-index:60; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(0,0,0,.6); }
+.modal { position:fixed; inset:0; z-index:60; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(0,0,0,.65); }
 .modal[hidden] { display:none; }
-.modalbox { position:relative; width:min(380px,100%); max-height:100%; overflow:auto; background:var(--panel); border:1px solid var(--accent); border-radius:10px; padding:12px 14px; box-shadow:0 12px 40px rgba(0,0,0,.7); }
-.modalbox h3 { margin:0 22px 8px 0; font-size:15px; color:var(--accent); }
+/* windows: the same frame, title and close button as the playmat's windows (playmat.css .pm .mmodalbox) */
+.modalbox { position:relative; width:min(380px,100%); max-height:86vh; overflow:auto; background:var(--panel); border:1px solid var(--accent); border-radius:12px; padding:18px 22px; box-shadow:0 20px 60px rgba(0,0,0,.7); }
+.modalbox h3 { margin:0 40px 14px 0; font-size:17px; color:var(--accent); }
 .modalrows { display:flex; flex-direction:column; gap:2px; }
 .modalrow { display:flex; align-items:center; gap:10px; padding:6px 4px; border-radius:6px; cursor:pointer; }
 .modalrow:hover { background:rgba(199,164,74,.12); }
@@ -294,8 +295,8 @@ button.evchip { cursor:pointer; }
 .setsec > .setgrp:first-child { margin-top:0; }
 .setpanel .setgrp:first-child { margin-top:0; }
 .setfoot { display:flex; justify-content:flex-end; margin-top:4px; }
-.modalx { position:absolute; top:8px; right:8px; width:26px; height:26px; display:flex; align-items:center; justify-content:center; background:none; border:none; border-radius:6px; color:var(--muted); font-size:20px; line-height:1; cursor:pointer; }
-.modaledit { position:absolute; top:8px; right:40px; width:26px; height:26px; padding:0; display:flex; align-items:center; justify-content:center; }
+.modalx { position:absolute; top:10px; right:10px; width:28px; height:28px; display:flex; align-items:center; justify-content:center; background:none; border:none; border-radius:6px; color:var(--muted); font-size:20px; line-height:1; cursor:pointer; }
+.modaledit { position:absolute; top:11px; right:44px; width:26px; height:26px; padding:0; display:flex; align-items:center; justify-content:center; }
 #scnModal h3 { margin-right:80px; }
 .modalx:hover, .modalx:focus-visible { background:rgba(199,164,74,.15); color:var(--accent); }
 /* scenario page (modal): banner with the sticker art, storyline and state tags; facts left, linked scenarios as sticker chips right */
@@ -389,7 +390,7 @@ body.flowpanning, body.flowpanning * { cursor:grabbing !important; }
 .stickers .chip { align-self:center; }
 .secedit { display:inline-flex; align-items:center; justify-content:center; padding:2px 6px; margin-left:8px; vertical-align:middle; }
 /* tile modals (campaign stickers, classes): 760px box, one section per group, a grid of tiles that turn gold when on */
-.modalbox.modalwide { width:min(760px,100%); padding:10px 12px; }
+.modalbox.modalwide { width:min(760px,100%); }
 .modalwide h3 { margin-bottom:6px; }
 .modalhead { display:flex; align-items:center; justify-content:space-between; gap:8px; border-bottom:1px solid var(--line); padding-bottom:4px; }
 .modalhead h4 { margin:0; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); min-width:0; }
@@ -427,7 +428,6 @@ body.flowpanning, body.flowpanning * { cursor:grabbing !important; }
 .overview .scnrow .scnpct { text-align:right; color:var(--muted); font-size:12px; font-variant-numeric:tabular-nums; }
 .overview .scnrow.done .scnpct { color:var(--accent); }
 .partybox { width:min(420px,100%); }
-.partybox .partyedit { margin-top:10px; padding-top:8px; border-top:1px solid var(--line); }
 /* Overview: stickers as tiles, tables that scroll sideways on a phone, one muted line for an empty list */
 .overview .sticker { width:110px; padding:6px; border:1px solid var(--line); border-radius:8px; background:#1c1711; }
 .overview .sticker img { border:0; border-radius:6px; }
@@ -439,7 +439,7 @@ body.flowpanning, body.flowpanning * { cursor:grabbing !important; }
 .emptyline { margin:6px 0 12px; color:var(--muted); font-size:13px; }
 
 /* prosperity track modal */
-.modalbox.ptmodal { width:min(760px,100%); padding:10px 12px; }
+.modalbox.ptmodal { width:min(760px,100%); }
 .ptsum { margin:0 0 6px; color:var(--muted); font-size:13px; }
 .ptlevel { display:grid; grid-template-columns:118px 1fr; gap:4px 10px; align-items:center; border-top:1px solid var(--line); padding:4px 2px; opacity:.72; }
 .ptlevel.reached, .ptlevel.current { opacity:1; }
@@ -1015,6 +1015,45 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); min-height: 420px; }
 .chedit .cesec h4 { margin:0; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); }
 .chedit .chfoot { display:flex; justify-content:flex-end; gap:10px; margin-top:2px; }
 .chedit .cesec .modalrows { display:flex; flex-direction:column; gap:6px; }
+.chedit .cesec h4 span { color:var(--muted); text-transform:none; letter-spacing:0; font-size:12px; font-weight:400; margin-left:8px; }
+.chedit .cegrid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.chedit label.cefield { display:flex; flex-direction:column; gap:4px; font-size:12px; color:var(--muted); }
+.chedit input.txt, .chedit input.num, .chedit select, .chedit .cefield input { height:34px; box-sizing:border-box; background:#2d2519; color:var(--text); border:1px solid var(--line); border-radius:8px; font:inherit; font-size:14px; padding:0 10px; }
+.chedit input.txt:focus, .chedit input.num:focus, .chedit select:focus, .chedit .cefield input:focus { outline:0; border-color:var(--accent); box-shadow:0 0 0 2px rgba(199,164,74,.25); }
+.chedit .cesec button.chip { height:34px; padding:0 14px; border-radius:8px; background:#2d2519; border:1px solid var(--line); color:var(--text); font:inherit; font-size:13px; cursor:pointer; }
+.chedit .cesec button.chip:hover, .chedit .cesec button.chip:focus-visible { border-color:var(--accent); color:var(--accent); }
+.chedit .cesec .kv { padding:4px 0; border-bottom:1px solid rgba(58,48,38,.6); }
+.chedit .cesec .kv:last-child { border-bottom:0; }
+/* the footer button (Close): the journal's button look (style.css .pm .jbox .btn6) */
+.chedit .chfoot .btn { border:1px solid #2b2318; border-radius:10px; background:#4a3f2e; color:#e5d3a8; font:inherit; font-size:13px; font-weight:700; padding:7px 18px; box-shadow:inset 0 1px 2px rgba(0,0,0,.25); cursor:pointer; }
+.chedit .chfoot .btn:hover, .chedit .chfoot .btn:focus-visible { background:#534735; color:#f0e0b8; }
+@media (max-width:520px) { .chedit .cegrid { grid-template-columns:1fr; } }
+/* the scenario level control of the Party window: counter and difficulty pill, as on the Monsters tab (monsters.css .mondiff) */
+.wlv { display:inline-flex; align-items:center; gap:8px; }
+.wdiff { min-width:34px; height:26px; padding:0 8px; display:inline-flex; align-items:center; justify-content:center; border:1px solid var(--line); border-radius:999px; background:#2d2519; color:var(--muted); font:inherit; font-size:12px; font-weight:700; }
+.wdiff.on { border-color:rgba(199,164,74,.6); color:var(--accent); cursor:pointer; }
+.wdiff.on:hover { background:#3a2f1e; }
+.lvdiff { color:var(--accent); font-size:12px; font-weight:600; margin-left:4px; }
+/* window counters: the playmat's counter (playmat.css .pm .sp); on phones and touch screens [-] value [+] with 40px buttons (phone.css .pp .statrow) */
+.chedit .cefield > span:first-child { font-size:12px; color:var(--muted); }
+.chedit .cefield { display:flex; flex-direction:column; gap:4px; }
+.wsp { display:inline-flex; align-items:stretch; align-self:flex-start; border:1px solid var(--line); border-radius:10px; background:#2d2519; overflow:hidden; }
+.wsp .wspv { width:64px; height:40px; border:0; background:transparent; color:var(--text); font:inherit; font-size:18px; font-weight:600; text-align:center; font-variant-numeric:tabular-nums; padding:0 6px; }
+.wsp .wspv:focus { outline:0; background:#3a2f1e; }
+.wsp .spc { display:flex; flex-direction:column; border-left:1px solid var(--line); }
+.wsp .spc button { flex:1; width:28px; padding:0; border:0; border-radius:0; background:transparent; color:var(--muted); display:flex; align-items:center; justify-content:center; cursor:pointer; }
+.wsp .spc button + button { border-top:1px solid var(--line); }
+.wsp .spc button:hover:not(:disabled) { background:#3a2f1e; color:var(--accent); }
+.wsp .spc button:active:not(:disabled) { background:var(--accent); color:#1b150c; }
+.wsp .spc button:disabled { opacity:.3; cursor:not-allowed; }
+@media (max-width:700px), (pointer:coarse) {
+  .wsp { border:0; background:none; gap:6px; align-items:center; }
+  .wsp .spc { display:contents; }
+  .wsp .spc button { width:40px; height:40px; flex:none; border:1px solid var(--line); border-radius:8px; background:#2d2519; color:var(--text); }
+  .wsp .spc button + button { border-top:1px solid var(--line); }
+  .wsp .spc button:first-child { order:2; } .wsp .spc button:last-child { order:0; } .wsp .wspv { order:1; border:1px solid var(--line); border-radius:8px; background:#2d2519; }
+  .wsp .spc button svg { width:16px; height:16px; }
+}
 
 /* History tab filter bar (same look as the playmat's History modal) */
 .histbar { display: flex; gap: 8px; align-items: center; margin: 8px 0; flex-wrap: wrap; }
@@ -1023,6 +1062,7 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); min-height: 420px; }
 
 /* Settings modal tabs: the hidden panel must stay hidden even where a section sets its own display */
 #settingsModal .settabs { margin: 0 0 12px; }
+#prosModal .prostabs { margin: 0 0 12px; }
 #settingsModal section[hidden] { display: none; }
 
 /* Shortcuts tab of the settings modal */
