@@ -83,6 +83,48 @@ export function drawState(c, st = {}) {
   return { tiles, specials, missing, pile, top: pile[0] || null, topList: lists.top, botList: lists.bot, actList: lists.act, pool, faces, total, disc };
 }
 
+// The modifier of a card for the odds, effects ignored: { v: number | 'x2' | 'miss', roll }. Unique class cards take the value printed before
+// the colon of their face text ("+2: ...", "2x: ..."), else +0; ">" in the face marks rolling.
+function oddsValue(t) {
+  if (t.key === 'bless') return { v: 'x2', roll: false };
+  if (t.key === 'curse') return { v: 'miss', roll: false };
+  const uniq = t.card?.kind === 'unique', f = String(t.face ?? '');
+  const raw = uniq ? (/^([+-]\d+):/.exec(f)?.[1] ?? (/^2x:/i.test(f) ? 'x2' : '+0')) : String(t.card?.value ?? t.value ?? '+0');
+  const v = raw === 'x2' ? 'x2' : raw === 'null' ? 'miss' : (parseInt(raw, 10) || 0);
+  return { v, roll: uniq ? f.includes('>') : !!t.rolling };
+}
+
+// Odds of one random draw from the pool, rolling cards chained (drawn without replacement): { miss, le2, le1, z, ge1, ge2, crit } as fractions,
+// cumulative (le2 and le1 include the misses, ge1 and ge2 include the crits). null when the pool is empty.
+export function drawOdds(A) {
+  const kinds = [];
+  for (const t of [...A.tiles, ...A.specials]) if (t.n > 0) { const o = oddsValue(t), k = kinds.find(x => x.v === o.v && x.roll === o.roll); if (k) k.n += t.n; else kinds.push({ ...o, n: t.n }); }
+  const N = kinds.reduce((s, k) => s + k.n, 0);
+  if (!N) return null;
+  const out = { miss: 0, le2: 0, le1: 0, z: 0, ge1: 0, ge2: 0, crit: 0 };
+  const end = (p, r) => {                                               // r = the result: a number, 'x2' or 'miss'
+    if (r === 'miss') { out.miss += p; out.le2 += p; out.le1 += p; return; }
+    if (r === 'x2') { out.crit += p; out.ge1 += p; out.ge2 += p; return; }
+    if (r <= -2) out.le2 += p;
+    if (r <= -1) out.le1 += p;
+    if (r === 0) out.z += p;
+    if (r >= 1) out.ge1 += p;
+    if (r >= 2) out.ge2 += p;
+  };
+  const left = kinds.map(k => k.n);
+  const walk = (p, sum, rem) => {                                       // sum = the rolling modifiers drawn so far, rem = cards left
+    if (!rem) { end(p, sum); return; }                                  // only rolling cards were left: their sum is the result
+    kinds.forEach((k, i) => {
+      if (!left[i]) return;
+      const q = p * left[i] / rem;
+      if (!k.roll) { end(q, typeof k.v === 'number' ? sum + k.v : k.v); return; }
+      left[i]--; walk(q, typeof k.v === 'number' ? sum + k.v : sum, rem - 1); left[i]++;
+    });
+  };
+  walk(1, 0, N);
+  return out;
+}
+
 // GeekRoller code that draws one card of what is left in the deck ('' when empty).
 export const amdRollCode = faces => (faces.length ? `1custom${faces.length}{${faces.join(';')}}` : '');
 
