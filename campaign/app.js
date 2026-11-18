@@ -35,7 +35,7 @@ import { PROSPERITY_SECTIONS, PROSPERITY_ITEMS, IMBUEMENT_SECTIONS } from '../sc
 import { frontOf as eventFront, EVENT_TABLE } from '../scripts/campaign/events.js';
 import { buildCard } from '../scripts/amd/card.js';
 import { createPreview, SHARE } from './preview.js';
-import { deckOf, drawState, amdAct, perkList } from '../scripts/campaign/amdDeck.js';
+import { deckOf, drawState, perkList } from '../scripts/campaign/amdDeck.js';
 import { heroCatalog, heroPerkClass } from '../scripts/amd/heroDeck.js';
 import { PERSONAL_QUESTS } from '../scripts/games/gh2_quests.js';
 import ghConfig from '../scripts/games/gh.js';
@@ -399,9 +399,10 @@ const scnViewToggle = n => `<div class="imgmode viewmode" role="group" aria-labe
 function rollerCodeOf(faces) {
   return faces.length ? `1custom${faces.length}{${faces.join(';')}}` : '';
 }
+// Roll buttons of the Scenarios and Items tabs: the merc tab's roll button style (dice icon and label; copies the code, shows Copied).
 function rollerBtn(attr, noun, code, emptyTitle) {
-  const title = code ? `Roll a random ${noun}` : emptyTitle;
-  return `<button type="button" class="editbtn editicon" ${attr} ${code ? '' : 'disabled'} title="${esc(title)}" aria-label="${esc(title)}">${ICON_DICE}</button>`;
+  const title = code ? `Copy the GeekRoller code for a random ${noun}` : emptyTitle;
+  return `<button type="button" class="btn6 rollbtn" ${attr} ${code ? '' : 'disabled'} title="${esc(title)}">${ICON_DICE}<span>BGG code for roll</span></button>`;
 }
 async function copyRollerCode(btn, code) {
   const orig = btn.innerHTML, origTitle = btn.title;
@@ -418,7 +419,7 @@ async function copyRollerCode(btn, code) {
 function scenarioRollerCode(r) {
   return rollerCodeOf(SCENARIOS.filter(s => (r.scn[String(s.n)]?.s ?? 0) === 1).map(s => s.n));
 }
-const scenarioRollerBtn = r => rollerBtn('data-scnroll', 'Side Scenario', scenarioRollerCode(r), 'No unlocked scenarios');
+const scenarioRollerBtn = r => rollerBtn('data-scnroll', 'side scenario', scenarioRollerCode(r), 'No unlocked scenarios');
 
 // The 16 GH2E items flagged "random" in the Gloomhaven Secretariat data (never sold in the shop, only gained
 // from a "random item design"/"random item" reward): ids 81-96. "Gain a random item design" draws one of these
@@ -427,8 +428,7 @@ const RANDOM_ITEM_IDS = [81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94,
 function itemRollerCode(r) {
   return rollerCodeOf(ITEMS.filter(i => RANDOM_ITEM_IDS.includes(i.id) && !r.items.unl.includes(i.id)).map(i => i.id));
 }
-// The same button as the merc tab's roll buttons (dice icon and label, copies the code and shows Copied).
-const itemRollerBtn = r => { const code = itemRollerCode(r); return `<button type="button" class="btn6 rollbtn" data-itemroll ${code ? '' : 'disabled'} title="${code ? 'Copy the GeekRoller code for a random item design' : 'No item designs left to gain'}">${ICON_DICE}<span>BGG code for roll</span></button>`; };
+const itemRollerBtn = r => rollerBtn('data-itemroll', 'item design', itemRollerCode(r), 'No item designs left to gain');
 
 // Scenario state counts and pacing, shown on Overview. A scenario missing from r.scn is Locked (setScenarioState
 // deletes the key when a scenario is set back to Locked), so the Locked count is the total minus the other three, not
@@ -837,7 +837,7 @@ function portraitStyle(c, size) {
 }
 // What the playmat remembers while the page is open: the open modal, the mat side, the history filter. Saved BGG codes of the user are kept
 // in this browser (not in the campaign record).
-const pm = { modal: null, matSide: 'front', histKind: 'all', jtab: 'goal', bgv: null, pqv: null, notesPreview: false, amd: {}, amZoom: null, dtab: 'hand', hsel: {}, hsArmed: false, itemId: null, isel: {}, ptab: 'cards', sheet: null, mkKey: null, mkSel: null, pileZ: null, cf: null, mkIdx: -1, chMenu: false, hview: 'hand', amEdit: false };   // amd = draw state per character (not saved)
+const pm = { modal: null, matSide: 'front', histKind: 'all', jtab: 'goal', bgv: null, pqv: null, notesPreview: false, amZoom: null, dtab: 'hand', hsel: {}, hsArmed: false, itemId: null, isel: {}, ptab: 'cards', sheet: null, mkKey: null, mkSel: null, pileZ: null, cf: null, mkIdx: -1, chMenu: false, hview: 'hand', amEdit: false };
 const CODES_KEY = 'havenmap.campaign.codes';
 // Display settings of the playmat (gear in the top bar), kept in this browser.
 // Phones (700 px wide or less, or 500 px high or less: a phone held sideways) get the touch layout: the phone view of the Mercenaries
@@ -859,7 +859,7 @@ const pmState = c => ({
   itemId: pm.itemId, mkKey: pm.mkKey, mkIdx: pm.mkIdx, chars: subTabList(), chMenu: pm.chMenu, pileZ: pm.pileZ, cf: pm.cf, players: record.players, classChips: classTraits({ ...c, cls: pm.cf?.cls || c.cls }).map(t => chip(t)).join(''), classOpts: pm.modal === 'char' ? charClassOptions(c) : [], mkSel: mkSelOf(c), set: pmset, ptab: pm.ptab, sheet: pm.sheet,
   items: pm.modal === 'items' ? { pool: ITEMS.filter(i => record.items.unl.includes(i.id) && ownsItem(c, i.id)), isel: pm.isel[c.id] || [] } : null,
   deck: pm.modal === 'deck' ? { cards: CARDS.filter(k => k.cls === classByName(c.cls)?.i).sort((a, b) => cardLevel(a.id) - cardLevel(b.id) || (a.ini ?? 1e9) - (b.ini ?? 1e9)), hsel: pm.hsel[c.id] || [], armed: pm.hsArmed } : null,
-  amd: pm.modal === 'amd' || pm.modal === 'amdpile' ? drawState(c, pm.amd[c.id]) : null, hview: pm.hview, amEdit: pm.amEdit, amv: pm.hview === 'amd' || pm.ptab === 'amd' ? drawState(c, pm.amd[c.id]) : null, amZoom: pm.modal === 'amd' ? pm.amZoom : null,
+  amd: pm.modal === 'amd' || pm.modal === 'amdpile' ? drawState(c, c.amd) : null, hview: pm.hview, amEdit: pm.amEdit, amv: pm.hview === 'amd' || pm.ptab === 'amd' ? drawState(c, c.amd) : null, amZoom: pm.modal === 'amd' ? pm.amZoom : null,
   customCodes: pm.modal === 'codes' ? loadCodes() : [],
   enh: pm.modal === 'enh' ? record.enh.map((e, i) => ({ e, i })).filter(x => x.e.cls === c.cls) : [],
   enhCards: pm.modal === 'enh' ? CARDS.filter(k => k.cls === classByName(c.cls)?.i).map(k => pretty(k.slug)) : [],
@@ -1804,7 +1804,7 @@ function hydratePerkCards() {
 function hydrateAmdModal() {
   const c = record?.chars.find(x => x.id === currentSub());
   if (!c) return;
-  const byKey = new Map([...deckOf(c, pm.amd[c.id]?.adj), ...drawState(c, pm.amd[c.id]).missing].map(t => [t.key, t]));
+  const byKey = new Map([...deckOf(c, c.amd?.adj), ...drawState(c, c.amd).missing].map(t => [t.key, t]));
   main.querySelectorAll('[data-amslot]').forEach(el => {
     const t = byKey.get(el.dataset.amslot);
     if (!t || el.dataset.shown === el.dataset.amslot) return;
@@ -2189,17 +2189,13 @@ registerMenu({
 function amdPileMenu() {
   const c = pmChar();
   if (!c) return [];
-  const st = pm.amd[c.id] || {}, pile = drawState(c, st).pile;
+  const pile = drawState(c, c.amd).pile;
   const n = pile.length;
   return [
     { label: 'Recover top card to deck', disabled: !n, run: () => amdDo(c, 'ret', pile[0].key) },
     { label: `Move whole pile to deck (${n})`, disabled: !n, danger: true, run: async () => {
       if (!await ask({ title: 'Move cards to deck', text: `Move all ${n} cards from the discard to the deck?`, ok: 'Move all', danger: true })) return;
-      let s = st;
-      for (const t of pile) s = amdAct(c, s, 'ret', t.key);
-      pm.amd[c.id] = s;
-      addLog('Cards', 'Modifier deck', `${c.name}: moved the whole discard (${n} cards) back to the deck`);
-      render();
+      amdDo(c, 'retall');
     } },
   ];
 }
@@ -2487,7 +2483,7 @@ main.addEventListener('click', e => {
   if (q('[data-cfsave]')) {
     e.stopImmediatePropagation();
     const f = pm.cf; let r = record;
-    if (f.cls && f.cls !== c.cls) { r = ed.changeCharacterClass(r, c.id, f.cls); delete pm.amd[c.id]; delete pm.hsel[c.id]; }       // the name and player in the form are the reset ones unless edited after
+    if (f.cls && f.cls !== c.cls) { r = ed.changeCharacterClass(r, c.id, f.cls); delete pm.hsel[c.id]; }       // the name and player in the form are the reset ones unless edited after
     r = ed.renameCharacter(r, c.id, f.name); r = ed.setCharacterPlayer(r, c.id, f.seat);
     for (const t of SPECIAL_TRAITS) r = ed.setSpecialTrait(r, c.id, t.key, f.special.includes(t.key));
     pm.modal = null; pm.cf = null; commit(r); render();
@@ -2590,39 +2586,10 @@ main.addEventListener('change', e => {
   commit(ed.monAddType(record, Number(sel.value)));
 }, true);
 
-// Attack modifier deck action: changes the session state and writes a history line (the deck state is not part of the record, so the line is added directly).
-function addLog(tabName, kind, d) {
-  const e = { t: Date.now(), u: userName(), tab: tabName, kind, d };
-  record = { ...record, log: foldLog(record.log || [], [e]).slice(-LOG_MAX) };
-  persist();
-}
-const AM_PLACE = { pool: 'the deck', disc: 'the discard', top: 'the top of the deck', bot: 'the bottom of the deck', act: 'the active area' };
+// Attack modifier deck action of a character: an edit of the record (chars[].amd), so it is saved, shared, undone and logged like any
+// other edit (the history lines come from changelog.js).
 const amOpts = d => ({ from: d.from, to: d.to, idx: d.idx === undefined ? undefined : Number(d.idx), at: d.at === undefined ? undefined : Number(d.at) });
-function amdDo(c, kind, key, opts) {
-  const before = drawState(c, pm.amd[c.id]);
-  pm.amd[c.id] = amdAct(c, pm.amd[c.id], kind, key, opts);
-  const tile = before.tiles.find(t => t.key === key), sp = before.specials.find(s => s.key === key), face = tile?.face ?? sp?.label ?? key;
-  const after = drawState(c, pm.amd[c.id]), sp2 = after.specials.find(s => s.key === key);
-  if (kind === 'move') {
-    const { from, to } = opts, was = JSON.stringify(before), now = JSON.stringify(after);
-    if (was !== now || from === to) {
-      const msg = from === to ? `moved ${face} within ${AM_PLACE[to]}`
-        : to === 'disc' && from === 'pool' ? (sp ? `drew ${sp.label} (removed from the game)` : `drew ${face} (${after.total} left in the deck)`)
-        : to === 'disc' && from === 'act' ? `discarded the active ${face}`
-        : to === 'disc' ? `drew ${face} from ${AM_PLACE[from]}${sp ? ' (removed from the game)' : ''}`
-        : to === 'pool' ? `returned ${face} from ${AM_PLACE[from]} to the deck`
-        : `placed ${face} on ${AM_PLACE[to]}${from === 'pool' ? '' : ` (from ${AM_PLACE[from]})`}`;
-      addLog('Cards', 'Modifier deck', `${c.name}: ${msg}`);
-    }
-  }
-  else if (kind === 'shuffle') addLog('Cards', 'Modifier deck', `${c.name}: discarded modifier cards shuffled back into the deck`);
-  else if (kind === 'draw' && sp) addLog('Cards', 'Modifier deck', `${c.name}: drew ${sp.label} (removed from the game)`);
-  else if (kind === 'draw') addLog('Cards', 'Modifier deck', `${c.name}: drew ${face} (${after.total} left in the deck)`);
-  else if (kind === 'ret') addLog('Cards', 'Modifier deck', `${c.name}: returned ${face} from the discard to the deck`);
-  else if (kind === 'plus' || kind === 'minus') addLog('Cards', 'Modifier deck', `${c.name}: ${kind === 'plus' ? 'added' : 'removed'} one ${face} card (${after.total} in the deck)`);
-  else if (sp && sp2 && sp.n !== sp2.n) addLog('Cards', 'Modifier deck', `${c.name}: ${sp.label.toLowerCase()} cards in deck ${sp.n} to ${sp2.n}`);
-  render();
-}
+function amdDo(c, kind, key, opts) { commit(ed.charAm(record, c.id, kind, key, opts)); }
 
 // Playmat clicks: flip a played card, the + and - of XP, gold and inherited perks, click on a number to type a value.
 const HUD_KEY = { xp: 'xp', gold: 'gold', inh: 'inh' };

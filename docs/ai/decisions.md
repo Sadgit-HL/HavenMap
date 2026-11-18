@@ -4,6 +4,10 @@ Dated, newest first within each group. "Owner" marks decisions the owner made. C
 
 ## Architecture and data
 
+- 2026-11-18: The hero attack modifier deck state (draws, Top, Bottom, Active, count edits) is saved in the campaign record, like the monster decks (`mon.am`). Supersedes the 2026-11-12 "draw state stays session only". Owner.
+- 2026-11-18: Kept as they are: no perk limit, no item or enhancement price shortcuts, no fallback for hero roll codes over 255 characters. Owner.
+- 2026-11-18: BGG banner codes already use a public address (linked in the banner modal). Owner.
+- 2026-11-18: The GH2 scenario book and section book share one pCloud link on purpose (Resources). Owner.
 - 2026-11-18: Scenario storylines (flowchart lanes) come from the Card DB area, corrected in `SCENARIO_AREA_FIX` of the generator. 13 Icecrag Ascent is Voice and Drake (it unlocks only Voice and Drake scenarios). 1 Bandit Camp, 2 Ruinous Crypt and 3 Frozen Hollow are Guards. 7 Black Barrow stays Demons (Secretariat agrees; the owner's sheet says Merchants). Scenario numbers follow the book: 23 to 26 are four boxes; the Secretariat's ally variants 23A/23B and 25A/25B are not split. Owner.
 - 2026-11-17: Monsters tab: state in the campaign record (`mon`, shared with the players), a grid of up to 8 monster panels above the modifier deck band (swapped 2026-11-17), monster types picked from a list (the scenario data has no monster lists), stat cards at the monster level, End of round, an ally deck, a phone layout. The mechanics follow the map app; the map's own decks stay separate (URL state). Owner.
 - 2026-11-17: Shared campaign: simultaneous edits of two players are merged (three-way merge, a value both changed keeps the version saved first, the other player gets a notice). Undo reverts only the user's own edits. Owner.
@@ -33,6 +37,7 @@ Dated, newest first within each group. "Owner" marks decisions the owner made. C
 
 ## Interaction and UI
 
+- 2026-11-18: The tab keeps the name "Mercenaries". The Scenarios and Items roll buttons share one style (the merc tab's roll button: dice icon and "BGG code for roll"). Owner.
 - 2026-11-18: Playmat drag uses one pointer-event implementation with a custom ghost card (opaque, lifted, fixed size, placeholder left behind, fly back on cancel) for mouse and touch, replacing the browser's native drag image (faint, sized like the source). Owner.
 - 2026-11-18: Scenario tab look: flowchart boxes are sticker cards (sticker art on top, number and name band below; mockup variant 1C), the scenario modal is a page with a sticker banner (variant 3A), and each storyline has a colour (the owner's sheet hues, darkened) used on lanes, lane labels, boxes, tags and link chips. Owner.
 - 2026-11-18: Scenario flowchart: lane labels stay visible at the left edge; the chart opens where it was left, else on the next scenario after the last completed one; an overview map in the corner; lane order for the shortest total arrow length. Owner.

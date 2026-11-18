@@ -9,7 +9,7 @@ import { SCN_STATE, availableSet, CARD_ZONES, zoneOf, handList, cardLevel, owned
 import { CARDS } from '../games/gh2_cards.js';
 import { SPECIAL_TRAITS } from './traits.js';
 import { tokenDefs, markerTokens, MARK_STICKERS } from './classTokens.js';
-import { perkList, amdAct, amOwner, drawState } from './amdDeck.js';
+import { perkList, amdAct, amOwner, drawState, cleanAmd } from './amdDeck.js';
 import { MON_MAX, monOf, monsterById, deckCards, deckState, deckNeedsShuffle, monSlugs } from './monsters.js';
 import { MASTERIES } from '../games/masteries.js';
 import { BATTLE_GOALS } from '../games/battle_goals.js';
@@ -530,7 +530,7 @@ export function changeCharacterClass(r, cid, cls) {
     t.cls = klass.name; t.name = klass.name; delete t.seat;
     t.lv = 1; t.xp = 0; t.gold = 0; t.traits = [];
     t.deck = []; t.bench = start; t.disc = []; t.act = []; t.lost = []; t.play = [null, null]; t.hord = null; t.items = []; t.own = [];
-    t.tok = {}; t.mk = {}; t.mp = {}; t.pk = { perks: [], boxes: {}, ms: [] };
+    t.tok = {}; t.mk = {}; t.mp = {}; t.pk = { perks: [], boxes: {}, ms: [] }; delete t.amd;
     t.bgo = null; t.pqo = null; t.pqc = {};
     for (const map of [x.bgs, x.pq]) for (const k of Object.keys(map || {})) if (map[k] && map[k].c === cid) delete map[k];
     delete t.hand; delete t.am;
@@ -952,6 +952,19 @@ export function monDeck(r, slug, kind, n) {
   else return r;
   const full = next && next.deck.length === deckCards(slug).length;
   return monEdit(r, m => { if (next && !full) m.decks[slug] = next; else delete m.decks[slug]; });
+}
+// A character's attack modifier deck (chars[].amd, the state shape of amdDeck.js): the actions of amdAct (draw, ret, add, rem, shuffle,
+// plus, minus, move), and retall (the whole discard back into the deck). A state with nothing drawn, placed or edited is removed.
+export function charAm(r, cid, kind, key, opts = {}) {
+  const c = r.chars.find(x => x.id === cid);
+  if (!c) return r;
+  const st = c.amd || {};
+  let next = st;
+  if (kind === 'retall') for (const t of drawState(c, st).pile) next = amdAct(c, next, 'ret', t.key);
+  else next = amdAct(c, st, kind, key, opts);
+  const clean = cleanAmd(next);
+  if (JSON.stringify(clean) === JSON.stringify(cleanAmd(st))) return r;
+  return edit(r, x => { const t = x.chars.find(k => k.id === cid); if (clean) t.amd = clean; else delete t.amd; });
 }
 // Modifier deck g ('m' monsters, 'a' allies): the actions of amdDeck.js amdAct (draw, ret, add, rem, shuffle, plus, minus, move).
 export function monAm(r, g, kind, key, opts = {}) {

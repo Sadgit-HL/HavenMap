@@ -42,6 +42,7 @@ Earlier work (last commits, 2026-11-13 and 2026-11-14): tile modals for stickers
 - Built: everything listed under Mercenaries above. Stages a to f of the redesign are done (`docs/archive/merc-tab-handover.md` section 6 has the history).
 - Not browser-tested: the 2026-11-14 layout changes (`ui-guidelines.md` section 8). Long press, touch drag and the phone view were not tested on a real device.
 - Touch layout (2026-11-17): phones upright and sideways, `campaign/touch.css` and the phone view; see `playmat.md` and `ui-guidelines.md` 6.4. Checked with Playwright touch emulation at 390x844 and 844x390, tablet playmat at 768x1024. Not checked on a real device.
+- Modifier deck state saved (2026-11-18): `chars[].amd`, every action an edit (Undo, History, sync). Node checks of the actions, the record check and the history lines; browser test (draw, Undo, reload) in Playwright. Not yet tried with two players on the server.
 - Drag ghost (2026-11-18): ability and modifier cards drag with pointer events and a fixed-size ghost card, see `playmat.md`. Mouse drag to a play slot, Esc cancel and a modifier card to the discard tested in Playwright (Edge, 1440x900); touch drag not re-tested after the change.
 - Modifier deck odds strip (2026-11-18, `cd916db`): `drawOdds` in `amdDeck.js`, strip left of Top and Bottom; see `playmat.md`. Math checked in Node (standard deck, rolling chain, unique values); layout not checked in a browser.
 

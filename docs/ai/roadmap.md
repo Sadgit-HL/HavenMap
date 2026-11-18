@@ -16,9 +16,9 @@ Open work in priority order. Items marked (owner) need a decision or data from t
 5. Touch: check the long-press context menu of the playmat on a real touch device (tablet).
 6. Hand fan and active zone: size from `--cu` instead of their own containers.
 7. Settings: explain or relabel "Reduce motion" (owner note in the old `updates merc site.md`, now archived).
-8. Attack modifier state is session only (draws, top, bottom, active, count edits). Decide whether it belongs in the record (needs a field and a schema note in `campaign-record.md`). (owner)
-9. No perk limit is enforced. Decide whether the app should enforce one. (owner)
-10. Item and enhancement price shortcuts from the old mockup: unclear what they were. (owner)
+8. Done 2026-11-18: the attack modifier state is in the record (`chars[].amd`, owner decision).
+9. Closed 2026-11-18: no perk limit (owner).
+10. Closed 2026-11-18: no item or enhancement price shortcuts (owner).
 11. Mark a card as active (`setCardActive` exists; no UI). Decide if it is needed.
 12. Monsters tab, collapsed modifier ribbon: it shows the faces left and the discard only. Proposed: the odds strip and a count of the cards in Top, Bottom and Active (cards placed there in the full view are invisible once it is collapsed).
 
@@ -28,7 +28,7 @@ Open work in priority order. Items marked (owner) need a decision or data from t
 14. Perk sheets (`wh_perks`, one per class) and masteries/banners in the Cards tab: not built.
 15. Scenario flowchart: diagonal arrows in the Flow chart are interpreted by position, unverified against the book. (Storylines were checked against the Secretariat and the owner's sheet on 2026-11-18; the unlock links were not.)
 15a. Scenarios: the Table view and the flowchart's overview map do not use the storyline colours or the stickers yet (the chart, the modal and the phone list do).
-16. Resources: pCloud links may expire; the GH2 scenario book and section book share one link (probably one is wrong). Check with the owner.
+16. Resources: pCloud links may expire. The scenario book and section book share one link on purpose (owner, 2026-11-18).
 
 ## 4. Campaign server and session flow (blocked on hosting decision)
 
@@ -48,7 +48,7 @@ Open work in priority order. Items marked (owner) need a decision or data from t
 ## 6. Hero decks and art
 
 32. Shield and retaliate frames still use placeholders (`p0`). (verify, from 2026-11-07 notes)
-33. Some hero roll codes exceed 255 characters. Decide on a fallback or a split. (owner)
+33. Closed 2026-11-18: roll codes over 255 characters stay as they are (owner).
 34. The 68 unique faces are real card scans (not rebuilt), so the earlier "unique faces not rebuilt" item is closed. The 26 multi-icon faces: check against the scans.
 35. Unprocessed PSD exports (14 files, 2026-11-07) are not converted. Low priority.
 
@@ -69,11 +69,11 @@ Open work in priority order. Items marked (owner) need a decision or data from t
 ## 9. Images in the repo (2026-11-16)
 
 44. Browser check of the image switch: the map, the campaign tabs, the attack modifier deck and the perk icons. Only Node checks were run (every key resolves to a file, 2,045 campaign keys, 916 attack-modifier layers, the map's tiles, overlays, monsters and mercenaries).
-45. BGG banner codes need a public address. They still use the Wordhaven_Assets URL. Decide: GitHub Pages copy of `images/character-banners`, or keep the old address.
+45. Closed 2026-11-18: the banner codes already use a public address, linked in the banner modal (owner).
 46. The six event images sit in `events/gh2/event_images/` (four levels). Move them up to `events/gh2/`, and update `tools/images-manifest.json` and regenerate the index.
 47. Mockups under `campaign/mockups/` still point at the old image paths. Decide: rewire or retire them.
 48. Browser check of the 2026-11-16 changes, not done yet: tab order, the settings modal width and two-column shortcuts, the items roll button, the marker fix, the portrait crops. Node and headless checks only.
-49. The Mercenaries tab label is still "Mercenaries" (requested as "Mercs"). Decide whether to shorten it.
-50. Scenario roller is still the icon button, unlike the item roller. Decide whether both should use one style.
+49. Closed 2026-11-18: the tab stays "Mercenaries" (owner).
+50. Done 2026-11-18: the Scenarios and Items roll buttons share the merc tab roll button style (owner).
 51. Touch for the card preview (tap and long press pin it) is not tried on touch hardware.
 52. Card preview (2026-11-17): checked in Playwright at 1366x650 on the Cards and Items tabs and every playmat zone. Not checked: other window sizes by hand, the old attack modifier modal of the phone view (it keeps its own docked zoom, `pm.amZoom`).

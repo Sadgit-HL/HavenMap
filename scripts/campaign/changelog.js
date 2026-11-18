@@ -217,6 +217,7 @@ export function describeChange(a, b) {
       }
       if (k === 'seat') add('Mercenaries', 'Character player', `${c.name}: ${(b.players || []).find(p => p.seat === c.seat)?.name ?? 'nobody'} (was ${(a.players || []).find(p => p.seat === o.seat)?.name ?? 'nobody'})`);
       else if (k === 'am') add('Cards', 'Modifier deck', `${c.name}: modifier deck changed`);
+      else if (k === 'amd') describeHeroDeck(c, o.amd || {}, c.amd || {}).forEach(d => add('Cards', 'Modifier deck', `${c.name}: ${d}`));
       else if (k === 'items') {
         const ids = diffList((o.items || []).map(i => `#${i.id}`), (c.items || []).map(i => `#${i.id}`));
         if (ids.add.length || ids.del.length) add('Mercenaries', 'Character items', `${c.name}: ${plusMinus(ids)}`);
@@ -277,6 +278,26 @@ function describeEvents(a, b, rec, add) {
   }
   for (const k of keys(a.marks, b.marks)) if (!same(a.marks?.[k], b.marks?.[k])) add('Events', 'Event box', `${k}: ticked boxes ${fmt(a.marks?.[k] || [])} to ${fmt(b.marks?.[k] || [])}`);
   for (const k of keys(a.notes, b.notes)) if (a.notes?.[k] !== b.notes?.[k]) add('Events', 'Event note', `${k}: note ${b.notes?.[k] ? 'edited' : 'removed'}`);
+}
+
+// A character's modifier deck (chars[].amd), from the two states: cards drawn, returned, shuffled back, placed on top, on the bottom or in
+// the active area, bless and curse counts, edited counts.
+const AM_PLACE = { top: 'top of the deck', bot: 'bottom of the deck', act: 'active area' };
+function describeHeroDeck(c, sa, sb) {
+  const out = [], da = drawState(c, sa), db = drawState(c, sb);
+  const diff = sign => db.tiles.flatMap(t => { const n = sign * (t.d - (da.tiles.find(x => x.key === t.key)?.d || 0)); return n > 0 ? Array(n).fill(t.face) : []; });
+  const drawn = diff(1), back = diff(-1);
+  if (drawn.length) out.push(`drew ${drawn.join(', ')} (${db.total} left in the deck)`);
+  if (back.length) out.push(db.disc === 0 && back.length === da.disc ? `discard (${back.length}) shuffled back into the deck` : `returned ${back.join(', ')} from the discard to the deck`);
+  for (const s of da.specials) {
+    const x = s.c, y = db.specials.find(t => t.key === s.key)?.c ?? 0;
+    if (x !== y) out.push(`${s.label.toLowerCase()} cards ${x} to ${y}`);
+  }
+  for (const [z, list] of [['top', 'topList'], ['bot', 'botList'], ['act', 'actList']]) {
+    if (!same(sa[z] || [], sb[z] || [])) out.push(`${AM_PLACE[z]}: ${db[list].map(t => (t.key === 'bless' || t.key === 'curse' ? t.label : t.face)).join(', ') || 'empty'}`);
+  }
+  if (!same(sa.adj, sb.adj)) out.push(`cards edited (${db.total} in the deck)`);
+  return out;
 }
 
 // Monsters tab: level, round, types, ability decks (cards drawn, discarded, returned, shuffles), the modifier decks (cards drawn,

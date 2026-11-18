@@ -1,6 +1,7 @@
 import { imageFile } from '../images.js';
 // Attack modifier deck of one character: the standard deck plus what the perks taken change (c.pk = { perks: [index], boxes: { index: mask } }).
-// Pure data logic (no DOM), shared by the playmat modal and the checks. Draws, bless and curse are not saved: the page keeps them while it is open.
+// Pure data logic (no DOM), shared by the playmat modal and the checks. The draw state is saved in the record: chars[].amd for a
+// character (since 2026-11-18), mon.am for the monster and ally decks.
 import { heroCatalog, heroPerkClass, perkBoxes, perkLabel, perkDelta } from '../amd/heroDeck.js';
 
 // The standard 20 cards (keys of scripts/amd/heroDeck.js); x2 and Miss reshuffle the deck.
@@ -123,6 +124,19 @@ export function drawOdds(A) {
   };
   walk(1, 0, N);
   return out;
+}
+
+// A deck state as saved in the record (chars[].amd): only known fields with sane values; null when nothing is drawn, placed or edited.
+export function cleanAmd(st) {
+  if (!st || typeof st !== 'object' || Array.isArray(st)) return null;
+  const ok = k => typeof k === 'string' && /^[\w-]{1,40}$/.test(k), int = v => Math.trunc(Number(v)) || 0;
+  const map = (o, lo, hi) => Object.entries(o && typeof o === 'object' && !Array.isArray(o) ? o : {}).filter(([k, v]) => ok(k) && int(v)).map(([k, v]) => [k, Math.max(lo, Math.min(hi, int(v)))]).filter(([, v]) => v);
+  const out = {}, disc = map(st.disc, 0, 99), adj = map(st.adj, -20, 20);
+  if (disc.length) { out.disc = Object.fromEntries(disc); const order = (Array.isArray(st.order) ? st.order : []).filter(ok).slice(-200); if (order.length) out.order = order; }
+  if (adj.length) out.adj = Object.fromEntries(adj);
+  for (const s of AM_SPECIAL) { const n = Math.max(0, Math.min(s.max, int(st[s.key]))); if (n) out[s.key] = n; }
+  for (const z of PLACES) { const l = (Array.isArray(st[z]) ? st[z] : []).filter(ok).slice(0, 60); if (l.length) out[z] = l; }
+  return Object.keys(out).length ? out : null;
 }
 
 // GeekRoller code that draws one card of what is left in the deck ('' when empty).

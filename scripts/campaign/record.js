@@ -6,6 +6,7 @@ import { ALL_CLASSES } from './classList.js';
 import { CARDS } from '../games/gh2_cards.js';
 import { ITEMS } from './itemList.js';
 import { SCENARIOS } from '../games/gh2_scenarios.js';
+import { cleanAmd } from './amdDeck.js';
 
 export const RECORD_VERSION = 1;
 
@@ -35,6 +36,8 @@ Record fields (all optional on load, defaults filled by normalize):
                     notes = free text of the journal (markdown)
                     pk = perks taken { perks: [index into the class perk list], boxes: { index: ticked-box mask of a multi-box perk }, ms: [masteries achieved, index into scripts/games/masteries.js] } (scripts/amd/heroDeck.js);
                     the modifier deck follows from it (scripts/campaign/amdDeck.js)
+                    amd = the modifier deck's draw state (optional; absent = full deck, nothing placed): { disc: { key: n }, order: [key],
+                    adj: { key: +-n }, bless, curse, top: [key], bot: [key], act: [key] } (amdDeck.js cleanAmd, edit.js charAm)
                     special = special traits gained through events (keys of scripts/campaign/traits.js)
   items             { unl: [itemId], taken: { itemId: copies in use } }
   events            { city, road: { top, bottom, out, locked }, pend? }   piles are ordered, see scripts/campaign/events.js
@@ -148,6 +151,7 @@ function normalizeChar(c) {
   { const pk = ch.pk && typeof ch.pk === 'object' ? ch.pk : {}; ch.pk = { perks: [...new Set((Array.isArray(pk.perks) ? pk.perks : []).map(Number).filter(n => Number.isInteger(n) && n >= 0))].sort((x, y) => x - y), boxes: pk.boxes && typeof pk.boxes === 'object' && !Array.isArray(pk.boxes) ? pk.boxes : {}, ms: [...new Set((Array.isArray(pk.ms) ? pk.ms : []).map(Number).filter(n => Number.isInteger(n) && n >= 0))].sort((x, y) => x - y) }; }
   ch.tok = ch.tok && typeof ch.tok === 'object' && !Array.isArray(ch.tok) ? Object.fromEntries(Object.entries(ch.tok).map(([k, v]) => [k, Math.max(0, Math.min(99, Math.trunc(Number(v)) || 0))])) : {};
   if (Array.isArray(ch.hord)) { const own = new Set(); ch.hord = ch.hord.filter(id => ch.deck.includes(id) && !seen.has(id) && !own.has(id) && own.add(id)); } else ch.hord = null;
+  { const amd = cleanAmd(ch.amd); if (amd) ch.amd = amd; else delete ch.amd; }
   return ch;
 }
 
