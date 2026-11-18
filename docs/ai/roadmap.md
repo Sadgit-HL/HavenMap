@@ -12,6 +12,7 @@ Open work in priority order. Items marked (owner) need a decision or data from t
 ## 2. Playmat and phone gaps
 
 4. Phone: check the touch layout (2026-11-17) on a real phone, upright and sideways: page sheet, bottom sheets, long press preview, hold and move of modifier cards. Tested only with Playwright touch emulation.
+4a. Touch drag with the new ghost card (2026-11-18, `374f2f8`): hold and move of ability and modifier cards on a tablet and a phone. Mouse drag was tested in Playwright; touch was not re-tested after the change.
 5. Touch: check the long-press context menu of the playmat on a real touch device (tablet).
 6. Hand fan and active zone: size from `--cu` instead of their own containers.
 7. Settings: explain or relabel "Reduce motion" (owner note in the old `updates merc site.md`, now archived).
@@ -19,18 +20,20 @@ Open work in priority order. Items marked (owner) need a decision or data from t
 9. No perk limit is enforced. Decide whether the app should enforce one. (owner)
 10. Item and enhancement price shortcuts from the old mockup: unclear what they were. (owner)
 11. Mark a card as active (`setCardActive` exists; no UI). Decide if it is needed.
+12. Monsters tab, collapsed modifier ribbon: it shows the faces left and the discard only. Proposed: the odds strip and a count of the cards in Top, Bottom and Active (cards placed there in the full view are invisible once it is collapsed).
 
 ## 3. Campaign tab gaps
 
-13. Stickers: the `wh_stickers` images (about 119) need a mapping to the 19 named stickers. Unknown mapping. (owner)
+13. Campaign stickers: the scenario stickers are matched by number (used by the flowchart since 2026-11-18). The 19 named campaign stickers (city rule, the Voice, the Drake and others) have files in `images/stickers/gh2` by slug; check that the Overview sticker list and the stickers modal use them. (verify)
 14. Perk sheets (`wh_perks`, one per class) and masteries/banners in the Cards tab: not built.
-15. Scenario flowchart: diagonal arrows in the Flow chart are interpreted by position, unverified against the book.
+15. Scenario flowchart: diagonal arrows in the Flow chart are interpreted by position, unverified against the book. (Storylines were checked against the Secretariat and the owner's sheet on 2026-11-18; the unlock links were not.)
+15a. Scenarios: the Table view and the flowchart's overview map do not use the storyline colours or the stickers yet (the chart, the modal and the phone list do).
 16. Resources: pCloud links may expire; the GH2 scenario book and section book share one link (probably one is wrong). Check with the owner.
 
 ## 4. Campaign server and session flow (blocked on hosting decision)
 
 22. Backend decided and deployed 2026-11-17 (`decisions.md`, `server/README.md`): Cloudflare Worker with KV at `https://api.penultimate.de/`. The page uses it since 2026-11-17 (shared mode, invite links, merge). Next: upload the live campaign and send the invite links (owner); watch the KV write count in the first sessions.
-23. Server: campaign GET and PUT with `ver` check, token auth (128-bit tokens, hashes stored, roles admin, player, read-only). Tokens never in the public thread.
+23. Done (2026-11-17, `server/worker.js`): campaign GET and PUT with `ver` check, token auth (128-bit tokens, SHA-256 hashes stored, roles admin, player, read-only). Not yet run with the live server and real players. Tokens never in the public thread.
 24. Session start from the campaign page: scenario level, one hero per character, fresh `sid`, open the map with the `campaign` block. Design: `design/server-and-commit.md`.
 25. Map side: a panel for result, battle goals, items found; write the session result into the URL state.
 26. Session commit from the campaign page: validate `cid`, unused `sid`, `base` version. Merge XP, gold, items, scenario result and unlocks. Preview before applying. Idempotent. Level-ups, enhancements and card choice stay separate campaign edits.

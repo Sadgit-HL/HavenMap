@@ -31,7 +31,7 @@ Tabs (`PAGE_TABS` in `campaign/app.js`, in this order): Overview, Mercenaries, I
 - Settings modal (cogwheel, 880 px wide): shortcuts list in two columns; four tabs, Display, Campaign, Profile and Shortcuts (`docs/ai/playmat.md`). Object keys on the pointer (D, L, A on cards and items, D on modifier cards) tested in the browser by the owner on 2026-11-16.
 - Imported test data: `import/campaign-import.json` (made by `tools/import-campaign-state.py`). The owner decided not to import the live campaign automatically; state is synced by hand.
 
-Work on branch `merc-tab-rework` (2026-11-17, not merged): the Modifiers view layout for short screens (sizes in container units, the view covers the Active/Play row below 820 px window height); the fan zoom without flicker; one card preview for every tab (`campaign/preview.js`), click zoom and zoom zones removed. See `playmat.md` and `decisions.md`.
+Merc tab rework (2026-11-17, on `main` since `675a4ae`; the branch `merc-tab-rework` no longer exists): the Modifiers view layout for short screens (sizes in container units, the view covers the Active/Play row below 820 px window height); the fan zoom without flicker; one card preview for every tab (`campaign/preview.js`), click zoom and zoom zones removed. See `playmat.md` and `decisions.md`.
 
 Recent work (2026-11-16, committed and pushed in `0c8c81f` and `c67d314`, plus the follow-ups below): Frosthaven and Jaws character abilities, mats and battle goal pictures on the Cards tab; journal battle goals with pictures; tab order; settings modal split into tabs, two-column shortcut list; item roll button in the merc tab's roll button style; portrait crops looked up by class slug; marker tokens and stickers resolved through the new image functions (a removed constant had broken markers, fixed); the image rewrite described below. Follow-ups: Items grid tiles and the Cards tab's attack-modifier cards got Ctrl+hover previews; preview sizes follow the playmat zoom setting; trails behind the previews removed (transform positioning); unique attack-modifier cards get the class badge; settings tabs reordered (Mercenary tab, Campaign file, Profile, Shortcuts).
 
@@ -47,7 +47,6 @@ Earlier work (last commits, 2026-11-13 and 2026-11-14): tile modals for stickers
 
 ## Not built
 
-- Campaign server, token auth (roles admin, player, read-only), storage behind the `store.js` interface.
 - Session start from the campaign page and session commit back into the record. Design in `design/server-and-commit.md`.
 - BBCode composer in the map app. The playmat already builds Turn and Cards posts (`turnPost`, `cardsPost` in `campaign/playmat.js`) and an icon and banner code list. Where the composer should live is open (see `roadmap.md`).
 - Automated tests. Nothing is committed under `tools/` or elsewhere for the campaign code.
