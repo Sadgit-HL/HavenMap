@@ -36,9 +36,9 @@ Hand-maintained inputs and outputs:
 ## Regeneration rules
 
 - Run Python generators with `python -I` (isolated mode).
-- The workbook exists in two versions: `asset-backups/WHTracker.xlsx` (default) and `import/WH Tracker.xlsx`. They differ. Pass the path explicitly and say which one you used.
+- The workbook exists in two versions: `asset-backups/WHTracker.xlsx` (default) and `import/WH Tracker.xlsx`. They differ. Pass the path explicitly and say which one you used. On 2026-11-18 the default path was missing; `../campaign_assets/WHTracker.xlsx` (2026-11-06) was used and gave the same scenario rows as the live sheet.
 - Running `extract-campaign-tables.py` rewrites several generated files, some with unrelated changes (cards, scenarios, events, quests). Before running, commit or stash the intended changes. After running, restore everything except the intended file. Check `git diff` first: a restore discards hand patches in those files (see the card and battle goal fixes below).
-- Corrections go into the generator's fix tables, not the output: `CLASS_NAME_FIX` (Plagueherald), `ITEM_SLOT_FIX` (items 169 and 170), `CARD_FIX` (seven level 9 cards filed under the next class), and the initiative JSON.
+- Corrections go into the generator's fix tables, not the output: `CLASS_NAME_FIX` (Plagueherald), `ITEM_SLOT_FIX` (items 169 and 170), `SCENARIO_AREA_FIX` (storyline of scenarios 1, 3, 5, 11, 13), `CARD_FIX` (seven level 9 cards filed under the next class), and the initiative JSON.
 - Card ids are `classIndex * 100 + n`. They change when the Card DB rows change. Saved campaign records must be re-imported after such a change.
 - `gh2_cards.js`, `battle_goals.js` and `gh2_items.js` have had hand patches as well (level X and battle goal text, 2026-11-09). Check that the generator carries them before regenerating.
 

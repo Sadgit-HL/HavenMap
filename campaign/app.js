@@ -40,7 +40,7 @@ import { heroCatalog, heroPerkClass } from '../scripts/amd/heroDeck.js';
 import { PERSONAL_QUESTS } from '../scripts/games/gh2_quests.js';
 import ghConfig from '../scripts/games/gh.js';
 import { GH_DECKS } from '../scripts/games/gh_decks.js';
-import { buildFlow, LANES, laneOf } from '../scripts/campaign/flow.js?v=3';
+import { buildFlow, LANES, laneOf } from '../scripts/campaign/flow.js?v=4';
 import { RESOURCES, RESOURCE_GAMES } from '../scripts/games/resources.js';
 import { characterTraits } from '../scripts/campaign/outcomes.js';
 import { SPECIAL_TRAITS, specialName } from '../scripts/campaign/traits.js';
@@ -58,7 +58,7 @@ let sub = '';                      // sub-tab under Mercenaries: a character id 
 const editPages = new Set();        // pages (top-level tabs) currently in edit mode; each page has its own Edit button
 let editing = false;               // derived in render(): is the visible page being edited
 const history = [];                                   // own edits for undo, newest last: { before, after } (records)
-const view = { flowFull: false, scnView: 'table', logKind: 'all', flowShow: 'progress', flowLane: '', flowZoom: 'm', scnSel: null, scnStatus: '', scnSearch: '', scnSort: { col: '', dir: 1 }, itemSlot: '', itemSearch: '', itemShow: 'unlocked', itemView: 'list', itemSel: null, itemSize: 'm', itemSort: { col: '', dir: 1 }, cardType: 'abilities', cardSlot: '', cardChk: '', cardKind: 'city', cardSide: 'front', cardDeck: '', cardMon: '', cardMLv: '', cardShow: 'unlocked', cardCls: '', cardLv: '', cardSearch: '', cardSize: 's', cardStk: true };   // itemView: 'list' | 'grid'
+const view = { flowFull: false, flowPos: null, scnView: 'table', logKind: 'all', flowShow: 'progress', flowLane: '', flowZoom: 'm', scnSel: null, scnStatus: '', scnSearch: '', scnSort: { col: '', dir: 1 }, itemSlot: '', itemSearch: '', itemShow: 'unlocked', itemView: 'list', itemSel: null, itemSize: 'm', itemSort: { col: '', dir: 1 }, cardType: 'abilities', cardSlot: '', cardChk: '', cardKind: 'city', cardSide: 'front', cardDeck: '', cardMon: '', cardMLv: '', cardShow: 'unlocked', cardCls: '', cardLv: '', cardSearch: '', cardSize: 's', cardStk: true };   // itemView: 'list' | 'grid'
 
 // Level order of ability cards: 1, X (the level 1.1 cards), 2 ... 9, then M (mastery).
 const lvRank = lv => ({ X: 1.5, M: 99, a: 1.1, b: 1.2 }[lv] ?? Number(lv));   // a and b: the Jaws of the Lion level A and B cards
@@ -76,7 +76,7 @@ const ICON_CHECK = '<svg viewBox="0 0 24 24" width="16" height="16" fill="curren
 const ITEM_SIZES = { s: 150, m: 188, l: 250 };      // minimum tile width in px for the item grid
 // Filter and view settings are kept in this browser (not the search texts: a stale search would hide rows after a reload).
 const VIEW_KEY = 'havenmap.campaign.view';
-const VIEW_SAVED = ['scnView', 'logKind', 'flowShow', 'flowLane', 'flowZoom', 'scnStatus', 'scnSort', 'itemSlot', 'itemShow', 'itemView', 'itemSize', 'itemSort', 'cardType', 'cardSlot', 'cardKind', 'cardSide', 'cardDeck', 'cardMon', 'cardMLv', 'cardShow', 'cardCls', 'cardLv', 'cardSize', 'cardStk'];
+const VIEW_SAVED = ['scnView', 'logKind', 'flowShow', 'flowLane', 'flowZoom', 'flowPos', 'scnStatus', 'scnSort', 'itemSlot', 'itemShow', 'itemView', 'itemSize', 'itemSort', 'cardType', 'cardSlot', 'cardKind', 'cardSide', 'cardDeck', 'cardMon', 'cardMLv', 'cardShow', 'cardCls', 'cardLv', 'cardSize', 'cardStk'];
 function saveView() {
   try { localStorage.setItem(VIEW_KEY, JSON.stringify(Object.fromEntries(VIEW_SAVED.map(k => [k, view[k]])))); } catch { /* ignore */ }
 }
@@ -87,6 +87,7 @@ function loadView() {
     if (v.scnView === 'table' || v.scnView === 'flow') view.scnView = v.scnView;
     if (v.flowShow === 'progress' || v.flowShow === 'all') view.flowShow = v.flowShow;
     if (typeof v.flowLane === 'string') view.flowLane = v.flowLane;
+    if (v.flowPos && Number.isFinite(v.flowPos.px) && Number.isFinite(v.flowPos.py)) view.flowPos = { px: v.flowPos.px, py: v.flowPos.py };
     if (['s', 'm', 'l', 'xl', 'xxl', 'fit'].includes(v.flowZoom)) view.flowZoom = v.flowZoom;
     if (typeof v.scnStatus === 'string') view.scnStatus = v.scnStatus;
     if (typeof v.itemSlot === 'string') view.itemSlot = v.itemSlot;
@@ -467,7 +468,18 @@ function flowPage(r) {
     ${scenarioRollerBtn(r)}</div>`;
   if (!g.nodes.length) return filters + scnViewToggle() + '<div class="empty">No scenarios to show yet.</div>';
   const legend = `<span class="flegend">${[1, 2, 0, 3].map(i => `<span class="spill s${i}">${SCN_STATE_NAME[i]}</span>`).join('')}</span>`;
-  const lanes = g.lanes.map((l, i) => `<rect class="flane${i % 2 ? ' alt' : ''}" x="0" y="${l.y}" width="${g.width}" height="${l.h}"/><text class="flabel" x="8" y="${l.y + 18}">${esc(l.name)}</text>`).join('');
+  const lanes = g.lanes.map((l, i) => `<rect class="flane${i % 2 ? ' alt' : ''}" x="0" y="${l.y}" width="${g.width}" height="${l.h}"/>`).join('');
+  // lane names in a top layer; flowSync() keeps each at the left edge of the view and inside its lane while the chart scrolls
+  const labels = `<g class="flabels" aria-hidden="true">${g.lanes.map(l => `<g class="flabelg" data-y="${l.y}" data-h="${l.h}" transform="translate(2,${l.y + 2})"><rect class="flabbg" width="10" height="24" rx="6"/><text class="flabel" x="8" y="17">${esc(l.name)}</text></g>`).join('')}</g>`;
+  // where the chart opens without a remembered position: the available scenario unlocked most recently (by the completion date
+  // of the scenario that unlocks it), else the last completed one
+  const done = n => (st(n) === 2 ? r.scn[String(n)]?.d || '' : '');
+  const unlockDate = n => SCENARIOS.reduce((m, s) => ((s.unl || []).includes(n) && done(s.n) > m ? done(s.n) : m), '');
+  const pick = (list, key) => list.reduce((best, n) => (best == null || key(n) > key(best) || (key(n) === key(best) && n > best) ? n : best), null);
+  flowHome = pick(g.nodes.filter(n => st(n.n) === 1).map(n => n.n), unlockDate) ?? pick(g.nodes.filter(n => st(n.n) === 2).map(n => n.n), done);
+  // the overview map: boxes in their state colour (no names), the frame of the visible part; flowSync() places the frame
+  const mk = Math.min(200 / g.width, 150 / g.height), mini = `<svg class="flowmini" width="${Math.round(g.width * mk)}" height="${Math.round(g.height * mk)}" viewBox="0 0 ${g.width} ${g.height}" preserveAspectRatio="none" role="img" aria-label="Overview of the flowchart" hidden>
+    ${g.lanes.map((l, i) => `<rect class="flane${i % 2 ? ' alt' : ''}" x="0" y="${l.y}" width="${g.width}" height="${l.h}"/>`).join('')}${g.nodes.map(n => `<rect class="fmnode s${st(n.n)}${masked(n.n) ? ' mask' : ''}" x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}" rx="10"/>`).join('')}<rect class="fmview" x="0" y="0" width="0" height="0"/></svg>`;
   const edges = g.edges.map(e => `<path class="fedge${st(e.from) === 2 ? ' on' : ''}" data-from="${e.from}" data-to="${e.to}" d="${e.d}" marker-end="url(#farrow)"/>`).join('');
   const nodes = g.nodes.map(n => {
     const s = byN.get(n.n), hide = masked(n.n), name = String(s.name || '');
@@ -479,9 +491,9 @@ function flowPage(r) {
       ${text}<g class="ficon" transform="translate(${n.w - 18},${iy})">${FLOW_ICON[hide ? 0 : st(n.n)]}</g></g>`;
   }).join('');
   const svg = `<svg class="flowsvg" width="${Math.round(g.width * z)}" height="${Math.round(g.height * z)}" viewBox="0 0 ${g.width} ${g.height}" role="img" aria-label="Scenario flowchart">
-    <defs><marker id="farrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="farrowhead"/></marker><marker id="farrowp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="farrowhead pth"/></marker></defs>${lanes}${edges}${nodes}</svg>`;
-  if (full) return `<div class="flowwrap full"><div class="flowfsbar">${find}${zoomBtns}${fsBtn}${scenarioRollerBtn(r)}${legend}</div>${svg}</div>`;
-  return filters.replace(/<\/div>$/, `${legend}</div>`) + scnViewToggle() + `<div class="flowwrap">${svg}</div>`;
+    <defs><marker id="farrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="farrowhead"/></marker><marker id="farrowp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="farrowhead pth"/></marker></defs>${lanes}${edges}${nodes}${labels}</svg>`;
+  if (full) return `<div class="flowstage full"><div class="flowwrap full"><div class="flowfsbar">${find}${zoomBtns}${fsBtn}${scenarioRollerBtn(r)}${legend}</div>${svg}</div>${mini}</div>`;
+  return filters.replace(/<\/div>$/, `${legend}</div>`) + scnViewToggle() + `<div class="flowstage"><div class="flowwrap">${svg}</div>${mini}</div>`;
 }
 // A scenario name in at most two lines of about 17 characters (word wrap; the second line is cut with an ellipsis).
 function flowLines(name, max = 17) {
@@ -575,17 +587,72 @@ function flowZoomTo(key, cx, cy) {
   view.flowZoom = key;
   render();
 }
+// The chart point (fractions of its width and height) at the middle of the box, and the reverse: scroll so a point is in the middle.
+function flowCenterFrac() {
+  const fw = flowBox(), svg = fw?.querySelector('.flowsvg');
+  if (!svg) return null;
+  const b = fw.getBoundingClientRect(), s = svg.getBoundingClientRect();
+  return { px: (b.left + fw.clientWidth / 2 - s.left) / s.width, py: (b.top + fw.clientHeight / 2 - s.top) / s.height };
+}
+function flowCenterAt(px, py, ox, oy) {                // ox, oy: where in the box the point goes (default the middle)
+  const fw = flowBox(), svg = fw?.querySelector('.flowsvg');
+  if (!svg) return;
+  const b = fw.getBoundingClientRect(), s = svg.getBoundingClientRect();
+  const sx = s.left - b.left + fw.scrollLeft, sy = s.top - b.top + fw.scrollTop;   // where the chart starts in the scrolled content
+  fw.scrollLeft = sx + px * s.width - (ox ?? fw.clientWidth / 2);
+  fw.scrollTop = sy + py * s.height - (oy ?? fw.clientHeight / 2);
+}
+// After a render: the zoom anchor, else the view kept from the chart before, else the remembered position (tab switch, reload),
+// else the newest available scenario (flowHome). A filter change starts again from flowHome.
+let flowHome = null, flowRecenter = false;
 function flowRestoreScroll(keep) {
   const fw = flowBox(), svg = fw?.querySelector('.flowsvg');
   if (!fw || !svg) { flowAnchor = null; return; }
-  if (flowAnchor) {
-    const b = fw.getBoundingClientRect(), s = svg.getBoundingClientRect();
-    const sx = s.left - b.left + fw.scrollLeft, sy = s.top - b.top + fw.scrollTop;   // where the chart starts in the scrolled content
-    fw.scrollLeft = sx + flowAnchor.px * s.width - flowAnchor.ox;
-    fw.scrollTop = sy + flowAnchor.py * s.height - flowAnchor.oy;
-    flowAnchor = null;
-  } else if (keep) { fw.scrollLeft = keep.l; fw.scrollTop = keep.t; }
+  const pos = flowRecenter ? null : keep || view.flowPos;
+  if (flowAnchor) flowCenterAt(flowAnchor.px, flowAnchor.py, flowAnchor.ox, flowAnchor.oy);
+  else if (pos) flowCenterAt(pos.px, pos.py);
+  else if (flowHome != null) {
+    const g = svg.querySelector(`.fnode[data-flow="${flowHome}"]`), s = svg.getBoundingClientRect(), r = g?.getBoundingClientRect();
+    if (r) flowCenterAt((r.left + r.width / 2 - s.left) / s.width, (r.top + r.height / 2 - s.top) / s.height);
+  }
+  flowAnchor = null; flowRecenter = false;
+  flowSync(true);
 }
+// Lane names at the left edge and inside their lane, the overview frame, and (save) the remembered position.
+let flowSaveT = 0;
+function flowSync(save) {
+  const fw = flowBox(), svg = fw?.querySelector('.flowsvg');
+  if (!svg) return;
+  const z = svg.width.baseVal.value / svg.viewBox.baseVal.width, b = fw.getBoundingClientRect(), s = svg.getBoundingClientRect();
+  const bar = fw.querySelector('.flowfsbar')?.offsetHeight || 0;                       // fullscreen: the sticky bar covers the top
+  const left = (b.left - s.left) / z, top = (b.top + bar - s.top) / z, w = fw.clientWidth / z, h = (fw.clientHeight - bar) / z;
+  svg.querySelectorAll('.flabelg').forEach(g => {
+    const bg = g.querySelector('.flabbg');
+    if (!bg.dataset.w) { bg.dataset.w = 1; bg.setAttribute('width', Math.ceil(g.querySelector('.flabel').getComputedTextLength() + 16)); }
+    const y0 = Number(g.dataset.y), lh = Number(g.dataset.h), k = Math.min(1 / z, (lh - 4) / 26), y1 = y0 + lh - 26 * k;   // the same size on screen, but never taller than the lane
+    g.setAttribute('transform', `translate(${Math.max(2, left + 4 * k)},${Math.max(y0 + 2, Math.min(y1, top + 4 * k))}) scale(${k})`);
+  });
+  const mini = fw.parentElement.querySelector('.flowmini');
+  if (mini) {
+    mini.toggleAttribute('hidden', fw.scrollWidth <= fw.clientWidth + 2 && fw.scrollHeight <= fw.clientHeight + 2);   // the whole chart is in view
+    const v = mini.querySelector('.fmview');
+    v.setAttribute('x', Math.max(0, left)); v.setAttribute('y', Math.max(0, top)); v.setAttribute('width', w); v.setAttribute('height', h);
+  }
+  if (save) { clearTimeout(flowSaveT); flowSaveT = setTimeout(() => { const p = flowCenterFrac(); if (p) { view.flowPos = p; saveView(); } }, 250); }
+}
+main.addEventListener('scroll', e => { if (e.target.classList?.contains('flowwrap')) flowSync(true); }, true);
+window.addEventListener('resize', () => flowSync(false));
+// The overview map: press or drag moves the view there (pointer events, so touch works too).
+let flowMiniDrag = false;
+const flowMiniGo = (e, mini) => { const m = mini.getBoundingClientRect(); flowCenterAt(Math.max(0, Math.min(1, (e.clientX - m.left) / m.width)), Math.max(0, Math.min(1, (e.clientY - m.top) / m.height))); };
+main.addEventListener('pointerdown', e => {
+  const mini = e.target.closest?.('.flowmini');
+  if (!mini || e.button !== 0) return;
+  flowMiniDrag = true; mini.setPointerCapture(e.pointerId); flowMiniGo(e, mini); e.preventDefault();
+});
+main.addEventListener('pointermove', e => { if (flowMiniDrag) { const mini = e.target.closest?.('.flowmini') || main.querySelector('.flowmini'); if (mini) flowMiniGo(e, mini); } });
+main.addEventListener('pointerup', () => { flowMiniDrag = false; });
+main.addEventListener('pointercancel', () => { flowMiniDrag = false; });
 const flowCursor = () => { const fw = flowBox(); fw?.classList.toggle('panready', flowSpace && flowOver); document.body.classList.toggle('flowpanning', !!flowPan); };
 main.addEventListener('mouseover', e => { const o = !!e.target.closest?.('.flowsvg'); if (o !== flowOver) { flowOver = o; flowCursor(); } });
 main.addEventListener('mouseleave', () => { flowOver = false; flowCursor(); });
@@ -1609,7 +1676,7 @@ function render() {
   renderScnModal();
   const html = pagebar + (issues.length ? `<div class="issues">${issues.length} issue(s): ${esc(issues.slice(0, 5).join('; '))}</div>` : '') + body;
   // The playmat is redrawn in place (campaign/morph.js): cards keep their picture and hover state, so a drop or a flip does not flicker.
-  const fw0 = flowPage && main.querySelector('.flowwrap'), flowKeep = fw0 ? { l: fw0.scrollLeft, t: fw0.scrollTop } : null;
+  const flowKeep = flowPage ? flowCenterFrac() : null;      // the chart before this render (none when coming from another view)
   if (tab === 'Mercenaries' && !editing && main.querySelector('.pm')) morphInto(main, html); else main.innerHTML = html;
   if (flowPage) flowRestoreScroll(flowKeep);
   sizePlaymat();
@@ -2661,6 +2728,7 @@ main.addEventListener('change', e => {
   if (evChange(e)) return;
   if (e.target.id === 'cardStk') { view.cardStk = e.target.checked; render(); return; }
   const k = { flowShow: 'flowShow', flowLane: 'flowLane', scnStatus: 'scnStatus', itemSlot: 'itemSlot', itemShow: 'itemShow', cardType: 'cardType', cardKind: 'cardKind', cardSide: 'cardSide', cardDeck: 'cardDeck', cardMon: 'cardMon', cardMLv: 'cardMLv', cardSlot: 'cardSlot', cardChk: 'cardChk', cardShow: 'cardShow', cardCls: 'cardCls', cardLv: 'cardLv' }[e.target.id];
+  if (k === 'flowShow' || k === 'flowLane') { view.flowPos = null; flowRecenter = true; }   // another chart: open at the newest available scenario
   if (k) { view[k] = e.target.value; render(); return; }
   if (editing && e.target.dataset.act && e.target.tagName !== 'BUTTON') apply(e.target);
 });

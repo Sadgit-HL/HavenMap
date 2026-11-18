@@ -15,7 +15,7 @@ export const SCENARIOS = [
   {"n":10,"name":"Mountain Pass","area":"Guards","img":"https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_stickers/10.png","unl":[13,14]},
   {"n":11,"name":"Ritual Chamber","area":"Demons","img":"https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_stickers/11.png","unl":[15]},
   {"n":12,"name":"Inox Encampment","area":"Merchants","img":"https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_stickers/12.png","unl":[25]},
-  {"n":13,"name":"Icecrag Ascent","area":null,"img":"https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_stickers/13.png","unl":[14,29,32]},
+  {"n":13,"name":"Icecrag Ascent","area":"Voice and Drake","img":"https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_stickers/13.png","unl":[14,29,32]},
   {"n":14,"name":"Echo Chamber","area":"Voice and Drake","img":"https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_stickers/14.png","unl":[30,31]},
   {"n":15,"name":"Plane of Elemental Power","area":"Demons","img":"https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_stickers/15.png"},
   {"n":16,"name":"Diamond Mine","area":"Merchants","img":"https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_stickers/16.png"},

@@ -447,6 +447,16 @@ main.wide { max-width:none; }
 .flowwrap.full { position:fixed; inset:0; z-index:55; max-height:none; min-height:0; border:0; border-radius:0; }
 .flowfsbar { position:sticky; top:0; left:0; z-index:2; display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:8px 12px; background:rgba(18,15,11,.92); border-bottom:1px solid var(--line); width:max-content; max-width:100vw; box-sizing:border-box; }
 body.noscroll { overflow:hidden; }
+/* lane names that follow the scroll (flowSync in app.js), and the overview map in the lower right corner of the chart */
+.flabbg { fill:rgba(18,15,11,.88); stroke:var(--line); stroke-width:1; }
+.flabels { pointer-events:none; }
+.flowstage { position:relative; }
+.flowmini { position:absolute; right:22px; bottom:22px; z-index:3; display:block; border:1px solid var(--line); border-radius:8px; background:#120f0b; box-shadow:0 4px 14px rgba(0,0,0,.6); cursor:pointer; touch-action:none; opacity:.92; }
+.flowmini[hidden] { display:none; }
+.flowmini:hover { opacity:1; border-color:#6b5a3c; }
+.flowstage.full .flowmini { position:fixed; z-index:56; }
+.fmnode { fill:#3a3026; } .fmnode.s1 { fill:var(--info); } .fmnode.s2 { fill:var(--ok); } .fmnode.s3 { fill:var(--bad); opacity:.75; } .fmnode.mask { fill:#2b241b; }
+.fmview { fill:rgba(199,164,74,.12); stroke:var(--accent); stroke-width:2; vector-effect:non-scaling-stroke; }
 /* touch drag of playmat cards (pointer events, see app.js): a quick swipe scrolls, a short hold picks the card up */
 .pm:not(.pp) .ac[data-card], .pm:not(.pp) .flipcard[data-card] { touch-action: pan-y; }
 .pm .ac.armed, .pm .flipcard.armed { outline: 2px solid var(--accent); }

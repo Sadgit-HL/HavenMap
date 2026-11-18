@@ -35,6 +35,11 @@ CLASS_NAME_FIX = {'Plague Herald': 'Plagueherald'}
 # Item slots the Card DB has wrong: item id -> slot (169 Staff of Command is a two-hander, 170 Crawling Carapace a body item; swapped in the Card DB).
 ITEM_SLOT_FIX = {169: '2H', 170: 'body'}
 
+# Scenario areas (storyline) the Card DB has wrong or empty: scenario -> area. 1, 3, 5, 11 were patched by hand in the
+# generated file on 2026-11-09 (commit 0580e6e, checked against the Secretariat) and moved here. 13 Icecrag Ascent has no
+# area; it unlocks only Voice and Drake scenarios (14, 29, 32). Owner confirmed 2026-11-18.
+SCENARIO_AREA_FIX = {1: 'Intro/Hail', 3: 'Hail', 5: 'Hail', 11: 'Demons', 13: 'Voice and Drake'}
+
 # Corrections to the Card DB's ability cards: DB slug -> (class code, corrected slug or None). Found 2026-11-08 by comparing
 # with the Secretariat data and the asset repository: these level 9 cards sit under the NEXT class's rows in the Card DB
 # (their picture URLs give 404; the files are in the folders named here), and one slug has a typo.
@@ -258,7 +263,7 @@ def main():
             if r[8] is not None:
                 n = num(r[8])
                 g = ghs.get(n, {})
-                row = {'n': n, 'name': g.get('name') or re.sub(r'^GH ', 'Gloomhaven ', r[30]), 'area': r[9]}
+                row = {'n': n, 'name': g.get('name') or re.sub(r'^GH ', 'Gloomhaven ', r[30]), 'area': SCENARIO_AREA_FIX.get(n, r[9])}
                 if r[47]:
                     row['img'] = r[47]
                 if g.get('init'):
