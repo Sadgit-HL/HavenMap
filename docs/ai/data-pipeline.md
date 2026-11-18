@@ -33,6 +33,13 @@ Hand-maintained inputs and outputs:
 - `scripts/campaign/classTokens.js`, `classList.js`, `cardImages.js`, `bggBanners.js`: hand-written.
 - `campaign/playmat.css`: hand-maintained since 2026-11-14. `tools/build-playmat-css.py` refuses to run without `--force`, and running it would break the settings panel. Do not run it.
 
+## Treasure placement
+
+`gh2_scenarios.js` carries `tre`, the treasure tiles of each scenario (`load_ghs_treasures` and `TREASURE_FIX` in `extract-campaign-tables.py`; 79 treasures in 64 scenarios, each once). The Gloomhaven Secretariat's GH2E data says which treasure lies in which scenario: `data/gh2e/scenarios/*.json` (`rooms[].treasures`, the scenario map) and `data/gh2e/sections/*.json` (rooms revealed later; `parent` is the scenario). Together: 79 placements in 63 scenarios. Checked by the owner against the scenario book on 2026-11-18:
+- Treasure 7 in scenario 6 (sections 38.1 and 40.1) is correct: the same treasure in two alternative rooms.
+- Section 112.1 (scenario 82) holds treasure 41, not 40 (the Secretariat data is wrong; 40 is in scenario 37). `TREASURE_FIX` corrects it.
+- Treasure 14 is missing from the data; it is in scenario 80 Lost Temple (owner, 2026-11-18). `TREASURE_FIX` adds it.
+
 ## Regeneration rules
 
 - Run Python generators with `python -I` (isolated mode).

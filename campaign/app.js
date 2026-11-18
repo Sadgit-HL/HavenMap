@@ -484,6 +484,9 @@ function flowPage(r) {
   // boxes: the sticker art on top, a band with number and name below (a stripe in the storyline colour), the state icon in a
   // corner dot; locked boxes show a "?" and no art
   const BAND = 30;
+  // a chest in the upper left corner while an unlocked scenario still has treasure that nobody took (with the number left when more than one)
+  const treLeft = (k, hide) => { const t = byN.get(k)?.tre || [], left = hide ? 0 : t.filter(x => !r.decks.tre.includes(x)).length;
+    return left ? `<g class="ftre" transform="translate(13,13)"><title>${left} treasure${left > 1 ? 's' : ''} left</title><circle r="9"/><g class="fchest">${FLOW_CHEST}</g>${left > 1 ? `<text x="9" y="9" class="ftren">${left}</text>` : ''}</g>` : ''; };
   const nodes = g.nodes.map(n => {
     const s = byN.get(n.n), hide = masked(n.n), name = String(s.name || ''), src = hide ? '' : scnImg(s);
     const art = hide ? `<text class="fq" x="${n.w / 2}" y="${(n.h - BAND) / 2 + 12}" text-anchor="middle">?</text>`
@@ -492,7 +495,7 @@ function flowPage(r) {
     return `<g class="fnode s${st(n.n)}${hide ? ' mask' : ''}${view.scnSel === n.n ? ' sel' : ''}${flowFound === n.n && !hide ? ' found' : ''}" data-flow="${n.n}" tabindex="0" role="button" transform="translate(${n.x},${n.y})"><title>${hide ? 'Locked' : esc(`${s.n} ${name} (${SCN_STATE_NAME[st(n.n)]})`)}</title>
       <rect class="fbox" width="${n.w}" height="${n.h}" rx="10"/>${art}
       <path class="fband" d="M1,${n.h - BAND} H${n.w - 1} V${n.h - 10} a9,9 0 0 1 -9,9 H10 a9,9 0 0 1 -9,-9 Z"/>${hide ? '' : `<rect x="1" y="${n.h - BAND}" width="${n.w - 2}" height="3" fill="${laneColor(laneOf(s))}"/>`}${label}
-      <circle class="fdot" cx="${n.w - 13}" cy="13" r="9"/><g class="ficon" transform="translate(${n.w - 19},7)">${FLOW_ICON[hide ? 0 : st(n.n)]}</g></g>`;
+      <circle class="fdot" cx="${n.w - 13}" cy="13" r="9"/><g class="ficon" transform="translate(${n.w - 19},7)">${FLOW_ICON[hide ? 0 : st(n.n)]}</g>${treLeft(n.n, hide)}</g>`;
   }).join('');
   const svg = `<svg class="flowsvg" width="${Math.round(g.width * z)}" height="${Math.round(g.height * z)}" viewBox="0 0 ${g.width} ${g.height}" role="img" aria-label="Scenario flowchart">
     <defs><marker id="farrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="farrowhead"/></marker><marker id="farrowp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="farrowhead pth"/></marker></defs>${lanes}${edges}${nodes}${labels}</svg>`;
@@ -503,6 +506,12 @@ const cutText = (t, max) => (t.length > max ? `${t.slice(0, max - 1).trimEnd()}â
 const laneColor = name => LANE_COLOR[name] || LANE_COLOR.Other;
 // Sticker art of a scenario: the local copy under images/, else the remote address.
 const scnImg = s => (s?.img ? imageFile(s.img, '../') || s.img : '');
+// The treasures of a completed scenario for the table (its tiles and any number entered with the result); none before completion.
+const scnTreasures = (r, s) => ((r.scn[String(s.n)]?.s ?? 0) === 2 ? [...new Set([...(s.tre || []), ...(r.scn[String(s.n)]?.ch || [])])].sort((a, b) => a - b) : []);
+// Treasure chips of the scenario page and the chest mark of the flowchart boxes.
+const TRE_CHEST = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M3 10.5V18a1.5 1.5 0 0 0 1.5 1.5h15A1.5 1.5 0 0 0 21 18v-7.5z" fill="currentColor" opacity=".9"/><path d="M3 10.5V9a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v1.5z" fill="currentColor"/><rect x="10.3" y="9.3" width="3.4" height="4.2" rx=".8" fill="#1b150c"/><path d="M3 10.5h18" stroke="#1b150c" stroke-width="1.2"/></svg>';
+const TRE_TAKEN = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
+const FLOW_CHEST = '<path d="M-6,-1 V4 a1,1 0 0 0 1,1 H5 a1,1 0 0 0 1,-1 V-1 Z" fill="currentColor"/><path d="M-6,-1 V-2 a3,3 0 0 1 3,-3 H3 a3,3 0 0 1 3,3 V-1 Z" fill="currentColor" opacity=".8"/><rect x="-1.1" y="-2" width="2.2" height="3" rx=".5" fill="#1b150c"/>';
 // State icons in the corner dot of a box (12x12, currentColor = the state colour): locked, unlocked (available), completed, locked out.
 const FLOW_ICON = [
   '<rect x="2" y="5.5" width="8" height="6" rx="1.2" fill="currentColor"/><path d="M3.8 5.5V4a2.2 2.2 0 0 1 4.4 0v1.5" fill="none" stroke="currentColor" stroke-width="1.4"/>',
@@ -723,10 +732,11 @@ function flowDetail(r) {
       + kv('Chests', `<input type="text" class="txt" style="width:120px" data-act="scnRes" data-key="ch" data-id="${esc(s.n)}" value="${esc((x.ch || []).join(', '))}">`)
       + kv('Date (completed)', `<input type="date" class="txt" data-act="scnRes" data-key="d" data-id="${esc(s.n)}" value="${esc(x.d ?? '')}">`)
     : kv('Level', esc(signed(x.l) ?? '?')) + kv('# Mercenaries', esc(x.p ?? '?')) + kv('Date (completed)', esc(x.d ?? ''));
-  const treNums = x.ch || [];
-  const treRow = !treNums.length ? '' : kv('Treasure', `<span class="chips">${treNums.map(tn => editing
-    ? `<button type="button" class="chip ${r.decks.tre.includes(tn) ? 'ok' : 'dim'}" data-act="deck" data-key="tre" data-id="${tn}">${tn}</button>`
-    : chip(tn, r.decks.tre.includes(tn) ? 'ok' : 'dim')).join('')}</span>`);
+  // the treasure tiles of the scenario (gh2_scenarios.js tre, plus any chest number entered with the result): taken or still there;
+  // a click marks a treasure as collected or not (play, not setup: no Edit needed)
+  const treNums = [...new Set([...(s.tre || []), ...(x.ch || [])])].sort((a, b) => a - b);
+  const treRow = !treNums.length ? '' : kv('Treasure', `<span class="trechips">${treNums.map(tn => { const got = r.decks.tre.includes(tn);
+    return `<button type="button" class="trechip${got ? ' got' : ''}" data-scntre="${tn}" aria-pressed="${got}" title="Treasure ${tn}: ${got ? 'taken. Click to mark it as not taken' : 'still in the scenario. Click when collected'}">${got ? TRE_TAKEN : TRE_CHEST}<b>${tn}</b><small>${got ? 'Taken' : 'Available'}</small></button>`; }).join('')}</span>`);
   const lane = laneOf(s), src = scnImg(s);
   const facts = stateRow + resultRows + treRow;
   return `<div class="scnhero" style="--lc:${laneColor(lane)}">${src ? `<div class="scnblur" style="background-image:url('${esc(src)}')"></div><img class="scnart" src="${esc(src)}" alt="">` : ''}
@@ -753,7 +763,7 @@ function scenarios(r) {
     state: s => r.scn[String(s.n)]?.s ?? 0,
     l: s => r.scn[String(s.n)]?.l ?? -99,
     p: s => r.scn[String(s.n)]?.p ?? -1,
-    ch: s => (r.scn[String(s.n)]?.ch || []).length,
+    ch: s => { const t = scnTreasures(r, s); return t.length ? 100 + t.filter(n => !r.decks.tre.includes(n)).length : 0; },   // treasures left first
     d: s => r.scn[String(s.n)]?.d || '',
   };
   const cmp = (a, b) => (typeof a === 'number' ? a - b : String(a).localeCompare(String(b)));
@@ -761,7 +771,7 @@ function scenarios(r) {
   if (SORT[col]) rows = [...rows].sort((x, y) => dir * cmp(SORT[col](x), SORT[col](y)) || SORT.n(x) - SORT.n(y));
   const sortTh = (k, l) => `<button type="button" class="sortbtn" data-scnsort="${k}" title="Sort by ${esc(l.toLowerCase())}">${esc(l)}${col === k ? (dir > 0 ? ' &#9650;' : ' &#9660;') : ''}</button>`;
   const head = [sortTh('n', '#'), sortTh('name', 'Name'), sortTh('area', 'Area'), sortTh('state', 'State'), sortTh('l', 'Lv'),
-    sortTh('p', '# Mercenaries'), sortTh('ch', 'Chests'), sortTh('d', 'Date (completed)'), 'Unlocks', 'Unlocked by'];
+    sortTh('p', '# Mercenaries'), sortTh('ch', 'Treasures'), sortTh('d', 'Date (completed)'), 'Unlocks', 'Unlocked by'];
   const filters = `<div class="filters">
     <select id="scnStatus"><option value="">All states</option>${SCN_STATE_NAME.map((n, i) => `<option value="${i}" ${view.scnStatus === String(i) ? 'selected' : ''}>${n}</option>`).join('')}</select>
     <input id="scnSearch" type="search" placeholder="Search number, name, area" value="${esc(view.scnSearch)}">
@@ -777,7 +787,7 @@ function scenarios(r) {
     return `<tr class="rowlink" data-flow="${s.n}" tabindex="0"><td>${esc(s.n)}</td><td>${esc(s.name)}</td><td>${esc(s.area ?? '')}</td><td><span class="spill s${x.s}">${SCN_STATE_NAME[x.s]}</span></td>
       <td>${esc(signed(x.l) ?? '')}</td>
       <td>${esc(x.p ?? '')}</td>
-      <td>${esc((x.ch || []).join(', '))}</td>
+      <td>${scnTreasures(r, s).map(n => `<span class="trtag${r.decks.tre.includes(n) ? ' got' : ''}" title="Treasure ${n}: ${r.decks.tre.includes(n) ? 'taken' : 'still in the scenario'}">${n}</span>`).join('')}</td>
       <td>${esc(x.d ?? '')}</td>
       <td>${(s.unl || []).map(n => chip(n, stateClass(n))).join('')}</td><td>${unlockedBy(s.n).map(n => chip(n, stateClass(n))).join('')}</td></tr>`;
   }));
@@ -1216,7 +1226,9 @@ function treasureEffectText(effect) {
 function treasureList(r) {
   const claimed = n => r.decks.tre.includes(n);
   const got = TREASURES.filter(t => claimed(t.n)), open = TREASURES.filter(t => !claimed(t.n));
-  const rows = got.map(t => `<div class="trrow"><b>${esc(t.n)}</b><span class="treffect">${esc(treasureEffectText(t.effect))}</span><button type="button" class="pill ok" data-trclaim="${t.n}" title="Claimed: click to undo" aria-label="Treasure ${esc(t.n)} claimed, undo">&#10003;</button></div>`).join('');
+  // where a claimed treasure lies (gh2_scenarios.js tre): a link to the scenario page; unclaimed treasures keep their place hidden
+  const from = n => { const s = SCENARIOS.find(x => (x.tre || []).includes(n)); return s ? `<button type="button" class="trfrom" data-flow="${s.n}" title="Open scenario ${s.n}">Scenario ${esc(s.n)} ${esc(s.name)}</button>` : ''; };
+  const rows = got.map(t => `<div class="trrow"><b>${esc(t.n)}</b><span class="treffect">${esc(treasureEffectText(t.effect))}</span>${from(t.n)}<button type="button" class="pill ok" data-trclaim="${t.n}" title="Claimed: click to undo" aria-label="Treasure ${esc(t.n)} claimed, undo">&#10003;</button></div>`).join('');
   const nums = open.map(t => `<button type="button" class="trnum" data-trclaim="${t.n}" title="Mark treasure ${esc(t.n)} claimed">${esc(t.n)}</button>`).join('');
   return `<section class="card trcard"><h3>Treasure index <span class="ovcount">${got.length} of ${TREASURES.length} claimed</span></h3>${rows ? `<div class="trrows">${rows}</div>` : ''}${nums ? `<h4 class="trsub">Not claimed</h4><div class="trnums">${nums}</div>` : ''}</section>`;
 }
@@ -1621,6 +1633,8 @@ function renderScnModal() {
 function closeScnModal() { view.scnSel = null; render(); }
 scnModalRoot.addEventListener('click', e => {
   if (e.target.id === 'scnModal' || e.target.closest('[data-scn-close]')) { closeScnModal(); return; }
+  const tb = e.target.closest('[data-scntre]');
+  if (tb) { commit(ed.toggleDeckEntry(record, 'tre', Number(tb.dataset.scntre))); return; }
   const go = e.target.closest('[data-scn-go]');
   if (go) { view.scnSel = Number(go.dataset.scnGo); render(); return; }
   if (e.target.closest('[data-pageedit]')) {
@@ -2463,13 +2477,13 @@ main.addEventListener('click', e => {
 }, true);
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && pm.chMenu) { pm.chMenu = false; render(); e.stopImmediatePropagation(); } }, true);
 
-// The classes a character can switch to: its own and the ones nobody plays; unlocked classes first.
+// The classes a character can switch to: its own, and the classes nobody plays that are available in this campaign and unlocked.
 function charClassOptions(c) {
-  const open = new Set(record.cls.map(n => n.toLowerCase()));
+  const open = new Set(record.cls.map(n => n.toLowerCase())), avail = availableSet(record);
   const own = classByName(c.cls);
-  return [...(own ? [own] : []), ...ed.availableClasses(record)]
-    .map(k => ({ name: k.name, locked: !open.has(k.name.toLowerCase()) }))
-    .sort((a, b) => (a.locked - b.locked) || a.name.localeCompare(b.name));
+  return [...(own ? [own] : []), ...ed.availableClasses(record).filter(k => open.has(k.name.toLowerCase()) && avail.has(k.name.toLowerCase()))]
+    .map(k => ({ name: k.name, locked: false }))
+    .sort((a, b) => a.name.localeCompare(b.name));
 }
 // Edit character modal: name, player, class and event traits are drafted in pm.cf and saved together. Another class resets what belongs to the class (ed.changeCharacterClass).
 main.addEventListener('click', e => {

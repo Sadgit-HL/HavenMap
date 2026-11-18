@@ -97,6 +97,38 @@ def load_ghs_links(directory):
     return out
 
 
+# Corrections to the Secretariat's treasure placement, checked by the owner against the scenario book (2026-11-18):
+# section 112.1 of scenario 82 holds treasure 41 (the data says 40, which is in scenario 37); treasure 14 is missing (scenario 80).
+TREASURE_FIX = {'replace': {('112.1', 40): 41}, 'add': {80: [14]}}
+
+
+def load_ghs_treasures(directory):
+    """Treasure tiles per scenario index from the Secretariat's gh2e scenario files (rooms[].treasures: the scenario map) and section
+    files (rooms revealed later; parent = the scenario), with TREASURE_FIX applied: {index: [treasure numbers, sorted]}."""
+    out = {}
+    key = lambda v: int(v) if str(v).isdigit() else str(v)
+    sections = os.path.join(os.path.dirname(directory), 'sections')
+    for folder, is_section in ((directory, False), (sections, True)):
+        if not os.path.isdir(folder):
+            continue
+        for fn in sorted(os.listdir(folder)):
+            if not fn.endswith('.json'):
+                continue
+            with open(os.path.join(folder, fn), encoding='utf-8') as f:
+                j = json.load(f)
+            if j.get('solo'):
+                continue
+            scn = key(j.get('parent') if is_section else j['index'])
+            for room in j.get('rooms', []):
+                for t in room.get('treasures', []):
+                    if isinstance(t, int):
+                        t = TREASURE_FIX['replace'].get((str(j['index']), t), t) if is_section else t
+                        out.setdefault(scn, set()).add(t)
+    for scn, extra in TREASURE_FIX['add'].items():
+        out.setdefault(scn, set()).update(extra)
+    return {k: sorted(v) for k, v in out.items()}
+
+
 def load_flow_edges(path):
     """Unlock links from the sheet's "GH2 Flow" tab, which is a drawn flowchart on a cell grid: scenario boxes are
     9 columns wide and 13 rows tall (number in the top-left cell), and arrows are single characters in the cells
@@ -330,6 +362,7 @@ def main():
     # --- scenarios and campaign stickers --------------------------------------------------------------
     flow = load_flow_edges(path)
     ghs = load_ghs_links(sys.argv[2] if len(sys.argv) > 2 else DEFAULT_GHS)
+    tre = load_ghs_treasures(sys.argv[2] if len(sys.argv) > 2 else DEFAULT_GHS)
     scn, stickers = [], []
     for r in rows:
         if r[0] == 'Stickers' and r[46] == 'gh2':
@@ -341,6 +374,8 @@ def main():
                     row['img'] = r[47]
                 if g.get('init'):
                     row['init'] = 1
+                if tre.get(n):
+                    row['tre'] = tre[n]
                 if flow.get(n):
                     row['unl'] = flow[n]
                 forced = [f for f in g.get('forced', []) if f in flow.get(n, [])]
@@ -356,6 +391,8 @@ def main():
                                      "fields, keyed by slug instead of number). unl = scenarios it unlocks, read from the "
                                      "arrows of the group's own GH2 Flow chart in the workbook (the source of truth); init = "
                                      "available at the start and forced = forced links, both from Gloomhaven Secretariat's gh2e "
+                                     "data (AGPL-3.0); tre = the treasure tiles of the scenario (its map and its sections, same source, corrected "
+                                     "by the owner: TREASURE_FIX). "
                                      "data (AGPL-3.0). Scenarios unlocked by events, reputation or personal quests may have no "
                                      "incoming link. A pair of scenarios that share one physical sticker (23/24, 25/26) share "
                                      "the same img URL.",
