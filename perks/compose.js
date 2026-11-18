@@ -1,7 +1,7 @@
 // Compare page: each shared perk face composed from the layered assets, next to its baked scan.
 // Layers all share the 600x391 canvas, so they stack at 0,0. Corner value badges (not exported yet)
 // and the class badge are not drawn here.
-import { PERKS } from '../scripts/games/perks.js?v=10';
+import { PERKS } from '../scripts/amd/perkData.js?v=1';
 import { compose, stack, addOverlays, withOverlays, withBadges } from '../scripts/amd/compose.js?v=3';
 
 // Distinct shared faces, with the classes that use each.

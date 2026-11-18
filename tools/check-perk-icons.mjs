@@ -1,7 +1,7 @@
 // Checks that every %token% in the perk texts has an icon in images/common/perk-icons and that every
 // listed token has a file. Run: node tools/check-perk-icons.mjs
 import fs from 'fs';
-import { PERKS } from '../scripts/games/perks.js';
+import { PERKS } from '../scripts/amd/perkData.js';
 import { PERK_ICON_TOKENS } from '../scripts/amd/perkText.js';
 
 const used = new Set();

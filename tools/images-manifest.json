@@ -9100,391 +9100,6 @@
   },
   {
    "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-crushing-weight.png",
-   "dst": "character-abilities/jotl/de-jl-crushing-weight.webp",
-   "status": "ok",
-   "bytes": 46050,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-explode.png",
-   "dst": "character-abilities/jotl/de-jl-explode.webp",
-   "status": "ok",
-   "bytes": 47732,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-explosive-blitz.png",
-   "dst": "character-abilities/jotl/de-jl-explosive-blitz.webp",
-   "status": "ok",
-   "bytes": 47412,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-implode.png",
-   "dst": "character-abilities/jotl/de-jl-implode.webp",
-   "status": "ok",
-   "bytes": 43086,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-knock-out-the-support.png",
-   "dst": "character-abilities/jotl/de-jl-knock-out-the-support.webp",
-   "status": "ok",
-   "bytes": 52482,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-one-two-punch.png",
-   "dst": "character-abilities/jotl/de-jl-one-two-punch.webp",
-   "status": "ok",
-   "bytes": 46778,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-piston-punch.png",
-   "dst": "character-abilities/jotl/de-jl-piston-punch.webp",
-   "status": "ok",
-   "bytes": 44758,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-the-big-one.png",
-   "dst": "character-abilities/jotl/de-jl-the-big-one.webp",
-   "status": "ok",
-   "bytes": 48310,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-windup.png",
-   "dst": "character-abilities/jotl/de-jl-windup.webp",
-   "status": "ok",
-   "bytes": 44870,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-crash-protocol.png",
-   "dst": "character-abilities/jotl/de-jl-crash-protocol.webp",
-   "status": "ok",
-   "bytes": 57070,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-robotic-enhancement.png",
-   "dst": "character-abilities/jotl/de-jl-robotic-enhancement.webp",
-   "status": "ok",
-   "bytes": 43020,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-fire-bombs.png",
-   "dst": "character-abilities/jotl/de-jl-fire-bombs.webp",
-   "status": "ok",
-   "bytes": 48174,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-nowhere-to-run.png",
-   "dst": "character-abilities/jotl/de-jl-nowhere-to-run.webp",
-   "status": "ok",
-   "bytes": 48980,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-extra-fuel.png",
-   "dst": "character-abilities/jotl/de-jl-extra-fuel.webp",
-   "status": "ok",
-   "bytes": 45188,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-remote-detonation.png",
-   "dst": "character-abilities/jotl/de-jl-remote-detonation.webp",
-   "status": "ok",
-   "bytes": 49766,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-mech-suit.png",
-   "dst": "character-abilities/jotl/de-jl-mech-suit.webp",
-   "status": "ok",
-   "bytes": 44166,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-drill-fist.png",
-   "dst": "character-abilities/jotl/de-jl-drill-fist.webp",
-   "status": "ok",
-   "bytes": 56680,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-dust-cloud.png",
-   "dst": "character-abilities/jotl/de-jl-dust-cloud.webp",
-   "status": "ok",
-   "bytes": 47512,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-insult-to-injury.png",
-   "dst": "character-abilities/jotl/de-jl-insult-to-injury.webp",
-   "status": "ok",
-   "bytes": 52514,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-micro-missiles.png",
-   "dst": "character-abilities/jotl/de-jl-micro-missiles.webp",
-   "status": "ok",
-   "bytes": 43586,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-gut-punch.png",
-   "dst": "character-abilities/jotl/de-jl-gut-punch.webp",
-   "status": "ok",
-   "bytes": 44264,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-the-bigger-one.png",
-   "dst": "character-abilities/jotl/de-jl-the-bigger-one.webp",
-   "status": "ok",
-   "bytes": 54278,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-collateral-damage.png",
-   "dst": "character-abilities/jotl/de-jl-collateral-damage.webp",
-   "status": "ok",
-   "bytes": 56024,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-wholesale-destruction.png",
-   "dst": "character-abilities/jotl/de-jl-wholesale-destruction.webp",
-   "status": "ok",
-   "bytes": 52548,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-level.png",
-   "dst": "character-abilities/jotl/de-jl-level.webp",
-   "status": "ok",
-   "bytes": 43874,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-lobbed-charge.png",
-   "dst": "character-abilities/jotl/de-jl-lobbed-charge.webp",
-   "status": "ok",
-   "bytes": 53942,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-rubble.png",
-   "dst": "character-abilities/jotl/de-jl-rubble.webp",
-   "status": "ok",
-   "bytes": 48866,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-a-explosive-blitz.png",
-   "dst": "character-abilities/jotl/de-jl-a-explosive-blitz.webp",
-   "status": "ok",
-   "bytes": 44650,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-a-implode.png",
-   "dst": "character-abilities/jotl/de-jl-a-implode.webp",
-   "status": "ok",
-   "bytes": 54286,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-a-knock-out-the-support.png",
-   "dst": "character-abilities/jotl/de-jl-a-knock-out-the-support.webp",
-   "status": "ok",
-   "bytes": 50188,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-a-one-two-punch.png",
-   "dst": "character-abilities/jotl/de-jl-a-one-two-punch.webp",
-   "status": "ok",
-   "bytes": 47704,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-a-piston-punch.png",
-   "dst": "character-abilities/jotl/de-jl-a-piston-punch.webp",
-   "status": "ok",
-   "bytes": 46628,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-a-the-big-one.png",
-   "dst": "character-abilities/jotl/de-jl-a-the-big-one.webp",
-   "status": "ok",
-   "bytes": 45180,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-b-one-two-punch.png",
-   "dst": "character-abilities/jotl/de-jl-b-one-two-punch.webp",
-   "status": "ok",
-   "bytes": 51864,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/de/jl-b-the-big-one.png",
-   "dst": "character-abilities/jotl/de-jl-b-the-big-one.webp",
-   "status": "ok",
-   "bytes": 54232,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
    "src": "D:/github/worldhaven/images/character-ability-cards/frosthaven/df/fh-bloodletting.png",
    "dst": "character-abilities/fh/df-fh-bloodletting.webp",
    "status": "ok",
@@ -10827,402 +10442,6 @@
   },
   {
    "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-center-mass.png",
-   "dst": "character-abilities/jotl/ha-jl-center-mass.webp",
-   "status": "ok",
-   "bytes": 39116,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-close-cuts.png",
-   "dst": "character-abilities/jotl/ha-jl-close-cuts.webp",
-   "status": "ok",
-   "bytes": 36514,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-disorienting-barrage.png",
-   "dst": "character-abilities/jotl/ha-jl-disorienting-barrage.webp",
-   "status": "ok",
-   "bytes": 45536,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-double-throw.png",
-   "dst": "character-abilities/jotl/ha-jl-double-throw.webp",
-   "status": "ok",
-   "bytes": 41522,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-follow-through.png",
-   "dst": "character-abilities/jotl/ha-jl-follow-through.webp",
-   "status": "ok",
-   "bytes": 44560,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-power-pitch.png",
-   "dst": "character-abilities/jotl/ha-jl-power-pitch.webp",
-   "status": "ok",
-   "bytes": 36422,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-retrieval.png",
-   "dst": "character-abilities/jotl/ha-jl-retrieval.webp",
-   "status": "ok",
-   "bytes": 39058,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-second-wind.png",
-   "dst": "character-abilities/jotl/ha-jl-second-wind.webp",
-   "status": "ok",
-   "bytes": 40104,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-stopping-power.png",
-   "dst": "character-abilities/jotl/ha-jl-stopping-power.webp",
-   "status": "ok",
-   "bytes": 46142,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-the-favorite.png",
-   "dst": "character-abilities/jotl/ha-jl-the-favorite.webp",
-   "status": "ok",
-   "bytes": 53456,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-repeat-shot.png",
-   "dst": "character-abilities/jotl/ha-jl-repeat-shot.webp",
-   "status": "ok",
-   "bytes": 42422,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-ricochet.png",
-   "dst": "character-abilities/jotl/ha-jl-ricochet.webp",
-   "status": "ok",
-   "bytes": 50778,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-fearsome-efficiency.png",
-   "dst": "character-abilities/jotl/ha-jl-fearsome-efficiency.webp",
-   "status": "ok",
-   "bytes": 51826,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-sharpened-blades.png",
-   "dst": "character-abilities/jotl/ha-jl-sharpened-blades.webp",
-   "status": "ok",
-   "bytes": 44698,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-overwatch.png",
-   "dst": "character-abilities/jotl/ha-jl-overwatch.webp",
-   "status": "ok",
-   "bytes": 50320,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-ripped-from-the-flesh.png",
-   "dst": "character-abilities/jotl/ha-jl-ripped-from-the-flesh.webp",
-   "status": "ok",
-   "bytes": 47618,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-the-new-favorite.png",
-   "dst": "character-abilities/jotl/ha-jl-the-new-favorite.webp",
-   "status": "ok",
-   "bytes": 54184,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-bombardment.png",
-   "dst": "character-abilities/jotl/ha-jl-bombardment.webp",
-   "status": "ok",
-   "bytes": 46046,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-quick-turnaround.png",
-   "dst": "character-abilities/jotl/ha-jl-quick-turnaround.webp",
-   "status": "ok",
-   "bytes": 43900,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-brutalize.png",
-   "dst": "character-abilities/jotl/ha-jl-brutalize.webp",
-   "status": "ok",
-   "bytes": 43024,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-excessive-force.png",
-   "dst": "character-abilities/jotl/ha-jl-excessive-force.webp",
-   "status": "ok",
-   "bytes": 47272,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-camaraderie.png",
-   "dst": "character-abilities/jotl/ha-jl-camaraderie.webp",
-   "status": "ok",
-   "bytes": 41672,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-shrapnel.png",
-   "dst": "character-abilities/jotl/ha-jl-shrapnel.webp",
-   "status": "ok",
-   "bytes": 49950,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-executioners-axe.png",
-   "dst": "character-abilities/jotl/ha-jl-executioners-axe.webp",
-   "status": "ok",
-   "bytes": 42608,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-heart-seeker.png",
-   "dst": "character-abilities/jotl/ha-jl-heart-seeker.webp",
-   "status": "ok",
-   "bytes": 47664,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-care-package.png",
-   "dst": "character-abilities/jotl/ha-jl-care-package.webp",
-   "status": "ok",
-   "bytes": 42094,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-extra-lift.png",
-   "dst": "character-abilities/jotl/ha-jl-extra-lift.webp",
-   "status": "ok",
-   "bytes": 47200,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-fancy-hat.png",
-   "dst": "character-abilities/jotl/ha-jl-fancy-hat.webp",
-   "status": "ok",
-   "bytes": 40324,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-a-center-mass.png",
-   "dst": "character-abilities/jotl/ha-jl-a-center-mass.webp",
-   "status": "ok",
-   "bytes": 41730,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-a-close-cuts.png",
-   "dst": "character-abilities/jotl/ha-jl-a-close-cuts.webp",
-   "status": "ok",
-   "bytes": 39672,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-a-disorienting-barrage.png",
-   "dst": "character-abilities/jotl/ha-jl-a-disorienting-barrage.webp",
-   "status": "ok",
-   "bytes": 48760,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-a-double-throw.png",
-   "dst": "character-abilities/jotl/ha-jl-a-double-throw.webp",
-   "status": "ok",
-   "bytes": 42776,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-a-second-wind.png",
-   "dst": "character-abilities/jotl/ha-jl-a-second-wind.webp",
-   "status": "ok",
-   "bytes": 38384,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-a-stopping-power.png",
-   "dst": "character-abilities/jotl/ha-jl-a-stopping-power.webp",
-   "status": "ok",
-   "bytes": 49624,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-b-center-mass.png",
-   "dst": "character-abilities/jotl/ha-jl-b-center-mass.webp",
-   "status": "ok",
-   "bytes": 48228,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/ha/jl-b-close-cuts.png",
-   "dst": "character-abilities/jotl/ha-jl-b-close-cuts.webp",
-   "status": "ok",
-   "bytes": 48946,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
    "src": "D:/github/worldhaven/images/character-ability-cards/frosthaven/if/fh-boon-of-the-tempest.png",
    "dst": "character-abilities/fh/if-fh-boon-of-the-tempest.webp",
    "status": "ok",
@@ -12499,402 +11718,6 @@
   },
   {
    "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-blinding-sickle.png",
-   "dst": "character-abilities/jotl/rg-jl-blinding-sickle.webp",
-   "status": "ok",
-   "bytes": 36608,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-desert-night.png",
-   "dst": "character-abilities/jotl/rg-jl-desert-night.webp",
-   "status": "ok",
-   "bytes": 36602,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-flame-shroud.png",
-   "dst": "character-abilities/jotl/rg-jl-flame-shroud.webp",
-   "status": "ok",
-   "bytes": 43354,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-flaming-sickle.png",
-   "dst": "character-abilities/jotl/rg-jl-flaming-sickle.webp",
-   "status": "ok",
-   "bytes": 35868,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-healing-sands.png",
-   "dst": "character-abilities/jotl/rg-jl-healing-sands.webp",
-   "status": "ok",
-   "bytes": 35940,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-shield-of-the-desert.png",
-   "dst": "character-abilities/jotl/rg-jl-shield-of-the-desert.webp",
-   "status": "ok",
-   "bytes": 38614,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-shield-spikes.png",
-   "dst": "character-abilities/jotl/rg-jl-shield-spikes.webp",
-   "status": "ok",
-   "bytes": 37652,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-shocking-advance.png",
-   "dst": "character-abilities/jotl/rg-jl-shocking-advance.webp",
-   "status": "ok",
-   "bytes": 35102,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-swift-strength.png",
-   "dst": "character-abilities/jotl/rg-jl-swift-strength.webp",
-   "status": "ok",
-   "bytes": 35330,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-twirling-stabs.png",
-   "dst": "character-abilities/jotl/rg-jl-twirling-stabs.webp",
-   "status": "ok",
-   "bytes": 36944,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-barbaric-instincts.png",
-   "dst": "character-abilities/jotl/rg-jl-barbaric-instincts.webp",
-   "status": "ok",
-   "bytes": 38648,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-harvest-sickle.png",
-   "dst": "character-abilities/jotl/rg-jl-harvest-sickle.webp",
-   "status": "ok",
-   "bytes": 37454,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-strangling-chain.png",
-   "dst": "character-abilities/jotl/rg-jl-strangling-chain.webp",
-   "status": "ok",
-   "bytes": 44778,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-warmth-of-the-sun.png",
-   "dst": "character-abilities/jotl/rg-jl-warmth-of-the-sun.webp",
-   "status": "ok",
-   "bytes": 38186,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-burn-away-the-dark.png",
-   "dst": "character-abilities/jotl/rg-jl-burn-away-the-dark.webp",
-   "status": "ok",
-   "bytes": 41672,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-radiant-sickle.png",
-   "dst": "character-abilities/jotl/rg-jl-radiant-sickle.webp",
-   "status": "ok",
-   "bytes": 36766,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-sand-devil.png",
-   "dst": "character-abilities/jotl/rg-jl-sand-devil.webp",
-   "status": "ok",
-   "bytes": 47850,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-fierce-brilliance.png",
-   "dst": "character-abilities/jotl/rg-jl-fierce-brilliance.webp",
-   "status": "ok",
-   "bytes": 42548,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-flying-sickle.png",
-   "dst": "character-abilities/jotl/rg-jl-flying-sickle.webp",
-   "status": "ok",
-   "bytes": 36252,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-horns-of-the-beast.png",
-   "dst": "character-abilities/jotl/rg-jl-horns-of-the-beast.webp",
-   "status": "ok",
-   "bytes": 38176,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-vicious-ballet.png",
-   "dst": "character-abilities/jotl/rg-jl-vicious-ballet.webp",
-   "status": "ok",
-   "bytes": 48514,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-no-fear.png",
-   "dst": "character-abilities/jotl/rg-jl-no-fear.webp",
-   "status": "ok",
-   "bytes": 50058,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-prismatic-sickle.png",
-   "dst": "character-abilities/jotl/rg-jl-prismatic-sickle.webp",
-   "status": "ok",
-   "bytes": 33368,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-honorable-fury.png",
-   "dst": "character-abilities/jotl/rg-jl-honorable-fury.webp",
-   "status": "ok",
-   "bytes": 42912,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-soaring-shield.png",
-   "dst": "character-abilities/jotl/rg-jl-soaring-shield.webp",
-   "status": "ok",
-   "bytes": 39780,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-blade-dance.png",
-   "dst": "character-abilities/jotl/rg-jl-blade-dance.webp",
-   "status": "ok",
-   "bytes": 44796,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-precision-strike.png",
-   "dst": "character-abilities/jotl/rg-jl-precision-strike.webp",
-   "status": "ok",
-   "bytes": 38512,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-warrior-of-the-sun.png",
-   "dst": "character-abilities/jotl/rg-jl-warrior-of-the-sun.webp",
-   "status": "ok",
-   "bytes": 38402,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-a-blinding-sickle.png",
-   "dst": "character-abilities/jotl/rg-jl-a-blinding-sickle.webp",
-   "status": "ok",
-   "bytes": 40302,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-a-desert-night.png",
-   "dst": "character-abilities/jotl/rg-jl-a-desert-night.webp",
-   "status": "ok",
-   "bytes": 39228,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-a-flaming-sickle.png",
-   "dst": "character-abilities/jotl/rg-jl-a-flaming-sickle.webp",
-   "status": "ok",
-   "bytes": 40602,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-a-shield-spikes.png",
-   "dst": "character-abilities/jotl/rg-jl-a-shield-spikes.webp",
-   "status": "ok",
-   "bytes": 37292,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-a-shocking-advance.png",
-   "dst": "character-abilities/jotl/rg-jl-a-shocking-advance.webp",
-   "status": "ok",
-   "bytes": 38650,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-a-twirling-stabs.png",
-   "dst": "character-abilities/jotl/rg-jl-a-twirling-stabs.webp",
-   "status": "ok",
-   "bytes": 40100,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-b-desert-night.png",
-   "dst": "character-abilities/jotl/rg-jl-b-desert-night.webp",
-   "status": "ok",
-   "bytes": 41278,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/rg/jl-b-flaming-sickle.png",
-   "dst": "character-abilities/jotl/rg-jl-b-flaming-sickle.webp",
-   "status": "ok",
-   "bytes": 42402,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
    "src": "D:/github/worldhaven/images/character-ability-cards/frosthaven/sh/fh-devastating-shout.png",
    "dst": "character-abilities/fh/sh-fh-devastating-shout.webp",
    "status": "ok",
@@ -13845,413 +12668,6 @@
    "dst": "character-abilities/fh/ta-fh-spring-loaded.webp",
    "status": "ok",
    "bytes": 51414,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-black-boon.png",
-   "dst": "character-abilities/jotl/vw-jl-black-boon.webp",
-   "status": "ok",
-   "bytes": 39604,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-close-to-the-abyss.png",
-   "dst": "character-abilities/jotl/vw-jl-close-to-the-abyss.webp",
-   "status": "ok",
-   "bytes": 42788,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-freeze-the-soul.png",
-   "dst": "character-abilities/jotl/vw-jl-freeze-the-soul.webp",
-   "status": "ok",
-   "bytes": 42646,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-gift-of-the-void.png",
-   "dst": "character-abilities/jotl/vw-jl-gift-of-the-void.webp",
-   "status": "ok",
-   "bytes": 42424,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-grasp-of-doom.png",
-   "dst": "character-abilities/jotl/vw-jl-grasp-of-doom.webp",
-   "status": "ok",
-   "bytes": 40342,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-lure-of-the-void.png",
-   "dst": "character-abilities/jotl/vw-jl-lure-of-the-void.webp",
-   "status": "ok",
-   "bytes": 46780,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-master-influence.png",
-   "dst": "character-abilities/jotl/vw-jl-master-influence.webp",
-   "status": "ok",
-   "bytes": 46880,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-signs-of-the-void.png",
-   "dst": "character-abilities/jotl/vw-jl-signs-of-the-void.webp",
-   "status": "ok",
-   "bytes": 46862,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-suggestion.png",
-   "dst": "character-abilities/jotl/vw-jl-suggestion.webp",
-   "status": "ok",
-   "bytes": 45950,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-turn-out-the-lights.png",
-   "dst": "character-abilities/jotl/vw-jl-turn-out-the-lights.webp",
-   "status": "ok",
-   "bytes": 48814,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-wicked-scratch.png",
-   "dst": "character-abilities/jotl/vw-jl-wicked-scratch.webp",
-   "status": "ok",
-   "bytes": 39706,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-crushing-cold.png",
-   "dst": "character-abilities/jotl/vw-jl-crushing-cold.webp",
-   "status": "ok",
-   "bytes": 42226,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-give-and-take.png",
-   "dst": "character-abilities/jotl/vw-jl-give-and-take.webp",
-   "status": "ok",
-   "bytes": 48038,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-commanding-presence.png",
-   "dst": "character-abilities/jotl/vw-jl-commanding-presence.webp",
-   "status": "ok",
-   "bytes": 49800,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-taunting-fate.png",
-   "dst": "character-abilities/jotl/vw-jl-taunting-fate.webp",
-   "status": "ok",
-   "bytes": 48688,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-savage-instinct.png",
-   "dst": "character-abilities/jotl/vw-jl-savage-instinct.webp",
-   "status": "ok",
-   "bytes": 46050,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-the-last-journey.png",
-   "dst": "character-abilities/jotl/vw-jl-the-last-journey.webp",
-   "status": "ok",
-   "bytes": 44042,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-stand-fast.png",
-   "dst": "character-abilities/jotl/vw-jl-stand-fast.webp",
-   "status": "ok",
-   "bytes": 50848,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-surge-of-power.png",
-   "dst": "character-abilities/jotl/vw-jl-surge-of-power.webp",
-   "status": "ok",
-   "bytes": 44394,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-withering-conviction.png",
-   "dst": "character-abilities/jotl/vw-jl-withering-conviction.webp",
-   "status": "ok",
-   "bytes": 45230,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-hateful-blast.png",
-   "dst": "character-abilities/jotl/vw-jl-hateful-blast.webp",
-   "status": "ok",
-   "bytes": 46770,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-spirit-hunger.png",
-   "dst": "character-abilities/jotl/vw-jl-spirit-hunger.webp",
-   "status": "ok",
-   "bytes": 45474,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-empowered-link.png",
-   "dst": "character-abilities/jotl/vw-jl-empowered-link.webp",
-   "status": "ok",
-   "bytes": 43820,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-lull-into-oblivion.png",
-   "dst": "character-abilities/jotl/vw-jl-lull-into-oblivion.webp",
-   "status": "ok",
-   "bytes": 45680,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-eye-of-the-void.png",
-   "dst": "character-abilities/jotl/vw-jl-eye-of-the-void.webp",
-   "status": "ok",
-   "bytes": 47724,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-possessed-by-fate.png",
-   "dst": "character-abilities/jotl/vw-jl-possessed-by-fate.webp",
-   "status": "ok",
-   "bytes": 47126,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-cold-embrace.png",
-   "dst": "character-abilities/jotl/vw-jl-cold-embrace.webp",
-   "status": "ok",
-   "bytes": 43762,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-resigned-frenzy.png",
-   "dst": "character-abilities/jotl/vw-jl-resigned-frenzy.webp",
-   "status": "ok",
-   "bytes": 42480,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-sap-warmth.png",
-   "dst": "character-abilities/jotl/vw-jl-sap-warmth.webp",
-   "status": "ok",
-   "bytes": 46986,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-a-black-boon.png",
-   "dst": "character-abilities/jotl/vw-jl-a-black-boon.webp",
-   "status": "ok",
-   "bytes": 39194,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-a-gift-of-the-void.png",
-   "dst": "character-abilities/jotl/vw-jl-a-gift-of-the-void.webp",
-   "status": "ok",
-   "bytes": 42900,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-a-lure-of-the-void.png",
-   "dst": "character-abilities/jotl/vw-jl-a-lure-of-the-void.webp",
-   "status": "ok",
-   "bytes": 46426,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-a-suggestion.png",
-   "dst": "character-abilities/jotl/vw-jl-a-suggestion.webp",
-   "status": "ok",
-   "bytes": 51398,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-a-turn-out-the-lights.png",
-   "dst": "character-abilities/jotl/vw-jl-a-turn-out-the-lights.webp",
-   "status": "ok",
-   "bytes": 48070,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-a-wicked-scratch.png",
-   "dst": "character-abilities/jotl/vw-jl-a-wicked-scratch.webp",
-   "status": "ok",
-   "bytes": 48684,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-b-lure-of-the-void.png",
-   "dst": "character-abilities/jotl/vw-jl-b-lure-of-the-void.webp",
-   "status": "ok",
-   "bytes": 50560,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "ability FH/JotL",
-   "src": "D:/github/worldhaven/images/character-ability-cards/jaws-of-the-lion/vw/jl-b-wicked-scratch.png",
-   "dst": "character-abilities/jotl/vw-jl-b-wicked-scratch.webp",
-   "status": "ok",
-   "bytes": 51420,
    "size": [
     429,
     600
@@ -23258,11 +21674,14 @@
   },
   {
    "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/de1.webp",
+   "src": "D:/github/worldhaven/images/attack-modifiers/jaws-of-the-lion/de/jl-am-de-10.png",
    "dst": "attack-modifiers/common/unique-de1.webp",
    "status": "ok",
-   "bytes": 30536,
-   "size": null
+   "bytes": 50078,
+   "size": [
+    600,
+    391
+   ]
   },
   {
    "group": "repo images",
@@ -24082,83 +22501,6 @@
    "size": [
     750,
     1050
-   ]
-  },
-  {
-   "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/card_backs/jl-de-back.png",
-   "dst": "card-backs/jotl/jl-de-back.webp",
-   "status": "ok",
-   "bytes": 44788,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/card_backs/jl-de-demolitionist-card-back.png",
-   "dst": "card-backs/jotl/jl-de-demolitionist-card-back.webp",
-   "status": "ok",
-   "bytes": 52856,
-   "size": [
-    400,
-    600
-   ]
-  },
-  {
-   "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/card_backs/jl-ha-back.png",
-   "dst": "card-backs/jotl/jl-ha-back.webp",
-   "status": "ok",
-   "bytes": 43532,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/card_backs/jl-rg-back.png",
-   "dst": "card-backs/jotl/jl-rg-back.webp",
-   "status": "ok",
-   "bytes": 36838,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/card_backs/jl-rg-Red-Guard-Card-Back.png",
-   "dst": "card-backs/jotl/jl-rg-Red-Guard-Card-Back.webp",
-   "status": "ok",
-   "bytes": 44806,
-   "size": [
-    400,
-    600
-   ]
-  },
-  {
-   "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/card_backs/jl-vw-back.png",
-   "dst": "card-backs/jotl/jl-vw-back.webp",
-   "status": "ok",
-   "bytes": 64866,
-   "size": [
-    429,
-    600
-   ]
-  },
-  {
-   "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/card_backs/jl-vw-voidwarden-card-back.png",
-   "dst": "card-backs/jotl/jl-vw-voidwarden-card-back.webp",
-   "status": "ok",
-   "bytes": 49682,
-   "size": [
-    400,
-    600
    ]
   },
   {
@@ -45087,6 +43429,1282 @@
     300
    ],
    "from": "owner's Worldhaven folder characters/mp/character_solo_items (tools/prep-mp-solo-items.py)"
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-collateral-damage.png",
+   "dst": "character-abilities/jotl/de-collateral-damage.webp",
+   "status": "ok",
+   "bytes": 50824,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-crash-protocol.png",
+   "dst": "character-abilities/jotl/de-crash-protocol.webp",
+   "status": "ok",
+   "bytes": 54670,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-crushing-weight.png",
+   "dst": "character-abilities/jotl/de-crushing-weight.webp",
+   "status": "ok",
+   "bytes": 37306,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-demolitionist-card-back.png",
+   "dst": "card-backs/jotl/de-card-back.webp",
+   "status": "ok",
+   "bytes": 48186,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-drill-fist.png",
+   "dst": "character-abilities/jotl/de-drill-fist.webp",
+   "status": "ok",
+   "bytes": 48312,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-dust-cloud.png",
+   "dst": "character-abilities/jotl/de-dust-cloud.webp",
+   "status": "ok",
+   "bytes": 38318,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-explode.png",
+   "dst": "character-abilities/jotl/de-explode.webp",
+   "status": "ok",
+   "bytes": 38320,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-explosive-blitz.png",
+   "dst": "character-abilities/jotl/de-explosive-blitz.webp",
+   "status": "ok",
+   "bytes": 38134,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-extra-fuel.png",
+   "dst": "character-abilities/jotl/de-extra-fuel.webp",
+   "status": "ok",
+   "bytes": 36704,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-fire-bombs.png",
+   "dst": "character-abilities/jotl/de-fire-bombs.webp",
+   "status": "ok",
+   "bytes": 39252,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-gut-punch.png",
+   "dst": "character-abilities/jotl/de-gut-punch.webp",
+   "status": "ok",
+   "bytes": 34466,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-implode.png",
+   "dst": "character-abilities/jotl/de-implode.webp",
+   "status": "ok",
+   "bytes": 46000,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-insult-to-injury.png",
+   "dst": "character-abilities/jotl/de-insult-to-injury.webp",
+   "status": "ok",
+   "bytes": 47692,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-knock-out-the-support.png",
+   "dst": "character-abilities/jotl/de-knock-out-the-support.webp",
+   "status": "ok",
+   "bytes": 43314,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-level.png",
+   "dst": "character-abilities/jotl/de-level.webp",
+   "status": "ok",
+   "bytes": 35340,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-lobbed-charge.png",
+   "dst": "character-abilities/jotl/de-lobbed-charge.webp",
+   "status": "ok",
+   "bytes": 49696,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-mech-suit.png",
+   "dst": "character-abilities/jotl/de-mech-suit.webp",
+   "status": "ok",
+   "bytes": 45324,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-micro-missiles.png",
+   "dst": "character-abilities/jotl/de-micro-missiles.webp",
+   "status": "ok",
+   "bytes": 34140,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-nowhere-to-run.png",
+   "dst": "character-abilities/jotl/de-nowhere-to-run.webp",
+   "status": "ok",
+   "bytes": 44746,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-one-two-punch.png",
+   "dst": "character-abilities/jotl/de-one-two-punch.webp",
+   "status": "ok",
+   "bytes": 36348,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-piston-punch.png",
+   "dst": "character-abilities/jotl/de-piston-punch.webp",
+   "status": "ok",
+   "bytes": 35004,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-remote-detonation.png",
+   "dst": "character-abilities/jotl/de-remote-detonation.webp",
+   "status": "ok",
+   "bytes": 43350,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-robotic-enhancement.png",
+   "dst": "character-abilities/jotl/de-robotic-enhancement.webp",
+   "status": "ok",
+   "bytes": 34110,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-rubble.png",
+   "dst": "character-abilities/jotl/de-rubble.webp",
+   "status": "ok",
+   "bytes": 46874,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-the-big-one.png",
+   "dst": "character-abilities/jotl/de-the-big-one.webp",
+   "status": "ok",
+   "bytes": 40162,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-the-bigger-one.png",
+   "dst": "character-abilities/jotl/de-the-bigger-one.webp",
+   "status": "ok",
+   "bytes": 49042,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-wholesale-destruction.png",
+   "dst": "character-abilities/jotl/de-wholesale-destruction.webp",
+   "status": "ok",
+   "bytes": 43160,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-de-windup.png",
+   "dst": "character-abilities/jotl/de-windup.webp",
+   "status": "ok",
+   "bytes": 37458,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-bombardment.png",
+   "dst": "character-abilities/jotl/ha-bombardment.webp",
+   "status": "ok",
+   "bytes": 34920,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-brutalize.png",
+   "dst": "character-abilities/jotl/ha-brutalize.webp",
+   "status": "ok",
+   "bytes": 33114,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-camaraderie.png",
+   "dst": "character-abilities/jotl/ha-camaraderie.webp",
+   "status": "ok",
+   "bytes": 32684,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-care-package.png",
+   "dst": "character-abilities/jotl/ha-care-package.webp",
+   "status": "ok",
+   "bytes": 32104,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-center-mass.png",
+   "dst": "character-abilities/jotl/ha-center-mass.webp",
+   "status": "ok",
+   "bytes": 27340,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-close-cuts.png",
+   "dst": "character-abilities/jotl/ha-close-cuts.webp",
+   "status": "ok",
+   "bytes": 28846,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-disorienting-barrage.png",
+   "dst": "character-abilities/jotl/ha-disorienting-barrage.webp",
+   "status": "ok",
+   "bytes": 33872,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-double-throw.png",
+   "dst": "character-abilities/jotl/ha-double-throw.webp",
+   "status": "ok",
+   "bytes": 32928,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-excessive-force.png",
+   "dst": "character-abilities/jotl/ha-excessive-force.webp",
+   "status": "ok",
+   "bytes": 42318,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-executioners-axe.png",
+   "dst": "character-abilities/jotl/ha-executioners-axe.webp",
+   "status": "ok",
+   "bytes": 33716,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-extra-lift.png",
+   "dst": "character-abilities/jotl/ha-extra-lift.webp",
+   "status": "ok",
+   "bytes": 38186,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-fancy-hat.png",
+   "dst": "character-abilities/jotl/ha-fancy-hat.webp",
+   "status": "ok",
+   "bytes": 30988,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-fearsome-efficiency.png",
+   "dst": "character-abilities/jotl/ha-fearsome-efficiency.webp",
+   "status": "ok",
+   "bytes": 46830,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-follow-through.png",
+   "dst": "character-abilities/jotl/ha-follow-through.webp",
+   "status": "ok",
+   "bytes": 34368,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-hatchet-card-back.png",
+   "dst": "card-backs/jotl/ha-card-back.webp",
+   "status": "ok",
+   "bytes": 44722,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-heart-seeker.png",
+   "dst": "character-abilities/jotl/ha-heart-seeker.webp",
+   "status": "ok",
+   "bytes": 39672,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-overwatch.png",
+   "dst": "character-abilities/jotl/ha-overwatch.webp",
+   "status": "ok",
+   "bytes": 42398,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-power-pitch.png",
+   "dst": "character-abilities/jotl/ha-power-pitch.webp",
+   "status": "ok",
+   "bytes": 27982,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-quick-turnaround.png",
+   "dst": "character-abilities/jotl/ha-quick-turnaround.webp",
+   "status": "ok",
+   "bytes": 34090,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-repeat-shot.png",
+   "dst": "character-abilities/jotl/ha-repeat-shot.webp",
+   "status": "ok",
+   "bytes": 32812,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-retrieval.png",
+   "dst": "character-abilities/jotl/ha-retrieval.webp",
+   "status": "ok",
+   "bytes": 28016,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-ricochet.png",
+   "dst": "character-abilities/jotl/ha-ricochet.webp",
+   "status": "ok",
+   "bytes": 46286,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-ripped-from-the-flesh.png",
+   "dst": "character-abilities/jotl/ha-ripped-from-the-flesh.webp",
+   "status": "ok",
+   "bytes": 39866,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-second-wind.png",
+   "dst": "character-abilities/jotl/ha-second-wind.webp",
+   "status": "ok",
+   "bytes": 31622,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-sharpened-blades.png",
+   "dst": "character-abilities/jotl/ha-sharpened-blades.webp",
+   "status": "ok",
+   "bytes": 37390,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-shrapnel.png",
+   "dst": "character-abilities/jotl/ha-shrapnel.webp",
+   "status": "ok",
+   "bytes": 42428,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-stopping-power.png",
+   "dst": "character-abilities/jotl/ha-stopping-power.webp",
+   "status": "ok",
+   "bytes": 38190,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-the-favorite.png",
+   "dst": "character-abilities/jotl/ha-the-favorite.webp",
+   "status": "ok",
+   "bytes": 33672,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-ha-the-new-favorite.png",
+   "dst": "character-abilities/jotl/ha-the-new-favorite.webp",
+   "status": "ok",
+   "bytes": 40114,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-Red-Guard-Card-Back.png",
+   "dst": "card-backs/jotl/rg-card-back.webp",
+   "status": "ok",
+   "bytes": 41230,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-barbaric-instincts.png",
+   "dst": "character-abilities/jotl/rg-barbaric-instincts.webp",
+   "status": "ok",
+   "bytes": 39468,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-blade-dance.png",
+   "dst": "character-abilities/jotl/rg-blade-dance.webp",
+   "status": "ok",
+   "bytes": 47296,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-blinding-sickle.png",
+   "dst": "character-abilities/jotl/rg-blinding-sickle.webp",
+   "status": "ok",
+   "bytes": 37314,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-burn-away-the-dark.png",
+   "dst": "character-abilities/jotl/rg-burn-away-the-dark.webp",
+   "status": "ok",
+   "bytes": 41720,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-desert-night.png",
+   "dst": "character-abilities/jotl/rg-desert-night.webp",
+   "status": "ok",
+   "bytes": 36766,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-fierce-brilliance.png",
+   "dst": "character-abilities/jotl/rg-fierce-brilliance.webp",
+   "status": "ok",
+   "bytes": 46022,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-flame-shroud.png",
+   "dst": "character-abilities/jotl/rg-flame-shroud.webp",
+   "status": "ok",
+   "bytes": 46910,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-flaming-sickle.png",
+   "dst": "character-abilities/jotl/rg-flaming-sickle.webp",
+   "status": "ok",
+   "bytes": 37476,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-flying-sickle.png",
+   "dst": "character-abilities/jotl/rg-flying-sickle.webp",
+   "status": "ok",
+   "bytes": 37726,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-harvest-sickle.png",
+   "dst": "character-abilities/jotl/rg-harvest-sickle.webp",
+   "status": "ok",
+   "bytes": 38250,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-healing-sands.png",
+   "dst": "character-abilities/jotl/rg-healing-sands.webp",
+   "status": "ok",
+   "bytes": 37754,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-honorable-fury.png",
+   "dst": "character-abilities/jotl/rg-honorable-fury.webp",
+   "status": "ok",
+   "bytes": 45482,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-horns-of-the-beast.png",
+   "dst": "character-abilities/jotl/rg-horns-of-the-beast.webp",
+   "status": "ok",
+   "bytes": 41614,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-no-fear.png",
+   "dst": "character-abilities/jotl/rg-no-fear.webp",
+   "status": "ok",
+   "bytes": 50352,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-precision-strike.png",
+   "dst": "character-abilities/jotl/rg-precision-strike.webp",
+   "status": "ok",
+   "bytes": 39782,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-prismatic-sickle.png",
+   "dst": "character-abilities/jotl/rg-prismatic-sickle.webp",
+   "status": "ok",
+   "bytes": 35576,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-radiant-sickle.png",
+   "dst": "character-abilities/jotl/rg-radiant-sickle.webp",
+   "status": "ok",
+   "bytes": 37546,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-sand-devil.png",
+   "dst": "character-abilities/jotl/rg-sand-devil.webp",
+   "status": "ok",
+   "bytes": 35816,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-shield-of-the-desert.png",
+   "dst": "character-abilities/jotl/rg-shield-of-the-desert.webp",
+   "status": "ok",
+   "bytes": 39052,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-shield-spikes.png",
+   "dst": "character-abilities/jotl/rg-shield-spikes.webp",
+   "status": "ok",
+   "bytes": 38140,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-shocking-advance.png",
+   "dst": "character-abilities/jotl/rg-shocking-advance.webp",
+   "status": "ok",
+   "bytes": 36662,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-soaring-shield.png",
+   "dst": "character-abilities/jotl/rg-soaring-shield.webp",
+   "status": "ok",
+   "bytes": 41000,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-strangling-chain.png",
+   "dst": "character-abilities/jotl/rg-strangling-chain.webp",
+   "status": "ok",
+   "bytes": 49550,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-swift-strength.png",
+   "dst": "character-abilities/jotl/rg-swift-strength.webp",
+   "status": "ok",
+   "bytes": 35244,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-twirling-stabs.png",
+   "dst": "character-abilities/jotl/rg-twirling-stabs.webp",
+   "status": "ok",
+   "bytes": 38464,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-vicious-ballet.png",
+   "dst": "character-abilities/jotl/rg-vicious-ballet.webp",
+   "status": "ok",
+   "bytes": 48772,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-warmth-of-the-sun.png",
+   "dst": "character-abilities/jotl/rg-warmth-of-the-sun.webp",
+   "status": "ok",
+   "bytes": 40740,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-rg-warrior-of-the-sun.png",
+   "dst": "character-abilities/jotl/rg-warrior-of-the-sun.webp",
+   "status": "ok",
+   "bytes": 38386,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-black-boon.png",
+   "dst": "character-abilities/jotl/vw-black-boon.webp",
+   "status": "ok",
+   "bytes": 37592,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-close-to-the-abyss.png",
+   "dst": "character-abilities/jotl/vw-close-to-the-abyss.webp",
+   "status": "ok",
+   "bytes": 38956,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-cold-embrace.png",
+   "dst": "character-abilities/jotl/vw-cold-embrace.webp",
+   "status": "ok",
+   "bytes": 43224,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-commanding-presence.png",
+   "dst": "character-abilities/jotl/vw-commanding-presence.webp",
+   "status": "ok",
+   "bytes": 50752,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-crushing-cold.png",
+   "dst": "character-abilities/jotl/vw-crushing-cold.webp",
+   "status": "ok",
+   "bytes": 40564,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-empowered-link.png",
+   "dst": "character-abilities/jotl/vw-empowered-link.webp",
+   "status": "ok",
+   "bytes": 43188,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-eye-of-the-void.png",
+   "dst": "character-abilities/jotl/vw-eye-of-the-void.webp",
+   "status": "ok",
+   "bytes": 46012,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-freeze-the-soul.png",
+   "dst": "character-abilities/jotl/vw-freeze-the-soul.webp",
+   "status": "ok",
+   "bytes": 41938,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-gift-of-the-void.png",
+   "dst": "character-abilities/jotl/vw-gift-of-the-void.webp",
+   "status": "ok",
+   "bytes": 39344,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-give-and-take.png",
+   "dst": "character-abilities/jotl/vw-give-and-take.webp",
+   "status": "ok",
+   "bytes": 43862,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-grasp-of-doom.png",
+   "dst": "character-abilities/jotl/vw-grasp-of-doom.webp",
+   "status": "ok",
+   "bytes": 39760,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-hateful-blast.png",
+   "dst": "character-abilities/jotl/vw-hateful-blast.webp",
+   "status": "ok",
+   "bytes": 42756,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-lull-into-oblivion.png",
+   "dst": "character-abilities/jotl/vw-lull-into-oblivion.webp",
+   "status": "ok",
+   "bytes": 46348,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-lure-of-the-void.png",
+   "dst": "character-abilities/jotl/vw-lure-of-the-void.webp",
+   "status": "ok",
+   "bytes": 46414,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-master-influence.png",
+   "dst": "character-abilities/jotl/vw-master-influence.webp",
+   "status": "ok",
+   "bytes": 46562,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-possessed-by-fate.png",
+   "dst": "character-abilities/jotl/vw-possessed-by-fate.webp",
+   "status": "ok",
+   "bytes": 46700,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-resigned-frenzy.png",
+   "dst": "character-abilities/jotl/vw-resigned-frenzy.webp",
+   "status": "ok",
+   "bytes": 43062,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-sap-warmth.png",
+   "dst": "character-abilities/jotl/vw-sap-warmth.webp",
+   "status": "ok",
+   "bytes": 46104,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-savage-instinct.png",
+   "dst": "character-abilities/jotl/vw-savage-instinct.webp",
+   "status": "ok",
+   "bytes": 45192,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-signs-of-the-void.png",
+   "dst": "character-abilities/jotl/vw-signs-of-the-void.webp",
+   "status": "ok",
+   "bytes": 46324,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-spirit-hunger.png",
+   "dst": "character-abilities/jotl/vw-spirit-hunger.webp",
+   "status": "ok",
+   "bytes": 44654,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-stand-fast.png",
+   "dst": "character-abilities/jotl/vw-stand-fast.webp",
+   "status": "ok",
+   "bytes": 40112,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-suggestion.png",
+   "dst": "character-abilities/jotl/vw-suggestion.webp",
+   "status": "ok",
+   "bytes": 44484,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-surge-of-power.png",
+   "dst": "character-abilities/jotl/vw-surge-of-power.webp",
+   "status": "ok",
+   "bytes": 43740,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-taunting-fate.png",
+   "dst": "character-abilities/jotl/vw-taunting-fate.webp",
+   "status": "ok",
+   "bytes": 49150,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-the-last-journey.png",
+   "dst": "character-abilities/jotl/vw-the-last-journey.webp",
+   "status": "ok",
+   "bytes": 41432,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-turn-out-the-lights.png",
+   "dst": "character-abilities/jotl/vw-turn-out-the-lights.webp",
+   "status": "ok",
+   "bytes": 47412,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-voidwarden-card-back.png",
+   "dst": "card-backs/jotl/vw-card-back.webp",
+   "status": "ok",
+   "bytes": 46626,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-wicked-scratch.png",
+   "dst": "character-abilities/jotl/vw-wicked-scratch.webp",
+   "status": "ok",
+   "bytes": 37724,
+   "size": [
+    400,
+    600
+   ]
+  },
+  {
+   "group": "ability JotL",
+   "src": "D:/github/Wordhaven_Assets/wh_character_ability_cards/jotl/jl-vw-withering-conviction.png",
+   "dst": "character-abilities/jotl/vw-withering-conviction.webp",
+   "status": "ok",
+   "bytes": 45544,
+   "size": [
+    400,
+    600
+   ]
   }
  ],
  "missing": []

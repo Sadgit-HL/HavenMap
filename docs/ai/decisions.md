@@ -4,6 +4,8 @@ Dated, newest first within each group. "Owner" marks decisions the owner made. C
 
 ## Architecture and data
 
+- 2026-11-18: The Jaws of the Lion classes use Cephalofair's updated crossover sheets: their perks (replacing the FrosthavenAssistant lists), traits and masteries. Owner.
+- 2026-11-18: The four Jaws of the Lion classes are playable in the campaign. Their classes and cards are generated into `gh2_classes.js` and `gh2_cards.js` with fixed class indexes 41 to 44 (card ids stay valid when the Card DB grows); ability cards in the updated GH2E-style design from the asset repository (`wh_character_ability_cards/jotl`) with their backs; the older Jaws-style pictures were removed (owner, 2026-11-18). Modifier decks: base and decorated cards drawn from layers, unique cards from the worldhaven scans. Owner.
 - 2026-11-18: The hero attack modifier deck state (draws, Top, Bottom, Active, count edits) is saved in the campaign record, like the monster decks (`mon.am`). Supersedes the 2026-11-12 "draw state stays session only". Owner.
 - 2026-11-18: Kept as they are: no perk limit, no item or enhancement price shortcuts, no fallback for hero roll codes over 255 characters. Owner.
 - 2026-11-18: BGG banner codes already use a public address (linked in the banner modal). Owner.

@@ -1,4 +1,4 @@
-import { PERKS } from '../scripts/games/perks.js?v=10';
+import { PERKS } from '../scripts/amd/perkData.js?v=1';
 import { buildCard } from '../scripts/amd/card.js?v=4';
 import { perkTextHtml, perkRuleNote } from '../scripts/amd/perkText.js';
 

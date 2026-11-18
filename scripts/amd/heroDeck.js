@@ -6,7 +6,7 @@
 //   standard cards   p0 p1 p2 p3 p4 m1 m2 miss   (the keys the monster deck already uses)
 //   decorated cards  the art slug, e.g. 'plus0pierce3flip'
 //   unique cards     'u-' + code, e.g. 'u-df1'
-import { PERKS } from '../games/perks.js';
+import { PERKS } from './perkData.js';
 import { UNIQUE_FACE_TEXT } from './uniqueFaceText.js';
 
 // Mercenary title -> perk class name where the spelling differs.

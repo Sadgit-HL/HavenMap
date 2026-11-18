@@ -66,9 +66,13 @@ const lvLabel = lv => ({ M: 'Pack', a: 'A', b: 'B' }[lv] ?? String(lv));      //
 const cardById = new Map(CARDS.map(c => [c.id, c]));
 // Ability cards on the Cards tab: the GH2 tables above plus the Frosthaven and Jaws of the Lion classes (worldhaven data,
 // scripts/games/wh_cards.js, classes from index 101 on, card ids from 100000 on). Other tabs keep the GH2 tables only.
-const ABILITY_CLASSES = [...CLASSES, ...WH_CLASSES.map((c, k) => ({ i: 101 + k, code: '', name: c.name, src: c.edition }))];
-const whClassIndex = new Map(WH_CLASSES.map((c, k) => [c.name, 101 + k]));
-const ABILITY_CARDS = [...CARDS, ...WH_CARDS.map((c, k) => ({ id: 100000 + k, cls: whClassIndex.get(c.c), slug: c.slug, lv: c.lv, ini: c.ini, img: c.img }))];
+// Cards tab: the campaign classes (gh2_classes.js, Jaws of the Lion included) plus the Frosthaven classes of wh_cards.js. The Jaws
+// classes take their cards from gh2_cards.js; wh_cards.js adds only their tutorial versions (levels a and b).
+const playable = new Map(CLASSES.map(c => [c.name, c.i]));
+const WH_ONLY = WH_CLASSES.filter(c => !playable.has(c.name));
+const ABILITY_CLASSES = [...CLASSES, ...WH_ONLY.map((c, k) => ({ i: 101 + k, code: '', name: c.name, src: c.edition }))];
+const whClassIndex = new Map([...WH_ONLY.map((c, k) => [c.name, 101 + k]), ...playable]);
+const ABILITY_CARDS = [...CARDS, ...WH_CARDS.filter(c => !playable.has(c.c) || c.lv === 'a' || c.lv === 'b').map((c, k) => ({ id: 100000 + k, cls: whClassIndex.get(c.c), slug: c.slug, lv: c.lv, ini: c.ini, img: c.img }))];
 const FULLSCREEN_ICON = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const PENCIL = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2 2 0 0 1 3 0l0 0a2 2 0 0 1 0 3L8 19z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M14 7l3 3" stroke="currentColor" stroke-width="2"/></svg>';
 const ICON_DICE = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg>';

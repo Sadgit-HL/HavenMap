@@ -2,7 +2,8 @@
 """Extract the class masteries (the two or three achievements per class that unlock the mastery perks) from the Gloomhaven Secretariat data.
 
 Source (AGPL-3.0, mastery texts only): <secretariat>/data/<edition>/character/*.json and <edition>/label/en.json plus label/spoiler/en.json,
-editions gh2e, mp (Mercenary Pack) and fh (Frosthaven). Jaws of the Lion has no masteries.
+editions gh2e, mp (Mercenary Pack) and fh (Frosthaven). The Jaws of the Lion classes have masteries only on Cephalofair's updated crossover
+sheets (not in the Secretariat data): JOTL_MASTERIES below, transcribed from those sheets on 2026-11-18.
 Output: scripts/games/masteries.js  (GENERATED, do not edit by hand): MASTERIES = { "<class name>": ["text", ...] }.
 Icon placeholders are written as words (%game.damage:6% -> "damage 6").
 
@@ -51,6 +52,20 @@ for ed in ['gh2e', 'mp', 'fh']:
         if name == 'HIVE': name = 'H.I.V.E.'
         if name and texts and name not in out: out[name] = texts
         elif ms and not name: missing.append((ed, slug, 'name'))
+
+# Jaws of the Lion masteries from Cephalofair's updated crossover character sheets (icons written as words, as above).
+JOTL_MASTERIES = {
+    'Demolitionist': ['Deal 10 or more damage with each of three different attack actions',
+                      'Destroy at least six obstacles. End the scenario with no obstacles on the map other than ones placed by allies'],
+    'Hatchet': ['Infuse or consume air during each of your turns',
+                'During each round in which there is at least one enemy on the map at the start of your turn, either place one of your tokens on an ability card of yours or on an enemy'],
+    'Red Guard': ['Kill at least five enemies during their turns',
+                  'Force each enemy in the scenario to move at least one hex, forcing at least six enemies to move'],
+    'Voidwarden': ['Cause enemies to suffer 20 or more damage in a single turn with granted or commanded attacks',
+                   'Give at least one ally or enemy poison, strengthen, bless, or ward each round'],
+}
+for k, v in JOTL_MASTERIES.items():
+    out.setdefault(k, v)
 
 dest = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'scripts', 'games', 'masteries.js')
 with open(dest, 'w', encoding='utf-8', newline='\n') as f:

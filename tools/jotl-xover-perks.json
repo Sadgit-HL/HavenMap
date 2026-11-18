@@ -1,0 +1,54 @@
+{
+  "_source": "Cephalofair's updated Jaws of the Lion character sheets (crossover sheets in the Frosthaven format), transcribed by hand on 2026-11-18 from the owner's copies (P:/Guido/boardgames/Worldhaven/characters/jotl/character-perks/x-over/<Class> Sheet.jpg). One entry per perk line; n = boxes of a repeatable perk (each box is one entry, applied on its own); a text starting with [double] is one perk that needs two ticks. Cards: '+0' '+1' '+2' '+3' '-1' '-2' are plain cards, other names are decorated faces (the art slugs of scripts/games/perks.js, decoded by tools/perks-decode.mjs), 'u:<code>' a unique card. Read by tools/build-xover-perks.mjs.",
+  "JotL": {
+    "Hatchet": [
+      { "n": 2, "removes": ["-1", "-1"] },
+      { "removes": ["+0"], "adds": ["plus0stun"] },
+      { "removes": ["+1"], "adds": ["plus1stun"] },
+      { "removes": ["+0"], "adds": ["plus1wound"] },
+      { "removes": ["+0"], "adds": ["plus1poison"] },
+      { "removes": ["+0"], "adds": ["plus1immobilize"] },
+      { "removes": ["+0"], "adds": ["plus2muddle"] },
+      { "n": 3, "removes": ["+1"], "adds": ["+3"] },
+      { "n": 3, "adds": ["plus2air"] },
+      { "text": "Hasty Pick-up: Once each scenario, during your turn, if the Favorite is in a hex on the map, you may %use%%air% to return it to its ability card" }
+    ],
+    "Demolitionist": [
+      { "n": 2, "removes": ["-1", "-1"] },
+      { "removes": ["+0", "+0", "+0", "+0"] },
+      { "removes": ["-2"], "adds": ["plus0poison"] },
+      { "n": 2, "removes": ["+0"], "adds": ["plus2muddle"] },
+      { "text": "Replace one +1 card with two +2 cards", "removes": ["+1"], "adds": ["+2", "+2"] },
+      { "n": 2, "removes": ["+1"], "adds": ["plus2fire"] },
+      { "n": 2, "removes": ["+1"], "adds": ["plus2earth"] },
+      { "text": "Add two +0 \"All adjacent enemies suffer %damage% 1\" cards", "adds": ["u:de1", "u:de1"] },
+      { "text": "Ignore scenario effects and remove one -1 card", "removes": ["-1"] },
+      { "text": "[double] Remodeling: Whenever you rest while adjacent to a wall or obstacle, you may place an obstacle in an empty hex within %range% 2 (of you)" }
+    ],
+    "Red Guard": [
+      { "n": 2, "removes": ["-1", "-1"] },
+      { "removes": ["-2"] },
+      { "removes": ["+0"], "adds": ["plus1wound"] },
+      { "removes": ["+0"], "adds": ["plus1immobilize"] },
+      { "text": "Replace one +0 card and one +1 card with two +1 \"%shield% 1\" cards", "removes": ["+0", "+1"], "adds": ["plus1shield1", "plus1shield1"] },
+      { "n": 2, "removes": ["+1"], "adds": ["plus2fire"] },
+      { "n": 2, "removes": ["+1"], "adds": ["plus2light"] },
+      { "n": 2, "adds": ["plus1firelight"] },
+      { "text": "Ignore item - 1 effects and add two +1 cards", "adds": ["+1", "+1"] },
+      { "text": "[double] Brilliant Aegis: Whenever you are attacked, you may %use%%light% to gain %shield% 1 for the attack and have the attacker gain disadvantage for the attack" }
+    ],
+    "Voidwarden": [
+      { "removes": ["-1", "-1"] },
+      { "removes": ["-2"] },
+      { "n": 2, "removes": ["-1"], "adds": ["plus0heal1ally"] },
+      { "n": 3, "removes": ["+0"], "adds": ["plus1heal1ally"] },
+      { "removes": ["+0"], "adds": ["plus1poison"] },
+      { "n": 2, "removes": ["+0"], "adds": ["plus1curse"] },
+      { "text": "Add two +1 %ice% cards", "adds": ["plus1ice", "plus1ice"] },
+      { "text": "Add two +1 %dark% cards", "adds": ["plus1dark", "plus1dark"] },
+      { "adds": ["+3"] },
+      { "text": "Ignore scenario effects" },
+      { "text": "Grave Defense: Whenever you rest, you may %use%%icedark% to give %ward% to one ally who has %poison%" }
+    ]
+  }
+}

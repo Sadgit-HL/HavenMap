@@ -198,6 +198,40 @@ def write_module(name, doc, exports):
     print(name, sum(len(v) if hasattr(v, '__len__') else 1 for _, v in exports))
 
 
+# Playable Jaws of the Lion classes (2026-11-18): (class index, code, name as scripts/games/perks.js). The indexes are fixed and
+# kept clear of the Card DB classes (1 to 22), so card ids (index * 100 + n) of saved characters stay valid when the Card DB grows.
+JOTL_CLASSES = [(41, 'de', 'Demolitionist'), (42, 'ha', 'Hatchet'), (43, 'rg', 'Red Guard'), (44, 'vw', 'Voidwarden')]
+
+
+JOTL_CARD_BASE = 'https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/wh_character_ability_cards/jotl/'
+
+
+def add_jotl(classes, cards):
+    """Append the Jaws of the Lion classes and their ability cards. Names, levels and initiative come from the worldhaven data through
+    tools/extract-worldhaven-cards.py (load_cards); the pictures are the updated (GH2E style) cards of the asset repository,
+    wh_character_ability_cards/jotl/jl-<code>-<card>.png (converted by tools/convert-jotl-ability-cards.py; their levels and
+    initiatives were checked against these values on 2026-11-18). Cards: level 1, X, then 2 to 9, each by name, as the Card DB
+    orders a class; the tutorial versions of the level 1 cards (levels a and b) are left out."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location('whcards', os.path.join(ROOT, 'tools', 'extract-worldhaven-cards.py'))
+    wh = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(wh)
+    whcards, _, _ = wh.load_cards()
+    rank = lambda lv: 1.5 if lv == 'X' else int(lv)
+    for ci, code, name in JOTL_CLASSES:
+        mine = sorted((c for c in whcards if c['c'] == name and c['lv'] not in ('a', 'b')), key=lambda c: (rank(c['lv']), c['slug']))
+        if not mine:
+            raise SystemExit(f'no worldhaven cards for {name}')
+        classes.append({'i': ci, 'code': code, 'name': name, 'src': 'jotl'})
+        for n, c in enumerate(mine, start=1):
+            row = {'id': ci * 100 + n, 'cls': ci, 'slug': c['slug'], 'lv': 'X' if c['lv'] == 'X' else int(c['lv'])}
+            if c['ini'] is not None:
+                row['ini'] = c['ini']
+            row['img'] = f"{JOTL_CARD_BASE}jl-{code}-{c['slug']}.png"
+            cards.append(row)
+        print(f'{name}: {len(mine)} cards')
+
+
 def level_key(r):
     """Sort key for an ability card: its level (1, 1.1 -> '1x', 2..9, 'M' = mastery last)."""
     v = r[5]
@@ -241,11 +275,14 @@ def main():
         v = ini.get((classes[c['cls'] - 1]['code'], c['slug']))
         if v is not None:
             c['ini'] = v
-    write_module('gh2_classes.js', 'Class index -> code, name and source edition. Card ids are class index * 100 + n.',
+    add_jotl(classes, cards)
+    write_module('gh2_classes.js', 'Class index -> code, name and source edition (gh2, mp, jotl). Card ids are class index * 100 + n. '
+                                   'The Jaws of the Lion classes have fixed indexes 41 to 44 (JOTL_CLASSES in the generator).',
                  [('CLASSES', classes)])
     write_module('gh2_cards.js', 'Class ability cards: id, class index, slug, level, ini = initiative (only where known: the Secretariat '
-                                 'data covers 12 of the 22 classes, tools/card-initiative.json adds more). Ids are stable only while the Card DB '
-                                 'rows are unchanged: regenerate and diff before committing.', [('CARDS', cards)])
+                                 'data covers 12 of the 22 classes, tools/card-initiative.json adds more), img = picture address (Jaws of '
+                                 'the Lion cards, from the worldhaven data). Ids are stable only while the Card DB rows are unchanged: '
+                                 'regenerate and diff before committing.', [('CARDS', cards)])
 
     # --- items ---------------------------------------------------------------------------------------
     items = []
