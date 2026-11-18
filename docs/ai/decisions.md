@@ -32,6 +32,7 @@ Dated, newest first within each group. "Owner" marks decisions the owner made. C
 
 ## Interaction and UI
 
+- 2026-11-18: Scenario flowchart: panning by right-drag (as on the map), left-drag on the background and Space plus drag; the chart has no browser menu. Ctrl+wheel over the chart changes the chart size, not the page zoom. A search field finds scenarios by number or name; only boxes drawn with their name are found (spoiler rule), the found box is centered and marked gold. Owner.
 - 2026-11-18: Modifier deck odds: the per-card list is replaced by cumulative odds of the next random draw (Miss, <=-2, <=-1, 0, >=+1, >=+2, Crit; misses inside the negative thresholds, crits inside the positive ones). Bless, Curse, x2 and Miss included; rolling cards chained exactly; card effects ignored; unique cards without a printed value and variable cards count as +0. No average. Shown as a framed strip left of Top and Bottom (mockup `amd-stats.html` variant 5), no label. Owner.
 - 2026-11-16: Object keys (D, L, A on ability cards; D, L on items; D on attack modifier cards) act on the object under the mouse pointer, not on focus. The objects are not Tab stops. Owner.
 - 2026-11-16: Item D toggles between available and spent (consumed counts as not spent); L sets consumed. Owner.

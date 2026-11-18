@@ -305,7 +305,11 @@ button.evchip { cursor:pointer; }
 
 /* scenario flowchart */
 .flowwrap { overflow:auto; border:1px solid var(--line); border-radius:8px; background:#120f0b; }
-.flowsvg { display:block; }
+.flowsvg { display:block; cursor:grab; user-select:none; -webkit-user-select:none; }
+.flowwrap.panready .flowsvg, .flowwrap.panready .fnode { cursor:grab; }
+.flowsvg .fnode.found .fbox { stroke:var(--accent); stroke-width:3.5; filter:drop-shadow(0 0 6px rgba(199,164,74,.7)); }
+.flowfsbar .flowfind { height:32px; width:220px; padding:0 10px; border-radius:7px; background:#2d2519; border:1px solid var(--line); color:var(--text); font:inherit; font-size:13px; }
+body.flowpanning, body.flowpanning * { cursor:grabbing !important; }
 .flane { fill:#1b160f; } .flane.alt { fill:#201a12; }
 .flabel { fill:var(--muted); font-size:13px; font-weight:600; }
 .fedge { fill:none; stroke:#5a4c3a; stroke-width:1.5; } .fedge.on { stroke:var(--ok); }

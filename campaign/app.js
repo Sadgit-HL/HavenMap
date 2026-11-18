@@ -457,11 +457,13 @@ function flowPage(r) {
   const z = view.flowZoom === 'fit' ? Math.min(3, Math.max(0.3, ((full ? window.innerWidth : main.clientWidth - 32) - 4) / g.width)) : FLOW_ZOOM[view.flowZoom];
   const masked = n => st(n) === 0;
   const zoomBtns = `<div class="imgmode viewmode" role="group" aria-label="Chart size">${Object.entries(FLOW_ZOOM_LABEL).map(([k, l]) => `<button type="button" data-flowzoom="${k}" aria-pressed="${view.flowZoom === k}" title="Chart size ${l}${k === 'fit' ? ' (as wide as the window)' : ''}">${l}</button>`).join('')}</div>`;
+  const findable = g.nodes.filter(n => !masked(n.n)).map(n => byN.get(n.n)).sort((a, b) => a.n - b.n);   // locked boxes ("?") are not found, not even by number
+  const find = `<input type="search" class="flowfind" data-flowfind list="flowFindList" value="${esc(flowFindQ)}" placeholder="Find scenario" aria-label="Find a scenario by number or name" autocomplete="off"><datalist id="flowFindList">${findable.map(s => `<option value="${esc(`${s.n} ${s.name || ''}`.trim())}"></option>`).join('')}</datalist>`;
   const fsBtn = `<button type="button" class="editbtn editicon" data-flowfull aria-pressed="${!!full}" title="${full ? 'Exit fullscreen' : 'Fullscreen'}" aria-label="${full ? 'Exit fullscreen' : 'Fullscreen'}">${FULLSCREEN_ICON}</button>`;
   const filters = `<div class="filters">
     <select id="flowShow">${[['progress', 'Progress and next steps'], ['all', 'All scenarios']].map(([v, l]) => `<option value="${v}" ${view.flowShow === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
     <select id="flowLane"><option value="">All storylines</option>${LANES.map(l => `<option ${view.flowLane === l ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>
-    ${zoomBtns}${fsBtn}
+    ${find}${zoomBtns}${fsBtn}
     ${scenarioRollerBtn(r)}</div>`;
   if (!g.nodes.length) return filters + scnViewToggle() + '<div class="empty">No scenarios to show yet.</div>';
   const legend = `<span class="flegend">${[1, 2, 0, 3].map(i => `<span class="spill s${i}">${SCN_STATE_NAME[i]}</span>`).join('')}</span>`;
@@ -472,13 +474,13 @@ function flowPage(r) {
     const lines = hide ? [] : flowLines(name), tx = 44, iy = n.h / 2 - 6;
     const text = hide ? `<text class="fq" x="${(tx + n.w - 22) / 2}" y="${n.h / 2 + 6}" text-anchor="middle">?</text>`
       : `<text class="fname">${lines.map((l, i) => `<tspan x="${tx}" y="${n.h / 2 + 4 + (i - (lines.length - 1) / 2) * 14}">${esc(l)}</tspan>`).join('')}</text>`;
-    return `<g class="fnode s${st(n.n)}${hide ? ' mask' : ''}${view.scnSel === n.n ? ' sel' : ''}" data-flow="${n.n}" tabindex="0" role="button" transform="translate(${n.x},${n.y})"><title>${hide ? 'Locked' : esc(`${s.n} ${name} (${SCN_STATE_NAME[st(n.n)]})`)}</title>
+    return `<g class="fnode s${st(n.n)}${hide ? ' mask' : ''}${view.scnSel === n.n ? ' sel' : ''}${flowFound === n.n && !hide ? ' found' : ''}" data-flow="${n.n}" tabindex="0" role="button" transform="translate(${n.x},${n.y})"><title>${hide ? 'Locked' : esc(`${s.n} ${name} (${SCN_STATE_NAME[st(n.n)]})`)}</title>
       <rect class="fbox" width="${n.w}" height="${n.h}" rx="7"/><rect class="fbadge" x="6" y="${n.h / 2 - 10}" width="32" height="20" rx="5"/><text class="fnum" x="22" y="${n.h / 2 + 4}" text-anchor="middle">${hide ? '?' : esc(s.n)}</text>
       ${text}<g class="ficon" transform="translate(${n.w - 18},${iy})">${FLOW_ICON[hide ? 0 : st(n.n)]}</g></g>`;
   }).join('');
   const svg = `<svg class="flowsvg" width="${Math.round(g.width * z)}" height="${Math.round(g.height * z)}" viewBox="0 0 ${g.width} ${g.height}" role="img" aria-label="Scenario flowchart">
     <defs><marker id="farrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="farrowhead"/></marker><marker id="farrowp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="farrowhead pth"/></marker></defs>${lanes}${edges}${nodes}</svg>`;
-  if (full) return `<div class="flowwrap full"><div class="flowfsbar">${zoomBtns}${fsBtn}${scenarioRollerBtn(r)}${legend}</div>${svg}</div>`;
+  if (full) return `<div class="flowwrap full"><div class="flowfsbar">${find}${zoomBtns}${fsBtn}${scenarioRollerBtn(r)}${legend}</div>${svg}</div>`;
   return filters.replace(/<\/div>$/, `${legend}</div>`) + scnViewToggle() + `<div class="flowwrap">${svg}</div>`;
 }
 // A scenario name in at most two lines of about 17 characters (word wrap; the second line is cut with an ellipsis).
@@ -516,7 +518,118 @@ function flowHighlight(n) {
   }
   svg.querySelectorAll('.fnode').forEach(g => g.classList.toggle('pth', on.has(g.dataset.flow)));
 }
-const flowRest = () => flowHighlight(view.scnSel);
+let flowFindQ = '', flowFound = null;                                  // the scenario last found with the search field: marked and highlighted until the next search
+const flowRest = () => flowHighlight(view.scnSel ?? flowFound);
+// The search field: a number or a name (part of it) that matches one drawn scenario centers the chart on it; Enter takes the first match.
+function flowMatches(q) {
+  const opts = [...(document.getElementById('flowFindList')?.options || [])].map(o => o.value);
+  q = q.trim().toLowerCase();
+  if (!q) return [];
+  const num = o => o.split(' ')[0];
+  if (/^\d+$/.test(q)) return opts.filter(o => num(o) === q);
+  const exact = opts.filter(o => o.toLowerCase() === q);
+  return exact.length ? exact : opts.filter(o => o.toLowerCase().slice(num(o).length + 1).includes(q));
+}
+function flowFocus(n) {
+  const fw = flowBox(), g = fw?.querySelector(`.fnode[data-flow="${n}"]`);
+  if (!g) return;
+  flowFound = Number(n);
+  fw.querySelectorAll('.fnode.found').forEach(el => el.classList.remove('found'));
+  g.classList.add('found');
+  const b = fw.getBoundingClientRect(), r = g.getBoundingClientRect();
+  const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches && !pmset.reduce;
+  fw.scrollTo({ left: fw.scrollLeft + r.left - b.left + r.width / 2 - fw.clientWidth / 2, top: fw.scrollTop + r.top - b.top + r.height / 2 - fw.clientHeight / 2, behavior: smooth ? 'smooth' : 'auto' });
+  if (view.scnSel == null) flowHighlight(n);
+}
+main.addEventListener('input', e => {
+  if (!e.target.matches?.('[data-flowfind]')) return;
+  flowFindQ = e.target.value;
+  if (!flowFindQ.trim()) { flowClearFound(); return; }   // emptied (also the field's clear button)
+  const m = flowMatches(flowFindQ);
+  if (m.length === 1) flowFocus(m[0].split(' ')[0]);
+});
+function flowClearFound() {
+  flowFound = null;
+  flowBox()?.querySelectorAll('.fnode.found').forEach(el => el.classList.remove('found'));
+  flowRest();
+}
+main.addEventListener('keydown', e => {
+  if (!e.target.matches?.('[data-flowfind]')) return;
+  if (e.key === 'Enter') { const m = flowMatches(e.target.value); if (m.length) flowFocus(m[0].split(' ')[0]); e.preventDefault(); }
+  else if (e.key === 'Escape' && e.target.value) { e.target.value = ''; flowFindQ = ''; flowClearFound(); e.preventDefault(); e.stopPropagation(); }
+});
+// Panning and zoom of the chart. The chart box (.flowwrap) scrolls, so panning sets its scroll position: right button held,
+// left button on the background (not on a box), or Space held with the left button anywhere on the chart. Ctrl+wheel steps
+// through the sizes S to XXL around the pointer; the size buttons keep the middle of the box. A render keeps the scroll position.
+const FLOW_STEPS = ['s', 'm', 'l', 'xl', 'xxl'];
+let flowPan = null, flowSpace = false, flowOver = false, flowAnchor = null, flowWheelT = 0, flowSwallow = false;
+const flowBox = () => main.querySelector('.flowwrap');
+// Remember which chart point lies at (cx, cy) on the screen, then render at the new size with that point at the same place.
+function flowZoomTo(key, cx, cy) {
+  const fw = flowBox(), svg = fw?.querySelector('.flowsvg');
+  if (svg) {
+    const b = fw.getBoundingClientRect(), s = svg.getBoundingClientRect();
+    if (cx == null) { cx = b.left + fw.clientWidth / 2; cy = b.top + fw.clientHeight / 2; }
+    flowAnchor = { px: (cx - s.left) / s.width, py: (cy - s.top) / s.height, ox: cx - b.left, oy: cy - b.top };
+  }
+  view.flowZoom = key;
+  render();
+}
+function flowRestoreScroll(keep) {
+  const fw = flowBox(), svg = fw?.querySelector('.flowsvg');
+  if (!fw || !svg) { flowAnchor = null; return; }
+  if (flowAnchor) {
+    const b = fw.getBoundingClientRect(), s = svg.getBoundingClientRect();
+    const sx = s.left - b.left + fw.scrollLeft, sy = s.top - b.top + fw.scrollTop;   // where the chart starts in the scrolled content
+    fw.scrollLeft = sx + flowAnchor.px * s.width - flowAnchor.ox;
+    fw.scrollTop = sy + flowAnchor.py * s.height - flowAnchor.oy;
+    flowAnchor = null;
+  } else if (keep) { fw.scrollLeft = keep.l; fw.scrollTop = keep.t; }
+}
+const flowCursor = () => { const fw = flowBox(); fw?.classList.toggle('panready', flowSpace && flowOver); document.body.classList.toggle('flowpanning', !!flowPan); };
+main.addEventListener('mouseover', e => { const o = !!e.target.closest?.('.flowsvg'); if (o !== flowOver) { flowOver = o; flowCursor(); } });
+main.addEventListener('mouseleave', () => { flowOver = false; flowCursor(); });
+main.addEventListener('mousedown', e => {
+  flowSwallow = false;                                 // a new press: the click after it is a click, unless it pans
+  const fw = e.target.closest?.('.flowwrap');
+  if (!fw || !e.target.closest('.flowsvg')) return;
+  const right = e.button === 2, left = e.button === 0 && (flowSpace || !e.target.closest('.fnode'));
+  if (!right && !left) return;
+  flowPan = { fw, x: e.clientX, y: e.clientY, l: fw.scrollLeft, t: fw.scrollTop, moved: false };
+  flowCursor();
+  e.preventDefault();
+});
+window.addEventListener('mousemove', e => {
+  if (!flowPan) return;
+  const dx = e.clientX - flowPan.x, dy = e.clientY - flowPan.y;
+  if (!flowPan.moved && Math.abs(dx) + Math.abs(dy) < 4) return;
+  flowPan.moved = true;
+  flowPan.fw.scrollLeft = flowPan.l - dx;
+  flowPan.fw.scrollTop = flowPan.t - dy;
+});
+window.addEventListener('mouseup', () => { if (!flowPan) return; flowSwallow = flowPan.moved; flowPan = null; flowCursor(); });
+// a drag that ends on a box does not open it; the right button pans, so the chart has no browser menu (as on the map)
+main.addEventListener('click', e => { if (flowSwallow && e.target.closest?.('.flowsvg')) { e.stopImmediatePropagation(); e.preventDefault(); } }, true);
+main.addEventListener('contextmenu', e => { if (e.target.closest?.('.flowsvg')) e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.code !== 'Space' || !flowOver || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return;
+  e.preventDefault(); e.stopImmediatePropagation();   // over the chart, Space pans (it does not open the focused box or scroll the page)
+  if (!flowSpace) { flowSpace = true; flowCursor(); }
+}, true);
+document.addEventListener('keyup', e => { if (e.code === 'Space' && flowSpace) { flowSpace = false; flowCursor(); } });
+window.addEventListener('blur', () => { flowSpace = false; flowPan = null; flowCursor(); });
+main.addEventListener('wheel', e => {
+  if (!(e.ctrlKey || e.metaKey) || !e.target.closest?.('.flowsvg')) return;
+  e.preventDefault();                                 // Ctrl+wheel over the chart zooms the chart, not the page
+  const now = performance.now();
+  if (now - flowWheelT < 120 || !e.deltaY) return;     // one step per notch; trackpads send many small events
+  flowWheelT = now;
+  const svg = e.target.closest('.flowsvg'), z = svg.width.baseVal.value / svg.viewBox.baseVal.width;
+  const up = e.deltaY < 0, i = FLOW_STEPS.indexOf(view.flowZoom);
+  const next = i >= 0 ? FLOW_STEPS[i + (up ? 1 : -1)]
+    : up ? FLOW_STEPS.find(k => FLOW_ZOOM[k] > z + 0.01) : [...FLOW_STEPS].reverse().find(k => FLOW_ZOOM[k] < z - 0.01);   // from Fit: the next size bigger or smaller
+  if (next) flowZoomTo(next, e.clientX, e.clientY);
+}, { passive: false });
 main.addEventListener('mouseover', e => { const g = e.target.closest?.('.flowsvg .fnode'); if (g) flowHighlight(g.dataset.flow); });
 main.addEventListener('mouseout', e => { if (e.target.closest?.('.flowsvg .fnode') && !e.relatedTarget?.closest?.('.flowsvg .fnode')) flowRest(); });
 main.addEventListener('focusin', e => { const g = e.target.closest?.('.flowsvg .fnode'); if (g) flowHighlight(g.dataset.flow); });
@@ -1496,12 +1609,14 @@ function render() {
   renderScnModal();
   const html = pagebar + (issues.length ? `<div class="issues">${issues.length} issue(s): ${esc(issues.slice(0, 5).join('; '))}</div>` : '') + body;
   // The playmat is redrawn in place (campaign/morph.js): cards keep their picture and hover state, so a drop or a flip does not flicker.
+  const fw0 = flowPage && main.querySelector('.flowwrap'), flowKeep = fw0 ? { l: fw0.scrollLeft, t: fw0.scrollTop } : null;
   if (tab === 'Mercenaries' && !editing && main.querySelector('.pm')) morphInto(main, html); else main.innerHTML = html;
+  if (flowPage) flowRestoreScroll(flowKeep);
   sizePlaymat();
   if (tab === 'Cards' && view.cardType === 'am') hydrateAm();
   if (pm.modal === 'amd' || pm.modal === 'amdpile' || pm.hview === 'amd' || pm.ptab === 'amd') hydrateAmdModal();
   if (pm.modal === 'perks') hydratePerkCards();
-  if (flowPage && view.scnSel != null) flowRest();
+  if (flowPage && (view.scnSel ?? flowFound) != null) flowRest();
 }
 
 // Phone view: tabs, the menu, bottom sheets, tap a card to move it, tap a played card to flip it.
@@ -1656,7 +1771,7 @@ main.addEventListener('click', e => {
   if (sv) { view.scnView = sv; render(); return; }
   if (e.target.closest('[data-flowfull]')) { view.flowFull = !view.flowFull; render(); return; }
   const fz = e.target.closest('[data-flowzoom]')?.dataset.flowzoom;
-  if (fz) { view.flowZoom = fz; render(); return; }
+  if (fz) { flowZoomTo(fz); return; }
   const fn = e.target.closest('[data-flow]')?.dataset.flow;
   if (fn) { view.scnSel = Number(fn); render(); return; }
   const isel = e.target.closest('[data-itemsel]')?.dataset.itemsel;
@@ -2634,6 +2749,8 @@ const SHORTCUTS = [
   ]],
   ['Events and flowchart', [
     [[['Enter'], ['Space']], 'Choose an event option, or open a scenario'],
+    [[['Right-drag'], ['Drag background'], ['Space', 'Drag']], 'Pan the flowchart'],
+    [[['Ctrl', 'Wheel']], 'Flowchart size, around the pointer'],
   ]],
 ];
 const renderShortcuts = () => {
