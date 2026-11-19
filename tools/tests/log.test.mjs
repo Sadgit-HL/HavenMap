@@ -25,6 +25,13 @@ export const tests = {
     const r = withChars(1), other = availableClasses(r).find(c => c.name !== r.chars[0].cls);
     assert.ok(describeChange(r, changeCharacterClass(r, r.chars[0].id, other.name)).length > 0);
   },
+  'hand order and grid changes are not logged'() {
+    const r = withChars(1), id = r.chars[0].id;
+    const set = (k, v) => ({ ...r, chars: r.chars.map(c => ({ ...c, [k]: v })) });
+    assert.deepEqual(describeChange(r, set('hord', [1, 2])), []);
+    assert.deepEqual(describeChange(r, set('hord', null)), []);
+    assert.deepEqual(describeChange(r, set('hgrid', { 1: 3 })), []);
+  },
   'folding merges counter changes in the window'() {
     const log = foldLog([], [{ ...base, t: 1000, d: 'Sam: gold 42 to 45 (+3)' }, { ...base, t: 2000, d: 'Sam: gold 45 to 47 (+2)' }]);
     assert.equal(log.length, 1);

@@ -54,7 +54,7 @@ Earlier work (last commits, 2026-11-13 and 2026-11-14): tile modals for stickers
 
 - Session start from the campaign page and session commit back into the record. Design in `design/server-and-commit.md`.
 - BBCode composer in the map app. The playmat already builds Turn and Cards posts (`turnPost`, `cardsPost` in `campaign/playmat.js`) and an icon and banner code list. Where the composer should live is open (see `roadmap.md`).
-- Browser tests and full coverage. `tools/tests/` has 69 Node checks (2026-11-19, including the sync merge); `outcomes.js`, `amdDeck.js` and `monsters.js` have none yet.
+- Browser tests and full coverage. `tools/tests/` has 70 Node checks (2026-11-19, including the sync merge); `outcomes.js`, `amdDeck.js` and `monsters.js` have none yet.
 
 ## Data and generated files
 

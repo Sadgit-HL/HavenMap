@@ -156,11 +156,9 @@ export function describeChange(a, b) {
     if (!o) { add('Mercenaries', 'Character', `Added ${c.name} (${c.cls})`); continue; }
     const cardLines = describeCards(o, c);
     cardLines.forEach(d => add('Mercenaries', 'Card', `${c.name}: ${d}`));
-    if (!cardLines.length && !same(o.hord, c.hord)) add('Mercenaries', 'Card', `${c.name}: ${c.hord === null ? 'hand sorted by initiative (automatic)' : 'hand order changed'}`);
-    if (!cardLines.length && same(o.hord, c.hord) && !same(o.hgrid ?? null, c.hgrid ?? null)) add('Mercenaries', 'Card', `${c.name}: hand cards arranged`);
     for (const k of keys(o, c)) {
       if (same(o[k], c[k])) continue;
-      if (['disc', 'act', 'lost', 'play', 'hord', 'hgrid'].includes(k)) continue;                  // described above
+      if (['disc', 'act', 'lost', 'play', 'hord', 'hgrid'].includes(k)) continue;                  // not logged (hand order and grid), or described above
       if (k === 'deck' || k === 'bench') {
         if (k === 'bench' && !same(o.deck, c.deck)) continue;                               // described with the deck
         const own = x => new Set([...(x.deck || []), ...(x.bench || [])]), oa = own(o), ob = own(c);

@@ -58,7 +58,7 @@ let sub = '';                      // sub-tab under Mercenaries: a character id 
 const editPages = new Set();        // pages (top-level tabs) currently in edit mode; each page has its own Edit button
 let editing = false;               // derived in render(): is the visible page being edited
 const history = [];                                   // own edits for undo, newest last: { before, after } (records)
-const view = { flowFull: false, flowPos: null, scnView: 'table', logKind: 'all', flowShow: 'progress', flowLane: '', flowZoom: 'm', scnSel: null, scnStatus: '', scnSearch: '', scnSort: { col: '', dir: 1 }, itemSlot: '', itemSearch: '', itemGold: '', itemShow: 'unlocked', itemView: 'list', itemSel: null, itemSize: 'm', itemSort: { col: '', dir: 1 }, cardType: 'abilities', cardSlot: '', cardChk: '', cardKind: 'city', cardSide: 'front', cardDeck: '', cardMon: '', cardMLv: '', cardShow: 'unlocked', cardCls: '', cardLv: '', cardSearch: '', cardSize: 's', cardStk: true };   // itemView: 'list' | 'grid'
+const view = { flowFull: false, flowPos: null, scnView: 'table', logKind: 'all', logUser: 'all', flowShow: 'progress', flowLane: '', flowZoom: 'm', scnSel: null, scnStatus: '', scnSearch: '', scnSort: { col: '', dir: 1 }, itemSlot: '', itemSearch: '', itemGold: '', itemShow: 'unlocked', itemView: 'list', itemSel: null, itemSize: 'm', itemSort: { col: '', dir: 1 }, cardType: 'abilities', cardSlot: '', cardChk: '', cardKind: 'city', cardSide: 'front', cardDeck: '', cardMon: '', cardMLv: '', cardShow: 'unlocked', cardCls: '', cardLv: '', cardSearch: '', cardSize: 's', cardStk: true };   // itemView: 'list' | 'grid'
 
 // Level order of ability cards: 1, X (the level 1.1 cards), 2 ... 9, then M (mastery).
 const lvRank = lv => ({ X: 1.5, M: 99, a: 1.1, b: 1.2 }[lv] ?? Number(lv));   // a and b: the Jaws of the Lion level A and B cards
@@ -76,7 +76,7 @@ const ICON_CHECK = '<svg viewBox="0 0 24 24" width="16" height="16" fill="curren
 const ITEM_SIZES = { s: 150, m: 188, l: 250 };      // minimum tile width in px for the item grid
 // Filter and view settings are kept in this browser (not the search texts: a stale search would hide rows after a reload).
 const VIEW_KEY = 'havenmap.campaign.view';
-const VIEW_SAVED = ['scnView', 'logKind', 'flowShow', 'flowLane', 'flowZoom', 'flowPos', 'scnStatus', 'scnSort', 'itemSlot', 'itemShow', 'itemView', 'itemSize', 'itemSort', 'cardType', 'cardSlot', 'cardKind', 'cardSide', 'cardDeck', 'cardMon', 'cardMLv', 'cardShow', 'cardCls', 'cardLv', 'cardSize', 'cardStk'];
+const VIEW_SAVED = ['scnView', 'logKind', 'logUser', 'flowShow', 'flowLane', 'flowZoom', 'flowPos', 'scnStatus', 'scnSort', 'itemSlot', 'itemShow', 'itemView', 'itemSize', 'itemSort', 'cardType', 'cardSlot', 'cardKind', 'cardSide', 'cardDeck', 'cardMon', 'cardMLv', 'cardShow', 'cardCls', 'cardLv', 'cardSize', 'cardStk'];
 function saveView() {
   try { localStorage.setItem(VIEW_KEY, JSON.stringify(Object.fromEntries(VIEW_SAVED.map(k => [k, view[k]])))); } catch { /* ignore */ }
 }
@@ -173,7 +173,8 @@ function showWho() {
   if (!on) return;
   const who = srv.by === null ? 'you' : srv.by || 'someone';
   whoEl.textContent = `Last edit: ${who}, ${ago(srv.t)}`;
-  whoEl.title = `Shared campaign: last saved by ${who}, ${new Date(srv.t).toLocaleString()}`;
+  whoEl.title = `Shared campaign: last saved by ${who}, ${new Date(srv.t).toLocaleString()}
+Campaign id: ${srv.cid}`;
 }
 setInterval(showWho, 30000);
 function setSync(state) {
@@ -181,7 +182,8 @@ function setSync(state) {
   if (!srv) { showWho(); return; }
   showWho();
   const [text, tip] = { ok: ['Saved', 'Shared campaign: saved'], pending: ['Saving', 'Shared campaign: saving'], offline: ['Offline', 'Shared campaign: the server cannot be reached; edits are kept in this browser and sent later'] }[state];
-  syncEl.textContent = text; syncEl.title = tip; syncEl.dataset.state = state;
+  syncEl.textContent = text; syncEl.title = `${tip}
+Campaign id: ${srv.cid}`; syncEl.dataset.state = state;
 }
 const cacheSrv = () => { if (srv && record) saveCache({ cid: srv.cid, ver: srv.ver, base: srv.base, record }); };
 function persist() {
@@ -383,9 +385,10 @@ function historyPage(r) {
   const log = r.log || [];
   if (!log.length) return '<div class="empty">No edits recorded yet. Edits made from now on are listed here, by page.</div>';
   const kinds = [...new Set(log.map(e => e.kind))].sort(), f = kinds.includes(view.logKind) ? view.logKind : 'all';
-  const shown = log.filter(e => f === 'all' || e.kind === f);
-  const bar = `<div class="histbar filters"><label for="logfilter">Show</label><select id="logfilter" data-logkind><option value="all">All</option>${kinds.map(k => `<option${k === f ? ' selected' : ''}>${esc(k)}</option>`).join('')}</select><span class="hn">${shown.length} entries</span></div>`;
-  if (!shown.length) return `${bar}<div class="empty">No changes of this kind.</div>`;
+  const users = [...new Set(log.map(e => e.u).filter(Boolean))].sort((a, b) => a.localeCompare(b)), fu = users.includes(view.logUser) ? view.logUser : 'all';
+  const shown = log.filter(e => (f === 'all' || e.kind === f) && (fu === 'all' || e.u === fu));
+  const bar = `<div class="histbar filters"><label for="logfilter">Show</label><select id="logfilter" data-logkind><option value="all">All</option>${kinds.map(k => `<option${k === f ? ' selected' : ''}>${esc(k)}</option>`).join('')}</select>${users.length ? `<label for="loguser">Player</label><select id="loguser" data-loguser><option value="all">All</option>${users.map(u => `<option value="${esc(u)}"${u === fu ? ' selected' : ''}>${esc(u)}</option>`).join('')}</select>` : ''}<span class="hn">${shown.length} entries</span></div>`;
+  if (!shown.length) return `${bar}<div class="empty">No changes match.</div>`;
   const groups = LOG_TABS.map(tabName => {
     const list = shown.filter(e => e.tab === tabName).reverse();
     if (!list.length) return '';
@@ -2335,6 +2338,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && pm.modal) 
 main.addEventListener('change', e => {
   if (e.target.matches?.('[data-histkind]')) { pm.histKind = e.target.value; render(); }
   else if (e.target.matches?.('[data-logkind]')) { view.logKind = e.target.value; render(); }
+  else if (e.target.matches?.('[data-loguser]')) { view.logUser = e.target.value; render(); }
   else if (e.target.matches?.('[data-mastery]')) commit(ed.setMastery(record, e.target.dataset.char, Number(e.target.dataset.mastery), e.target.checked));
   else if (e.target.matches?.('[data-mkprice]')) commit(ed.setMarkPrice(record, e.target.dataset.char, e.target.dataset.mkprice, e.target.value));
   else if (e.target.matches?.('[data-enhprice]')) commit(ed.setEnhancementPrice(record, Number(e.target.dataset.enhprice), e.target.value));
