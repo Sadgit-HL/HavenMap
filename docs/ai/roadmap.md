@@ -5,21 +5,21 @@ Open work in priority order. Items marked (owner) need a decision or data from t
 ## 1. Stabilise what exists
 
 1. Browser-test the 2026-11-14 layout changes at the sizes in `ui-guidelines.md` section 9. Scope: top bar on one line, modifier and modal card sizes, tile modals close (Escape, overlay, footer), Stickers toggle.
-2. Commit a test set. The Node checks for `edit.js`, `record.js`, `events.js`, `outcomes.js`, `amdDeck.js`, `flow.js` and `changelog.js` existed only in temporary folders. Put them under `tools/tests/` and say how to run them.
+2. Partly done 2026-11-19: `tools/tests/` holds 49 checks (items buy and sell, hand grid, class change, record, scenario state, history, events, flow); run `node tools/tests/run.mjs`. Still missing: `outcomes.js`, `amdDeck.js`, monsters and the merge in `sync.js`. The original Node checks for `edit.js`, `record.js`, `events.js`, `outcomes.js`, `amdDeck.js`, `flow.js` and `changelog.js` existed only in temporary folders. Put them under `tools/tests/` and say how to run them.
 
 - Rename to HavenTracker, map side (when the map is free): `index.html` title and heading. Repository rename only together with the move away from URL links (`design/map-integration.md`). See `decisions.md` 2026-11-17.
 
 ## 2. Playmat and phone gaps
 
-4. Phone: check the touch layout (2026-11-17) on a real phone, upright and sideways: page sheet, bottom sheets, long press preview, hold and move of modifier cards. Tested only with Playwright touch emulation.
-4a. Touch drag with the new ghost card (2026-11-18, `374f2f8`): hold and move of ability and modifier cards on a tablet and a phone. Mouse drag was tested in Playwright; touch was not re-tested after the change.
+4. Done 2026-11-19 (owner, on a real phone, ok). Phone: check the touch layout (2026-11-17) on a real phone, upright and sideways: page sheet, bottom sheets, long press preview, hold and move of modifier cards. Tested only with Playwright touch emulation.
+4a. Done 2026-11-19 (owner, on a phone, ok). Touch drag with the new ghost card (2026-11-18, `374f2f8`): hold and move of ability and modifier cards on a tablet and a phone. Mouse drag was tested in Playwright; touch was not re-tested after the change.
 5. Touch: check the long-press context menu of the playmat on a real touch device (tablet).
 6. Hand fan and active zone: size from `--cu` instead of their own containers.
 7. Settings: explain or relabel "Reduce motion" (owner note in the old `updates merc site.md`, now archived).
 8. Done 2026-11-18: the attack modifier state is in the record (`chars[].amd`, owner decision).
 9. Closed 2026-11-18: no perk limit (owner).
 10. Items: Buy and Sell exist since 2026-11-19 (owner). Enhancement price shortcuts stay closed (owner, 2026-11-18).
-11. Mark a card as active (`setCardActive` exists; no UI). Decide if it is needed.
+11. Closed 2026-11-19: left as is (owner). Mark a card as active (`setCardActive` exists; no UI). Decide if it is needed.
 12. Monsters tab, collapsed modifier ribbon: it shows the faces left and the discard only. Proposed: the odds strip and a count of the cards in Top, Bottom and Active (cards placed there in the full view are invisible once it is collapsed).
 
 ## 3. Campaign tab gaps
@@ -27,7 +27,7 @@ Open work in priority order. Items marked (owner) need a decision or data from t
 13. Campaign stickers: the scenario stickers are matched by number (used by the flowchart since 2026-11-18). The 19 named campaign stickers (city rule, the Voice, the Drake and others) have files in `images/stickers/gh2` by slug; check that the Overview sticker list and the stickers modal use them. (verify)
 14. Perk sheets (`wh_perks`, one per class) and masteries/banners in the Cards tab: not built.
 15. Scenario flowchart: diagonal arrows in the Flow chart are interpreted by position, unverified against the book. (Storylines were checked against the Secretariat and the owner's sheet on 2026-11-18; the unlock links were not.)
-15a. Scenarios: the Table view and the flowchart's overview map do not use the storyline colours or the stickers yet (the chart, the modal and the phone list do).
+15a. Closed 2026-11-19: left as is (owner). Scenarios: the Table view and the flowchart's overview map do not use the storyline colours or the stickers yet (the chart, the modal and the phone list do).
 16. Resources: pCloud links may expire. The scenario book and section book share one link on purpose (owner, 2026-11-18).
 
 ## 4. Campaign server and session flow (blocked on hosting decision)

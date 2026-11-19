@@ -32,7 +32,7 @@ Start here. Read in this order, then only the file for the area you touch.
 - Serve over HTTP, never `file://` (ES modules fail silently). Either `start.bat` one folder above the repo (serves `http://localhost:8080/HavenMap/`), or `python -m http.server 8099` in the parent folder.
 - Map: `/HavenMap/`. Campaign page: `/HavenMap/campaign/`. Mockups: `/HavenMap/campaign/mockups/`.
 - Syntax check: `node --check <file.js>`. Perk icon check: `node tools/check-perk-icons.mjs`.
-- There is no committed test suite. Browser checks used Playwright (installed globally at `C:/Users/hansen/AppData/Roaming/npm/node_modules/playwright`, Edge or Chrome channel). Throwaway scripts were not kept.
+- Node checks: `node tools/tests/run.mjs [filter]` (`tools/tests/*.test.mjs`, no dependencies; each file exports `tests`). Browser checks used Playwright (installed globally at `C:/Users/hansen/AppData/Roaming/npm/node_modules/playwright`, Edge or Chrome channel). Throwaway scripts were not kept.
 - Cache busting is by hand: `?v=` strings in `index.html` files and in some imports. Bump them when a file changes. Tell the owner to hard refresh (Ctrl+F5).
 
 ## Files outside the repo (do not commit, do not delete)
