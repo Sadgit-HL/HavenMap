@@ -2,7 +2,7 @@ import { imageFile } from '../scripts/images.js';
 // The playmat of the Mercenaries tab (design: campaign/mockups/merc-6-playmat-v2.html, styles: campaign/playmat.css, generated).
 // playmatHtml() turns one character of the record into the playmat markup; the page (app.js) wires the clicks and drags to the
 // pure edit functions in scripts/campaign/edit.js, so everything done here is saved, undoable and logged in the history.
-import { handList, handLimit, zoneOf, ownedCards, pendingPicks, cardLevel, SLOT_ORDER, SLOT_LABEL, slotLimits, slotUse, itemFits } from '../scripts/campaign/record.js';
+import { handList, handGrid, handLimit, zoneOf, ownedCards, pendingPicks, cardLevel, SLOT_ORDER, SLOT_LABEL, slotLimits, slotUse, itemFits } from '../scripts/campaign/record.js';
 import { tokenDefs, tokenImage, stickerImage, markerTokens, MARK_STICKERS, markLabel } from '../scripts/campaign/classTokens.js';
 import { BGG_ICON_GROUPS } from '../scripts/campaign/bggIcons.js';
 import { BANNERS, bannerIcon } from '../scripts/campaign/bggBanners.js';
@@ -186,7 +186,7 @@ export function playmatHtml(c, X, S = {}) {
         <div class="zone"><span class="zlabel">Active &middot; <b>${active.length}</b></span><div class="activelist" data-zone="active" data-char="${cid}">${active.map(id => ac(id)).join('')}</div></div>
         <div class="zone play"><span class="zlabel">Play area &middot; Initiative <b>${playIni}</b></span>${slotHtml(0)}${slotHtml(1)}</div>
       </div>
-      <div class="hand6" data-hmode="${AMD ? 'amd' : 'hand'}" data-layout="${ST.layout === 'fan' ? 'fan' : 'spread'}"><div class="hbar">${hviewTog}${AMD ? amBar : `<span class="zlabel">Hand &middot; <b class="${limit && hand.length > limit ? 'over-limit' : ''}">${hand.length}</b>${limit ? ` of <span>${esc(limit)}</span>` : ''}</span>${heBtn}<span class="hctl"><span class="sortlab">Sort</span>${`<span class="sortgrp"><button type="button" class="btn6" data-handsort="ini" data-char="${cid}" title="Sort by initiative and keep the hand sorted">Ini</button><button type="button" class="btn6" data-handsort="lvl" data-char="${cid}" title="Sort by level once">Lvl</button></span>`}</span>`}</div>${AMD ? amView : `<div class="fan6" data-zone="hand" data-char="${cid}">${hand.map((id, i) => ac(id, i, true, true)).join('')}</div>`}</div>
+      <div class="hand6" data-hmode="${AMD ? 'amd' : 'hand'}" data-layout="${ST.layout === 'fan' ? 'fan' : ST.layout === 'grid' ? 'grid' : 'spread'}"><div class="hbar">${hviewTog}${AMD ? amBar : `<span class="zlabel">Hand &middot; <b class="${limit && hand.length > limit ? 'over-limit' : ''}">${hand.length}</b>${limit ? ` of <span>${esc(limit)}</span>` : ''}</span>${heBtn}<span class="hctl"><span class="sortlab">Sort</span>${`<span class="sortgrp"><button type="button" class="btn6" data-handsort="ini" data-char="${cid}" title="Sort by initiative and keep the hand sorted">Ini</button><button type="button" class="btn6" data-handsort="lvl" data-char="${cid}" title="Sort by level once">Lvl</button></span>`}</span>`}</div>${AMD ? amView : `<div class="fan6${ST.layout === 'grid' ? ' hgrid' : ''}" data-zone="hand" data-char="${cid}">${ST.layout === 'grid' ? `<div class="hgi" style="--hrows:${handGrid(c, limit).cells.length / 6}">${handGrid(c, limit).cells.map((id, i) => `<div class="hcell${id == null ? ' empty' : ''}" data-cell="${i}">${id == null ? '' : ac(id, i, true, true)}</div>`).join('')}</div>` : hand.map((id, i) => ac(id, i, true, true)).join('')}</div>`}</div>
     </section>
     <section class="piles6">${pile('discard', 'Discard', ' target')}${pile('lost', 'Lost', ' lost target')}</section>
     ${dockHtml(pendingPicks(c))}
@@ -211,7 +211,7 @@ export function cardsPost(c, { pretty, cardById }) {
 
 // ---- display settings (the gear of the top bar; kept in this browser by the page) ----
 export const SET_DEFAULT = { layout: 'spread', size: 'm', delay: 'short', trigger: 'hover', place: 'near', inib: true, autosort: false, reduce: false };
-const SET_ENUM = { layout: ['spread', 'fan'], size: ['s', 'm', 'l', 'xl'], delay: ['off', 'short', 'long'], trigger: ['hover', 'ctrl'], place: ['near', 'left', 'right'] };
+const SET_ENUM = { layout: ['spread', 'fan', 'grid'], size: ['s', 'm', 'l', 'xl'], delay: ['off', 'short', 'long'], trigger: ['hover', 'ctrl'], place: ['near', 'left', 'right'] };
 export function cleanSettings(o) {
   const s = JSON.parse(JSON.stringify(SET_DEFAULT));
   if (!o || typeof o !== 'object') return s;
@@ -229,7 +229,7 @@ export function displaySettingsHtml(st) {
   const card = (title, lines, cls = '') => `<section class="setcard${cls}"><h4>${title}</h4>${lines}</section>`;
   return `<div class="setcols split">
     ${card('Card preview', row('Show on', seg('trigger', [['hover', 'Hover'], ['ctrl', 'Ctrl+hover']]), ' deskonly') + row('Position', seg('place', [['near', 'Next to card'], ['left', 'Left'], ['right', 'Right']]), ' deskonly') + row('Size', seg('size', [['s', 'S'], ['m', 'M'], ['l', 'L'], ['xl', 'XL']])) + row('Hover delay', seg('delay', [['off', 'Off'], ['short', 'Short'], ['long', 'Long']]), ' deskonly'), ' tall')}
-    ${card('Hand', row('Layout', seg('layout', [['spread', 'Spread'], ['fan', 'Fan']]), ' deskonly') + chk('autosort', 'Auto-sort by initiative'))}
+    ${card('Hand', row('Layout', seg('layout', [['spread', 'Spread'], ['fan', 'Fan'], ['grid', 'Grid']]), ' deskonly') + chk('autosort', 'Auto-sort by initiative'))}
     ${card('Cards and motion', chk('inib', 'Initiative badge on cards') + chk('reduce', 'Reduce motion'))}
     </div>
     <div class="setfoot"><button type="button" class="btn6" data-setreset>Reset display settings</button></div>`;
@@ -261,6 +261,7 @@ export function modalHtml(c, X, S) {
     const banners = BANNERS.map(b => `<button type="button" class="bnrtile" data-bnr="${b.slug}" title="Copy the ${esc(b.name)} banner code">${b.icon ? `<img src="${esc(bannerIcon(b.icon) ?? '')}" alt="">` : '<span class="bnrnoimg">?</span>'}<span>${esc(b.name)}</span></button>`).join('');
     const custom = (S.customCodes || []).map((k, i) => `<div class="coderow"><div><b style="margin:0">${esc(k.label)}</b></div><span><button type="button" class="btn6" data-code="${esc(k.text)}">Copy</button> <button type="button" class="delx" data-codedel="${i}" aria-label="Remove ${esc(k.label)}">&times;</button></span></div>`).join('');
     body = `<div class="chedit sedit">
+      <section class="cesec"><h4>Posts</h4><div class="addrow"><button type="button" class="btn6" data-bgg="turn" data-char="${esc(c.id)}" title="Copy the Turn post">Turn</button><button type="button" class="btn6" data-bgg="cards" data-char="${esc(c.id)}" title="Copy the Cards post for the next round">Cards</button></div></section>
       <section class="cesec"><h4>Icons <span>click to copy</span></h4><div class="bgg-icons">${icons}</div></section>
       <section class="cesec"><h4>Class banners</h4><p class="bnrnote" data-bnrnote>Click a class to copy its <b>banner image</b> code.</p><div class="bnrgrid">${banners}</div></section>
       <section class="cesec"><h4>Own codes</h4>${custom ? `<div class="codelist">${custom}</div>` : ''}

@@ -31,6 +31,7 @@ Record fields (all optional on load, defaults filled by normalize):
                     Every ability card of `deck` is in exactly one place: lost, disc (discard pile, last = top), play, act (active area) or the hand
                     (all the rest). play = [slot 1, slot 2], each null or { id, up } (up = face up); only hand cards enter a slot, slot 1 sets the
                     initiative. hord = manual hand order [cardId] or null (null = sorted by initiative),
+                    hgrid = cell of a hand card in the grid layout { cardId: cell } or null (cells count along 6 columns; cards without a cell fill the free cells),
                     tok = class special tokens { key: count or state index } (scripts/campaign/classTokens.js)
                     bgo, pqo = battle goals (3) and personal quests (2) just drawn, one to be kept, or null; pqc = { questSlug: [count per requirement] };
                     notes = free text of the journal (markdown)
@@ -134,7 +135,7 @@ function cleanMarks(mk) {
 // A character with every field present. Each ability card is in one place only: a record that lists a card twice keeps it in
 // the first of lost, discard, a play slot, active; play slots keep { id, up } or null; hord keeps hand cards only.
 function normalizeChar(c) {
-  const ch = { traits: [], special: [], deck: [], disc: [], act: [], lost: [], bench: [], items: [], play: [null, null], hord: null, tok: {}, bgo: null, pqo: null, pqc: {}, notes: '', mk: {}, mp: {}, pk: { perks: [], boxes: {}, ms: [] }, ...c };
+  const ch = { traits: [], special: [], deck: [], disc: [], act: [], lost: [], bench: [], items: [], play: [null, null], hord: null, hgrid: null, tok: {}, bgo: null, pqo: null, pqc: {}, notes: '', mk: {}, mp: {}, pk: { perks: [], boxes: {}, ms: [] }, ...c };
   // a card is owned once: the deck lists it once, and the bench does not list a card that is in the deck (an import may have both)
   ch.deck = [...new Set(Array.isArray(ch.deck) ? ch.deck : [])];
   ch.bench = [...new Set(Array.isArray(ch.bench) ? ch.bench : [])].filter(id => !ch.deck.includes(id));
@@ -156,6 +157,11 @@ function normalizeChar(c) {
   { const pk = ch.pk && typeof ch.pk === 'object' ? ch.pk : {}; ch.pk = { perks: [...new Set((Array.isArray(pk.perks) ? pk.perks : []).map(Number).filter(n => Number.isInteger(n) && n >= 0))].sort((x, y) => x - y), boxes: pk.boxes && typeof pk.boxes === 'object' && !Array.isArray(pk.boxes) ? pk.boxes : {}, ms: [...new Set((Array.isArray(pk.ms) ? pk.ms : []).map(Number).filter(n => Number.isInteger(n) && n >= 0))].sort((x, y) => x - y) }; }
   ch.tok = ch.tok && typeof ch.tok === 'object' && !Array.isArray(ch.tok) ? Object.fromEntries(Object.entries(ch.tok).map(([k, v]) => [k, Math.max(0, Math.min(99, Math.trunc(Number(v)) || 0))])) : {};
   if (Array.isArray(ch.hord)) { const own = new Set(); ch.hord = ch.hord.filter(id => ch.deck.includes(id) && !seen.has(id) && !own.has(id) && own.add(id)); } else ch.hord = null;
+  if (ch.hgrid && typeof ch.hgrid === 'object' && !Array.isArray(ch.hgrid)) {
+    const cells = new Set(), out = {};
+    for (const [k, v] of Object.entries(ch.hgrid)) { const id = Number(k); if (ch.deck.includes(id) && Number.isInteger(v) && v >= 0 && v < 300 && !cells.has(v)) { out[id] = v; cells.add(v); } }
+    ch.hgrid = Object.keys(out).length ? out : null;
+  } else ch.hgrid = null;
   { const amd = cleanAmd(ch.amd); if (amd) ch.amd = amd; else delete ch.amd; }
   return ch;
 }
@@ -246,6 +252,20 @@ export function handList(c) {
   if (!Array.isArray(c.hord)) return hand;
   const pos = id => { const i = c.hord.indexOf(id); return i < 0 ? Infinity : i; };
   return hand.sort((a, b) => (pos(a) === pos(b) ? 0 : pos(a) < pos(b) ? -1 : 1));
+}
+
+// The hand in the grid layout: 6 columns, cells[i] = card id or null. Cards keep the cell saved in hgrid; the others fill the free cells
+// in hand order. At least 2 rows, room for the hand limit, and one more row only when every cell is taken, so there is always a free cell.
+export const HAND_COLS = 6;
+export function handGrid(c, limit = 0) {
+  const hand = handList(c), saved = c.hgrid && typeof c.hgrid === 'object' ? c.hgrid : {};
+  const cells = [], rest = [];
+  for (const id of hand) { const n = saved[id]; if (Number.isInteger(n) && n >= 0 && cells[n] === undefined) cells[n] = id; else rest.push(id); }
+  let n = 0;
+  for (const id of rest) { while (cells[n] !== undefined) n++; cells[n] = id; }
+  let rows = Math.max(2, Math.ceil(Math.max(limit, hand.length, cells.length) / HAND_COLS));
+  if (hand.length >= rows * HAND_COLS) rows++;
+  return { cols: HAND_COLS, cells: Array.from({ length: rows * HAND_COLS }, (_, i) => cells[i] ?? null) };
 }
 
 // Copies of an item in use: the number of characters owning it (calculated from the character sheets,

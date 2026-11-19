@@ -449,3 +449,11 @@
 .pm[data-dock=right] .pcbig{left:auto;right:max(12px,calc(50vw - 378px - var(--zw,340px)))}
 .pm .pcbig{left:max(12px,calc(50vw - 378px - var(--zw,340px)))}.pm .amslot{display:block}
 .oldsheet{margin-top:14px}.oldsheet>summary{cursor:pointer;color:var(--muted);padding:6px 2px}
+
+/* Hand, Grid layout: 6 fixed columns of cells, a card can be dropped on any cell (swap with a card there) */
+.pm .hand6[data-layout=grid] .fan6{display:block;container-type:size;overflow-y:auto;overflow-x:hidden}
+.pm .hgi{--hg:6px;--hcw:max(44px,min(calc((100cqw - 5 * var(--hg)) / 6),calc((100cqh - (var(--hrows,2) - 1) * var(--hg)) / var(--hrows,2) * 5 / 7)));display:grid;grid-template-columns:repeat(6,var(--hcw));grid-auto-rows:calc(var(--hcw) * 7 / 5);gap:var(--hg);justify-content:center;align-content:start}
+.pm .hgrid .hcell{position:relative;border:1px dashed var(--line,#3a3026);border-radius:8px;background:rgba(0,0,0,.18)}
+.pm .hgrid .hcell:has(.ac){border-color:transparent;background:none}
+.pm .hgrid .hcell .ac{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto}
+.pm .hgrid .hcell.dropcell{border-color:var(--accent,#c7a44a);background:rgba(199,164,74,.1)}

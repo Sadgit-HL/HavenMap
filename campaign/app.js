@@ -4,6 +4,7 @@ import { imageFile } from '../scripts/images.js';
 // server come later (docs/campaign-schema.md section 10).
 import { CARDS } from '../scripts/games/gh2_cards.js';
 import { ITEMS } from '../scripts/campaign/itemList.js';
+import { ITEM_COSTS } from '../scripts/games/gh2_item_costs.js';
 import { TREASURES } from '../scripts/games/gh2_treasures.js';
 import { SCENARIOS, STICKERS } from '../scripts/games/gh2_scenarios.js';
 import { BATTLE_GOALS } from '../scripts/games/battle_goals.js';
@@ -57,7 +58,7 @@ let sub = '';                      // sub-tab under Mercenaries: a character id 
 const editPages = new Set();        // pages (top-level tabs) currently in edit mode; each page has its own Edit button
 let editing = false;               // derived in render(): is the visible page being edited
 const history = [];                                   // own edits for undo, newest last: { before, after } (records)
-const view = { flowFull: false, flowPos: null, scnView: 'table', logKind: 'all', flowShow: 'progress', flowLane: '', flowZoom: 'm', scnSel: null, scnStatus: '', scnSearch: '', scnSort: { col: '', dir: 1 }, itemSlot: '', itemSearch: '', itemShow: 'unlocked', itemView: 'list', itemSel: null, itemSize: 'm', itemSort: { col: '', dir: 1 }, cardType: 'abilities', cardSlot: '', cardChk: '', cardKind: 'city', cardSide: 'front', cardDeck: '', cardMon: '', cardMLv: '', cardShow: 'unlocked', cardCls: '', cardLv: '', cardSearch: '', cardSize: 's', cardStk: true };   // itemView: 'list' | 'grid'
+const view = { flowFull: false, flowPos: null, scnView: 'table', logKind: 'all', flowShow: 'progress', flowLane: '', flowZoom: 'm', scnSel: null, scnStatus: '', scnSearch: '', scnSort: { col: '', dir: 1 }, itemSlot: '', itemSearch: '', itemGold: '', itemShow: 'unlocked', itemView: 'list', itemSel: null, itemSize: 'm', itemSort: { col: '', dir: 1 }, cardType: 'abilities', cardSlot: '', cardChk: '', cardKind: 'city', cardSide: 'front', cardDeck: '', cardMon: '', cardMLv: '', cardShow: 'unlocked', cardCls: '', cardLv: '', cardSearch: '', cardSize: 's', cardStk: true };   // itemView: 'list' | 'grid'
 
 // Level order of ability cards: 1, X (the level 1.1 cards), 2 ... 9, then M (mastery).
 const lvRank = lv => ({ X: 1.5, M: 99, a: 1.1, b: 1.2 }[lv] ?? Number(lv));   // a and b: the Jaws of the Lion level A and B cards
@@ -909,12 +910,25 @@ function addTab(r) {
 
 // A flip item: the preview shows its back beside the front (data-imgb, read by the card preview below).
 const backAttr = i => { const b = itemBackUrl(i); return b ? ` data-imgb="${esc(b)}"` : ''; };
+// Item search: comma separated terms, each a number (3), a range (10-20) or part of a name. An item matches when any term does.
+function itemQueryMatch(i, q) {
+  if (!q) return true;
+  const name = pretty(i.slug).toLowerCase(), id = String(i.id).toLowerCase();
+  return q.split(',').map(t => t.trim()).filter(Boolean).some(t => {
+    const m = /^(\d+)\s*[-–]\s*(\d+)$/.exec(t);
+    if (m) return typeof i.id === 'number' && i.id >= Math.min(+m[1], +m[2]) && i.id <= Math.max(+m[1], +m[2]);
+    return name.includes(t) || id === t;
+  });
+}
 function items(r) {
+  const gold = view.itemGold.trim() === '' || !Number.isFinite(Number(view.itemGold)) ? null : Number(view.itemGold);
   const slots = [...new Set(ITEMS.map(i => i.slot).filter(Boolean))].sort();
   const rows = ITEMS.filter(i => {
     if (view.itemSlot && i.slot !== view.itemSlot) return false;
     if (view.itemShow === 'unlocked' && !r.items.unl.includes(i.id)) return false;
     if (view.itemShow === 'shop' && shopCopies(r, i) === 0) return false;
+    // Affordable: only items with a known price at or below the gold entered. Locked items are not filtered by price, so the filter cannot reveal them.
+    if (gold != null && (!r.items.unl.includes(i.id) || !(ITEM_COSTS[i.id] <= gold))) return false;
     // Search the item name. Locked items are never matched by name, so a search cannot reveal them.
     const q = view.itemSearch.trim().toLowerCase();
     if (q && !(r.items.unl.includes(i.id) && pretty(i.slug).toLowerCase().includes(q) || String(i.id).toLowerCase() === q)) return false;
@@ -925,6 +939,7 @@ function items(r) {
   const filters = `<div class="filters"><select id="itemSlot"><option value="">All slots</option>${slots.map(s => `<option ${view.itemSlot === s ? 'selected' : ''}>${esc(s)}</option>`).join('')}</select>
     <select id="itemShow">${[['all', 'All items'], ['unlocked', 'Unlocked'], ['shop', 'In the shop']].map(([v, l]) => `<option value="${v}" ${view.itemShow === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
     <input id="itemSearch" type="search" placeholder="Search item name" value="${esc(view.itemSearch)}">
+    <input id="itemGold" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="Gold" aria-label="Gold: show only items this affordable" title="Show only items that cost this much or less" value="${esc(view.itemGold)}" style="width:5.5em">
     <span class="tbend">${itemRollerBtn(r)}
     <button type="button" class="editbtn editicon" data-pageedit aria-pressed="${editing}" aria-label="${editing ? 'Stop editing items' : 'Edit items'}" title="${editing ? 'Stop editing items' : 'Edit items'}">${PENCIL}</button></span></div>`;
   const holders = id => r.chars.filter(c => ownsItem(c, id)).map(c => c.name).join(', ');
@@ -955,6 +970,7 @@ function items(r) {
     kind: i => i.kind ?? '',
     unl: i => (r.items.unl.includes(i.id) ? 1 : 0),
     n: i => i.n || 0,
+    cost: i => (r.items.unl.includes(i.id) ? ITEM_COSTS[i.id] ?? -1 : -1),
     used: i => (r.items.unl.includes(i.id) ? itemsInUse(r, i) : -1),
     shop: i => (r.items.unl.includes(i.id) ? shopCopies(r, i) : -1),
     with: i => holders(i.id).toLowerCase(),
@@ -962,7 +978,7 @@ function items(r) {
   const cmp = (a, b) => (Array.isArray(a) ? (a[0] - b[0] || (typeof a[1] === 'number' ? a[1] - b[1] : String(a[1]).localeCompare(String(b[1])))) : typeof a === 'number' ? a - b : String(a).localeCompare(String(b)));
   const { col, dir } = view.itemSort;
   if (SORT[col]) rows.sort((x, y) => dir * cmp(SORT[col](x), SORT[col](y)) || cmp(SORT.id(x), SORT.id(y)));
-  const head = [['id', '#'], ['name', 'Item'], ['slot', 'Slot'], ['kind', 'Type'], ['unl', 'Unlocked'], ['n', 'Copies'], ['used', 'In use'], ['shop', 'In shop'], ['with', 'With']]
+  const head = [['id', '#'], ['name', 'Item'], ['slot', 'Slot'], ['kind', 'Type'], ['cost', 'Cost'], ['unl', 'Unlocked'], ['n', 'Copies'], ['used', 'In use'], ['shop', 'In shop'], ['with', 'With']]
     .map(([k, l]) => `<button type="button" class="sortbtn" data-itemsort="${k}" title="Sort by ${esc(l.toLowerCase())}">${l}${col === k ? (dir > 0 ? ' &#9650;' : ' &#9660;') : ''}</button>`);
   if (isPhone()) return filters + viewToggle + itemRows(r, rows) + itemSheet(r, ownerChips);
   return filters + viewToggle + dataTable('itemtable', head, rows.map(i => {
@@ -970,7 +986,7 @@ function items(r) {
     const unlCell = editing ? `<input type="checkbox" data-act="itemUnl" data-id="${esc(i.id)}" ${unl ? 'checked' : ''}>` : unl ? '<span class="tick" aria-label="unlocked">&#10003;</span>' : '<span class="tick no" aria-label="locked">&ndash;</span>';
     const usedCell = unl ? esc(itemsInUse(r, i)) : '';   // calculated from the character tabs, not editable
     const pic = (unl || editing) && itemImageUrl(i);   // locked items stay hidden for players
-    return `<tr class="${unl ? '' : 's0'}"${pic ? ` data-img="${esc(pic)}"${backAttr(i)}` : ''}><td>${esc(i.id)}</td><td>${unl ? esc(pretty(i.slug)) : 'Locked item'}</td><td>${esc(i.slot ?? '')}</td><td>${esc(i.kind === 'qm' ? 'QM' : i.cls ? `${i.kind}, ${i.cls}` : i.kind)}</td>
+    return `<tr class="${unl ? '' : 's0'}"${pic ? ` data-img="${esc(pic)}"${backAttr(i)}` : ''}><td>${esc(i.id)}</td><td>${unl ? esc(pretty(i.slug)) : 'Locked item'}</td><td>${esc(i.slot ?? '')}</td><td>${esc(i.kind === 'qm' ? 'QM' : i.cls ? `${i.kind}, ${i.cls}` : i.kind)}</td><td>${unl ? esc(ITEM_COSTS[i.id] ?? '') : ''}</td>
       <td>${unlCell}</td><td>${esc(i.n)}</td><td>${usedCell}</td><td>${unl ? esc(shopCopies(r, i)) : ''}</td><td>${unl ? `<span class="itemwith">${ownerChips(i)}${giveMenu(i)}</span>` : ''}</td></tr>`;
   }));
 }
@@ -981,7 +997,7 @@ function itemRows(r, rows) {
   if (!rows.length) return none;
   return `<div class="mlist">${rows.map(i => {
     const unl = r.items.unl.includes(i.id), open = unl || editing, who = r.chars.filter(c => ownsItem(c, i.id)).map(c => c.name).join(', ');
-    const sub = unl ? `${esc(i.slot ?? '')} &middot; ${esc(shopCopies(r, i))} of ${esc(i.n)} in the shop` : 'Locked';
+    const sub = unl ? `${esc(i.slot ?? '')}${ITEM_COSTS[i.id] != null ? ` &middot; ${esc(ITEM_COSTS[i.id])} gold` : ''} &middot; ${esc(shopCopies(r, i))} of ${esc(i.n)} in the shop` : 'Locked';
     return `<${open ? 'button type="button"' : 'div'} class="mrow${unl ? '' : ' s0'}"${open ? ` data-itemsel="${esc(i.id)}"` : ''}><span class="mnum">${esc(i.id)}</span><span class="mmain"><b>${unl ? esc(pretty(i.slug)) : 'Locked item'}</b><small>${sub}</small></span>${who ? `<span class="mend">${esc(who)}</span>` : ''}</${open ? 'button' : 'div'}>`;
   }).join('')}</div>`;
 }
@@ -1021,7 +1037,7 @@ function hydrateAm() {
 // With "unlocked" the other classes are never listed or matched by a search, so the page cannot reveal them. Filters: class, level, name. Cards get the shared card preview (campaign/preview.js).
 function cardsPage(r) {
   const typeSel = `<select id="cardType" aria-label="Card type">${[['abilities', 'Character abilities'], ['am', 'Attack modifiers'], ['goals', 'Battle goals'], ['mats', 'Character mats'], ['events', 'Events'], ['items', 'Items'], ['monsters', 'Monster abilities'], ['stats', 'Monster stat cards'], ['pq', 'Personal quests']].sort((a, b) => a[1].localeCompare(b[1])).map(([v, l]) => `<option value="${v}" ${view.cardType === v ? 'selected' : ''}>${l}</option>`).join('')}</select>`;
-  const showSel = `<select id="cardShow">${[['unlocked', { items: 'Unlocked items', goals: 'Drawn goals', events: 'Discarded events', am: 'Unlocked classes', mats: 'Unlocked classes' }[view.cardType] || 'Unlocked classes'], ['all', { items: 'All items', goals: 'All goals', events: 'All events' }[view.cardType] || 'All classes']].map(([v, l]) => `<option value="${v}" ${view.cardShow === v ? 'selected' : ''}>${l}</option>`).join('')}</select>`;
+  const showSel = `<select id="cardShow">${[['unlocked', { items: 'Unlocked items', events: 'Discarded events', am: 'Unlocked classes', mats: 'Unlocked classes' }[view.cardType] || 'Unlocked classes'], ['all', { items: 'All items', events: 'All events' }[view.cardType] || 'All classes']].map(([v, l]) => `<option value="${v}" ${view.cardShow === v ? 'selected' : ''}>${l}</option>`).join('')}</select>`;
   const sizeBar = n => `<div class="imgmode viewmode" role="group" aria-label="Tile size">${[['s', 'S'], ['m', 'M'], ['l', 'L']].map(([k, l]) => `<button type="button" data-cardsize="${k}" aria-pressed="${view.cardSize === k}" title="Tile size ${l}">${l}</button>`).join('')}<span class="ctrlhint">${n} cards</span></div>`;
   if (view.cardType === 'stats') {
     // Monster stat cards of the 50 Gloomhaven 2nd Edition monsters, one picture per monster level 0 to 7 (300x162, so the tiles are wider
@@ -1128,12 +1144,11 @@ function cardsPage(r) {
     }).join('')}</div>` : (view.cardShow === 'all' ? none : '<div class="empty">No events discarded yet. Choose "All events" to see every card.</div>'));
   }
   if (view.cardType === 'goals') {
-    // Battle goal pictures from worldhaven (Frosthaven set, used for every edition). "Unlocked" means the goals drawn so far (r.decks.bg).
+    // Battle goal pictures from worldhaven (Frosthaven set, used for every edition).
     const q = view.cardSearch.trim().toLowerCase();
-    const rows = BATTLE_GOALS.filter(g => (view.cardShow === 'all' || r.decks.bg.includes(g.id))
-      && (!view.cardChk || String(g.chk) === view.cardChk)
+    const rows = BATTLE_GOALS.filter(g => (!view.cardChk || String(g.chk) === view.cardChk)
       && (!q || pretty(g.slug).toLowerCase().includes(q) || String(g.t || '').toLowerCase().includes(q)));
-    const filters = `<div class="filters">${typeSel}${showSel}<select id="cardChk"><option value="">Any checkmarks</option>${[1, 2].map(n => `<option value="${n}" ${view.cardChk === String(n) ? 'selected' : ''}>${n} checkmark${n > 1 ? 's' : ''}</option>`).join('')}</select>
+    const filters = `<div class="filters">${typeSel}<select id="cardChk"><option value="">Any checkmarks</option>${[1, 2].map(n => `<option value="${n}" ${view.cardChk === String(n) ? 'selected' : ''}>${n} checkmark${n > 1 ? 's' : ''}</option>`).join('')}</select>
       <input id="cardSearch" type="search" placeholder="Goal name or text" value="${esc(view.cardSearch)}"></div>`;
     return filters + sizeBar(rows.length) + (rows.length ? `<div class="itemgrid" style="--tile-min:${ITEM_SIZES[view.cardSize]}px">${rows.map(g => {
       const url = battleGoalImageUrl(g.slug), name = pretty(g.slug);
@@ -1145,9 +1160,9 @@ function cardsPage(r) {
     const q = view.cardSearch.trim().toLowerCase();
     const rows = ITEMS.filter(i => (view.cardShow === 'all' || r.items.unl.includes(i.id))
       && (!view.cardSlot || i.slot === view.cardSlot)
-      && (!q || pretty(i.slug).toLowerCase().includes(q) || String(i.id).toLowerCase() === q));
+      && itemQueryMatch(i, q));
     const filters = `<div class="filters">${typeSel}${showSel}<select id="cardSlot"><option value="">All slots</option>${slots.map(sl => `<option ${view.cardSlot === sl ? 'selected' : ''}>${esc(sl)}</option>`).join('')}</select>
-      <input id="cardSearch" type="search" placeholder="Item name or number" value="${esc(view.cardSearch)}">${stkToggle()}</div>`;
+      <input id="cardSearch" type="search" placeholder="Item name, number or range (10-20)" value="${esc(view.cardSearch)}">${stkToggle()}</div>`;
     return filters + sizeBar(rows.length) + (rows.length ? `<div class="itemgrid" style="--tile-min:${ITEM_SIZES[view.cardSize]}px">${rows.map(i => {
       const url = itemImageUrl(i), name = pretty(i.slug);
       const pic = url ? `<img class="cardpic" src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false">` : `<div class="noimg">${esc(name)}</div>`;
@@ -2083,19 +2098,26 @@ function handDropPlace(e, zone) {
   const next = row.nextElementSibling?.closest('.ac');
   return { before: next ? Number(next.dataset.card) : null, row, side: 'after' };
 }
-const clearMarks = () => main.querySelectorAll('.ins-before, .ins-after').forEach(el => el.classList.remove('ins-before', 'ins-after'));
+const clearMarks = () => main.querySelectorAll('.ins-before, .ins-after, .dropcell').forEach(el => el.classList.remove('ins-before', 'ins-after', 'dropcell'));
 main.addEventListener('dragover', e => { evDragOver(e); });
 function markDropZone(e, zone) {
   main.querySelectorAll('[data-zone].over').forEach(z => { if (z !== zone) z.classList.remove('over'); });
   zone.classList.add('over');
   clearMarks();
-  if (zone.dataset.zone === 'hand') { const p = handDropPlace(e, zone); if (p.row) p.row.classList.add(p.side === 'before' ? 'ins-before' : 'ins-after'); }
+  if (zone.dataset.zone === 'hand' && zone.classList.contains('hgrid')) e.target.closest?.('.hcell')?.classList.add('dropcell');
+  else if (zone.dataset.zone === 'hand') { const p = handDropPlace(e, zone); if (p.row) p.row.classList.add(p.side === 'before' ? 'ins-before' : 'ins-after'); }
 }
 function applyDrop(e, zone, d) {                                  // e: the drop event, or { target, clientX, clientY } from a touch drag
   zone.classList.remove('over');
   clearMarks();
   if (!d || d.char !== zone.dataset.char) return;
   if (zone.dataset.zone !== 'hand') { commit(ed.moveCard(record, d.char, d.card, zone.dataset.zone)); return; }
+  if (zone.classList.contains('hgrid')) {                         // grid layout: the cell under the pointer
+    const cell = e.target.closest?.('.hcell');
+    if (cell && zone.contains(cell)) commit(ed.placeInHand(record, d.char, d.card, Number(cell.dataset.cell)));
+    else if (!zone.querySelector(`.ac[data-card="${d.card}"]`)) commit(ed.moveCard(record, d.char, d.card, 'hand'));
+    return;
+  }
   const place = handDropPlace(e, zone).before;
   const fromHand = !!zone.querySelector(`.ac[data-card="${d.card}"]`);
   // inside the hand, dropping on empty space puts the card at the end; from another zone it just enters the hand
@@ -2804,7 +2826,7 @@ main.addEventListener('click', e => {
   if (editing && b) apply(b);
 });
 main.addEventListener('input', e => {
-  const sk = { scnSearch: 'scnSearch', itemSearch: 'itemSearch', cardSearch: 'cardSearch' }[e.target.id];
+  const sk = { scnSearch: 'scnSearch', itemSearch: 'itemSearch', itemGold: 'itemGold', cardSearch: 'cardSearch' }[e.target.id];
   if (!sk) return;
   view[sk] = e.target.value;
   const pos = e.target.selectionStart;

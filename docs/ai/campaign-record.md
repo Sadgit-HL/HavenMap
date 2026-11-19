@@ -47,6 +47,7 @@ Events also carry `pend` (open events, one per deck, `{ city?, road? }`), `marks
 | `disc`, `lost`, `act` | discard pile (last = top), lost pile, active area |
 | `play` | `[slot 1, slot 2]`, each null or `{ id, up }`. Only hand cards enter a slot; slot 1 sets initiative |
 | `hord` | manual hand order, or null (sorted by initiative) |
+| `hgrid` | grid layout of the hand: `{ cardId: cell }` (6 columns), or null |
 | `own`, `bench` | owned item ids; owned ability cards not in the deck |
 | `items` | equipped items `[{ id, st, s }]`, `s` = 0 available, 1 spent, 2 consumed |
 | `tok` | class special tokens `{ key: count or state index }` |

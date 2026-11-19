@@ -5,7 +5,7 @@ import { SCENARIOS, STICKERS } from '../games/gh2_scenarios.js';
 import { ITEMS } from './itemList.js';
 import { CLASSES } from '../games/gh2_classes.js';
 import { ALL_CLASSES } from './classList.js';
-import { SCN_STATE, availableSet, CARD_ZONES, zoneOf, handList, cardLevel, ownedCards, pendingPicks, handLimit, normalDifficulty, classByName, SLOT_ORDER, itemFits, itemsInUse, ownsItem } from './record.js';
+import { SCN_STATE, availableSet, CARD_ZONES, zoneOf, handList, cardLevel, ownedCards, pendingPicks, handLimit, normalDifficulty, classByName, SLOT_ORDER, itemFits, itemsInUse, ownsItem, handGrid } from './record.js';
 import { CARDS } from '../games/gh2_cards.js';
 import { SPECIAL_TRAITS } from './traits.js';
 import { tokenDefs, markerTokens, MARK_STICKERS } from './classTokens.js';
@@ -511,7 +511,7 @@ export function addCharacter(r, { cls, name }) {
   if (!availableClasses(r).some(c => c.i === klass.i)) return r;
   return edit(r, x => {
     x.chars.push({ id: nextCharId(x.chars), cls: klass.name, name: nm, lv: 1, xp: 0, gold: 0, inh: 0, traits: [],
-      deck: [], disc: [], act: [], lost: [], play: [null, null], hord: null, tok: {}, bgo: null, pqo: null, pqc: {}, notes: '', bench: [], items: [] });
+      deck: [], disc: [], act: [], lost: [], play: [null, null], hord: null, hgrid: null, tok: {}, bgo: null, pqo: null, pqc: {}, notes: '', bench: [], items: [] });
   });
 }
 
@@ -529,7 +529,7 @@ export function changeCharacterClass(r, cid, cls) {
     const t = x.chars.find(k => k.id === cid);
     t.cls = klass.name; t.name = klass.name; delete t.seat;
     t.lv = 1; t.xp = 0; t.gold = 0; t.traits = [];
-    t.deck = []; t.bench = start; t.disc = []; t.act = []; t.lost = []; t.play = [null, null]; t.hord = null; t.items = []; t.own = [];
+    t.deck = []; t.bench = start; t.disc = []; t.act = []; t.lost = []; t.play = [null, null]; t.hord = null; t.hgrid = null; t.items = []; t.own = [];
     t.tok = {}; t.mk = {}; t.mp = {}; t.pk = { perks: [], boxes: {}, ms: [] }; delete t.amd;
     t.bgo = null; t.pqo = null; t.pqc = {};
     for (const map of [x.bgs, x.pq]) for (const k of Object.keys(map || {})) if (map[k] && map[k].c === cid) delete map[k];
@@ -578,6 +578,7 @@ export function moveCard(r, cid, cardId, dest, opts = {}) {
     ch.disc = without(ch.disc); ch.lost = without(ch.lost); ch.act = without(ch.act);
     ch.play = play.map(p => (p && p.id === cardId ? null : p));
     if (Array.isArray(ch.hord)) ch.hord = without(ch.hord);
+    if (dest !== 'hand' && ch.hgrid) { delete ch.hgrid[cardId]; if (!Object.keys(ch.hgrid).length) ch.hgrid = null; }
     if (dest === 'discard') ch.disc.push(cardId);
     else if (dest === 'lost') ch.lost.push(cardId);
     else if (dest === 'active') ch.act.push(cardId);
@@ -803,7 +804,7 @@ export function removePoolCard(r, cid, cardId) {
   return edit(r, x => {
     const ch = x.chars.find(y => y.id === cid), out = l => l.filter(n => n !== id);
     ch.deck = out(ch.deck); ch.bench = out(ch.bench); ch.disc = out(ch.disc); ch.lost = out(ch.lost); ch.act = out(ch.act);
-    ch.play = ch.play.map(p => (p && p.id === id ? null : p)); if (ch.hord) ch.hord = out(ch.hord);
+    ch.play = ch.play.map(p => (p && p.id === id ? null : p)); if (ch.hord) ch.hord = out(ch.hord); ch.hgrid = null;
   });
 }
 
@@ -817,7 +818,7 @@ export function applyHand(r, cid, ids) {
   const deck = own.filter(id => pick.includes(id));
   return edit(r, x => {
     const ch = x.chars.find(y => y.id === cid);
-    ch.deck = deck; ch.bench = own.filter(id => !pick.includes(id)); ch.disc = []; ch.lost = []; ch.act = []; ch.play = [null, null]; ch.hord = null;
+    ch.deck = deck; ch.bench = own.filter(id => !pick.includes(id)); ch.disc = []; ch.lost = []; ch.act = []; ch.play = [null, null]; ch.hord = null; ch.hgrid = null;
   });
 }
 
@@ -865,12 +866,30 @@ export function flipPlayCard(r, cid, slot) {
 export function sortHand(r, cid, mode) {
   const c = r.chars.find(x => x.id === cid);
   if (!c || !['ini', 'lvl'].includes(mode)) return r;
-  if (mode === 'ini') return Array.isArray(c.hord) ? edit(r, x => { x.chars.find(y => y.id === cid).hord = null; }) : r;
+  if (mode === 'ini') return Array.isArray(c.hord) || c.hgrid ? edit(r, x => { const ch = x.chars.find(y => y.id === cid); ch.hord = null; ch.hgrid = null; }) : r;
   const cur = handList({ ...c, hord: null });
   const key = id => { const l = cardLevel(id); return l === 0 ? 1.5 : l; };         // the X cards come right after level 1
   const order = [...cur].sort((a, b) => key(a) - key(b));                          // stable: initiative order inside a level
-  if (order.join() === (Array.isArray(c.hord) ? c.hord : []).join()) return r;
-  return edit(r, x => { x.chars.find(y => y.id === cid).hord = order; });
+  if (order.join() === (Array.isArray(c.hord) ? c.hord : []).join() && !c.hgrid) return r;
+  return edit(r, x => { const ch = x.chars.find(y => y.id === cid); ch.hord = order; ch.hgrid = null; });   // the grid layout packs the cards again, in this order
+}
+
+// Grid layout of the hand: put a card into a cell (0 is the top left, 6 cells per row). A card of the hand that is dropped on a taken
+// cell swaps places with that card; a card from another zone enters the hand and takes the cell only when it is free. Every card of the
+// hand keeps the cell it is shown in, so one move does not shift the others.
+export function placeInHand(r, cid, cardId, cell) {
+  if (!Number.isInteger(cell) || cell < 0 || cell >= 300) return r;
+  let c = r.chars.find(x => x.id === cid);
+  if (!c || !c.deck.includes(cardId)) return r;
+  const wasHand = zoneOf(c, cardId) === 'hand';
+  let next = r;
+  if (!wasHand) { next = moveCard(r, cid, cardId, 'hand'); if (next === r) return r; c = next.chars.find(x => x.id === cid); }
+  const cells = handGrid(c, handLimit(c)).cells.slice(), from = cells.indexOf(cardId);
+  if (from === cell) return next;
+  if (cells[cell] != null && !wasHand) return next;
+  cells[from] = cells[cell] ?? null; cells[cell] = cardId;
+  const grid = {}; cells.forEach((id, i) => { if (id != null) grid[id] = i; });
+  return edit(next, x => { x.chars.find(y => y.id === cid).hgrid = grid; });
 }
 
 // Put a hand card into the active area, or clear it from there (back to the hand). Kept for older callers; moveCard does the work.
