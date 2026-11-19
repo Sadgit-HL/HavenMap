@@ -713,7 +713,11 @@ function flowDetail(r) {
   const n = view.scnSel, s = SCENARIOS.find(x => x.n === n);
   if (!s) return '';
   const x = r.scn[String(n)] || { s: 0 };
-  if (x.s === 0) return '<div class="scnlocked"><h3 id="scnModalTitle">Locked scenario</h3></div>';
+  if (x.s === 0) {   // locked: no name for players; in edit mode the number and the state, so it can be unlocked by hand
+    return editing
+      ? `<div class="scnlocked"><h3 id="scnModalTitle">Locked scenario ${esc(s.n)}</h3>${kv('State', `<select data-act="scnState" data-id="${esc(s.n)}">${SCN_STATE_NAME.map((name, i) => `<option value="${i}" ${i === 0 ? 'selected' : ''}>${esc(name)}</option>`).join('')}</select>`)}</div>`
+      : '<div class="scnlocked"><h3 id="scnModalTitle">Locked scenario</h3></div>';
+  }
   // linked scenarios as sticker chips; a known one opens its own page, a locked one is a "?"
   const link = k => {
     const v = r.scn[String(k)]?.s ?? 0, t = SCENARIOS.find(y => y.n === k);
