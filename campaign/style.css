@@ -1223,6 +1223,13 @@ main .histbar .hn { margin-left:auto; }
 header nav button { height:32px; padding:0 12px; border-radius:7px; }
 header nav button:not([aria-selected="true"]):hover { border-color:#6b5a3c; }
 header .actions button { height:32px; }
+/* 701 to 1000 px wide (1366x768 at 150% is 911): the header stays on one line, wide tables scroll sideways instead of the page */
+@media (min-width: 701px) and (max-width: 1000px) {
+  header { gap:6px 8px; padding:10px 8px; } h1 { font-size:15px; }
+  header nav { gap:2px; } header nav button { padding:0 7px; font-size:13px; }
+  .syncwho { display:none; }
+  .dtable { display:block; max-width:100%; overflow-x:auto; } .dtable th { position:static; }
+}
 @media (max-width: 640px) {
   header { gap:8px; padding:8px 10px; }
   header h1 { flex:1; }

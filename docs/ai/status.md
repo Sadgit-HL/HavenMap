@@ -42,7 +42,7 @@ Earlier work (last commits, 2026-11-13 and 2026-11-14): tile modals for stickers
 ## Mercenaries playmat and phone
 
 - Built: everything listed under Mercenaries above. Stages a to f of the redesign are done (`docs/archive/merc-tab-handover.md` section 6 has the history).
-- Not browser-tested: the 2026-11-14 layout changes (`ui-guidelines.md` section 8). Long press, touch drag and the phone view were not tested on a real device.
+- Layout matrix (2026-11-14 changes) browser-checked on 2026-11-19 at six sizes, see `ui-guidelines.md` section 8; open: modifier cards are tiny at 911x512. Long press, touch drag and the phone view were not tested on a real device.
 - Touch layout (2026-11-17): phones upright and sideways, `campaign/touch.css` and the phone view; see `playmat.md` and `ui-guidelines.md` 6.4. Checked with Playwright touch emulation at 390x844 and 844x390, tablet playmat at 768x1024. Owner checked on a real phone on 2026-11-19, ok, including touch drag.
 - Frosthaven classes playable (2026-11-18): the 17 classes in `gh2_classes.js` (src `fh`, indexes 51 to 67) with their cards (27 to 34 each, the worldhaven scans), backs, mats, traits and species, hand sizes (Geminate 14), masteries, modifier decks (FrosthavenAssistant perks). Character tokens are generated stand-ins; H.I.V.E. mode and Geminate form tokens are the scans, cut to their disc. Infuser hit points added and the H.I.V.E. level 1 hit points corrected (7 to 8) in `scripts/games/common.js`. `wh_cards.js` is gone (every class is in `gh2_cards.js`). Tested in Playwright: a H.I.V.E. hand and the marker modal; Node checks for all 43 classes (map entry, hit points, perks, card pictures, backs, mats, traits, masteries, marker token files).
 - Jaws of the Lion classes playable (2026-11-18): Demolitionist, Hatchet, Red Guard, Voidwarden in `gh2_classes.js` (src `jotl`, indexes 41 to 44) with their ability cards (27 to 29 each, the updated GH2E-style cards from the asset repository; the older Jaws-style pictures and the tutorial cards a and b are removed) and the matching new backs, species for event checks (no traits), modifier decks from the perk data (layered faces; the one unique card from the worldhaven scan). Perks, traits and masteries from Cephalofair's crossover sheets (`perks_xover.js`, merged in `scripts/amd/perkData.js`; the map app uses them too). Tested in Playwright: hand, perks window and modifier deck of a Hatchet and a Demolitionist; the add-character form was not clicked through. Hand size is set by hand as for the other classes (Jaws: Demolitionist 9, Hatchet 10, Red Guard 10, Voidwarden 11).
@@ -54,7 +54,7 @@ Earlier work (last commits, 2026-11-13 and 2026-11-14): tile modals for stickers
 
 - Session start from the campaign page and session commit back into the record. Design in `design/server-and-commit.md`.
 - BBCode composer in the map app. The playmat already builds Turn and Cards posts (`turnPost`, `cardsPost` in `campaign/playmat.js`) and an icon and banner code list. Where the composer should live is open (see `roadmap.md`).
-- Browser tests and full coverage. `tools/tests/` has 70 Node checks (2026-11-19, including the sync merge); `outcomes.js`, `amdDeck.js` and `monsters.js` have none yet.
+- Browser tests and full coverage. `tools/tests/` has 120 Node checks (2026-11-19) for the edit functions, record, history, events, outcomes, modifier decks, monsters, flow and the sync merge. No checks for the DOM code.
 
 ## Data and generated files
 

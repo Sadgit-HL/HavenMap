@@ -216,7 +216,7 @@ An empty list shows one muted line (`.emptyline`), for example "No stickers yet.
   of section 5.4 since 2026-11-14.
 - `campaign/playmat.css` is maintained by hand. `tools/build-playmat-css.py` refuses to run without `--force`: the mockup and the live page disagree
   (`.setpop` against `.setpanel`), so a run would break the live settings panel.
-- None of the 2026-11-14 layout changes has been tested in a browser at the sizes of section 9.
+- Browser check 2026-11-19 (Playwright, Edge, 1280x720, 1366x768, 1536x864 [1920x1080 at 125%], 1920x1080, 2560x1440 and 911x512 [1366x768 at 150%], imported test campaign): no page errors; no horizontal page scroll on any tab; top bar on one line (it wrapped below 1000 px before; now one line down to about 800 px, two lines from 701 to 790 px); Stickers and Classes tile modals fit the window and close with Escape, overlay click and the footer Close; the Cards tab Stickers toggle shows and hides the stickers on card pictures; Modifiers view has nothing outside its area. Fixed in the same pass: the Scenarios table (971 px wide) made the page scroll sideways below 971 px, wide tables now scroll inside their box between 701 and 1000 px. Open: at 911x512 the Modifiers view cards are 32 px high (area 617x231); at 1280x720 they are 81 px. Real display scaling (as opposed to a viewport of the same CSS size) was not checked.
 
 ## 9. Test matrix for layout changes
 
