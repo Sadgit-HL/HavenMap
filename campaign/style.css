@@ -1243,3 +1243,4 @@ header .actions button { height:32px; }
 .syncstate[data-state="pending"] { color:var(--accent); border-color:rgba(199,164,74,.5); }
 .syncstate[data-state="offline"] { color:#e08a7a; border-color:rgba(201,96,79,.5); }
 html.phone .syncstate { padding:2px 8px; font-size:11px; }
+html.phone .syncwho { display:none; }

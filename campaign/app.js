@@ -164,10 +164,22 @@ function undo() {
 // minute while it is visible. Edits of two players are merged; a value both changed keeps the other player's value.
 const SYNC_MS = 3000, POLL_MS = 60000, RETRY_MS = 30000;
 let srv = null;                                       // { cid, token, ver, base, timer, busy, again }: base = the record as the server has it
-const syncEl = document.getElementById('syncState');
+const syncEl = document.getElementById('syncState'), whoEl = document.getElementById('syncWho');
+// Who saved last: the server keeps the label of the token that saved (`by`) and the time (`t`) with the record. No extra requests or writes.
+const ago = t => { const m = Math.max(0, Math.floor((Date.now() - t) / 60000)); return m < 1 ? 'just now' : m < 60 ? `${m} min ago` : m < 1440 ? `${Math.floor(m / 60)} h ago` : `${Math.floor(m / 1440)} d ago`; };
+function showWho() {
+  const on = srv && srv.t && srv.by !== undefined;
+  whoEl.hidden = !on;
+  if (!on) return;
+  const who = srv.by === null ? 'you' : srv.by || 'someone';
+  whoEl.textContent = `Last edit: ${who}, ${ago(srv.t)}`;
+  whoEl.title = `Shared campaign: last saved by ${who}, ${new Date(srv.t).toLocaleString()}`;
+}
+setInterval(showWho, 30000);
 function setSync(state) {
   syncEl.hidden = !srv;
-  if (!srv) return;
+  if (!srv) { showWho(); return; }
+  showWho();
   const [text, tip] = { ok: ['Saved', 'Shared campaign: saved'], pending: ['Saving', 'Shared campaign: saving'], offline: ['Offline', 'Shared campaign: the server cannot be reached; edits are kept in this browser and sent later'] }[state];
   syncEl.textContent = text; syncEl.title = tip; syncEl.dataset.state = state;
 }
@@ -188,7 +200,7 @@ async function pushNow() {
   const sent = record;
   try {
     const r = await api('PUT', `/c/${srv.cid}`, srv.token, { base: srv.ver, record: sent });
-    if (r.status === 200) { srv.ver = r.data.ver; srv.base = sent; }
+    if (r.status === 200) { srv.ver = r.data.ver; srv.base = sent; srv.by = null; srv.t = Date.now(); }
     else if (r.status === 409) { await pullAndMerge(); srv.again = true; }
     else throw new Error(r.data?.error || `HTTP ${r.status}`);
     setSync(same(record, srv.base) ? 'ok' : 'pending');
@@ -205,7 +217,7 @@ async function pullAndMerge() {
   if (r.status !== 200) throw new Error(r.data?.error || `HTTP ${r.status}`);
   const remote = normalize(r.data.record), conflicts = [];
   const merged = !record || !srv.base || same(record, srv.base) ? remote : merge3(srv.base, record, remote, conflicts);
-  srv.base = remote; srv.ver = r.data.ver;
+  srv.base = remote; srv.ver = r.data.ver; srv.by = r.data.by; srv.t = r.data.t;
   if (!same(merged, record)) { record = merged; render(); }
   cacheSrv();
   if (conflicts.length) notify('Changed by another player', `${conflicts.length === 1 ? 'One value was' : `${conflicts.length} values were`} changed by you and another player at the same time. Their version was kept.`);
@@ -241,7 +253,7 @@ async function startShared(conn) {
     }
     if (r.status !== 200) throw new Error();
     const remote = normalize(r.data.record);
-    srv.ver = r.data.ver; srv.base = remote;
+    srv.ver = r.data.ver; srv.base = remote; srv.by = r.data.by; srv.t = r.data.t;
     if (cache?.base && cache.record && !same(cache.record, cache.base)) { const merged = merge3(normalize(cache.base), normalize(cache.record), remote); setTimeout(persist); return merged; }
     setSync('ok');
     return remote;
@@ -2996,7 +3008,7 @@ settingsModal.addEventListener('submit', async e => {
       const t = await api('POST', `/c/${cid}/tokens`, adminKey, { role: 'player', label: userName() });   // this browser joins with its own player token
       if (t.status !== 201) { await notify('Upload', t.data?.error || `HTTP ${t.status}`); return; }
       saveConn({ cid, token: t.data.token });
-      srv = { cid, token: t.data.token, ver: r.data.ver, base: record, timer: 0, busy: false, again: false };
+      srv = { cid, token: t.data.token, ver: r.data.ver, base: record, timer: 0, busy: false, again: false, by: null, t: Date.now() };
       cacheSrv(); setSync('ok'); adminTokens = null; renderShare();
     } catch { await notify('Upload', 'The server cannot be reached.'); }
     return;

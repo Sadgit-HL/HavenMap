@@ -475,12 +475,13 @@ export function setCharacterPlayer(r, cid, seat) {
 // At most this many active characters (retired ones live in `retired`, not here).
 export const MAX_CHARACTERS = 4;
 
-// Next free character id: 'c1', 'c2', ...
+// New character id: 'c' and six random letters or digits ('cq3k9ab'). Random so that two players adding a character at the same time
+// do not get the same id (the merge of simultaneous edits matches characters by id). Older records keep their 'c1', 'c2' ids.
 function nextCharId(chars) {
   const used = new Set(chars.map(c => c.id));
-  let n = 1;
-  while (used.has('c' + n)) n++;
-  return 'c' + n;
+  let id;
+  do id = 'c' + Math.random().toString(36).slice(2, 8).padEnd(6, '0'); while (used.has(id));
+  return id;
 }
 
 // Classes that can still be added: known classes not already played by an active character.

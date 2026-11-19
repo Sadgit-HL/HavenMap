@@ -4,6 +4,7 @@ Dated, newest first within each group. "Owner" marks decisions the owner made. C
 
 ## Architecture and data
 
+- 2026-11-19: No presence heartbeat: the KV free plan allows 1,000 writes a day, shared with the saves. The header shows who saved last and when (`by`, `t` of the record). Durable Objects or a throttled last-seen key stay possible later. Owner.
 - 2026-11-19: Left as they are: no UI to mark a card active (`setCardActive`), no storyline colours or stickers in the scenario Table view and the flowchart overview map. Phone touch layout and touch drag checked on a real phone, ok. Owner.
 - 2026-11-19: Items have prices in the campaign: Buy for ... on the Items tab (pays the cost, refused with too little gold) and Sell in the Inventory modal (half the cost rounded down, with a confirmation). Costs are generated (`gh2_item_costs.js`). Supersedes the 2026-11-18 "no item price shortcuts" for items. Owner.
 - 2026-11-18: One scenario level for the campaign: the normal difficulty (half the average character level, rounded up) plus the difficulty `party.diff` (-2 to +4), clamped 0 to 7. The Overview's Party window and the Monsters tab show the same control (level stepper and difficulty pill) and change the same value; the Monsters tab's own level (`mon.lvl`) is gone (converted on load). The difficulty stays when the party levels up. Owner.
