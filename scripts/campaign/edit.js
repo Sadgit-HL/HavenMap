@@ -7,6 +7,7 @@ import { CLASSES } from '../games/gh2_classes.js';
 import { ALL_CLASSES } from './classList.js';
 import { SCN_STATE, availableSet, CARD_ZONES, zoneOf, handList, cardLevel, ownedCards, pendingPicks, handLimit, normalDifficulty, classByName, SLOT_ORDER, itemFits, itemsInUse, ownsItem, handGrid } from './record.js';
 import { CARDS } from '../games/gh2_cards.js';
+import { ITEM_COSTS } from '../games/gh2_item_costs.js';
 import { SPECIAL_TRAITS } from './traits.js';
 import { tokenDefs, markerTokens, MARK_STICKERS } from './classTokens.js';
 import { perkList, amdAct, amOwner, drawState, cleanAmd } from './amdDeck.js';
@@ -517,7 +518,7 @@ export function addCharacter(r, { cls, name }) {
 
 // A character takes another class and starts over as a new character: name (the class name), player, level, XP, gold, ability cards (every zone),
 // items, perks and masteries, markers, class tokens, hand size, the old modifier deck, and the battle goals and personal quests the character holds
-// (they go back into their decks). Kept: the inherited perks, the event traits and the notes. The level 1 and X ability cards of the new class are
+// (they go back into their decks), and the event traits (special). Kept: the inherited perks and the notes. The level 1 and X ability cards of the new class are
 // unlocked (they wait in the pool; the hand is chosen in the hand editor). The enhancement log is a record of the campaign (each entry names its
 // class), so it is not touched. Unknown classes, a class another character plays and the same class are ignored.
 export function changeCharacterClass(r, cid, cls) {
@@ -528,7 +529,7 @@ export function changeCharacterClass(r, cid, cls) {
   return edit(r, x => {
     const t = x.chars.find(k => k.id === cid);
     t.cls = klass.name; t.name = klass.name; delete t.seat;
-    t.lv = 1; t.xp = 0; t.gold = 0; t.traits = [];
+    t.lv = 1; t.xp = 0; t.gold = 0; t.traits = []; t.special = [];
     t.deck = []; t.bench = start; t.disc = []; t.act = []; t.lost = []; t.play = [null, null]; t.hord = null; t.hgrid = null; t.items = []; t.own = [];
     t.tok = {}; t.mk = {}; t.mp = {}; t.pk = { perks: [], boxes: {}, ms: [] }; delete t.amd;
     t.bgo = null; t.pqo = null; t.pqc = {};
@@ -774,6 +775,29 @@ export function returnItem(r, cid, itemId) {
   const c = r.chars.find(x => x.id === cid);
   if (!c || !ownsItem(c, itemId)) return r;
   return edit(r, x => { const t = x.chars.find(y => y.id === cid); t.own = (t.own || []).filter(i => String(i) !== String(itemId)); t.items = t.items.filter(it => String(it.id) !== String(itemId)); });
+}
+
+// Cost of a shop item in gold; null for items that are not bought or sold (quartermaster and solo items).
+export const itemCost = itemId => { const item = itemById.get(String(itemId)), cost = ITEM_COSTS[itemId]; return item && item.kind === 'coin' && Number.isInteger(cost) ? cost : null; };
+// Sell price: half the cost, rounded down.
+export const sellPrice = itemId => { const cost = itemCost(itemId); return cost === null ? null : Math.floor(cost / 2); };
+
+// Buy an item for a character: it is given (see giveItem) and its cost is taken from the character's gold. Refused when the gold is not enough.
+// An item without a cost cannot be bought; giveItem hands it out.
+export function buyItem(r, cid, itemId) {
+  const c = r.chars.find(x => x.id === cid), cost = itemCost(itemId);
+  if (!c || cost === null || (c.gold || 0) < cost) return r;
+  const given = giveItem(r, cid, itemId);
+  if (given === r) return r;
+  return edit(given, x => { x.chars.find(y => y.id === cid).gold -= cost; });
+}
+
+// Sell an item of a character: the copy goes back to the shop and the character gets the sell price in gold (at most 9999).
+export function sellItem(r, cid, itemId) {
+  const c = r.chars.find(x => x.id === cid), price = sellPrice(itemId);
+  if (!c || price === null || !ownsItem(c, itemId)) return r;
+  const gold = Math.min(CHAR_RANGE.gold[1], (c.gold || 0) + price);
+  return edit(returnItem(r, cid, itemId), x => { x.chars.find(y => y.id === cid).gold = gold; });
 }
 
 // Order the items of a character by slot (head, body, hands, legs, small), then by number.

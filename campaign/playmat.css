@@ -457,3 +457,8 @@
 .pm .hgrid .hcell:has(.ac){border-color:transparent;background:none}
 .pm .hgrid .hcell .ac{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto}
 .pm .hgrid .hcell.dropcell{border-color:var(--accent,#c7a44a);background:rgba(199,164,74,.1)}
+.pm .pcard .sellbtn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:3;padding:5px 16px;border:1px solid #7a3a30;border-radius:999px;background:rgba(40,18,14,.9);color:#f0a090;font:inherit;font-size:11px;font-weight:700;cursor:pointer}
+.pm .pcard .sellbtn:hover{background:#4a2620}
+.pm .pcard.eqable{cursor:pointer}
+.pm .pcard.eqable:not(.sel):not(.dis):hover{border-color:#6b5a3c}
+.pm .pcard.dis.eqable{cursor:not-allowed}

@@ -7,7 +7,7 @@ import { tokenDefs, tokenImage, stickerImage, markerTokens, MARK_STICKERS, markL
 import { BGG_ICON_GROUPS } from '../scripts/campaign/bggIcons.js';
 import { BANNERS, bannerIcon } from '../scripts/campaign/bggBanners.js';
 import { SPECIAL_TRAITS, specialName } from '../scripts/campaign/traits.js';
-import { holdStatus } from '../scripts/campaign/edit.js';
+import { holdStatus, sellPrice } from '../scripts/campaign/edit.js';
 import { amdRollCode, perkList, AM_STANDARD, drawOdds } from '../scripts/campaign/amdDeck.js';
 import { groupPerks } from '../scripts/amd/heroDeck.js';
 import { perkTextHtml, perkRuleNote } from '../scripts/amd/perkText.js';
@@ -180,7 +180,7 @@ export function playmatHtml(c, X, S = {}) {
       <div class="grp"><small>BGG code</small><span class="bggseg"><button type="button" class="bggb" data-bgg="turn" data-char="${cid}" title="Copy BGG code" aria-label="Copy BGG code: Turn">${DOC}<span>Turn</span></button><button type="button" class="bggb" data-bgg="cards" data-char="${cid}" title="Copy BGG code" aria-label="Copy BGG code: Cards">${CARDS_ICON}<span>Cards</span></button></span></div>
       <div class="sep"></div>
     </header>
-    <section class="shelf6" aria-label="Items"><h4>Items <span class="itbar"><span>${c.items.length}</span><button type="button" class="btn6" data-itemssort="${cid}" title="Sort by slot" aria-label="Sort by slot">Slot</button><button type="button" class="btn6 equipbtn" data-itemsedit="${cid}" title="Equip items" aria-label="Equip items"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1-4 11-11a2 2 0 0 1 3 3L8 19z"/><path d="M14 7l3 3"/></svg></button></span></h4>${items}</section>
+    <section class="shelf6" aria-label="Items"><h4>Items <span class="itbar"><span>${c.items.length}</span><button type="button" class="btn6" data-itemssort="${cid}" title="Sort by slot" aria-label="Sort by slot">Slot</button><button type="button" class="btn6 equipbtn" data-itemsedit="${cid}" title="Inventory" aria-label="Inventory"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1-4 11-11a2 2 0 0 1 3 3L8 19z"/><path d="M14 7l3 3"/></svg></button></span></h4>${items}</section>
     <section class="board6">
       <div class="toprow">
         <div class="zone"><span class="zlabel">Active &middot; <b>${active.length}</b></span><div class="activelist" data-zone="active" data-char="${cid}">${active.map(id => ac(id)).join('')}</div></div>
@@ -283,7 +283,7 @@ export function modalHtml(c, X, S) {
     title = X.pretty(card.slug); const url = X.cardImageUrl(card);
     body = `<div class="itmodal"><div class="itcard pick" data-mkcard="c:${id}">${url ? `<img src="${esc(url)}" alt="${esc(title)}" draggable="false">` : ''}${markersHtml(c.mk?.[`c:${id}`], S.mkIdx)}</div><div class="itpanel">${markPanel(c, S, esc, `c:${id}`)}<div class="row"><button type="button" class="btn6" data-mkclear="c:${id}">Clear all</button></div></div></div>`;
   } else if (S.modal === 'items') {
-    title = 'Equip items'; big = ' huge';
+    title = 'Inventory'; big = ' huge';
     const I = S.items || { pool: [], isel: [] }, sel = new Set(I.isel.map(String));
     const chosen = I.pool.filter(i => sel.has(String(i.id))), u = slotUse(chosen), l = slotLimits(c.lv);
     const SLOT_USE = { head: [u.head, l.head], body: [u.body, l.body], legs: [u.legs, l.legs], '1H': [u.hands, l.hands], '2H': [u.hands, l.hands], small: [u.small, l.small] };   // both hand slots share the two hands
@@ -292,11 +292,12 @@ export function modalHtml(c, X, S) {
       if (!list.length) return '';
       return `<div class="pgrp"><h3>${SLOT_LABEL[sl]}${SLOT_USE[sl] ? ` <span class="${SLOT_USE[sl][0] >= SLOT_USE[sl][1] ? 'full' : ''}">(${SLOT_USE[sl][0]}/${SLOT_USE[sl][1]})</span>` : ''}</h3><div class="pgrid">${list.map(i => {
         const on = sel.has(String(i.id)), off = !on && !itemFits(chosen, i, c.lv), url = X.itemImageUrl(i), nm = X.pretty(i.slug);
-        const tip = on ? 'Equipped: click to take it off' : off ? 'Owned (it does not fit the free slots)' : 'Owned: click to equip it';
-        return `<div class="pcard ${on ? 'sel' : ''}" data-name="${esc(nm)}" title="${esc(nm)} (${esc(sl)})">${url ? `<img src="${esc(url)}" alt="${esc(nm)}" loading="lazy" draggable="false">` : ''}${markersHtml(c.mk?.[`i:${i.id}`])}<button type="button" class="cbadge ${on ? 'equipped' : 'owned'}${off ? ' off' : ''}" data-isel="${esc(i.id)}" aria-pressed="${on}" title="${esc(tip)}" aria-label="${esc(nm)}: ${on ? 'Equipped' : 'Owned'}"${off ? ' disabled' : ''}>${on ? 'Equipped' : 'Owned'}</button></div>`;
+        const tip = I.sell ? `${nm} (${sl})` : on ? `${nm}: click to take it off` : off ? `${nm}: does not fit the free slots` : `${nm}: click to equip it`;
+        const act = I.sell ? '' : ` data-isel="${esc(i.id)}"${off ? ' data-off="1"' : ''} role="button" tabindex="${off ? -1 : 0}" aria-pressed="${on}" aria-disabled="${off}"`;
+        return `<div class="pcard${on ? ' sel' : ''}${off && !I.sell ? ' dis' : ''}${I.sell ? '' : ' eqable'}" data-name="${esc(nm)}" title="${esc(tip)}"${act}>${url ? `<img src="${esc(url)}" alt="${esc(nm)}" loading="lazy" draggable="false">` : ''}${markersHtml(c.mk?.[`i:${i.id}`])}${on ? '<span class="cbadge equipped" style="pointer-events:none">Equipped</span>' : ''}${I.sell && sellPrice(i.id) !== null ? `<button type="button" class="sellbtn" data-sellitem="${esc(i.id)}" title="Sell ${esc(nm)} for ${sellPrice(i.id)} gold" aria-label="Sell ${esc(nm)} for ${sellPrice(i.id)} gold">Sell</button>` : ''}</div>`;
       }).join('')}</div></div>`;
     }).join('');
-    body = `<div class="poolbar"><span class="grow"></span><button type="button" class="btn6" data-itemclear>Clear</button></div>${groups ? `<div class="itgroups">${groups}</div>` : '<p class="mrow">This character owns no items yet. Give items to the character in the Items tab.</p>'}<div class="poolfoot"><span></span><button type="button" class="btn6" data-itemok data-char="${esc(c.id)}">Confirm items</button></div>`;
+    body = `<div class="poolbar"><span class="grow">${I.sell ? `Value of all items <b>${I.pool.reduce((n, i) => n + (sellPrice(i.id) ?? 0), 0)}</b> gold` : ''}</span><span class="seg" role="group" aria-label="Inventory mode"><button type="button" data-itemmode="equip" aria-pressed="${!I.sell}">Equip</button><button type="button" data-itemmode="sell" aria-pressed="${!!I.sell}">Sell</button></span></div>${groups ? `<div class="itgroups">${groups}</div>` : '<p class="mrow">This character owns no items yet. Give items to the character in the Items tab.</p>'}`;
   } else if (S.modal === 'deck') {
     title = 'Hand'; big = ' huge';
     body = deckBodyHtml(c, X, S, esc);
@@ -373,7 +374,7 @@ export function modalHtml(c, X, S) {
       <section class="cesec"><h4>Class</h4>
         <label>Class<select data-cf="cls">${opts}</select></label>
         <div class="cerow"><span class="celab">Class traits</span><span class="chips">${S.classChips || '<span class="hint">none</span>'}</span></div>
-        ${changed ? `<div class="cewarn" role="alert"><b>Switching to ${esc(cls)} starts the character over.</b> Name, player, level, XP, gold, ability cards, items, perks and masteries, markers, class tokens, battle goals, personal quests and the modifier deck are reset. Inherited perks, event traits and notes stay, and the level 1 and X ability cards of the new class are unlocked. Enhancements stay in the campaign. The Undo button of the page takes it back.</div>` : ''}</section>
+        ${changed ? `<div class="cewarn" role="alert"><b>Switching to ${esc(cls)} starts the character over.</b> Name, player, level, XP, gold, ability cards, items, perks and masteries, markers, class tokens, event traits, battle goals, personal quests and the modifier deck are reset. Inherited perks and notes stay, and the level 1 and X ability cards of the new class are unlocked. Enhancements stay in the campaign. The Undo button of the page takes it back.</div>` : ''}</section>
       <section class="cesec"><h4>Event traits</h4>
         <div class="cerow"><span class="chips">${f.special.length ? f.special.map(k => `<span class="chip info">${esc(specialName(k))}<button type="button" class="chx" data-cfx="${esc(k)}" aria-label="Remove ${esc(specialName(k))}">&times;</button></span>`).join('') : '<span class="hint">none</span>'}</span></div>
         <select data-cfadd aria-label="Add an event trait"><option value="">Add a trait...</option>${free.map(t => `<option value="${esc(t.key)}">${esc(t.name)}</option>`).join('')}</select></section>

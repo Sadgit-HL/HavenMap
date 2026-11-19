@@ -18,7 +18,7 @@ Open work in priority order. Items marked (owner) need a decision or data from t
 7. Settings: explain or relabel "Reduce motion" (owner note in the old `updates merc site.md`, now archived).
 8. Done 2026-11-18: the attack modifier state is in the record (`chars[].amd`, owner decision).
 9. Closed 2026-11-18: no perk limit (owner).
-10. Closed 2026-11-18: no item or enhancement price shortcuts (owner).
+10. Items: Buy and Sell exist since 2026-11-19 (owner). Enhancement price shortcuts stay closed (owner, 2026-11-18).
 11. Mark a card as active (`setCardActive` exists; no UI). Decide if it is needed.
 12. Monsters tab, collapsed modifier ribbon: it shows the faces left and the discard only. Proposed: the odds strip and a count of the cards in Top, Bottom and Active (cards placed there in the full view are invisible once it is collapsed).
 

@@ -64,7 +64,7 @@ export function phoneHtml(c, X, S = {}) {
       const back = item ? X.itemBackUrl(item) : null, url = it.f && back ? back : item ? X.itemImageUrl(item) : null;   // a flip item turned over: its back
       return `<div class="it${s === 1 ? ' spent' : s === 2 ? ' consumed' : ''}" data-itemstate data-id="${esc(it.id)}" data-char="${cid}" role="button" tabindex="0" aria-label="${esc(nm)}, ${['available', 'spent', 'consumed'][s]}">${url ? `<img src="${esc(url)}" alt="" loading="lazy" draggable="false">` : `<span class="itname">${esc(nm)}</span>`}${s ? `<span class="itst">${s === 1 ? 'Spent' : 'Consumed'}</span>` : ''}${markersHtml(c.mk?.[`i:${it.id}`])}</div>`;
     }).join('');
-    view = `<h4>Items <span class="hbtns"><span style="align-self:center">${c.items.length}</span><button type="button" class="sm" data-itemssort="${cid}">Slot</button><button type="button" class="sm" data-itemsedit="${cid}">Equip</button></span></h4><div class="itl">${tiles || '<div class="note">No items.</div>'}</div>`;
+    view = `<h4>Items <span class="hbtns"><span style="align-self:center">${c.items.length}</span><button type="button" class="sm" data-itemssort="${cid}">Slot</button><button type="button" class="sm" data-itemsedit="${cid}">Inventory</button></span></h4><div class="itl">${tiles || '<div class="note">No items.</div>'}</div>`;
   } else {
     view = `<div class="panel"><h4>Traits</h4><div class="chips">${X.traitChips(c)}</div></div>
       <div class="panel"><h4>Character</h4><div class="stats">${sp('xp', 'XP', 'XP', c.xp ?? 0, hi ? `of ${hi}` : 'max')}${sp('gold', 'Gold', 'gold', c.gold ?? 0)}${sp('inh', 'Inherited perks', 'inherited perks', c.inh ?? 0)}</div></div>

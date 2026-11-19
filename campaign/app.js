@@ -869,7 +869,7 @@ const pmState = c => ({
   modal: pm.modal, matSide: pm.matSide, histKind: pm.histKind, jtab: pm.jtab, bgv: pm.bgv, pqv: pm.pqv, notesPreview: pm.notesPreview,
   bgs: record.bgs, pq: record.pq,
   itemId: pm.itemId, mkKey: pm.mkKey, mkIdx: pm.mkIdx, chars: subTabList(), chMenu: pm.chMenu, pileZ: pm.pileZ, cf: pm.cf, players: record.players, classChips: classTraits({ ...c, cls: pm.cf?.cls || c.cls }).map(t => chip(t)).join(''), classOpts: pm.modal === 'char' ? charClassOptions(c) : [], mkSel: mkSelOf(c), set: pmset, ptab: pm.ptab, sheet: pm.sheet,
-  items: pm.modal === 'items' ? { pool: ITEMS.filter(i => record.items.unl.includes(i.id) && ownsItem(c, i.id)), isel: pm.isel[c.id] || [] } : null,
+  items: pm.modal === 'items' ? { pool: ITEMS.filter(i => record.items.unl.includes(i.id) && ownsItem(c, i.id)), isel: c.items.map(it => String(it.id)), sell: !!pm.sellMode } : null,
   deck: pm.modal === 'deck' ? { cards: CARDS.filter(k => k.cls === classByName(c.cls)?.i).sort((a, b) => cardLevel(a.id) - cardLevel(b.id) || (a.ini ?? 1e9) - (b.ini ?? 1e9)), hsel: pm.hsel[c.id] || [], armed: pm.hsArmed } : null,
   amd: pm.modal === 'amd' || pm.modal === 'amdpile' ? drawState(c, c.amd) : null, hview: pm.hview, amEdit: pm.amEdit, amv: pm.hview === 'amd' || pm.ptab === 'amd' ? drawState(c, c.amd) : null, amZoom: pm.modal === 'amd' ? pm.amZoom : null,
   customCodes: pm.modal === 'codes' ? loadCodes() : [],
@@ -950,7 +950,7 @@ function items(r) {
   // who owns an item (a chip per owner; x takes the copy back to the shop) and the menu that gives a copy to a character
   const ownerChips = i => r.chars.filter(c => ownsItem(c, i.id)).map(c => `<span class="chip">${esc(c.name)}<button type="button" class="chx" data-returnitem="${esc(c.id)}|${esc(i.id)}" aria-label="Take ${esc(pretty(i.slug))} back from ${esc(c.name)}" title="Back to the shop">&times;</button></span>`).join('');
   const giveMenu = i => (r.items.unl.includes(i.id) && shopCopies(r, i) > 0 && r.chars.some(c => !ownsItem(c, i.id))
-    ? `<select class="givesel" data-giveitem="${esc(i.id)}" aria-label="Give ${esc(pretty(i.slug))} to a character"><option value="">Give to...</option>${r.chars.filter(c => !ownsItem(c, i.id)).map(c => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('')}</select>` : '');
+    ? (cost => `<select class="givesel" data-giveitem="${esc(i.id)}" aria-label="${cost === null ? 'Give' : 'Buy'} ${esc(pretty(i.slug))} ${cost === null ? 'to' : 'for'} a character"><option value="">${cost === null ? 'Give to...' : 'Buy for...'}</option>${r.chars.filter(c => !ownsItem(c, i.id)).map(c => `<option value="${esc(c.id)}"${cost !== null && (c.gold || 0) < cost ? ' disabled' : ''}>${esc(c.name)}${cost === null ? '' : ` (${c.gold || 0} gold)`}</option>`).join('')}</select>`)(ed.itemCost(i.id)) : '');
   if (view.itemView === 'grid') {
     // Pictures of the filtered items. Locked items have no picture (a placeholder, with the number in edit mode) and are dimmed; the badge shows copies in the shop / total.
     return filters + viewToggle + (rows.length ? `<div class="itemgrid itemcards" style="--tile-min:${ITEM_SIZES[view.itemSize]}px">${rows.map(i => {
@@ -1018,7 +1018,7 @@ function itemSheet(r, ownerChips) {
     <button type="button" class="modalx" data-itemclose aria-label="Close">&times;</button><h3 id="itemSheetTitle">${esc(name)}</h3>
     <div class="isbody">${url && back ? `<div class="ispair"><img src="${esc(url)}" alt="" draggable="false"><img src="${esc(back)}" alt="" draggable="false"></div>` : url ? `<img src="${esc(url)}" alt="" draggable="false">` : ''}<div class="isfacts">${kv('Number', esc(i.id))}${kv('Slot', esc(i.slot ?? ''))}${kv('Type', esc(i.kind === 'qm' ? 'QM' : i.cls ? `${i.kind}, ${i.cls}` : i.kind ?? ''))}${kv('Copies', esc(i.n))}${unl ? kv('In use', esc(itemsInUse(r, i))) + kv('In the shop', esc(shopCopies(r, i))) : ''}</div></div>
     ${unl ? `<h4>With</h4><div class="itemwith">${ownerChips(i) || '<span class="hint">Nobody</span>'}</div>` : ''}
-    ${takers.length ? `<h4>Give to</h4><div class="isgive">${takers.map(c => `<button type="button" data-giveto="${esc(c.id)}|${esc(i.id)}">${esc(c.name)}</button>`).join('')}</div>` : ''}
+    ${takers.length ? (cost => `<h4>${cost === null ? 'Give to' : 'Buy for'}</h4><div class="isgive">${takers.map(c => `<button type="button" data-giveto="${esc(c.id)}|${esc(i.id)}"${cost !== null && (c.gold || 0) < cost ? ' disabled' : ''}>${esc(c.name)}${cost === null ? '' : ` (${c.gold || 0} gold)`}</button>`).join('')}</div>`)(ed.itemCost(i.id)) : ''}
     ${editing ? `<div class="isedit"><button type="button" class="btn" data-act="itemToggle" data-id="${esc(i.id)}">${unl ? 'Lock this item' : 'Unlock this item'}</button></div>` : ''}
   </div></div>`;
 }
@@ -1799,18 +1799,29 @@ function itemClick(e, c) {
   const sort = q('[data-itemssort]');
   if (sort) { commit(ed.sortItems(record, c.id)); return true; }
   if (q('[data-itemsedit]')) {
-    pm.isel[c.id] = c.items.map(it => String(it.id)); pm.modal = 'items'; render(); return true;
+    pm.sellMode = false; pm.modal = 'items'; render(); return true;
   }
   const tile = q('.pm .it[data-itemstate]');
   if (tile && !pm.modal) { pm.itemId = tile.dataset.id; pm.modal = 'item'; render(); return true; }
   const sel = q('[data-isel]');
   if (sel) {
-    if (sel.disabled) return true;
-    const id = sel.dataset.isel, cur = pm.isel[c.id] || [];
-    pm.isel[c.id] = cur.includes(id) ? cur.filter(x => x !== id) : [...cur, id]; render(); return true;
+    if (sel.dataset.off) return true;
+    const id = sel.dataset.isel, cur = c.items.map(it => String(it.id));         // saved at once: no confirm step
+    commit(ed.setEquippedItems(record, c.id, cur.includes(id) ? cur.filter(x => x !== id) : [...cur, id])); return true;
   }
-  if (q('[data-itemclear]')) { pm.isel[c.id] = []; render(); return true; }
-  if (q('[data-itemok]')) { pm.modal = null; commit(ed.setEquippedItems(record, c.id, pm.isel[c.id] || [])); return true; }
+  const sell = q('[data-sellitem]');
+  const mode = q('[data-itemmode]');
+  if (mode) { pm.sellMode = mode.dataset.itemmode === 'sell'; render(); return true; }
+  if (sell) {
+    const id = sell.dataset.sellitem, item = ITEMS.find(x => String(x.id) === id), price = ed.sellPrice(id);
+    if (!item || price === null) return true;
+    ask({ title: 'Sell item', text: `Sell ${pretty(item.slug)} for ${price} gold?
+The card goes back to the shop and ${price} gold is added to ${c.name}.`, ok: 'Sell', cancel: 'Cancel', danger: true }).then(yes => {
+      if (!yes) return;
+      commit(ed.sellItem(record, c.id, id));
+    });
+    return true;
+  }
   return false;
 }
 
@@ -1919,7 +1930,7 @@ main.addEventListener('click', e => {
   if (isel != null) { view.itemSel = isel; render(); return; }
   if (e.target.closest('[data-itemclose]') || e.target.id === 'itemSheet') { view.itemSel = null; render(); return; }
   const gt = e.target.closest('[data-giveto]')?.dataset.giveto;
-  if (gt) { const [cid, id] = gt.split('|'); commit(ed.giveItem(record, cid, id)); return; }
+  if (gt) { const [cid, id] = gt.split('|'); commit(ed.itemCost(id) === null ? ed.giveItem(record, cid, id) : ed.buyItem(record, cid, id)); return; }
   const scnRollBtn = e.target.closest('[data-scnroll]');
   if (scnRollBtn) { copyRollerCode(scnRollBtn, scenarioRollerCode(record)); return; }
   const itemRollBtn = e.target.closest('[data-itemroll]');
@@ -2548,7 +2559,7 @@ function charClassOptions(c) {
 main.addEventListener('click', e => {
   const q = sel => e.target.closest?.(sel), c = pmChar();
   if (!c) return;
-  if (q('[data-charedit]') && !pm.modal) { e.stopImmediatePropagation(); pm.cf = { name: c.name, seat: c.seat ?? '', cls: c.cls, special: [...(c.special || [])], orig: { name: c.name, seat: c.seat ?? '' } }; pm.modal = 'char'; render(); return; }
+  if (q('[data-charedit]') && !pm.modal) { e.stopImmediatePropagation(); pm.cf = { name: c.name, seat: c.seat ?? '', cls: c.cls, special: [...(c.special || [])], orig: { name: c.name, seat: c.seat ?? '', special: [...(c.special || [])] } }; pm.modal = 'char'; render(); return; }
   if (pm.modal !== 'char' || !pm.cf) return;
   const x = q('[data-cfx]');
   if (x) { e.stopImmediatePropagation(); pm.cf.special = pm.cf.special.filter(k => k !== x.dataset.cfx); render(); return; }
@@ -2565,9 +2576,9 @@ main.addEventListener('input', e => { const f = e.target.closest?.('[data-cf]');
 main.addEventListener('change', e => {
   const a = e.target.closest?.('[data-cfadd]');
   if (a && pm.cf && a.value) { pm.cf.special.push(a.value); render(); }
-  if (e.target.matches?.('[data-cf="cls"]') && pm.cf) {                                              // another class: the name and the player start over (the old ones come back with the old class)
+  if (e.target.matches?.('[data-cf="cls"]') && pm.cf) {                                              // another class: the name, the player and the event traits start over (the old ones come back with the old class)
     const c = pmChar(), back = c && e.target.value === c.cls;
-    pm.cf.cls = e.target.value; pm.cf.name = back ? pm.cf.orig.name : e.target.value; pm.cf.seat = back ? pm.cf.orig.seat : ''; render();
+    pm.cf.cls = e.target.value; pm.cf.name = back ? pm.cf.orig.name : e.target.value; pm.cf.seat = back ? pm.cf.orig.seat : ''; pm.cf.special = back ? [...pm.cf.orig.special] : []; render();
   }
 });
 
@@ -3150,7 +3161,7 @@ main.addEventListener('click', e => { if (e.detail > 0) e.target.closest?.('.pm 
 // Items tab: give a copy of an item to a character (it joins the owned items), or take it back to the shop.
 main.addEventListener('change', e => {
   const g = e.target.closest?.('[data-giveitem]');
-  if (g && g.value) commit(ed.giveItem(record, g.value, g.dataset.giveitem));
+  if (g && g.value) commit(ed.itemCost(g.dataset.giveitem) === null ? ed.giveItem(record, g.value, g.dataset.giveitem) : ed.buyItem(record, g.value, g.dataset.giveitem));
 });
 main.addEventListener('click', e => {
   const b = e.target.closest?.('[data-returnitem]');
@@ -3159,3 +3170,6 @@ main.addEventListener('click', e => {
   e.stopImmediatePropagation();
   commit(ed.returnItem(record, cid, id));
 }, true);
+
+// Inventory dialog: Enter or Space on a focused card equips it, as a click does.
+main.addEventListener('keydown', e => { const k = e.target.closest?.('.pcard.eqable[data-isel]'); if (k && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); k.click(); } });

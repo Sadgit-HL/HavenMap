@@ -65,7 +65,7 @@ Code: `campaign/playmat.js` (markup, modals, dock, settings), `campaign/playmat.
 | History | this character's entries from `record.log`, kind filter |
 | Edit character | name, player, event traits, class change (restarts the character), portrait |
 | Hand editor (deck modal) | class cards by level with states Locked, Unlocked, Hand; Confirm hand applies it. Level stepper moves XP to the level threshold |
-| Items | state buttons (available, spent, consumed), equip dialog with slot limits (head 1, body 1, legs 1, hands 2, small items half the level rounded up) |
+| Items | state buttons (available, spent, consumed). Inventory modal (formerly Equip items, 2026-11-19) with an Equip and Sell switch: Equip, a click on the picture equips or unequips at once (slot limits: head 1, body 1, legs 1, hands 2, small items half the level rounded up; equipped items show the frame, others the plain picture, no Clear or Confirm buttons). Sell: a Sell button per item asks for confirmation, then the item returns to the shop and the character gets half its cost, rounded down; the toolbar shows the value of all items (`Value of all items N gold`). Items without a cost (not coin items) cannot be sold |
 | Pile modal | recover top or all cards; a click on a card recovers it |
 | Markers | tokens and stickers on cards and items |
 
