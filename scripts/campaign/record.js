@@ -7,6 +7,7 @@ import { CARDS } from '../games/gh2_cards.js';
 import { ITEMS } from './itemList.js';
 import { SCENARIOS } from '../games/gh2_scenarios.js';
 import { cleanAmd } from './amdDeck.js';
+import { cleanRest } from './rest.js';
 
 export const RECORD_VERSION = 1;
 
@@ -26,7 +27,7 @@ Record fields (all optional on load, defaults filled by normalize):
   stk, cls          sticker labels, unlocked class names
   avail             class names available in this campaign (optional; absent = every class in scripts/campaign/classList.js)
   scn               { "<number>": { s, l?, p?, ch?, d? } }   state, level, party size, chests, date
-  chars             [{ id, cls, name, seat?, lv, xp, gold, inh, traits, special, hand, deck, disc, act, lost, play, hord, tok, bench, own, items:[{id, st, s, f?}], am }]
+  chars             [{ id, cls, name, seat?, lv, xp, gold, inh, traits, special, hand, deck, disc, act, lost, play, hord, tok, bench, own, items:[{id, st, s, f?}], am, rest? }]
                     own = the item ids the character owns (given from the Items tab); items = the owned items that are equipped (slot limits), with their state (f: 1 = a flip item turned to its back)
                     Every ability card of `deck` is in exactly one place: lost, disc (discard pile, last = top), play, act (active area) or the hand
                     (all the rest). play = [slot 1, slot 2], each null or { id, up } (up = face up); only hand cards enter a slot, slot 1 sets the
@@ -149,6 +150,7 @@ function normalizeChar(c) {
   const take = list => (Array.isArray(list) ? list : []).filter(id => !seen.has(id) && seen.add(id));
   ch.lost = take(ch.lost);
   ch.disc = take(ch.disc);
+  { const rs = cleanRest(ch.rest, ch.deck); if (rs) ch.rest = rs; else delete ch.rest; }                  // the last short rest (scripts/campaign/rest.js)
   const play = Array.isArray(ch.play) ? ch.play : [];
   ch.play = [0, 1].map(i => { const p = play[i]; return p && ch.deck.includes(p.id) && !seen.has(p.id) && seen.add(p.id) ? { id: p.id, up: !!p.up } : null; });
   ch.act = take(ch.act);

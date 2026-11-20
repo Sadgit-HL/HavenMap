@@ -41,7 +41,7 @@ Code: `campaign/playmat.js` (markup, modals, dock, settings), `campaign/playmat.
 - Drag between zones works without the Edit toggle: moving cards is play, not setup.
 - Drag (2026-11-18): pointer events for mouse, touch and pen, no native HTML drag. The mouse picks a card up after 5 px, touch and pen after a 220 ms hold. The ghost (`ghostStart` in `campaign/app.js`, `.dragghost` in `style.css`) is an opaque copy, tilted 3 degrees with a shadow and a gold rim, at a fixed size: 1.5 card units (`--cu`) wide for ability cards, 1.1 for modifier cards (painted onto a canvas). The source stays as a dimmed, dashed placeholder. A drop fades the ghost; Esc or a drop outside a zone flies it back. Native drag remains only for the Events tab rows.
 - End of round: drag each play card to discard. No dedicated control (owner decision).
-- Rest and lose-a-card: done by hand, by dragging cards. No flow.
+- Short rest (2026-11-20, `scripts/campaign/rest.js`, `shortRest` and `shortRestRedo` in `edit.js`): one random card of the discard pile is lost and the rest of the pile returns to the hand; a dialog shows the lost card and offers Redo (take 1 damage): the first card goes back to the hand and is not picked again, another card of the pile is lost. One redo per rest, only while no other card of the pile was moved. Needs 2 cards in the discard pile. Started from the Discard pile dialog (Short rest button), the pile's right-click menu, the phone pile sheet, or R with the pointer over the discard pile. The state is `chars[].rest` (one History line per rest and per redo). Long rest and lose-a-card: by hand, by dragging cards.
 - Inherited perks are a number only.
 
 ## Modifier deck (Modifiers view in the hand bar)

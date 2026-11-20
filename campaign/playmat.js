@@ -8,6 +8,7 @@ import { BGG_ICON_GROUPS } from '../scripts/campaign/bggIcons.js';
 import { BANNERS, bannerIcon } from '../scripts/campaign/bggBanners.js';
 import { specialName, specialChoices } from '../scripts/campaign/traits.js';
 import { holdStatus, sellPrice } from '../scripts/campaign/edit.js';
+import { canShortRest, restRedoable } from '../scripts/campaign/rest.js';
 import { amdRollCode, perkList, AM_STANDARD, drawOdds } from '../scripts/campaign/amdDeck.js';
 import { groupPerks } from '../scripts/amd/heroDeck.js';
 import { perkTextHtml, perkRuleNote } from '../scripts/amd/perkText.js';
@@ -394,7 +395,14 @@ export function modalHtml(c, X, S) {
     title = z === 'lost' ? 'Lost' : 'Discard'; big = ' big';
     const ids = (c[z] || []).filter(id => c.deck.includes(id));
     const cell = id => { const card = X.cardById.get(id), url = X.cardImageUrl(card), name = X.pretty(card?.slug ?? id); return `<div class="pcell" data-pcard="${id}" title="${esc(name)}"><button type="button" class="rec" data-pilerec="${id}" data-char="${esc(c.id)}" title="Recover ${esc(name)}" aria-label="Recover ${esc(name)}">${REC_ICON}</button>${url ? `<img src="${esc(url)}" alt="${esc(name)}" draggable="false">` : `<div class="noimg">${esc(name)}</div>`}${markersHtml(c.mk?.[`c:${id}`])}</div>`; };
-    body = `<div class="poolbar"><span>${ids.length} ${ids.length === 1 ? 'card' : 'cards'}</span><span class="grow"></span><button type="button" class="btn6" data-pilerecall="${z}" data-char="${esc(c.id)}" title="Recover all" aria-label="Recover all"${ids.length ? '' : ' disabled'}>${REC_ICON}</button></div><div class="pilelist">${ids.length ? ids.map(cell).join('') : '<p class="mrow">Nothing here.</p>'}</div>`;
+    body = `<div class="poolbar"><span>${ids.length} ${ids.length === 1 ? 'card' : 'cards'}</span><span class="grow"></span>${z === 'disc' ? `<button type="button" class="btn6" data-shortrest data-char="${esc(c.id)}" title="${canShortRest(c) ? 'Lose a random card of the pile, the rest goes back to the hand' : 'A short rest needs at least two cards in the discard pile'}"${canShortRest(c) ? '' : ' disabled'}>Short rest</button>` : ''}<button type="button" class="btn6" data-pilerecall="${z}" data-char="${esc(c.id)}" title="Recover all" aria-label="Recover all"${ids.length ? '' : ' disabled'}>${REC_ICON}</button></div><div class="pilelist">${ids.length ? ids.map(cell).join('') : '<p class="mrow">Nothing here.</p>'}</div>`;
+  } else if (S.modal === 'rest') {
+    // the result of a short rest: the card lost at random, and the redo (1 damage) while it is still allowed
+    const rs = c.rest;
+    if (!rs) return '';
+    const nm = id => X.pretty(X.cardById.get(id)?.slug ?? id), url = X.cardImageUrl(X.cardById.get(rs.x));
+    title = 'Short rest';
+    body = `<div class="itmodal restmodal"><div class="itcard">${url ? `<img src="${esc(url)}" alt="${esc(nm(rs.x))}" draggable="false">` : ''}</div><div class="itpanel"><div class="row"><span>Lost at random</span><b class="restname">${esc(nm(rs.x))}</b></div>${rs.first != null ? `<div class="row"><span>Redone (1 damage)</span><span>${esc(nm(rs.first))} is back in the hand</span></div>` : ''}<div class="row"><span>The rest of the discard pile</span><span>is back in the hand</span></div></div></div><div class="chfoot"><button type="button" class="btn6" data-restredo data-char="${esc(c.id)}"${restRedoable(c) ? '' : ' disabled'} title="${rs.redo ? 'A short rest is redone once' : restRedoable(c) ? 'Take 1 damage: the first card goes back to the hand and another card of the pile is lost instead' : 'Too late: a card of the pile was moved'}">Redo (take 1 damage)</button><button type="button" class="btn6 ce-save" data-modalclose>Done</button></div>`;
   } else return '';
   return `<div class="mmodal" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="mmodalbox${big}"><button type="button" class="mmodalx" data-modalclose aria-label="Close">&times;</button><h2>${esc(title)}</h2>${body}</div>${extra}</div>`;
 }

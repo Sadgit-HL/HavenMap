@@ -26,6 +26,7 @@ import {
   normalize, validate, prosperityLevel, partyAvg, normalDifficulty, scenarioLevel, scenarioLevelRange, handOf, handList, zoneOf, CARD_ZONES, shopCopies, itemsInUse, ownsItem, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE, ownedCards, cardLevel, pendingPicks, handLimit,
 } from '../scripts/campaign/record.js';
 import * as ed from '../scripts/campaign/edit.js';
+import { canShortRest } from '../scripts/campaign/rest.js';
 import { describeChange, foldLog, LOG_TABS, LOG_MAX } from '../scripts/campaign/changelog.js';
 import { CLASSES } from '../scripts/games/gh2_classes.js';
 import { ALL_CLASSES, classKnown } from '../scripts/campaign/classList.js';
@@ -1748,6 +1749,7 @@ window.addEventListener('resize', sizePlaymat);
 
 function render() {
   renderTabs();
+  if (pm.modal === 'rest' && !pmChar()?.rest) pm.modal = null;                               // the rest was undone: no result to show
   if (!record) {
     main.innerHTML = '<div class="empty">No campaign loaded.<br>Use <b>Load file</b> to open a campaign JSON file. It is kept in this browser only.</div>';
     return;
@@ -2283,6 +2285,7 @@ registerMenu({
     if (!c) return [];
     const key = el.dataset.pile, ids = (key === 'lost' ? c.lost : c.disc).filter(id => c.deck.includes(id));
     return [
+      ...(key === 'discard' ? [{ label: 'Short rest: lose a random card', disabled: !canShortRest(c), run: () => doShortRest(c.id) }, { sep: true }] : []),
       { label: 'Recover top card to hand', disabled: !ids.length, run: () => commit(ed.moveCard(record, c.id, ids.at(-1), 'hand')) },
       { label: `Move whole pile to hand (${ids.length})`, disabled: !ids.length, danger: true, run: async () => {
         const where = key === 'lost' ? 'lost' : 'discard';
@@ -2365,15 +2368,20 @@ main.addEventListener('change', e => {
   }
 });
 // Keys on the object under the mouse pointer: D, L, A move an ability card; D, L set an item to spent or consumed, F flips a flip item
-// (only one with a back picture); D discards a placed attack modifier card. The pointer is read at key press (not on move), so a card that was re-rendered still counts.
+// (only one with a back picture); D discards a placed attack modifier card; R over the discard pile is a short rest. The pointer is read at key press (not on move), so a card that was re-rendered still counts.
 let lastPointer = null;
 document.addEventListener('mousemove', e => { lastPointer = { x: e.clientX, y: e.clientY }; });
 document.addEventListener('keydown', e => {
   const key = e.key.toLowerCase();
-  if (!['d', 'l', 'a', 'f'].includes(key) || e.ctrlKey || e.altKey || e.metaKey || e.shiftKey || e.repeat || pm.modal || !lastPointer) return;
+  if (!['d', 'l', 'a', 'f', 'r'].includes(key) || e.ctrlKey || e.altKey || e.metaKey || e.shiftKey || e.repeat || pm.modal || !lastPointer) return;
   if (e.target.closest?.('input, textarea, select, [contenteditable]')) return;
   const under = document.elementFromPoint(lastPointer.x, lastPointer.y);
   if (!under || !main.contains(under)) return;
+  if (key === 'r') {                                                                                  // R over the discard pile: short rest
+    const p = under.closest?.('.pm .pile6[data-pile="discard"]'), c = p && record?.chars.find(x => x.id === p.dataset.char);
+    if (c && canShortRest(c)) { e.preventDefault(); doShortRest(c.id); }
+    return;
+  }
   const card = key === 'f' ? null : under.closest?.('.pm .ac[data-card], .pm .flipcard[data-card]');
   if (card) {
     const c = record?.chars.find(x => x.id === card.dataset.char), id = Number(card.dataset.card), dest = { d: 'discard', l: 'lost', a: 'active' }[key];
@@ -2620,10 +2628,20 @@ function dockPreview(el, w) {
   return ww;
 }
 
+// Short rest of a character (scripts/campaign/rest.js): a random card of the discard pile is lost, the rest returns to the hand; the dialog
+// ('rest') shows the lost card and offers the redo for 1 damage. From the pile dialog, the phone pile sheet, the pile menu and R over the pile.
+function doShortRest(cid) {
+  const next = ed.shortRest(record, cid);
+  if (next === record) return;
+  pm.sheet = null; pm.modal = 'rest';
+  commit(next);
+}
 // Pile modal: click a pile to list its cards; Recover brings one card (or all) back to the hand; the card under the pointer is shown large.
 main.addEventListener('click', e => {
   const q = sel => e.target.closest?.(sel), c = pmChar();
   if (!c) return;
+  if (q('[data-shortrest]')) { e.stopImmediatePropagation(); doShortRest(c.id); return; }
+  if (q('[data-restredo]')) { e.stopImmediatePropagation(); commit(ed.shortRestRedo(record, c.id)); return; }          // the dialog stays open and shows the new card
   const rec = q('[data-pilerec]');
   if (rec) { e.stopImmediatePropagation(); commit(ed.moveCard(record, c.id, Number(rec.dataset.pilerec), 'hand')); return; }
   const all = q('[data-pilerecall]');
@@ -2938,6 +2956,7 @@ const SHORTCUTS = [
     { obj: 'Ability card', keys: [['D', 'Discard'], ['L', 'Lost'], ['A', 'Active area']] },
     { obj: 'Item', keys: [['D', 'Spent or available'], ['L', 'Consumed'], ['F', 'Flip (items with a back)']] },
     { obj: 'Modifier card', keys: [['D', 'Discard (deck: draw one)']] },
+    { obj: 'Discard pile', keys: [['R', 'Short rest']] },
   ]],
   ['Notes and fields', [
     [[['Ctrl', 'B']], 'Bold in the notes'],

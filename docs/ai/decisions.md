@@ -47,6 +47,7 @@ Dated, newest first within each group. "Owner" marks decisions the owner made. C
 
 ## Interaction and UI
 
+- 2026-11-20: Short rest has a flow (supersedes 2026-11-10 for the short rest; long rest and lose-a-card stay by hand). One random card of the discard pile is lost, the rest of the pile returns to the hand; once per rest the player may take 1 damage to redo it, the first card goes back to the hand and is not part of the new pick. Needs two cards in the discard pile. The pick is made in the browser (crypto random) and saved in the record (`chars[].rest`), so all players see the same card; the GeekRoller code stays available elsewhere for rolls the group wants on the forum. Owner.
 - 2026-11-20: Items search: in edit mode the search box also matches the names of locked items, so the owner can find and unlock an item by name. Players (no edit mode) still find locked items by number only; the tiles still read "Locked item". Owner.
 - 2026-11-18: Treasures: each scenario shows its treasure tiles; players mark a treasure as collected with a click (play, no Edit). Taken and still available treasures look different, so a replayed scenario shows what is left; the flowchart marks unlocked scenarios that still hold treasure. Treasure placement from the Secretariat data with the owner's corrections. Owner.
 - 2026-11-18: The tab keeps the name "Mercenaries". The Scenarios and Items roll buttons share one style (the merc tab's roll button: dice icon and "BGG code for roll"). Owner.

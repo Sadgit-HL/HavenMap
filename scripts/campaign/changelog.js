@@ -155,10 +155,14 @@ export function describeChange(a, b) {
     const o = ca.get(id);
     if (!o) { add('Mercenaries', 'Character', `Added ${c.name} (${c.cls})`); continue; }
     const cardLines = describeCards(o, c);
-    cardLines.forEach(d => add('Mercenaries', 'Card', `${c.name}: ${d}`));
+    if (c.rest && !same(o.rest, c.rest)) {                                                // a short rest: one line instead of a line per moved card
+      add('Mercenaries', 'Short rest', c.rest.redo
+        ? `${c.name}: short rest redone (1 damage), lost ${cardLabel(c.rest.x)}, ${cardLabel(c.rest.first)} back in the hand`
+        : `${c.name}: short rest, lost ${cardLabel(c.rest.x)}, the rest of the discard pile back in the hand`);
+    } else cardLines.forEach(d => add('Mercenaries', 'Card', `${c.name}: ${d}`));
     for (const k of keys(o, c)) {
       if (same(o[k], c[k])) continue;
-      if (['disc', 'act', 'lost', 'play', 'hord', 'hgrid'].includes(k)) continue;                  // not logged (hand order and grid), or described above
+      if (['disc', 'act', 'lost', 'play', 'hord', 'hgrid', 'rest'].includes(k)) continue;                  // not logged (hand order and grid), or described above
       if (k === 'deck' || k === 'bench') {
         if (k === 'bench' && !same(o.deck, c.deck)) continue;                               // described with the deck
         const own = x => new Set([...(x.deck || []), ...(x.bench || [])]), oa = own(o), ob = own(c);
