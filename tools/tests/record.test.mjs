@@ -3,10 +3,19 @@ import { emptyRecord, normalize, validate, scenarioLevel, normalDifficulty, SCN_
 import { setScenarioState, setParty, addCharacter, setCharacter } from '../../scripts/campaign/edit.js';
 import { SCENARIOS } from '../../scripts/games/gh2_scenarios.js';
 import { withChars } from './helpers.mjs';
+import { CARDS } from '../../scripts/games/gh2_cards.js';
+import { classByName, ownedCards, cardLevel } from '../../scripts/campaign/record.js';
 
 const linking = () => SCENARIOS.find(x => (x.unl || []).length);
 
 export const tests = {
+  'normalize puts missing level 1 and X cards into the pool'() {
+    const r = withChars(1), c = r.chars[0], k = classByName(c.cls);
+    const base = CARDS.filter(x => x.cls === k.i && cardLevel(x.id) < 2).map(x => x.id);
+    c.deck = []; c.bench = [];
+    const n = normalize(JSON.parse(JSON.stringify(r))).chars[0];
+    for (const id of base) assert.ok(ownedCards(n).includes(id));
+  },
   'empty record is valid'() {
     assert.deepEqual(validate(emptyRecord()), []);
   },

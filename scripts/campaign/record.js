@@ -139,6 +139,12 @@ function normalizeChar(c) {
   // a card is owned once: the deck lists it once, and the bench does not list a card that is in the deck (an import may have both)
   ch.deck = [...new Set(Array.isArray(ch.deck) ? ch.deck : [])];
   ch.bench = [...new Set(Array.isArray(ch.bench) ? ch.bench : [])].filter(id => !ch.deck.includes(id));
+  // the level 1 and X cards of the class are never locked: any that is missing from the pool goes to the bench
+  const klass = classByName(ch.cls);
+  if (klass) {
+    const have = new Set([...ch.deck, ...ch.bench]);
+    for (const k of CARDS) if (k.cls === klass.i && cardLevel(k.id) < 2 && !have.has(k.id)) ch.bench.push(k.id);
+  }
   const seen = new Set();
   const take = list => (Array.isArray(list) ? list : []).filter(id => !seen.has(id) && seen.add(id));
   ch.lost = take(ch.lost);
