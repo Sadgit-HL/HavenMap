@@ -43,7 +43,7 @@ import { GH_DECKS } from '../scripts/games/gh_decks.js';
 import { buildFlow, LANES, laneOf, lanesOf, LANE_COLOR } from '../scripts/campaign/flow.js?v=7';
 import { RESOURCES, RESOURCE_GAMES } from '../scripts/games/resources.js';
 import { characterTraits } from '../scripts/campaign/outcomes.js';
-import { SPECIAL_TRAITS, specialName } from '../scripts/campaign/traits.js';
+import { SPECIAL_TRAITS, specialName, specialChoices } from '../scripts/campaign/traits.js';
 import { eventsHtml, evInit, evClick, evChange, evSubmit, evOutside, evDragStart, evDragOver, evDrop, evDragEnd } from './eventsView.js?v=39';
 
 const PAGE_TABS = ['Overview', 'Mercenaries', 'Monsters', 'Items', 'Events', 'Scenarios', 'Resources', 'Cards', 'History'];
@@ -1305,7 +1305,7 @@ function renderModal() {
   const on = new Set(c.special || []);
   modalRoot.innerHTML = `<div class="modal" id="traitModal" role="dialog" aria-modal="true" aria-labelledby="tmTitle"><div class="modalbox">
     <h3 id="tmTitle">Special traits: ${esc(c.name)}</h3>
-    <div class="modalrows">${SPECIAL_TRAITS.map(t => `<label class="modalrow"><input type="checkbox" data-sp="${esc(t.key)}" ${on.has(t.key) ? 'checked' : ''}> ${esc(t.name)}</label>`).join('')}</div>
+    <div class="modalrows">${specialChoices(c.cls, c.traits, c.special).map(t => `<label class="modalrow"><input type="checkbox" data-sp="${esc(t.key)}" ${on.has(t.key) ? 'checked' : ''}> ${esc(t.name)}</label>`).join('')}</div>
     <div class="modalfoot"><button type="button" class="primary" data-tm-close>Close</button></div></div></div>`;
   const f = modalFocus && [...modalRoot.querySelectorAll('[data-sp]')].find(x => x.dataset.sp === modalFocus);
   (f || modalRoot.querySelector('[data-sp]'))?.focus();

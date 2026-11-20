@@ -6,7 +6,7 @@ import { handList, handGrid, handLimit, zoneOf, ownedCards, pendingPicks, cardLe
 import { tokenDefs, tokenImage, stickerImage, markerTokens, MARK_STICKERS, markLabel } from '../scripts/campaign/classTokens.js';
 import { BGG_ICON_GROUPS } from '../scripts/campaign/bggIcons.js';
 import { BANNERS, bannerIcon } from '../scripts/campaign/bggBanners.js';
-import { SPECIAL_TRAITS, specialName } from '../scripts/campaign/traits.js';
+import { specialName, specialChoices } from '../scripts/campaign/traits.js';
 import { holdStatus, sellPrice } from '../scripts/campaign/edit.js';
 import { amdRollCode, perkList, AM_STANDARD, drawOdds } from '../scripts/campaign/amdDeck.js';
 import { groupPerks } from '../scripts/amd/heroDeck.js';
@@ -369,7 +369,7 @@ export function modalHtml(c, X, S) {
   } else if (S.modal === 'char') {
     title = 'Edit character';
     const f = S.cf || { name: c.name, seat: c.seat ?? '', cls: c.cls, special: c.special || [] };
-    const free = SPECIAL_TRAITS.filter(t => !f.special.includes(t.key)), cls = f.cls || c.cls, changed = cls !== c.cls;
+    const cls = f.cls || c.cls, changed = cls !== c.cls, free = specialChoices(cls, changed ? [] : c.traits, f.special).filter(t => !f.special.includes(t.key));
     const opts = (S.classOpts || []).map(k => `<option value="${esc(k.name)}"${k.name === cls ? ' selected' : ''}>${esc(k.name)}${k.locked ? ' (locked)' : ''}</option>`).join('');
     body = `<div class="chedit">
       <div class="cehero"><div class="ceport" style="${esc(X.portraitStyle({ ...c, cls }, 76))}" role="img" aria-label="Class portrait"></div><div class="cehtxt"><b>${esc(f.name || c.name)}</b><span>${esc(cls)}${changed ? ` <em>(was ${esc(c.cls)})</em>` : ''}</span></div></div>

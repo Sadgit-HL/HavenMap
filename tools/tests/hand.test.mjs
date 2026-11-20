@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import { handGrid, handList, HAND_COLS, zoneOf } from '../../scripts/campaign/record.js';
+import { handGrid, handList, HAND_COLS, zoneOf, normalize } from '../../scripts/campaign/record.js';
+import { specialChoices } from '../../scripts/campaign/traits.js';
 import { placeInHand, moveCard, applyHand, changeCharacterClass, setSpecialTrait, availableClasses } from '../../scripts/campaign/edit.js';
 import { CARDS } from '../../scripts/games/gh2_cards.js';
 import { CLASSES } from '../../scripts/games/gh2_classes.js';
@@ -14,6 +15,13 @@ function withHand(n) {
 }
 
 export const tests = {
+  'basic traits can be gained, but not the ones the class has'() {
+    const keys = (cls, tr = [], sp = []) => specialChoices(cls, tr, sp).map(t => t.key);
+    assert.ok(keys('Blinkblade').includes('strong') && !keys('Blinkblade').includes('educated'));
+    assert.ok(keys('Blinkblade', [], ['educated']).includes('educated'), 'a gained trait stays listed');
+    const r = withChars(1), cid = r.chars[0].id, g = setSpecialTrait(normalize(r), cid, 'persuasive', true);
+    assert.deepEqual(g.chars[0].special, ['persuasive']);
+  },
   'grid has 6 columns and at least 2 rows'() {
     const { r } = withHand(3), g = handGrid(r.chars[0], 0);
     assert.equal(g.cols, HAND_COLS);
