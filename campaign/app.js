@@ -2713,6 +2713,8 @@ main.addEventListener('click', e => {
   if (e.target.closest?.('[data-modalclose]') || e.target.matches?.('.pm .mmodal')) { pm.modal = null; pm.amZoom = null; render(); return; }
   const dch = pmChar();
   if (dch && (deckClick(e, dch) || itemClick(e, dch))) return;
+  const pc = e.target.closest?.('[data-perkchk]');
+  if (pc && pmChar()) { commit(ed.setPerkChecks(record, pmChar().id, pc.dataset.perkchk)); return; }
   const pb = e.target.closest?.('[data-perkbox]') || e.target.closest?.('[data-perkrow]');
   if (pb && pmChar()) { const [i, b] = (pb.dataset.perkbox || pb.dataset.perkrow).split('.').map(Number); commit(ed.togglePerkBox(record, pmChar().id, i, b)); return; }
   const hv = e.target.closest?.('[data-hview]');

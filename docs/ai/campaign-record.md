@@ -53,7 +53,7 @@ Events also carry `pend` (open events, one per deck, `{ city?, road? }`), `marks
 | `tok` | class special tokens `{ key: count or state index }` |
 | `mk` | markers on cards and items: `{ 'c:<card id>' or 'i:<item id>': [{ k, s?, x, y }] }` |
 | `mp` | enhancement sticker prices |
-| `pk` | perks: `{ perks: [entry index], boxes: { index: mask }, ms: [mastery index] }` |
+| `pk` | perks: `{ chk: 0 to 18, perks: [entry index], boxes: { index: mask }, ms: [mastery index] }` |
 | `am` | legacy modifier deck state, if any (the playmat derives the deck from `pk`) |
 | `amd` | attack modifier deck draw state (optional; absent = full deck): `{ disc: { key: n }, order: [key], adj: { key: +-n }, bless, curse, top: [key], bot: [key], act: [key] }`. Checked by `cleanAmd` (`amdDeck.js`), changed by `charAm` (`edit.js`), cleared on a class change. Since 2026-11-18 |
 | `bgo`, `pqo`, `pqc`, `notes` | battle goals and quests just drawn (to keep or return), quest requirement counts, journal notes |
@@ -85,7 +85,7 @@ Grouped by area. Each takes a record and returns a new record.
 - Characters: `addCharacter`, `renameCharacter`, `setCharacter`, `setCharacterPlayer`, `setSpecialTrait`, `changeCharacterClass` (restarts the character and clears the event traits, keeps inherited perks, class traits and notes), `setToken`.
 - Cards: `moveCard`, `flipPlayCard`, `sortHand`, `setCardActive`, `addPoolCard`, `removePoolCard`, `applyHand` (hand selection, level-up picks).
 - Journal: `keepBattleGoal`, `setQuestStatus`, `clearOffer`, `returnAllBattleGoals`, `setQuestCount`, `setNotes`, `holdStatus`.
-- Perks and masteries: `togglePerkBox`, `setMastery`.
+- Perks and masteries: `togglePerkBox`, `setPerkChecks` (battle goal checkmarks, 0 to 18, every 3 earn a perk), `setMastery`.
 - Enhancements: `addEnhancement`, `removeEnhancement`, `setEnhancementPrice`.
 - Markers: `addMarker`, `moveMarker`, `removeMarker`, `clearMarkers`, `setMarkPrice`.
 

@@ -322,7 +322,12 @@ export function modalHtml(c, X, S) {
     }).join('');
     const ms = MASTERIES[c.cls] || [], msOn = c.pk.ms.filter(i => i < ms.length).length;
     // same layout as the Journal popup: no portrait or header, bordered sections, footer. Changes apply at once (no save button).
+    const chk = c.pk.chk || 0, earned = Math.floor(chk / 3);
+    const chkCells = [0, 1, 2, 3, 4, 5].map(cell => `<div class="pkchkcell${chk >= cell * 3 + 3 ? ' is-full' : ''}">${[0, 1, 2].map(j => { const n = cell * 3 + j, on = n < chk;
+      return `<button type="button" class="am-perk-check${on ? ' is-checked' : ''}" data-perkchk="${n + 1 === chk ? n : n + 1}" title="Checkmark ${n + 1} of 18" aria-label="Checkmark ${n + 1} of 18">${on ? '✓' : ''}</button>`; }).join('')}</div>`).join('');
     body = `<div class="chedit sedit">
+      <section class="cesec"><h4>Checkmarks <span>${chk} of 18, ${earned} perk${earned === 1 ? '' : 's'} earned</span></h4>
+        <div class="pkchk">${chkCells}</div></section>
       <section class="cesec"><h4>Perks <span>${c.pk.perks.length} of ${perks.length}</span></h4>
         <div class="perklist am-perklist">${rows || `<p class="mrow">No perk data for ${esc(c.cls)}.</p>`}</div></section>
       <section class="cesec"><h4>Masteries <span>${msOn} of ${ms.length}</span></h4>

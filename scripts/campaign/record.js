@@ -160,7 +160,7 @@ function normalizeChar(c) {
   ch.notes = typeof ch.notes === 'string' ? ch.notes : '';
   ch.mk = cleanMarks(ch.mk);
   ch.mp = ch.mp && typeof ch.mp === 'object' && !Array.isArray(ch.mp) ? Object.fromEntries(Object.entries(ch.mp).filter(([k, v]) => /^c:\d+$/.test(k) && Number.isInteger(v) && v >= 0 && v <= 9999)) : {};
-  { const pk = ch.pk && typeof ch.pk === 'object' ? ch.pk : {}; ch.pk = { perks: [...new Set((Array.isArray(pk.perks) ? pk.perks : []).map(Number).filter(n => Number.isInteger(n) && n >= 0))].sort((x, y) => x - y), boxes: pk.boxes && typeof pk.boxes === 'object' && !Array.isArray(pk.boxes) ? pk.boxes : {}, ms: [...new Set((Array.isArray(pk.ms) ? pk.ms : []).map(Number).filter(n => Number.isInteger(n) && n >= 0))].sort((x, y) => x - y) }; }
+  { const pk = ch.pk && typeof ch.pk === 'object' ? ch.pk : {}; ch.pk = { chk: Math.max(0, Math.min(18, Math.trunc(Number(pk.chk)) || 0)), perks: [...new Set((Array.isArray(pk.perks) ? pk.perks : []).map(Number).filter(n => Number.isInteger(n) && n >= 0))].sort((x, y) => x - y), boxes: pk.boxes && typeof pk.boxes === 'object' && !Array.isArray(pk.boxes) ? pk.boxes : {}, ms: [...new Set((Array.isArray(pk.ms) ? pk.ms : []).map(Number).filter(n => Number.isInteger(n) && n >= 0))].sort((x, y) => x - y) }; }
   ch.tok = ch.tok && typeof ch.tok === 'object' && !Array.isArray(ch.tok) ? Object.fromEntries(Object.entries(ch.tok).map(([k, v]) => [k, Math.max(0, Math.min(99, Math.trunc(Number(v)) || 0))])) : {};
   if (Array.isArray(ch.hord)) { const own = new Set(); ch.hord = ch.hord.filter(id => ch.deck.includes(id) && !seen.has(id) && !own.has(id) && own.add(id)); } else ch.hord = null;
   if (ch.hgrid && typeof ch.hgrid === 'object' && !Array.isArray(ch.hgrid)) {

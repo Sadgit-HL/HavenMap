@@ -191,6 +191,7 @@ export function describeChange(a, b) {
           const x = o.pk?.boxes?.[i] || 0, y = c.pk?.boxes?.[i] || 0;
           if (x !== y && !pa.includes(Number(i)) && !pb.includes(Number(i))) add('Mercenaries', 'Perk', `${c.name}: perk ${name(Number(i))}, boxes ${pc(x)} to ${pc(y)} of ${perks[i]?.boxes ?? '?'}`);
         });
+        if ((o.pk?.chk || 0) !== (c.pk?.chk || 0)) add('Mercenaries', 'Perk', `${c.name}: perk checkmarks ${o.pk?.chk || 0} to ${c.pk?.chk || 0} of 18`);
         const ma = o.pk?.ms || [], mb = c.pk?.ms || [], mt = i => MASTERIES[c.cls]?.[i] || `mastery ${i + 1}`;
         mb.filter(i => !ma.includes(i)).forEach(i => add('Mercenaries', 'Mastery', `${c.name}: mastery achieved: ${mt(i)}`));
         ma.filter(i => !mb.includes(i)).forEach(i => add('Mercenaries', 'Mastery', `${c.name}: mastery unticked: ${mt(i)}`));

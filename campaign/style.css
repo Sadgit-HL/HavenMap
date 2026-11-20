@@ -924,6 +924,9 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); min-height: 420px; }
 .pm .sedit .am-perk-text { font-size: 13px; line-height: 1.35; color: var(--text); }
 .pm .sedit .am-perk-gone { font-size: 12px; }
 .pm .sedit .am-perk-tag { font-size: 11px; padding: 1px 8px; border: 1px solid var(--line); border-radius: 999px; background: #2d2519; }
+.pm .sedit .pkchk { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.pm .sedit .pkchkcell { display: flex; justify-content: center; gap: 4px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: #1c1711; transition: border-color .14s, background .14s; }
+.pm .sedit .pkchkcell.is-full { border-color: var(--accent); background: rgba(199,164,74,.1); }
 .pm .sedit .pkmast { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 6px; }
 .pm .sedit .pkmast .mrow { grid-column: 1 / -1; margin: 2px 0; }
 .pm .sedit .pkmast label.pkm { flex-direction: row; align-items: center; gap: 8px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 10px; background: #1c1711; color: var(--muted); font-size: 13px; cursor: pointer; transition: border-color .14s, background .14s; }

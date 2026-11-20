@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { emptyRecord, normalize, validate, scenarioLevel, normalDifficulty, SCN_STATE } from '../../scripts/campaign/record.js';
-import { setScenarioState, setParty, addCharacter, setCharacter } from '../../scripts/campaign/edit.js';
+import { setPerkChecks, setScenarioState, setParty, addCharacter, setCharacter } from '../../scripts/campaign/edit.js';
 import { SCENARIOS } from '../../scripts/games/gh2_scenarios.js';
 import { withChars } from './helpers.mjs';
 import { CARDS } from '../../scripts/games/gh2_cards.js';
@@ -9,6 +9,17 @@ import { classByName, ownedCards, cardLevel } from '../../scripts/campaign/recor
 const linking = () => SCENARIOS.find(x => (x.unl || []).length);
 
 export const tests = {
+  'perk checkmarks: set, clamp, normalize'() {
+    const r = normalize(withChars(1)), id = r.chars[0].id;
+    assert.equal(r.chars[0].pk.chk, 0);
+    const a = setPerkChecks(r, id, 7);
+    assert.equal(a.chars[0].pk.chk, 7);
+    assert.equal(setPerkChecks(a, id, 19), a);
+    assert.equal(setPerkChecks(a, id, -1), a);
+    assert.equal(setPerkChecks(a, id, 7), a);
+    const j = JSON.parse(JSON.stringify(a)); j.chars[0].pk.chk = 99;
+    assert.equal(normalize(j).chars[0].pk.chk, 18);
+  },
   'normalize puts missing level 1 and X cards into the pool'() {
     const r = withChars(1), c = r.chars[0], k = classByName(c.cls);
     const base = CARDS.filter(x => x.cls === k.i && cardLevel(x.id) < 2).map(x => x.id);

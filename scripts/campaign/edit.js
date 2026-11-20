@@ -532,7 +532,7 @@ export function changeCharacterClass(r, cid, cls) {
     t.cls = klass.name; t.name = klass.name; delete t.seat;
     t.lv = 1; t.xp = 0; t.gold = 0; t.traits = []; t.special = [];
     t.deck = []; t.bench = start; t.disc = []; t.act = []; t.lost = []; t.play = [null, null]; t.hord = null; t.hgrid = null; t.items = []; t.own = [];
-    t.tok = {}; t.mk = {}; t.mp = {}; t.pk = { perks: [], boxes: {}, ms: [] }; delete t.amd;
+    t.tok = {}; t.mk = {}; t.mp = {}; t.pk = { chk: 0, perks: [], boxes: {}, ms: [] }; delete t.amd;
     t.bgo = null; t.pqo = null; t.pqc = {};
     for (const map of [x.bgs, x.pq]) for (const k of Object.keys(map || {})) if (map[k] && map[k].c === cid) delete map[k];
     delete t.hand; delete t.am;
@@ -860,6 +860,15 @@ export function togglePerkBox(r, cid, index, box = 0) {
     if ((m === full) !== taken) pk.perks = m === full ? [...pk.perks, i].sort((p, q) => p - q) : pk.perks.filter(n => n !== i);
     if (m && m !== full) pk.boxes[i] = m; else delete pk.boxes[i];
   });
+}
+
+// Perk checkmarks (battle goals): 0 to 18 counted in a row; every 3 earn a perk. Ticking box n (0-based) sets the count to n + 1,
+// ticking the last ticked box again takes it back to n.
+export const PERK_CHECK_MAX = 18;
+export function setPerkChecks(r, cid, n) {
+  const c = r.chars.find(x => x.id === cid), v = toInt(n);
+  if (!c || v === null || v < 0 || v > PERK_CHECK_MAX || (c.pk.chk || 0) === v) return r;
+  return edit(r, x => { x.chars.find(y => y.id === cid).pk.chk = v; });
 }
 
 // A mastery of the class (index into MASTERIES[class]) achieved or not.
