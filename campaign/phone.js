@@ -82,7 +82,7 @@ export function phoneHtml(c, X, S = {}) {
     sheet = `<h3>${esc(nameOf(sh.id))}<button type="button" data-sheetclose aria-label="Close">&times;</button></h3><div class="prev">${card(sh.id)}<div class="meta">Level ${esc(k?.lv ?? '?')}<br>Initiative ${k?.ini ?? 'unknown'}<br>Now in: ${esc(ZONE_NAME[z] || z)}</div></div><div class="opts">${opts}${ord}<button type="button" data-mkopen="c:${sh.id}" data-char="${cid}">Markers</button></div>`;
   } else if (sh && sh.kind === 'pile') {
     const a = piled(sh.z);
-    const rest = sh.z === 'lost' ? '' : `<div class="opts"><button type="button" data-shortrest data-char="${cid}"${canShortRest(c) ? '' : ' disabled'}>Short rest</button></div>`;
+    const rest = sh.z === 'lost' ? '' : `<div class="opts"><button type="button" data-shortrest data-char="${cid}"${canShortRest(c) ? '' : ' disabled'}>Short rest</button><button type="button" data-restroll="rest" data-char="${cid}"${canShortRest(c) ? '' : ' disabled'}>Short rest by BGG roll</button></div>`;
     sheet = `<h3>${sh.z === 'lost' ? 'Lost' : 'Discard'} &middot; ${a.length}<button type="button" data-sheetclose aria-label="Close">&times;</button></h3>${rest}${a.length ? `<div class="grid">${a.map(card).join('')}</div>` : '<div class="note">empty</div>'}`;
   } else if (sh && sh.kind === 'chars') {
     sheet = `<h3>Characters<button type="button" data-sheetclose aria-label="Close">&times;</button></h3><div class="chpick">${(S.chars || []).map(t => `<button type="button" data-sub="${esc(t.id)}"${t.id === c.id ? ' aria-current="true"' : ''}>${t.id === 'add' ? '+ Add character' : esc(t.label)}</button>`).join('')}</div>`;

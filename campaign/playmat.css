@@ -103,6 +103,8 @@
 .pm .itpanel .seg button{text-align:left}
 .pm .itpanel .row{display:flex;flex-direction:column;gap:5px}
 .pm .restmodal .restname{color:var(--text);font-size:15px}
+.pm .pcell[data-restpick]{cursor:pointer}
+.pm .pcell[data-restpick]:hover,.pm .pcell[data-restpick]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 html.phone .pm .restmodal{flex-direction:column;align-items:center}
 html.phone .pm .restmodal .itcard{width:min(240px,70vw)}
 .pm .itpanel .row[hidden]{display:none}

@@ -57,7 +57,7 @@ Events also carry `pend` (open events, one per deck, `{ city?, road? }`), `marks
 | `am` | legacy modifier deck state, if any (the playmat derives the deck from `pk`) |
 | `amd` | attack modifier deck draw state (optional; absent = full deck): `{ disc: { key: n }, order: [key], adj: { key: +-n }, bless, curse, top: [key], bot: [key], act: [key] }`. Checked by `cleanAmd` (`amdDeck.js`), changed by `charAm` (`edit.js`), cleared on a class change. Since 2026-11-18 |
 | `bgo`, `pqo`, `pqc`, `notes` | battle goals and quests just drawn (to keep or return), quest requirement counts, journal notes |
-| `rest` | the last short rest (optional): `{ x, pool, first?, redo? }` (x = card lost by it, pool = the discard pile it drew from, first and redo after the one redo). Checked by `cleanRest` (`rest.js`), set by `shortRest` and `shortRestRedo` (`edit.js`) |
+| `rest` | the last short rest (optional): `{ x, pool, first?, redo?, roll? }` (x = card lost by it, pool = the discard pile it drew from, first and redo after the one redo, roll = 1 when the card was chosen after a BGG roll). Checked by `cleanRest` (`rest.js`), set by `shortRest` and `shortRestRedo` (`edit.js`) |
 | `cnt` | custom counters (not in the UI yet) |
 
 Card ids are generated: `classIndex * 100 + n` (`scripts/games/gh2_cards.js`). Changing the Card DB rows changes the ids. Regenerating the tables requires regenerating saved records.

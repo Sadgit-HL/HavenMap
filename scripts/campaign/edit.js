@@ -601,33 +601,38 @@ const toHandOf = (ch, id) => { if (Array.isArray(ch.hord) && !ch.hord.includes(i
 
 // Short rest: one random card of the discard pile is lost, the rest of the pile returns to the hand. The pick is made here from `rand`
 // (a number in [0, 1), the browser's crypto source by default); chars[].rest keeps the pile and the lost card, so the rest can be redone once.
-export function shortRest(r, cid, rand = cryptoRandom) {
+// `pick` (a card id of the pile) is the card a GeekRoller roll on BGG gave: it is lost instead of a random one (rest.roll = 1).
+export function shortRest(r, cid, rand = cryptoRandom, pick = null) {
   const c = r.chars.find(x => x.id === cid);
   if (!c || !canShortRest(c)) return r;
-  const pool = restPool(c), x = pool[Math.floor(rand() * pool.length)];
+  const pool = restPool(c);
+  if (pick !== null && !pool.includes(pick)) return r;
+  const x = pick !== null ? pick : pool[Math.floor(rand() * pool.length)];
   return edit(r, s => {
     const ch = s.chars.find(y => y.id === cid);
     ch.disc = ch.disc.filter(id => !pool.includes(id));
     ch.lost = [...ch.lost.filter(id => id !== x), x];
     pool.forEach(id => { if (id !== x) toHandOf(ch, id); });
-    ch.rest = { x, pool };
+    ch.rest = { x, pool, ...(pick !== null ? { roll: 1 } : {}) };
   });
 }
 
 // Redo of the last short rest (the player takes 1 damage): the first lost card goes back to the hand and is not part of the new pick, one
 // of the other cards of the pile is lost at random instead. Only once per rest, and only while the rest is the last thing done with
-// these cards (restRedoable).
-export function shortRestRedo(r, cid, rand = cryptoRandom) {
+// these cards (restRedoable). `pick` is the card a BGG roll gave, one of the other cards of the pile.
+export function shortRestRedo(r, cid, rand = cryptoRandom, pick = null) {
   const c = r.chars.find(x => x.id === cid);
   if (!c || !restRedoable(c)) return r;
-  const { x, pool } = c.rest, others = pool.filter(id => id !== x), y = others[Math.floor(rand() * others.length)];
+  const { x, pool } = c.rest, others = pool.filter(id => id !== x);
+  if (pick !== null && !others.includes(pick)) return r;
+  const y = pick !== null ? pick : others[Math.floor(rand() * others.length)];
   return edit(r, s => {
     const ch = s.chars.find(z => z.id === cid);
     ch.lost = [...ch.lost.filter(id => id !== x), y];
     if (Array.isArray(ch.hord)) ch.hord = ch.hord.filter(id => id !== y);
     if (ch.hgrid) { delete ch.hgrid[y]; if (!Object.keys(ch.hgrid).length) ch.hgrid = null; }
     toHandOf(ch, x);
-    ch.rest = { x: y, pool, first: x, redo: 1 };
+    ch.rest = { x: y, pool, first: x, redo: 1, ...(pick !== null ? { roll: 1 } : {}) };
   });
 }
 

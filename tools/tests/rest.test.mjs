@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { zoneOf, handList, normalize } from '../../scripts/campaign/record.js';
 import { shortRest, shortRestRedo, moveCard } from '../../scripts/campaign/edit.js';
-import { restRedoable, canShortRest } from '../../scripts/campaign/rest.js';
+import { restRedoable, canShortRest, restCandidates, restRollCode, REST_CODE_MAX } from '../../scripts/campaign/rest.js';
 import { describeChange } from '../../scripts/campaign/changelog.js';
 import { CARDS } from '../../scripts/games/gh2_cards.js';
 import { CLASSES } from '../../scripts/games/gh2_classes.js';
@@ -108,6 +108,64 @@ export const tests = {
     assert.match(l1[0].d, /short rest, lost /);
     assert.equal(l2.length, 1);
     assert.match(l2[0].d, /redone \(1 damage\)/);
+  },
+  'BGG roll: the card the roll gave is lost, the flag is saved'() {
+    const { r, cid, pile } = setup(), n = shortRest(r, cid, undefined, pile[2]), c = ch(n, cid);
+    assert.deepEqual(c.lost, [pile[2]]);
+    assert.deepEqual(c.rest, { x: pile[2], pool: pile, roll: 1 });
+    for (const id of pile) assert.equal(zoneOf(c, id), id === pile[2] ? 'lost' : 'hand');
+    assert.equal(ch(shortRest(r, cid, at(0)), cid).rest.roll, undefined, 'a random pick has no roll flag');
+    assert.deepEqual(ch(normalize(n), cid).rest, c.rest, 'the flag survives normalize');
+  },
+  'BGG roll: a card that is not in the pile is refused'() {
+    const { r, cid, hand } = setup();
+    assert.equal(shortRest(r, cid, undefined, hand[0]), r);
+    assert.equal(shortRest(r, cid, undefined, 999999), r);
+  },
+  'BGG roll redo: the card the roll gave is lost, never the first card'() {
+    const { r, cid, pile } = setup(), a = shortRest(r, cid, at(0));            // the first lost card is pile[0]
+    assert.equal(shortRestRedo(a, cid, undefined, pile[0]), a, 'the first card is not part of the redo');
+    assert.equal(shortRestRedo(a, cid, undefined, 999999), a);
+    const b = shortRestRedo(a, cid, undefined, pile[3]), c = ch(b, cid);
+    assert.deepEqual(c.lost, [pile[3]]);
+    assert.deepEqual(c.rest, { x: pile[3], pool: pile, first: pile[0], redo: 1, roll: 1 });
+    assert.equal(zoneOf(c, pile[0]), 'hand');
+  },
+  'the cards of a BGG roll: the pile for a rest, the pile without the first card for the redo'() {
+    const { r, cid, pile } = setup(), c0 = ch(r, cid);
+    assert.deepEqual(restCandidates(c0, false), pile);
+    assert.deepEqual(restCandidates(c0, true), [], 'no rest to redo yet');
+    const a = ch(shortRest(r, cid, at(1.5 / pile.length)), cid);          // the second card
+    assert.deepEqual(restCandidates(a, true), pile.filter(id => id !== pile[1]));
+    assert.deepEqual(restCandidates(a, false), [], 'the pile is empty after the rest');
+    const one = setup(6, 1);
+    assert.deepEqual(restCandidates(ch(one.r, one.cid), false), [], 'one card is no rest');
+  },
+  'roll code: one custom die over the card names'() {
+    assert.equal(restRollCode(['Brute Force', 'Swift Strike', 'Rest Up']), '1custom3{Brute Force;Swift Strike;Rest Up}');
+    assert.equal(restRollCode(['Only One']), '');
+    assert.equal(restRollCode([]), '');
+    assert.equal(restRollCode(['A‑B C', 'D;E {F}']), '1custom2{A-B C;D E  F}'.replace('E  F', 'E  F'), 'hyphens normalised, reserved characters removed');
+  },
+  'roll code: a long pile gets shortened names that fit into 241 characters and stay different'() {
+    const names = Array.from({ length: 14 }, (_, i) => `${String.fromCharCode(65 + i)} Proliferation Of The Abyss`);
+    const full = `1custom14{${names.join(';')}}`;
+    assert.ok(full.length > REST_CODE_MAX);
+    const code = restRollCode(names), labels = code.slice(code.indexOf('{') + 1, -1).split(';');
+    assert.ok(code.startsWith('1custom14{') && code.length <= REST_CODE_MAX, `length ${code.length}`);
+    assert.equal(labels.length, 14);
+    assert.equal(new Set(labels).size, 14, 'the labels stay different');
+    assert.equal(restRollCode(['Same Name', 'Same Name']), '', 'two equal names cannot be told apart');
+  },
+  'roll code: the real cards of a class fit, in full or shortened'() {
+    const klass = CLASSES.find(k => k.name === 'Infuser'), names = CARDS.filter(c => c.cls === klass.i).slice(0, 12).map(c => c.slug.replace(/-/g, ' '));
+    const code = restRollCode(names);
+    assert.ok(code && code.length <= REST_CODE_MAX && code.startsWith('1custom12{'));
+  },
+  'History: a BGG roll is named in the line'() {
+    const { r, cid, pile } = setup(), a = shortRest(r, cid, undefined, pile[1]), b = shortRestRedo(a, cid, undefined, pile[2]);
+    assert.match(describeChange(r, a)[0].d, /short rest \(BGG roll\), lost /);
+    assert.match(describeChange(a, b)[0].d, /redone \(1 damage, BGG roll\)/);
   },
   'the cards stay in exactly one place'() {
     const { r, cid, ids } = setup(), a = shortRestRedo(shortRest(r, cid, at(0)), cid, at(0.5)), c = ch(a, cid);

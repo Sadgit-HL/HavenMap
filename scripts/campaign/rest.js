@@ -9,6 +9,7 @@
 //   pool   the cards of the discard pile when the rest began (x included)
 //   first  after a redo: the card that was lost first, now back in the hand
 //   redo   1 after a redo (a rest is redone only once)
+//   roll   1 when the player chose the card after a GeekRoller (BGG) roll instead of the app's random pick
 // No imports: record.js uses cleanRest.
 
 export const REST_MIN = 2;
@@ -27,6 +28,25 @@ export function restRedoable(c) {
   return rs.pool.every(id => id === rs.x || inHand(c, id));
 }
 
+// The cards a BGG roll is over: the discard pile for a rest, the pile without the first lost card for the redo ([] when not allowed).
+export const restCandidates = (c, redo) => (redo ? (restRedoable(c) ? c.rest.pool.filter(id => id !== c.rest.x) : []) : (canShortRest(c) ? restPool(c) : []));
+
+// BGG caps a whole GeekRoller code at 241 characters (see scripts/amd/heroDeck.js).
+export const REST_CODE_MAX = 241;
+
+// GeekRoller code that rolls one of the given card names: 1custom<n>{name;name;...}. A long pile gets shortened names (each cut to the
+// same length, as long as they stay different) so the code fits; '' when there are fewer than two cards or no short enough names exist.
+export function restRollCode(names) {
+  const list = names.map(n => String(n).replace(/[\u2010-\u2015]/g, '-').replace(/[;{}]/g, ' ').trim());
+  if (list.length < REST_MIN) return '';
+  for (let max = Math.max(...list.map(s => s.length)); max >= 6; max--) {
+    const labels = list.map(s => (s.length > max ? s.slice(0, max).trimEnd() : s));
+    const code = `1custom${labels.length}{${labels.join(';')}}`;
+    if (code.length <= REST_CODE_MAX && new Set(labels).size === labels.length) return code;
+  }
+  return '';
+}
+
 // The cleaned rest of a character as saved in the record, or null.
 export function cleanRest(rs, deck = []) {
   if (!rs || typeof rs !== 'object' || Array.isArray(rs)) return null;
@@ -36,5 +56,6 @@ export function cleanRest(rs, deck = []) {
   const out = { x: rs.x, pool };
   if (id(rs.first) && pool.includes(rs.first) && rs.first !== rs.x) out.first = rs.first;
   if (rs.redo) out.redo = 1;
+  if (rs.roll) out.roll = 1;
   return out;
 }

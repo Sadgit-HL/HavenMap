@@ -26,7 +26,7 @@ import {
   normalize, validate, prosperityLevel, partyAvg, normalDifficulty, scenarioLevel, scenarioLevelRange, handOf, handList, zoneOf, CARD_ZONES, shopCopies, itemsInUse, ownsItem, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE, ownedCards, cardLevel, pendingPicks, handLimit,
 } from '../scripts/campaign/record.js';
 import * as ed from '../scripts/campaign/edit.js';
-import { canShortRest } from '../scripts/campaign/rest.js';
+import { canShortRest, restCandidates } from '../scripts/campaign/rest.js';
 import { describeChange, foldLog, LOG_TABS, LOG_MAX } from '../scripts/campaign/changelog.js';
 import { CLASSES } from '../scripts/games/gh2_classes.js';
 import { ALL_CLASSES, classKnown } from '../scripts/campaign/classList.js';
@@ -893,7 +893,7 @@ const matSlug = c => matSlugOf(c.cls);   // the class slug, as the portrait focu
 const pmState = c => ({
   modal: pm.modal, matSide: pm.matSide, histKind: pm.histKind, jtab: pm.jtab, bgv: pm.bgv, pqv: pm.pqv, notesPreview: pm.notesPreview,
   bgs: record.bgs, pq: record.pq,
-  itemId: pm.itemId, mkKey: pm.mkKey, mkIdx: pm.mkIdx, chars: subTabList(), chMenu: pm.chMenu, pileZ: pm.pileZ, cf: pm.cf, players: record.players, classChips: classTraits({ ...c, cls: pm.cf?.cls || c.cls }).map(t => chip(t)).join(''), classOpts: pm.modal === 'char' ? charClassOptions(c) : [], mkSel: mkSelOf(c), set: pmset, ptab: pm.ptab, sheet: pm.sheet,
+  itemId: pm.itemId, mkKey: pm.mkKey, mkIdx: pm.mkIdx, chars: subTabList(), chMenu: pm.chMenu, pileZ: pm.pileZ, restRoll: pm.restRoll, cf: pm.cf, players: record.players, classChips: classTraits({ ...c, cls: pm.cf?.cls || c.cls }).map(t => chip(t)).join(''), classOpts: pm.modal === 'char' ? charClassOptions(c) : [], mkSel: mkSelOf(c), set: pmset, ptab: pm.ptab, sheet: pm.sheet,
   items: pm.modal === 'items' ? { pool: ITEMS.filter(i => record.items.unl.includes(i.id) && ownsItem(c, i.id)), isel: c.items.map(it => String(it.id)), sell: !!pm.sellMode } : null,
   deck: pm.modal === 'deck' ? { cards: CARDS.filter(k => k.cls === classByName(c.cls)?.i).sort((a, b) => cardLevel(a.id) - cardLevel(b.id) || (a.ini ?? 1e9) - (b.ini ?? 1e9)), hsel: pm.hsel[c.id] || [], armed: pm.hsArmed } : null,
   amd: pm.modal === 'amd' || pm.modal === 'amdpile' ? drawState(c, c.amd) : null, hview: pm.hview, amEdit: pm.amEdit, amv: pm.hview === 'amd' || pm.ptab === 'amd' ? drawState(c, c.amd) : null, amZoom: pm.modal === 'amd' ? pm.amZoom : null,
@@ -1750,6 +1750,7 @@ window.addEventListener('resize', sizePlaymat);
 function render() {
   renderTabs();
   if (pm.modal === 'rest' && !pmChar()?.rest) pm.modal = null;                               // the rest was undone: no result to show
+  if (pm.modal === 'restroll' && !(pmChar() && restCandidates(pmChar(), pm.restRoll === 'redo').length)) pm.modal = null;   // nothing to roll over any more
   if (!record) {
     main.innerHTML = '<div class="empty">No campaign loaded.<br>Use <b>Load file</b> to open a campaign JSON file. It is kept in this browser only.</div>';
     return;
@@ -2412,6 +2413,8 @@ document.addEventListener('keydown', e => {
 main.addEventListener('keydown', e => {
   const f = e.target.closest?.('.pm .flipcard[data-slot]');
   if (f && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); flipPlayed(f); }
+  const rp = e.target.closest?.('.pm [data-restpick]');
+  if (rp && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); pickRestCard(rp.dataset.char, Number(rp.dataset.restpick)); }
 });
 // The character of the open playmat, and the random picks of the journal (the pure edit functions get the chosen slugs).
 const pmChar = () => record?.chars.find(x => x.id === currentSub());
@@ -2636,12 +2639,23 @@ function doShortRest(cid) {
   pm.sheet = null; pm.modal = 'rest';
   commit(next);
 }
+// The card a BGG roll gave for a short rest (pm.restRoll 'rest') or its redo ('redo'): it is lost; the result dialog follows.
+function pickRestCard(cid, id) {
+  const next = pm.restRoll === 'redo' ? ed.shortRestRedo(record, cid, undefined, id) : ed.shortRest(record, cid, undefined, id);
+  if (next === record) return;
+  pm.modal = 'rest';
+  commit(next);
+}
 // Pile modal: click a pile to list its cards; Recover brings one card (or all) back to the hand; the card under the pointer is shown large.
 main.addEventListener('click', e => {
   const q = sel => e.target.closest?.(sel), c = pmChar();
   if (!c) return;
   if (q('[data-shortrest]')) { e.stopImmediatePropagation(); doShortRest(c.id); return; }
   if (q('[data-restredo]')) { e.stopImmediatePropagation(); commit(ed.shortRestRedo(record, c.id)); return; }          // the dialog stays open and shows the new card
+  const rr = q('[data-restroll]');                                                                                    // by a BGG roll: the dialog with the code and the cards to click
+  if (rr) { e.stopImmediatePropagation(); if (!rr.disabled) { pm.sheet = null; pm.restRoll = rr.dataset.restroll === 'redo' ? 'redo' : 'rest'; pm.modal = 'restroll'; render(); } return; }
+  const rp = q('[data-restpick]');
+  if (rp) { e.stopImmediatePropagation(); pickRestCard(c.id, Number(rp.dataset.restpick)); return; }
   const rec = q('[data-pilerec]');
   if (rec) { e.stopImmediatePropagation(); commit(ed.moveCard(record, c.id, Number(rec.dataset.pilerec), 'hand')); return; }
   const all = q('[data-pilerecall]');
