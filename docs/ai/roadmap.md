@@ -27,6 +27,7 @@ Open work in priority order. Items marked (owner) need a decision or data from t
 13. Campaign stickers: the scenario stickers are matched by number (used by the flowchart since 2026-11-18). The 19 named campaign stickers (city rule, the Voice, the Drake and others) have files in `images/stickers/gh2` by slug; check that the Overview sticker list and the stickers modal use them. (verify)
 14. Perk sheets (`wh_perks`, one per class) and masteries/banners in the Cards tab: not built.
 15. Scenario flowchart: diagonal arrows in the Flow chart are interpreted by position, unverified against the book. (Storylines were checked against the Secretariat and the owner's sheet on 2026-11-18; the unlock links were not.)
+15b. Scenarios: plain "linked" scenarios (no city phase after them, the party may still return to the city) have no data: the Secretariat has no field for it. Needs the owner's list. Forced links (no city phase, must continue) are in the data and marked in the flowchart; the app does not yet skip or require anything on completion. (owner)
 15a. Closed 2026-11-19: left as is (owner). Scenarios: the Table view and the flowchart's overview map do not use the storyline colours or the stickers yet (the chart, the modal and the phone list do).
 16. Resources: pCloud links may expire. The scenario book and section book share one link on purpose (owner, 2026-11-18).
 
