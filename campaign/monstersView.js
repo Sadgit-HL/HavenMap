@@ -2,7 +2,7 @@
 // (monsters, allies) in a dock at the bottom, in the look of the Mercenaries playmat (class pm, styles in campaign/monsters.css). The state is record.mon
 // (scripts/campaign/monsters.js); app.js wires the clicks to the edit functions of scripts/campaign/edit.js.
 import { imageFile } from '../scripts/images.js';
-import { MONSTERS, MON_MAX, monOf, monsterById, deckSlug, deckCards, deckState, deckNeedsShuffle, deckRollCode } from '../scripts/campaign/monsters.js';
+import { MONSTERS, MON_MAX, monOf, monsterById, deckSlug, deckCards, deckState, deckNeedsShuffle, deckRollCode, monSlugs } from '../scripts/campaign/monsters.js';
 import { drawState, amOwner, amdRollCode } from '../scripts/campaign/amdDeck.js';
 import { normalDifficulty, scenarioLevel, scenarioLevelRange } from '../scripts/campaign/record.js';
 import { amViewHtml } from './playmat.js';
@@ -33,11 +33,12 @@ export function monstersHtml(r, V, esc) {
   const nd = normalDifficulty(r), bump = lvl - nd, bumpTxt = bump > 0 ? `+${bump}` : String(bump);
   const diff = bump ? `<button type="button" class="mondiff on" data-monlvauto title="Normal difficulty is level ${nd}: back to normal" aria-label="Difficulty ${bumpTxt}, back to normal">${bumpTxt}</button>`
     : `<span class="mondiff" title="Normal difficulty (level ${nd})" aria-label="Normal difficulty">0</span>`;
+  const canDraw = monSlugs(m).some(s => { const d = deckState(m, s); return !d.active.length && d.deck.length; });
   const bar = `<div class="monbar">
     <span class="monfield"><span class="lab">Scenario level</span><span class="sp"><b>${lvl}</b><span class="spc"><button type="button" data-monlv="1" aria-label="Raise the monster level"${lvl >= lvMax ? ' disabled' : ''}>${UP}</button><button type="button" data-monlv="-1" aria-label="Lower the monster level"${lvl <= lvMin ? ' disabled' : ''}>${DN}</button></span></span>${diff}</span>
     <span class="monfield"><span class="lab">Round</span><b class="monround">${m.round}</b></span>
     ${add}
-    <span class="monacts"><button type="button" class="btn6" data-monnew title="Shuffle every deck and start at round 1">New scenario</button><button type="button" class="btn6 monend" data-monend title="Drawn ability cards to the discard, shuffle the decks that need it, next round">End of round</button></span>
+    <span class="monacts"><button type="button" class="btn6" data-mdrawall${canDraw ? '' : ' disabled'} title="${canDraw ? 'Draw a random ability card for every monster type that has none' : 'Every deck has a card, or nothing is left to draw'}">Draw cards</button><button type="button" class="btn6" data-monnew title="Shuffle every deck and start at round 1">New scenario</button><button type="button" class="btn6 monend" data-monend title="Drawn ability cards to the discard, shuffle the decks that need it, next round">End of round</button></span>
   </div>`;
 
   const tog = `<span class="tog" role="group" aria-label="Modifier deck">${[['m', 'Monsters'], ['a', 'Allies']].map(([k, l]) => `<button type="button" data-monamg="${k}" aria-pressed="${g === k}">${l}</button>`).join('')}</span>`;
@@ -61,7 +62,7 @@ export function monstersHtml(r, V, esc) {
     const active = ds.active.map(n => cards.find(c => c.n === n)).filter(Boolean).sort((a, b) => a.init - b.init);
     const big = active.length
       ? active.map(c => `<div class="mab big" data-mcard="${c.n}" data-mslug="${slug}"><img src="${esc(abilityUrl(slug, c.n))}" alt="${esc(`${title(slug.replace(/-/g, ' '))} ${c.n}`)}" draggable="false"><span class="mini6">${c.init}</span><button type="button" class="mdisc" data-mdisc="${c.n}" data-mslug="${slug}" title="Discard now" aria-label="Discard now">${TO_DISCARD}</button></div>`).join('')
-      : `<div class="mab big back" aria-label="No card drawn"><span>${ds.deck.length}</span></div>`;
+      : `<button type="button" class="mab big back" data-mdraw="${slug}"${ds.deck.length ? '' : ' disabled'} title="${ds.deck.length ? 'Draw a random card' : 'Nothing left to draw: shuffle the deck'}" aria-label="Draw a random card, ${ds.deck.length} left"><span>${ds.deck.length}</span></button>`;
     const row = [...cards].sort((a, b) => a.init - b.init || a.n - b.n).map(c => {
       const s = status(c.n);
       return `<button type="button" class="mab sm ${s}" data-mcard="${c.n}" data-mslug="${slug}" title="Initiative ${c.init}${c.s ? ', shuffle' : ''}: ${s === 'deck' ? 'mark as drawn' : 'back to the deck'}"><img src="${esc(abilityUrl(slug, c.n))}" alt="" loading="lazy" draggable="false"><span class="mini6${c.s ? ' s' : ''}">${c.init}</span></button>`;

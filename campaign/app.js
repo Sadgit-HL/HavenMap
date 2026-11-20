@@ -2701,6 +2701,8 @@ main.addEventListener('click', async e => {
   if (q('[data-monamg]')) { monView.amg = d('[data-monamg]').monamg === 'a' ? 'a' : 'm'; monView.amEdit = false; render(); return; }
   if (q('[data-monimb]')) { commit(ed.monImbue(record, Number(d('[data-monimb]').monimb))); return; }
   if (q('[data-mremove]')) { commit(ed.monRemoveType(record, Number(d('[data-mremove]').mremove))); return; }
+  if (q('[data-mdraw]')) { commit(ed.monDraw(record, d('[data-mdraw]').mdraw)); return; }
+  if (q('[data-mdrawall]')) { commit(ed.monDrawAll(record)); return; }
   if (q('[data-mshuffle]')) { commit(ed.monDeck(record, d('[data-mshuffle]').mshuffle, 'shuffle')); return; }
   if (q('[data-code]')) { copyCodeButton(q('[data-code]')); return; }
   if (q('[data-mcode]')) { const b = q('[data-mcode]'); if (!b.disabled) copyRollerCode(b, b.dataset.mcode); return; }

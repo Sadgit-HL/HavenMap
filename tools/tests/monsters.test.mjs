@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import { emptyRecord, normalDifficulty, scenarioLevel } from '../../scripts/campaign/record.js';
 import { MONSTERS, MON_MAX, monOf, deckSlug, deckCards, deckState, deckNeedsShuffle, deckRollCode, monSlugs } from '../../scripts/campaign/monsters.js';
 import { GH_DECKS } from '../../scripts/games/gh_decks.js';
-import { monAddType, monRemoveType, monDeck, monEndRound, monNewScenario, monImbue, monAm, monSetLevel } from '../../scripts/campaign/edit.js';
+import { monAddType, monRemoveType, monDeck, monDraw, monDrawAll, monEndRound, monNewScenario, monImbue, monAm, monSetLevel } from '../../scripts/campaign/edit.js';
+import { describeChange } from '../../scripts/campaign/changelog.js';
 
 const archers = MONSTERS.filter(m => deckSlug(m.id) === 'archer').map(m => m.id);
 const boss = MONSTERS.find(m => m.boss), plain = MONSTERS.find(m => !m.boss && deckSlug(m.id) && deckSlug(m.id) !== 'archer');
@@ -113,9 +114,54 @@ export const tests = {
     assert.equal(scenarioLevel(r), 4);
     assert.equal(monSetLevel(r, null).party.diff, 0);
   },
+  'random draw takes the card the number points at and leaves the rest of the deck'() {
+    const r = withType(emptyRecord(), plain.id), n = cards.length, all = cards.map(c => c.n);
+    const d = deckState(monOf(monDraw(r, slug, () => 2.5 / n)), slug);
+    assert.deepEqual(d.active, [all[2]]);
+    assert.deepEqual(d.deck, all.filter(x => x !== all[2]));
+    assert.deepEqual(d.discard, []);
+  },
+  'random draw: every card of the deck is equally likely'() {
+    const r = withType(emptyRecord(), plain.id), N = 800, seen = new Map();
+    for (let i = 0; i < N; i++) { const a = deckState(monOf(monDraw(r, slug, () => i / N)), slug).active[0]; seen.set(a, (seen.get(a) || 0) + 1); }
+    assert.deepEqual([...seen.keys()].sort((a, b) => a - b), cards.map(c => c.n).sort((a, b) => a - b));
+    for (const k of seen.values()) assert.equal(k, N / cards.length);
+  },
+  'random draw takes only from the cards left, and does nothing for an empty or unknown deck'() {
+    let r = withType(emptyRecord(), plain.id);
+    for (let i = 0; i < cards.length; i++) r = monDraw(r, slug, () => 0);      // draw the whole deck
+    const d = deckState(monOf(r), slug);
+    assert.equal(d.deck.length, 0);
+    assert.deepEqual([...d.active].sort((a, b) => a - b), cards.map(c => c.n).sort((a, b) => a - b), 'no card twice');
+    assert.equal(monDraw(r, slug, () => 0), r, 'empty draw pile');
+    assert.equal(monDraw(r, 'no-such-deck', () => 0), r);
+  },
+  'draw all: one card for each deck without a card, a shared deck once'() {
+    let r = withType(withType(withType(emptyRecord(), archers[0]), archers[1]), plain.id);
+    const a = monDrawAll(r, () => 0), m = monOf(a);
+    assert.equal(deckState(m, 'archer').active.length, 1, 'the archer decks are one deck');
+    assert.equal(deckState(m, slug).active.length, 1);
+    assert.equal(monDrawAll(a, () => 0), a, 'nothing more to draw while every deck has a card');
+    // a deck that already has a drawn card keeps it; the other deck draws
+    const one = monDeck(r, slug, 'draw', cards[3].n), b = monOf(monDrawAll(one, () => 0));
+    assert.deepEqual(deckState(b, slug).active, [cards[3].n]);
+    assert.equal(deckState(b, 'archer').active.length, 1);
+    // next round: End of round clears the cards, Draw all draws again
+    const next = monOf(monDrawAll(monEndRound(a), () => 0));
+    assert.equal(next.round, 2);
+    assert.equal(deckState(next, slug).active.length, 1);
+    const none = emptyRecord();
+    assert.equal(monDrawAll(none, () => 0), none, 'no monster types: nothing to draw');
+  },
+  'History: a random draw is logged as drew, with the card'() {
+    const r = withType(emptyRecord(), plain.id), a = monDraw(r, slug, () => 0), lines = describeChange(r, a);
+    assert.equal(lines.length, 1);
+    assert.equal(lines[0].kind, 'Ability deck');
+    assert.match(lines[0].d, /drew /);
+  },
   'edits do not change the input'() {
     const r = withType(emptyRecord(), plain.id), snap = JSON.stringify(r);
-    monDeck(r, slug, 'draw', cards[0].n); monEndRound(r); monNewScenario(r);
+    monDeck(r, slug, 'draw', cards[0].n); monEndRound(r); monNewScenario(r); monDraw(r, slug, () => 0); monDrawAll(r, () => 0);
     assert.equal(JSON.stringify(r), snap);
   },
 };

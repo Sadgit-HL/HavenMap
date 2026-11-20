@@ -1051,6 +1051,19 @@ export function monDeck(r, slug, kind, n) {
   const full = next && next.deck.length === deckCards(slug).length;
   return monEdit(r, m => { if (next && !full) m.decks[slug] = next; else delete m.decks[slug]; });
 }
+// Random draw of a monster ability deck: one card of the cards left in the deck is drawn (becomes active). `rand` is a number in [0, 1)
+// (the browser's crypto source by default). Nothing to draw (unknown deck, empty draw pile): the record is returned as it is.
+export function monDraw(r, slug, rand = cryptoRandom) {
+  const cur = deckState(monOf(r), slug);
+  if (!deckCards(slug).length || !cur.deck.length) return r;
+  return monDeck(r, slug, 'draw', cur.deck[Math.floor(rand() * cur.deck.length)]);
+}
+// A random card for every deck of the chosen monster types that has no card drawn yet (a deck shared by several types draws once).
+export function monDrawAll(r, rand = cryptoRandom) {
+  let next = r;
+  for (const slug of monSlugs(monOf(r))) if (!deckState(monOf(r), slug).active.length) next = monDraw(next, slug, rand);
+  return next;
+}
 // A character's attack modifier deck (chars[].amd, the state shape of amdDeck.js): the actions of amdAct (draw, ret, add, rem, shuffle,
 // plus, minus, move), and retall (the whole discard back into the deck). A state with nothing drawn, placed or edited is removed.
 export function charAm(r, cid, kind, key, opts = {}) {
