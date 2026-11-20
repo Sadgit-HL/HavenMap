@@ -139,11 +139,6 @@ function withLog(from, to, kindPrefix = '', draw = '') {
   const entries = describeChange(from, to, { draw }).map(e => ({ t, u, tab: e.tab, kind: kindPrefix + e.kind, d: e.d }));
   return entries.length ? { ...to, log: foldLog(from.log || [], entries).slice(-LOG_MAX) } : { ...to, log: from.log || [] };
 }
-// A History line for something that changes no record data (a random pick that is only shown): the line goes into the log directly.
-function logLine(tab, kind, d) {
-  record = { ...record, log: foldLog(record.log || [], [{ t: Date.now(), u: userName(), tab, kind, d }]).slice(-LOG_MAX) };
-  persist();
-}
 function commit(next, draw = '') {                                                   // draw: how a monster ability card was drawn, for History
   if (next === record) return;
   if (pmset.autosort) for (const c of next.chars) if (c.hord) next = ed.sortHand(next, c.id, 'ini');   // setting: the hand always follows the initiative
@@ -440,12 +435,13 @@ async function copyRollerCode(btn, code) {
 function scenarioRollerCode(r) {
   return rollerCodeOf(scenarioPool(r));
 }
-// Random side scenario (the Scenarios tab): one of the unlocked scenarios is drawn and shown (its page opens, the flowchart centers on it and
-// marks it); nothing changes in the campaign, the draw is a History line. Random item design: see drawItem.
+// Random side scenario (the Scenarios tab): one of the random scenarios that are still locked is drawn and unlocked; History says random, its
+// page opens, and the flowchart centers on it and marks it. Random item design: see drawItem.
 function drawScenario() {
-  const pool = scenarioPool(record), n = pickOne(pool), s = SCENARIOS.find(x => x.n === n);
-  if (!s) return;
-  logLine('Scenarios', 'Random scenario', `Drew scenario ${n} ${s.name} (random), one of ${pool.length} unlocked`);
+  const next = ed.drawSideScenario(record);
+  if (next === record) return;
+  const n = scenarioPool(record).find(x => (next.scn[String(x)]?.s ?? 0) !== 0);
+  commit(next, 'random');
   view.scnSel = n;
   render();
   if (view.scnView === 'flow') flowFocus(n);
@@ -459,7 +455,7 @@ async function drawItem() {
   commit(next, 'random');
   await notify('Random item design', `${pretty(item.slug)} (item ${id}) is now unlocked.`);
 }
-const scenarioRollerBtn = r => rollerBtn('data-scnroll', 'side scenario', scenarioRollerCode(r), 'No unlocked scenarios');
+const scenarioRollerBtn = r => rollerBtn('data-scnroll', 'side scenario', scenarioRollerCode(r), 'No random side scenarios left to unlock');
 
 // The candidates of a random item design are in scripts/campaign/draws.js (itemDesignPool).
 function itemRollerCode(r) {
@@ -475,7 +471,7 @@ function drawBtn(attr, label, title) {
 }
 const scenarioRollButtons = r => {
   const n = scenarioPool(r).length;
-  return scenarioRollerBtn(r) + drawBtn('data-scndraw', 'Draw side scenario', { ok: n > 0, text: n ? `Draw a random side scenario among the ${n} unlocked` : 'No unlocked scenarios' });
+  return scenarioRollerBtn(r) + drawBtn('data-scndraw', 'Draw random scenario', { ok: n > 0, text: n ? `Draw a random side scenario among the ${n} not unlocked yet and unlock it` : 'No random side scenarios left to unlock' });
 };
 const itemRollButtons = r => {
   const n = itemDesignPool(r).length;

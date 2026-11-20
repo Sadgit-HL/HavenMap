@@ -73,7 +73,7 @@ export function foldLog(log, entries, windowMs = 4000) {
 }
 
 // opts.draw names how a card was drawn in this change ('random' for the app's own pick, 'BGG roll' for a card marked by hand); it is added to
-// the "drew" lines of the monster ability decks and to the "Unlocked item" line of a random item design.
+// the "drew" lines of the monster ability decks and to the "Unlocked item" line of a random item design and the state line of a random side scenario.
 export function describeChange(a, b, opts = {}) {
   const out = [];
   const add = (tab, kind, d) => out.push({ tab, kind, d });
@@ -137,7 +137,7 @@ export function describeChange(a, b, opts = {}) {
 
   for (const n of keys(a.scn, b.scn).sort((x, y) => x - y)) {
     const x = a.scn?.[n] || {}, y = b.scn?.[n] || {};
-    if ((x.s || 0) !== (y.s || 0)) add('Scenarios', 'Scenario state', `Scenario ${n}: ${SCN_STATE_NAME[x.s || 0]} to ${SCN_STATE_NAME[y.s || 0]}`);
+    if ((x.s || 0) !== (y.s || 0)) add('Scenarios', 'Scenario state', `Scenario ${n}: ${SCN_STATE_NAME[x.s || 0]} to ${SCN_STATE_NAME[y.s || 0]}${opts.draw ? ` (${opts.draw})` : ''}`);
     for (const f of keys(x, y)) {
       if (f !== 's' && !same(x[f], y[f])) add('Scenarios', 'Scenario result', `Scenario ${n}: ${SCN_FIELD[f] || f} ${fmt(x[f])} to ${fmt(y[f])}`);
     }

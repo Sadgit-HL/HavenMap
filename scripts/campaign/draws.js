@@ -1,5 +1,5 @@
-// Random picks of the Scenarios and Items tabs: which cards or scenarios a draw can take, and the pick. Pure functions, no record changes
-// (drawItemDesign in edit.js unlocks the item). The same lists feed the GeekRoller code buttons, so the code and the app's own draw
+// Random picks of the Scenarios and Items tabs: which scenarios or items a draw can take, and the pick. Pure functions, no record changes
+// (drawSideScenario and drawItemDesign in edit.js unlock what was drawn). The same lists feed the GeekRoller code buttons, so the code and the app's own draw
 // always cover the same candidates.
 import { SCENARIOS } from '../games/gh2_scenarios.js';
 import { ITEMS } from './itemList.js';
@@ -11,8 +11,12 @@ import { cryptoRandom } from './events.js';
 // full item catalog.
 export const RANDOM_ITEM_IDS = [81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96];
 
-// Scenario numbers a random side scenario can take: the scenarios in the Unlocked state (not completed, not locked out).
-export const scenarioPool = r => SCENARIOS.filter(s => (r.scn?.[String(s.n)]?.s ?? 0) === SCN_STATE.UNLOCKED).map(s => s.n);
+// Scenario numbers a random side scenario can take (owner, 2026-11-21): the random scenarios 67 to 74 that are still locked. A roll unlocks
+// the scenario. (Scenario 83, Lost Island, is in the Random storyline too but follows 70: it is not rolled.)
+export const RANDOM_SCENARIO_NUMBERS = [67, 68, 69, 70, 71, 72, 73, 74];
+export const scenarioPool = r => SCENARIOS
+  .filter(s => RANDOM_SCENARIO_NUMBERS.includes(s.n) && (r.scn?.[String(s.n)]?.s ?? 0) === SCN_STATE.LOCKED)
+  .map(s => s.n);
 
 // Item ids a random item design can take: the random items that are not unlocked yet.
 export const itemDesignPool = r => ITEMS.filter(i => RANDOM_ITEM_IDS.includes(i.id) && !(r.items?.unl || []).includes(i.id)).map(i => i.id);
