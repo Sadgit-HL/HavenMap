@@ -176,6 +176,9 @@ def read_decks(sh):
 
 # --- items ---------------------------------------------------------------------------------------------------
 
+SOLO_ITEMS = set(range(153, 171))   # the GH2E solo items (kind 'solo' in scripts/games/gh2_items.js)
+
+
 def read_items(wb):
     """From the Card DB (see docs/HANDOVER.md section 14): column 8 = unlocked, column 39 = total copies, column 40 =
     copies left in the shop; copies in use by players = total - left."""
@@ -185,6 +188,8 @@ def read_items(wb):
         r = tuple(r) + (None,) * (60 - len(r))
         if r[0] == 'Items' and r[46] == 'gh2' and r[13] == 'gloomhaven2':
             iid = num(r[5])
+            if iid in SOLO_ITEMS:
+                continue   # character specific solo items start locked; the owner unlocks them in the app
             if r[8] is True:
                 unl.append(iid)
                 t = (num(r[39]) or 0) - (num(r[40]) or 0)
