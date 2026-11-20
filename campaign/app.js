@@ -19,6 +19,7 @@ import { GH2_PQ } from '../scripts/games/gh2_pq_text.js';
 import { morphInto } from './morph.js';
 import { registerMenu, openMenuFor } from './ctxmenu.js';
 import { ask, notify } from './dialog.js';
+import { scenarioPool, itemDesignPool, pickOne } from '../scripts/campaign/draws.js';
 import { phoneHtml } from './phone.js';
 import { monstersHtml } from './monstersView.js';
 import { monOf, deckState as monDeckState } from '../scripts/campaign/monsters.js';
@@ -137,6 +138,11 @@ function withLog(from, to, kindPrefix = '', draw = '') {
   const t = Date.now(), u = userName();
   const entries = describeChange(from, to, { draw }).map(e => ({ t, u, tab: e.tab, kind: kindPrefix + e.kind, d: e.d }));
   return entries.length ? { ...to, log: foldLog(from.log || [], entries).slice(-LOG_MAX) } : { ...to, log: from.log || [] };
+}
+// A History line for something that changes no record data (a random pick that is only shown): the line goes into the log directly.
+function logLine(tab, kind, d) {
+  record = { ...record, log: foldLog(record.log || [], [{ t: Date.now(), u: userName(), tab, kind, d }]).slice(-LOG_MAX) };
+  persist();
 }
 function commit(next, draw = '') {                                                   // draw: how a monster ability card was drawn, for History
   if (next === record) return;
@@ -432,18 +438,49 @@ async function copyRollerCode(btn, code) {
 }
 
 function scenarioRollerCode(r) {
-  return rollerCodeOf(SCENARIOS.filter(s => (r.scn[String(s.n)]?.s ?? 0) === 1).map(s => s.n));
+  return rollerCodeOf(scenarioPool(r));
+}
+// Random side scenario (the Scenarios tab): one of the unlocked scenarios is drawn and shown (its page opens, the flowchart centers on it and
+// marks it); nothing changes in the campaign, the draw is a History line. Random item design: see drawItem.
+function drawScenario() {
+  const pool = scenarioPool(record), n = pickOne(pool), s = SCENARIOS.find(x => x.n === n);
+  if (!s) return;
+  logLine('Scenarios', 'Random scenario', `Drew scenario ${n} ${s.name} (random), one of ${pool.length} unlocked`);
+  view.scnSel = n;
+  render();
+  if (view.scnView === 'flow') flowFocus(n);
+}
+// Random item design (the Items tab): one of the random items that are not unlocked yet is drawn and unlocked, the History line says random,
+// and a dialog names the item.
+async function drawItem() {
+  const next = ed.drawItemDesign(record);
+  if (next === record) return;
+  const id = next.items.unl.find(x => !record.items.unl.includes(x)), item = itemById.get(id);
+  commit(next, 'random');
+  await notify('Random item design', `${pretty(item.slug)} (item ${id}) is now unlocked.`);
 }
 const scenarioRollerBtn = r => rollerBtn('data-scnroll', 'side scenario', scenarioRollerCode(r), 'No unlocked scenarios');
 
-// The 16 GH2E items flagged "random" in the Gloomhaven Secretariat data (never sold in the shop, only gained
-// from a "random item design"/"random item" reward): ids 81-96. "Gain a random item design" draws one of these
-// that isn't already unlocked -- it is not a draw from the full item catalog.
-const RANDOM_ITEM_IDS = [81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96];
+// The candidates of a random item design are in scripts/campaign/draws.js (itemDesignPool).
 function itemRollerCode(r) {
-  return rollerCodeOf(ITEMS.filter(i => RANDOM_ITEM_IDS.includes(i.id) && !r.items.unl.includes(i.id)).map(i => i.id));
+  return rollerCodeOf(itemDesignPool(r));
 }
 const itemRollerBtn = r => rollerBtn('data-itemroll', 'item design', itemRollerCode(r), 'No item designs left to gain');
+
+// The app's own random draws of the two tabs, next to the buttons that copy the GeekRoller code (same candidates). On phones the labels
+// are hidden (touch.css), so the draw button has its own icon, the crossing arrows of the shuffle buttons.
+const ICON_DRAW = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M10.59 9.17 5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>';
+function drawBtn(attr, label, title) {
+  return `<button type="button" class="btn6 rollbtn" ${attr} ${title.ok ? '' : 'disabled'} title="${esc(title.text)}" aria-label="${esc(title.text)}">${ICON_DRAW}<span>${esc(label)}</span></button>`;
+}
+const scenarioRollButtons = r => {
+  const n = scenarioPool(r).length;
+  return scenarioRollerBtn(r) + drawBtn('data-scndraw', 'Draw side scenario', { ok: n > 0, text: n ? `Draw a random side scenario among the ${n} unlocked` : 'No unlocked scenarios' });
+};
+const itemRollButtons = r => {
+  const n = itemDesignPool(r).length;
+  return itemRollerBtn(r) + drawBtn('data-itemdraw', 'Draw item design', { ok: n > 0, text: n ? `Draw a random item design among the ${n} not unlocked yet and unlock it` : 'No item designs left to gain' });
+};
 
 // Scenario state counts and pacing, shown on Overview. A scenario missing from r.scn is Locked (setScenarioState
 // deletes the key when a scenario is set back to Locked), so the Locked count is the total minus the other three, not
@@ -480,7 +517,7 @@ function flowPage(r) {
     <select id="flowShow">${[['progress', 'Progress and next steps'], ['all', 'All scenarios']].map(([v, l]) => `<option value="${v}" ${view.flowShow === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
     <select id="flowLane"><option value="">All scenario chains</option>${LANES.map(l => `<option ${view.flowLane === l ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>
     ${find}${zoomBtns}${fsBtn}
-    ${scenarioRollerBtn(r)}</div>`;
+    ${scenarioRollButtons(r)}</div>`;
   if (!g.nodes.length) return filters + scnViewToggle() + '<div class="empty">No scenarios to show yet.</div>';
   const legend = `<span class="flegend">${[1, 2, 0, 3].map(i => `<span class="spill s${i}">${SCN_STATE_NAME[i]}</span>`).join('')}</span>`;
   // lanes: a faint tint and a stripe in the storyline colour
@@ -517,7 +554,7 @@ function flowPage(r) {
   }).join('');
   const svg = `<svg class="flowsvg" width="${Math.round(g.width * z)}" height="${Math.round(g.height * z)}" viewBox="0 0 ${g.width} ${g.height}" role="img" aria-label="Scenario flowchart">
     <defs><marker id="farrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="farrowhead"/></marker><marker id="farrowp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="farrowhead pth"/></marker></defs>${lanes}${edges}${nodes}${forcedMarks}${labels}</svg>`;
-  if (full) return `<div class="flowstage full"><div class="flowwrap full"><div class="flowfsbar">${find}${zoomBtns}${fsBtn}${scenarioRollerBtn(r)}${legend}</div>${svg}</div>${mini}</div>`;
+  if (full) return `<div class="flowstage full"><div class="flowwrap full"><div class="flowfsbar">${find}${zoomBtns}${fsBtn}${scenarioRollButtons(r)}${legend}</div>${svg}</div>${mini}</div>`;
   return filters.replace(/<\/div>$/, `${legend}</div>`) + scnViewToggle() + `<div class="flowstage"><div class="flowwrap">${svg}</div>${mini}</div>`;
 }
 const cutText = (t, max) => (t.length > max ? `${t.slice(0, max - 1).trimEnd()}…` : t);
@@ -804,7 +841,7 @@ function scenarios(r) {
   const filters = `<div class="filters">
     <select id="scnStatus"><option value="">All states</option>${SCN_STATE_NAME.map((n, i) => `<option value="${i}" ${view.scnStatus === String(i) ? 'selected' : ''}>${n}</option>`).join('')}</select>
     <input id="scnSearch" type="search" placeholder="Search number, name, scenario chain" value="${esc(view.scnSearch)}">
-    <span class="tbend">${scenarioRollerBtn(r)}</span></div>`;
+    <span class="tbend">${scenarioRollButtons(r)}</span></div>`;
   if (isPhone()) return filters + scnViewToggle(rows.length) + (rows.length ? `<div class="mlist">${rows.map(s => {
     // phone row: sticker thumbnail (a "?" while locked), number and name, storyline in its colour and the date, state
     const x = r.scn[String(s.n)] || { s: 0 }, lane = laneOf(s), src = x.s ? scnImg(s) : '';
@@ -970,7 +1007,7 @@ function items(r) {
     <select id="itemShow">${[['all', 'All items'], ['unlocked', 'Unlocked'], ['shop', 'In the shop']].map(([v, l]) => `<option value="${v}" ${view.itemShow === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
     <input id="itemSearch" type="search" placeholder="Search item name" value="${esc(view.itemSearch)}">
     <input id="itemGold" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="Gold" aria-label="Gold: show only items this affordable" title="Show only items that cost this much or less" value="${esc(view.itemGold)}" style="width:5.5em">
-    <span class="tbend">${itemRollerBtn(r)}
+    <span class="tbend">${itemRollButtons(r)}
     <button type="button" class="editbtn editicon" data-pageedit aria-pressed="${editing}" aria-label="${editing ? 'Stop editing items' : 'Edit items'}" title="${editing ? 'Stop editing items' : 'Edit items'}">${PENCIL}</button></span></div>`;
   const holders = id => r.chars.filter(c => ownsItem(c, id)).map(c => c.name).join(', ');
   // who owns an item (a chip per owner; x takes the copy back to the shop) and the menu that gives a copy to a character
@@ -1959,6 +1996,8 @@ main.addEventListener('click', e => {
   if (e.target.closest('[data-itemclose]') || e.target.id === 'itemSheet') { view.itemSel = null; render(); return; }
   const gt = e.target.closest('[data-giveto]')?.dataset.giveto;
   if (gt) { const [cid, id] = gt.split('|'); commit(ed.itemCost(id) === null ? ed.giveItem(record, cid, id) : ed.buyItem(record, cid, id)); return; }
+  if (e.target.closest('[data-scndraw]')) { drawScenario(); return; }
+  if (e.target.closest('[data-itemdraw]')) { drawItem(); return; }
   const scnRollBtn = e.target.closest('[data-scnroll]');
   if (scnRollBtn) { copyRollerCode(scnRollBtn, scenarioRollerCode(record)); return; }
   const itemRollBtn = e.target.closest('[data-itemroll]');

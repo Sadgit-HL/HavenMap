@@ -73,7 +73,7 @@ export function foldLog(log, entries, windowMs = 4000) {
 }
 
 // opts.draw names how a card was drawn in this change ('random' for the app's own pick, 'BGG roll' for a card marked by hand); it is added to
-// the "drew" lines of the monster ability decks.
+// the "drew" lines of the monster ability decks and to the "Unlocked item" line of a random item design.
 export function describeChange(a, b, opts = {}) {
   const out = [];
   const add = (tab, kind, d) => out.push({ tab, kind, d });
@@ -241,7 +241,7 @@ export function describeChange(a, b, opts = {}) {
   for (const [id, c] of ca) if (!cb.has(id)) add('Mercenaries', 'Character', `Removed ${c.name} (${c.cls})`);
 
   const ua = a.items?.unl || [], ub = b.items?.unl || [];
-  diffList(ua, ub).add.forEach(i => add('Items', 'Item unlock', `Unlocked item #${i}`));
+  diffList(ua, ub).add.forEach(i => add('Items', 'Item unlock', `Unlocked item #${i}${opts.draw ? ` (${opts.draw})` : ''}`));
   diffList(ua, ub).del.forEach(i => add('Items', 'Item unlock', `Locked item #${i}`));
   for (const i of keys(a.items?.taken, b.items?.taken)) {
     if ((a.items?.taken?.[i] || 0) !== (b.items?.taken?.[i] || 0)) add('Items', 'Item copies', `Item #${i}: copies in use ${a.items?.taken?.[i] || 0} to ${b.items?.taken?.[i] || 0}`);

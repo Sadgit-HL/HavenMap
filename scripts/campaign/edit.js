@@ -12,6 +12,7 @@ import { SPECIAL_TRAITS } from './traits.js';
 import { tokenDefs, markerTokens, MARK_STICKERS } from './classTokens.js';
 import { perkList, amdAct, amOwner, drawState, cleanAmd } from './amdDeck.js';
 import { restPool, canShortRest, restRedoable } from './rest.js';
+import { itemDesignPool, pickOne } from './draws.js';
 import { MON_MAX, monOf, monsterById, deckCards, deckState, deckNeedsShuffle, monSlugs } from './monsters.js';
 import { MASTERIES } from '../games/masteries.js';
 import { BATTLE_GOALS } from '../games/battle_goals.js';
@@ -785,6 +786,13 @@ export function setItemFlipped(r, cid, itemId, back) {
   const i = c.items.findIndex(it => String(it.id) === String(itemId));
   if (i < 0 || !!c.items[i].f === !!back) return r;
   return edit(r, x => { const it = x.chars.find(y => y.id === cid).items[i]; if (back) it.f = 1; else delete it.f; });
+}
+
+// Random item design: one of the random items (draws.js) that is not unlocked yet is unlocked. `rand` is a number in [0, 1) (the browser's
+// crypto source by default). No random item left: the record is returned as it is.
+export function drawItemDesign(r, rand = cryptoRandom) {
+  const id = pickOne(itemDesignPool(r), rand);
+  return id === null ? r : setItemUnlocked(r, id, true);
 }
 
 // The items a character carries: unlocked items only, one copy each, the copies of the shop and the slot limits respected (what does not fit is

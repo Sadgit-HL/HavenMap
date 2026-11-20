@@ -8,7 +8,7 @@ Before any change, read `docs/ai/README.md`, then `docs/ai/status.md` and `docs/
 
 - Serve over HTTP, never `file://`. Use `start.bat` in the parent folder (`http://localhost:8080/HavenMap/`) or `python -m http.server` in the parent folder.
 - Syntax check: `node --check <file.js>`. Perk icons: `node tools/check-perk-icons.mjs`.
-- Node checks: `node tools/tests/run.mjs [filter]` (154 checks for items, hand grid, record, history, events, flow, sync merge, outcomes, modifier decks, monsters; no dependencies). Browser checks used Playwright (global install).
+- Node checks: `node tools/tests/run.mjs [filter]` (160 checks for items, hand grid, record, history, events, flow, sync merge, outcomes, modifier decks, monsters; no dependencies). Browser checks used Playwright (global install).
 - Cache busting is by hand (`?v=` strings). Bump them when a file changes, and tell the owner to hard refresh (Ctrl+F5).
 
 ## Rules
