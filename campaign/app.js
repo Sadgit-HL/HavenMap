@@ -974,7 +974,7 @@ function items(r) {
   // who owns an item (a chip per owner; x takes the copy back to the shop) and the menu that gives a copy to a character
   const ownerChips = i => r.chars.filter(c => ownsItem(c, i.id)).map(c => `<span class="chip">${esc(c.name)}<button type="button" class="chx" data-returnitem="${esc(c.id)}|${esc(i.id)}" aria-label="Take ${esc(pretty(i.slug))} back from ${esc(c.name)}" title="Back to the shop">&times;</button></span>`).join('');
   const giveMenu = i => (r.items.unl.includes(i.id) && shopCopies(r, i) > 0 && r.chars.some(c => !ownsItem(c, i.id))
-    ? (cost => `<select class="givesel" data-giveitem="${esc(i.id)}" aria-label="${cost === null ? 'Give' : 'Buy'} ${esc(pretty(i.slug))} ${cost === null ? 'to' : 'for'} a character"><option value="">${cost === null ? 'Give to...' : 'Buy for...'}</option>${r.chars.filter(c => !ownsItem(c, i.id)).map(c => `<option value="${esc(c.id)}"${cost !== null && (c.gold || 0) < cost ? ' disabled' : ''}>${esc(c.name)}${cost === null ? '' : ` (${c.gold || 0} gold)`}</option>`).join('')}</select>`)(ed.itemCost(i.id)) : '');
+    ? (cost => `<select class="givesel" data-giveitem="${esc(i.id)}" aria-label="${cost === null ? 'Give' : 'Buy'} ${esc(pretty(i.slug))} ${cost === null ? 'to' : 'for'} a character"><option value="">${cost === null ? 'Give to...' : 'Buy for...'}</option>${r.chars.filter(c => !ownsItem(c, i.id)).map(c => `<option value="${esc(c.id)}"${cost !== null && (c.gold || 0) < cost ? ' disabled' : ''}>${esc(c.name)}${cost === null ? '' : ` (${c.gold || 0} gold)`}</option>`).join('')}</select>${cost === null ? '' : `<select class="givesel" data-giveitem="${esc(i.id)}" data-free="1" aria-label="Give ${esc(pretty(i.slug))} to a character for free"><option value="">Give free...</option>${r.chars.filter(c => !ownsItem(c, i.id)).map(c => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('')}</select>`}`)(ed.itemCost(i.id)) : '');
   if (view.itemView === 'grid') {
     // Pictures of the filtered items. Locked items have no picture (a placeholder, with the number in edit mode) and are dimmed; the badge shows copies in the shop / total.
     return filters + viewToggle + (rows.length ? `<div class="itemgrid itemcards" style="--tile-min:${ITEM_SIZES[view.itemSize]}px">${rows.map(i => {
@@ -3188,7 +3188,7 @@ main.addEventListener('click', e => { if (e.detail > 0) e.target.closest?.('.pm 
 // Items tab: give a copy of an item to a character (it joins the owned items), or take it back to the shop.
 main.addEventListener('change', e => {
   const g = e.target.closest?.('[data-giveitem]');
-  if (g && g.value) commit(ed.itemCost(g.dataset.giveitem) === null ? ed.giveItem(record, g.value, g.dataset.giveitem) : ed.buyItem(record, g.value, g.dataset.giveitem));
+  if (g && g.value) commit(g.dataset.free || ed.itemCost(g.dataset.giveitem) === null ? ed.giveItem(record, g.value, g.dataset.giveitem) : ed.buyItem(record, g.value, g.dataset.giveitem));
 });
 main.addEventListener('click', e => {
   const b = e.target.closest?.('[data-returnitem]');
