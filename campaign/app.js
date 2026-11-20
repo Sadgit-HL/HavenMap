@@ -957,9 +957,9 @@ function items(r) {
     if (view.itemShow === 'shop' && shopCopies(r, i) === 0) return false;
     // Affordable: only items with a known price at or below the gold entered. Locked items are not filtered by price, so the filter cannot reveal them.
     if (gold != null && (!r.items.unl.includes(i.id) || !(ITEM_COSTS[i.id] <= gold))) return false;
-    // Search the item name. Locked items are never matched by name, so a search cannot reveal them.
+    // Search the item name. Locked items are matched by name in edit mode only (the owner unlocks them by name); players never find them by name.
     const q = view.itemSearch.trim().toLowerCase();
-    if (q && !(r.items.unl.includes(i.id) && pretty(i.slug).toLowerCase().includes(q) || String(i.id).toLowerCase() === q)) return false;
+    if (q && !((r.items.unl.includes(i.id) || editing) && pretty(i.slug).toLowerCase().includes(q) || String(i.id).toLowerCase() === q)) return false;
     return true;
   });
   const viewToggle = `<div class="imgmode viewmode" role="group" aria-label="Items view">${

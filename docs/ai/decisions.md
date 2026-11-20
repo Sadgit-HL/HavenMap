@@ -47,6 +47,7 @@ Dated, newest first within each group. "Owner" marks decisions the owner made. C
 
 ## Interaction and UI
 
+- 2026-11-20: Items search: in edit mode the search box also matches the names of locked items, so the owner can find and unlock an item by name. Players (no edit mode) still find locked items by number only; the tiles still read "Locked item". Owner.
 - 2026-11-18: Treasures: each scenario shows its treasure tiles; players mark a treasure as collected with a click (play, no Edit). Taken and still available treasures look different, so a replayed scenario shows what is left; the flowchart marks unlocked scenarios that still hold treasure. Treasure placement from the Secretariat data with the owner's corrections. Owner.
 - 2026-11-18: The tab keeps the name "Mercenaries". The Scenarios and Items roll buttons share one style (the merc tab's roll button: dice icon and "BGG code for roll"). Owner.
 - 2026-11-18: Playmat drag uses one pointer-event implementation with a custom ghost card (opaque, lifted, fixed size, placeholder left behind, fly back on cancel) for mouse and touch, replacing the browser's native drag image (faint, sized like the source). Owner.
