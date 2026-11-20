@@ -476,7 +476,7 @@ function flowPage(r) {
   const fsBtn = `<button type="button" class="editbtn editicon" data-flowfull aria-pressed="${!!full}" title="${full ? 'Exit fullscreen' : 'Fullscreen'}" aria-label="${full ? 'Exit fullscreen' : 'Fullscreen'}">${FULLSCREEN_ICON}</button>`;
   const filters = `<div class="filters">
     <select id="flowShow">${[['progress', 'Progress and next steps'], ['all', 'All scenarios']].map(([v, l]) => `<option value="${v}" ${view.flowShow === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
-    <select id="flowLane"><option value="">All storylines</option>${LANES.map(l => `<option ${view.flowLane === l ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>
+    <select id="flowLane"><option value="">All scenario chains</option>${LANES.map(l => `<option ${view.flowLane === l ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>
     ${find}${zoomBtns}${fsBtn}
     ${scenarioRollerBtn(r)}</div>`;
   if (!g.nodes.length) return filters + scnViewToggle() + '<div class="empty">No scenarios to show yet.</div>';
@@ -511,7 +511,7 @@ function flowPage(r) {
     return `<g class="fnode s${st(n.n)}${hide ? ' mask' : ''}${view.scnSel === n.n ? ' sel' : ''}${flowFound === n.n && !hide ? ' found' : ''}" data-flow="${n.n}" tabindex="0" role="button" transform="translate(${n.x},${n.y})"><title>${hide ? 'Locked' : esc(`${s.n} ${name} (${SCN_STATE_NAME[st(n.n)]})`)}</title>
       <rect class="fbox" width="${n.w}" height="${n.h}" rx="10"/>${art}
       <path class="fband" d="M1,${n.h - BAND} H${n.w - 1} V${n.h - 10} a9,9 0 0 1 -9,9 H10 a9,9 0 0 1 -9,-9 Z"/>${hide ? '' : laneStripe(lanesOf(s), 1, n.h - BAND, n.w - 2)}${label}
-      <circle class="fdot" cx="${n.w - 13}" cy="13" r="9"/><g class="ficon" transform="translate(${n.w - 19},7)">${FLOW_ICON[hide ? 0 : st(n.n)]}</g>${treLeft(n.n, hide)}</g>`;
+      ${s.boss && !hide ? `<g class="fboss" transform="translate(${n.w - 13},35)"><title>Boss scenario</title><circle r="9"/><g transform="translate(-6.5,-6.5) scale(.54)">${SKULL}</g></g>` : ''}<circle class="fdot" cx="${n.w - 13}" cy="13" r="9"/><g class="ficon" transform="translate(${n.w - 19},7)">${FLOW_ICON[hide ? 0 : st(n.n)]}</g>${treLeft(n.n, hide)}</g>`;
   }).join('');
   const svg = `<svg class="flowsvg" width="${Math.round(g.width * z)}" height="${Math.round(g.height * z)}" viewBox="0 0 ${g.width} ${g.height}" role="img" aria-label="Scenario flowchart">
     <defs><marker id="farrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="farrowhead"/></marker><marker id="farrowp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="farrowhead pth"/></marker></defs>${lanes}${edges}${nodes}${forcedMarks}${labels}</svg>`;
@@ -529,6 +529,9 @@ const scnTreasures = (r, s) => ((r.scn[String(s.n)]?.s ?? 0) === 2 ? [...new Set
 // Treasure chips of the scenario page and the chest mark of the flowchart boxes.
 const TRE_CHEST = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M3 10.5V18a1.5 1.5 0 0 0 1.5 1.5h15A1.5 1.5 0 0 0 21 18v-7.5z" fill="currentColor" opacity=".9"/><path d="M3 10.5V9a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v1.5z" fill="currentColor"/><rect x="10.3" y="9.3" width="3.4" height="4.2" rx=".8" fill="#1b150c"/><path d="M3 10.5h18" stroke="#1b150c" stroke-width="1.2"/></svg>';
 const TRE_TAKEN = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
+// Skull (24 x 24, filled; the eyes, nose and teeth are cut out in the page colour): marks a boss scenario.
+const SKULL = '<path d="M12 2.6c-4.5 0-7.6 3-7.6 7.3 0 2.4 1 4 2.6 5.1V18c0 .9.7 1.5 1.5 1.5h7c.8 0 1.5-.6 1.5-1.5v-3c1.6-1.1 2.6-2.7 2.6-5.1 0-4.3-3.1-7.3-7.6-7.3z"/><g class="skcut"><circle cx="8.9" cy="10.6" r="2.1"/><circle cx="15.1" cy="10.6" r="2.1"/><path d="M12 12.8l-1.2 2.4h2.4z"/><path d="M10.2 16.6v2.6M12 16.6v2.6M13.8 16.6v2.6" fill="none" stroke-width="1"/></g>';
+const skullIcon = (cls = 'skull') => `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${SKULL}</svg>`;
 // Chain (24 x 24, stroke icon): two interlocked links.
 const FLOW_LINK = '<path d="M10 13.5a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 10.5a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>';
 const FLOW_CHEST = '<path d="M-6,-1 V4 a1,1 0 0 0 1,1 H5 a1,1 0 0 0 1,-1 V-1 Z" fill="currentColor"/><path d="M-6,-1 V-2 a3,3 0 0 1 3,-3 H3 a3,3 0 0 1 3,3 V-1 Z" fill="currentColor" opacity=".8"/><rect x="-1.1" y="-2" width="2.2" height="3" rx=".5" fill="#1b150c"/>';
@@ -765,7 +768,7 @@ function flowDetail(r) {
   const facts = stateRow + resultRows + treRow;
   return `<div class="scnhero" style="--lc:${laneColor(lane)}">${src ? `<div class="scnblur" style="background-image:url('${esc(src)}')"></div><img class="scnart" src="${esc(src)}" alt="">` : ''}
       <div class="scntt"><div class="scnno">${esc(s.n)}</div><h3 id="scnModalTitle">${esc(s.name)}</h3>
-      <div class="scntags">${lanesOf(s).map(l => `<span class="ltag" style="--lc:${laneColor(l)}">${esc(l)}</span>`).join('')}<span class="spill s${x.s}">${esc(SCN_STATE_NAME[x.s])}</span></div></div></div>
+      <div class="scntags">${lanesOf(s).map(l => `<span class="ltag" style="--lc:${laneColor(l)}">${esc(l)}</span>`).join('')}${s.boss ? `<span class="ltag bosstag">${skullIcon()}Boss</span>` : ''}<span class="spill s${x.s}">${esc(SCN_STATE_NAME[x.s])}</span></div></div></div>
     <div class="scnbody">${facts ? `<div class="scnfacts">${facts}</div>` : ''}<div class="scnlinks">
       <h4>Unlocks</h4>${links(s.unl || []) || '<span class="hint">no scenario</span>'}
       <h4>Unlocked by</h4>${links(unlockedBy(s.n)) || '<span class="hint">no scenario (event, reputation or quest)</span>'}</div></div>`;
@@ -794,11 +797,11 @@ function scenarios(r) {
   const { col, dir } = view.scnSort;
   if (SORT[col]) rows = [...rows].sort((x, y) => dir * cmp(SORT[col](x), SORT[col](y)) || SORT.n(x) - SORT.n(y));
   const sortTh = (k, l) => `<button type="button" class="sortbtn" data-scnsort="${k}" title="Sort by ${esc(l.toLowerCase())}">${esc(l)}${col === k ? (dir > 0 ? ' &#9650;' : ' &#9660;') : ''}</button>`;
-  const head = [sortTh('n', '#'), sortTh('name', 'Name'), sortTh('area', 'Area'), sortTh('state', 'State'), sortTh('l', 'Lv'),
+  const head = [sortTh('n', '#'), sortTh('name', 'Name'), sortTh('area', 'Scenario chain'), sortTh('state', 'State'), sortTh('l', 'Lv'),
     sortTh('p', '# Mercenaries'), sortTh('ch', 'Treasures'), sortTh('d', 'Date (completed)'), 'Unlocks', 'Unlocked by'];
   const filters = `<div class="filters">
     <select id="scnStatus"><option value="">All states</option>${SCN_STATE_NAME.map((n, i) => `<option value="${i}" ${view.scnStatus === String(i) ? 'selected' : ''}>${n}</option>`).join('')}</select>
-    <input id="scnSearch" type="search" placeholder="Search number, name, area" value="${esc(view.scnSearch)}">
+    <input id="scnSearch" type="search" placeholder="Search number, name, scenario chain" value="${esc(view.scnSearch)}">
     <span class="tbend">${scenarioRollerBtn(r)}</span></div>`;
   if (isPhone()) return filters + scnViewToggle(rows.length) + (rows.length ? `<div class="mlist">${rows.map(s => {
     // phone row: sticker thumbnail (a "?" while locked), number and name, storyline in its colour and the date, state
@@ -808,7 +811,7 @@ function scenarios(r) {
   }).join('')}</div>` : none);
   return filters + scnViewToggle(rows.length) + dataTable('scntable', head, rows.map(s => {
     const x = r.scn[String(s.n)] || { s: 0 };
-    return `<tr class="rowlink" data-flow="${s.n}" tabindex="0"><td>${esc(s.n)}</td><td>${esc(s.name)}</td><td>${esc(s.area ?? '')}</td><td><span class="spill s${x.s}">${SCN_STATE_NAME[x.s]}</span></td>
+    return `<tr class="rowlink" data-flow="${s.n}" tabindex="0"><td>${esc(s.n)}</td><td>${esc(s.name)}${s.boss ? ` ${skullIcon('skull tskull')}` : ''}</td><td>${esc(s.area ?? '')}</td><td><span class="spill s${x.s}">${SCN_STATE_NAME[x.s]}</span></td>
       <td>${esc(signed(x.l) ?? '')}</td>
       <td>${esc(x.p ?? '')}</td>
       <td>${scnTreasures(r, s).map(n => `<span class="trtag${r.decks.tre.includes(n) ? ' got' : ''}" title="Treasure ${n}: ${r.decks.tre.includes(n) ? 'taken' : 'still in the scenario'}">${n}</span>`).join('')}</td>

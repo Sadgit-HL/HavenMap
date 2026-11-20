@@ -58,6 +58,10 @@ CARD_FIX = {
     'voice-of-the-night': ('ns2', None),
     'lead-from-the-fron': ('sa', 'lead-from-the-front'),
 }
+# Boss scenarios: the skull on the box in the owner's GH2 Flow image (campaign_assets/scenario_flow.jpeg, lower left corner of the box).
+# Owner, 2026-11-20.
+BOSS_SCENARIOS = {8, 16, 20, 23, 24, 25, 26, 27, 29, 43, 50, 51, 52, 67, 80}
+
 # Forced links (red arrows of the owner's GH2 Flow sheet) the Secretariat keys by section (23B to 25, 25A and 25B to 27), which
 # the base numbers of the flow chart do not match: scenario -> forced next scenarios. Owner, 2026-11-20.
 FORCED_FIX = {23: [25], 25: [27]}
@@ -385,6 +389,8 @@ def main():
                     row['tre'] = tre[n]
                 if flow.get(n):
                     row['unl'] = flow[n]
+                if n in BOSS_SCENARIOS:
+                    row['boss'] = 1
                 forced = [f for f in sorted(set(g.get('forced', []) + FORCED_FIX.get(n, []))) if f in flow.get(n, [])]
                 if forced:
                     row['forced'] = forced
@@ -398,7 +404,7 @@ def main():
                                      "fields, keyed by slug instead of number). unl = scenarios it unlocks, read from the "
                                      "arrows of the group's own GH2 Flow chart in the workbook (the source of truth); init = "
                                      "available at the start and forced = forced links, both from Gloomhaven Secretariat's gh2e "
-                                     "data (AGPL-3.0); tre = the treasure tiles of the scenario (its map and its sections, same source, corrected "
+                                     "data (AGPL-3.0); boss = a boss scenario (skull in the owner's flow image, BOSS_SCENARIOS); tre = the treasure tiles of the scenario (its map and its sections, same source, corrected "
                                      "by the owner: TREASURE_FIX). "
                                      "data (AGPL-3.0). Scenarios unlocked by events, reputation or personal quests may have no "
                                      "incoming link. A pair of scenarios that share one physical sticker (23/24, 25/26) share "

@@ -39,4 +39,7 @@ export const tests = {
     assert.equal(forced.length, 13);
     for (const k of ['7>8', '23>25', '24>25', '25>27', '26>23', '33>34', '42>43', '46>51', '47>49', '48>50', '54>55', '55>56', '59>60']) assert.ok(forced.includes(k), k);
   },
+  'boss scenarios: the 15 with a skull in the flow image'() {
+    assert.deepEqual(SCENARIOS.filter(s => s.boss).map(s => s.n), [8, 16, 20, 23, 24, 25, 26, 27, 29, 43, 50, 51, 52, 67, 80]);
+  },
 };

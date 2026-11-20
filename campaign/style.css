@@ -335,6 +335,9 @@ button.schip:hover, button.schip:focus-visible { border-color:var(--accent); bor
 .trechip.got { border-color:var(--line); background:#1d1813; color:var(--muted); }
 .trechip.got svg { color:var(--ok); }
 .trechip.got:hover { border-color:#6b5a3c; }
+.skull { width:1em; height:1em; fill:var(--accent); vertical-align:-.14em; } .skull .skcut { fill:#120f0b; stroke:#120f0b; }
+.tskull { margin-left:5px; } .ltag.bosstag::before { display:none; } .ltag.bosstag .skull { width:13px; height:13px; }
+.fboss { pointer-events:none; } .fboss circle { fill:#120f0b; stroke:var(--accent); stroke-width:1.5; } .fboss path { fill:var(--accent); } .fboss .skcut { fill:#120f0b; stroke:#120f0b; }
 .flink { pointer-events:none; } .flink circle { fill:#120f0b; stroke:var(--accent); stroke-width:1.5; }
 .flink .flinkicon { fill:none; stroke:var(--accent); stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round; }
 .fnode .ftre circle { fill:#120f0b; stroke:var(--accent); stroke-width:1.5; }
