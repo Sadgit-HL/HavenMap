@@ -40,7 +40,7 @@ import { heroCatalog, heroPerkClass } from '../scripts/amd/heroDeck.js';
 import { PERSONAL_QUESTS } from '../scripts/games/gh2_quests.js';
 import ghConfig from '../scripts/games/gh.js';
 import { GH_DECKS } from '../scripts/games/gh_decks.js';
-import { buildFlow, LANES, laneOf, LANE_COLOR } from '../scripts/campaign/flow.js?v=5';
+import { buildFlow, LANES, laneOf, lanesOf, LANE_COLOR } from '../scripts/campaign/flow.js?v=7';
 import { RESOURCES, RESOURCE_GAMES } from '../scripts/games/resources.js';
 import { characterTraits } from '../scripts/campaign/outcomes.js';
 import { SPECIAL_TRAITS, specialName } from '../scripts/campaign/traits.js';
@@ -465,7 +465,7 @@ function flowPage(r) {
     vis = new Set(SCENARIOS.filter(s => st(s.n) > 0).map(s => s.n));
     for (const s of SCENARIOS) if (st(s.n) === 1 || st(s.n) === 2) for (const t of s.unl || []) vis.add(t);
   }
-  if (view.flowLane) vis = new Set([...vis].filter(n => laneOf(byN.get(n)) === view.flowLane));
+  if (view.flowLane) vis = new Set([...vis].filter(n => lanesOf(byN.get(n)).includes(view.flowLane)));
   const g = buildFlow(SCENARIOS, vis);
   const full = view.flowFull;
   const z = view.flowZoom === 'fit' ? Math.min(3, Math.max(0.3, ((full ? window.innerWidth : main.clientWidth - 32) - 4) / g.width)) : FLOW_ZOOM[view.flowZoom];
@@ -501,6 +501,8 @@ function flowPage(r) {
   // a chest in the upper left corner while an unlocked scenario still has treasure that nobody took (with the number left when more than one)
   const treLeft = (k, hide) => { const t = byN.get(k)?.tre || [], left = hide ? 0 : t.filter(x => !r.decks.tre.includes(x)).length;
     return left ? `<g class="ftre" transform="translate(13,13)"><title>${left} treasure${left > 1 ? 's' : ''} left</title><circle r="9"/><g class="fchest">${FLOW_CHEST}</g>${left > 1 ? `<text x="9" y="9" class="ftren">${left}</text>` : ''}</g>` : ''; };
+  // a chain on the middle of each forced link (no city phase after the scenario, the next one must be played)
+  const forcedMarks = g.edges.filter(e => e.forced).map(e => `<g class="flink" transform="translate(${e.mx},${e.my})"><title>Forced link: no city phase, ${e.to} must be played next</title><circle r="13"/><g transform="scale(.74) translate(-12,-12)" class="flinkicon">${FLOW_LINK}</g></g>`).join('');
   const nodes = g.nodes.map(n => {
     const s = byN.get(n.n), hide = masked(n.n), name = String(s.name || ''), src = hide ? '' : scnImg(s);
     const art = hide ? `<text class="fq" x="${n.w / 2}" y="${(n.h - BAND) / 2 + 12}" text-anchor="middle">?</text>`
@@ -508,15 +510,17 @@ function flowPage(r) {
     const label = hide ? '' : `<text class="fname" x="9" y="${n.h - 10}"><tspan class="fnum">${esc(s.n)}</tspan> ${esc(cutText(name, n.n >= 10 ? 17 : 18))}</text>`;
     return `<g class="fnode s${st(n.n)}${hide ? ' mask' : ''}${view.scnSel === n.n ? ' sel' : ''}${flowFound === n.n && !hide ? ' found' : ''}" data-flow="${n.n}" tabindex="0" role="button" transform="translate(${n.x},${n.y})"><title>${hide ? 'Locked' : esc(`${s.n} ${name} (${SCN_STATE_NAME[st(n.n)]})`)}</title>
       <rect class="fbox" width="${n.w}" height="${n.h}" rx="10"/>${art}
-      <path class="fband" d="M1,${n.h - BAND} H${n.w - 1} V${n.h - 10} a9,9 0 0 1 -9,9 H10 a9,9 0 0 1 -9,-9 Z"/>${hide ? '' : `<rect x="1" y="${n.h - BAND}" width="${n.w - 2}" height="3" fill="${laneColor(laneOf(s))}"/>`}${label}
+      <path class="fband" d="M1,${n.h - BAND} H${n.w - 1} V${n.h - 10} a9,9 0 0 1 -9,9 H10 a9,9 0 0 1 -9,-9 Z"/>${hide ? '' : laneStripe(lanesOf(s), 1, n.h - BAND, n.w - 2)}${label}
       <circle class="fdot" cx="${n.w - 13}" cy="13" r="9"/><g class="ficon" transform="translate(${n.w - 19},7)">${FLOW_ICON[hide ? 0 : st(n.n)]}</g>${treLeft(n.n, hide)}</g>`;
   }).join('');
   const svg = `<svg class="flowsvg" width="${Math.round(g.width * z)}" height="${Math.round(g.height * z)}" viewBox="0 0 ${g.width} ${g.height}" role="img" aria-label="Scenario flowchart">
-    <defs><marker id="farrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="farrowhead"/></marker><marker id="farrowp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="farrowhead pth"/></marker></defs>${lanes}${edges}${nodes}${labels}</svg>`;
+    <defs><marker id="farrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="farrowhead"/></marker><marker id="farrowp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="farrowhead pth"/></marker></defs>${lanes}${edges}${nodes}${forcedMarks}${labels}</svg>`;
   if (full) return `<div class="flowstage full"><div class="flowwrap full"><div class="flowfsbar">${find}${zoomBtns}${fsBtn}${scenarioRollerBtn(r)}${legend}</div>${svg}</div>${mini}</div>`;
   return filters.replace(/<\/div>$/, `${legend}</div>`) + scnViewToggle() + `<div class="flowstage"><div class="flowwrap">${svg}</div>${mini}</div>`;
 }
 const cutText = (t, max) => (t.length > max ? `${t.slice(0, max - 1).trimEnd()}…` : t);
+// The 3 px storyline stripe of a box: one colour, or the two storylines side by side (first colour left).
+const laneStripe = (ls, x, y, w) => ls.map((l, i) => `<rect x="${x + i * w / ls.length}" y="${y}" width="${w / ls.length}" height="3" fill="${laneColor(l)}"/>`).join('');
 const laneColor = name => LANE_COLOR[name] || LANE_COLOR.Other;
 // Sticker art of a scenario: the local copy under images/, else the remote address.
 const scnImg = s => (s?.img ? imageFile(s.img, '../') || s.img : '');
@@ -525,6 +529,8 @@ const scnTreasures = (r, s) => ((r.scn[String(s.n)]?.s ?? 0) === 2 ? [...new Set
 // Treasure chips of the scenario page and the chest mark of the flowchart boxes.
 const TRE_CHEST = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M3 10.5V18a1.5 1.5 0 0 0 1.5 1.5h15A1.5 1.5 0 0 0 21 18v-7.5z" fill="currentColor" opacity=".9"/><path d="M3 10.5V9a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v1.5z" fill="currentColor"/><rect x="10.3" y="9.3" width="3.4" height="4.2" rx=".8" fill="#1b150c"/><path d="M3 10.5h18" stroke="#1b150c" stroke-width="1.2"/></svg>';
 const TRE_TAKEN = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
+// Chain (24 x 24, stroke icon): two interlocked links.
+const FLOW_LINK = '<path d="M10 13.5a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 10.5a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>';
 const FLOW_CHEST = '<path d="M-6,-1 V4 a1,1 0 0 0 1,1 H5 a1,1 0 0 0 1,-1 V-1 Z" fill="currentColor"/><path d="M-6,-1 V-2 a3,3 0 0 1 3,-3 H3 a3,3 0 0 1 3,3 V-1 Z" fill="currentColor" opacity=".8"/><rect x="-1.1" y="-2" width="2.2" height="3" rx=".5" fill="#1b150c"/>';
 // State icons in the corner dot of a box (12x12, currentColor = the state colour): locked, unlocked (available), completed, locked out.
 const FLOW_ICON = [
@@ -759,7 +765,7 @@ function flowDetail(r) {
   const facts = stateRow + resultRows + treRow;
   return `<div class="scnhero" style="--lc:${laneColor(lane)}">${src ? `<div class="scnblur" style="background-image:url('${esc(src)}')"></div><img class="scnart" src="${esc(src)}" alt="">` : ''}
       <div class="scntt"><div class="scnno">${esc(s.n)}</div><h3 id="scnModalTitle">${esc(s.name)}</h3>
-      <div class="scntags"><span class="ltag" style="--lc:${laneColor(lane)}">${esc(lane)}</span><span class="spill s${x.s}">${esc(SCN_STATE_NAME[x.s])}</span></div></div></div>
+      <div class="scntags">${lanesOf(s).map(l => `<span class="ltag" style="--lc:${laneColor(l)}">${esc(l)}</span>`).join('')}<span class="spill s${x.s}">${esc(SCN_STATE_NAME[x.s])}</span></div></div></div>
     <div class="scnbody">${facts ? `<div class="scnfacts">${facts}</div>` : ''}<div class="scnlinks">
       <h4>Unlocks</h4>${links(s.unl || []) || '<span class="hint">no scenario</span>'}
       <h4>Unlocked by</h4>${links(unlockedBy(s.n)) || '<span class="hint">no scenario (event, reputation or quest)</span>'}</div></div>`;
@@ -797,7 +803,7 @@ function scenarios(r) {
   if (isPhone()) return filters + scnViewToggle(rows.length) + (rows.length ? `<div class="mlist">${rows.map(s => {
     // phone row: sticker thumbnail (a "?" while locked), number and name, storyline in its colour and the date, state
     const x = r.scn[String(s.n)] || { s: 0 }, lane = laneOf(s), src = x.s ? scnImg(s) : '';
-    const sub = `<span class="mlane" style="--lc:${laneColor(lane)}">${esc(lane)}</span>${x.d ? ` &middot; ${esc(x.d)}` : ''}`;
+    const sub = `${lanesOf(s).map(l => `<span class="mlane" style="--lc:${laneColor(l)}">${esc(l)}</span>`).join(' ')}${x.d ? ` &middot; ${esc(x.d)}` : ''}`;
     return `<button type="button" class="mrow scnmrow s${x.s}" data-flow="${s.n}" style="--lc:${laneColor(lane)}">${src ? `<img class="mstk" src="${esc(src)}" alt="" loading="lazy">` : '<span class="mstk schq">?</span>'}<span class="mmain"><b><span class="mnum2">${esc(s.n)}</span> ${esc(s.name)}</b><small>${sub}</small></span><span class="spill s${x.s}">${SCN_STATE_NAME[x.s]}</span></button>`;
   }).join('')}</div>` : none);
   return filters + scnViewToggle(rows.length) + dataTable('scntable', head, rows.map(s => {

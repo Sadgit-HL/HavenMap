@@ -39,7 +39,11 @@ ITEM_SLOT_FIX = {169: '2H', 170: 'body'}
 # generated file on 2026-11-09 (commit 0580e6e, checked against the Secretariat) and moved here. 13 Icecrag Ascent has no
 # area; it unlocks only Voice and Drake scenarios (14, 29, 32). 1 Bandit Camp, 2 Ruinous Crypt and 3 Frozen Hollow
 # are Guards. Owner, 2026-11-18.
-SCENARIO_AREA_FIX = {1: 'Guards', 2: 'Guards', 3: 'Guards', 5: 'Hail', 11: 'Demons', 13: 'Voice and Drake'}
+# The owner's GH2 Flow image (campaign_assets/scenario_flow.jpeg) is the source of truth for the storylines (2026-11-20): a box in two
+# colours belongs to two storylines, written first colour first ("Guards/Hail"). Read from the border colours of every box.
+SCENARIO_AREA_FIX = {1: 'Guards/Merchants', 2: 'Guards/Demons', 3: 'Guards/Hail', 5: 'Guards/Hail', 7: 'Merchants', 9: 'Guards/Hail',
+                     11: 'Demons', 13: 'Guards/Voice and Drake', 23: 'Guards/Demons', 25: 'Guards/Merchants', 27: 'Guards/Merchants',
+                     29: 'Guards/Voice and Drake', 79: 'Guards/Merchants', 80: 'Guards/Merchants'}
 
 # Corrections to the Card DB's ability cards: DB slug -> (class code, corrected slug or None). Found 2026-11-08 by comparing
 # with the Secretariat data and the asset repository: these level 9 cards sit under the NEXT class's rows in the Card DB
@@ -54,6 +58,9 @@ CARD_FIX = {
     'voice-of-the-night': ('ns2', None),
     'lead-from-the-fron': ('sa', 'lead-from-the-front'),
 }
+# Forced links (red arrows of the owner's GH2 Flow sheet) the Secretariat keys by section (23B to 25, 25A and 25B to 27), which
+# the base numbers of the flow chart do not match: scenario -> forced next scenarios. Owner, 2026-11-20.
+FORCED_FIX = {23: [25], 25: [27]}
 ABILITY_SOURCES = ('gh2', 'mp')          # editions whose class ability cards the campaign can use
 
 
@@ -378,7 +385,7 @@ def main():
                     row['tre'] = tre[n]
                 if flow.get(n):
                     row['unl'] = flow[n]
-                forced = [f for f in g.get('forced', []) if f in flow.get(n, [])]
+                forced = [f for f in sorted(set(g.get('forced', []) + FORCED_FIX.get(n, []))) if f in flow.get(n, [])]
                 if forced:
                     row['forced'] = forced
                 scn.append(row)

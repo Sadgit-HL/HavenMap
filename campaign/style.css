@@ -335,6 +335,8 @@ button.schip:hover, button.schip:focus-visible { border-color:var(--accent); bor
 .trechip.got { border-color:var(--line); background:#1d1813; color:var(--muted); }
 .trechip.got svg { color:var(--ok); }
 .trechip.got:hover { border-color:#6b5a3c; }
+.flink { pointer-events:none; } .flink circle { fill:#120f0b; stroke:var(--accent); stroke-width:1.5; }
+.flink .flinkicon { fill:none; stroke:var(--accent); stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round; }
 .fnode .ftre circle { fill:#120f0b; stroke:var(--accent); stroke-width:1.5; }
 .fnode .ftre .fchest { color:var(--accent); }
 .fnode .ftre .ftren { fill:#120f0b; font-size:9px; font-weight:800; paint-order:stroke; stroke:var(--accent); stroke-width:3px; }

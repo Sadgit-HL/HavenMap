@@ -11,12 +11,15 @@
 // last. "Other" is empty since then and stays as the fallback for a scenario with an unknown area.
 export const LANES = ['Merchants', 'Demons', 'Hail', 'Guards', 'Voice and Drake', 'Other', 'Sewers', 'The Gloom', 'PQ', 'Random', 'Puzzle', 'Events'];
 
-// Storyline of a scenario: the first part of its area; "Intro/Voice and Drake" and the typo "Into/Hail" take the second part.
-export function laneOf(s) {
-  const parts = String(s.area || '').split('/').map(x => x.trim()).filter(Boolean);
-  const p = /^(intro|into)$/i.test(parts[0] || '') ? parts[1] : parts[0];
-  return LANES.includes(p) ? p : 'Other';
+// Storylines of a scenario (1 or 2, first colour first): the parts of its `area` that are lanes. "Intro/Voice and Drake" and the
+// typo "Into/Hail" lose their first part. A scenario in two storylines is drawn in the lane of one of them (see buildFlow).
+export function lanesOf(s) {
+  const parts = String(s.area || '').split('/').map(x => x.trim()).filter(Boolean).filter(p => !/^(intro|into)$/i.test(p));
+  const l = [...new Set(parts.filter(p => LANES.includes(p)))].slice(0, 2);
+  return l.length ? l : ['Other'];
 }
+// First storyline (the colour on the left of a two-colour box).
+export function laneOf(s) { return lanesOf(s)[0]; }
 
 // Storyline colours (2026-11-18): the hues of the owner's GH2 Flow sheet, darkened for the dark page.
 export const LANE_COLOR = { Merchants: '#5fae8a', Demons: '#d0483c', Hail: '#3f80c8', Guards: '#d8b545', 'Voice and Drake': '#b8679a',
@@ -29,7 +32,7 @@ export const BOX = { w: 150, h: 128, colGap: 46, rowGap: 12, laneGap: 12, labelW
 buildFlow(scenarios, visible)
   scenarios  [{ n, name, area, unl: [n] }]
   visible    Set of scenario numbers to draw (links to scenarios outside the set are dropped)
-Returns { nodes: [{ n, x, y, w, h, lane, layer }], edges: [{ from, to, d }], lanes: [{ name, y, h }], width, height }.
+Returns { nodes: [{ n, x, y, w, h, lane, lanes, layer }], edges: [{ from, to, d, mx, my, forced }], lanes: [{ name, y, h }], width, height }.
 */
 export function buildFlow(scenarios, visible, order = LANES) {
   const { w, h, colGap, rowGap, laneGap, labelW, pad, gridCols } = BOX;
@@ -49,11 +52,23 @@ export function buildFlow(scenarios, visible, order = LANES) {
   const preds = new Map(nodes.map(s => [s.n, []]));
   for (const [a, b] of edges) preds.get(b).push(a);
 
+  // Lane of each scenario. One storyline: that lane. Two: the lane that holds most of its linked scenarios (their lane, or for a
+  // two-storyline neighbour the one chosen so far), a tie goes to the first colour. Three passes settle chains of such scenarios.
+  const lane = new Map(nodes.filter(s => lanesOf(s).length < 2).map(s => [s.n, laneOf(s)]));   // two-storyline scenarios are undecided at first
+  const near = new Map(nodes.map(s => [s.n, []]));
+  for (const [a, b] of edges) { near.get(a).push(b); near.get(b).push(a); }
+  for (let pass = 0; pass < 4; pass++) for (const s of nodes) {
+    const ls = lanesOf(s);
+    if (ls.length < 2) continue;
+    const cnt = ls.map(l => near.get(s.n).filter(k => lane.get(k) === l).length);
+    lane.set(s.n, cnt[1] > cnt[0] ? ls[1] : ls[0]);
+  }
+
   const placed = new Map();                                   // n -> { n, x, y, w, h, lane, layer }
   const lanes = [];
   let top = pad;
   for (const name of order) {
-    const inLane = nodes.filter(s => laneOf(s) === name);
+    const inLane = nodes.filter(s => lane.get(s.n) === name);
     if (!inLane.length) continue;
     const conn = inLane.filter(s => linked.has(s.n)), free = inLane.filter(s => !linked.has(s.n));
     // Rows of the linked nodes: per column, ordered by the mean row of the predecessors already placed (fewer crossings).
@@ -67,10 +82,10 @@ export function buildFlow(scenarios, visible, order = LANES) {
       list.sort((a, b) => key(a) - key(b) || a.n - b.n);
       list.forEach((s, i) => { rowOf.set(s.n, i); rows = Math.max(rows, i + 1); });
     }
-    for (const s of conn) placed.set(s.n, { n: s.n, x: labelW + layer.get(s.n) * (w + colGap), y: top + rowOf.get(s.n) * (h + rowGap), w, h, lane: name, layer: layer.get(s.n) });
+    for (const s of conn) placed.set(s.n, { n: s.n, x: labelW + layer.get(s.n) * (w + colGap), y: top + rowOf.get(s.n) * (h + rowGap), w, h, lane: name, lanes: lanesOf(s), layer: layer.get(s.n) });
     let y = top + rows * (h + rowGap);
     free.sort((a, b) => a.n - b.n).forEach((s, i) => {
-      placed.set(s.n, { n: s.n, x: labelW + (i % gridCols) * (w + rowGap), y: y + Math.floor(i / gridCols) * (h + rowGap), w, h, lane: name, layer: -1 });
+      placed.set(s.n, { n: s.n, x: labelW + (i % gridCols) * (w + rowGap), y: y + Math.floor(i / gridCols) * (h + rowGap), w, h, lane: name, lanes: lanesOf(s), layer: -1 });
     });
     const gridRows = Math.ceil(free.length / gridCols);
     const height = Math.max(h, (rows + gridRows) * (h + rowGap) - rowGap);
@@ -78,11 +93,13 @@ export function buildFlow(scenarios, visible, order = LANES) {
     top += height + laneGap + 8;
   }
   const out = [...placed.values()];
+  const byN = new Map(nodes.map(s => [s.n, s]));
   const edgeOut = edges.map(([a, b]) => {
     const p = placed.get(a), q = placed.get(b);
     const x1 = p.x + w, y1 = p.y + h / 2, x2 = q.x, y2 = q.y + h / 2;
     const dx = Math.max(24, Math.abs(x2 - x1) / 2);
-    return { from: a, to: b, d: `M${x1},${y1} C${x1 + dx},${y1} ${x2 - dx},${y2} ${x2},${y2}` };
+    // (mx, my) is the middle of the curve (both control points are level with their end points); forced = a forced link
+    return { from: a, to: b, d: `M${x1},${y1} C${x1 + dx},${y1} ${x2 - dx},${y2} ${x2},${y2}`, mx: (x1 + x2) / 2, my: (y1 + y2) / 2, forced: (byN.get(a).forced || []).includes(b) };
   });
   const width = Math.max(labelW + w + pad, ...out.map(n => n.x + w + pad));
   return { nodes: out, edges: edgeOut, lanes, width, height: Math.max(top, h + 2 * pad) };
