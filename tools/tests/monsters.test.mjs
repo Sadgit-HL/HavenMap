@@ -153,11 +153,20 @@ export const tests = {
     const none = emptyRecord();
     assert.equal(monDrawAll(none, () => 0), none, 'no monster types: nothing to draw');
   },
-  'History: a random draw is logged as drew, with the card'() {
+  'History: a draw is logged as drew, with the card and how it was drawn'() {
     const r = withType(emptyRecord(), plain.id), a = monDraw(r, slug, () => 0), lines = describeChange(r, a);
     assert.equal(lines.length, 1);
     assert.equal(lines[0].kind, 'Ability deck');
-    assert.match(lines[0].d, /drew /);
+    assert.match(lines[0].d, /drew card \d+ \(initiative \d+\)$/, 'no marker without a note');
+    assert.match(describeChange(r, a, { draw: 'random' })[0].d, /drew card \d+ \(initiative \d+\) \(random\)$/);
+    assert.match(describeChange(r, a, { draw: 'BGG roll' })[0].d, /\(BGG roll\)$/);
+    const back = describeChange(a, r, { draw: 'random' });                                  // a card put back is not a draw: no marker
+    assert.ok(back.length && back.every(l => !/random/.test(l.d)));
+  },
+  'History: Draw cards marks every deck it drew for'() {
+    const r = withType(withType(emptyRecord(), archers[0]), plain.id), lines = describeChange(r, monDrawAll(r, () => 0), { draw: 'random' });
+    assert.equal(lines.length, 2);
+    assert.ok(lines.every(l => /drew card .*\(random\)$/.test(l.d)));
   },
   'edits do not change the input'() {
     const r = withType(emptyRecord(), plain.id), snap = JSON.stringify(r);

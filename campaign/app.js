@@ -59,7 +59,7 @@ let sub = '';                      // sub-tab under Mercenaries: a character id 
 const editPages = new Set();        // pages (top-level tabs) currently in edit mode; each page has its own Edit button
 let editing = false;               // derived in render(): is the visible page being edited
 const history = [];                                   // own edits for undo, newest last: { before, after } (records)
-const view = { flowFull: false, flowPos: null, scnView: 'table', logKind: 'all', logUser: 'all', flowShow: 'progress', flowLane: '', flowZoom: 'm', scnSel: null, scnStatus: '', scnSearch: '', scnSort: { col: '', dir: 1 }, itemSlot: '', itemSearch: '', itemGold: '', itemShow: 'unlocked', itemView: 'list', itemSel: null, itemSize: 'm', itemSort: { col: '', dir: 1 }, cardType: 'abilities', cardSlot: '', cardChk: '', cardKind: 'city', cardSide: 'front', cardDeck: '', cardMon: '', cardMLv: '', cardShow: 'unlocked', cardCls: '', cardLv: '', cardSearch: '', cardSize: 's', cardStk: true };   // itemView: 'list' | 'grid'
+const view = { flowFull: false, flowPos: null, scnView: 'table', logKind: 'all', logUser: 'all', logTab: 'all', flowShow: 'progress', flowLane: '', flowZoom: 'm', scnSel: null, scnStatus: '', scnSearch: '', scnSort: { col: '', dir: 1 }, itemSlot: '', itemSearch: '', itemGold: '', itemShow: 'unlocked', itemView: 'list', itemSel: null, itemSize: 'm', itemSort: { col: '', dir: 1 }, cardType: 'abilities', cardSlot: '', cardChk: '', cardKind: 'city', cardSide: 'front', cardDeck: '', cardMon: '', cardMLv: '', cardShow: 'unlocked', cardCls: '', cardLv: '', cardSearch: '', cardSize: 's', cardStk: true };   // itemView: 'list' | 'grid'
 
 // Level order of ability cards: 1, X (the level 1.1 cards), 2 ... 9, then M (mastery).
 const lvRank = lv => ({ X: 1.5, M: 99, a: 1.1, b: 1.2 }[lv] ?? Number(lv));   // a and b: the Jaws of the Lion level A and B cards
@@ -133,16 +133,16 @@ const USER_KEY = 'havenmap.campaign.user';
 function userName() {
   try { return (localStorage.getItem(USER_KEY) || '').trim() || 'Unknown'; } catch { return 'Unknown'; }
 }
-function withLog(from, to, kindPrefix = '') {
+function withLog(from, to, kindPrefix = '', draw = '') {
   const t = Date.now(), u = userName();
-  const entries = describeChange(from, to).map(e => ({ t, u, tab: e.tab, kind: kindPrefix + e.kind, d: e.d }));
+  const entries = describeChange(from, to, { draw }).map(e => ({ t, u, tab: e.tab, kind: kindPrefix + e.kind, d: e.d }));
   return entries.length ? { ...to, log: foldLog(from.log || [], entries).slice(-LOG_MAX) } : { ...to, log: from.log || [] };
 }
-function commit(next) {
+function commit(next, draw = '') {                                                   // draw: how a monster ability card was drawn, for History
   if (next === record) return;
   if (pmset.autosort) for (const c of next.chars) if (c.hord) next = ed.sortHand(next, c.id, 'ini');   // setting: the hand always follows the initiative
   const before = record;
-  record = withLog(record, next);
+  record = withLog(record, next, '', draw);
   history.push({ before, after: record });
   if (history.length > 50) history.shift();
   persist();
@@ -387,8 +387,9 @@ function historyPage(r) {
   if (!log.length) return '<div class="empty">No edits recorded yet. Edits made from now on are listed here, by page.</div>';
   const kinds = [...new Set(log.map(e => e.kind))].sort(), f = kinds.includes(view.logKind) ? view.logKind : 'all';
   const users = [...new Set(log.map(e => e.u).filter(Boolean))].sort((a, b) => a.localeCompare(b)), fu = users.includes(view.logUser) ? view.logUser : 'all';
-  const shown = log.filter(e => (f === 'all' || e.kind === f) && (fu === 'all' || e.u === fu));
-  const bar = `<div class="histbar filters"><label for="logfilter">Show</label><select id="logfilter" data-logkind><option value="all">All</option>${kinds.map(k => `<option${k === f ? ' selected' : ''}>${esc(k)}</option>`).join('')}</select>${users.length ? `<label for="loguser">Player</label><select id="loguser" data-loguser><option value="all">All</option>${users.map(u => `<option value="${esc(u)}"${u === fu ? ' selected' : ''}>${esc(u)}</option>`).join('')}</select>` : ''}<span class="hn">${shown.length} entries</span></div>`;
+  const tabsOf = LOG_TABS.filter(t => log.some(e => e.tab === t)), ft = tabsOf.includes(view.logTab) ? view.logTab : 'all';       // the page tabs that have entries
+  const shown = log.filter(e => (ft === 'all' || e.tab === ft) && (f === 'all' || e.kind === f) && (fu === 'all' || e.u === fu));
+  const bar = `<div class="histbar filters"><label for="logtab">Tab</label><select id="logtab" data-logtab><option value="all">All</option>${tabsOf.map(t => `<option${t === ft ? ' selected' : ''}>${esc(t)}</option>`).join('')}</select><label for="logfilter">Show</label><select id="logfilter" data-logkind><option value="all">All</option>${kinds.map(k => `<option${k === f ? ' selected' : ''}>${esc(k)}</option>`).join('')}</select>${users.length ? `<label for="loguser">Player</label><select id="loguser" data-loguser><option value="all">All</option>${users.map(u => `<option value="${esc(u)}"${u === fu ? ' selected' : ''}>${esc(u)}</option>`).join('')}</select>` : ''}<span class="hn">${shown.length} entries</span></div>`;
   if (!shown.length) return `${bar}<div class="empty">No changes match.</div>`;
   const groups = LOG_TABS.map(tabName => {
     const list = shown.filter(e => e.tab === tabName).reverse();
@@ -2350,6 +2351,7 @@ registerMenu({
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && pm.modal) { pm.modal = null; render(); } });
 main.addEventListener('change', e => {
   if (e.target.matches?.('[data-histkind]')) { pm.histKind = e.target.value; render(); }
+  else if (e.target.matches?.('[data-logtab]')) { view.logTab = e.target.value; render(); }
   else if (e.target.matches?.('[data-logkind]')) { view.logKind = e.target.value; render(); }
   else if (e.target.matches?.('[data-loguser]')) { view.logUser = e.target.value; render(); }
   else if (e.target.matches?.('[data-mastery]')) commit(ed.setMastery(record, e.target.dataset.char, Number(e.target.dataset.mastery), e.target.checked));
@@ -2701,14 +2703,18 @@ main.addEventListener('click', async e => {
   if (q('[data-monamg]')) { monView.amg = d('[data-monamg]').monamg === 'a' ? 'a' : 'm'; monView.amEdit = false; render(); return; }
   if (q('[data-monimb]')) { commit(ed.monImbue(record, Number(d('[data-monimb]').monimb))); return; }
   if (q('[data-mremove]')) { commit(ed.monRemoveType(record, Number(d('[data-mremove]').mremove))); return; }
-  if (q('[data-mdraw]')) { commit(ed.monDraw(record, d('[data-mdraw]').mdraw)); return; }
-  if (q('[data-mdrawall]')) { commit(ed.monDrawAll(record)); return; }
+  if (q('[data-mdraw]')) { commit(ed.monDraw(record, d('[data-mdraw]').mdraw), 'random'); return; }
+  if (q('[data-mdrawall]')) { commit(ed.monDrawAll(record), 'random'); return; }
   if (q('[data-mshuffle]')) { commit(ed.monDeck(record, d('[data-mshuffle]').mshuffle, 'shuffle')); return; }
   if (q('[data-code]')) { copyCodeButton(q('[data-code]')); return; }
   if (q('[data-mcode]')) { const b = q('[data-mcode]'); if (!b.disabled) copyRollerCode(b, b.dataset.mcode); return; }
   if (q('[data-mdisc]')) { const x = d('[data-mdisc]'); commit(ed.monDeck(record, x.mslug, 'discard', Number(x.mdisc))); return; }
   const card = q('.mab[data-mcard]');
-  if (card) { const n = Number(card.dataset.mcard), slug = card.dataset.mslug; commit(ed.monDeck(record, slug, monDeckState(monOf(record), slug).deck.includes(n) ? 'draw' : 'back', n)); return; }
+  if (card) {                                                                                // a card marked by hand: drawn (the result of a BGG roll) or put back
+    const n = Number(card.dataset.mcard), slug = card.dataset.mslug, draw = monDeckState(monOf(record), slug).deck.includes(n);
+    commit(ed.monDeck(record, slug, draw ? 'draw' : 'back', n), draw ? 'BGG roll' : '');
+    return;
+  }
   if (q('[data-monamopen]')) { const open = monView.amOpen || monView.amEdit; monView.amOpen = !open; if (open) monView.amEdit = false; render(); return; }
   if (q('[data-mamdraw]')) { commit(ed.monAm(record, g, 'draw', d('[data-mamdraw]').mamdraw)); return; }
   if (q('.monamhd [data-amact="shuffle"]')) { commit(ed.monAm(record, g, 'shuffle')); return; }

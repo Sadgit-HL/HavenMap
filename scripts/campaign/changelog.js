@@ -72,7 +72,9 @@ export function foldLog(log, entries, windowMs = 4000) {
   return out;
 }
 
-export function describeChange(a, b) {
+// opts.draw names how a card was drawn in this change ('random' for the app's own pick, 'BGG roll' for a card marked by hand); it is added to
+// the "drew" lines of the monster ability decks.
+export function describeChange(a, b, opts = {}) {
   const out = [];
   const add = (tab, kind, d) => out.push({ tab, kind, d });
 
@@ -256,7 +258,7 @@ export function describeChange(a, b) {
   for (const k of keys(a.resLinks, b.resLinks)) {
     if (a.resLinks?.[k] !== b.resLinks?.[k]) add('Resources', 'Link', `${k.replace('|', ' / ')} ${b.resLinks?.[k] ? 'set' : 'cleared'}`);
   }
-  if (!same(a.mon, b.mon)) describeMonsters(monOf(a), monOf(b), add);
+  if (!same(a.mon, b.mon)) describeMonsters(monOf(a), monOf(b), add, opts.draw);
   for (const k of keys(a, b)) if (!HANDLED.has(k) && !same(a[k], b[k])) add('Overview', 'Other', `${k} changed`);
   return out;
 }
@@ -306,7 +308,7 @@ function describeHeroDeck(c, sa, sb) {
 
 // Monsters tab: level, round, types, ability decks (cards drawn, discarded, returned, shuffles), the modifier decks (cards drawn,
 // bless and curse, edits, imbuement).
-function describeMonsters(a, b, add) {
+function describeMonsters(a, b, add, how = '') {
   const name = id => monsterById(id)?.title.replace(/\b\w/g, ch => ch.toUpperCase()) || `#${id}`;
   const deckName = slug => slug.replace(/-/g, ' ').replace(/\b\w/g, ch => ch.toUpperCase());
   if (a.round !== b.round) add('Monsters', 'Round', `Round ${a.round} to ${b.round}`);
@@ -316,7 +318,7 @@ function describeMonsters(a, b, add) {
   for (const slug of keys(a.decks, b.decks)) {
     const x = deckState(a, slug), y = deckState(b, slug), card = n => `card ${n} (initiative ${deckCard(slug, n)?.init ?? '?'})`;
     if (!b.decks[slug] && a.decks[slug]) { add('Monsters', 'Ability deck', `${deckName(slug)}: deck shuffled`); continue; }
-    y.active.filter(n => !x.active.includes(n)).forEach(n => add('Monsters', 'Ability deck', `${deckName(slug)}: drew ${card(n)}`));
+    y.active.filter(n => !x.active.includes(n)).forEach(n => add('Monsters', 'Ability deck', `${deckName(slug)}: drew ${card(n)}${how ? ` (${how})` : ''}`));
     y.deck.filter(n => !x.deck.includes(n)).forEach(n => add('Monsters', 'Ability deck', `${deckName(slug)}: ${card(n)} back to the deck`));
     y.discard.filter(n => !x.discard.includes(n) && !x.active.includes(n)).forEach(n => add('Monsters', 'Ability deck', `${deckName(slug)}: ${card(n)} discarded`));
   }
