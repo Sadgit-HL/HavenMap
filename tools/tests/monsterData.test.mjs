@@ -35,9 +35,10 @@ export const tests = {
     }
     assert.equal(n, 576);
   },
-  'monster data: the standee counts differ in three places (lurker soldier, night demon, vermling scout), to be settled by the owner'() {
-    const diff = Object.entries(gh.monsterStats).filter(([name, st]) => st.count !== undefined && GH2_MONSTERS[name.replace(/ /g, '-')].count !== st.count).map(([name]) => name);
-    assert.deepEqual(diff.sort(), ['lurker soldier', 'night demon', 'vermling scout']);
+  'monster data: the standee counts agree with scripts/games/gh.js (corrected 2026-11-21: lurker soldier 6, night demon 6, vermling scout 10)'() {
+    for (const [name, st] of Object.entries(gh.monsterStats)) {
+      if (st.count !== undefined) assert.equal(GH2_MONSTERS[name.replace(/ /g, '-')].count, st.count, name);
+    }
   },
   'monster data: the 35 area patterns of the decks are connected shapes (checks the hex conversion), 26 of them melee'() {
     assert.equal(areas.length, 35);

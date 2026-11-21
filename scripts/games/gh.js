@@ -473,7 +473,7 @@ const MONSTER_STATS = {
   },
 
   'lurker soldier': {
-    count: 10,
+    count: 6,
     levels: {
       0: { normal: 5, elite: 7 },
       1: { normal: 7, elite: 9 },
@@ -487,7 +487,7 @@ const MONSTER_STATS = {
   },
 
   'night demon': {
-    count: 8,
+    count: 6,
     levels: {
       0: { normal: 3, elite: 5 },
       1: { normal: 5, elite: 8 },
@@ -613,7 +613,7 @@ const MONSTER_STATS = {
   },
 
   'vermling scout': {
-    count: 8,
+    count: 10,
     levels: {
       0: { normal: 2, elite: 4 },
       1: { normal: 3, elite: 5 },
