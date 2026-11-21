@@ -10,7 +10,7 @@ function with a stand-in object for every scenario and each rule set (0 Frosthav
 Locations are gloom's: column * 7 + row on a 16 by 7 map (0 based, odd columns shifted down by half a hex). In HavenMap's grid that is
 col = column + 1 (1 based, even columns shifted down), row = row. An answer is a list of tuples: the end hex, then the hexes attacked.
 thin: the pairs of neighbouring locations with a wall on the edge between them (walls are gloom's own edge numbers).
-`supported` marks the scenarios the solver of scripts/monsterMove.js can answer now (no icy hex).
+`supported` marks the scenarios the solver of scripts/monsterMove.js can answer now (all of them now).
 """
 import importlib.util
 import json
@@ -57,8 +57,6 @@ def record(index, rules, s):
     thin = sorted({tuple(sorted((i, n))) for i, e in walls for n in [neighbour(i, e)] if n is not None})
     aoe = [i for i, on in enumerate(s.aoe) if on]
     reasons = []
-    if 'I' in contents.values():
-        reasons.append('icy terrain')
     if list(figures.values()).count('A') != 1:
         reasons.append('no single active monster')
     return {

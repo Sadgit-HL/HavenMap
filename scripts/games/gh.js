@@ -697,6 +697,15 @@ const MONSTER_ROWS = [
   { id: 114, title: 'the winged horror',    boss: true },
 ].map(r => ({ ...SH, boss: false, game: 'gh2', ...r }));
 
+// ─── Ice terrain ─────────────────────────────────────────────────────
+// Frosthaven classes played in this game (Frozen Fist, Snowdancer) can lay icy terrain; a monster slides on it (scripts/monsterMove.js).
+// The art is the Frosthaven overlay art (images/overlays/fh), so these rows carry game 'fh'.
+const TH8 = { left: 36, top: 24, w:  72, h: 125 };   // two-hex ['S'], 80% centred (as in fh.js)
+const ICE_ROWS = [
+  { id: 70, title: 'ice',   img: 'ice-1', ...SH,                       defaultRole: 'ice' },
+  { id: 71, title: 'ice 2', img: 'ice-2', ...TH8, hexes: ['S'],        defaultRole: 'ice' },
+].map(r => ({ ...r, game: 'fh' }));
+
 // ─── Level-dependent stats ────────────────────────────────────────────────────
 
 export default {
@@ -704,7 +713,7 @@ export default {
   name:             'Gloomhaven',
   gridSize:         { cols: 40, rows: 50 },
   tiles:            TILE_ROWS,
-  overlays:         OVERLAY_ROWS,
+  overlays:         [...OVERLAY_ROWS, ...ICE_ROWS],
   monsters:         MONSTER_ROWS,
   mercenaryStats:   MERCENARY_STATS,
   monsterStats:     MONSTER_STATS,

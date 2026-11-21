@@ -112,3 +112,21 @@ tests['hex state: sight does not cross the border of two tiles, nor does a range
   const r = solveMove({ ...hs, figures: [{ kind: 'monster', side: 'monsters', id: 1, col: 5, row: 3, role: null }, { kind: 'mercenary', side: 'characters', id: 1, col: 8, row: 3, role: null }] }, { active: { col: 5, row: 3 }, move: 8, range: 6 });
   assert.equal(r.focuses.length, 0, 'a ranged attack does not reach across either');
 };
+
+// ---- ice terrain objects of the Gloomhaven game ----
+import gh from '../../scripts/games/gh.js';
+
+tests['hex state: the Gloomhaven game has ice terrain objects, the solver slides over them'] = function () {
+  const rows = gh.overlays.filter(o => o.defaultRole === 'ice');
+  assert.deepEqual(rows.map(o => [o.id, o.title, o.game, (o.hexes ?? []).length]), [[70, 'ice', 'fh', 0], [71, 'ice 2', 'fh', 1]]);
+  const real = { tileTitle: () => null, overlay: id => gh.overlays.find(o => o.id === id) ?? null };
+  const hs = buildHexState({ overlays: [{ id: 70, x: 6, y: 4 }, { id: 71, x: 8, y: 2 }] }, real);
+  assert.deepEqual(hs.cells.get('6,4'), { ice: true });
+  assert.ok(hs.cells.get('8,2').ice && hs.cells.get('8,3').ice, 'the two hex piece');
+  // a strip of ice in a corridor: a walking monster slides over it in one point
+  const strip = buildHexState({ overlays: [3, 4, 5].map(r => ({ id: 70, x: 4, y: r })) }, real);
+  const floor = new Set(); for (let r = 0; r <= 9; r++) floor.add(hexKey(4, r));
+  const w = { ...strip, floor, floorKnown: true, figures: [{ kind: 'monster', side: 'monsters', id: 1, col: 4, row: 2, role: null }, { kind: 'mercenary', side: 'characters', id: 1, col: 4, row: 9, role: null }] };
+  const r = solveMove(w, { active: { col: 4, row: 2 }, move: 1, range: 0 });
+  assert.deepEqual(r.actions.map(a => [a.col, a.row]), [[4, 6]], 'one step onto the ice at row 3, on over rows 4 and 5 to row 6');
+};

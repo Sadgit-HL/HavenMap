@@ -24,11 +24,12 @@
 // Several targets follow gloom: the best group of targets is found first (fewest traps, reachable, no disadvantage against the focus, most targets,
 // shortest way, then the most targets of the best rank; rank is by proximity and initiative), then the end hex with the fewest disadvantaged targets.
 // Area attacks follow gloom too: the area is put where it hits the most targets that count (patterns turn and mirror); the focus must be hit.
-// Walls on hex edges (hs.walls) stop moving, ranges and adjacency. Not done: icy terrain (treated as plain floor).
+// Walls on hex edges (hs.walls) stop moving, ranges and adjacency. Walking monsters slide on icy hexes (cells with ice): they go on in the same direction
+// until a hex that is not icy, or something stops them, for one point of movement; flying, jumping and teleporting monsters do not slide.
 import { COLS, ROWS } from './hex.js';
 import { toAxial, toBoard } from './tileMask.js';
 import { hexKey } from './hexState.js';
-import { neighbors, hexDistance, edgeKey } from './hexGrid.js';
+import { neighbors, neighborAt, hexDistance, edgeKey } from './hexGrid.js';
 
 export { neighbors, hexDistance };
 const INF = 1e9;
@@ -79,6 +80,9 @@ function movement(hs, active, o) {
     },
     isTrap: k => !flying && !!(cellOf(hs, k).trap || cellOf(hs, k).hazardous),
     extra: k => (!free && cellOf(hs, k).difficult ? 1 : 0),
+    // walking figures slide over ice: they go on in the same direction until a hex that is not icy; flying, jumping and teleporting ones do not
+    icy: k => !free && !!cellOf(hs, k).ice,
+    allyAt: k => k !== own && figureAt.get(k)?.side === 'monsters',
     pen: k => (jumping && !teleport ? (cellOf(hs, k).difficult ? 1 : 0) : !free && cellOf(hs, k).difficult ? 1 : 0),   // what the last hex adds to a way
     jumping, teleport, flying, free,
   };
@@ -89,10 +93,22 @@ function paths(hs, start, mv) {
   const sk = hexKey(start.col, start.row), best = new Map([[sk, { d: 0, t: 0 }]]), queue = [start];
   for (let i = 0; i < queue.length; i++) {
     const cur = queue[i], b = best.get(hexKey(cur.col, cur.row));
-    for (const n of neighbors(cur.col, cur.row)) {
-      const k = hexKey(n.col, n.row);
-      if (!mv.canTravel(k) || walled(hs, hexKey(cur.col, cur.row), k)) continue;
-      const d = b.d + 1 + mv.extra(k), t = mv.isTrap(k) + (mv.jumping || mv.teleport ? 0 : b.t), old = best.get(k);
+    const ck = hexKey(cur.col, cur.row);
+    for (let dir = 0; dir < 6; dir++) {
+      let n = neighborAt(cur.col, cur.row, dir);
+      if (!n) continue;
+      let k = hexKey(n.col, n.row);
+      if (!mv.canTravel(k) || walled(hs, ck, k)) continue;
+      let slid = false;
+      while (mv.icy(k)) {                                                         // on ice: on in the same direction while it is free
+        slid = true;
+        const next = neighborAt(n.col, n.row, dir);
+        if (!next) break;
+        const nk = hexKey(next.col, next.row);
+        if (!mv.canTravel(nk) || mv.allyAt(nk) || walled(hs, k, nk)) break;
+        n = next; k = nk;
+      }
+      const d = b.d + 1 + (slid ? 0 : mv.extra(k)), t = mv.isTrap(k) + (mv.jumping || mv.teleport ? 0 : b.t), old = best.get(k);
       if (!old || t < old.t || (t === old.t && d < old.d)) { best.set(k, { d, t }); queue.push(n); }
     }
   }
@@ -315,14 +331,21 @@ export function solveMove(hs, o) {
     } else {
       // out of reach: move to the reachable hex that is closest to an attack hex (fewest traps, then distance, then own way)
       const reachableHexes = endHexes.filter(k => from.get(k).d <= move);
+      const iceMap = !mv.free && [...hs.cells.values()].some(c => c.ice);            // ways that slide are not the same both ways round: ask from each hex
       for (const dk of [...new Set(dest.map(x => x.k))]) {
-        const back = paths(hs, cell(dk), mv);
-        const m = minimize(reachableHexes.filter(k => back.has(k)), k => {
-          const here = from.get(k), rest = back.get(k);                              // way from the destination, corrected for entering costs
-          const traps = rest.t - (mv.isTrap(k) ? 1 : 0) + (mv.isTrap(dk) ? 1 : 0) + here.t;
-          const dist = rest.d - mv.pen(k) + mv.pen(dk);
-          return [traps, dist, here.d];
-        });
+        let m;
+        if (iceMap) {
+          m = minimize(reachableHexes, k => { const w = paths(hs, cell(k), mv).get(dk); return w ? [w.t, w.d, from.get(k).d] : [INF, INF, INF]; });
+          m.items = m.best[0] >= INF ? [] : m.items;
+        } else {
+          const back = paths(hs, cell(dk), mv);
+          m = minimize(reachableHexes.filter(k => back.has(k)), k => {
+            const here = from.get(k), rest = back.get(k);                            // way from the destination, corrected for entering costs
+            const traps = rest.t - (mv.isTrap(k) ? 1 : 0) + (mv.isTrap(dk) ? 1 : 0) + here.t;
+            const dist = rest.d - mv.pen(k) + mv.pen(dk);
+            return [traps, dist, here.d];
+          });
+        }
         for (const k of m.items) add(k, fk, false, [], dk, []);
       }
     }

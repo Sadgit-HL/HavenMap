@@ -15,6 +15,12 @@ export function neighbors(col, row) {
   return out;
 }
 
+// The neighbour of a hex in direction d (0 to 5, a fixed order, the opposite direction is d + 1 for the pairs 0/1, 2/5 and 3/4), or null off the board.
+export function neighborAt(col, row, d) {
+  const a = toAxial(col, row), b = toBoard(a.q + DIRS[d][0], a.r + DIRS[d][1]);
+  return b.col >= 1 && b.col <= COLS && b.row >= 0 && b.row <= ROWS ? b : null;
+}
+
 // Hex distance on an open board (cube distance).
 export function hexDistance(c1, r1, c2, r2) {
   const a = toAxial(c1, r1), b = toAxial(c2, r2), dq = a.q - b.q, dr = a.r - b.r;

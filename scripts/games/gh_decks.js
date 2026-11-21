@@ -177,7 +177,7 @@ export const GH_DECKS = {
   'living-corpse': [
     { n: 1, iid: 9903172, init: 47, s: false },
     { n: 2, iid: 9903173, init: 32, s: false },
-    { n: 3, iid: 9903174, init: 68, s: true },
+    { n: 3, iid: 9903174, init: 66, s: true },
     { n: 4, iid: 9903175, init: 91, s: false },
     { n: 5, iid: 9903176, init: 82, s: false },
     { n: 6, iid: 9903177, init: 66, s: true },

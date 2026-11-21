@@ -105,4 +105,23 @@ export const tests = {
     const r = run(hs, { col: 2, row: 5 }, { move: 8, range: 0 });
     assert.equal(r.focuses.length, 0);
   },
+  'monster move: walking monsters slide over ice in one point, flying ones do not, an ally stops the slide, no difficult terrain is paid on the slide'() {
+    const corridor = (c) => c === 4, ice = {};
+    for (let r = 1; r <= 4; r++) ice[hexKey(4, r)] = { ice: true };
+    const end = (hs, o) => run(hs, { col: 4, row: 0 }, { move: 1, range: 0, ...o }).actions.map(a => [a.col, a.row]);
+    const base = field([M(4, 0), C(4, 9)], ice, corridor);
+    assert.deepEqual(end(base, {}), [[4, 5]], 'one step onto the ice, then on to the first hex that is not icy');
+    assert.deepEqual(end(base, { flying: true }), [[4, 1]], 'flying: one step');
+    assert.deepEqual(end(field([M(4, 0), M(4, 5), C(4, 9)], ice, corridor), {}), [[4, 4]], 'an ally in the way stops the slide before it');
+    const difficult = { ...ice, [hexKey(4, 5)]: { difficult: true } };
+    assert.deepEqual(end(field([M(4, 0), C(4, 9)], difficult, corridor), {}), [[4, 5]], 'the landing hex is difficult, the slide still costs one point');
+  },
+  'monster move: out of reach on a map with ice, the monster slides towards its destination, the way counts the slide as one point'() {
+    const corridor = (c) => c === 4, ice = {};
+    for (let r = 1; r <= 4; r++) ice[hexKey(4, r)] = { ice: true };
+    const hs = field([M(4, 0), C(4, 9)], ice, corridor), me = { col: 4, row: 0 };
+    const two = run(hs, me, { move: 2, range: 0 });
+    assert.deepEqual([two.canAttackFocus, two.actions.map(a => [a.col, a.row, a.attack])], [false, [[4, 6, false]]], 'slide to row 5, one step to row 6');
+    assert.equal(run(hs, me, { move: 4, range: 0 }).canAttackFocus, true, 'slide, then three steps to the hex next to the character');
+  },
 };

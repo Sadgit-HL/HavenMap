@@ -49,7 +49,7 @@ export const tests = {
     assert.equal(candidatesFor(deck, 17, false).length, 1);
     assert.deepEqual(candidatesFor(GH2_MONSTER_DECKS['lurker-soldier'], 28, true).map(c => c.init), [28], 'no exact match on the shuffle mark: the initiative is used');
   },
-  'monster card: the cards of the map decks have a candidate in the Secretariat deck (248 cards, 33 ambiguous, living corpse n3 has none: initiative 68 against 66)'() {
+  'monster card: every card of the map decks has a candidate in the Secretariat deck (248 cards, 33 ambiguous; living corpse card 3 was corrected from initiative 68 to 66)'() {
     let total = 0, ambiguous = 0; const none = [];
     for (const [slug, cards] of Object.entries(GH_DECKS)) for (const c of cards) {
       const cand = candidatesFor(GH2_MONSTER_DECKS[slug], c.init, c.s);
@@ -57,7 +57,7 @@ export const tests = {
       if (!cand.length) none.push(`${slug} n${c.n}`);
       if (distinctCards(cand).length > 1) ambiguous++;
     }
-    assert.deepEqual(none, ['living-corpse n3']);
+    assert.deepEqual(none, []);
     assert.deepEqual([total, ambiguous], [248, 33]);
   },
   'monster card: area patterns go onto the 7 by 7 editor with the same shape'() {

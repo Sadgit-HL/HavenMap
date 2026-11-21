@@ -8,7 +8,7 @@ import { makeSightLine } from '../../scripts/los.js';
 export const fixture = JSON.parse(readFileSync(new URL('./fixtures/gloom-scenarios.json', import.meta.url), 'utf8'));
 const H = fixture.height, W = fixture.width;
 const col = loc => Math.floor(loc / H) + 1, row = loc => loc % H, loc = (c, r) => (c - 1) * H + r;
-const CELLS = { X: { blocked: true, blocksLos: true }, O: { blocked: true }, T: { trap: true }, H: { hazardous: true }, D: { difficult: true } };
+const CELLS = { X: { blocked: true, blocksLos: true }, O: { blocked: true }, T: { trap: true }, H: { hazardous: true }, D: { difficult: true }, I: { ice: true } };
 
 // The hex state of a scenario: the whole 16 by 7 map is floor, X are walls, O obstacles, T traps, H hazards, D difficult terrain.
 export function hexStateOf(rec) {
