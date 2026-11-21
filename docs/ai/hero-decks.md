@@ -23,7 +23,7 @@ Status: done on `main` (map app, 2026-11-07). Campaign playmat uses the same per
 - Ticking a perk applies its card swap to `base`; unticking reverts it. Manual basic-card edits stay on top.
 - `withoutAm()` (`scripts/state.js`): copies of a hero start with a fresh deck and no campaign link.
 
-Campaign side: the record's `chars[].pk` holds the same kind of data (`perks`, `boxes`, `ms`) and `scripts/campaign/amdDeck.js` derives the deck from it. The campaign deck state (draws, top, bottom, active, bless and curse, count edits) is saved in `chars[].amd` (since 2026-11-18, `cleanAmd` in `amdDeck.js`).
+Campaign side (random draws: `drawRandom`, `drawTwo`, advantage rules in `amdCompare.js`): the record's `chars[].pk` holds the same kind of data (`perks`, `boxes`, `ms`) and `scripts/campaign/amdDeck.js` derives the deck from it. The campaign deck state (draws, top, bottom, active, bless and curse, count edits) is saved in `chars[].amd` (since 2026-11-18, `cleanAmd` in `amdDeck.js`).
 
 ## Code map
 

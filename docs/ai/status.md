@@ -1,6 +1,6 @@
 # Status
 
-Verified 2026-11-19 against `main` at `5b27110` plus uncommitted changes (Inventory, items below). "Verified" means the file or function exists and was read or grepped. Behaviour in a browser is only claimed where the log says so.
+Verified 2026-11-21 against `main` at `1bdb799`. "Verified" means the file or function exists and was read or grepped. Behaviour in a browser is only claimed where the log says so.
 
 ## Map app (standalone HavenMap)
 

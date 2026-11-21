@@ -23,6 +23,8 @@ Go to the **Mercenaries** tab and pick your character from the name in the top b
 - **Journal:** draw your battle goals and personal quest, and keep notes.
 - **Character mat, Enhancements, History:** what they say.
 - **Modifiers** (switch in the hand bar): draw, shuffle, bless and curse your attack modifier deck. It follows your perks.
+- **Draw:** the Draw button draws a random card and logs it. A rolling card is followed by more cards: click the face-down card to reveal each one. The Std / Adv / Dis button next to it cycles the draw mode. With advantage or disadvantage the app picks the card by the rules, or lets you choose when it is your call. An empty deck is shuffled automatically.
+- **Short rest:** click your discard pile, then Short rest (or press R over it). A random card of the discard is lost. You can redo it once. The BGG roll button does the same with a GeekRoller code.
 
 ## Forum posts
 
@@ -31,6 +33,12 @@ The **Turn** and **Cards** buttons in the top bar build your BGG post for you. C
 ## Items
 
 The **Items** tab shows what is unlocked and what is in the shop. You can buy an item for your gold there, and sell items back from your inventory.
+
+Items with a real back (shown by a flip button) turn over with the F key. Solo items of all classes are in the list.
+
+## Random draws
+
+The **Monsters** tab draws monster ability cards and monster modifier cards the same way (Draw, Std / Adv / Dis). In the Scenarios tab, Draw random scenario unlocks one of the side scenarios 67 to 74, and Draw random item design unlocks one of items 81 to 96. Every draw shows in the **History** tab, marked (random) or (BGG roll); filter it with the type drop-down.
 
 ## Oops
 

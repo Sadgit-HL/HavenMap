@@ -5,7 +5,7 @@ Open work in priority order. Items marked (owner) need a decision or data from t
 ## 1. Stabilise what exists
 
 1. Done 2026-11-19 (see `ui-guidelines.md` section 8; open: modifier cards are tiny at 911x512). Browser-test the 2026-11-14 layout changes at the sizes in `ui-guidelines.md` section 9. Scope: top bar on one line, modifier and modal card sizes, tile modals close (Escape, overlay, footer), Stickers toggle.
-2. Done 2026-11-19: `tools/tests/` holds 120 Node checks (edit functions, record, history, events, outcomes, modifier decks, monsters, flow, sync merge and invite links); run `node tools/tests/run.mjs`. The merge tests found that two players adding a character at the same time got the same id; fixed (new ids are `c` plus six random characters, `nextCharId` in `edit.js`; old records keep `c1`, `c2`). No checks for the DOM code.
+2. Done 2026-11-19: `tools/tests/` holds 194 Node checks (edit functions, record, history, events, outcomes, modifier decks, advantage rules, short rest, random draws, monsters, flow, sync merge and invite links); run `node tools/tests/run.mjs`. The merge tests found that two players adding a character at the same time got the same id; fixed (new ids are `c` plus six random characters, `nextCharId` in `edit.js`; old records keep `c1`, `c2`). No checks for the DOM code.
 
 - Rename to HavenTracker, map side (when the map is free): `index.html` title and heading. Repository rename only together with the move away from URL links (`design/map-integration.md`). See `decisions.md` 2026-11-17.
 

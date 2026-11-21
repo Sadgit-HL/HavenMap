@@ -8,9 +8,9 @@
 | `scripts/state.js` | map state, `mapVersion` 5.0.0, migration chain, URL hash codec |
 | `scripts/attackMods.js`, `scripts/decks.js` | attack modifier decks and the deck panel |
 | `scripts/amd/` | app-agnostic card rendering and hero deck model (see `hero-decks.md`) |
-| `scripts/campaign/` | campaign logic, no DOM: `record.js`, `edit.js`, `events.js`, `outcomes.js`, `flow.js`, `amdDeck.js`, `changelog.js`, `store.js`, `classMap.js`, `classList.js`, `classTokens.js`, `traits.js`, `cardImages.js`, `bggIcons.js`, `bggBanners.js`, `monsters.js` (Monsters tab), `sync.js` (shared campaign) |
+| `scripts/campaign/` | campaign logic, no DOM: `record.js`, `edit.js`, `events.js`, `outcomes.js`, `flow.js`, `amdDeck.js`, `amdCompare.js` (advantage and disadvantage card comparison), `rest.js` (short rest), `draws.js` (random side scenario and item design pools), `itemList.js`, `changelog.js`, `store.js`, `classMap.js`, `classList.js`, `classTokens.js`, `traits.js`, `cardImages.js`, `bggIcons.js`, `bggBanners.js`, `monsters.js` (Monsters tab), `sync.js` (shared campaign) |
 | `scripts/games/` | static tables. `gh2_*.js`, `battle_goals.js`, `masteries.js`, `perks.js` etc. are GENERATED (see `data-pipeline.md`) |
-| `campaign/` | the campaign page: `index.html`, `app.js` (the page), `playmat.js` and `playmat.css` (Mercenaries tab), `phone.js` and `phone.css` (phone view), `touch.css` (touch layout of all pages), `preview.js` (card preview), `monstersView.js` and `monsters.css` (Monsters tab), `eventsView.js`, `ctxmenu.js`, `morph.js`, `dialog.js`, `mockups/` (static design files) |
+| `campaign/` | the campaign page: `index.html`, `app.js` (the page), `playmat.js` and `playmat.css` (Mercenaries tab), `phone.js` and `phone.css` (phone view), `touch.css` (touch layout of all pages), `preview.js` (card preview), `monstersView.js` and `monsters.css` (Monsters tab), `eventsView.js`, `ctxmenu.js`, `morph.js`, `dialog.js` (`ask`, `notify`, `showDraw`: the draw dialog, cards revealed one at a time), `mockups/` (static design files) |
 | `perks/` | standalone perks viewer and the compose dev page |
 | `images/` | art. `images/common/` is shared; `images/gh2/` monster art; `images/events/` event artwork |
 | `tools/` | generators and art pipeline (Python, Node, one ExtendScript). `tools/merc-mockups/` generates mockups |
@@ -34,7 +34,7 @@ Data flow:
 3. The page calls `commit(next)` (`campaign/app.js` line 127). It stamps the log via `changelog.js` (`describeChange`), saves, and re-renders.
 4. Saving: local mode writes to localStorage at once. Shared mode sends the record 3 seconds after the last edit (`PUT` with the server version), checks `/ver` every 60 seconds while the page is visible, and merges the edits of two players (`merge3` in `sync.js`: objects by key, characters by id, the logs combined, the edit counter `ver` as the larger value; a value both changed keeps the other player's value and the page says so).
 5. Undo reverts the user's own last edit (50 steps, Ctrl+Z) and logs "Undo: ...". History entries are `{ before, after }`; changes of other players that arrived since are kept (`merge3(after, before, current)`).
-6. Pure logic (`events.js`, `outcomes.js`, `amdDeck.js`, `flow.js`, `record.js` derived values) takes the record and returns values. Keep new logic in this form so it can be tested in Node.
+6. Pure logic (`events.js`, `outcomes.js`, `amdDeck.js`, `amdCompare.js`, `rest.js`, `draws.js`, `flow.js`, `record.js` derived values) takes the record and returns values. Keep new logic in this form so it can be tested in Node.
 
 Rules for new code:
 - Route every change through `edit.js` and `commit`, so Undo and History work.

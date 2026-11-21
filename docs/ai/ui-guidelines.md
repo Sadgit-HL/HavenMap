@@ -130,6 +130,7 @@ An empty list shows one muted line (`.emptyline`), for example "No stickers yet.
 - Width: 560px default; 760px for popups with tables or grids; 780px for the journal (tabs); full width only for images.
 - Closing: the close button, a click on the overlay, Escape, or the footer Close button. All four must work.
 - The modal opens from the dock or a pencil button. Only one playmat modal is open at a time (`pm.modal`).
+- The draw dialog (`showDraw`, `campaign/dialog.js`) reveals cards one at a time: a click on the face-down card shows the next one. A click outside closes it only after the reveal is complete. It shows only situational notices (empty deck shuffled), no deck counts.
 - Keep the scroll position when the modal re-renders (`keep = box.scrollTop`).
 - Previews of a card in a modal are docked beside the box, on the side set in the display settings (`dockPreview`).
 - Windows outside the playmat (`.modalbox`: Overview, Scenarios, Settings) use the same frame since 2026-11-18: 12px corners, 18px 22px padding, deep shadow, title 17px gold, close button 28px. Content goes in `.chedit` with `.cesec` panels (a gold uppercase `h4`, a count in its `span`), fields as `label.cefield` with 34px inputs, and a footer `.chfoot` with the Close button in the journal button look. Several tracks or parts of one thing are tabs (`.subtabs`), as in the Prosperity window.
@@ -173,6 +174,7 @@ An empty list shows one muted line (`.emptyline`), for example "No stickers yet.
 ### 6.3 Keyboard
 
 - Escape closes the open modal or preview first. One Escape, one step back.
+- R does a short rest (random lost card from the discard) and F flips an item that has a real back, both on the object under the pointer.
 - Z pins the card preview of the card under the pointer; Ctrl shows it without the hover delay.
 - Space switches between hand and modifier deck when nothing is focused and no modal is open.
 - Object keys act on the object under the mouse pointer, not on focus: D, L and A on ability cards, D and L on items, D on attack modifier cards. A pointer-based key does not need Tab focus, so the cards do not take focus. Every new key goes into the Shortcuts tab (`SHORTCUTS` in `campaign/app.js`).
