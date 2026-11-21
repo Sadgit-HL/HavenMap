@@ -35,6 +35,8 @@ Hand-maintained inputs and outputs:
 
 ## Treasure placement
 
+`tools/make-tile-masks.py` (2026-11-21, exploration branch `explore/monster-automation`) writes `scripts/games/gh2_tile_masks.js`: the floor hexes of each Gloomhaven 2e map tile as `[q, r]` offsets from the tile anchor (angle 0), derived from the alpha channel of `images/tiles/gh2`. See `monster-automation.md`.
+
 `gh2_scenarios.js` carries `tre`, the treasure tiles of each scenario (`load_ghs_treasures` and `TREASURE_FIX` in `extract-campaign-tables.py`; 79 treasures in 64 scenarios, each once). The Gloomhaven Secretariat's GH2E data says which treasure lies in which scenario: `data/gh2e/scenarios/*.json` (`rooms[].treasures`, the scenario map) and `data/gh2e/sections/*.json` (rooms revealed later; `parent` is the scenario). Together: 79 placements in 63 scenarios. Checked by the owner against the scenario book on 2026-11-18:
 - Treasure 7 in scenario 6 (sections 38.1 and 40.1) is correct: the same treasure in two alternative rooms.
 - Section 112.1 (scenario 82) holds treasure 41, not 40 (the Secretariat data is wrong; 40 is in scenario 37). `TREASURE_FIX` corrects it.

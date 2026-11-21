@@ -41,7 +41,13 @@ Rule flags per rule set are in `set_rules_flags`. Check them against the ruleboo
 3. Solver port in `scripts/` as pure logic with Node tests, in stages: focus only (breadth-first search with blockers and initiative), then attack hex with line of sight and the target and disadvantage tuple, then area attacks and exact Frosthaven line of sight.
 4. UI on the hex page: highlight the focus and the candidate end hexes.
 
+## Progress
+
+- 2026-11-21: floor masks for the 56 Gloomhaven 2e tiles, derived from the tile alpha channel (`tools/make-tile-masks.py`, output `scripts/games/gh2_tile_masks.js`, tests in `tools/tests/tileMasks.test.mjs`). A hex is floor when at least 93% of its area is opaque; hexes cut by the image edge count as transparent. Checked by eye on 01-A, 07-A and 03-B; variants of one tile always give the same shape.
+- The tile anchor in `gh.js` is not always a floor hex (03-B: it lies beside the tile). Do not assume it.
+- Not done: a helper that applies a mask to a placed, rotated tile; Frosthaven tiles (46 of 76 have no alpha channel, and a "hex fits inside the image" rule only fits the rectangular ones; options: Worldhaven `map-tiles`, line detection, hand masks).
+
 ## Open decisions
 
-- Floor masks: from the tile images, or from Worldhaven?
+- Floor masks for Frosthaven: Worldhaven `map-tiles`, detect the printed hex lines, or paint by hand? (Gloomhaven 2e is done from the tile images.)
 - Action data: import from FrosthavenAssistant, or manual input first?
