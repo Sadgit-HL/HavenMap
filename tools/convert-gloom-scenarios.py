@@ -9,7 +9,8 @@ function with a stand-in object for every scenario and each rule set (0 Frosthav
 
 Locations are gloom's: column * 7 + row on a 16 by 7 map (0 based, odd columns shifted down by half a hex). In HavenMap's grid that is
 col = column + 1 (1 based, even columns shifted down), row = row. An answer is a list of tuples: the end hex, then the hexes attacked.
-`supported` marks the scenarios the solver of scripts/monsterMove.js can answer now (no thin wall, no icy hex).
+thin: the pairs of neighbouring locations with a wall on the edge between them (walls are gloom's own edge numbers).
+`supported` marks the scenarios the solver of scripts/monsterMove.js can answer now (no icy hex).
 """
 import importlib.util
 import json
@@ -40,14 +41,22 @@ def load(path):
     return mod
 
 
+def neighbour(loc, edge, width=16):
+    """The location across edge 0 to 5 of a location (gloom's neighbour order), or None off the map."""
+    column, row = divmod(loc, HEIGHT)
+    base = (column + 1) % 2
+    dc, dr = [(1, 1 - base), (0, 1), (-1, 1 - base), (-1, -base), (0, -1), (1, -base)][edge]
+    c, r = column + dc, row + dr
+    return c * HEIGHT + r if 0 <= c < width and 0 <= r < HEIGHT else None
+
+
 def record(index, rules, s):
     contents = {i: c for i, c in enumerate(s.contents) if c != ' '}
     figures = {i: c for i, c in enumerate(s.figures) if c != ' '}
     walls = [[i, e] for i, w in enumerate(s.walls) for e, on in enumerate(w) if on]
+    thin = sorted({tuple(sorted((i, n))) for i, e in walls for n in [neighbour(i, e)] if n is not None})
     aoe = [i for i, on in enumerate(s.aoe) if on]
     reasons = []
-    if walls:
-        reasons.append('thin walls')
     if 'I' in contents.values():
         reasons.append('icy terrain')
     if list(figures.values()).count('A') != 1:
@@ -58,7 +67,7 @@ def record(index, rules, s):
         'flying': bool(s.FLYING), 'jumping': bool(s.JUMPING), 'teleport': bool(s.TELEPORT), 'muddled': bool(s.MUDDLED),
         'contents': {str(k): v for k, v in contents.items()}, 'figures': {str(k): v for k, v in figures.items()},
         'initiatives': {str(i): v for i, v in enumerate(s.initiatives) if v and figures.get(i) == 'C'},
-        'walls': walls, 'aoe': aoe,
+        'walls': walls, 'thin': [list(t) for t in thin], 'aoe': aoe,
         'answer': sorted([list(t) for t in s.correct_answer]) if s.correct_answer else None,
         'supported': not reasons, 'unsupported': reasons,
     }

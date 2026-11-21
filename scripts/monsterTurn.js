@@ -4,7 +4,9 @@
 // The result is worked out again on every render, so it follows the pieces when they are moved.
 import { uiState, setTurn } from './uiState.js';
 import { state } from './state.js';
-import { TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES, SUMMONS } from './data.js';
+import { TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES, SUMMONS, GAME_ID } from './data.js';
+import { activeCardsFor } from './decks.js';
+import { cardOptions, candidatesFor, distinctCards, areaIndexes } from './monsterCard.js';
 import { colLabel, hexCenter, HEX_W, HEX_H } from './hex.js';
 import { buildHexState, hexKey } from './hexState.js';
 import { solveMove, areaOffsets } from './monsterMove.js';
@@ -22,6 +24,51 @@ const figName = f => TABLES[f.kind]?.byId.get(f.id)?.title ?? f.kind;
 const label = h => `${colLabel(h.col)}${h.row}`;
 const figKey = f => `${f.kind}:${f.id}`;
 
+// The monster data (about 200 KB) loads when a monster is first selected.
+let data = null, loading = false;
+function ensureData() {
+  if (data || loading) return;
+  loading = true;
+  import('./games/gh2_monsters.js').then(m => { data = m; setTurn({}); }).catch(() => { loading = false; });
+}
+
+// The ability card of a monster on the map: the card drawn this round, matched to the Secretariat card by initiative and shuffle mark (the map's card
+// numbers are not the Secretariat's ids, equal initiatives can be ambiguous: then the player picks the card by its name). null without data for it.
+function cardInfo(obj) {
+  if (GAME_ID !== 'gh') return null;
+  ensureData();
+  if (!data) return null;
+  const mon = MONSTERS.byId.get(Number(obj.id)), rec = mon ? data.GH2_MONSTERS[mon.title.replace(/ /g, '-')] : null;
+  if (!rec) return null;
+  const kind = obj.role === 'elite' ? 'elite' : obj.role === 'boss' ? 'boss' : 'normal', level = Math.max(0, Math.min(7, Number(state.CurrentLevel) || 0));
+  const chars = Math.max(1, (state.mercenaries ?? []).length || 4);
+  const act = activeCardsFor(obj.id);
+  if (!act) return { rec, kind, level, chars, none: true };
+  const deck = data.GH2_MONSTER_DECKS[act.slug] ?? [];
+  const options = [];
+  for (const c of act.cards) for (const g of distinctCards(candidatesFor(deck, c.init, c.s))) options.push({ n: c.n, init: c.init, card: g, pickKey: `${act.slug}:${c.n}` });
+  if (!options.length) return { rec, kind, level, chars, none: false, unmatched: act.cards.map(c => c.init) };
+  const byCard = new Map();
+  for (const o of options) byCard.set(o.pickKey, [...(byCard.get(o.pickKey) ?? []), o]);
+  const chosen = [...byCard.entries()].map(([k, list]) => list.find(o => String(o.card.id) === String(uiState.turn.pick[k])) ?? list[0]);
+  const sel = chosen[0];
+  return { rec, kind, level, chars, options, chosen: sel, ambiguous: byCard.get(sel.pickKey).length > 1, alts: byCard.get(sel.pickKey), more: act.cards.length > 1,
+    opts: cardOptions({ monster: rec, kind, level, card: sel.card, chars }) };
+}
+
+// Puts the values of the card into the panel when the monster, its card, the level or the party size change; manual changes stay until then.
+function autoApply(obj) {
+  const info = cardInfo(obj), T = uiState.turn;
+  if (!info?.opts) return;
+  const key = [obj.id, info.chosen.pickKey, info.chosen.card.id ?? info.chosen.card.name, info.kind, info.level, info.chars].join('|');
+  if (T.appliedKey === key) return;
+  const o = info.opts, ai = o.area.length ? areaIndexes(o.area, o.areaMelee) : { indexes: [] };
+  Object.assign(T, {
+    appliedKey: key, move: Math.min(20, o.move), range: Math.min(20, o.range), targets: o.targets >= 6 ? 1 : o.targets, all: o.targets >= 6,
+    fly: o.flying, jump: o.jumping && !o.flying, tele: false, noAttack: !o.attack, cells: o.area.length ? o.area : null, area: ai.indexes,
+  });
+}
+
 let last = null;                                                          // { hs, res, figs } of the latest run, for the panel
 
 function selectedMonster() {
@@ -35,7 +82,7 @@ function run(obj) {
   const initiatives = {};                                                   // typed per figure (kind and id), the solver wants them by hex
   for (const f of figs) if (T.init[figKey(f)] != null) initiatives[hexKey(f.col, f.row)] = T.init[figKey(f)];
   const res = solveMove(hs, {
-    active: { col: Number(obj.x), row: Number(obj.y) }, move: T.move, range: T.range, attack: !T.noAttack, targets: T.all ? 6 : T.targets, area: areaOffsets(T.area, !(T.range > 0)),
+    active: { col: Number(obj.x), row: Number(obj.y) }, move: T.move, range: T.range, attack: !T.noAttack, targets: T.all ? 6 : T.targets, area: T.cells ?? areaOffsets(T.area, !(T.range > 0)),
     flying: T.fly, jumping: T.jump, teleport: T.tele, muddled: T.muddled, initiatives, canSee: (a, b) => sight(a, b) !== null,
   });
   return { hs, res, figs, sight };
@@ -97,7 +144,9 @@ function draw(run_) {
 
 // Called by the sidebar on every render: works out and draws the result for the selected monster, or clears the board.
 export function refreshSolver() {
-  const obj = uiState.turn.on ? selectedMonster() : null;
+  const sel = selectedMonster();
+  if (sel) autoApply(sel);
+  const obj = uiState.turn.on ? sel : null;
   last = obj ? run(obj) : null;
   draw(last);
 }
@@ -106,14 +155,15 @@ const chip = (key, text, on) => `<button type="button" class="sp-turn-chip${on ?
 // The area pattern: a 7 by 7 drawing like gloom's (cell index = column * 7 + row, odd columns shifted down). A melee area is drawn around the monster in the
 // centre (M); a ranged area is a shape, any cell can be its first.
 function areaEditor(T) {
+  const shown = T.cells ? areaIndexes(T.cells, !(T.range > 0)).indexes : T.area;
   const R = 11, w = 2 * R + 1.5 * R * 6 + 2, h = Math.sqrt(3) * R * 7.5 + 2, melee = !(T.range > 0), cells = [];
   for (let c = 0; c < 7; c++) for (let r = 0; r < 7; r++) {
-    const x = R + 1 + 1.5 * R * c, y = Math.sqrt(3) * R * (r + 0.5 * (c % 2) + 0.5) + 1, i = c * 7 + r, on = T.area.includes(i), mid = i === 24;
+    const x = R + 1 + 1.5 * R * c, y = Math.sqrt(3) * R * (r + 0.5 * (c % 2) + 0.5) + 1, i = c * 7 + r, on = shown.includes(i), mid = i === 24;
     const pts = [[R, 0], [R / 2, 0.866 * R], [-R / 2, 0.866 * R], [-R, 0], [-R / 2, -0.866 * R], [R / 2, -0.866 * R]].map(([dx, dy]) => `${(x + dx).toFixed(1)},${(y + dy).toFixed(1)}`).join(' ');
     cells.push(`<polygon points="${pts}" data-turn-aoe="${i}" class="sp-aoe-cell${on ? ' on' : ''}${mid ? ' mid' : ''}"></polygon>`);
     if (mid && melee) cells.push(`<text x="${x}" y="${y + 4}" text-anchor="middle" class="sp-aoe-m">M</text>`);
   }
-  return `<div class="sp-turn-row"><span class="sp-turn-lbl">Area</span>${T.area.length ? '<button type="button" class="sp-turn-chip" data-turn="clearArea">Clear</button>' : ''}</div>` +
+  return `<div class="sp-turn-row"><span class="sp-turn-lbl">Area</span>${shown.length ? '<button type="button" class="sp-turn-chip" data-turn="clearArea">Clear</button>' : ''}</div>` +
     `<svg class="sp-aoe" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">${cells.join('')}</svg>`;
 }
 const num = (field, value) => `<input type="number" class="sp-turn-num" data-turn-field="${field}" min="0" max="20" value="${value}">`;
@@ -140,9 +190,23 @@ function resultHtml() {
 }
 
 // The panel for the selected monster (empty for other objects).
+function cardHtml(info) {
+  if (!info) return '';
+  if (info.none) return '<div class="sp-turn-card sp-turn-dim">No ability card drawn</div>';
+  if (info.unmatched) return `<div class="sp-turn-card sp-turn-dim">No matching card in the data for initiative ${info.unmatched.join(', ')}</div>`;
+  const c = info.chosen.card, o = info.opts;
+  const pick = info.ambiguous
+    ? `<select class="sp-turn-pick" data-turn-field="pick" data-key="${esc(info.chosen.pickKey)}">${info.alts.map(a => `<option value="${esc(a.card.id ?? '')}"${a.card === c ? ' selected' : ''}>${esc(a.card.name ?? a.card.id)}</option>`).join('')}</select>`
+    : `<b>${esc(c.name ?? c.id)}</b>`;
+  const parts = [`Move ${o.move}`, o.attack ? `Attack ${o.damage ?? '?'}` : 'No attack', o.attack && o.range ? `Range ${o.range}` : '', o.targets > 1 ? (o.targets >= 6 ? 'All targets' : `${o.targets} targets`) : '', o.area.length ? (o.areaMelee ? 'Area around it' : 'Area') : '', o.jumping ? 'Jump' : '', o.flying ? 'Flying' : ''].filter(Boolean);
+  return `<div class="sp-turn-card"><div class="sp-turn-cardhd">${pick}<span class="sp-turn-dim">init ${info.chosen.init}</span><button type="button" class="sp-turn-chip" data-turn="useCard" title="Take the values of the card again">Use card</button></div>` +
+    `<div class="sp-turn-dim">${parts.join(', ')}${info.more ? '; more than one card is drawn, the first is used' : ''}</div>` +
+    (o.notes.length ? `<ul class="sp-turn-notes">${o.notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul>` : '') + '</div>';
+}
+
 export function turnPanelHtml(kind) {
   if (kind !== 'monster') return '';
-  const T = uiState.turn;
+  const T = uiState.turn, sel = selectedMonster(), card = sel ? cardHtml(cardInfo(sel)) : '';
   const figs = last ? last.figs : buildHexState(state, lookup).figures.filter(f => f.side === 'characters');
   const inits = figs.length ? `<div class="sp-turn-inits">${figs.map(f => {
     const k = figKey(f);
@@ -151,6 +215,7 @@ export function turnPanelHtml(kind) {
   return `
     <div class="sp-action-section sp-turn">
       <div class="sp-subhead">Monster turn</div>
+      ${card}
       <div class="sp-turn-row"><label>Move ${num('move', T.move)}</label><label>Range ${num('range', T.range)}</label><label>Targets ${num('targets', T.targets)}</label>${chip('all', 'All', T.all)}</div>
       <div class="sp-turn-row">${chip('fly', 'Fly', T.fly)}${chip('jump', 'Jump', T.jump)}${chip('tele', 'Teleport', T.tele)}${chip('muddled', 'Muddled', T.muddled)}${chip('noAttack', 'No attack', T.noAttack)}</div>
       ${areaEditor(T)}
@@ -164,8 +229,8 @@ export function initTurnPanel(panel) {
   panel.addEventListener('click', e => {
     const cellEl = e.target.closest('[data-turn-aoe]');
     if (cellEl) {
-      const i = Number(cellEl.dataset.turnAoe), a = uiState.turn.area;
-      setTurn({ area: a.includes(i) ? a.filter(x => x !== i) : [...a, i].sort((p, q) => p - q) });
+      const T0 = uiState.turn, i = Number(cellEl.dataset.turnAoe), a = T0.cells ? areaIndexes(T0.cells, !(T0.range > 0)).indexes : T0.area;
+      setTurn({ cells: null, area: a.includes(i) ? a.filter(x => x !== i) : [...a, i].sort((p, q) => p - q) });
       return;
     }
     const b = e.target.closest('[data-turn]');
@@ -173,7 +238,8 @@ export function initTurnPanel(panel) {
     const T = uiState.turn, k = b.dataset.turn;
     if (k === 'on' || k === 'off') setTurn({ on: k === 'on' });
     else if (k === 'fly') setTurn({ fly: !T.fly, jump: T.fly ? T.jump : false });
-    else if (k === 'clearArea') setTurn({ area: [] });
+    else if (k === 'clearArea') setTurn({ area: [], cells: null });
+    else if (k === 'useCard') setTurn({ appliedKey: null });
     else if (k === 'jump') setTurn({ jump: !T.jump, fly: T.jump ? T.fly : false });
     else if (k in T) setTurn({ [k]: !T[k] });
   });
@@ -183,6 +249,7 @@ export function initTurnPanel(panel) {
     const n = Math.round(Number(e.target.value));
     if (f === 'move' || f === 'range') setTurn({ [f]: Number.isFinite(n) ? Math.max(0, Math.min(20, n)) : 0 });
     else if (f === 'targets') setTurn({ targets: Number.isFinite(n) ? Math.max(0, Math.min(5, n)) : 1 });
+    else if (f === 'pick') setTurn({ pick: { ...uiState.turn.pick, [e.target.dataset.key]: e.target.value } });
     else if (f === 'init') {
       const init = { ...uiState.turn.init };
       if (e.target.value === '' || !Number.isFinite(n)) delete init[e.target.dataset.key]; else init[e.target.dataset.key] = Math.max(1, Math.min(99, n));

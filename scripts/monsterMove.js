@@ -24,31 +24,20 @@
 // Several targets follow gloom: the best group of targets is found first (fewest traps, reachable, no disadvantage against the focus, most targets,
 // shortest way, then the most targets of the best rank; rank is by proximity and initiative), then the end hex with the fewest disadvantaged targets.
 // Area attacks follow gloom too: the area is put where it hits the most targets that count (patterns turn and mirror); the focus must be hit.
-// Not done: thin walls, icy terrain (treated as plain floor).
+// Walls on hex edges (hs.walls) stop moving, ranges and adjacency. Not done: icy terrain (treated as plain floor).
 import { COLS, ROWS } from './hex.js';
 import { toAxial, toBoard } from './tileMask.js';
 import { hexKey } from './hexState.js';
+import { neighbors, hexDistance, edgeKey } from './hexGrid.js';
 
+export { neighbors, hexDistance };
 const INF = 1e9;
-const DIRS = [[0, -1], [0, 1], [1, 0], [1, -1], [-1, 0], [-1, 1]];
-
-export function neighbors(col, row) {
-  const a = toAxial(col, row), out = [];
-  for (const [dq, dr] of DIRS) {
-    const b = toBoard(a.q + dq, a.r + dr);
-    if (b.col >= 1 && b.col <= COLS && b.row >= 0 && b.row <= ROWS) out.push(b);
-  }
-  return out;
-}
-
-// Hex distance on an open board (cube distance).
-export function hexDistance(c1, r1, c2, r2) {
-  const a = toAxial(c1, r1), b = toAxial(c2, r2), dq = a.q - b.q, dr = a.r - b.r;
-  return Math.max(Math.abs(dq), Math.abs(dr), Math.abs(dq + dr));
-}
 
 const cellOf = (hs, k) => hs.cells.get(k) ?? {};
 const isVoid = (hs, k) => hs.floorKnown && !hs.floor.has(k);
+// A wall on the edge between two neighbouring hexes (hs.walls: the borders of tiles that no door or corridor joins, and thin walls): nothing passes it, not
+// moving, not measuring a range, and it blocks sight.
+const walled = (hs, k1, k2) => !!hs.walls && hs.walls.has(edgeKey(k1, k2));
 
 // Distance in hexes, walls and the void do not count as passable (obstacles and figures do), up to limit.
 function proximity(hs, start, limit) {
@@ -58,7 +47,7 @@ function proximity(hs, start, limit) {
     if (d >= limit) continue;
     for (const n of neighbors(cur.col, cur.row)) {
       const k = hexKey(n.col, n.row);
-      if (dist.has(k) || isVoid(hs, k) || cellOf(hs, k).blocksLos) continue;
+      if (dist.has(k) || isVoid(hs, k) || cellOf(hs, k).blocksLos || walled(hs, hexKey(cur.col, cur.row), k)) continue;
       dist.set(k, d + 1);
       queue.push(n);
     }
@@ -102,7 +91,7 @@ function paths(hs, start, mv) {
     const cur = queue[i], b = best.get(hexKey(cur.col, cur.row));
     for (const n of neighbors(cur.col, cur.row)) {
       const k = hexKey(n.col, n.row);
-      if (!mv.canTravel(k)) continue;
+      if (!mv.canTravel(k) || walled(hs, hexKey(cur.col, cur.row), k)) continue;
       const d = b.d + 1 + mv.extra(k), t = mv.isTrap(k) + (mv.jumping || mv.teleport ? 0 : b.t), old = best.get(k);
       if (!old || t < old.t || (t === old.t && d < old.d)) { best.set(k, { d, t }); queue.push(n); }
     }
@@ -228,7 +217,7 @@ export function solveMove(hs, o) {
     if (!targetable.has(k)) targetable.set(k, characters.filter(f => proxFrom.get(keyOf(f)).has(k) && canSee(f, cell(k))));
     return targetable.get(k);
   };
-  const adjacent = (k, f) => { const c = cell(k); return hexDistance(c.col, c.row, f.col, f.row) === 1; };
+  const adjacent = (k, f) => { const c = cell(k); return hexDistance(c.col, c.row, f.col, f.row) === 1 && !walled(hs, k, keyOf(f)); };
   const combos = (list, n) => {                                                  // all groups of n of the list
     if (n <= 0) return [[]];
     if (list.length < n) return [];

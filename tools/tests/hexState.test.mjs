@@ -65,3 +65,50 @@ export const tests = {
     }
   },
 };
+
+// ---- the borders of tiles ----
+import { edgeKey, neighbors as gridNeighbors } from '../../scripts/hexGrid.js';
+import { solveMove } from '../../scripts/monsterMove.js';
+import { makeCanSee } from '../../scripts/los.js';
+
+const twoTiles = (overlays = [], extra = {}) => buildHexState({ tiles: [{ id: 1, x: 5, y: 2, angle: 0 }, { id: 1, x: 7, y: 2, angle: 0 }], overlays, ...extra }, lookup);
+const edgesBetweenTiles = hs => { const a = new Set(); for (const w of hs.walls) { const [p, q] = w.split('|'); a.add(p); a.add(q); } return a; };
+
+tests['hex state: neighbouring tiles are separated by walls on the border, none inside a tile'] = function () {
+  const one = buildHexState({ tiles: [{ id: 1, x: 5, y: 2, angle: 0 }] }, lookup);
+  assert.equal(one.walls.size, 0, 'one tile has no inner walls');
+  const hs = twoTiles();
+  assert.ok(hs.walls.size > 0, 'two tiles side by side');
+  for (const w of hs.walls) {
+    const [p, q] = w.split('|'), [pc] = p.split(',').map(Number), [qc] = q.split(',').map(Number);
+    assert.ok(hs.floor.has(p) && hs.floor.has(q), 'both sides are floor');
+    assert.ok(Math.abs(pc - qc) <= 1);
+  }
+  for (const k of hs.floor) for (const n of gridNeighbors(...k.split(',').map(Number))) {
+    const nk = hexKey(n.col, n.row);
+    if (hs.floor.has(nk) && hs.walls.has(edgeKey(k, nk))) assert.ok(edgesBetweenTiles(hs).has(k));
+  }
+};
+tests['hex state: a door or a corridor between tiles opens the border, tiles that overlap have no wall where they overlap'] = function () {
+  const closed = twoTiles(), openDoor = twoTiles([{ id: 13, x: 6, y: 3, role: 'door', opened: true }]), corridor = twoTiles([{ id: 14, x: 6, y: 3 }]);
+  assert.ok(openDoor.walls.size < closed.walls.size, 'an open door joins the hexes it is on');
+  assert.ok(corridor.walls.size < closed.walls.size, 'so does a corridor');
+  const overlap = buildHexState({ tiles: [{ id: 1, x: 5, y: 2, angle: 0 }, { id: 1, x: 5, y: 3, angle: 0 }] }, lookup);
+  for (const w of overlap.walls) { const [p, q] = w.split('|'); assert.ok(!(overlap.floor.has(p) && p === q)); }
+};
+tests['hex state: the solver does not cross the border of two tiles, it does through an open door'] = function () {
+  const run = hs => solveMove({ ...hs, figures: [{ kind: 'monster', side: 'monsters', id: 1, col: 5, row: 3, role: null }, { kind: 'mercenary', side: 'characters', id: 1, col: 8, row: 3, role: null }] }, { active: { col: 5, row: 3 }, move: 8, range: 0 });
+  const blocked = run(twoTiles());
+  assert.deepEqual([blocked.focuses.length, blocked.actions[0].attack], [0, false], 'no way across, the monster stays');
+  const through = run(twoTiles([{ id: 13, x: 6, y: 3, role: 'door', opened: true }]));
+  assert.equal(through.canAttackFocus, true);
+  assert.equal(through.actions[0].attack, true);
+};
+tests['hex state: sight does not cross the border of two tiles, nor does a range'] = function () {
+  const see = makeCanSee(twoTiles());
+  assert.equal(see({ col: 6, row: 3 }, { col: 7, row: 3 }), false, 'adjacent across the wall');
+  assert.equal(see({ col: 5, row: 3 }, { col: 8, row: 3 }), false);
+  const hs = twoTiles();
+  const r = solveMove({ ...hs, figures: [{ kind: 'monster', side: 'monsters', id: 1, col: 5, row: 3, role: null }, { kind: 'mercenary', side: 'characters', id: 1, col: 8, row: 3, role: null }] }, { active: { col: 5, row: 3 }, move: 8, range: 6 });
+  assert.equal(r.focuses.length, 0, 'a ranged attack does not reach across either');
+};

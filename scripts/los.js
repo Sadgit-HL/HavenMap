@@ -1,8 +1,10 @@
 // Line of sight between two hexes, Gloomhaven rule (exploration, branch explore/monster-automation). Pure logic, no DOM.
 // Rule: draw a line from any corner of one hex to any corner of the other; there is line of sight when at least one of those lines is not
 // blocked. Walls and closed doors block (cells with blocksLos, scripts/hexState.js); obstacles and figures do not. A line is blocked when it touches
-// a blocking hex: each blocking hex counts as its three long diagonals, and touching one (also at the end points) blocks. Adjacent hexes always see
-// each other (they share corners). When the floor is known, hexes outside the tiles (the void) block like walls.
+// a blocking hex: each blocking hex counts as its three long diagonals, and touching one (also at the end points) blocks. A wall on a hex edge (hs.walls:
+// the borders of tiles, thin walls) blocks as the segment of that edge. A corner of a hex that is a corner of a blocking hex or an end of a wall is not
+// used as the start or the end of a line. Adjacent hexes see each other through their shared corners when those are free. When the floor is known, hexes
+// outside the tiles (the void) block like walls.
 // Follows the vertex rule of https://github.com/AluminumAngel/gloom (MIT), server/solver.py test_vertex_los_between_locations.
 import { COLS, ROWS } from './hex.js';
 import { toAxial } from './tileMask.js';
@@ -33,6 +35,12 @@ const same = (a, b) => Math.abs(a.x - b.x) < EPS && Math.abs(a.y - b.y) < EPS;
 // The sight line between two hexes: the shortest unblocked corner to corner line as { x1, y1, x2, y2 } (board pixels, exact grid), or null.
 // canSee(a, b) is the same as a sight line existing; answers are cached. Both work on { col, row } hexes of a hex state.
 export function makeSightLine(hs) {
+  const wallSegs = [];                                                            // the walls on edges as segments: the two corners the hexes share
+  for (const key of hs.walls ?? []) {
+    const [k1, k2] = key.split('|'), [c1, r1] = k1.split(',').map(Number), [c2, r2] = k2.split(',').map(Number);
+    const shared = corners(c1, r1).filter(p => corners(c2, r2).some(q => same(p, q)));
+    if (shared.length === 2) wallSegs.push(shared);
+  }
   const cache = new Map(), blocks = (c, r) => { const k = hexKey(c, r); return !!hs.cells.get(k)?.blocksLos || (hs.floorKnown && !hs.floor.has(k)); };
   const occluders = (c1, r1, c2, r2) => {
     const out = [];
@@ -43,6 +51,11 @@ export function makeSightLine(hs) {
         for (let i = 0; i < 3; i++) out.push([v[i], v[i + 3]]);
       }
     }
+    const va = corners(c1, r1).concat(corners(c2, r2)), x0 = Math.min(...va.map(p => p.x)) - 1, x1 = Math.max(...va.map(p => p.x)) + 1, y0 = Math.min(...va.map(p => p.y)) - 1, y1 = Math.max(...va.map(p => p.y)) + 1;
+    for (const seg of wallSegs) {
+      if (Math.max(seg[0].x, seg[1].x) < x0 || Math.min(seg[0].x, seg[1].x) > x1 || Math.max(seg[0].y, seg[1].y) < y0 || Math.min(seg[0].y, seg[1].y) > y1) continue;
+      out.push(seg);
+    }
     return out;
   };
   return (a, b) => {
@@ -50,9 +63,12 @@ export function makeSightLine(hs) {
     const key = a.col < b.col || (a.col === b.col && a.row < b.row) ? `${a.col},${a.row}|${b.col},${b.row}` : `${b.col},${b.row}|${a.col},${a.row}`;
     if (cache.has(key)) return cache.get(key);
     const va = corners(a.col, a.row), vb = corners(b.col, b.row), occ = occluders(a.col, a.row, b.col, b.row);
+    const ends = occ.flat(), atWall = p => ends.some(e => same(p, e));
     let best = null, bestLen = Infinity;
     for (const p of va) {
+      if (atWall(p)) continue;
       for (const q of vb) {
+        if (atWall(q)) continue;
         const len = Math.hypot(p.x - q.x, p.y - q.y);
         if (len < bestLen && (same(p, q) || !occ.some(([o1, o2]) => meets(p, q, o1, o2)))) { best = { x1: p.x, y1: p.y, x2: q.x, y2: q.y }; bestLen = len; }
       }

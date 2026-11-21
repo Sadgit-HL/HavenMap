@@ -14,7 +14,7 @@ export const uiState = {
   mobileDetailsOpen:false,
   mobileMoveMode:   false,
   // Monster turn panel (scripts/monsterTurn.js): action values, movement type, initiatives by figure ('kind:id'), and whether the result is shown
-  turn: { on: false, move: 3, range: 0, fly: false, jump: false, tele: false, muddled: false, noAttack: false, targets: 1, all: false, area: [], init: {} },
+  turn: { on: false, move: 3, range: 0, fly: false, jump: false, tele: false, muddled: false, noAttack: false, targets: 1, all: false, area: [], cells: null, appliedKey: null, pick: {}, init: {} },
 };
 
 const listeners = [];

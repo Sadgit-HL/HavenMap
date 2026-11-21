@@ -2,6 +2,7 @@
 import { readFileSync } from 'node:fs';
 import { solveMove, areaOffsets } from '../../scripts/monsterMove.js';
 import { hexKey } from '../../scripts/hexState.js';
+import { edgeKey } from '../../scripts/hexGrid.js';
 import { makeSightLine } from '../../scripts/los.js';
 
 export const fixture = JSON.parse(readFileSync(new URL('./fixtures/gloom-scenarios.json', import.meta.url), 'utf8'));
@@ -17,7 +18,9 @@ export function hexStateOf(rec) {
   for (const [l, ch] of Object.entries(rec.figures)) {
     figures.push({ kind: ch === 'C' ? 'mercenary' : 'monster', side: ch === 'C' ? 'characters' : 'monsters', id: 1, col: col(+l), row: row(+l), role: ch === 'A' ? 'active' : null });
   }
-  return { floor, floorKnown: true, cells, figures, tilesWithoutMask: [], ignored: {} };
+  const walls = new Set();
+  for (const [a, b] of rec.thin ?? []) walls.add(edgeKey(hexKey(col(a), row(a)), hexKey(col(b), row(b))));
+  return { floor, floorKnown: true, cells, figures, walls, tilesWithoutMask: [], ignored: {} };
 }
 
 // The answer of the solver in gloom's form: sorted list of [end hex, attacked hexes...] as locations.
