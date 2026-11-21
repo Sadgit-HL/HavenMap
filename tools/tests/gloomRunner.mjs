@@ -1,6 +1,6 @@
 // Runs one converted scenario of the gloom monster mover (fixtures/gloom-scenarios.json, see tools/convert-gloom-scenarios.py) through solveMove.
 import { readFileSync } from 'node:fs';
-import { solveMove } from '../../scripts/monsterMove.js';
+import { solveMove, areaOffsets } from '../../scripts/monsterMove.js';
 import { hexKey } from '../../scripts/hexState.js';
 import { makeSightLine } from '../../scripts/los.js';
 
@@ -27,7 +27,7 @@ export function answerOf(rec) {
   for (const [l, v] of Object.entries(rec.initiatives)) initiatives[hexKey(col(+l), row(+l))] = v;
   const sight = makeSightLine(hs);
   const res = solveMove(hs, {
-    active: { col: a.col, row: a.row }, move: rec.move, range: rec.range, attack: rec.target > 0, targets: rec.target,
+    active: { col: a.col, row: a.row }, move: rec.move, range: rec.range, attack: rec.target > 0, targets: rec.target, area: rec.target > 0 ? areaOffsets(rec.aoe, !(rec.range > 0)) : [],
     flying: rec.flying, jumping: rec.jumping, teleport: rec.teleport, muddled: rec.muddled, initiatives, canSee: (p, q) => sight(p, q) !== null,
   });
   const tuples = new Set();

@@ -7,7 +7,7 @@ import { state } from './state.js';
 import { TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES, SUMMONS } from './data.js';
 import { colLabel, hexCenter, HEX_W, HEX_H } from './hex.js';
 import { buildHexState, hexKey } from './hexState.js';
-import { solveMove } from './monsterMove.js';
+import { solveMove, areaOffsets } from './monsterMove.js';
 import { makeSightLine } from './los.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -35,7 +35,7 @@ function run(obj) {
   const initiatives = {};                                                   // typed per figure (kind and id), the solver wants them by hex
   for (const f of figs) if (T.init[figKey(f)] != null) initiatives[hexKey(f.col, f.row)] = T.init[figKey(f)];
   const res = solveMove(hs, {
-    active: { col: Number(obj.x), row: Number(obj.y) }, move: T.move, range: T.range, attack: !T.noAttack, targets: T.all ? 6 : T.targets,
+    active: { col: Number(obj.x), row: Number(obj.y) }, move: T.move, range: T.range, attack: !T.noAttack, targets: T.all ? 6 : T.targets, area: areaOffsets(T.area, !(T.range > 0)),
     flying: T.fly, jumping: T.jump, teleport: T.tele, muddled: T.muddled, initiatives, canSee: (a, b) => sight(a, b) !== null,
   });
   return { hs, res, figs, sight };
@@ -67,6 +67,13 @@ function draw(run_) {
       layer.appendChild(hexShape(c, r, { fill: 'none', stroke: '#6aa7ff', 'stroke-width': 3, 'stroke-dasharray': '8 6' }));
     }
   }
+  const inArea = new Set();
+  for (const a of res.actions) for (const k of a.area ?? []) {
+    if (inArea.has(k)) continue;
+    inArea.add(k);
+    const [c, r] = k.split(',').map(Number);
+    layer.appendChild(hexShape(c, r, { fill: 'rgba(255,159,67,0.28)', stroke: '#ff9f43', 'stroke-width': 2 }));
+  }
   for (const a of res.actions) {
     if (!a.focus.length || seen.has(a.col + ',' + a.row)) continue;
     seen.add(a.col + ',' + a.row);
@@ -96,6 +103,19 @@ export function refreshSolver() {
 }
 
 const chip = (key, text, on) => `<button type="button" class="sp-turn-chip${on ? ' on' : ''}" data-turn="${key}" aria-pressed="${on}">${text}</button>`;
+// The area pattern: a 7 by 7 drawing like gloom's (cell index = column * 7 + row, odd columns shifted down). A melee area is drawn around the monster in the
+// centre (M); a ranged area is a shape, any cell can be its first.
+function areaEditor(T) {
+  const R = 11, w = 2 * R + 1.5 * R * 6 + 2, h = Math.sqrt(3) * R * 7.5 + 2, melee = !(T.range > 0), cells = [];
+  for (let c = 0; c < 7; c++) for (let r = 0; r < 7; r++) {
+    const x = R + 1 + 1.5 * R * c, y = Math.sqrt(3) * R * (r + 0.5 * (c % 2) + 0.5) + 1, i = c * 7 + r, on = T.area.includes(i), mid = i === 24;
+    const pts = [[R, 0], [R / 2, 0.866 * R], [-R / 2, 0.866 * R], [-R, 0], [-R / 2, -0.866 * R], [R / 2, -0.866 * R]].map(([dx, dy]) => `${(x + dx).toFixed(1)},${(y + dy).toFixed(1)}`).join(' ');
+    cells.push(`<polygon points="${pts}" data-turn-aoe="${i}" class="sp-aoe-cell${on ? ' on' : ''}${mid ? ' mid' : ''}"></polygon>`);
+    if (mid && melee) cells.push(`<text x="${x}" y="${y + 4}" text-anchor="middle" class="sp-aoe-m">M</text>`);
+  }
+  return `<div class="sp-turn-row"><span class="sp-turn-lbl">Area</span>${T.area.length ? '<button type="button" class="sp-turn-chip" data-turn="clearArea">Clear</button>' : ''}</div>` +
+    `<svg class="sp-aoe" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">${cells.join('')}</svg>`;
+}
 const num = (field, value) => `<input type="number" class="sp-turn-num" data-turn-field="${field}" min="0" max="20" value="${value}">`;
 
 function resultHtml() {
@@ -133,6 +153,7 @@ export function turnPanelHtml(kind) {
       <div class="sp-subhead">Monster turn</div>
       <div class="sp-turn-row"><label>Move ${num('move', T.move)}</label><label>Range ${num('range', T.range)}</label><label>Targets ${num('targets', T.targets)}</label>${chip('all', 'All', T.all)}</div>
       <div class="sp-turn-row">${chip('fly', 'Fly', T.fly)}${chip('jump', 'Jump', T.jump)}${chip('tele', 'Teleport', T.tele)}${chip('muddled', 'Muddled', T.muddled)}${chip('noAttack', 'No attack', T.noAttack)}</div>
+      ${areaEditor(T)}
       ${inits}
       <div class="sp-turn-row"><button type="button" class="sp-turn-btn" data-turn="${T.on ? 'off' : 'on'}">${T.on ? 'Clear' : 'Show'}</button></div>
       ${T.on ? resultHtml() : ''}
@@ -141,11 +162,18 @@ export function turnPanelHtml(kind) {
 
 export function initTurnPanel(panel) {
   panel.addEventListener('click', e => {
+    const cellEl = e.target.closest('[data-turn-aoe]');
+    if (cellEl) {
+      const i = Number(cellEl.dataset.turnAoe), a = uiState.turn.area;
+      setTurn({ area: a.includes(i) ? a.filter(x => x !== i) : [...a, i].sort((p, q) => p - q) });
+      return;
+    }
     const b = e.target.closest('[data-turn]');
     if (!b) return;
     const T = uiState.turn, k = b.dataset.turn;
     if (k === 'on' || k === 'off') setTurn({ on: k === 'on' });
     else if (k === 'fly') setTurn({ fly: !T.fly, jump: T.fly ? T.jump : false });
+    else if (k === 'clearArea') setTurn({ area: [] });
     else if (k === 'jump') setTurn({ jump: !T.jump, fly: T.jump ? T.fly : false });
     else if (k in T) setTurn({ [k]: !T[k] });
   });
