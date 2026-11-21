@@ -2502,3 +2502,7 @@ body {
 .sp-turn-notes { margin: 4px 0 0; padding-left: 16px; font-size: 11px; color: rgba(255 255 255 / 0.7); }
 .sp-turn-pick { max-width: 100%; padding: 2px 4px; font: inherit; font-size: 12px; color: #fff; background: rgba(255 255 255 / 0.07); border: 1px solid rgba(255 255 255 / 0.14); border-radius: 4px; }
 .sp-turn-pick option { color: #000; }
+.sp-turn-head { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 0; margin: 0 0 6px; background: none; border: 0; color: inherit; font: inherit; cursor: pointer; }
+.sp-turn-head .sp-subhead { margin: 0; }
+.sp-turn-arrow { font-size: 11px; color: rgba(255 255 255 / 0.55); }
+.sp-turn--closed .sp-turn-head { margin-bottom: 0; }

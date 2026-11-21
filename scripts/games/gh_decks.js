@@ -200,8 +200,8 @@ export const GH_DECKS = {
     { n: 3, iid: 9903190, init: 11, s: true },
     { n: 4, iid: 9903191, init: 38, s: false },
     { n: 5, iid: 9903192, init: 61, s: false },
-    { n: 6, iid: 9903193, init: 28, s: true },
-    { n: 7, iid: 9903194, init: 23, s: false },
+    { n: 6, iid: 9903193, init: 23, s: true },
+    { n: 7, iid: 9903194, init: 28, s: false },
     { n: 8, iid: 9903195, init: 41, s: false },
   ],
   'night-demon': [

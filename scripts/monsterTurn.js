@@ -1,5 +1,6 @@
 // Monster turn panel and highlights on the map page (exploration, branch explore/monster-automation).
-// The panel sits in the inspect panel of a selected monster: move, range, movement type and the initiative of each character; Show runs the solver
+// The panel sits in the inspect panel of a selected monster, closed until the header is clicked (nothing runs while it is closed): move, range, movement type,
+// the area pattern when the card has one, and the initiative of each character; open, it runs the solver
 // (scripts/monsterMove.js, Gloomhaven 2e rules) on the hex state (scripts/hexState.js) and marks the focus and the end hexes on the board.
 // The result is worked out again on every render, so it follows the pieces when they are moved.
 import { uiState, setTurn } from './uiState.js';
@@ -64,7 +65,7 @@ function autoApply(obj) {
   if (T.appliedKey === key) return;
   const o = info.opts, ai = o.area.length ? areaIndexes(o.area, o.areaMelee) : { indexes: [] };
   Object.assign(T, {
-    appliedKey: key, move: Math.min(20, o.move), range: Math.min(20, o.range), targets: o.targets >= 6 ? 1 : o.targets, all: o.targets >= 6,
+    appliedKey: key, areaOpen: false, move: Math.min(20, o.move), range: Math.min(20, o.range), targets: o.targets >= 6 ? 1 : o.targets, all: o.targets >= 6,
     fly: o.flying, jump: o.jumping && !o.flying, tele: false, noAttack: !o.attack, cells: o.area.length ? o.area : null, area: ai.indexes,
   });
 }
@@ -144,10 +145,9 @@ function draw(run_) {
 
 // Called by the sidebar on every render: works out and draws the result for the selected monster, or clears the board.
 export function refreshSolver() {
-  const sel = selectedMonster();
+  const sel = uiState.turn.on ? selectedMonster() : null;                        // closed: no data, no solver, no marks
   if (sel) autoApply(sel);
-  const obj = uiState.turn.on ? sel : null;
-  last = obj ? run(obj) : null;
+  last = sel ? run(sel) : null;
   draw(last);
 }
 
@@ -156,6 +156,7 @@ const chip = (key, text, on) => `<button type="button" class="sp-turn-chip${on ?
 // centre (M); a ranged area is a shape, any cell can be its first.
 function areaEditor(T) {
   const shown = T.cells ? areaIndexes(T.cells, !(T.range > 0)).indexes : T.area;
+  if (!shown.length && !T.areaOpen) return `<div class="sp-turn-row">${chip('areaOpen', 'Area', false)}</div>`;      // the grid comes with a card that has an area, or by hand
   const R = 11, w = 2 * R + 1.5 * R * 6 + 2, h = Math.sqrt(3) * R * 7.5 + 2, melee = !(T.range > 0), cells = [];
   for (let c = 0; c < 7; c++) for (let r = 0; r < 7; r++) {
     const x = R + 1 + 1.5 * R * c, y = Math.sqrt(3) * R * (r + 0.5 * (c % 2) + 0.5) + 1, i = c * 7 + r, on = shown.includes(i), mid = i === 24;
@@ -163,7 +164,7 @@ function areaEditor(T) {
     cells.push(`<polygon points="${pts}" data-turn-aoe="${i}" class="sp-aoe-cell${on ? ' on' : ''}${mid ? ' mid' : ''}"></polygon>`);
     if (mid && melee) cells.push(`<text x="${x}" y="${y + 4}" text-anchor="middle" class="sp-aoe-m">M</text>`);
   }
-  return `<div class="sp-turn-row"><span class="sp-turn-lbl">Area</span>${shown.length ? '<button type="button" class="sp-turn-chip" data-turn="clearArea">Clear</button>' : ''}</div>` +
+  return `<div class="sp-turn-row"><span class="sp-turn-lbl">Area</span>${shown.length ? '<button type="button" class="sp-turn-chip" data-turn="clearArea">Clear</button>' : '<button type="button" class="sp-turn-chip" data-turn="areaOpen">Hide</button>'}</div>` +
     `<svg class="sp-aoe" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">${cells.join('')}</svg>`;
 }
 const num = (field, value) => `<input type="number" class="sp-turn-num" data-turn-field="${field}" min="0" max="20" value="${value}">`;
@@ -206,22 +207,25 @@ function cardHtml(info) {
 
 export function turnPanelHtml(kind) {
   if (kind !== 'monster') return '';
-  const T = uiState.turn, sel = selectedMonster(), card = sel ? cardHtml(cardInfo(sel)) : '';
+  const T = uiState.turn;
+  const head = `<button type="button" class="sp-turn-head" data-turn="toggle" aria-expanded="${T.on}"><span class="sp-subhead">Monster turn</span><span class="sp-turn-arrow">${T.on ? '&#9662;' : '&#9656;'}</span></button>`;
+  if (!T.on) return `<div class="sp-action-section sp-turn sp-turn--closed">${head}</div>`;
+  const sel = selectedMonster(), card = sel ? cardHtml(cardInfo(sel)) : '';
   const figs = last ? last.figs : buildHexState(state, lookup).figures.filter(f => f.side === 'characters');
-  const inits = figs.length ? `<div class="sp-turn-inits">${figs.map(f => {
+  const filled = figs.filter(f => T.init[figKey(f)] != null).length;
+  const inits = figs.length ? `<div class="sp-turn-row">${chip('initOpen', `Initiatives${filled ? ` (${filled})` : ''}`, T.initOpen)}</div>` + (T.initOpen ? `<div class="sp-turn-inits">${figs.map(f => {
     const k = figKey(f);
     return `<label class="sp-turn-init"><span>${esc(figName(f))} ${label(f)}</span><input type="number" class="sp-turn-num" data-turn-field="init" data-key="${k}" min="1" max="99" value="${T.init[k] ?? ''}" placeholder="99"></label>`;
-  }).join('')}</div>` : '';
+  }).join('')}</div>` : '') : '';
   return `
     <div class="sp-action-section sp-turn">
-      <div class="sp-subhead">Monster turn</div>
+      ${head}
       ${card}
       <div class="sp-turn-row"><label>Move ${num('move', T.move)}</label><label>Range ${num('range', T.range)}</label><label>Targets ${num('targets', T.targets)}</label>${chip('all', 'All', T.all)}</div>
       <div class="sp-turn-row">${chip('fly', 'Fly', T.fly)}${chip('jump', 'Jump', T.jump)}${chip('tele', 'Teleport', T.tele)}${chip('muddled', 'Muddled', T.muddled)}${chip('noAttack', 'No attack', T.noAttack)}</div>
       ${areaEditor(T)}
       ${inits}
-      <div class="sp-turn-row"><button type="button" class="sp-turn-btn" data-turn="${T.on ? 'off' : 'on'}">${T.on ? 'Clear' : 'Show'}</button></div>
-      ${T.on ? resultHtml() : ''}
+      ${resultHtml()}
     </div>`;
 }
 
@@ -236,7 +240,7 @@ export function initTurnPanel(panel) {
     const b = e.target.closest('[data-turn]');
     if (!b) return;
     const T = uiState.turn, k = b.dataset.turn;
-    if (k === 'on' || k === 'off') setTurn({ on: k === 'on' });
+    if (k === 'toggle') setTurn({ on: !T.on });
     else if (k === 'fly') setTurn({ fly: !T.fly, jump: T.fly ? T.jump : false });
     else if (k === 'clearArea') setTurn({ area: [], cells: null });
     else if (k === 'useCard') setTurn({ appliedKey: null });

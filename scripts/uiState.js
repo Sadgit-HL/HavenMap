@@ -13,8 +13,9 @@ export const uiState = {
   mobilePanel:      'selection',
   mobileDetailsOpen:false,
   mobileMoveMode:   false,
-  // Monster turn panel (scripts/monsterTurn.js): action values, movement type, initiatives by figure ('kind:id'), and whether the result is shown
-  turn: { on: false, move: 3, range: 0, fly: false, jump: false, tele: false, muddled: false, noAttack: false, targets: 1, all: false, area: [], cells: null, appliedKey: null, pick: {}, init: {} },
+  // Monster turn panel (scripts/monsterTurn.js): on = the section is open and the solver runs (closed: nothing runs, nothing loads, nothing is drawn); action
+  // values, movement type, initiatives by figure ('kind:id'), areaOpen / initOpen = the area grid and the initiatives are opened by hand. Session only.
+  turn: { on: false, move: 3, range: 0, fly: false, jump: false, tele: false, muddled: false, noAttack: false, targets: 1, all: false, area: [], cells: null, appliedKey: null, pick: {}, areaOpen: false, initOpen: false, init: {} },
 };
 
 const listeners = [];

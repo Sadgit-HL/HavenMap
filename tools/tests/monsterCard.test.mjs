@@ -48,6 +48,11 @@ export const tests = {
     assert.deepEqual(distinctCards(candidatesFor(deck, 71, true)).map(c => c.name), ['Exploding Ammunition'], 'two copies of one card');
     assert.equal(candidatesFor(deck, 17, false).length, 1);
     assert.deepEqual(candidatesFor(GH2_MONSTER_DECKS['lurker-soldier'], 28, true).map(c => c.init), [28], 'no exact match on the shuffle mark: the initiative is used');
+    assert.deepEqual(candidatesFor(GH2_MONSTER_DECKS['lurker-soldier'], 23, true).map(c => c.name), ['Hardened by Frost'], 'card 6 of the map deck (corrected from 28 to 23 after its image)');
+  },
+  'monster card: the initiative and shuffle marks of every map deck agree with the Secretariat deck (31 decks)'() {
+    const marks = (cards, init, shuffle) => cards.map(c => `${c[init]}${c[shuffle] ? 's' : ''}`).sort().join();
+    for (const [slug, cards] of Object.entries(GH_DECKS)) assert.equal(marks(cards, 'init', 's'), marks(GH2_MONSTER_DECKS[slug], 'init', 'shuffle'), slug);
   },
   'monster card: every card of the map decks has a candidate in the Secretariat deck (248 cards, 33 ambiguous; living corpse card 3 was corrected from initiative 68 to 66)'() {
     let total = 0, ambiguous = 0; const none = [];
