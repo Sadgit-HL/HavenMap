@@ -35,6 +35,8 @@ Hand-maintained inputs and outputs:
 
 ## Treasure placement
 
+`tools/extract-monster-data.py` (2026-11-21, exploration branch) writes `scripts/games/gh2_monsters.js` (GENERATED) from a clone of the Secretariat (`data/gh2e/monster`, `monster/deck`, `label/en.json`): Gloomhaven 2e monster stat cards and ability decks. See `monster-automation.md`.
+
 `tools/convert-gloom-scenarios.py` (2026-11-21, exploration branch) turns the test scenarios of the gloom monster mover into `tools/tests/fixtures/gloom-scenarios.json` (needs a clone of https://github.com/AluminumAngel/gloom, MIT). See `monster-automation.md`.
 
 `tools/make-tile-masks.py` (2026-11-21, exploration branch `explore/monster-automation`) writes `scripts/games/gh2_tile_masks.js`: the floor hexes of each Gloomhaven 2e map tile as `[q, r]` offsets from the tile anchor (angle 0), derived from the alpha channel of `images/tiles/gh2`. See `monster-automation.md`.
