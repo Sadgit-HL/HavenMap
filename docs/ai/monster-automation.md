@@ -45,7 +45,9 @@ Rule flags per rule set are in `set_rules_flags`. Check them against the ruleboo
 
 - 2026-11-21: floor masks for the 56 Gloomhaven 2e tiles, derived from the tile alpha channel (`tools/make-tile-masks.py`, output `scripts/games/gh2_tile_masks.js`, tests in `tools/tests/tileMasks.test.mjs`). A hex is floor when at least 93% of its area is opaque; hexes cut by the image edge count as transparent. Checked by eye on 01-A, 07-A and 03-B; variants of one tile always give the same shape.
 - The tile anchor in `gh.js` is not always a floor hex (03-B: it lies beside the tile). Do not assume it.
-- Not done: a helper that applies a mask to a placed, rotated tile; Frosthaven tiles (46 of 76 have no alpha channel, and a "hex fits inside the image" rule only fits the rectangular ones; options: Worldhaven `map-tiles`, line detection, hand masks).
+- 2026-11-21: `scripts/tileMask.js` (`placeMask`, `tileFloorHexes`) places a mask on the board with rotation; tested against `footprintHexes`.
+- 2026-11-21: `scripts/hexState.js` (`buildHexState`, `cellAt`) builds the hex state from the placed objects: floor, per-hex terrain flags, figures by side. Data lookups are passed in (`data.js` only loads in a browser). Rules are in the file header: obstacle blocks movement, wall and closed door also block line of sight. Monsters, mercenaries and summons are one hex each (boss footprints not handled). Tests in `tools/tests/hexState.test.mjs`.
+- Not done: Frosthaven tiles (46 of 76 have no alpha channel, and a "hex fits inside the image" rule only fits the rectangular ones; options: Worldhaven `map-tiles`, line detection, hand masks); monster action data; the solver.
 
 ## Open decisions
 
