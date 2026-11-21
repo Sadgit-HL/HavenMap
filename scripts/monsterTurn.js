@@ -35,7 +35,7 @@ function run(obj) {
   const initiatives = {};                                                   // typed per figure (kind and id), the solver wants them by hex
   for (const f of figs) if (T.init[figKey(f)] != null) initiatives[hexKey(f.col, f.row)] = T.init[figKey(f)];
   const res = solveMove(hs, {
-    active: { col: Number(obj.x), row: Number(obj.y) }, move: T.move, range: T.range, attack: !T.noAttack,
+    active: { col: Number(obj.x), row: Number(obj.y) }, move: T.move, range: T.range, attack: !T.noAttack, targets: T.all ? 6 : T.targets,
     flying: T.fly, jumping: T.jump, teleport: T.tele, muddled: T.muddled, initiatives, canSee: (a, b) => sight(a, b) !== null,
   });
   return { hs, res, figs, sight };
@@ -58,7 +58,7 @@ function draw(run_) {
   if (!layer) return;
   while (layer.firstChild) layer.removeChild(layer.firstChild);
   if (!run_) return;
-  const { res } = run_;
+  const { res } = run_, seen = new Set();
   layer.setAttribute('pointer-events', 'none');
   for (const a of res.actions) {
     if (!a.focus.length) continue;                                                // standing still: nothing to mark
@@ -68,7 +68,8 @@ function draw(run_) {
     }
   }
   for (const a of res.actions) {
-    if (!a.focus.length) continue;
+    if (!a.focus.length || seen.has(a.col + ',' + a.row)) continue;
+    seen.add(a.col + ',' + a.row);
     layer.appendChild(hexShape(a.col, a.row, a.attack
       ? { fill: 'rgba(80,200,120,0.38)', stroke: '#50c878', 'stroke-width': 3 }
       : { fill: 'rgba(106,167,255,0.32)', stroke: '#6aa7ff', 'stroke-width': 3 }));
@@ -77,8 +78,8 @@ function draw(run_) {
   // the sight line from each attack hex to its focus (the line comes in the exact grid of scripts/los.js, the board is 45 and 78 pixels further)
   for (const a of res.actions) {
     if (!a.attack) continue;
-    for (const f of res.focuses) {
-      const l = run_.sight(a, f);
+    for (const t of a.targets) {
+      const [tc, tr] = t.split(',').map(Number), l = run_.sight(a, { col: tc, row: tr });
       if (!l || (l.x1 === l.x2 && l.y1 === l.y2)) continue;
       const e = document.createElementNS(SVG_NS, 'line');
       for (const [k, v] of Object.entries({ x1: l.x1 + 45, y1: l.y1 + 78, x2: l.x2 + 45, y2: l.y2 + 78, stroke: '#ffd23f', 'stroke-width': 2, opacity: 0.85 })) e.setAttribute(k, v);
@@ -103,8 +104,12 @@ function resultHtml() {
   if (!res.focuses.length) lines.push('No focus: nothing can be reached or attacked');
   else {
     lines.push(`Focus: ${res.focuses.map(f => `${esc(figName(f))} ${label(f)}`).join(' or ')}`);
-    const hexes = res.actions.map(label).join(', ');
-    lines.push(res.canAttackFocus ? `Attacks from: ${hexes}` : `Moves to: ${hexes}`);
+    const names = new Map(last.hs.figures.map(f => [hexKey(f.col, f.row), figName(f)]));
+    const hexes = [...new Set(res.actions.map(label))].join(', ');
+    if (res.canAttackFocus && res.actions.some(x => x.targets.length > 1)) {
+      lines.push('Attacks from:');
+      for (const x of res.actions) lines.push(`${label(x)}: ${x.targets.map(t => esc(names.get(t) ?? t)).join(', ')}`);
+    } else lines.push(res.canAttackFocus ? `Attacks from: ${hexes}` : `Moves to: ${hexes}`);
     if (!res.canAttackFocus) {
       const dest = [...new Set(res.actions.flatMap(a => a.destinations))].map(k => { const [c, r] = k.split(',').map(Number); return label({ col: c, row: r }); });
       if (dest.length) lines.push(`Towards: ${dest.join(', ')}`);
@@ -126,7 +131,7 @@ export function turnPanelHtml(kind) {
   return `
     <div class="sp-action-section sp-turn">
       <div class="sp-subhead">Monster turn</div>
-      <div class="sp-turn-row"><label>Move ${num('move', T.move)}</label><label>Range ${num('range', T.range)}</label></div>
+      <div class="sp-turn-row"><label>Move ${num('move', T.move)}</label><label>Range ${num('range', T.range)}</label><label>Targets ${num('targets', T.targets)}</label>${chip('all', 'All', T.all)}</div>
       <div class="sp-turn-row">${chip('fly', 'Fly', T.fly)}${chip('jump', 'Jump', T.jump)}${chip('tele', 'Teleport', T.tele)}${chip('muddled', 'Muddled', T.muddled)}${chip('noAttack', 'No attack', T.noAttack)}</div>
       ${inits}
       <div class="sp-turn-row"><button type="button" class="sp-turn-btn" data-turn="${T.on ? 'off' : 'on'}">${T.on ? 'Clear' : 'Show'}</button></div>
@@ -149,6 +154,7 @@ export function initTurnPanel(panel) {
     if (!f) return;
     const n = Math.round(Number(e.target.value));
     if (f === 'move' || f === 'range') setTurn({ [f]: Number.isFinite(n) ? Math.max(0, Math.min(20, n)) : 0 });
+    else if (f === 'targets') setTurn({ targets: Number.isFinite(n) ? Math.max(0, Math.min(5, n)) : 1 });
     else if (f === 'init') {
       const init = { ...uiState.turn.init };
       if (e.target.value === '' || !Number.isFinite(n)) delete init[e.target.dataset.key]; else init[e.target.dataset.key] = Math.max(1, Math.min(99, n));

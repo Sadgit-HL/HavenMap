@@ -27,12 +27,12 @@ export function answerOf(rec) {
   for (const [l, v] of Object.entries(rec.initiatives)) initiatives[hexKey(col(+l), row(+l))] = v;
   const sight = makeSightLine(hs);
   const res = solveMove(hs, {
-    active: { col: a.col, row: a.row }, move: rec.move, range: rec.range, attack: rec.target > 0,
+    active: { col: a.col, row: a.row }, move: rec.move, range: rec.range, attack: rec.target > 0, targets: rec.target,
     flying: rec.flying, jumping: rec.jumping, teleport: rec.teleport, muddled: rec.muddled, initiatives, canSee: (p, q) => sight(p, q) !== null,
   });
   const tuples = new Set();
   for (const x of res.actions) {
-    if (x.attack) for (const f of x.focus) { const [fc, fr] = f.split(',').map(Number); tuples.add(JSON.stringify([loc(x.col, x.row), loc(fc, fr)])); }
+    if (x.attack) tuples.add(JSON.stringify([loc(x.col, x.row), ...x.targets.map(t => { const [tc, tr] = t.split(',').map(Number); return loc(tc, tr); }).sort((p, q) => p - q)]));
     else tuples.add(JSON.stringify([loc(x.col, x.row)]));
   }
   return [...tuples].map(t => JSON.parse(t)).sort((p, q) => JSON.stringify(p) < JSON.stringify(q) ? -1 : 1);
