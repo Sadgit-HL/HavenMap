@@ -15,6 +15,7 @@ import { colLabel, footprintHexes, hexCenter } from './hex.js';
 import { centerBoardPoint } from './controls.js';
 import { displayCurrentHp, displayMaxHp } from './hp.js';
 import { activeCardsFor } from './decks.js';
+import { refreshSolver, turnPanelHtml, initTurnPanel } from './monsterTurn.js';
 
 // ─── Kind → state key + data table ───────────────────────────────────────────
 
@@ -315,6 +316,7 @@ export function initSidebar() {
   subscribe(render);
   const panel = document.getElementById('sidebar-panel');
   panel.addEventListener('click', handlePanelClick);
+  initTurnPanel(panel);
 
   // ── Stack drag-to-reorder ────────────────────────────────────────────────────
   let stackDragSrc = null;
@@ -820,6 +822,7 @@ function findAllAt(col, row) {
 // ─── Top-level render ─────────────────────────────────────────────────────────
 
 function render() {
+  refreshSolver();
   const panel = document.getElementById('sidebar-panel');
   const { selected, stack, selectedHex, addPanelOpen } = uiState;
   const sidebarW = window.matchMedia('(max-width: 760px)').matches
@@ -971,6 +974,7 @@ function objectPanel(kind, idx) {
     </div>
     ${statsHtml}
     ${activeHtml}
+    ${turnPanelHtml(kind)}
     ${statCardHtml}
     ${toolbarHtml}
   `;

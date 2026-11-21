@@ -13,6 +13,8 @@ export const uiState = {
   mobilePanel:      'selection',
   mobileDetailsOpen:false,
   mobileMoveMode:   false,
+  // Monster turn panel (scripts/monsterTurn.js): action values, movement type, initiatives by figure ('kind:id'), and whether the result is shown
+  turn: { on: false, move: 3, range: 0, fly: false, jump: false, tele: false, muddled: false, noAttack: false, init: {} },
 };
 
 const listeners = [];
@@ -83,6 +85,8 @@ export function clearSelection() {
   uiState.mobileMoveMode = false;
   notify();
 }
+
+export function setTurn(patch) { Object.assign(uiState.turn, patch); notify(); }
 
 export function toggleSection(key) {
   if (uiState.expandedSections.has(key)) uiState.expandedSections.delete(key);

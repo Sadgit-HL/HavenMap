@@ -1,0 +1,145 @@
+// Monster turn panel and highlights on the map page (exploration, branch explore/monster-automation).
+// The panel sits in the inspect panel of a selected monster: move, range, movement type and the initiative of each character; Show runs the solver
+// (scripts/monsterMove.js, Gloomhaven 2e rules) on the hex state (scripts/hexState.js) and marks the focus and the end hexes on the board.
+// The result is worked out again on every render, so it follows the pieces when they are moved.
+import { uiState, setTurn } from './uiState.js';
+import { state } from './state.js';
+import { TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES, SUMMONS } from './data.js';
+import { colLabel, hexCenter, HEX_W, HEX_H } from './hex.js';
+import { buildHexState, hexKey } from './hexState.js';
+import { solveMove } from './monsterMove.js';
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
+// The floor masks are for the Gloomhaven 2e tiles only (game 'gh2'); tiles of other games have none and the floor is then unknown.
+const lookup = {
+  tileTitle: id => { const t = TILES.byId.get(id); return t?.game === 'gh2' ? t.title : null; },
+  overlay: id => OVERLAY_OBJECTS.byId.get(id) ?? null,
+};
+const TABLES = { monster: MONSTERS, mercenary: MERCENARIES, summon: SUMMONS };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const figName = f => TABLES[f.kind]?.byId.get(f.id)?.title ?? f.kind;
+const label = h => `${colLabel(h.col)}${h.row}`;
+const figKey = f => `${f.kind}:${f.id}`;
+
+let last = null;                                                          // { hs, res, figs } of the latest run, for the panel
+
+function selectedMonster() {
+  const sel = uiState.selected;
+  return sel?.kind === 'monster' ? state.monsters?.[sel.idx] ?? null : null;
+}
+
+function run(obj) {
+  const T = uiState.turn, hs = buildHexState(state, lookup), figs = hs.figures.filter(f => f.side === 'characters');
+  const initiatives = {};                                                   // typed per figure (kind and id), the solver wants them by hex
+  for (const f of figs) if (T.init[figKey(f)] != null) initiatives[hexKey(f.col, f.row)] = T.init[figKey(f)];
+  const res = solveMove(hs, {
+    active: { col: Number(obj.x), row: Number(obj.y) }, move: T.move, range: T.range, attack: !T.noAttack,
+    flying: T.fly, jumping: T.jump, teleport: T.tele, muddled: T.muddled, initiatives,
+  });
+  return { hs, res, figs };
+}
+
+function hexPoints(col, row) {
+  const { x, y } = hexCenter(col, row), r = HEX_W / 2, h = HEX_H / 2;
+  return `${x + r},${y} ${x + r / 2},${y + h} ${x - r / 2},${y + h} ${x - r},${y} ${x - r / 2},${y - h} ${x + r / 2},${y - h}`;
+}
+
+function hexShape(col, row, attrs) {
+  const p = document.createElementNS(SVG_NS, 'polygon');
+  p.setAttribute('points', hexPoints(col, row));
+  for (const [k, v] of Object.entries(attrs)) p.setAttribute(k, v);
+  return p;
+}
+
+function draw(run_) {
+  const layer = document.getElementById('layer-solver');
+  if (!layer) return;
+  while (layer.firstChild) layer.removeChild(layer.firstChild);
+  if (!run_) return;
+  const { res } = run_;
+  layer.setAttribute('pointer-events', 'none');
+  for (const a of res.actions) {
+    if (!a.focus.length) continue;                                                // standing still: nothing to mark
+    for (const d of a.destinations) {
+      const [c, r] = d.split(',').map(Number);
+      layer.appendChild(hexShape(c, r, { fill: 'none', stroke: '#6aa7ff', 'stroke-width': 3, 'stroke-dasharray': '8 6' }));
+    }
+  }
+  for (const a of res.actions) {
+    if (!a.focus.length) continue;
+    layer.appendChild(hexShape(a.col, a.row, a.attack
+      ? { fill: 'rgba(80,200,120,0.38)', stroke: '#50c878', 'stroke-width': 3 }
+      : { fill: 'rgba(106,167,255,0.32)', stroke: '#6aa7ff', 'stroke-width': 3 }));
+  }
+  for (const f of res.focuses) layer.appendChild(hexShape(f.col, f.row, { fill: 'none', stroke: '#ffd23f', 'stroke-width': 5 }));
+}
+
+// Called by the sidebar on every render: works out and draws the result for the selected monster, or clears the board.
+export function refreshSolver() {
+  const obj = uiState.turn.on ? selectedMonster() : null;
+  last = obj ? run(obj) : null;
+  draw(last);
+}
+
+const chip = (key, text, on) => `<button type="button" class="sp-turn-chip${on ? ' on' : ''}" data-turn="${key}" aria-pressed="${on}">${text}</button>`;
+const num = (field, value) => `<input type="number" class="sp-turn-num" data-turn-field="${field}" min="0" max="20" value="${value}">`;
+
+function resultHtml() {
+  if (!last) return '';
+  const { res, hs } = last, lines = [];
+  if (!res.focuses.length) lines.push('No focus: nothing can be reached or attacked');
+  else {
+    lines.push(`Focus: ${res.focuses.map(f => `${esc(figName(f))} ${label(f)}`).join(' or ')}`);
+    const hexes = res.actions.map(label).join(', ');
+    lines.push(res.canAttackFocus ? `Attacks from: ${hexes}` : `Moves to: ${hexes}`);
+    if (!res.canAttackFocus) {
+      const dest = [...new Set(res.actions.flatMap(a => a.destinations))].map(k => { const [c, r] = k.split(',').map(Number); return label({ col: c, row: r }); });
+      if (dest.length) lines.push(`Towards: ${dest.join(', ')}`);
+    }
+  }
+  if (!hs.floorKnown) lines.push('Floor unknown on this map: hexes outside the tiles are not excluded');
+  return `<div class="sp-turn-res">${lines.map(l => `<div>${l}</div>`).join('')}</div>`;
+}
+
+// The panel for the selected monster (empty for other objects).
+export function turnPanelHtml(kind) {
+  if (kind !== 'monster') return '';
+  const T = uiState.turn;
+  const figs = last ? last.figs : buildHexState(state, lookup).figures.filter(f => f.side === 'characters');
+  const inits = figs.length ? `<div class="sp-turn-inits">${figs.map(f => {
+    const k = figKey(f);
+    return `<label class="sp-turn-init"><span>${esc(figName(f))} ${label(f)}</span><input type="number" class="sp-turn-num" data-turn-field="init" data-key="${k}" min="1" max="99" value="${T.init[k] ?? ''}" placeholder="99"></label>`;
+  }).join('')}</div>` : '';
+  return `
+    <div class="sp-action-section sp-turn">
+      <div class="sp-subhead">Monster turn</div>
+      <div class="sp-turn-row"><label>Move ${num('move', T.move)}</label><label>Range ${num('range', T.range)}</label></div>
+      <div class="sp-turn-row">${chip('fly', 'Fly', T.fly)}${chip('jump', 'Jump', T.jump)}${chip('tele', 'Teleport', T.tele)}${chip('muddled', 'Muddled', T.muddled)}${chip('noAttack', 'No attack', T.noAttack)}</div>
+      ${inits}
+      <div class="sp-turn-row"><button type="button" class="sp-turn-btn" data-turn="${T.on ? 'off' : 'on'}">${T.on ? 'Clear' : 'Show'}</button></div>
+      ${T.on ? resultHtml() : ''}
+    </div>`;
+}
+
+export function initTurnPanel(panel) {
+  panel.addEventListener('click', e => {
+    const b = e.target.closest('[data-turn]');
+    if (!b) return;
+    const T = uiState.turn, k = b.dataset.turn;
+    if (k === 'on' || k === 'off') setTurn({ on: k === 'on' });
+    else if (k === 'fly') setTurn({ fly: !T.fly, jump: T.fly ? T.jump : false });
+    else if (k === 'jump') setTurn({ jump: !T.jump, fly: T.jump ? T.fly : false });
+    else if (k in T) setTurn({ [k]: !T[k] });
+  });
+  panel.addEventListener('change', e => {
+    const f = e.target.dataset?.turnField;
+    if (!f) return;
+    const n = Math.round(Number(e.target.value));
+    if (f === 'move' || f === 'range') setTurn({ [f]: Number.isFinite(n) ? Math.max(0, Math.min(20, n)) : 0 });
+    else if (f === 'init') {
+      const init = { ...uiState.turn.init };
+      if (e.target.value === '' || !Number.isFinite(n)) delete init[e.target.dataset.key]; else init[e.target.dataset.key] = Math.max(1, Math.min(99, n));
+      setTurn({ init });
+    }
+  });
+}
