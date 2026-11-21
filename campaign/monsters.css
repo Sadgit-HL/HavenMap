@@ -45,7 +45,7 @@
 .pm.mon .mamdisc img, .pm.mon .mamempty { display:block; height:58px; aspect-ratio:3 / 2; border-radius:6px; border:1px solid var(--line); box-shadow:0 2px 8px rgba(0,0,0,.5); }
 .pm.mon .mamempty { border-style:dashed; }
 .pm.mon .monamhd > .btn6[data-amact] { width:34px; padding:0; justify-content:center; flex:none; }
-.pm.mon .monamhd > .btn6.mamdraw { width:auto; padding:0 12px; gap:6px; }
+.pm.mon .monamhd > .btn6.mamdraw { width:auto; min-width:44px; padding:0 10px; justify-content:center; }
 .pm.mon .monamhd > .btn6[data-amact="shuffle"] { position:relative; }
 .pm.mon .mamdraw img { display:block; }
 .pm.mon .monamhd > .btn6.mammode { width:auto; min-width:44px; padding:0 8px; justify-content:center; font-size:12px; font-weight:700; flex:none; }
