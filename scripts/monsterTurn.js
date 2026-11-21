@@ -8,6 +8,7 @@ import { TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES, SUMMONS } from './data.j
 import { colLabel, hexCenter, HEX_W, HEX_H } from './hex.js';
 import { buildHexState, hexKey } from './hexState.js';
 import { solveMove } from './monsterMove.js';
+import { makeSightLine } from './los.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 // The floor masks are for the Gloomhaven 2e tiles only (game 'gh2'); tiles of other games have none and the floor is then unknown.
@@ -30,13 +31,14 @@ function selectedMonster() {
 
 function run(obj) {
   const T = uiState.turn, hs = buildHexState(state, lookup), figs = hs.figures.filter(f => f.side === 'characters');
+  const sight = makeSightLine(hs);
   const initiatives = {};                                                   // typed per figure (kind and id), the solver wants them by hex
   for (const f of figs) if (T.init[figKey(f)] != null) initiatives[hexKey(f.col, f.row)] = T.init[figKey(f)];
   const res = solveMove(hs, {
     active: { col: Number(obj.x), row: Number(obj.y) }, move: T.move, range: T.range, attack: !T.noAttack,
-    flying: T.fly, jumping: T.jump, teleport: T.tele, muddled: T.muddled, initiatives,
+    flying: T.fly, jumping: T.jump, teleport: T.tele, muddled: T.muddled, initiatives, canSee: (a, b) => sight(a, b) !== null,
   });
-  return { hs, res, figs };
+  return { hs, res, figs, sight };
 }
 
 function hexPoints(col, row) {
@@ -72,6 +74,17 @@ function draw(run_) {
       : { fill: 'rgba(106,167,255,0.32)', stroke: '#6aa7ff', 'stroke-width': 3 }));
   }
   for (const f of res.focuses) layer.appendChild(hexShape(f.col, f.row, { fill: 'none', stroke: '#ffd23f', 'stroke-width': 5 }));
+  // the sight line from each attack hex to its focus (the line comes in the exact grid of scripts/los.js, the board is 45 and 78 pixels further)
+  for (const a of res.actions) {
+    if (!a.attack) continue;
+    for (const f of res.focuses) {
+      const l = run_.sight(a, f);
+      if (!l || (l.x1 === l.x2 && l.y1 === l.y2)) continue;
+      const e = document.createElementNS(SVG_NS, 'line');
+      for (const [k, v] of Object.entries({ x1: l.x1 + 45, y1: l.y1 + 78, x2: l.x2 + 45, y2: l.y2 + 78, stroke: '#ffd23f', 'stroke-width': 2, opacity: 0.85 })) e.setAttribute(k, v);
+      layer.appendChild(e);
+    }
+  }
 }
 
 // Called by the sidebar on every render: works out and draws the result for the selected monster, or clears the board.
