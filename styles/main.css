@@ -2502,7 +2502,14 @@ body {
 .sp-turn-notes { margin: 4px 0 0; padding-left: 16px; font-size: 11px; color: rgba(255 255 255 / 0.7); }
 .sp-turn-pick { max-width: 100%; padding: 2px 4px; font: inherit; font-size: 12px; color: #fff; background: rgba(255 255 255 / 0.07); border: 1px solid rgba(255 255 255 / 0.14); border-radius: 4px; }
 .sp-turn-pick option { color: #000; }
-.sp-turn-head { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 0; margin: 0 0 6px; background: none; border: 0; color: inherit; font: inherit; cursor: pointer; }
-.sp-turn-head .sp-subhead { margin: 0; }
-.sp-turn-arrow { font-size: 11px; color: rgba(255 255 255 / 0.55); }
-.sp-turn--closed .sp-turn-head { margin-bottom: 0; }
+.sp-turn-choices { display: grid; gap: 4px; margin-top: 8px; }
+.sp-turn-choice { padding: 4px 8px; text-align: left; font: inherit; font-size: 12px; color: rgba(255 255 255 / 0.85); background: rgba(255 255 255 / 0.05); border: 1px solid rgba(255 255 255 / 0.12); border-radius: 4px; cursor: pointer; }
+.sp-turn-choice.on { color: #1a1a2e; background: #fff; border-color: #fff; font-weight: 700; }
+.sp-turn-chip:disabled { opacity: 0.4; cursor: default; }
+.sp-turn-bar { display: flex; gap: 4px; align-items: stretch; }
+.sp-turn-bar .sp-turn-btn { flex: 1 1 0; min-width: 0; padding: 6px 2px; font-size: 11px; white-space: nowrap; }
+.sp-turn-btn.on { color: #1a1a2e; background: #f0b428; border-color: #f0b428; }
+.sp-turn-btn:disabled, .sp-turn-icon:disabled { opacity: 0.4; cursor: default; }
+.sp-turn-icon { flex: none; width: 22px; padding: 0; font-size: 12px; color: rgba(255 255 255 / 0.8); background: rgba(255 255 255 / 0.07); border: 1px solid rgba(255 255 255 / 0.14); border-radius: 4px; cursor: pointer; }
+.sp-turn-status { margin-top: 6px; font-size: 12px; color: rgba(255 255 255 / 0.85); }
+.sp-turn-details { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255 255 255 / 0.08); }

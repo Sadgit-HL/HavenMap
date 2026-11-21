@@ -96,6 +96,11 @@ Dated, newest first within each group. "Owner" marks decisions the owner made. C
 
 ## Content and rules (as implemented; check against the books when in doubt)
 
+- 2026-11-21: Monster turn on the map page (branch `explore/monster-automation`, owner): optional, closed until asked, the player confirms the move, move only for now (the attack roll stays in GeekRoller, so that everyone in the forum can verify it), forum text one line per monster and a line per target when there are several, no restating of the ability card. See `monster-automation.md`.
+- 2026-11-21: Rules of the hex map: the Gloomhaven 2e rules are the only source of truth (owner). One rule set: gloom's Gloomhaven rules for focus, disadvantage and target ranking for every edition (no Frosthaven or Jaws of the Lion rule sets), and line of sight from any point of a hex to any point of the other (not gloom's corner to corner setting).
+- 2026-11-21: Where HavenMap's tables and the Secretariat data differ, the Secretariat is right (owner): standee counts lurker soldier 6, night demon 6, vermling scout 10 (`gh.js`); living corpse card 3 initiative 66 and the swapped initiatives of lurker soldier cards 6 and 7 (`gh_decks.js`, the images agree).
+- 2026-11-21: Two map tiles side by side are separated by walls on their border unless a door or a corridor joins them (owner report: monsters crossed). Gloomhaven has ice terrain objects (ids 70 and 71) because Frozen Fist and Snowdancer can lay icy terrain.
+
 - 2026-11-16: Frosthaven and Jaws character mats come from the group's asset repository (`wh_character_mats`), same URL rule as the GH2 mats (H.I.V.E. is `hive.png`). Owner.
 - 2026-11-16: Frosthaven and Jaws of the Lion ability cards come from any2cards/worldhaven, pictures hotlinked, for the Cards tab only. Owner, for now. Initiative: worldhaven first, Secretariat numbers for the 29 gaps; the worldhaven values were checked against the card art where the two differ. Card titles come from the picture file: the source name is sometimes the summon the card creates.
 - 2026-11-13: All 649 GH2 ability cards have an initiative value (from card images).
@@ -110,6 +115,7 @@ Dated, newest first within each group. "Owner" marks decisions the owner made. C
 
 ## Process
 
+- 2026-11-21: the branch `explore/monster-automation` is not merged into `main` until the owner says so (owner).
 - Commit and push only when asked. Work on `main` (the owner asked for direct commits to `main` for campaign work).
 - Co-author line on commits: unresolved. Earlier repo rule (2026-11-07) added a `Co-Authored-By` line; the global `~/.claude/CLAUDE.md` says never add the assistant as co-author. Until the owner decides, follow the global CLAUDE.md (no line). Commits from 2026-11-10 (`01a5263` onward) have no line.
 - Destructive or high blast-radius actions need confirmation (global CLAUDE.md). Reorganising docs was done by moving files into `docs/archive/`, not by deleting them.

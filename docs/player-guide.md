@@ -40,6 +40,17 @@ Items with a real back (shown by a flip button) turn over with the F key. Solo i
 
 The **Monsters** tab draws monster ability cards and monster modifier cards the same way (Draw, Std / Adv / Dis). In the Scenarios tab, Draw random scenario unlocks one of the side scenarios 67 to 74, and Draw random item design unlocks one of items 81 to 96. Every draw shows in the **History** tab, marked (random) or (BGG roll); filter it with the type drop-down.
 
+## Monster turn on the map (branch only, not in the main app yet)
+
+Select a monster on the map page. **Monster turn** sits above its ability card.
+
+- **Show** marks the monster's focus (gold ring), the hex it attacks from (green) and the hexes it only moves to (blue). **Hide** clears it.
+- **Move** puts the monster on the chosen hex. With several equal options, click one of the hexes on the board first. Ctrl+Z undoes the move.
+- **BGG text** copies the monster's turn for the forum: the move, the attack with its targets, and the other actions of the card. The attack roll stays in GeekRoller.
+- The two small arrows: the next monster in turn order, and the details (values from the card, area, initiatives).
+
+Gloomhaven 2e tiles only so far.
+
 ## Oops
 
 Mis-click? **Undo** (or Ctrl+Z) takes it back. **History** shows who changed what.

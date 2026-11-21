@@ -24,11 +24,11 @@ export function hexStateOf(rec) {
 }
 
 // The answer of the solver in gloom's form: sorted list of [end hex, attacked hexes...] as locations.
-export function answerOf(rec) {
+export function answerOf(rec, { los = 'vertex' } = {}) {                     // gloom's Gloomhaven answers need its corner to corner line of sight
   const hs = hexStateOf(rec), a = hs.figures.find(f => f.role === 'active');
   const initiatives = {};
   for (const [l, v] of Object.entries(rec.initiatives)) initiatives[hexKey(col(+l), row(+l))] = v;
-  const sight = makeSightLine(hs);
+  const sight = makeSightLine(hs, { rule: los });
   const res = solveMove(hs, {
     active: { col: a.col, row: a.row }, move: rec.move, range: rec.range, attack: rec.target > 0, targets: rec.target, area: rec.target > 0 ? areaOffsets(rec.aoe, !(rec.range > 0)) : [],
     flying: rec.flying, jumping: rec.jumping, teleport: rec.teleport, muddled: rec.muddled, initiatives, canSee: (p, q) => sight(p, q) !== null,

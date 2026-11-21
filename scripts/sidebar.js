@@ -973,8 +973,8 @@ function objectPanel(kind, idx) {
       </div>
     </div>
     ${statsHtml}
-    ${activeHtml}
     ${turnPanelHtml(kind)}
+    ${activeHtml}
     ${statCardHtml}
     ${toolbarHtml}
   `;

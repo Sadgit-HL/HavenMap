@@ -23,7 +23,7 @@ Rule: never hand-edit a file marked GENERATED. Fix the generator (or its input t
 Generated, but no generator in the repo (do not regenerate without a plan):
 
 - `scripts/games/gh2_treasures.js`: header says it comes from Secretariat `data/gh2e/treasures.json`. Generator not found in `tools/`.
-- `scripts/games/gh_decks.js`: generated from `gh2_monster_abilities.xlsx`. Generator not found in `tools/`.
+- `scripts/games/gh_decks.js`: generated from `gh2_monster_abilities.xlsx`. Generator not found in `tools/`. Corrected by hand on the owner's order (2026-11-21): living corpse card 3 initiative 66, lurker soldier cards 6 (23, shuffle) and 7 (28); the spreadsheet still has the old values, so regenerating from it would bring the errors back. `gh.js` standee counts corrected the same way (lurker soldier 6, night demon 6, vermling scout 10).
 
 Hand-maintained inputs and outputs:
 

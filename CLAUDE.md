@@ -2,13 +2,13 @@
 
 Browser helper for a Gloomhaven 2e / Frosthaven play-by-forum campaign (four players): a hex map with monsters, heroes and attack modifier decks, plus a campaign page (`campaign/`) that tracks the whole campaign.
 
-Before any change, read `docs/ai/README.md`, then `docs/ai/status.md` and `docs/ai/decisions.md`. Then the area file you need (`architecture.md`, `campaign-record.md`, `playmat.md`, `hero-decks.md`, `data-pipeline.md`). UI work follows `docs/ai/ui-guidelines.md`.
+Before any change, read `docs/ai/README.md`, then `docs/ai/status.md` and `docs/ai/decisions.md`. Then the area file you need (`architecture.md`, `campaign-record.md`, `playmat.md`, `hero-decks.md`, `data-pipeline.md`, `monster-automation.md` for the monster turn of the map page). UI work follows `docs/ai/ui-guidelines.md`.
 
 ## Running and checking
 
 - Serve over HTTP, never `file://`. Use `start.bat` in the parent folder (`http://localhost:8080/HavenMap/`) or `python -m http.server` in the parent folder.
 - Syntax check: `node --check <file.js>`. Perk icons: `node tools/check-perk-icons.mjs`.
-- Node checks: `node tools/tests/run.mjs [filter]` (194 checks for items, hand grid, record, history, events, flow, sync merge, outcomes, modifier decks, monsters; no dependencies). Browser checks used Playwright (global install).
+- Node checks: `node tools/tests/run.mjs [filter]` (194 checks on `main`, 269 on the branch `explore/monster-automation`: items, hand grid, record, history, events, flow, sync merge, outcomes, modifier decks, monsters, and on the branch the monster turn of the map page (hex state, line of sight, movement, card data, forum text, gloom's test scenarios); no dependencies). Browser checks used Playwright (global install).
 - Cache busting is by hand (`?v=` strings). Bump them when a file changes, and tell the owner to hard refresh (Ctrl+F5).
 
 ## Rules

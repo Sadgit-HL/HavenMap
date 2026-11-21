@@ -1,0 +1,65 @@
+import assert from 'node:assert/strict';
+import { turnPost, iconCode, extraText } from '../../scripts/monsterPost.js';
+import { cardOptions } from '../../scripts/monsterCard.js';
+import { GH2_MONSTERS, GH2_MONSTER_DECKS } from '../../scripts/games/gh2_monsters.js';
+
+const attack = { damage: 3, range: 4, targets: 1, effects: [{ t: 'condition', v: 'wound' }, { t: 'pierce', v: 2 }] };
+const lines = t => t.split('\n');
+
+export const tests = {
+  'monster post: icons come from the BGG codes of the campaign page'() {
+    assert.equal(iconCode('move'), '[ImageID=7410469 inline]');
+    assert.equal(iconCode('attack'), '[ImageID=7410466 inline]');
+    assert.equal(iconCode('no such icon'), null);
+  },
+  'monster post: one line for a monster with one target, with forum codes'() {
+    const t = turnPost({ name: 'Ancient Artillery', role: 'elite', standee: 3, from: 'E5', to: 'F4', attack, targets: [['Anaphi']] });
+    assert.deepEqual(lines(t), ['[b]Ancient Artillery[/b] (elite) #3: [ImageID=7410469 inline] E5 to F4, [ImageID=7410466 inline] 3 [ImageID=7410470 inline] 4 [ImageID=4113446 inline] [ImageID=4123143 inline] 2 on [b]Anaphi[/b]']);
+  },
+  'monster post: words instead of icons, disadvantage on the target, tied single targets on one line'() {
+    const one = turnPost({ name: 'Bandit Archer', from: 'A1', to: 'B2', attack: { damage: 2, range: 3, targets: 1, effects: [{ t: 'condition', v: 'poison' }] }, targets: [['Anaphi']], disadvantage: ['Anaphi'], icons: false });
+    assert.deepEqual(lines(one), ['[b]Bandit Archer[/b]: move A1 to B2, attack 2 range 3 poison on [b]Anaphi[/b] (disadvantage)']);
+    const tie = turnPost({ name: 'Bandit Archer', from: 'A1', to: 'B2', attack: { damage: 2, range: 3, targets: 1, effects: [] }, targets: [['Anaphi'], ['Brute']], icons: false });
+    assert.deepEqual(lines(tie), ['[b]Bandit Archer[/b]: move A1 to B2, attack 2 range 3 on [b]Anaphi[/b] or [b]Brute[/b]']);
+  },
+  'monster post: several targets, a line for each target, the first line has the move and the other actions'() {
+    const t = turnPost({ name: 'Guard', from: 'A1', to: 'B1', attack: { damage: 2, range: 3, targets: 2, effects: [{ t: 'condition', v: 'poison' }] }, targets: [['Anaphi', 'Brute']], focus: ['Brute'], disadvantage: ['Anaphi'], extras: [{ t: 'shield', v: 1 }], icons: false });
+    assert.deepEqual(lines(t), [
+      '[b]Guard[/b]: move A1 to B1, shield 1',
+      'attack 2 range 3 poison on [b]Anaphi[/b] (disadvantage)',
+      'attack 2 range 3 poison on [b]Brute[/b] (focus)',
+    ]);
+    const groups = turnPost({ name: 'Guard', from: 'A1', to: 'A1', attack: { damage: 1, range: 0, targets: 2, effects: [] }, targets: [['A', 'B'], ['A', 'C']], focus: ['A'], icons: false });
+    assert.deepEqual(lines(groups), ['[b]Guard[/b]: stays at A1', 'attack 1 on [b]A[/b] (focus)', 'attack 1 on [b]B[/b]', 'or', 'attack 1 on [b]A[/b] (focus)', 'attack 1 on [b]C[/b]']);
+  },
+  'monster post: no ability card, the reason for no attack, stays, moves towards a hex'() {
+    const out = turnPost({ name: 'Guard', from: 'A1', to: 'B1', towards: 'F4', noAttack: 'out of range', icons: false });
+    assert.equal(out, '[b]Guard[/b]: move A1 to B1, towards F4, no attack: out of range');
+    assert.ok(!/Ability/.test(out));
+    assert.equal(turnPost({ name: 'Guard', role: 'boss', from: 'C3', to: 'C3', icons: false }), '[b]Guard[/b] (boss): stays at C3');
+    assert.equal(turnPost({ name: 'Guard', from: 'C3', to: 'D3', towards: 'G7', icons: false }), '[b]Guard[/b]: move C3 to D3, towards G7');
+  },
+  'monster post: the other actions of the card on the same line, shield and retaliate added to the stat card'() {
+    const extras = [{ t: 'shield', v: 1, vt: 'plus' }, { t: 'retaliate', v: 2, vt: 'plus', sub: [{ t: 'range', v: 1 }] }, { t: 'heal', v: 3, sub: [{ t: 'range', v: 2 }, { t: 'target', v: 2 }] }, { t: 'heal', v: 1, sub: [{ t: 'specialTarget', v: 'self' }] }, { t: 'condition', v: 'strengthen', sub: [{ t: 'specialTarget', v: 'all' }, { t: 'range', v: 2 }] }, { t: 'element', v: 'ice', vt: 'minus', sub: [{ t: 'shield', v: 2 }] }, { t: 'summon', v: 'monsterStandee', obj: [{ monster: { name: 'living-bones', type: 'normal' } }] }, { t: 'custom', txt: 'Target all adjacent enemies' }];
+    const plain = turnPost({ name: 'Guard', from: 'A1', to: 'A1', extras, statFx: [{ t: 'shield', v: 1 }, { t: 'retaliate', v: 1, sub: [{ t: 'range', v: 1 }] }], icons: false });
+    assert.equal(plain, '[b]Guard[/b]: stays at A1, shield 2, retaliate 3 range 1, heal 3 range 2 target 2, heal 1 self, strengthen all range 2, consume ice: shield 2, summons living bones (normal), Target all adjacent enemies');
+    const icons = turnPost({ name: 'Guard', from: 'A1', to: 'A1', extras: extras.slice(0, 3), icons: true });
+    assert.ok(icons.includes(iconCode('shield')) && icons.includes(iconCode('retaliate')) && icons.includes(iconCode('heal')) && icons.includes(iconCode('range')) && icons.includes(iconCode('target')), icons);
+    assert.equal(extraText({ t: 'shield', v: 1, vt: 'plus' }, { icons: false }), 'shield +1', 'no base on the stat card: the relative value');
+    assert.equal(extraText({ t: 'heal', v: 'C' }, { icons: false, chars: 3 }), 'heal 3', 'C is worked out');
+  },
+  'monster post: every extra action in the decks gives text, none gives undefined or an object'() {
+    let n = 0;
+    for (const m of Object.values(GH2_MONSTERS)) for (const c of GH2_MONSTER_DECKS[m.deck] ?? []) {
+      const o = cardOptions({ monster: m, kind: 'elite', level: 5, card: c });
+      for (const e of o.extras) { n++; const t = extraText(e, { icons: true, statFx: o.statFx }); assert.ok(typeof t === 'string' && !/undefined|\[object|NaN/.test(t), `${m.deck} / ${c.name}: ${t}`); }
+    }
+    assert.ok(n > 300, `${n} extras`);
+  },
+  'monster post: the effects of a card attack are read from the card, every effect in the decks has an icon'() {
+    const seen = new Set();
+    for (const m of Object.values(GH2_MONSTERS)) for (const c of GH2_MONSTER_DECKS[m.deck] ?? []) for (const e of cardOptions({ monster: m, card: c }).effects) seen.add(['condition', 'element', 'elementHalf'].includes(e.t) ? String(e.v) : e.t);
+    assert.ok(seen.size >= 15, [...seen].join());
+    for (const name of seen) assert.ok(iconCode(name), `${name} has no icon`);
+  },
+};

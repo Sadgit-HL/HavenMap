@@ -10,6 +10,9 @@
 //   area     axial offsets of the area pattern ([] without one); areaMelee: the pattern is drawn around the monster
 //   attack   the card has an attack
 //   damage   the attack value (stat card plus or minus the card), null when it cannot be worked out
+//   effects  what the first attack does besides damage: [{ t, v }] pierce, push, pull, conditions and elements by name
+//   extras   the other actions of the card (shield, retaliate, heal, conditions, summons, custom text ...) as they are in the data, without the moves and attacks
+//   statFx   the extras of the stat card (shield, retaliate ...), the base of a relative shield or retaliate on the card
 //   notes    texts the solver cannot act on (custom card text, special targets, formulas), to show to the player
 //   multi    the card has more than one attack or move; the first of each is used
 import { toAxial, toBoard } from './tileMask.js';
@@ -33,6 +36,17 @@ function findActions(nodes, kind, out = []) {
   return out;
 }
 
+// The actions of a card that are not moves or attacks, in reading order (grids and concatenations opened, monster types only for this kind).
+function findExtras(nodes, kind, out = []) {
+  for (const n of nodes ?? []) {
+    if (n.t === 'move' || n.t === 'attack') continue;
+    if (n.t === 'monsterType') { if (n.v === kind || kind === 'boss') findExtras(n.sub, kind, out); }
+    else if (n.t === 'grid' || n.t === 'concatenation') findExtras(n.sub, kind, out);
+    else out.push(n);
+  }
+  return out;
+}
+
 // Texts of a card the solver cannot act on: custom text outside the move and attack nodes, and inside them.
 function collectNotes(nodes, notes) {
   for (const n of nodes ?? []) {
@@ -46,7 +60,7 @@ export function cardOptions({ monster, kind = 'normal', level = 0, card, chars =
   const notes = [];
   collectNotes(card.actions, notes);
   const found = findActions(card.actions, kind), moves = found.filter(n => n.t === 'move'), attacks = found.filter(n => n.t === 'attack');
-  const out = { move: 0, range: 0, targets: 1, area: [], areaMelee: false, attack: attacks.length > 0, jumping: false, flying: !!monster?.flying, damage: null, notes, multi: moves.length > 1 || attacks.length > 1 };
+  const out = { move: 0, range: 0, targets: 1, area: [], areaMelee: false, attack: attacks.length > 0, jumping: false, flying: !!monster?.flying, damage: null, effects: [], extras: findExtras(card.actions, kind), statFx: stat?.fx ?? [], notes, multi: moves.length > 1 || attacks.length > 1 };
 
   const base = (v) => statValue(v, chars);
   const rel = (n, statNumber) => (n.vt ? (statNumber ?? 0) + (n.vt === 'minus' ? -1 : 1) * (statValue(n.v, chars) ?? 0) : statValue(n.v, chars));
@@ -60,6 +74,7 @@ export function cardOptions({ monster, kind = 'normal', level = 0, card, chars =
     const a = attacks[0], statAttack = stat ? base(stat.attack) : null;
     out.damage = a.vt ? (statAttack === null ? null : rel(a, statAttack)) : statValue(a.v, chars);
     for (const s of a.sub ?? []) {
+      if (['pierce', 'push', 'pull', 'condition', 'element', 'elementHalf'].includes(s.t)) out.effects.push({ t: s.t, v: s.v });
       if (s.t === 'range' && typeof s.v === 'number') out.range = s.v;
       else if (s.t === 'target') {
         const t = s.v === 'all' ? 6 : statValue(s.v, chars);

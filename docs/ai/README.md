@@ -15,6 +15,7 @@ Start here. Read in this order, then only the file for the area you touch.
 | `hero-decks.md` | map app hero attack modifier decks, perks, GeekRoller codes |
 | `ui-guidelines.md` | visual and interaction rules for every campaign tab. Follow it for any UI change |
 | `data-pipeline.md` | generated files, their generators and sources, regeneration rules, licences |
+| `monster-automation.md` | the monster turn of the map page (branch `explore/monster-automation`, not merged): hex state, line of sight, solver, card data, panel, validation |
 | `design/server-and-commit.md` | designed, not built: server, tokens, session start and commit, BBCode |
 | `design/map-integration.md` | proposed, not built: the map as a campaign tab, map state per turn on the server, short forum posts |
 | `../../server/README.md` | the deployed API: Cloudflare Worker, KV, Netlify relay, `api.penultimate.de`, how to update |

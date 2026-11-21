@@ -2,9 +2,12 @@
 // The panel sits in the inspect panel of a selected monster, closed until the header is clicked (nothing runs while it is closed): move, range, movement type,
 // the area pattern when the card has one, and the initiative of each character; open, it runs the solver
 // (scripts/monsterMove.js, Gloomhaven 2e rules) on the hex state (scripts/hexState.js) and marks the focus and the end hexes on the board.
-// The result is worked out again on every render, so it follows the pieces when they are moved.
-import { uiState, setTurn } from './uiState.js';
-import { state } from './state.js';
+// The result is worked out again on every render, so it follows the pieces when they are moved. Where several end hexes tie the player picks one (a row of
+// the panel or the hex on the board); Move puts the monster there (an ordinary map change, Ctrl+Z undoes it), Forum text copies the turn for the forum with BGG
+// codes, Next selects the monster that acts after this one.
+import { uiState, setTurn, selectObject } from './uiState.js';
+import { state, patch } from './state.js';
+import { centerBoardPoint } from './controls.js';
 import { TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES, SUMMONS, GAME_ID } from './data.js';
 import { activeCardsFor } from './decks.js';
 import { cardOptions, candidatesFor, distinctCards, areaIndexes } from './monsterCard.js';
@@ -12,6 +15,8 @@ import { colLabel, hexCenter, HEX_W, HEX_H } from './hex.js';
 import { buildHexState, hexKey } from './hexState.js';
 import { solveMove, areaOffsets } from './monsterMove.js';
 import { makeSightLine } from './los.js';
+import { hexDistance, edgeKey } from './hexGrid.js';
+import { turnPost } from './monsterPost.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 // The floor masks are for the Gloomhaven 2e tiles only (game 'gh2'); tiles of other games have none and the floor is then unknown.
@@ -86,7 +91,7 @@ function run(obj) {
     active: { col: Number(obj.x), row: Number(obj.y) }, move: T.move, range: T.range, attack: !T.noAttack, targets: T.all ? 6 : T.targets, area: T.cells ?? areaOffsets(T.area, !(T.range > 0)),
     flying: T.fly, jumping: T.jump, teleport: T.tele, muddled: T.muddled, initiatives, canSee: (a, b) => sight(a, b) !== null,
   });
-  return { hs, res, figs, sight };
+  return { hs, res, figs, sight, choices: choicesOf(res) };
 }
 
 function hexPoints(col, row) {
@@ -124,10 +129,18 @@ function draw(run_) {
   }
   for (const a of res.actions) {
     if (!a.focus.length || seen.has(a.col + ',' + a.row)) continue;
-    seen.add(a.col + ',' + a.row);
-    layer.appendChild(hexShape(a.col, a.row, a.attack
-      ? { fill: 'rgba(80,200,120,0.38)', stroke: '#50c878', 'stroke-width': 3 }
-      : { fill: 'rgba(106,167,255,0.32)', stroke: '#6aa7ff', 'stroke-width': 3 }));
+    const hk = a.col + ',' + a.row, picked = hk === uiState.turn.choice && run_.choices.length > 1;
+    seen.add(hk);
+    const shape = hexShape(a.col, a.row, a.attack
+      ? { fill: 'rgba(80,200,120,0.38)', stroke: picked ? '#ffffff' : '#50c878', 'stroke-width': picked ? 5 : 3 }
+      : { fill: 'rgba(106,167,255,0.32)', stroke: picked ? '#ffffff' : '#6aa7ff', 'stroke-width': picked ? 5 : 3 });
+    if (run_.choices.length > 1) {                                                // a choice: the hexes can be clicked
+      shape.setAttribute('pointer-events', 'all');
+      shape.style.cursor = 'pointer';
+      for (const ev of ['mousedown', 'touchstart', 'pointerdown']) shape.addEventListener(ev, e => e.stopPropagation());
+      shape.addEventListener('click', e => { e.stopPropagation(); setTurn({ choice: hk }); });
+    }
+    layer.appendChild(shape);
   }
   for (const f of res.focuses) layer.appendChild(hexShape(f.col, f.row, { fill: 'none', stroke: '#ffd23f', 'stroke-width': 5 }));
   // the sight line from each attack hex to its focus (the line comes in the exact grid of scripts/los.js, the board is 45 and 78 pixels further)
@@ -144,10 +157,100 @@ function draw(run_) {
 }
 
 // Called by the sidebar on every render: works out and draws the result for the selected monster, or clears the board.
+// The end hexes to choose from, one per hex, with the groups of targets that tie there and the hexes it moves towards.
+function choicesOf(res) {
+  const by = new Map();
+  for (const a of res.actions) {
+    if (!a.focus.length) continue;
+    const k = a.col + ',' + a.row;
+    if (!by.has(k)) by.set(k, { key: k, col: a.col, row: a.row, attack: false, groups: [], towards: [], focus: [] });
+    const c = by.get(k);
+    for (const f of a.focus) if (!c.focus.includes(f)) c.focus.push(f);
+    if (a.attack) { c.attack = true; if (!c.groups.some(g => g.join() === a.targets.join())) c.groups.push(a.targets); }
+    for (const d of a.destinations) if (!c.towards.includes(d)) c.towards.push(d);
+  }
+  return [...by.values()];
+}
+
+const titleCase = s => String(s).replace(/\b\w/g, c => c.toUpperCase());
+
+// The monsters in the order they act: the initiative of the card drawn this round, elites before normal monsters, then the standee number. Monsters of a deck
+// with no card drawn do not act.
+function turnOrder() {
+  return (state.monsters ?? []).map((m, idx) => ({ m, idx, act: activeCardsFor(m.id) })).filter(x => x.act)
+    .map(x => ({ ...x, init: Math.min(...x.act.cards.map(c => c.init)), rank: x.m.role === 'normal' ? 1 : 0 }))
+    .sort((a, b) => a.init - b.init || a.rank - b.rank || (a.m.standeeNum ?? 99) - (b.m.standeeNum ?? 99) || a.idx - b.idx);
+}
+
+// The monster after the selected one in that order (the first when the selected one is not in it), null when there is no other.
+function nextInfo() {
+  const sel = uiState.selected, list = turnOrder();
+  if (!list.length) return null;
+  const cur = sel?.kind === 'monster' ? list.findIndex(x => x.idx === sel.idx) : -1, n = list[(cur + 1) % list.length];
+  if (sel?.kind === 'monster' && n.idx === sel.idx) return null;
+  const title = MONSTERS.byId.get(Number(n.m.id))?.title ?? 'monster';
+  return { idx: n.idx, m: n.m, name: `${titleCase(title)}${n.m.role === 'elite' ? ' (elite)' : n.m.role === 'boss' ? ' (boss)' : ''}${n.m.standeeNum != null ? ` #${n.m.standeeNum}` : ''}` };
+}
+
+function goNext() {
+  const n = nextInfo();
+  if (!n) return;
+  selectObject('monster', n.idx, Number(n.m.x), Number(n.m.y));
+  const c = hexCenter(Number(n.m.x), Number(n.m.y));
+  centerBoardPoint(c.x, c.y);
+}
+
+// The forum text of the chosen end hex for this monster.
+function buildPost(obj, c) {
+  const T = uiState.turn, mon = MONSTERS.byId.get(Number(obj.id)), info = cardInfo(obj), o = info?.opts;
+  const names = new Map(last.hs.figures.map(f => [hexKey(f.col, f.row), figName(f)]));
+  const attacking = c.attack && !T.noAttack;
+  const adjacentTo = t => { const [tc, tr] = t.split(',').map(Number); return hexDistance(c.col, c.row, tc, tr) === 1 && !last.hs.walls?.has(edgeKey(c.key, t)); };
+  const disadvantage = attacking && T.range > 0 && !T.muddled ? c.groups.flat().filter(adjacentTo).map(t => names.get(t) ?? t) : [];   // the targets it attacks with disadvantage
+  const lab = k => { const [kc, kr] = k.split(',').map(Number); return label({ col: kc, row: kr }); };
+  return turnPost({
+    name: titleCase(mon?.title ?? 'monster'), role: obj.role, standee: obj.standeeNum ?? null, from: label({ col: Number(obj.x), row: Number(obj.y) }), to: label(c),
+    towards: !c.attack && c.towards.length ? lab(c.towards[0]) : null,
+    noAttack: !T.noAttack && !c.attack ? (last.res.focuses.length ? 'out of range' : 'no target in reach') : null,
+    attack: attacking ? { damage: o?.damage ?? null, range: T.range, targets: T.all ? 6 : T.targets, effects: o?.effects ?? [] } : null,
+    targets: attacking ? c.groups.map(g => g.map(t => names.get(t) ?? t)) : [], focus: c.focus.map(k => names.get(k) ?? k), disadvantage,
+    extras: o?.extras ?? [], statFx: o?.statFx ?? [], chars: info?.chars ?? 4,
+  });
+}
+
+// Move: the monster goes to the chosen hex, the text of this turn is kept for the Forum text button.
+function confirmMove() {
+  const T = uiState.turn, sel = uiState.selected, obj = selectedMonster();
+  if (!obj || !last) return;
+  const c = last.choices.find(x => x.key === T.choice);
+  if (!c) return;
+  const post = buildPost(obj, c);
+  patch({ monsters: state.monsters.map((m, i) => (i === sel.idx ? { ...m, x: c.col, y: c.row } : m)) });
+  Object.assign(T, { lastPost: post, postFor: sel.idx, choice: null });
+  selectObject('monster', sel.idx, c.col, c.row);
+}
+
+async function copyPost() {
+  const T = uiState.turn, obj = selectedMonster(), c = last?.choices.find(x => x.key === T.choice);
+  const cur = obj ? hexKey(Number(obj.x), Number(obj.y)) : null;
+  // a hex to move to: its text; nothing to move to after a move: the text of that move
+  const text = obj && c && (c.key !== cur || !T.lastPost) ? buildPost(obj, c) : T.lastPost;
+  if (!text) return;
+  try { await navigator.clipboard.writeText(text); } catch { return; }
+  setTurn({ copied: true });
+  setTimeout(() => setTurn({ copied: false }), 1500);
+}
+
 export function refreshSolver() {
-  const sel = uiState.turn.on ? selectedMonster() : null;                        // closed: no data, no solver, no marks
-  if (sel) autoApply(sel);
+  const T = uiState.turn, mon = selectedMonster();
+  if (T.postFor !== uiState.selected?.idx) T.lastPost = '';                       // the text of the last move belongs to that monster
+  if (mon && (T.on || T.detailsOpen)) autoApply(mon);                            // Show off and no details: no data, no solver, no marks
+  const sel = T.on ? mon : null;
   last = sel ? run(sel) : null;
+  if (last) {
+    const ch = last.choices;
+    if (!ch.some(c => c.key === T.choice)) T.choice = ch.length === 1 ? ch[0].key : null;     // one way: it is the choice; several: the player picks
+  }
   draw(last);
 }
 
@@ -205,11 +308,44 @@ function cardHtml(info) {
     (o.notes.length ? `<ul class="sp-turn-notes">${o.notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul>` : '') + '</div>';
 }
 
-export function turnPanelHtml(kind) {
-  if (kind !== 'monster') return '';
+// The choice between end hexes, one row for each (the hexes on the board can be clicked as well).
+function choicesHtml() {
+  if (!last || last.choices.length < 2) return '';
+  const T = uiState.turn, names = new Map(last.hs.figures.map(f => [hexKey(f.col, f.row), figName(f)]));
+  return `<div class="sp-turn-choices">${last.choices.map(c => `<button type="button" class="sp-turn-choice${c.key === T.choice ? ' on' : ''}" data-turn-hex="${c.key}">${label(c)}${c.groups.length ? ': ' + c.groups.map(g => g.map(t => esc(names.get(t) ?? t)).join(', ')).join(' / ') : ''}</button>`).join('')}</div>`;
+}
+
+// The line under the buttons: what Move will do.
+function statusText() {
+  if (!uiState.turn.on || !last) return '';
+  const { res, choices } = last, sel = selectedMonster(), cur = sel ? hexKey(Number(sel.x), Number(sel.y)) : null;
+  if (!res.focuses.length) return 'No target in reach';
+  if (choices.length > 1) return `${choices.length} options: pick a hex`;
+  const c = choices[0];
+  if (!c) return '';
+  const names = new Map(last.hs.figures.map(f => [hexKey(f.col, f.row), figName(f)]));
+  const targets = c.groups.map(g => g.map(t => esc(names.get(t) ?? t)).join(', ')).join(' or ');
+  return c.attack ? `Attack ${targets} from ${label(c)}` : `No attack: out of range${c.key === cur ? '' : `, to ${label(c)}`}`;
+}
+
+// Show, BGG text and Move, with the arrow for the next monster and the one for the details.
+function barHtml() {
+  const T = uiState.turn, sel = selectedMonster(), cur = sel ? hexKey(Number(sel.x), Number(sel.y)) : null;
+  const chosen = last?.choices.find(c => c.key === T.choice), next = nextInfo();
+  const canMove = T.on && !!chosen && chosen.key !== cur, canPost = (T.on && !!chosen) || !!T.lastPost;
+  return `<div class="sp-turn-bar">` +
+    `<button type="button" class="sp-turn-btn${T.on ? ' on' : ''}" data-turn="toggle" aria-pressed="${T.on}">${T.on ? 'Hide' : 'Show'}</button>` +
+    `<button type="button" class="sp-turn-btn" data-turn="post"${canPost ? '' : ' disabled'}>${T.copied ? 'Copied' : 'BGG text'}</button>` +
+    `<button type="button" class="sp-turn-btn" data-turn="confirm"${canMove ? '' : ' disabled'}>Move${canMove ? ' ' + label(chosen) : ''}</button>` +
+    `<button type="button" class="sp-turn-icon" data-turn="next" title="${next ? 'Next: ' + esc(next.name) : 'No other monster to act'}" aria-label="Next monster"${next ? '' : ' disabled'}>&#9654;</button>` +
+    `<button type="button" class="sp-turn-icon" data-turn="detailsOpen" aria-expanded="${T.detailsOpen}" aria-label="Details">${T.detailsOpen ? '&#9662;' : '&#9656;'}</button>` +
+    `</div>`;
+}
+
+// The details: the card, the values, the area, the initiatives, the result and the choice.
+function detailsHtml() {
   const T = uiState.turn;
-  const head = `<button type="button" class="sp-turn-head" data-turn="toggle" aria-expanded="${T.on}"><span class="sp-subhead">Monster turn</span><span class="sp-turn-arrow">${T.on ? '&#9662;' : '&#9656;'}</span></button>`;
-  if (!T.on) return `<div class="sp-action-section sp-turn sp-turn--closed">${head}</div>`;
+  if (!T.detailsOpen) return '';
   const sel = selectedMonster(), card = sel ? cardHtml(cardInfo(sel)) : '';
   const figs = last ? last.figs : buildHexState(state, lookup).figures.filter(f => f.side === 'characters');
   const filled = figs.filter(f => T.init[figKey(f)] != null).length;
@@ -217,20 +353,27 @@ export function turnPanelHtml(kind) {
     const k = figKey(f);
     return `<label class="sp-turn-init"><span>${esc(figName(f))} ${label(f)}</span><input type="number" class="sp-turn-num" data-turn-field="init" data-key="${k}" min="1" max="99" value="${T.init[k] ?? ''}" placeholder="99"></label>`;
   }).join('')}</div>` : '') : '';
-  return `
-    <div class="sp-action-section sp-turn">
-      ${head}
+  return `<div class="sp-turn-details">
       ${card}
       <div class="sp-turn-row"><label>Move ${num('move', T.move)}</label><label>Range ${num('range', T.range)}</label><label>Targets ${num('targets', T.targets)}</label>${chip('all', 'All', T.all)}</div>
       <div class="sp-turn-row">${chip('fly', 'Fly', T.fly)}${chip('jump', 'Jump', T.jump)}${chip('tele', 'Teleport', T.tele)}${chip('muddled', 'Muddled', T.muddled)}${chip('noAttack', 'No attack', T.noAttack)}</div>
       ${areaEditor(T)}
       ${inits}
       ${resultHtml()}
+      ${choicesHtml()}
     </div>`;
+}
+
+export function turnPanelHtml(kind) {
+  if (kind !== 'monster') return '';
+  const status = statusText();
+  return `<div class="sp-action-section sp-turn"><div class="sp-subhead">Monster turn</div>${barHtml()}${status ? `<div class="sp-turn-status">${status}</div>` : ''}${detailsHtml()}</div>`;
 }
 
 export function initTurnPanel(panel) {
   panel.addEventListener('click', e => {
+    const hexEl = e.target.closest('[data-turn-hex]');
+    if (hexEl) { setTurn({ choice: hexEl.dataset.turnHex }); return; }
     const cellEl = e.target.closest('[data-turn-aoe]');
     if (cellEl) {
       const T0 = uiState.turn, i = Number(cellEl.dataset.turnAoe), a = T0.cells ? areaIndexes(T0.cells, !(T0.range > 0)).indexes : T0.area;
@@ -241,6 +384,9 @@ export function initTurnPanel(panel) {
     if (!b) return;
     const T = uiState.turn, k = b.dataset.turn;
     if (k === 'toggle') setTurn({ on: !T.on });
+    else if (k === 'confirm') confirmMove();
+    else if (k === 'post') copyPost();
+    else if (k === 'next') goNext();
     else if (k === 'fly') setTurn({ fly: !T.fly, jump: T.fly ? T.jump : false });
     else if (k === 'clearArea') setTurn({ area: [], cells: null });
     else if (k === 'useCard') setTurn({ appliedKey: null });

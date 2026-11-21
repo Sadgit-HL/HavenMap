@@ -23,4 +23,19 @@ export const tests = {
     }
     assert.deepEqual(failed, []);
   },
+  'gloom scenarios: with the any point line of sight (the rule of the app) the 154 scenarios on which the Gloomhaven and Frosthaven answers of gloom agree still match'() {
+    const frost = new Map(fixture.scenarios.filter(r => r.rules === 'frosthaven').map(r => [r.n, r]));
+    const failed = []; let agree = 0, differ = 0, matchFrost = 0, matchGloom = 0, inFrostSet = 0;
+    for (const rec of ours) {
+      const f = frost.get(rec.n), mine = answerOf(rec, { los: 'full' });
+      if (same(expectedOf(rec), expectedOf(f))) { agree++; if (!same(mine, expectedOf(rec))) failed.push(`#${rec.n}`); continue; }
+      differ++;
+      if (same(mine, expectedOf(f))) matchFrost++;
+      else if (same(mine, expectedOf(rec))) matchGloom++;
+      else if (mine.every(a => expectedOf(f).some(b => same(a, b)))) inFrostSet++;                  // #131: one of the tied groups of the Frosthaven answer, the Gloomhaven ranking picks it
+      else failed.push(`#${rec.n} differs`);
+    }
+    assert.deepEqual(failed, []);
+    assert.deepEqual([agree, differ, matchFrost, matchGloom, inFrostSet], [154, 28, 4, 23, 1]);
+  },
 };
