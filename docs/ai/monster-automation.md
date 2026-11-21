@@ -1,0 +1,47 @@
+# Monster automation (exploration)
+
+Branch `explore/monster-automation`. Status 2026-11-21: notes only, no code. Goal: on the hex map page, indicate the monster focus and the hexes where a monster ends its turn, later maybe execute the turn.
+
+## Reference: AluminumAngel/gloom
+
+Repo https://github.com/AluminumAngel/gloom (MIT, Copyright 2022 Daniel Nelson). Python 2 server plus a React map editor. The logic is in `server/solver.py`, `Scenario.calculate_monster_move` (about lines 1205 to 1865). Read, not run.
+
+Input (`unpack_scenario`): move, range, target count, flying or jumping, muddled, teleport, rule set (Frosthaven, Gloomhaven, JOTL), area pattern; map with walls, obstacles, traps, hazardous, difficult, icy, thin walls on hex edges; characters, monsters, initiatives; the active monster.
+
+Output: the set of tied actions (end hex plus targets), destinations, focus map, sight lines. Ties are returned, not resolved; the players choose.
+
+Steps:
+1. Focus: for every character and every hex the monster can end on, with range and line of sight, minimize (traps on the path, path distance, proximity, initiative). JOTL ignores proximity.
+2. Attack hex: among hexes that hit the focus, minimize (traps, can reach, most targets, fewest targets with disadvantage, path length, secondary target ranks). Gloomhaven and JOTL put focus disadvantage before target count.
+3. Cannot reach the focus: move to the reachable hex that minimizes (traps, distance to the best attack hex, own travel distance).
+4. Area attacks: melee tries 12 rotations, ranged tries every placement. Flying, jumping, teleport, icy and difficult terrain are handled.
+5. Line of sight: occluder geometry (vertex based under Gloomhaven rules), about 500 lines.
+
+Rule flags per rule set are in `set_rules_flags`. Check them against the rulebooks before use.
+
+## HavenMap: what exists (verified by grep, 2026-11-21)
+
+- Overlay objects carry `role` (`scripts/games/gh.js`, `fh.js`): obstacle, wall, trap, hazardous, difficult, ice, door, pressure-plate, corridor, loot. Maps almost one to one onto the solver terrain.
+- Footprints: `footprintHexes` in `scripts/hex.js` (anchor, directions, rotation).
+- Doors: `opened` flag per door overlay.
+- Monsters and characters are placed objects (role normal, elite, boss). Initiative is in the campaign record play slots.
+- Grid: 90 by 78 hexes, 40 columns, 50 rows (`scripts/hex.js`).
+
+## Gaps
+
+1. Floor: a map tile entry has only `id`, `title`, image offsets. No per-hex shape, so floor hexes are unknown. Needs a hex mask per tile (derive from the tile images, or from Worldhaven `map-tiles`; not checked).
+2. Footprint check: 2-hex objects use `hexes: ['S']`; confirm each overlay covers the right hexes. Terrain is per object, not per hex.
+3. Thin walls: not in the data. Probably not needed (walls are whole hex objects).
+4. Monster actions: ability cards (`images/monster-abilities`) and stats (`images/monster-stats`) are images only. `scripts/campaign/monsters.js` tracks draw, discard and active cards only. Needs move, range, target, area pattern, flying, jump per card and per level. Candidate source: FrosthavenAssistant data (not opened). Fallback: manual input per turn.
+
+## Plan (proposal)
+
+1. Hex state builder: placed objects to a grid of floor, blocked, trap, hazardous, difficult, ice, plus a figure list.
+2. Action data, or manual per-turn input.
+3. Solver port in `scripts/` as pure logic with Node tests, in stages: focus only (breadth-first search with blockers and initiative), then attack hex with line of sight and the target and disadvantage tuple, then area attacks and exact Frosthaven line of sight.
+4. UI on the hex page: highlight the focus and the candidate end hexes.
+
+## Open decisions
+
+- Floor masks: from the tile images, or from Worldhaven?
+- Action data: import from FrosthavenAssistant, or manual input first?
