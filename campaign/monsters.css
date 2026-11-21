@@ -45,6 +45,11 @@
 .pm.mon .mamdisc img, .pm.mon .mamempty { display:block; height:58px; aspect-ratio:3 / 2; border-radius:6px; border:1px solid var(--line); box-shadow:0 2px 8px rgba(0,0,0,.5); }
 .pm.mon .mamempty { border-style:dashed; }
 .pm.mon .monamhd > .btn6[data-amact] { width:34px; padding:0; justify-content:center; flex:none; }
+.pm.mon .monamhd > .btn6.mamdraw { width:auto; padding:0 12px; gap:6px; }
+.pm.mon .monamhd > .btn6[data-amact="shuffle"] { position:relative; }
+.pm.mon .mamdraw img { display:block; }
+.pm.mon .monamhd > .btn6.mammode { width:auto; min-width:44px; padding:0 8px; justify-content:center; font-size:12px; font-weight:700; flex:none; }
+.pm.mon .monamhd > .btn6.mammode[data-mode="adv"]:hover:not(:disabled), .pm.mon .monamhd > .btn6.mammode[data-mode="dis"]:hover:not(:disabled) { color:#120f0b; border-color:#120f0b; filter:brightness(1.12); }   /* the generic .btn6 hover paints the text gold: unreadable on the gold Adv button */
 .pm.mon .tog { display:inline-flex; overflow:hidden; border:1px solid var(--line); border-radius:9px; background:#2d2519; }
 .pm.mon .tog button { padding:5px 14px; border:0; background:transparent; color:var(--text); font:inherit; font-size:12px; cursor:pointer; }
 .pm.mon .tog button[aria-pressed="true"] { background:var(--accent); color:#120f0b; font-weight:700; }
@@ -96,11 +101,15 @@ html.phone .pm.mon .mrow { grid-template-columns:repeat(4, minmax(0, 1fr)); }
 html.phone .pm.mon .monadd { flex:1 1 100%; }
 html.phone .pm.mon .monadd select { flex:1; max-width:none; height:40px; }
 html.phone .pm.mon .monam { margin:0 -8px -8px; padding:6px 8px max(8px, env(safe-area-inset-bottom)); border-radius:12px 12px 0 0; border-bottom:0; }
-html.phone .pm.mon .monam:not(.open) .monamhd { display:grid; grid-template-columns:auto minmax(0, 1fr) auto auto; grid-template-areas:'tog deck shuf x' 'chips chips disc disc'; gap:6px 8px; }
+html.phone .pm.mon .monam:not(.open) .monamhd { display:grid; grid-template-columns:auto minmax(0, 1fr) auto auto auto auto; grid-template-areas:'tog . draw mode shuf x' 'chips chips chips chips disc disc'; gap:6px 8px; }
 html.phone .pm.mon .monam:not(.open) .tog button { padding:9px 10px; }
 html.phone .pm.mon .monam:not(.open) .monamhd > .tog { grid-area:tog; }
-html.phone .pm.mon .monam:not(.open) .mamdeck { grid-area:deck; justify-self:start; }
-html.phone .pm.mon .monam:not(.open) .monamhd > .btn6[data-amact] { grid-area:shuf; }
+html.phone .pm.mon .monam:not(.open) .mamdeck { display:none; }                  /* the deck count and the code button are in the opened view; the room goes to the draw mode button */
+html.phone .pm.mon .monam:not(.open) .monamhd > .btn6.mammode { grid-area:mode; padding:0; }
+html.phone .pm.mon .monam:not(.open) .monamhd > .tog button { padding:9px 10px; }
+html.phone .pm.mon .monam:not(.open) .monamhd > .btn6[data-amact="shuffle"] { grid-area:shuf; }
+html.phone .pm.mon .monam:not(.open) .monamhd > .btn6.mamdraw { grid-area:draw; padding:0; }
+html.phone .pm.mon .mamdraw span { display:none; }
 html.phone .pm.mon .monam:not(.open) .mamtog { grid-area:x; margin-left:0; }
 html.phone .pm.mon .monam:not(.open) .mamchips { grid-area:chips; }
 html.phone .pm.mon .monam:not(.open) .mamdisc { grid-area:disc; justify-self:end; }
@@ -117,7 +126,7 @@ html.phone .pm.mon .monam.open .monamhd { position:sticky; top:-6px; z-index:2; 
   html.phone .pm.mon .monamv { height:auto; }
   html.phone .pm.mon .amv { position:static; container-type:inline-size; display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1fr); grid-template-rows:none; gap:10px; inset:auto; }
   html.phone .pm.mon .amv .amside { display:contents; }
-  html.phone .pm.mon .amv .amctl { grid-column:1 / -1; order:1; display:grid; grid-template-columns:minmax(0, 1fr) 52px 52px; gap:8px; height:56px; flex:none; }
+  html.phone .pm.mon .amv .amctl { grid-column:1 / -1; order:1; display:grid; grid-template-columns:minmax(0, 1fr) 52px 52px 52px 52px; gap:8px; height:56px; flex:none; }
   html.phone .pm.mon .amv .amtools { display:contents; }
   html.phone .pm.mon .amv .amtools button { width:auto; height:auto; }
   html.phone .pm.mon .amv .deckarea { grid-column:1 / -1; order:2; overflow:visible; padding:0; }

@@ -3,6 +3,7 @@ import { imageFile } from '../images.js';
 // Pure data logic (no DOM), shared by the playmat modal and the checks. The draw state is saved in the record: chars[].amd for a
 // character (since 2026-11-18), mon.am for the monster and ally decks.
 import { heroCatalog, heroPerkClass, perkBoxes, perkLabel, perkDelta } from '../amd/heroDeck.js';
+import { cryptoRandom } from './events.js';
 
 // The standard 20 cards (keys of scripts/amd/heroDeck.js); x2 and Miss reshuffle the deck.
 export const AM_STANDARD = [
@@ -86,13 +87,18 @@ export function drawState(c, st = {}) {
 
 // The modifier of a card for the odds, effects ignored: { v: number | 'x2' | 'miss', roll }. Unique class cards take the value printed before
 // the colon of their face text ("+2: ...", "2x: ..."), else +0; ">" in the face marks rolling.
+// A rolling card: its modifier is added to the next card drawn (a unique class card marks it with ">" in its face text).
+export function isRolling(t) {
+  const uniq = t.card?.kind === 'unique';
+  return uniq ? String(t.face ?? '').includes('>') : !!t.rolling;
+}
 function oddsValue(t) {
   if (t.key === 'bless') return { v: 'x2', roll: false };
   if (t.key === 'curse') return { v: 'miss', roll: false };
   const uniq = t.card?.kind === 'unique', f = String(t.face ?? '');
   const raw = uniq ? (/^([+-]\d+):/.exec(f)?.[1] ?? (/^2x:/i.test(f) ? 'x2' : '+0')) : String(t.card?.value ?? t.value ?? '+0');
   const v = raw === 'x2' ? 'x2' : raw === 'null' ? 'miss' : (parseInt(raw, 10) || 0);
-  return { v, roll: uniq ? f.includes('>') : !!t.rolling };
+  return { v, roll: isRolling(t) };
 }
 
 // Odds of one random draw from the pool, rolling cards chained (drawn without replacement): { miss, le2, le1, z, ge1, ge2, crit } as fractions,
@@ -139,11 +145,105 @@ export function cleanAmd(st) {
   return Object.keys(out).length ? out : null;
 }
 
+// A reshuffle is due (the rule of the deck: a x2 or a Miss was drawn, or nothing is left to draw, with a discard pile to shuffle back and no
+// card placed on top or bottom): A is a drawState. The shuffle buttons show a mark then; the monster and ally decks also shuffle by themselves
+// at the end of a round (monEndRound).
+export const shuffleDue = A => A.tiles.some(t => t.shuffle && t.d > 0) || (A.pool === 0 && A.disc > 0 && !A.topList.length && !A.botList.length);
+
 // GeekRoller code that draws one card of what is left in the deck ('' when empty).
 export const amdRollCode = faces => (faces.length ? `1custom${faces.length}{${faces.join(';')}}` : '');
 
-// Change of the session state; returns a new state. kind: draw | ret | add | rem | shuffle | plus | minus (the last two edit the card count of a type).
+// A draw in progress, an attack being resolved. The cards drawn wait in the active area ("in play") until the attack is resolved, then go to the
+// discard (bless and curse leave the game). An empty deck is shuffled at once: the discard goes back into the deck, the cards in play stay out of
+// that shuffle (a rolling card was drawn and another card is still needed), and the cards of a resolved attack are in the discard, so they go back
+// too. take() draws one card: the first card placed on top of the deck, else a random card of the deck, else the first card placed on the bottom;
+// null when there is no card at all. finish() ends the attack and returns the state. shuffles lists the shuffles made, each as the number of cards
+// that stayed out of it.
+function drawSession(c, st, rand) {
+  let s = st;
+  const held = [], shuffles = [];
+  const shuffleIfEmpty = left => {
+    const d = drawState(c, s);
+    if (d.pool > 0 || d.topList.length || d.botList.length || d.disc === 0) return;
+    s = amdAct(c, s, 'shuffle');
+    shuffles.push(left);
+  };
+  return {
+    shuffles,
+    take() {
+      shuffleIfEmpty(held.length);
+      const d = drawState(c, s);
+      let t = d.topList[0], from = 'top';
+      if (!t) {
+        const cards = [...d.tiles, ...d.specials].flatMap(x => Array(x.n).fill(x));        // one entry per card left in the random part
+        if (cards.length) { t = cards[Math.floor(rand() * cards.length)]; from = 'pool'; }
+        else if (d.botList[0]) { t = d.botList[0]; from = 'bot'; }
+      }
+      if (!t) return null;
+      s = amdAct(c, s, 'move', t.key, from === 'pool' ? { from, to: 'act' } : { from, to: 'act', idx: 0 });
+      held.push(t.key);
+      return t;
+    },
+    finish() {
+      for (const k of held) s = amdAct(c, s, 'move', k, { from: 'act', to: 'disc' });
+      if (held.length) shuffleIfEmpty(0);
+      return s;
+    },
+  };
+}
+
+// Random draw of a modifier deck, the way an attack draws: a rolling card is followed by the next draw, until a card that is not rolling; all go
+// to the discard when the attack is resolved. The random source is `rand` (the browser's crypto source by default).
+// Returns { st, drawn: [key], shuffles }; drawn is empty when there is no card at all (st is the state as it was).
+export function drawRandom(c, st = {}, rand = cryptoRandom) {
+  const d = drawSession(c, st, rand), drawn = [];
+  for (let i = 0; i < 80; i++) {                                           // a deck is far smaller than that: the loop always ends
+    const t = d.take();
+    if (!t) break;
+    drawn.push(t.key);
+    if (!isRolling(t)) break;
+  }
+  const s = d.finish();
+  return { st: drawn.length ? s : st, drawn, shuffles: d.shuffles };
+}
+
+// The draw of an attack with advantage or disadvantage: cards until one that is not rolling (n), then one more card (second; its rolling icon is
+// ignored, so there is no further draw). Returns { st, drawn: [key] in the order drawn, rolling: [key] the rolling cards before n, n, second, shuffles }:
+// n is null when no card that is not rolling could be drawn, second is null when no card was left after n. Which card counts: amdCompare.js.
+export function drawTwo(c, st = {}, rand = cryptoRandom) {
+  const d = drawSession(c, st, rand), drawn = [], rolling = [];
+  let n = null, second = null;
+  for (let i = 0; i < 80; i++) {
+    const t = d.take();
+    if (!t) break;
+    drawn.push(t.key);
+    if (isRolling(t)) rolling.push(t.key); else { n = t.key; break; }
+  }
+  if (n !== null) { const t = d.take(); if (t) { drawn.push(t.key); second = t.key; } }
+  const s = d.finish();
+  return { st: drawn.length ? s : st, drawn, rolling, n, second, shuffles: d.shuffles };
+}
+
+// A card can be drawn: there is one in the deck, or the discard can be shuffled back in (the draw does it by itself).
+export const canDraw = A => A.total > 0 || A.disc > 0;
+
+// Change of the session state; returns a new state. kind: draw | ret | add | rem | shuffle | plus | minus (the last two edit the card count of
+// a type) | rdraw (a random draw, see drawRandom; opts.rand is the random source, opts.drawn an array that receives the keys drawn, opts.shuffled one entry per automatic shuffle) | rdraw2 (the
+// draw of advantage or disadvantage, see drawTwo; opts.pair receives the result).
 export function amdAct(c, st = {}, kind, key, opts = {}) {
+  if (kind === 'rdraw') {
+    const r = drawRandom(c, st, opts.rand);
+    if (Array.isArray(opts.drawn)) opts.drawn.push(...r.drawn);
+    if (Array.isArray(opts.shuffled)) opts.shuffled.push(...r.shuffles);
+    return r.st;
+  }
+  if (kind === 'rdraw2') {                                                                 // advantage or disadvantage: opts.pair receives { rolling, n, second }
+    const r = drawTwo(c, st, opts.rand);
+    if (Array.isArray(opts.drawn)) opts.drawn.push(...r.drawn);
+    if (opts.pair) Object.assign(opts.pair, { rolling: r.rolling, n: r.n, second: r.second });
+    if (Array.isArray(opts.shuffled)) opts.shuffled.push(...r.shuffles);
+    return r.st;
+  }
   const s = { ...st, disc: { ...(st.disc || {}) } }, sp = AM_SPECIAL.find(x => x.key === key);
   if (kind === 'shuffle') { s.disc = {}; s.order = []; s.top = []; s.bot = []; return s; }                // the active cards stay where they are
   if (kind === 'move') return moveCard(c, s, key, opts);

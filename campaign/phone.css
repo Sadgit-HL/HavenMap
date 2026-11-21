@@ -75,7 +75,7 @@
    Tap a stack: draw that card; hold and move a card: place it (Top, Bottom, Active, Discard); hold still: the preview. */
 .pp .amv{position:static;container-type:inline-size;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;inset:auto}
 .pp .amv .amside{display:contents}
-.pp .amv .amctl{grid-column:1/-1;order:1;flex:none;height:64px;grid-template-columns:minmax(0,1fr) 52px 52px;display:grid}
+.pp .amv .amctl{grid-column:1/-1;order:1;flex:none;height:64px;grid-template-columns:minmax(0,1fr) 52px 52px 52px 52px;display:grid}
 .pp .amv .amtools{display:contents}
 .pp .amv .amcode{flex-direction:row;gap:10px;font-size:15px}.pp .amv .amcode svg{width:26px;height:26px}.pp .amv .amcode.amdraw img{width:28px;height:auto}
 .pp .amv .deckarea{grid-column:1/-1;order:2;overflow:visible;padding:0;--stkw:calc((100cqw - 66px) / 4)}

@@ -3,9 +3,9 @@
 // (scripts/campaign/monsters.js); app.js wires the clicks to the edit functions of scripts/campaign/edit.js.
 import { imageFile } from '../scripts/images.js';
 import { MONSTERS, MON_MAX, monOf, monsterById, deckSlug, deckCards, deckState, deckNeedsShuffle, deckRollCode, monSlugs } from '../scripts/campaign/monsters.js';
-import { drawState, amOwner, amdRollCode } from '../scripts/campaign/amdDeck.js';
+import { drawState, amOwner, amdRollCode, shuffleDue, canDraw } from '../scripts/campaign/amdDeck.js';
 import { normalDifficulty, scenarioLevel, scenarioLevelRange } from '../scripts/campaign/record.js';
-import { amViewHtml } from './playmat.js';
+import { amViewHtml, amModeBtn } from './playmat.js';
 
 const UP = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>';
 const DN = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
@@ -24,6 +24,7 @@ const statUrl = (m, lvl) => imageFile(`images/gh2/monsters/stats/${m.title.repla
 export function monstersHtml(r, V, esc) {
   const m = monOf(r), lvl = scenarioLevel(r), [lvMin, lvMax] = scenarioLevelRange(r), g = V.amg === 'a' ? 'a' : 'm', st = m.am[g] || {};
   const A = drawState(amOwner(g, st), st);
+  const mode = V.amMode?.[g] ?? 'std';                                                             // the Std / Adv / Dis toggle of this deck
 
   const chosen = new Set(m.types);
   const add = m.types.length < MON_MAX ? `<label class="monfield monadd"><span class="lab">Add</span><select data-monadd aria-label="Add a monster type"><option value="">Monster...</option>${
@@ -33,12 +34,12 @@ export function monstersHtml(r, V, esc) {
   const nd = normalDifficulty(r), bump = lvl - nd, bumpTxt = bump > 0 ? `+${bump}` : String(bump);
   const diff = bump ? `<button type="button" class="mondiff on" data-monlvauto title="Normal difficulty is level ${nd}: back to normal" aria-label="Difficulty ${bumpTxt}, back to normal">${bumpTxt}</button>`
     : `<span class="mondiff" title="Normal difficulty (level ${nd})" aria-label="Normal difficulty">0</span>`;
-  const canDraw = monSlugs(m).some(s => { const d = deckState(m, s); return !d.active.length && d.deck.length; });
+  const cardsToDraw = monSlugs(m).some(s => { const d = deckState(m, s); return !d.active.length && d.deck.length; });
   const bar = `<div class="monbar">
     <span class="monfield"><span class="lab">Scenario level</span><span class="sp"><b>${lvl}</b><span class="spc"><button type="button" data-monlv="1" aria-label="Raise the monster level"${lvl >= lvMax ? ' disabled' : ''}>${UP}</button><button type="button" data-monlv="-1" aria-label="Lower the monster level"${lvl <= lvMin ? ' disabled' : ''}>${DN}</button></span></span>${diff}</span>
     <span class="monfield"><span class="lab">Round</span><b class="monround">${m.round}</b></span>
     ${add}
-    <span class="monacts"><button type="button" class="btn6" data-mdrawall${canDraw ? '' : ' disabled'} title="${canDraw ? 'Draw a random ability card for every monster type that has none' : 'Every deck has a card, or nothing is left to draw'}">Draw cards</button><button type="button" class="btn6" data-monnew title="Shuffle every deck and start at round 1">New scenario</button><button type="button" class="btn6 monend" data-monend title="Drawn ability cards to the discard, shuffle the decks that need it, next round">End of round</button></span>
+    <span class="monacts"><button type="button" class="btn6" data-mdrawall${cardsToDraw ? '' : ' disabled'} title="${cardsToDraw ? 'Draw a random ability card for every monster type that has none' : 'Every deck has a card, or nothing is left to draw'}">Draw cards</button><button type="button" class="btn6" data-monnew title="Shuffle every deck and start at round 1">New scenario</button><button type="button" class="btn6 monend" data-monend title="Drawn ability cards to the discard, shuffle the decks that need it, next round">End of round</button></span>
   </div>`;
 
   const tog = `<span class="tog" role="group" aria-label="Modifier deck">${[['m', 'Monsters'], ['a', 'Allies']].map(([k, l]) => `<button type="button" data-monamg="${k}" aria-pressed="${g === k}">${l}</button>`).join('')}</span>`;
@@ -49,10 +50,11 @@ export function monstersHtml(r, V, esc) {
   const chip = (t, n) => `<button type="button" class="mamc" data-mamdraw="${esc(t.key)}" title="Draw ${esc(t.face ?? t.label)}${n > 1 ? ` (${n} left)` : ''}">${t.img ? `<img src="${esc(t.img)}" alt="${esc(t.face ?? t.label)}" draggable="false">` : `<span class="mamf">${esc(t.face ?? t.label)}</span>`}${n > 1 ? `<span class="nb">${n}</span>` : ''}</button>`;
   const chips = [...A.tiles.filter(t => t.n > 0).map(t => chip(t, t.n)), ...A.specials.filter(t => t.n > 0).map(t => chip(t, t.n))].join('');
   const strip = `<span class="mamdeck"><span class="lab">Deck &middot; <b>${A.pool}</b></span><button type="button" class="btn6" data-code="${esc(amdRollCode(A.faces))}" title="Copy GeekRoller code" aria-label="Copy GeekRoller code"${A.faces.length ? '' : ' disabled'}>${DICE}</button></span>
+    <button type="button" class="btn6 mamdraw" data-amact="rdraw"${canDraw(A) ? '' : ' disabled'} title="${canDraw(A) ? 'Draw a random card of the deck (a rolling card is followed by the next card; an empty deck is shuffled first)' : 'Nothing left to draw'}" aria-label="Draw a random card of the deck"><img src="${imageFile('images/common/icons/draw', '../')}" width="20" height="19" alt="" draggable="false"><span>Draw</span></button>${amModeBtn(mode, ' btn6 mammode')}
     <span class="mamchips" aria-label="Cards left in the deck: a click draws the card">${chips || '<span class="lab">Empty</span>'}</span>
     <span class="mamdisc" title="Last discarded card"><span class="lab">Discard &middot; <b>${A.disc}</b></span>${A.top?.img ? `<img src="${esc(A.top.img)}" alt="${esc(A.top.face ?? '')}" draggable="false">` : '<span class="mamempty"></span>'}</span>
-    <button type="button" class="btn6" data-amact="shuffle" title="Shuffle the discard back into the deck" aria-label="Shuffle the discard back into the deck">${SHUFFLE}</button>`;
-  const amd = `<section class="monam${open ? ' open' : ''}"><div class="monamhd">${tog}${open ? imb : strip}<button type="button" class="btn6 mamtog" data-monamopen aria-expanded="${open}" title="${open ? 'Close the full deck view' : 'Open the full deck view'}" aria-label="${open ? 'Close the full deck view' : 'Open the full deck view'}">${open ? COLLAPSE : EXPAND}</button></div><div class="monamv" data-amg="${g}">${amViewHtml(A, esc, !!V.amEdit)}</div></section>`;
+    <button type="button" class="btn6" data-amact="shuffle" title="${shuffleDue(A) ? 'A x2 or Miss was drawn, or nothing is left to draw: shuffle the discard back into the deck' : 'Shuffle the discard back into the deck'}" aria-label="Shuffle the discard back into the deck">${SHUFFLE}${shuffleDue(A) ? '<i class="amdot" aria-hidden="true"></i>' : ''}</button>`;
+  const amd = `<section class="monam${open ? ' open' : ''}"><div class="monamhd">${tog}${open ? imb : strip}<button type="button" class="btn6 mamtog" data-monamopen aria-expanded="${open}" title="${open ? 'Close the full deck view' : 'Open the full deck view'}" aria-label="${open ? 'Close the full deck view' : 'Open the full deck view'}">${open ? COLLAPSE : EXPAND}</button></div><div class="monamv" data-amg="${g}">${amViewHtml(A, esc, !!V.amEdit, mode)}</div></section>`;
 
   const panel = id => {
     const t = monsterById(id), slug = deckSlug(id);

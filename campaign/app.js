@@ -18,7 +18,7 @@ import { bannerUrl, bannerCode } from '../scripts/campaign/bggBanners.js';
 import { GH2_PQ } from '../scripts/games/gh2_pq_text.js';
 import { morphInto } from './morph.js';
 import { registerMenu, openMenuFor } from './ctxmenu.js';
-import { ask, notify } from './dialog.js';
+import { ask, notify, showDraw } from './dialog.js';
 import { scenarioPool, itemDesignPool, pickOne } from '../scripts/campaign/draws.js';
 import { phoneHtml } from './phone.js';
 import { monstersHtml } from './monstersView.js';
@@ -37,7 +37,8 @@ import { PROSPERITY_SECTIONS, PROSPERITY_ITEMS, IMBUEMENT_SECTIONS } from '../sc
 import { frontOf as eventFront, EVENT_TABLE } from '../scripts/campaign/events.js';
 import { buildCard } from '../scripts/amd/card.js';
 import { createPreview, SHARE } from './preview.js';
-import { deckOf, drawState, perkList } from '../scripts/campaign/amdDeck.js';
+import { deckOf, drawState, perkList, isRolling, amOwner } from '../scripts/campaign/amdDeck.js';
+import { cardTerms, selectCard } from '../scripts/campaign/amdCompare.js';
 import { heroCatalog, heroPerkClass } from '../scripts/amd/heroDeck.js';
 import { PERSONAL_QUESTS } from '../scripts/games/gh2_quests.js';
 import ghConfig from '../scripts/games/gh.js';
@@ -908,7 +909,7 @@ function portraitStyle(c, size) {
 }
 // What the playmat remembers while the page is open: the open modal, the mat side, the history filter. Saved BGG codes of the user are kept
 // in this browser (not in the campaign record).
-const pm = { modal: null, matSide: 'front', histKind: 'all', jtab: 'goal', bgv: null, pqv: null, notesPreview: false, amZoom: null, dtab: 'hand', hsel: {}, hsArmed: false, itemId: null, isel: {}, ptab: 'cards', sheet: null, mkKey: null, mkSel: null, pileZ: null, cf: null, mkIdx: -1, chMenu: false, hview: 'hand', amEdit: false };
+const pm = { modal: null, matSide: 'front', histKind: 'all', jtab: 'goal', bgv: null, pqv: null, notesPreview: false, amZoom: null, dtab: 'hand', hsel: {}, hsArmed: false, itemId: null, isel: {}, ptab: 'cards', sheet: null, amMode: {}, mkKey: null, mkSel: null, pileZ: null, cf: null, mkIdx: -1, chMenu: false, hview: 'hand', amEdit: false };
 const CODES_KEY = 'havenmap.campaign.codes';
 // Display settings of the playmat (gear in the top bar), kept in this browser.
 // Phones (700 px wide or less, or 500 px high or less: a phone held sideways) get the touch layout: the phone view of the Mercenaries
@@ -927,7 +928,7 @@ const matSlug = c => matSlugOf(c.cls);   // the class slug, as the portrait focu
 const pmState = c => ({
   modal: pm.modal, matSide: pm.matSide, histKind: pm.histKind, jtab: pm.jtab, bgv: pm.bgv, pqv: pm.pqv, notesPreview: pm.notesPreview,
   bgs: record.bgs, pq: record.pq,
-  itemId: pm.itemId, mkKey: pm.mkKey, mkIdx: pm.mkIdx, chars: subTabList(), chMenu: pm.chMenu, pileZ: pm.pileZ, restRoll: pm.restRoll, cf: pm.cf, players: record.players, classChips: classTraits({ ...c, cls: pm.cf?.cls || c.cls }).map(t => chip(t)).join(''), classOpts: pm.modal === 'char' ? charClassOptions(c) : [], mkSel: mkSelOf(c), set: pmset, ptab: pm.ptab, sheet: pm.sheet,
+  itemId: pm.itemId, mkKey: pm.mkKey, mkIdx: pm.mkIdx, chars: subTabList(), chMenu: pm.chMenu, pileZ: pm.pileZ, restRoll: pm.restRoll, amMode: pm.amMode[c.id] || 'std', cf: pm.cf, players: record.players, classChips: classTraits({ ...c, cls: pm.cf?.cls || c.cls }).map(t => chip(t)).join(''), classOpts: pm.modal === 'char' ? charClassOptions(c) : [], mkSel: mkSelOf(c), set: pmset, ptab: pm.ptab, sheet: pm.sheet,
   items: pm.modal === 'items' ? { pool: ITEMS.filter(i => record.items.unl.includes(i.id) && ownsItem(c, i.id)), isel: c.items.map(it => String(it.id)), sell: !!pm.sellMode } : null,
   deck: pm.modal === 'deck' ? { cards: CARDS.filter(k => k.cls === classByName(c.cls)?.i).sort((a, b) => cardLevel(a.id) - cardLevel(b.id) || (a.ini ?? 1e9) - (b.ini ?? 1e9)), hsel: pm.hsel[c.id] || [], armed: pm.hsArmed } : null,
   amd: pm.modal === 'amd' || pm.modal === 'amdpile' ? drawState(c, c.amd) : null, hview: pm.hview, amEdit: pm.amEdit, amv: pm.hview === 'amd' || pm.ptab === 'amd' ? drawState(c, c.amd) : null, amZoom: pm.modal === 'amd' ? pm.amZoom : null,
@@ -2725,7 +2726,7 @@ function copyCodeButton(cp) {
 
 // Monsters tab (campaign/monstersView.js): every click inside it is handled here and goes no further, so the playmat's handlers (which act
 // on the selected character) never see it. Which modifier deck is shown and its edit mode are kept while the page is open.
-const monView = { amg: 'm', amEdit: false, amOpen: false };   // amOpen: the modifier dock shows the full deck view
+const monView = { amg: 'm', amEdit: false, amOpen: false, amMode: { m: 'std', a: 'std' } };   // amOpen: the modifier dock shows the full deck view
 main.addEventListener('click', async e => {
   const q = s => e.target.closest?.(s);
   if (!q('.mon') || !record) return;
@@ -2751,14 +2752,23 @@ main.addEventListener('click', async e => {
     return;
   }
   if (q('[data-monamopen]')) { const open = monView.amOpen || monView.amEdit; monView.amOpen = !open; if (open) monView.amEdit = false; render(); return; }
-  if (q('[data-mamdraw]')) { commit(ed.monAm(record, g, 'draw', d('[data-mamdraw]').mamdraw)); return; }
+  if (q('[data-mamdraw]')) { commit(ed.monAm(record, g, 'draw', d('[data-mamdraw]').mamdraw), 'BGG roll'); return; }
+  const mm = q('[data-ammode]');
+  if (mm) { monView.amMode[g] = mm.dataset.ammode; render(); return; }
+  const mrd = q('.monamhd [data-amact="rdraw"]');
+  if (mrd) { if (!mrd.disabled) monRandomDraw(g, monView.amMode[g]); return; }
   if (q('.monamhd [data-amact="shuffle"]')) { commit(ed.monAm(record, g, 'shuffle')); return; }
   if (q('.amv [data-amedit]')) { monView.amEdit = !monView.amEdit; render(); return; }
   const amb = q('.amv button[data-amact]');
-  if (amb) { if (!amb.disabled) commit(ed.monAm(record, g, amb.dataset.amact, amb.dataset.key, amOpts(amb.dataset))); return; }
+  if (amb) {
+    if (amb.disabled) return;
+    if (amb.dataset.amact === 'rdraw') monRandomDraw(g, monView.amMode[g]);
+    else commit(ed.monAm(record, g, amb.dataset.amact, amb.dataset.key, amOpts(amb.dataset)), amHow(amb.dataset.amact));
+    return;
+  }
   if (monView.amEdit) return;
   const stk = q('.amv .stk[data-k][data-z="deck"]');
-  if (stk && !q('.stkctl')) { commit(ed.monAm(record, g, 'draw', stk.dataset.k)); return; }
+  if (stk && !q('.stkctl')) { commit(ed.monAm(record, g, 'draw', stk.dataset.k), 'BGG roll'); return; }
   const mini = q('.amv .mini[data-k]');
   if (mini) { commit(ed.monAm(record, g, 'move', mini.dataset.k, { from: mini.dataset.z, to: 'disc', idx: Number(mini.dataset.i) })); return; }
 }, true);
@@ -2772,7 +2782,91 @@ main.addEventListener('change', e => {
 // Attack modifier deck action of a character: an edit of the record (chars[].amd), so it is saved, shared, undone and logged like any
 // other edit (the history lines come from changelog.js).
 const amOpts = d => ({ from: d.from, to: d.to, idx: d.idx === undefined ? undefined : Number(d.idx), at: d.at === undefined ? undefined : Number(d.at) });
-function amdDo(c, kind, key, opts) { commit(ed.charAm(record, c.id, kind, key, opts)); }
+// A modifier deck action of a character. History names how a card was drawn: random (the Draw button) or BGG roll (a card marked as drawn by hand).
+const amHow = kind => (kind === 'rdraw' ? 'random' : kind === 'draw' ? 'BGG roll' : '');
+// A draw of a modifier deck (the Draw button, with the Std / Adv / Dis toggle): the draw is committed at once (History: random, and advantage or
+// disadvantage), the dialog then reveals the cards one at a time: the first card is drawn by the button, every further card (after a rolling card,
+// or the second card of advantage or disadvantage) by a click in the dialog. With advantage or disadvantage the card that counts follows
+// (rules and comparison: scripts/campaign/amdCompare.js): who is 'hero' (with advantage the player picks) or 'monster' (the monster and ally decks:
+// automatic). The selection is logged when the last card is revealed, and again when it is changed by hand. The Draw button alone starts a draw.
+// deckNow() returns the deck as it is now, { c, st } (c = the character, or the owner of the monster or ally deck); drawOnce(drawn, pair, how,
+// shuffled) commits one draw and fills the keys drawn, the pair of advantage or disadvantage, and the automatic shuffles.
+// The picture of a modifier card for a dialog: the monster and ally cards are pictures, the cards of a character are built (scripts/amd/card.js).
+function amdCardNode(t, c) {
+  if (t.img) { const node = document.createElement('img'); node.src = t.img; node.alt = t.face; node.draggable = false; return node; }
+  return buildCard(t.card, c.cls, !!t.extra);
+}
+const SHUFFLE_NOTE = 'The deck was empty: the discard pile was shuffled back into the deck.';
+// The History line of a draw with an automatic shuffle: the cards drawn (the change of the discard pile alone cannot show them, the shuffle empties
+// it) and the shuffle; the cards in play stayed out of it when it came before the attack was resolved.
+const logShuffle = (tab, name, shuffled, labels, how) => logLine(tab, 'Modifier deck', `${name}: drew ${labels.join(', ')} (${how}), the deck was empty: the discard pile was shuffled back into the deck${shuffled.some(n => n > 0) ? ', the cards in play stayed out of it' : ''}`);
+// A History line for something that changes no record data (the card that counts after a draw with advantage or disadvantage): the line goes into
+// the log directly. The last undo step takes the line along, so Undo still finds the record it expects.
+function logLine(tab, kind, d) {
+  record = { ...record, log: foldLog(record.log || [], [{ t: Date.now(), u: userName(), tab, kind, d }]).slice(-LOG_MAX) };
+  if (history.length) history[history.length - 1].after = record;
+  persist();
+}
+async function amdDrawDialog({ title, name, who, mode, tab, deckNow, drawOnce }) {
+  const word = mode === 'adv' ? 'advantage' : mode === 'dis' ? 'disadvantage' : '', how = word ? `random, ${word}` : 'random';
+  const build = () => {
+    const pair = {}, drawn = [], shuffled = [];
+    drawOnce(drawn, pair, how, shuffled);
+    if (!drawn.length) return null;
+    const { c, st } = deckNow(), A = drawState(c, st), byKey = new Map([...A.tiles, ...A.specials].map(t => [t.key, t]));
+    const make = (k, kind) => { const t = byKey.get(k); return { kind, node: amdCardNode(t, c), label: t.label ?? t.face, terms: cardTerms(t), note: kind === 'C' && isRolling(t) ? 'rolling icon ignored' : '' }; };
+    const steps = !word ? drawn.map(k => make(k, isRolling(byKey.get(k)) ? 'roll' : 'card'))
+      : [...pair.rolling.map(k => make(k, 'roll')), ...(pair.n == null ? [] : [make(pair.n, 'N')]), ...(pair.second == null ? [] : [make(pair.second, 'C')])];
+    if (shuffled.length) logShuffle(tab, name, shuffled, steps.map(x => x.label), how);
+    return { title, mode: mode || 'std', steps, shown: 1, rollingIgnored: mode === 'dis', selected: null, choose: false, canSwap: false, needAttack: false, attack: '', attackShown: false, swapped: false,
+      modeLabel: mode === 'adv' ? (who === 'hero' ? 'Advantage: you choose one of the last two cards' : 'Advantage: the better of the last two cards') : mode === 'dis' ? 'Disadvantage: the worse of the last two cards' : '',
+      info: '', note: shuffled.length ? SHUFFLE_NOTE : '' };
+  };
+  const side = (m, kind) => m.steps.find(x => x.kind === kind) ?? null;
+  const decide = m => {
+    const N = side(m, 'N'), C = side(m, 'C');
+    const sc = selectCard({ mode, who, n: N?.terms ?? null, c: C?.terms ?? null, attack: m.attack === '' ? null : Number(m.attack) });
+    if (!m.swapped && !sc.choose) m.selected = sc.selected;                  // a card the player chose stays chosen
+    m.choose = sc.choose; m.needAttack = sc.needAttack;
+    m.canSwap = !sc.choose && !!N && !!C;
+    // only what the cards do not show by themselves: a missing card, a x2 card waiting for the attack value, an ambiguous or equal pair
+    m.info = !N ? 'Only rolling cards were left: no card to select.'
+      : !C ? 'No second card: the deck is empty. The first card counts.'
+      : m.swapped || sc.choose ? ''
+      : sc.needAttack ? 'A x2 card: enter the attack value to compare. Until then the card drawn first is shown.'
+      : sc.ambiguous ? 'Ambiguous: the card drawn first is used.'
+      : sc.equal ? 'The cards are equal: the card drawn first is used.'
+      : '';
+    return sc;
+  };
+  const logSelection = (m, extra) => {
+    const pick = m.selected === 'N' ? side(m, 'N') : side(m, 'C'), roll = m.steps.filter(x => x.kind === 'roll').map(x => x.label);
+    logLine(tab, 'Modifier deck', `${name}: ${word}: ${pick.label} counts${mode === 'adv' && roll.length ? ` with the rolling cards ${roll.join(', ')}` : ''}${mode === 'dis' && roll.length ? ' (rolling cards ignored)' : ''}${extra}`);
+  };
+  const m0 = build();
+  if (!m0) return;
+  const hooks = {
+    onDone: m => { if (!word) return; decide(m); if (!m.choose && m.selected && !m.needAttack) logSelection(m, ''); },
+    onChoose: (m, key) => { m.selected = key; decide(m); logSelection(m, ''); },
+    onAttack: (m, value) => { m.attack = value; const had = m.needAttack; decide(m); if (had && !m.needAttack && m.selected) logSelection(m, ''); },
+    onSwap: m => { m.swapped = true; m.selected = m.selected === 'N' ? 'C' : 'N'; decide(m); logSelection(m, ' (switched by hand)'); },
+  };
+  await showDraw(m0, hooks);
+}
+const heroDeckNow = id => () => { const k = record.chars.find(x => x.id === id); return { c: k, st: k.amd || {} }; };
+const monDeckNow = g => () => { const st = monOf(record).am[g] || {}; return { c: amOwner(g, st), st }; };
+const drawMode = m => (m === 'adv' || m === 'dis' ? m : undefined);                                  // the toggle's 'std' is a standard draw
+const heroRandomDraw = (c, toggle) => {
+  const mode = drawMode(toggle);
+  return amdDrawDialog({ title: `${c.name}: modifier deck`, name: c.name, who: 'hero', mode, tab: 'Cards', deckNow: heroDeckNow(c.id),
+    drawOnce: (drawn, pair, how, shuffled) => commit(ed.charAm(record, c.id, mode ? 'rdraw2' : 'rdraw', undefined, { drawn, pair, shuffled }), how) });
+};
+const monRandomDraw = (g, toggle) => {
+  const mode = drawMode(toggle), name = g === 'a' ? 'Ally modifier deck' : 'Monster modifier deck';
+  return amdDrawDialog({ title: name, name, who: 'monster', mode, tab: 'Monsters', deckNow: monDeckNow(g),
+    drawOnce: (drawn, pair, how, shuffled) => commit(ed.monAm(record, g, mode ? 'rdraw2' : 'rdraw', undefined, { drawn, pair, shuffled }), how) });
+};
+function amdDo(c, kind, key, opts) { commit(ed.charAm(record, c.id, kind, key, opts), amHow(kind)); }
 
 // Playmat clicks: flip a played card, the + and - of XP, gold and inherited perks, click on a number to type a value.
 const HUD_KEY = { xp: 'xp', gold: 'gold', inh: 'inh' };
@@ -2803,7 +2897,14 @@ main.addEventListener('click', e => {
   const amcl = e.target.closest?.('.pm .amcell');
   if (amcl && stc && !e.target.closest('.rec')) { amdDo(stc, 'ret', amcl.dataset.amcell); return; }
   const amb = e.target.closest?.('button[data-amact]'), amc = pmChar();
-  if (amb && amc) { if (!amb.disabled) amdDo(amc, amb.dataset.amact, amb.dataset.key, amOpts(amb.dataset)); return; }
+  const amm = e.target.closest?.('[data-ammode]');
+  if (amm && amc) { pm.amMode[amc.id] = amm.dataset.ammode; render(); return; }
+  if (amb && amc) {
+    if (amb.disabled) return;
+    if (amb.dataset.amact === 'rdraw') heroRandomDraw(amc, pm.amMode[amc.id]);
+    else amdDo(amc, amb.dataset.amact, amb.dataset.key, amOpts(amb.dataset));
+    return;
+  }
   const amz = e.target.closest?.('[data-amzoom]');
   if (amz) { pm.amZoom = pm.amZoom === amz.dataset.amzoom ? null : amz.dataset.amzoom; render(); return; }
   if (pm.amZoom) { pm.amZoom = null; render(); }

@@ -703,6 +703,8 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); min-height: 420px; }
 .pm .amv .amtools button { display: flex; align-items: center; justify-content: center; border-radius: 10px; border: 1px solid var(--line); background: #2d2519; color: var(--text); cursor: pointer; }
 .pm .amv .amtools button:hover { background: #3a2f1e; color: var(--accent); }
 .pm .amv .amtools button svg { display: block; pointer-events: none; }
+.pm .amv .amtools button { position: relative; }
+.pm .amdot { position: absolute; right: 5px; top: 5px; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 2px #2d2519; pointer-events: none; }
 .pm .amv .amtools button[aria-pressed="true"] { background: var(--accent); color: #120f0b; border-color: var(--accent); }
 .pm .amv .amside .discarea { flex: 1 0 70px; min-height: 70px; }
 .pm .pgrp h3 span { color: var(--muted); font-weight: 600; letter-spacing: 0; }
@@ -735,6 +737,11 @@ main .pm:not(.pp) .stage6 { height: calc(100vh - 110px); min-height: 420px; }
 .pm .amv .amstrip.drop, .pm .amv .amactive.drop { border-color: var(--accent); background: rgba(199,164,74,.14); }
 .pm .amv .deckarea { gap: 6px; }
 .pm .amv .amcode.amdraw { font-size: 13px; }
+/* the draw mode button (playmat.js amModeBtn): Std is quiet, Adv is gold, Dis is red */
+.pm .amv .amtools .amode { font-size: 12px; font-weight: 700; }
+.pm .amv .amtools .amode[data-mode="adv"], .pm .amode[data-mode="adv"] { background: var(--accent); color: #120f0b; border-color: var(--accent); }
+.pm .amv .amtools .amode[data-mode="dis"], .pm .amode[data-mode="dis"] { background: #c9604f; color: #120f0b; border-color: #c9604f; }
+.pm .amv .amtools .amode[data-mode="adv"]:hover, .pm .amv .amtools .amode[data-mode="dis"]:hover { color: #120f0b; filter: brightness(1.12); }
 .pm .amv .amcode.amdraw img { display: block; }
 .pm .amv .amrow { flex: none; display: flex; gap: 8px; }
 .pm .amv .amrow .amstrip { flex: 1 1 0; min-width: 0; }

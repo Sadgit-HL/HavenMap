@@ -58,7 +58,7 @@ export function phoneHtml(c, X, S = {}) {
       <div class="piles">${pileBtn('discard', 'Discard')}${pileBtn('lost', 'Lost')}</div>`;
   } else if (tab === 'amd') {
     // the modifier deck of the playmat (Modifiers view), in the phone's own tab: the same markup and buttons
-    view = S.amv ? amViewHtml(S.amv, esc, !!S.amEdit) : '';
+    view = S.amv ? amViewHtml(S.amv, esc, !!S.amEdit, S.amMode) : '';
   } else if (tab === 'items') {
     const tiles = c.items.map(it => {
       const item = X.itemById.get(it.id), nm = X.pretty(item?.slug ?? it.id), s = it.s || 0;

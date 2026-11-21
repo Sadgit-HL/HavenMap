@@ -73,7 +73,7 @@ export function foldLog(log, entries, windowMs = 4000) {
 }
 
 // opts.draw names how a card was drawn in this change ('random' for the app's own pick, 'BGG roll' for a card marked by hand); it is added to
-// the "drew" lines of the monster ability decks and to the "Unlocked item" line of a random item design and the state line of a random side scenario.
+// the "drew" lines of the monster ability decks and to the "Unlocked item" line of a random item design, the state line of a random side scenario and the "drew" lines of the modifier decks.
 export function describeChange(a, b, opts = {}) {
   const out = [];
   const add = (tab, kind, d) => out.push({ tab, kind, d });
@@ -223,7 +223,7 @@ export function describeChange(a, b, opts = {}) {
       }
       if (k === 'seat') add('Mercenaries', 'Character player', `${c.name}: ${(b.players || []).find(p => p.seat === c.seat)?.name ?? 'nobody'} (was ${(a.players || []).find(p => p.seat === o.seat)?.name ?? 'nobody'})`);
       else if (k === 'am') add('Cards', 'Modifier deck', `${c.name}: modifier deck changed`);
-      else if (k === 'amd') describeHeroDeck(c, o.amd || {}, c.amd || {}).forEach(d => add('Cards', 'Modifier deck', `${c.name}: ${d}`));
+      else if (k === 'amd') describeHeroDeck(c, o.amd || {}, c.amd || {}, opts.draw).forEach(d => add('Cards', 'Modifier deck', `${c.name}: ${d}`));
       else if (k === 'items') {
         const ids = diffList((o.items || []).map(i => `#${i.id}`), (c.items || []).map(i => `#${i.id}`));
         if (ids.add.length || ids.del.length) add('Mercenaries', 'Character items', `${c.name}: ${plusMinus(ids)}`);
@@ -289,11 +289,11 @@ function describeEvents(a, b, rec, add) {
 // A character's modifier deck (chars[].amd), from the two states: cards drawn, returned, shuffled back, placed on top, on the bottom or in
 // the active area, bless and curse counts, edited counts.
 const AM_PLACE = { top: 'top of the deck', bot: 'bottom of the deck', act: 'active area' };
-function describeHeroDeck(c, sa, sb) {
+function describeHeroDeck(c, sa, sb, how = '') {
   const out = [], da = drawState(c, sa), db = drawState(c, sb);
   const diff = sign => db.tiles.flatMap(t => { const n = sign * (t.d - (da.tiles.find(x => x.key === t.key)?.d || 0)); return n > 0 ? Array(n).fill(t.face) : []; });
   const drawn = diff(1), back = diff(-1);
-  if (drawn.length) out.push(`drew ${drawn.join(', ')} (${db.total} left in the deck)`);
+  if (drawn.length) out.push(`drew ${drawn.join(', ')} (${db.total} left in the deck)${how ? ` (${how})` : ''}`);
   if (back.length) out.push(db.disc === 0 && back.length === da.disc ? `discard (${back.length}) shuffled back into the deck` : `returned ${back.join(', ')} from the discard to the deck`);
   for (const s of da.specials) {
     const x = s.c, y = db.specials.find(t => t.key === s.key)?.c ?? 0;
@@ -329,7 +329,7 @@ function describeMonsters(a, b, add, how = '') {
     const da = drawState(amOwner(g, sa), sa), db = drawState(amOwner(g, sb), sb);
     const drawn = db.tiles.filter(tb => tb.d > (da.tiles.find(ta => ta.key === tb.key)?.d || 0)).map(x => x.face);
     if ((sa.imb || 0) !== (sb.imb || 0)) add('Monsters', 'Modifier deck', `${deck}: imbuement ${sa.imb || 0} to ${sb.imb || 0}`);
-    else if (drawn.length) add('Monsters', 'Modifier deck', `${deck}: drew ${drawn.join(', ')} (${db.total} left)`);
+    else if (drawn.length) add('Monsters', 'Modifier deck', `${deck}: drew ${drawn.join(', ')} (${db.total} left)${how ? ` (${how})` : ''}`);
     else if (db.disc === 0 && da.disc > 0) add('Monsters', 'Modifier deck', `${deck}: shuffled`);
     else for (const s of ['bless', 'curse']) if ((sa[s] || 0) !== (sb[s] || 0)) add('Monsters', 'Modifier deck', `${deck}: ${s} cards ${sa[s] || 0} to ${sb[s] || 0}`);
     if (!same(sa.adj, sb.adj)) add('Monsters', 'Modifier deck', `${deck}: cards edited (${db.total} in the deck)`);
