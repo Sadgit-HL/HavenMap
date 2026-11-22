@@ -70,13 +70,14 @@ export function visibleSlugs() {
 
 const byNumber = (a, b) => a - b;
 
-// Deck -> active: the card is drawn for this round (any number of cards).
+// Deck -> active: the card is drawn for this round. One active card per deck: an earlier active card goes to the discard.
 export function activateCard(slug, n) {
   const ds = deckState(slug);
   if (!ds.deck.includes(n)) return;
   patch({ decks: withDeck(slug, { ...ds,
-    deck:   ds.deck.filter(x => x !== n),
-    active: [...ds.active, n],
+    deck:    ds.deck.filter(x => x !== n),
+    active:  [n],
+    discard: [...ds.discard, ...ds.active],
   }) });
 }
 
