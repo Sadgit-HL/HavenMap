@@ -16,11 +16,18 @@ The map page can work out a monster's turn: who it goes for (the focus), where i
 
 The bar `Show | BGG text | Move`, a small arrow for the next monster, one for the details, and a status line, above the Active ability card of the inspect panel.
 
-- Show: runs the solver and marks the board: gold ring the focus, green hex where it attacks from, blue where it only moves, dashed blue the hex it moves towards, orange the area, a thin sight line to each target. Hide clears it.
+- Show: runs the solver and marks the board by what the card lets the monster do (`scripts/monsterView.js`, below): gold ring the focus, green hex where it attacks from, blue where it only moves, dashed blue the hex it moves towards, orange the area, a thin sight line to each target. Hide clears it. Without a card drawn (or without a match in the data) nothing is run and the status line says so.
 - Move: puts the monster on the chosen hex (an ordinary map change, Ctrl+Z undoes it). With a tie the hex is picked on the board or in the details; one way is preselected. Label: `Move F4`.
-- BGG text: copies the forum text of the chosen hex, or after a move the text of that move. Example: `Name (elite) #3: move E5 to F4, attack 3 range 4 wound pierce 2 on Anaphi (disadvantage), shield 2`. Several targets: the first line has the move and the other actions, each target its own line with `(focus)` and `(disadvantage)`; tied groups separated by `or`. No attack: `no attack: out of range` or `no target in reach`. Icons from the BGG codes of the campaign page (`scripts/campaign/bggIcons.js`), words where there is none. The top bar button `BGG Code` is a different thing (it copies the map link).
+- BGG text: copies the forum text of the chosen hex, or after a move the text of that move; for a monster that neither moves nor attacks the text is `stays at C3` with the other actions of the card. Example: `Name (elite) #3: move E5 to F4, attack 3 range 4 wound pierce 2 on Anaphi (disadvantage), shield 2`. Several targets: the first line has the move and the other actions, each target its own line with `(focus)` and `(disadvantage)` (every target when the monster is muddled); tied groups separated by `or`. An attack with no target: `no attack: out of range` or `no target in reach`; a card without an attack never says that. A monster that stays has no `towards`. Icons from the BGG codes of the campaign page (`scripts/campaign/bggIcons.js`), glued to a number without a space, words where there is none. The top bar button `BGG Code` is a different thing (it copies the map link).
 - Next: selects the monster that acts after this one (initiative of the drawn card, elites before normal monsters, then the standee number; decks with no card drawn are skipped) and centres the board on it.
-- Details (arrow): the drawn card (matched by initiative and shuffle mark; a select with the card names when two cards have the same initiative), move, range, targets, All, Fly, Jump, Teleport, Muddled, No attack, the area (a 7 by 7 hex drawing, shown by itself when the card has an area, else behind an Area chip), initiatives per character (behind a chip), the result and the rows to pick a hex. The panel fills the values from the card when the monster, card, level or party size change; manual changes stay until then; Use card applies it again.
+- Details (arrow): the notes of the card (consumes that apply or not, texts the solver cannot act on), the initiatives per character (always shown), a Values button that opens move, range, targets, All, Fly, Jump, Teleport, No attack and the area (a 7 by 7 hex drawing), the result and the rows to pick a hex. The panel fills the values from the card when the monster, card, level, party size or the outcome of an element consume change; manual changes stay until then. Muddled is not a value: it comes from the Muddle condition of the monster. Which card it is comes from `scripts/games/gh2_card_ids.js` where two cards share an initiative.
+- What is shown, by card (`turnView` and `viewStatus` in `scripts/monsterView.js`, one decision for the marks, the status line, the details and the forum text):
+  - Move and attack: attack from a green hex, or `Out of range, to H` with a blue end hex and dashed hexes towards the focus.
+  - Move, no attack: `Moves to H` (blue), dashed hexes towards only when it cannot get next to the focus; never `out of range`.
+  - No move, attack: green own hex when in range, `Out of range` otherwise with no end hex and no towards hexes.
+  - Neither: no marks, no status, no focus ring.
+  - No character: `No target in reach`, or `No target to move towards` for a card without an attack.
+  The hex a monster already stands on is marked only for an attack.
 - Show and the details are per session (`uiState.turn`), not in the map link and not across reloads. Initiatives are typed per figure and not saved.
 
 ## Modules (pure logic with Node checks, except `monsterTurn.js`)
@@ -35,11 +42,13 @@ The bar `Show | BGG text | Move`, a small arrow for the next monster, one for th
 | `scripts/monsterMove.js` | `solveMove`: movement, focus, end hexes, targets, areas |
 | `scripts/monsterCard.js` | `cardOptions`: ability card plus stat card to solver options; `candidatesFor`, `areaIndexes` |
 | `scripts/monsterPost.js` | `turnPost`, `extraText`: the forum text |
+| `scripts/monsterView.js` | `turnView`, `viewStatus`: what a turn shows for a card (idle, no focus, attack, out, approach, move) |
+| `scripts/games/gh2_card_ids.js` | map card number to Secretariat card id, for cards that share an initiative (hand-maintained, read from the ids printed on the card images, a test keeps it complete) |
 | `scripts/games/gh2_monsters.js` | GENERATED by `tools/extract-monster-data.py` (a clone of Lurkers/gloomhavensecretariat): 95 monsters (stats per kind and level) and 62 ability decks, 339 cards, about 200 KB, loaded when needed |
 | `scripts/monsterTurn.js` | the panel and the board marks (DOM) |
 | `scripts/uiState.js` `turn` | panel state |
 
-Tests: `tools/tests/` `tileMasks`, `tileMask`, `hexState`, `los`, `monsterMove`, `monsterCard`, `monsterPost`, `monsterData`, `gloomScenarios`. Gloom's scenarios: `tools/convert-gloom-scenarios.py <gloom/server/scenarios.py>` writes `tools/tests/fixtures/gloom-scenarios.json` (MIT notice inside); `node tools/gloom-report.mjs [gloomhaven|frosthaven|jotl] [-v]` prints mismatches.
+Tests: `tools/tests/` `tileMasks`, `tileMask`, `hexState`, `los`, `monsterMove`, `monsterCard`, `monsterPost`, `monsterView`, `monsterData`, `gloomScenarios`. Gloom's scenarios: `tools/convert-gloom-scenarios.py <gloom/server/scenarios.py>` writes `tools/tests/fixtures/gloom-scenarios.json` (MIT notice inside); `node tools/gloom-report.mjs [gloomhaven|frosthaven|jotl] [-v]` prints mismatches.
 
 ## Hex state
 

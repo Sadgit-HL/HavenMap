@@ -261,6 +261,23 @@ export function initSidebar() {
     settingsBtn.classList.toggle('active');
   });
 
+  // Desktop: the settings are a popover below the cogwheel; a click outside it or Esc closes it. The path of the event is read, not the target: a click on a
+  // row rebuilds the panel, so the target may no longer be in it.
+  const isPhone = () => window.matchMedia('(max-width: 760px)').matches;
+  const closePopover = () => { settingsPanel.classList.remove('open'); settingsBtn.classList.remove('active'); };
+  document.addEventListener('click', e => {
+    if (isPhone() || !settingsPanel.classList.contains('open')) return;
+    const path = e.composedPath();
+    if (path.includes(settingsPanel) || path.includes(settingsBtn)) return;
+    closePopover();
+  });
+  window.addEventListener('keydown', e => {
+    if (isPhone() || e.key !== 'Escape' || !settingsPanel.classList.contains('open')) return;
+    closePopover();
+    e.preventDefault();
+    e.stopImmediatePropagation();
+  }, true);
+
   window.addEventListener('keydown', e => {
     if (e.key !== 'Delete' && e.key !== 'Backspace') return;
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;

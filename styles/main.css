@@ -54,6 +54,8 @@ body {
 }
 
 .sidebar-brand {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -101,44 +103,55 @@ body {
   white-space: nowrap;
 }
 
-/* ── Sidebar footer (settings) ───────────────────────────────── */
-#sidebar-footer {
-  position: sticky;
-  bottom: 0;
-  margin-top: auto;
-  background: rgba(10 10 30 / 0.95);
-  border-top: 1px solid rgba(255 255 255 / 0.08);
-  padding-top: 8px;
-}
-
+/* ── Settings: cogwheel in the sidebar header, popover below it (phones: see the mobile block) ── */
 #settings-btn {
-  width: 100%;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.10em;
-  text-transform: uppercase;
-  color: rgba(255 255 255 / 0.30);
-  background: transparent;
-  border: none;
-  padding: 8px 0;
-  cursor: pointer;
+  flex: none;
+  margin-left: auto;
+  width: 30px;
+  height: 30px;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: rgba(255 255 255 / 0.38);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
 #settings-btn:hover,
 #settings-btn.active {
-  color: rgba(255 255 255 / 0.65);
+  color: rgba(255 255 255 / 0.80);
+  background: rgba(255 255 255 / 0.07);
+  border-color: rgba(255 255 255 / 0.14);
+}
+
+#settings-btn:focus-visible {
+  outline: 2px solid rgba(138 216 255 / 0.5);
+  outline-offset: 1px;
 }
 
 #settings-panel {
   display: none;
-  padding-bottom: 12px;
 }
 
-#settings-panel.open {
-  display: block;
+@media (min-width: 761px) {
+  #settings-panel.open {
+    display: block;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    max-height: calc(100vh - 110px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 4px 12px 8px;
+    background: #0f0f23;
+    border: 1px solid rgba(255 255 255 / 0.14);
+    border-radius: 10px;
+    box-shadow: 0 18px 50px rgba(0 0 0 / 0.55);
+  }
 }
 
 .settings-section {
@@ -1605,15 +1618,16 @@ body {
   }
 
   .sidebar-brand {
+    display: contents;
+  }
+
+  .sidebar-brand-mark,
+  .sidebar-brand-copy {
     display: none;
   }
 
   #sidebar-panel {
     display: none;
-  }
-
-  #sidebar-footer {
-    display: contents;
   }
 
   #settings-btn {
@@ -2479,33 +2493,46 @@ body {
 }
 
 /* -- Monster turn panel (scripts/monsterTurn.js) -------------------------- */
-.sp-turn-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 6px; }
-.sp-turn-row label { display: flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(255 255 255 / 0.72); }
-.sp-turn-num { width: 46px; padding: 3px 4px; text-align: center; font: inherit; font-size: 12px; color: #fff; background: rgba(255 255 255 / 0.07); border: 1px solid rgba(255 255 255 / 0.14); border-radius: 4px; }
-.sp-turn-chip, .sp-turn-btn { padding: 3px 8px; font: inherit; font-size: 11px; color: rgba(255 255 255 / 0.8); background: rgba(255 255 255 / 0.07); border: 1px solid rgba(255 255 255 / 0.14); border-radius: 4px; cursor: pointer; }
-.sp-turn-chip.on { color: #1a1a2e; background: #f0b428; border-color: #f0b428; font-weight: 700; }
-.sp-turn-btn { padding: 4px 14px; font-weight: 700; }
-.sp-turn-inits { display: grid; gap: 4px; margin: 2px 0 8px; }
-.sp-turn-init { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12px; color: rgba(255 255 255 / 0.72); }
-.sp-turn-res { margin-top: 4px; font-size: 12px; line-height: 1.5; color: rgba(255 255 255 / 0.85); }
+/* Looks like the rest of the sidebar: rows like the settings rows (.sg-row), pills like the condition toggle (.sp-cond-toggle), and a translucent gold tint
+   with a border for what is on (like .sp-icon-btn.is-locked). */
+.sp-turn-bar { display: flex; gap: 4px; align-items: stretch; }
+.sp-turn-btn, .sp-turn-icon, .sp-turn-chip { font: inherit; color: rgba(255 255 255 / 0.78); background: rgba(255 255 255 / 0.07); border: 1px solid rgba(255 255 255 / 0.14); cursor: pointer; transition: background 0.12s, border-color 0.12s, color 0.12s; }
+.sp-turn-btn:hover:not(:disabled), .sp-turn-icon:hover:not(:disabled), .sp-turn-chip:hover:not(:disabled) { background: rgba(255 255 255 / 0.16); border-color: rgba(255 255 255 / 0.30); color: #fff; }
+.sp-turn-btn:focus-visible, .sp-turn-icon:focus-visible, .sp-turn-chip:focus-visible, .sp-turn-fold:focus-visible, .sp-turn-choice:focus-visible { outline: 2px solid rgba(138 216 255 / 0.5); outline-offset: 1px; }
+.sp-turn-btn:disabled, .sp-turn-icon:disabled, .sp-turn-chip:disabled { opacity: 0.4; cursor: default; }
+.sp-turn-btn { flex: 1 1 0; min-width: 0; padding: 6px 2px; font-size: 11px; font-weight: 700; white-space: nowrap; border-radius: 6px; }
+.sp-turn-icon { flex: none; width: 24px; padding: 0; font-size: 12px; border-radius: 6px; }
+.sp-turn-chip { padding: 3px 9px; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; color: rgba(255 255 255 / 0.62); border-radius: 10px; }
+.sp-turn-btn.on, .sp-turn-chip.on { color: rgba(240 180 40 / 0.95); background: rgba(240 180 40 / 0.14); border-color: rgba(240 180 40 / 0.40); }
+.sp-turn-btn.on:hover:not(:disabled), .sp-turn-chip.on:hover:not(:disabled) { color: rgba(240 180 40 / 1); background: rgba(240 180 40 / 0.24); border-color: rgba(240 180 40 / 0.55); }
+.sp-turn-status { margin-top: 6px; font-size: 12px; color: rgba(255 255 255 / 0.85); }
+.sp-turn-details { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255 255 255 / 0.08); }
+.sp-turn-dim { color: rgba(255 255 255 / 0.55); font-size: 11px; }
+.sp-turn-notes { margin: 0 0 8px; padding-left: 16px; font-size: 11px; color: rgba(255 255 255 / 0.7); }
+.sp-turn-msg { margin: 0 0 8px; }
 .sp-turn-lbl { font-size: 11px; color: rgba(255 255 255 / 0.55); text-transform: uppercase; letter-spacing: 0.08em; }
+.sp-turn-inits { display: grid; gap: 4px; margin: 0 0 8px; }
+.sp-turn-inits .sp-subhead { margin-bottom: 2px; }
+.sp-turn-init { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 32px; padding: 3px 6px 3px 10px; border: 1px solid rgba(255 255 255 / 0.10); border-radius: 6px; background: rgba(255 255 255 / 0.045); font-size: 12px; font-weight: 600; color: rgba(255 255 255 / 0.78); }
+.sp-turn-init:focus-within { border-color: rgba(138 216 255 / 0.30); background: rgba(138 216 255 / 0.075); }
+.sp-turn-num { width: 48px; height: 24px; padding: 0 4px; text-align: center; font: inherit; font-size: 12px; color: rgba(255 255 255 / 0.9); background: rgba(0 0 0 / 0.22); border: 1px solid rgba(255 255 255 / 0.12); border-radius: 5px; }
+.sp-turn-num:focus { outline: none; border-color: rgba(138 216 255 / 0.5); }
+.sp-turn-fold { width: 100%; display: flex; align-items: center; justify-content: space-between; min-height: 32px; margin: 0 0 8px; padding: 4px 10px; font: inherit; font-size: 12px; font-weight: 600; text-align: left; color: rgba(255 255 255 / 0.78); background: rgba(255 255 255 / 0.045); border: 1px solid rgba(255 255 255 / 0.10); border-radius: 6px; cursor: pointer; }
+.sp-turn-fold:hover { background: rgba(255 255 255 / 0.08); border-color: rgba(255 255 255 / 0.18); }
+.sp-turn-fold::after { content: "⌄"; color: rgba(255 255 255 / 0.45); transition: transform 0.14s ease; }
+.sp-turn-fold[aria-expanded="true"] { margin-bottom: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.sp-turn-fold[aria-expanded="true"]::after { transform: rotate(180deg); }
+.sp-turn-values { margin: 0 0 8px; padding: 8px 10px 4px; border: 1px solid rgba(255 255 255 / 0.10); border-top: 0; border-radius: 0 0 6px 6px; background: rgba(255 255 255 / 0.025); }
+.sp-turn-row { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; margin-bottom: 8px; }
+.sp-turn-row label { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: rgba(255 255 255 / 0.72); }
+.sp-turn-res { margin: 0 0 8px; padding: 6px 10px; border: 1px solid rgba(255 255 255 / 0.08); border-radius: 6px; background: rgba(255 255 255 / 0.025); font-size: 12px; line-height: 1.5; color: rgba(255 255 255 / 0.85); }
+.sp-turn-choices { display: grid; gap: 4px; margin-top: 8px; }
+.sp-turn-choice { padding: 6px 10px; text-align: left; font: inherit; font-size: 12px; color: rgba(255 255 255 / 0.78); background: rgba(255 255 255 / 0.045); border: 1px solid rgba(255 255 255 / 0.10); border-radius: 6px; cursor: pointer; }
+.sp-turn-choice:hover { background: rgba(255 255 255 / 0.08); border-color: rgba(255 255 255 / 0.18); }
+.sp-turn-choice.on { color: #1a1a2e; background: #fff; border-color: #fff; font-weight: 700; }
 .sp-aoe { display: block; margin: 0 0 8px; max-width: 100%; }
 .sp-aoe-cell { fill: rgba(255 255 255 / 0.05); stroke: rgba(255 255 255 / 0.22); stroke-width: 1; cursor: pointer; }
 .sp-aoe-cell:hover { fill: rgba(255 255 255 / 0.16); }
 .sp-aoe-cell.on { fill: #ff9f43; stroke: #ff9f43; }
 .sp-aoe-cell.mid { stroke: #ffd23f; stroke-width: 2; }
 .sp-aoe-m { fill: rgba(255 255 255 / 0.6); font-size: 10px; font-weight: 700; pointer-events: none; }
-.sp-turn-dim { color: rgba(255 255 255 / 0.55); font-size: 11px; }
-.sp-turn-notes { margin: 0 0 8px; padding-left: 16px; font-size: 11px; color: rgba(255 255 255 / 0.7); }
-.sp-turn-msg { margin: 0 0 8px; }
-.sp-turn-choices { display: grid; gap: 4px; margin-top: 8px; }
-.sp-turn-choice { padding: 4px 8px; text-align: left; font: inherit; font-size: 12px; color: rgba(255 255 255 / 0.85); background: rgba(255 255 255 / 0.05); border: 1px solid rgba(255 255 255 / 0.12); border-radius: 4px; cursor: pointer; }
-.sp-turn-choice.on { color: #1a1a2e; background: #fff; border-color: #fff; font-weight: 700; }
-.sp-turn-chip:disabled { opacity: 0.4; cursor: default; }
-.sp-turn-bar { display: flex; gap: 4px; align-items: stretch; }
-.sp-turn-bar .sp-turn-btn { flex: 1 1 0; min-width: 0; padding: 6px 2px; font-size: 11px; white-space: nowrap; }
-.sp-turn-btn.on { color: #1a1a2e; background: #f0b428; border-color: #f0b428; }
-.sp-turn-btn:disabled, .sp-turn-icon:disabled { opacity: 0.4; cursor: default; }
-.sp-turn-icon { flex: none; width: 22px; padding: 0; font-size: 12px; color: rgba(255 255 255 / 0.8); background: rgba(255 255 255 / 0.07); border: 1px solid rgba(255 255 255 / 0.14); border-radius: 4px; cursor: pointer; }
-.sp-turn-status { margin-top: 6px; font-size: 12px; color: rgba(255 255 255 / 0.85); }
-.sp-turn-details { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255 255 255 / 0.08); }

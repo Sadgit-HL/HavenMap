@@ -17,6 +17,7 @@ import { solveMove, areaOffsets, isMuddled } from './monsterMove.js';
 import { makeSightLine } from './los.js';
 import { hexDistance, edgeKey } from './hexGrid.js';
 import { turnPost } from './monsterPost.js';
+import { turnView, viewStatus } from './monsterView.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 // The floor masks are for the Gloomhaven 2e tiles only (game 'gh2'); tiles of other games have none and the floor is then unknown.
@@ -39,11 +40,12 @@ function ensureData() {
 }
 
 // The ability card of a monster on the map: the card drawn this round, matched to the Secretariat card by initiative and shuffle mark (the map's card
-// numbers are not the Secretariat's ids, equal initiatives can be ambiguous: then the player picks the card by its name). null without data for it.
+// numbers are not the Secretariat's ids, equal initiatives can be ambiguous: then the player picks the card by its name). null without data for it, { loading } while
+// the data loads, { none } without a card drawn, { unmatched } for a card that is not in the data.
 function cardInfo(obj) {
   if (GAME_ID !== 'gh') return null;
   ensureData();
-  if (!data) return null;
+  if (!data) return { loading: true };
   const mon = MONSTERS.byId.get(Number(obj.id)), rec = mon ? data.GH2_MONSTERS[mon.title.replace(/ /g, '-')] : null;
   if (!rec) return null;
   const kind = obj.role === 'elite' ? 'elite' : obj.role === 'boss' ? 'boss' : 'normal', level = Math.max(0, Math.min(7, Number(state.CurrentLevel) || 0));
@@ -93,7 +95,7 @@ function run(obj) {
     active: { col: Number(obj.x), row: Number(obj.y) }, move: T.move, range: T.range, attack: !T.noAttack, targets: T.all ? 6 : T.targets, area: T.cells ?? areaOffsets(T.area, !(T.range > 0)),
     flying: T.fly, jumping: T.jump, teleport: T.tele, muddled: isMuddled(obj), initiatives, canSee: (a, b) => sight(a, b) !== null,
   });
-  return { hs, res, figs, sight, choices: choicesOf(res) };
+  return { hs, res, figs, sight, choices: choicesOf(res), here: { col: Number(obj.x), row: Number(obj.y) }, view: turnView(res, { moves: T.move > 0, attacks: !T.noAttack }) };
 }
 
 function hexPoints(col, row) {
@@ -116,7 +118,7 @@ function draw(run_) {
   const { res } = run_, seen = new Set();
   layer.setAttribute('pointer-events', 'none');
   for (const a of res.actions) {
-    if (!a.focus.length) continue;                                                // standing still: nothing to mark
+    if (!a.focus.length || !run_.view.showDest) continue;                         // only a monster that moves and cannot get there marks where it moves towards
     for (const d of a.destinations) {
       const [c, r] = d.split(',').map(Number);
       layer.appendChild(hexShape(c, r, { fill: 'none', stroke: '#6aa7ff', 'stroke-width': 3, 'stroke-dasharray': '8 6' }));
@@ -130,7 +132,8 @@ function draw(run_) {
     layer.appendChild(hexShape(c, r, { fill: 'rgba(255,159,67,0.28)', stroke: '#ff9f43', 'stroke-width': 2 }));
   }
   for (const a of res.actions) {
-    if (!a.focus.length || seen.has(a.col + ',' + a.row)) continue;
+    if (!a.focus.length || !run_.view.showEnd || seen.has(a.col + ',' + a.row)) continue;
+    if (!a.attack && a.col === run_.here.col && a.row === run_.here.row) continue;  // the hex it already stands on is marked only for an attack
     const hk = a.col + ',' + a.row, picked = hk === uiState.turn.choice && run_.choices.length > 1;
     seen.add(hk);
     const shape = hexShape(a.col, a.row, a.attack
@@ -144,7 +147,7 @@ function draw(run_) {
     }
     layer.appendChild(shape);
   }
-  for (const f of res.focuses) layer.appendChild(hexShape(f.col, f.row, { fill: 'none', stroke: '#ffd23f', 'stroke-width': 5 }));
+  if (run_.view.showFocus) for (const f of res.focuses) layer.appendChild(hexShape(f.col, f.row, { fill: 'none', stroke: '#ffd23f', 'stroke-width': 5 }));
   // the sight line from each attack hex to its focus (the line comes in the exact grid of scripts/los.js, the board is 45 and 78 pixels further)
   for (const a of res.actions) {
     if (!a.attack) continue;
@@ -202,6 +205,12 @@ function goNext() {
   centerBoardPoint(c.x, c.y);
 }
 
+// The only way for a monster that neither moves nor attacks: where it stands.
+function idleChoice(obj) {
+  const col = Number(obj.x), row = Number(obj.y);
+  return { key: hexKey(col, row), col, row, attack: false, groups: [], towards: [], focus: [] };
+}
+
 // The forum text of the chosen end hex for this monster.
 function buildPost(obj, c) {
   const T = uiState.turn, mon = MONSTERS.byId.get(Number(obj.id)), info = cardInfo(obj), o = info?.opts;
@@ -234,10 +243,11 @@ function confirmMove() {
 }
 
 async function copyPost() {
-  const T = uiState.turn, obj = selectedMonster(), c = last?.choices.find(x => x.key === T.choice);
+  const T = uiState.turn, obj = selectedMonster(), idle = last?.view.kind === 'idle';
+  const c = idle && obj ? idleChoice(obj) : last?.choices.find(x => x.key === T.choice);
   const cur = obj ? hexKey(Number(obj.x), Number(obj.y)) : null;
-  // a hex to move to: its text; nothing to move to after a move: the text of that move
-  const text = obj && c && (c.key !== cur || !T.lastPost) ? buildPost(obj, c) : T.lastPost;
+  // a hex to move to: its text; nothing to move to after a move: the text of that move; neither a move nor an attack: it stays, with the other actions of the card
+  const text = obj && c && (idle || c.key !== cur || !T.lastPost) ? buildPost(obj, c) : T.lastPost;
   if (!text) return;
   try { await navigator.clipboard.writeText(text); } catch { return; }
   setTurn({ copied: true });
@@ -248,8 +258,8 @@ export function refreshSolver() {
   const T = uiState.turn, mon = selectedMonster();
   if (T.postFor !== uiState.selected?.idx) T.lastPost = '';                       // the text of the last move belongs to that monster
   if (mon && (T.on || T.detailsOpen)) autoApply(mon);                            // Show off and no details: no data, no solver, no marks
-  const sel = T.on ? mon : null;
-  last = sel ? run(sel) : null;
+  const sel = T.on ? mon : null, info = sel ? cardInfo(sel) : null;
+  last = sel && !(info?.none || info?.unmatched || info?.loading) ? run(sel) : null;   // no card to go by: nothing is run, the status line says why
   if (last) {
     const ch = last.choices;
     if (!ch.some(c => c.key === T.choice)) T.choice = ch.length === 1 ? ch[0].key : null;     // one way: it is the choice; several: the player picks
@@ -276,35 +286,34 @@ function areaEditor(T) {
 const num = (field, value) => `<input type="number" class="sp-turn-num" data-turn-field="${field}" min="0" max="20" value="${value}">`;
 
 function resultHtml() {
-  if (!last) return '';
-  const { res, hs } = last, lines = [];
-  if (!res.focuses.length) lines.push('No focus: nothing can be reached or attacked');
+  if (!last || last.view.kind === 'idle') return '';
+  const { res, hs, view, here } = last, T = uiState.turn, lines = [];
+  if (view.kind === 'nofocus') lines.push(T.noAttack ? 'No focus: nothing to move towards' : 'No focus: nothing can be reached or attacked');
   else {
     lines.push(`Focus: ${res.focuses.map(f => `${esc(figName(f))} ${label(f)}`).join(' or ')}`);
     const names = new Map(last.hs.figures.map(f => [hexKey(f.col, f.row), figName(f)]));
-    const hexes = [...new Set(res.actions.map(label))].join(', ');
-    if (res.canAttackFocus && res.actions.some(x => x.targets.length > 1)) {
+    const ends = res.actions.filter(x => x.attack || x.col !== here.col || x.row !== here.row);           // the hex it stands on counts only for an attack
+    const hexes = [...new Set(ends.map(label))].join(', ');
+    if (view.kind === 'attack' && res.actions.some(x => x.targets.length > 1)) {
       lines.push('Attacks from:');
       for (const x of res.actions) lines.push(`${label(x)}: ${x.targets.map(t => esc(names.get(t) ?? t)).join(', ')}`);
-    } else lines.push(res.canAttackFocus ? `Attacks from: ${hexes}` : `Moves to: ${hexes}`);
-    if (!res.canAttackFocus) {
+    } else if (view.kind === 'attack') lines.push(`Attacks from: ${hexes}`);
+    else if (view.showEnd && hexes) lines.push(`Moves to: ${hexes}`);
+    if (view.showDest) {
       const dest = [...new Set(res.actions.flatMap(a => a.destinations))].map(k => { const [c, r] = k.split(',').map(Number); return label({ col: c, row: r }); });
       if (dest.length) lines.push(`Towards: ${dest.join(', ')}`);
     }
   }
   const mon = selectedMonster();
-  if (mon && isMuddled(mon) && uiState.turn.range > 0) lines.push('Muddled: does not step away from adjacent targets');
+  if (mon && isMuddled(mon) && !T.noAttack && T.range > 0) lines.push('Muddled: does not step away from adjacent targets');
   if (!hs.floorKnown) lines.push('Floor unknown on this map: hexes outside the tiles are not excluded');
   return `<div class="sp-turn-res">${lines.map(l => `<div>${l}</div>`).join('')}</div>`;
 }
 
-// What the card says about this turn: why there is no card, or the notes (consumes that apply or not, texts the solver cannot act on). The card itself is
-// shown in the sidebar (Active ability).
+// What the card says about this turn: the notes (consumes that apply or not, texts the solver cannot act on). The card itself is shown in the sidebar (Active
+// ability), and why there is nothing to show is in the status line.
 function cardHtml(info) {
-  if (!info) return '';
-  if (info.none) return '<div class="sp-turn-dim sp-turn-msg">No ability card drawn</div>';
-  if (info.unmatched) return `<div class="sp-turn-dim sp-turn-msg">No matching card in the data for initiative ${info.unmatched.join(', ')}</div>`;
-  const notes = info.opts.notes;
+  const notes = info?.opts?.notes ?? [];
   return notes.length ? `<ul class="sp-turn-notes">${notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul>` : '';
 }
 
@@ -315,24 +324,25 @@ function choicesHtml() {
   return `<div class="sp-turn-choices">${last.choices.map(c => `<button type="button" class="sp-turn-choice${c.key === T.choice ? ' on' : ''}" data-turn-hex="${c.key}">${label(c)}${c.groups.length ? ': ' + c.groups.map(g => g.map(t => esc(names.get(t) ?? t)).join(', ')).join(' / ') : ''}</button>`).join('')}</div>`;
 }
 
-// The line under the buttons: what Move will do.
+// The line under the buttons: what Move will do, or why there is nothing to show (no card drawn, no card in the data).
 function statusText() {
-  if (!uiState.turn.on || !last) return '';
-  const { res, choices } = last, sel = selectedMonster(), cur = sel ? hexKey(Number(sel.x), Number(sel.y)) : null;
-  if (!res.focuses.length) return 'No target in reach';
-  if (choices.length > 1) return `${choices.length} options: pick a hex`;
-  const c = choices[0];
-  if (!c) return '';
+  if (!uiState.turn.on) return '';
+  const sel = selectedMonster(), info = sel ? cardInfo(sel) : null;
+  if (info?.none) return 'No ability card drawn';
+  if (info?.unmatched) return `No matching card in the data for initiative ${info.unmatched.join(', ')}`;
+  if (!last) return '';
+  const { view, choices } = last, T = uiState.turn, attacks = !T.noAttack, cur = sel ? hexKey(Number(sel.x), Number(sel.y)) : null;
+  const c = choices.find(x => x.key === T.choice) ?? choices[0];
   const names = new Map(last.hs.figures.map(f => [hexKey(f.col, f.row), figName(f)]));
-  const targets = c.groups.map(g => g.map(t => esc(names.get(t) ?? t)).join(', ')).join(' or ');
-  return c.attack ? `Attack ${targets} from ${label(c)}` : `No attack: out of range${c.key === cur ? '' : `, to ${label(c)}`}`;
+  const targets = c ? c.groups.map(g => g.map(t => esc(names.get(t) ?? t)).join(', ')).join(' or ') : '';
+  return viewStatus(view.kind, { attacks, targets, hex: c ? label(c) : '', stays: !!c && c.key === cur, options: choices.length });
 }
 
 // Show, BGG text and Move, with the arrow for the next monster and the one for the details.
 function barHtml() {
   const T = uiState.turn, sel = selectedMonster(), cur = sel ? hexKey(Number(sel.x), Number(sel.y)) : null;
   const chosen = last?.choices.find(c => c.key === T.choice), next = nextInfo();
-  const canMove = T.on && !!chosen && chosen.key !== cur, canPost = (T.on && !!chosen) || !!T.lastPost;
+  const canMove = T.on && !!chosen && chosen.key !== cur, canPost = (T.on && (!!chosen || last?.view.kind === 'idle')) || !!T.lastPost;
   return `<div class="sp-turn-bar">` +
     `<button type="button" class="sp-turn-btn${T.on ? ' on' : ''}" data-turn="toggle" aria-pressed="${T.on}">${T.on ? 'Hide' : 'Show'}</button>` +
     `<button type="button" class="sp-turn-btn" data-turn="post"${canPost ? '' : ' disabled'}>${T.copied ? 'Copied' : 'BGG text'}</button>` +
@@ -342,23 +352,24 @@ function barHtml() {
     `</div>`;
 }
 
-// The details: the card, the values, the area, the initiatives, the result and the choice.
+// The details: the notes of the card, the initiatives, the values with the area (behind a button), the result and the choice.
 function detailsHtml() {
   const T = uiState.turn;
   if (!T.detailsOpen) return '';
   const sel = selectedMonster(), card = sel ? cardHtml(cardInfo(sel)) : '';
   const figs = last ? last.figs : buildHexState(state, lookup).figures.filter(f => f.side === 'characters');
-  const filled = figs.filter(f => T.init[figKey(f)] != null).length;
-  const inits = figs.length ? `<div class="sp-turn-row">${chip('initOpen', `Initiatives${filled ? ` (${filled})` : ''}`, T.initOpen)}</div>` + (T.initOpen ? `<div class="sp-turn-inits">${figs.map(f => {
+  const inits = figs.length ? `<div class="sp-turn-inits"><div class="sp-subhead">Initiatives</div>${figs.map(f => {
     const k = figKey(f);
     return `<label class="sp-turn-init"><span>${esc(figName(f))} ${label(f)}</span><input type="number" class="sp-turn-num" data-turn-field="init" data-key="${k}" min="1" max="99" value="${T.init[k] ?? ''}" placeholder="99"></label>`;
-  }).join('')}</div>` : '') : '';
-  return `<div class="sp-turn-details">
-      ${card}
+  }).join('')}</div>` : '';
+  const values = `<button type="button" class="sp-turn-fold" data-turn="valuesOpen" aria-expanded="${T.valuesOpen}">Values</button>` + (T.valuesOpen ? `<div class="sp-turn-values">
       <div class="sp-turn-row"><label>Move ${num('move', T.move)}</label><label>Range ${num('range', T.range)}</label><label>Targets ${num('targets', T.targets)}</label>${chip('all', 'All', T.all)}</div>
       <div class="sp-turn-row">${chip('fly', 'Fly', T.fly)}${chip('jump', 'Jump', T.jump)}${chip('tele', 'Teleport', T.tele)}${chip('noAttack', 'No attack', T.noAttack)}</div>
-      ${areaEditor(T)}
+      ${areaEditor(T)}</div>` : '');
+  return `<div class="sp-turn-details">
+      ${card}
       ${inits}
+      ${values}
       ${resultHtml()}
       ${choicesHtml()}
     </div>`;
