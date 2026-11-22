@@ -67,6 +67,6 @@ export function initShare() {
       }
     }
 
-    setTimeout(() => { btn.textContent = 'BGG Code'; btn.disabled = false; }, 2500);
+    setTimeout(() => { btn.textContent = 'BGG MAP'; btn.disabled = false; }, 2500);
   });
 }
