@@ -46,17 +46,18 @@ function expandConsumes(nodes, infused, notes) {
     if (!isConsume(n)) { out.push(n); continue; }
     const on = consumeOn(n, infused);
     addNote(notes, consumeNote(n, on));
-    if (on) out.push({ t: 'element', v: n.v }, ...expandConsumes(n.sub, infused, notes));   // the element stays in the effects, as a consume was always shown
+    if (on) out.push({ t: 'element', v: n.v, vt: 'minus' }, ...expandConsumes(n.sub, infused, notes));   // the consumed element stays in the effects (vt minus: the consume icon)
   }
   return out;
 }
 
 // The sub of a consume at the top of a card that holds an attack: the other entries (target, range, area, conditions ...) belong to that attack.
-function attackWithSiblings(sub) {
+function attackWithSiblings(sub, element) {
   const atk = (sub ?? []).find(s => s.t === 'attack');
   if (!atk) return sub ?? [];
   const rest = sub.filter(s => s !== atk && s.t !== 'move' && s.t !== 'attack');
-  return sub.filter(s => !rest.includes(s)).map(s => (s === atk ? { ...atk, sub: [...(atk.sub ?? []), ...rest] } : s));
+  const consumed = { t: 'element', v: element, vt: 'minus' };                    // the element it consumes is part of the attack in the effects
+  return sub.filter(s => !rest.includes(s)).map(s => (s === atk ? { ...atk, sub: [...(atk.sub ?? []), ...rest, consumed] } : s));
 }
 
 // One action with the infused consumes in its sub merged in: heal 2 with consume dark: heal +1 is heal 3 (and the element, as it is consumed); a consume that is not
@@ -84,7 +85,7 @@ function resolveNode(n, infused, notes) {
       } else if (c.t === 'range' || c.t === 'target') setOrAdd(c, c.vt === 'add' || c.vt === 'subtract');
       else sub.push(c);
     }
-    sub.push({ t: 'element', v: s.v });
+    sub.push({ t: 'element', v: s.v, vt: 'minus' });
   }
   const out = { ...n, sub };
   if (v !== undefined) out.v = v;
@@ -117,8 +118,8 @@ function findActions(nodes, kind, infused, notes, out = []) {
       const on = consumeOn(n, infused);
       if ((n.sub ?? []).some(s => s.t === 'move' || s.t === 'attack')) addNote(notes, consumeNote(n, on));
       const mod = (n.sub ?? []).some(s => s.t === 'attack' && (s.vt === 'add' || s.vt === 'subtract')), last = out.map(o => o.t).lastIndexOf('attack');
-      if (on && mod && last >= 0) out[last] = { ...out[last], sub: [...(out[last].sub ?? []), ...n.sub] };      // attack +1 and an area for the attack before it
-      else if (on) findActions(attackWithSiblings(n.sub), kind, infused, notes, out);
+      if (on && mod && last >= 0) out[last] = { ...out[last], sub: [...(out[last].sub ?? []), ...n.sub, { t: 'element', v: n.v, vt: 'minus' }] };      // attack +1 and an area for the attack before it
+      else if (on) findActions(attackWithSiblings(n.sub, n.v), kind, infused, notes, out);
     }
     else if (n.sub) findActions(n.sub, kind, infused, notes, out);
   }
@@ -165,7 +166,7 @@ export function cardOptions({ monster, kind = 'normal', level = 0, card, chars =
     out.damage = a.vt ? (statAttack === null ? null : rel(a, statAttack)) : statValue(a.v, chars);
     let dmgMod = 0, rangeMod = 0, targetMod = 0;                                   // modifiers of an infused consume: attack +2, range -1, target +1
     for (const s of expandConsumes(a.sub, infused, notes)) {
-      if (['pierce', 'push', 'pull', 'condition', 'element', 'elementHalf'].includes(s.t)) out.effects.push({ t: s.t, v: s.v });
+      if (['pierce', 'push', 'pull', 'condition', 'element', 'elementHalf'].includes(s.t)) out.effects.push(s.vt === 'minus' ? { t: s.t, v: s.v, vt: 'minus' } : { t: s.t, v: s.v });
       if (s.t === 'attack') dmgMod += signed(s);
       else if (s.t === 'range' && typeof s.v === 'number') { if (s.vt === 'add' || s.vt === 'subtract') rangeMod += signed(s); else out.range = s.v; }
       else if (s.t === 'target') {

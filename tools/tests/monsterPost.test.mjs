@@ -41,6 +41,9 @@ export const tests = {
     assert.equal(turnPost({ name: 'Guard', role: 'boss', from: 'C3', to: 'C3', icons: false }), '[b]Guard[/b] (boss): stays at C3');
     assert.equal(turnPost({ name: 'Guard', from: 'C3', to: 'D3', towards: 'G7', icons: false }), '[b]Guard[/b]: move C3 to D3, towards G7');
     assert.equal(turnPost({ name: 'Guard', from: 'C3', to: 'C3', towards: 'G7', icons: false }), '[b]Guard[/b]: stays at C3', 'staying put: no towards');
+    assert.equal(turnPost({ name: 'Guard', from: 'A1', to: 'B1', points: 3, icons: false }), '[b]Guard[/b]: move 3 A1 to B1', 'the move value after the move');
+    assert.equal(turnPost({ name: 'Guard', from: 'A1', to: 'B1', points: 3 }), `[b]Guard[/b]: ${iconCode('move')}3 A1 to B1`, 'glued to the icon');
+    assert.equal(turnPost({ name: 'Guard', from: 'A1', to: 'A1', points: 3, icons: false }), '[b]Guard[/b]: stays at A1', 'no value when it stays');
   },
   'monster post: the other actions of the card on the same line, shield and retaliate added to the stat card'() {
     const extras = [{ t: 'shield', v: 1, vt: 'plus' }, { t: 'retaliate', v: 2, vt: 'plus', sub: [{ t: 'range', v: 1 }] }, { t: 'heal', v: 3, sub: [{ t: 'range', v: 2 }, { t: 'target', v: 2 }] }, { t: 'heal', v: 1, sub: [{ t: 'specialTarget', v: 'self' }] }, { t: 'condition', v: 'strengthen', sub: [{ t: 'specialTarget', v: 'all' }, { t: 'range', v: 2 }] }, { t: 'element', v: 'ice', vt: 'minus', sub: [{ t: 'shield', v: 2 }] }, { t: 'summon', v: 'monsterStandee', obj: [{ monster: { name: 'living-bones', type: 'normal' } }] }, { t: 'custom', txt: 'Target all adjacent enemies' }];
@@ -65,18 +68,30 @@ export const tests = {
       return o.extras.map(n => extraText(n, { icons: false, statFx: o.statFx })).join(' | ');
     };
     assert.equal(text('ooze', 'Feed', []), 'loot 1 | heal 2 self', 'dark not infused: no bonus, no consume text');
-    assert.equal(text('ooze', 'Feed', ['dark']), 'loot 1 | heal 3 self dark', 'heal 2 and heal +1');
+    assert.equal(text('ooze', 'Feed', ['dark']), 'loot 1 | heal 3 self consume dark', 'heal 2 and heal +1');
     assert.equal(text('ooze', 'Feed', ['fire']), 'loot 1 | heal 2 self');
-    assert.equal(text('crystal-rot', 'Unholy Gifts', ['dark']), 'heal 1 target 3 range 3 ward dark', 'target +1');
-    assert.equal(text('sun-demon', 'Ray of Warmth', ['light']), 'heal 3 range 3 target all light', 'a target of the consume');
-    assert.equal(text('lurker-soldier', 'Defensive Claws', ['ice']), 'wound all range 1 | shield +2 ice', 'a relative shield adds up');
-    assert.equal(text('savvas-icestorm', 'Repulsive Torrent', ['air']), 'push 4 target all range 1 air');
+    assert.equal(text('crystal-rot', 'Unholy Gifts', ['dark']), 'heal 1 target 3 range 3 ward consume dark', 'target +1');
+    assert.equal(text('sun-demon', 'Ray of Warmth', ['light']), 'heal 3 range 3 target all consume light', 'a target of the consume');
+    assert.equal(text('lurker-soldier', 'Defensive Claws', ['ice']), 'wound all range 1 | shield +2 consume ice', 'a relative shield adds up');
+    assert.equal(text('savvas-icestorm', 'Repulsive Torrent', ['air']), 'push 4 target all range 1 consume air');
     assert.equal(text('bloated-victim', 'Reckless Charge', ['earth']).includes('consume'), false, 'the consume of the attack is not repeated in the extras');
   },
   'monster card: a relative attack of a consume inside a grid changes the attack before it'() {
     const o = infused => cardOptions({ monster: GH2_MONSTERS['wind-demon'], card: GH2_MONSTER_DECKS['wind-demon'].find(c => c.name === 'Cyclone'), infused });
     assert.deepEqual([o([]).damage, o([]).area.length, o([]).multi], [2, 3, false]);
     assert.deepEqual([o(['air']).damage, o(['air']).area.length, o(['air']).multi], [3, 6, false], 'attack +1, a bigger area, still one attack');
+  },
+  'monster post: a consumed element is the icon with the red cross, a created one the plain icon'() {
+    for (const el of ['air', 'dark', 'earth', 'fire', 'ice', 'light', 'wild']) assert.ok(iconCode(`${el}_x`) && iconCode(el) && iconCode(`${el}_x`) !== iconCode(el), `${el} has both icons`);
+    assert.equal(extraText({ t: 'element', v: 'dark' }), iconCode('dark'), 'a create');
+    assert.equal(extraText({ t: 'element', v: 'dark', vt: 'minus', sub: [{ t: 'heal', v: 2 }] }), `${iconCode('dark_x')}: ${iconCode('heal')}2`, 'a consume, no word');
+    assert.equal(extraText({ t: 'element', v: 'dark', vt: 'minus' }, { icons: false }), 'consume dark', 'words keep the word');
+    const o = cardOptions({ monster: GH2_MONSTERS.ooze, card: GH2_MONSTER_DECKS.ooze.find(c => c.name === 'Feed'), infused: ['dark'] });
+    assert.ok(extraText(o.extras.find(n => n.t === 'heal')).endsWith(iconCode('dark_x')), 'the merged heal ends with the consumed element');
+    const fire = cardOptions({ monster: GH2_MONSTERS['flame-demon'], card: GH2_MONSTER_DECKS['flame-demon'].find(c => c.name === 'Intense Torch'), infused: ['fire'] });
+    assert.ok(turnPost({ name: 'Demon', from: 'A1', to: 'A1', attack: { damage: 3, range: 0, targets: 1, effects: fire.effects }, targets: [['Anaphi']] }).includes(iconCode('fire_x')), 'an attack that consumes fire');
+    const reckless = cardOptions({ monster: GH2_MONSTERS['bloated-victim'], card: GH2_MONSTER_DECKS['bloated-victim'].find(c => c.name === 'Reckless Charge'), infused: ['earth'] });
+    assert.ok(reckless.effects.some(e => e.t === 'element' && e.v === 'earth' && e.vt === 'minus'), 'an attack that exists only with the element shows it');
   },
   'monster post: the effects of a card attack are read from the card, every effect in the decks has an icon'() {
     const seen = new Set();

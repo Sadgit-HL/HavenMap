@@ -222,6 +222,7 @@ function buildPost(obj, c) {
   const lab = k => { const [kc, kr] = k.split(',').map(Number); return label({ col: kc, row: kr }); };
   return turnPost({
     name: titleCase(mon?.title ?? 'monster'), role: obj.role, standee: obj.standeeNum ?? null, from: label({ col: Number(obj.x), row: Number(obj.y) }), to: label(c),
+    points: T.move > 0 ? T.move : null,
     towards: !c.attack && c.towards.length ? lab(c.towards[0]) : null,
     noAttack: !T.noAttack && !c.attack ? (last.res.focuses.length ? 'out of range' : 'no target in reach') : null,
     attack: attacking ? { damage: o?.damage ?? null, range: T.range, targets: T.all ? 6 : T.targets, effects: o?.effects ?? [] } : null,

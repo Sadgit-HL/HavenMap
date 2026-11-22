@@ -18,8 +18,12 @@ const iv = (name, value, icons) => {
   return code && /^[+-]?\d+$/.test(String(value)) ? code + value : `${ic(name, icons)} ${value}`.trim();
 };
 
-// The effects of an attack on a card as text: pierce 3, wound, push 1, fire ...
+// A consumed element: the element with the small red cross (`fire_x`), or the words `consume fire` where there is no icon.
+const consumeText = (v, icons) => (icons ? iconCode(`${v}_x`) : null) ?? `consume ${ic(String(v), icons)}`;
+
+// The effects of an attack on a card as text: pierce 3, wound, push 1, fire, a consumed element ...
 function effectText(e, icons) {
+  if (e.t === 'element' && e.vt === 'minus') return consumeText(e.v, icons);
   if (['condition', 'element', 'elementHalf'].includes(e.t)) return ic(String(e.v), icons);
   if (typeof e.v === 'number') return iv(e.t, e.v, icons);
   return ic(e.t, icons);
@@ -47,7 +51,7 @@ export function extraText(n, { icons = true, statFx = [], chars = 4 } = {}) {
     const names = (n.obj ?? []).map(o => (o.monster ? `${String(o.monster.name).replace(/-/g, ' ')} (${o.monster.type})` : '')).filter(Boolean).join(', ');
     return join('summons', names || (typeof n.v === 'string' ? n.v : ''));
   }
-  if (n.t === 'element') return n.vt === 'minus' ? join(`consume ${ic(String(n.v), icons)}`, n.sub?.length ? `: ${subs(n.sub)}` : '').replace(' :', ':') : join(ic(String(n.v), icons), subs(n.sub));
+  if (n.t === 'element') return n.vt === 'minus' ? join(consumeText(n.v, icons), n.sub?.length ? `: ${subs(n.sub)}` : '').replace(' :', ':') : join(ic(String(n.v), icons), subs(n.sub));
   if (n.t === 'condition') return join(ic(String(n.v), icons), subs(n.sub));
   if (n.t === 'elementHalf') return join(String(n.v).split(':').map(e => ic(e, icons)).join('/'), subs(n.sub));
   if (n.t === 'sufferDamage') return `suffers ${iv('damage', valueText(n, statFx, chars), icons)}`;
@@ -70,7 +74,8 @@ function subText(s, ctx) {
 
 // turnPost({ name, role, standee, from, to, towards, noAttack, attack, targets, focus, disadvantage, extras, statFx, chars, icons })
 //   name     monster name              role     'normal' | 'elite' | 'boss'     standee  number of the standee or null
-//   from, to hex labels ('E5')         towards  label of the hex it moves towards when it cannot attack this turn, or null
+//   from, to hex labels ('E5')         points   the move value of the card, written after the move icon (move 3 E5 to F4), or null for none
+//   towards  label of the hex it moves towards when it cannot attack this turn, or null
 //   noAttack null, or why there is no attack this turn ('out of range', 'no target in reach')
 //   attack   null without an attack, or { damage, range, targets: number, effects: [{ t, v }] }
 //   targets  [[names]]: the groups of targets that tie (one group is the usual case)    focus  names of the focus, marked when there are several targets
@@ -79,9 +84,9 @@ function subText(s, ctx) {
 // One line per monster: the move, the attack on its target, the other actions of the card, separated by commas. When an attack has several targets the first line
 // has the move and the other actions and every target has a line of its own with the attack, so that each roll can be filled in; tied groups of targets are
 // separated by a line `or`.
-export function turnPost({ name, role = 'normal', standee = null, from, to, towards = null, noAttack = null, attack = null, targets = [], focus = [], disadvantage = false, extras = [], statFx = [], chars = 4, icons = true }) {
+export function turnPost({ name, role = 'normal', standee = null, from, to, points = null, towards = null, noAttack = null, attack = null, targets = [], focus = [], disadvantage = false, extras = [], statFx = [], chars = 4, icons = true }) {
   const who = `[b]${name}[/b]${role === 'elite' ? ' (elite)' : role === 'boss' ? ' (boss)' : ''}${standee != null ? ` #${standee}` : ''}`;
-  const move = from === to ? `stays at ${from}` : `${ic('move', icons)} ${from} to ${to}${towards ? `, towards ${towards}` : ''}`;
+  const move = from === to ? `stays at ${from}` : `${points > 0 ? iv('move', points, icons) : ic('move', icons)} ${from} to ${to}${towards ? `, towards ${towards}` : ''}`;
   const more = extras.map(n => extraText(n, { icons, statFx, chars })).filter(Boolean);
   const dis = n => (Array.isArray(disadvantage) ? disadvantage.includes(n) : !!disadvantage);
   const parts = attack ? [iv('attack', attack.damage ?? '?', icons)] : [];
