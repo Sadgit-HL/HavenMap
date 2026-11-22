@@ -12,7 +12,7 @@ import { state, patch, subscribe, withoutAm } from './state.js';
 import { getShareMode, setShareMode, SHARE_MODES } from './share.js';
 import { assetPath, TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES, SUMMONS, CONDITIONS, GAME_ID, GAME_REGISTRY, getMonsterStats, getMonsterCount, generateStandeeNum, generateTokenNum } from './data.js';
 import { colLabel, footprintHexes, hexCenter } from './hex.js';
-import { centerBoardPoint } from './controls.js';
+import { centerBoardPoint, getWheelMode, setWheelMode } from './controls.js';
 import { displayCurrentHp, displayMaxHp } from './hp.js';
 import { activeCardsFor } from './decks.js';
 import { refreshSolver, turnPanelHtml, initTurnPanel } from './monsterTurn.js';
@@ -102,7 +102,8 @@ const SHORTCUTS = [
   ['Space+drag', 'Pan board'],
   ['Right-drag', 'Pan board'],
   ['Shift+drag', 'Draw LOS ruler line'],
-  ['Wheel', 'Zoom board'],
+  ['Wheel', 'Zoom board (Settings: scroll pans)'],
+  ['Ctrl+wheel / pinch', 'Zoom board when scroll pans'],
   ['0', 'Reset view'],
   ['H', 'Frame selected hex or object'],
   ['R', 'Rotate selected object'],
@@ -187,6 +188,12 @@ export function initSidebar() {
       `<span class="sg-row-label">Object labels</span>` +
       `<span class="sg-switch" aria-hidden="true"></span>` +
       `</button>` +
+      `<label class="sg-select-wrap">` +
+      `<select class="sg-select" id="wheel-mode-select" title="Mouse wheel or touchpad scroll on the board">` +
+      `<option value="zoom"${getWheelMode() === 'zoom' ? ' selected' : ''}>Wheel zooms</option>` +
+      `<option value="pan"${getWheelMode() === 'pan' ? ' selected' : ''}>Scroll pans (touchpad)</option>` +
+      `</select>` +
+      `</label>` +
       `</div>` +
       `<div class="settings-section">` +
       `<div class="settings-label">Share</div>` +
@@ -225,6 +232,12 @@ export function initSidebar() {
   });
 
   settingsPanel.addEventListener('change', e => {
+    const wheelSelect = e.target.closest('#wheel-mode-select');
+    if (wheelSelect) {
+      setWheelMode(wheelSelect.value);
+      return;
+    }
+
     const shareSelect = e.target.closest('#share-mode-select');
     if (shareSelect) {
       setShareMode(shareSelect.value);
