@@ -34,6 +34,7 @@ export function statValue(v, chars) {
 // page keeps the elements as state.elements (0 inert, 1 waning, 2 strong, in the order of ELEMENTS in games/common.js); the caller passes the names of the infused ones. Consuming is left to the player.
 export const infusedNames = elements => ELEMENTS.filter((_, i) => (elements?.[i] ?? 0) > 0).map(e => e.key);   // state.elements is in the order of ELEMENTS
 const isConsume = n => n.t === 'element' && n.vt === 'minus';
+const ADVANTAGE = /^(dis)?advantage$/i;                                          // a custom text that is just this: the attack has advantage or disadvantage
 const consumeOn = (n, infused) => infused.includes(n.v) || (n.v === 'wild' && infused.length > 0);   // wild: any element
 const addNote = (notes, text) => { if (!notes.includes(text)) notes.push(text); };
 const consumeNote = (n, on) => `Consume ${n.v}: ${on ? 'infused, bonus applied' : 'not infused, bonus not applied'}`;
@@ -161,12 +162,16 @@ export function cardOptions({ monster, kind = 'normal', level = 0, card, chars =
     out.jumping = expandConsumes(m.sub, infused, notes).some(s => s.t === 'jump');
     if (stat && base(stat.move) === null) notes.push(`Stat card movement ${stat.move} not worked out`);
   }
+  const applied = [];                                                              // the permanent effects of the stat card that went into the attack
   if (attacks[0]) {
     const a = attacks[0], statAttack = stat ? base(stat.attack) : null;
     out.damage = a.vt ? (statAttack === null ? null : rel(a, statAttack)) : statValue(a.v, chars);
+    const statTarget = (stat?.fx ?? []).find(f => f.t === 'target'), baseTargets = statTarget ? (statTarget.v === 'all' ? 6 : statValue(statTarget.v, chars)) : null;
+    if (baseTargets > 1) { out.targets = baseTargets; applied.push(baseTargets >= 6 ? 'all targets' : `target ${baseTargets}`); }   // the base of the targets: the card sets it again or adds to it
     let dmgMod = 0, rangeMod = 0, targetMod = 0;                                   // modifiers of an infused consume: attack +2, range -1, target +1
     for (const s of expandConsumes(a.sub, infused, notes)) {
       if (['pierce', 'push', 'pull', 'condition', 'element', 'elementHalf'].includes(s.t)) out.effects.push(s.vt === 'minus' ? { t: s.t, v: s.v, vt: 'minus' } : { t: s.t, v: s.v });
+      if (s.t === 'custom' && ADVANTAGE.test((s.txt ?? '').trim())) { const t = s.txt.trim().toLowerCase(); if (!out.effects.some(e => e.t === t)) out.effects.push({ t }); }
       if (s.t === 'attack') dmgMod += signed(s);
       else if (s.t === 'range' && typeof s.v === 'number') { if (s.vt === 'add' || s.vt === 'subtract') rangeMod += signed(s); else out.range = s.v; }
       else if (s.t === 'target') {
@@ -188,8 +193,23 @@ export function cardOptions({ monster, kind = 'normal', level = 0, card, chars =
     if (targetMod && out.targets < 6) out.targets += targetMod;
     if (out.area.length && out.areaMelee && out.range > 0) out.range = 0;                  // a melee area attack has no range
     if (out.area.length && !out.areaMelee && !(out.range > 0)) notes.push('Ranged area without a range on the card');
+    // the permanent effects of the stat card belong to every attack: conditions, pierce (added to the card's), advantage or disadvantage
+    for (const f of stat?.fx ?? []) {
+      if (f.t === 'condition' && !out.effects.some(e => e.t === 'condition' && e.v === f.v)) { out.effects.push({ t: 'condition', v: f.v }); applied.push(String(f.v)); }
+      else if (f.t === 'pierce' && typeof f.v === 'number') {
+        const e = out.effects.find(x => x.t === 'pierce');
+        if (e) e.v += f.v; else out.effects.push({ t: 'pierce', v: f.v });
+        applied.push(`pierce ${f.v}`);
+      } else if (f.t === 'custom' && ADVANTAGE.test((f.txt ?? '').trim())) {
+        const t = f.txt.trim().toLowerCase();
+        if (!out.effects.some(e => e.t === t)) out.effects.push({ t });
+        applied.push(t);
+      }
+    }
+    if (applied.length) notes.push(`Stat card effects on the attack: ${applied.join(', ')}`);
   }
-  if (out.multi) notes.push('The card has several moves or attacks: the first of each is used');
+  for (const f of stat?.fx ?? []) if (f.t === 'custom' && f.txt && !ADVANTAGE.test(f.txt.trim())) addNote(notes, `Stat card: ${f.txt}`);   // auras and the like: not part of the attack
+  if (out.multi) notes.push(`The card has several moves or attacks: the first of each is used${applied.length ? '; the stat card effects apply to every attack' : ''}`);
   return out;
 }
 

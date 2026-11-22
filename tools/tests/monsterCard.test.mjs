@@ -80,6 +80,35 @@ export const tests = {
       for (const n of Object.keys(map)) assert.ok(cards.some(c => c.n === Number(n)), `${slug}: entry for a card ${n} that the deck does not have`);
     }
   },
+  'monster card: the permanent effects of the stat card go into the attack'() {
+    const fx = (slug, kind, name, level = 0) => cardOptions({ monster: GH2_MONSTERS[slug], kind, level, card: card(GH2_MONSTERS[slug].deck, name) });
+    const has = (o, t, v) => o.effects.some(e => e.t === t && (v === undefined || e.v === v));
+    assert.ok(has(fx('chaos-demon', 'normal', 'Hungry Maw'), 'condition', 'muddle') && has(fx('chaos-demon', 'elite', 'Hungry Maw'), 'condition', 'muddle'), 'muddle on a Chaos Demon');
+    const attackCard = (slug, kind) => GH2_MONSTER_DECKS[GH2_MONSTERS[slug].deck].find(c => cardOptions({ monster: GH2_MONSTERS[slug], kind, level: 0, card: c }).attack).name;
+    const sun = fx('sun-demon', 'normal', attackCard('sun-demon', 'normal'));
+    assert.ok(has(sun, 'advantage'), 'permanent advantage on a Sun Demon');
+    assert.ok(has(fx('night-demon', 'normal', attackCard('night-demon', 'normal')), 'disadvantage'), 'disadvantage on a Night Demon');
+    assert.ok(sun.notes.some(n => n.startsWith('Stat card effects on the attack:') && n.includes('advantage')), 'the panel says it');
+    assert.ok(has(fx('chaos-demon', 'normal', 'White Claws'), 'advantage'), 'advantage written on the card itself');
+    assert.equal(fx('chaos-demon', 'normal', 'White Claws').effects.filter(e => e.t === 'condition' && e.v === 'muddle').length, 1, 'shown once');
+  },
+  'monster card: stat card effects are only for attacks, targets and pierce add up, the same effect is not shown twice'() {
+    let withAttack = 0, withoutAttack = 0;
+    for (const [slug, m] of Object.entries(GH2_MONSTERS)) for (const kind of Object.keys(m.stats ?? {})) for (const c of GH2_MONSTER_DECKS[m.deck] ?? []) {
+      const o = cardOptions({ monster: m, kind, level: 0, card: c });
+      const keys = o.effects.filter(e => e.t === 'condition' || e.t === 'advantage' || e.t === 'disadvantage').map(e => e.t + ':' + e.v);
+      assert.equal(new Set(keys).size, keys.length, `${slug} / ${c.name}: an effect twice`);
+      assert.equal(o.effects.filter(e => e.t === 'pierce').length <= 1, true, `${slug} / ${c.name}: one pierce entry`);
+      const stat = m.stats[kind][0], statFx = stat?.fx ?? [];
+      if (!o.attack) { withoutAttack++; assert.ok(!o.effects.some(e => statFx.some(f => f.t === 'condition' && f.v === e.v)), `${slug} / ${c.name}: no attack, no stat card effects`); }
+      else withAttack++;
+      const t = statFx.find(f => f.t === 'target');
+      if (o.attack && t && typeof t.v === 'number' && t.v > 1) assert.ok(o.targets >= Math.min(t.v, 6) || c.actions.some(a => a.t === 'attack'), `${slug} / ${c.name}: the targets of the stat card`);
+    }
+    assert.ok(withAttack > 300 && withoutAttack > 10, `${withAttack} cards with an attack, ${withoutAttack} without`);
+    const lurker = cardOptions({ monster: GH2_MONSTERS['alpha-lurker'], kind: 'boss', level: 0, card: GH2_MONSTER_DECKS['lurker-soldier'].find(c => c.actions.some(a => a.t === 'attack')), chars: 3 });
+    assert.ok(lurker.targets >= 2, 'a stat card with target 2: the attack has two targets');
+  },
   'monster card: a ranged area and a melee area'() {
     const g = opts('ancient-artillery', 'normal', 0, 'Grenade');
     assert.deepEqual([g.range > 0, g.areaMelee, g.area.length], [true, false, 3]);

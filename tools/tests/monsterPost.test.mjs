@@ -81,6 +81,16 @@ export const tests = {
     assert.deepEqual([o([]).damage, o([]).area.length, o([]).multi], [2, 3, false]);
     assert.deepEqual([o(['air']).damage, o(['air']).area.length, o(['air']).multi], [3, 6, false], 'attack +1, a bigger area, still one attack');
   },
+  'monster post: advantage and disadvantage are words on the attack, the stat card effects come with the attack'() {
+    const post = (slug, kind, icons) => {
+      const m = GH2_MONSTERS[slug], c = GH2_MONSTER_DECKS[m.deck].find(x => cardOptions({ monster: m, kind, level: 0, card: x }).attack), o = cardOptions({ monster: m, kind, level: 0, card: c });
+      return turnPost({ name: 'Demon', from: 'A1', to: 'A1', attack: { damage: o.damage, range: o.range, targets: o.targets, effects: o.effects }, targets: [['Anaphi']], icons });
+    };
+    assert.ok(/attack \d+ advantage on/.test(post('sun-demon', 'normal', false)), 'permanent advantage of the stat card');
+    assert.ok(/attack \d+ .*muddle on/.test(post('chaos-demon', 'elite', false)), 'muddle of the stat card');
+    assert.ok(post('chaos-demon', 'normal', true).includes(iconCode('muddle')), 'with the icon');
+    assert.ok(post('sun-demon', 'normal', true).split(' ').includes('advantage'), 'advantage stays a word with icons on');
+  },
   'monster post: a consumed element is the icon with the red cross, a created one the plain icon'() {
     for (const el of ['air', 'dark', 'earth', 'fire', 'ice', 'light', 'wild']) assert.ok(iconCode(`${el}_x`) && iconCode(el) && iconCode(`${el}_x`) !== iconCode(el), `${el} has both icons`);
     assert.equal(extraText({ t: 'element', v: 'dark' }), iconCode('dark'), 'a create');
@@ -97,6 +107,6 @@ export const tests = {
     const seen = new Set();
     for (const m of Object.values(GH2_MONSTERS)) for (const c of GH2_MONSTER_DECKS[m.deck] ?? []) for (const e of cardOptions({ monster: m, card: c, infused: ['fire', 'ice', 'air', 'earth', 'light', 'dark'] }).effects) seen.add(['condition', 'element', 'elementHalf'].includes(e.t) ? String(e.v) : e.t);
     assert.ok(seen.size >= 15, [...seen].join());
-    for (const name of seen) assert.ok(iconCode(name), `${name} has no icon`);
+    for (const name of seen) assert.ok(iconCode(name) || ['advantage', 'disadvantage'].includes(name), `${name} has no icon`);   // advantage and disadvantage are words
   },
 };
