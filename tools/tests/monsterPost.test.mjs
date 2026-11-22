@@ -56,9 +56,28 @@ export const tests = {
     }
     assert.ok(n > 300, `${n} extras`);
   },
+  'monster post: extras follow the infused elements, a consume inside an action is merged into it'() {
+    const text = (deck, name, infused) => {
+      const o = cardOptions({ monster: GH2_MONSTERS[deck], card: GH2_MONSTER_DECKS[deck].find(c => c.name === name), infused });
+      return o.extras.map(n => extraText(n, { icons: false, statFx: o.statFx })).join(' | ');
+    };
+    assert.equal(text('ooze', 'Feed', []), 'loot 1 | heal 2 self', 'dark not infused: no bonus, no consume text');
+    assert.equal(text('ooze', 'Feed', ['dark']), 'loot 1 | heal 3 self dark', 'heal 2 and heal +1');
+    assert.equal(text('ooze', 'Feed', ['fire']), 'loot 1 | heal 2 self');
+    assert.equal(text('crystal-rot', 'Unholy Gifts', ['dark']), 'heal 1 target 3 range 3 ward dark', 'target +1');
+    assert.equal(text('sun-demon', 'Ray of Warmth', ['light']), 'heal 3 range 3 target all light', 'a target of the consume');
+    assert.equal(text('lurker-soldier', 'Defensive Claws', ['ice']), 'wound all range 1 | shield +2 ice', 'a relative shield adds up');
+    assert.equal(text('savvas-icestorm', 'Repulsive Torrent', ['air']), 'push 4 target all range 1 air');
+    assert.equal(text('bloated-victim', 'Reckless Charge', ['earth']).includes('consume'), false, 'the consume of the attack is not repeated in the extras');
+  },
+  'monster card: a relative attack of a consume inside a grid changes the attack before it'() {
+    const o = infused => cardOptions({ monster: GH2_MONSTERS['wind-demon'], card: GH2_MONSTER_DECKS['wind-demon'].find(c => c.name === 'Cyclone'), infused });
+    assert.deepEqual([o([]).damage, o([]).area.length, o([]).multi], [2, 3, false]);
+    assert.deepEqual([o(['air']).damage, o(['air']).area.length, o(['air']).multi], [3, 6, false], 'attack +1, a bigger area, still one attack');
+  },
   'monster post: the effects of a card attack are read from the card, every effect in the decks has an icon'() {
     const seen = new Set();
-    for (const m of Object.values(GH2_MONSTERS)) for (const c of GH2_MONSTER_DECKS[m.deck] ?? []) for (const e of cardOptions({ monster: m, card: c }).effects) seen.add(['condition', 'element', 'elementHalf'].includes(e.t) ? String(e.v) : e.t);
+    for (const m of Object.values(GH2_MONSTERS)) for (const c of GH2_MONSTER_DECKS[m.deck] ?? []) for (const e of cardOptions({ monster: m, card: c, infused: ['fire', 'ice', 'air', 'earth', 'light', 'dark'] }).effects) seen.add(['condition', 'element', 'elementHalf'].includes(e.t) ? String(e.v) : e.t);
     assert.ok(seen.size >= 15, [...seen].join());
     for (const name of seen) assert.ok(iconCode(name), `${name} has no icon`);
   },

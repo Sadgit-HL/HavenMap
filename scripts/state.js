@@ -87,7 +87,7 @@ function emptyState() {
     amA:             null, // ally attack modifier deck, same shape as am
     campaign:        null, // set when the session belongs to a campaign: { cid, sid, scn, base, res? }; null = standalone map
     decks:           {}, // monster ability decks: slug -> { deck:[n], discard:[n] }; absent = full deck
-    elements:        [0, 0, 0, 0, 0, 0], // fire ice air earth light dark — 0=inert 1=waning 2=strong
+    elements:        [0, 0, 0, 0, 0, 0], // air dark earth fire ice light (ELEMENTS, games/common.js) — 0=inert 1=waning 2=strong
     showGridLabels:  false,
     showObjectLabels: true,
   };

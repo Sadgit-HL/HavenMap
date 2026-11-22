@@ -1,11 +1,12 @@
 import assert from 'node:assert/strict';
-import { statValue, cardOptions, candidatesFor, distinctCards, areaIndexes } from '../../scripts/monsterCard.js';
+import { statValue, cardOptions, candidatesFor, distinctCards, areaIndexes, infusedNames } from '../../scripts/monsterCard.js';
 import { areaOffsets } from '../../scripts/monsterMove.js';
 import { GH2_MONSTERS, GH2_MONSTER_DECKS } from '../../scripts/games/gh2_monsters.js';
 import { GH_DECKS } from '../../scripts/games/gh_decks.js';
 
 const card = (deck, name) => GH2_MONSTER_DECKS[deck].find(c => c.name === name);
 const opts = (slug, kind, level, name, chars = 4) => cardOptions({ monster: GH2_MONSTERS[slug], kind, level, card: card(GH2_MONSTERS[slug].deck, name), chars });
+const inf = (deck, name, infused, slug = deck) => cardOptions({ monster: GH2_MONSTERS[slug], kind: 'normal', level: 0, card: card(deck, name), chars: 4, infused });
 const norm = cells => { const m = [Math.min(...cells.map(c => c[0])), Math.min(...cells.map(c => c[1]))]; return cells.map(c => `${c[0] - m[0]},${c[1] - m[1]}`).sort().join(' '); };
 
 export const tests = {
@@ -19,6 +20,41 @@ export const tests = {
     assert.deepEqual([o.move, o.range, o.targets, o.attack, o.damage, o.area, o.flying], [0, 7, 1, true, 2, [], false]);
     assert.ok(o.notes.includes('Focus on the enemy farthest away within range 7'), 'the focus rule is shown as a note');
     assert.equal(opts('ancient-artillery', 'elite', 3, 'Long Shot').damage, 3, 'elite stat attack 4 minus 1');
+  },
+  'monster card: infused elements, names from the element state'() {
+    assert.deepEqual(infusedNames([0, 0, 0, 0, 0, 0]), []);
+    assert.deepEqual(infusedNames([2, 0, 0, 1, 0, 2]), ['air', 'fire', 'light'], 'strong and waning both count, in the order of the element bar');
+    assert.deepEqual(infusedNames([0, 0, 2, 0, 0, 0]), ['earth'], 'the third tile of the bar is earth');
+    assert.deepEqual(infusedNames(undefined), []);
+  },
+  'monster card: a consume adds its target, area, range and attack only when infused'() {
+    assert.equal(inf('earth-demon', 'Boulder Throw', []).targets, 1);
+    assert.equal(inf('earth-demon', 'Boulder Throw', ['earth']).targets, 2, 'target +1');
+    assert.equal(inf('earth-demon', 'Boulder Throw', ['fire']).targets, 1, 'another element does nothing');
+    assert.equal(inf('chaos-demon', 'Seismic Punch', []).area.length, 0);
+    const sp = inf('chaos-demon', 'Seismic Punch', ['earth']);
+    assert.deepEqual([sp.area.length, sp.areaMelee], [2, true], 'melee area');
+    assert.equal(inf('flame-demon', 'Explosive Blast', []).range, 4);
+    const eb = inf('flame-demon', 'Explosive Blast', ['fire']);
+    assert.deepEqual([eb.range, eb.area.length], [3, 7], 'range -1 and an area');
+    const off = inf('frost-demon', 'Frozen Shards', []), on = inf('frost-demon', 'Frozen Shards', ['ice']);
+    assert.deepEqual([on.damage - off.damage, on.range - off.range], [2, 1], 'attack +2 and range +1');
+    assert.ok(inf('flame-demon', 'Intense Torch', ['fire']).effects.some(e => e.t === 'condition' && e.v === 'wound'));
+    assert.ok(!inf('flame-demon', 'Intense Torch', []).effects.some(e => e.t === 'condition'));
+    assert.equal(inf('sun-demon', 'Supernova', ['light']).targets, 6, 'all targets');
+  },
+  'monster card: an attack that exists only with the element'() {
+    const off = inf('bloated-victim', 'Reckless Charge', []), on = inf('bloated-victim', 'Reckless Charge', ['earth']);
+    assert.deepEqual([off.attack, on.attack, on.targets], [false, true, 2]);
+    assert.equal(off.move, 3, 'the move is not conditional');
+    assert.ok(off.notes.includes('Consume earth: not infused, bonus not applied') && on.notes.includes('Consume earth: infused, bonus applied'));
+  },
+  'monster card: no infused element leaves every card as before, all elements infused throw nothing'() {
+    for (const m of Object.values(GH2_MONSTERS)) for (const c of GH2_MONSTER_DECKS[m.deck] ?? []) {
+      const base = cardOptions({ monster: m, kind: 'normal', level: 0, card: c });
+      assert.deepEqual(cardOptions({ monster: m, kind: 'normal', level: 0, card: c, infused: [] }), base);
+      cardOptions({ monster: m, kind: 'normal', level: 0, card: c, infused: ['fire', 'ice', 'air', 'earth', 'light', 'dark'] });
+    }
   },
   'monster card: a ranged area and a melee area'() {
     const g = opts('ancient-artillery', 'normal', 0, 'Grenade');

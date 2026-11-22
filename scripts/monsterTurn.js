@@ -10,7 +10,7 @@ import { state, patch } from './state.js';
 import { centerBoardPoint } from './controls.js';
 import { TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES, SUMMONS, GAME_ID } from './data.js';
 import { activeCardsFor } from './decks.js';
-import { cardOptions, candidatesFor, distinctCards, areaIndexes } from './monsterCard.js';
+import { cardOptions, candidatesFor, distinctCards, areaIndexes, infusedNames } from './monsterCard.js';
 import { colLabel, hexCenter, HEX_W, HEX_H } from './hex.js';
 import { buildHexState, hexKey } from './hexState.js';
 import { solveMove, areaOffsets } from './monsterMove.js';
@@ -59,14 +59,16 @@ function cardInfo(obj) {
   const chosen = [...byCard.entries()].map(([k, list]) => list.find(o => String(o.card.id) === String(uiState.turn.pick[k])) ?? list[0]);
   const sel = chosen[0];
   return { rec, kind, level, chars, options, chosen: sel, ambiguous: byCard.get(sel.pickKey).length > 1, alts: byCard.get(sel.pickKey), more: act.cards.length > 1,
-    opts: cardOptions({ monster: rec, kind, level, card: sel.card, chars }) };
+    opts: cardOptions({ monster: rec, kind, level, card: sel.card, chars, infused: infusedNames(state.elements) }) };
 }
 
 // Puts the values of the card into the panel when the monster, its card, the level or the party size change; manual changes stay until then.
 function autoApply(obj) {
   const info = cardInfo(obj), T = uiState.turn;
   if (!info?.opts) return;
-  const key = [obj.id, info.chosen.pickKey, info.chosen.card.id ?? info.chosen.card.name, info.kind, info.level, info.chars].join('|');
+  // The outcome of the card is part of the key: infusing or losing an element changes it only for a card with a consume, and only then are manual changes reset.
+  const outcome = JSON.stringify([info.opts.move, info.opts.range, info.opts.targets, info.opts.attack, info.opts.damage, info.opts.jumping, info.opts.area.length]);
+  const key = [obj.id, info.chosen.pickKey, info.chosen.card.id ?? info.chosen.card.name, info.kind, info.level, info.chars, outcome].join('|');
   if (T.appliedKey === key) return;
   const o = info.opts, ai = o.area.length ? areaIndexes(o.area, o.areaMelee) : { indexes: [] };
   Object.assign(T, {

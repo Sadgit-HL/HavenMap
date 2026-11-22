@@ -4,6 +4,8 @@
 // cardOptions({ monster, kind, level, card, chars }) -> { move, range, targets, area, areaMelee, attack, jumping, flying, damage, notes, multi }
 //   monster  GH2_MONSTERS record     kind  'normal' | 'elite' | 'boss'     level  0 to 7     card  one card of GH2_MONSTER_DECKS[deck]
 //   chars    number of characters, for the stat values of bosses that scale with it ('C', 'Cx2', 'C+1')
+//   infused  names of the infused elements (infusedNames(state.elements)): a consume of one of them adds its attack, target, range, area and effects to the
+//            attack, or gives the move or attack that only exists then; a consume of another one is left out. Nothing is consumed here, the player does that.
 //   move     movement points: the stat card's movement plus or minus the card's relative value (Move +1), an absolute value as it is; 0 without a move
 //   range    attack range from the card, 0 for a melee attack or no attack
 //   targets  number of targets, 6 for all; 1 when the card says nothing
@@ -16,6 +18,7 @@
 //   notes    texts the solver cannot act on (custom card text, special targets, formulas), to show to the player
 //   multi    the card has more than one attack or move; the first of each is used
 import { toAxial, toBoard } from './tileMask.js';
+import { ELEMENTS } from './games/common.js';
 
 // The value of a stat card entry: a number, or a formula of C (characters) and numbers such as 'Cx9', '7xC', 'C+1'; null when it cannot be worked out.
 export function statValue(v, chars) {
@@ -26,12 +29,97 @@ export function statValue(v, chars) {
   try { const n = Function(`"use strict"; return (${expr.replace(/\[/g, '(').replace(/\]/g, ')')});`)(); return Number.isFinite(n) ? n : null; } catch { return null; }
 }
 
-// Move and attack nodes of a card in reading order, inside grids and concatenations; monster type nodes only for the monster kind.
-function findActions(nodes, kind, out = []) {
+// Elements. A consume node is { t: 'element', v: name, vt: 'minus', sub } (a create has no vt): its sub applies only when that element is infused. The map
+// page keeps the elements as state.elements (0 inert, 1 waning, 2 strong, in the order of ELEMENTS in games/common.js); the caller passes the names of the infused ones. Consuming is left to the player.
+export const infusedNames = elements => ELEMENTS.filter((_, i) => (elements?.[i] ?? 0) > 0).map(e => e.key);   // state.elements is in the order of ELEMENTS
+const isConsume = n => n.t === 'element' && n.vt === 'minus';
+const consumeOn = (n, infused) => infused.includes(n.v) || (n.v === 'wild' && infused.length > 0);   // wild: any element
+const addNote = (notes, text) => { if (!notes.includes(text)) notes.push(text); };
+const consumeNote = (n, on) => `Consume ${n.v}: ${on ? 'infused, bonus applied' : 'not infused, bonus not applied'}`;
+const signed = n => (n.vt === 'subtract' || n.vt === 'minus' ? -1 : 1) * (Number(n.v) || 0);   // nested modifiers: add or plus, subtract or minus
+
+// A sub list with the consumes resolved: those whose element is infused are replaced by the element and their own sub, the others are dropped.
+function expandConsumes(nodes, infused, notes) {
+  const out = [];
+  for (const n of nodes ?? []) {
+    if (!isConsume(n)) { out.push(n); continue; }
+    const on = consumeOn(n, infused);
+    addNote(notes, consumeNote(n, on));
+    if (on) out.push({ t: 'element', v: n.v }, ...expandConsumes(n.sub, infused, notes));   // the element stays in the effects, as a consume was always shown
+  }
+  return out;
+}
+
+// The sub of a consume at the top of a card that holds an attack: the other entries (target, range, area, conditions ...) belong to that attack.
+function attackWithSiblings(sub) {
+  const atk = (sub ?? []).find(s => s.t === 'attack');
+  if (!atk) return sub ?? [];
+  const rest = sub.filter(s => s !== atk && s.t !== 'move' && s.t !== 'attack');
+  return sub.filter(s => !rest.includes(s)).map(s => (s === atk ? { ...atk, sub: [...(atk.sub ?? []), ...rest] } : s));
+}
+
+// One action with the infused consumes in its sub merged in: heal 2 with consume dark: heal +1 is heal 3 (and the element, as it is consumed); a consume that is not
+// infused is left out. A relative value of the consume is added, a target of the consume replaces the one of the action.
+function resolveNode(n, infused, notes) {
+  if (!(n.sub ?? []).some(isConsume)) return n;
+  let v = n.v, vt = n.vt;
+  const sub = [];
+  const setOrAdd = (c, rel) => {
+    const i = sub.findIndex(x => x.t === c.t);
+    if (i < 0) sub.push(rel ? { t: c.t, v: signed(c) } : c);
+    else sub[i] = { ...sub[i], v: rel && typeof sub[i].v === 'number' ? sub[i].v + signed(c) : c.v };
+  };
+  for (const s of n.sub) {
+    if (!isConsume(s)) { sub.push(s); continue; }
+    const on = consumeOn(s, infused);
+    addNote(notes, consumeNote(s, on));
+    if (!on) continue;
+    for (const c of s.sub ?? []) {
+      const rel = ['add', 'subtract', 'plus', 'minus'].includes(c.vt);
+      if (c.t === n.t && rel && typeof v === 'number' && typeof c.v === 'number') {
+        const now = (vt === 'minus' ? -1 : 1) * v + signed(c);
+        v = vt ? Math.abs(now) : now;
+        if (vt) vt = now < 0 ? 'minus' : 'plus';
+      } else if (c.t === 'range' || c.t === 'target') setOrAdd(c, c.vt === 'add' || c.vt === 'subtract');
+      else sub.push(c);
+    }
+    sub.push({ t: 'element', v: s.v });
+  }
+  const out = { ...n, sub };
+  if (v !== undefined) out.v = v;
+  if (vt) out.vt = vt;
+  return out;
+}
+
+// The other actions of a card for the player and the forum text: a consume of the attack or move is part of that (not repeated here), one that stands for
+// itself shows when its element is infused, and a consume inside an action is merged into it.
+function resolveExtras(nodes, infused, notes) {
+  const out = [];
+  for (const n of nodes) {
+    if (isConsume(n)) {
+      if ((n.sub ?? []).some(s => s.t === 'attack' || s.t === 'move')) continue;
+      const on = consumeOn(n, infused);
+      addNote(notes, consumeNote(n, on));
+      if (on) out.push(n);
+    } else out.push(resolveNode(n, infused, notes));
+  }
+  return out;
+}
+
+// Move and attack nodes of a card in reading order, inside grids and concatenations; monster type nodes only for the monster kind. A consume at the top
+// of the card counts when its element is infused (its move or attack exists only then).
+function findActions(nodes, kind, infused, notes, out = []) {
   for (const n of nodes ?? []) {
     if (n.t === 'move' || n.t === 'attack') out.push(n);
-    else if (n.t === 'monsterType') { if (n.v === kind || kind === 'boss') findActions(n.sub, kind, out); }
-    else if (n.sub) findActions(n.sub, kind, out);
+    else if (n.t === 'monsterType') { if (n.v === kind || kind === 'boss') findActions(n.sub, kind, infused, notes, out); }
+    else if (isConsume(n)) {
+      const on = consumeOn(n, infused);
+      if ((n.sub ?? []).some(s => s.t === 'move' || s.t === 'attack')) addNote(notes, consumeNote(n, on));
+      const mod = (n.sub ?? []).some(s => s.t === 'attack' && (s.vt === 'add' || s.vt === 'subtract')), last = out.map(o => o.t).lastIndexOf('attack');
+      if (on && mod && last >= 0) out[last] = { ...out[last], sub: [...(out[last].sub ?? []), ...n.sub] };      // attack +1 and an area for the attack before it
+      else if (on) findActions(attackWithSiblings(n.sub), kind, infused, notes, out);
+    }
+    else if (n.sub) findActions(n.sub, kind, infused, notes, out);
   }
   return out;
 }
@@ -55,30 +143,34 @@ function collectNotes(nodes, notes) {
   }
 }
 
-export function cardOptions({ monster, kind = 'normal', level = 0, card, chars = 4 }) {
+export function cardOptions({ monster, kind = 'normal', level = 0, card, chars = 4, infused = [] }) {
   const stat = monster?.stats?.[kind]?.[level] ?? monster?.stats?.normal?.[level] ?? null;
   const notes = [];
   collectNotes(card.actions, notes);
-  const found = findActions(card.actions, kind), moves = found.filter(n => n.t === 'move'), attacks = found.filter(n => n.t === 'attack');
+  const found = findActions(card.actions, kind, infused, notes), moves = found.filter(n => n.t === 'move'), attacks = found.filter(n => n.t === 'attack');
   const out = { move: 0, range: 0, targets: 1, area: [], areaMelee: false, attack: attacks.length > 0, jumping: false, flying: !!monster?.flying, damage: null, effects: [], extras: findExtras(card.actions, kind), statFx: stat?.fx ?? [], notes, multi: moves.length > 1 || attacks.length > 1 };
 
+  out.extras = resolveExtras(out.extras, infused, notes);
   const base = (v) => statValue(v, chars);
   const rel = (n, statNumber) => (n.vt ? (statNumber ?? 0) + (n.vt === 'minus' ? -1 : 1) * (statValue(n.v, chars) ?? 0) : statValue(n.v, chars));
   if (moves[0]) {
     const m = moves[0], statMove = stat ? base(stat.move) : 0;
     out.move = Math.max(0, rel(m, statMove) ?? 0);
-    out.jumping = !!m.sub?.some(s => s.t === 'jump');
+    out.jumping = expandConsumes(m.sub, infused, notes).some(s => s.t === 'jump');
     if (stat && base(stat.move) === null) notes.push(`Stat card movement ${stat.move} not worked out`);
   }
   if (attacks[0]) {
     const a = attacks[0], statAttack = stat ? base(stat.attack) : null;
     out.damage = a.vt ? (statAttack === null ? null : rel(a, statAttack)) : statValue(a.v, chars);
-    for (const s of a.sub ?? []) {
+    let dmgMod = 0, rangeMod = 0, targetMod = 0;                                   // modifiers of an infused consume: attack +2, range -1, target +1
+    for (const s of expandConsumes(a.sub, infused, notes)) {
       if (['pierce', 'push', 'pull', 'condition', 'element', 'elementHalf'].includes(s.t)) out.effects.push({ t: s.t, v: s.v });
-      if (s.t === 'range' && typeof s.v === 'number') out.range = s.v;
+      if (s.t === 'attack') dmgMod += signed(s);
+      else if (s.t === 'range' && typeof s.v === 'number') { if (s.vt === 'add' || s.vt === 'subtract') rangeMod += signed(s); else out.range = s.v; }
       else if (s.t === 'target') {
         const t = s.v === 'all' ? 6 : statValue(s.v, chars);
         if (t === null) notes.push(`Target ${typeof s.v === 'string' ? s.v : ''}`.trim());
+        else if (s.vt === 'add') targetMod += t;
         else out.targets = t;
       } else if (s.t === 'specialTarget') {
         if (s.v === 'enemiesAdjacent' || s.v === 'all') out.targets = 6;
@@ -89,6 +181,9 @@ export function cardOptions({ monster, kind = 'normal', level = 0, card, chars =
         if (s.area.active > 1) notes.push('The area is drawn for a monster of several hexes');
       }
     }
+    if (out.damage !== null) out.damage += dmgMod;
+    if (rangeMod) out.range = Math.max(0, out.range + rangeMod);
+    if (targetMod && out.targets < 6) out.targets += targetMod;
     if (out.area.length && out.areaMelee && out.range > 0) out.range = 0;                  // a melee area attack has no range
     if (out.area.length && !out.areaMelee && !(out.range > 0)) notes.push('Ranged area without a range on the card');
   }
