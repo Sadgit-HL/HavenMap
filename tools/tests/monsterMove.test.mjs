@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { solveMove, neighbors, hexDistance, isMuddled } from '../../scripts/monsterMove.js';
+import { solveMove, neighbors, hexDistance, isMuddled, turnConditions } from '../../scripts/monsterMove.js';
 import { hexKey } from '../../scripts/hexState.js';
 
 // An open field of floor, cols 1..12, rows 0..9; `figs` are [side, col, row]; `only(col, row)` limits the floor.
@@ -80,6 +80,12 @@ export const tests = {
     assert.equal(isMuddled({ conditions: ['Muddle'] }), true);
     assert.equal(isMuddled({ conditions: ['Poison', 'muddle'] }), true);
     assert.deepEqual([isMuddled({ conditions: ['Poison'] }), isMuddled({}), isMuddled(null)], [false, false, false]);
+  },
+  'monster move: stun, immobilize and disarm come from the conditions of the monster'() {
+    assert.deepEqual(turnConditions({ conditions: ['Stun', 'Poison'] }), { stunned: true, immobilized: false, disarmed: false });
+    assert.deepEqual(turnConditions({ conditions: ['immobilize', 'Disarm'] }), { stunned: false, immobilized: true, disarmed: true });
+    assert.deepEqual(turnConditions({}), { stunned: false, immobilized: false, disarmed: false });
+    assert.deepEqual(turnConditions(null), { stunned: false, immobilized: false, disarmed: false });
   },
   'monster move: no characters, the monster stays'() {
     const r = run(field([M(3, 5)]), { col: 3, row: 5 }, { move: 4, range: 0 });

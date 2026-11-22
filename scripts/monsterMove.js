@@ -33,9 +33,12 @@ import { neighbors, neighborAt, hexDistance, edgeKey } from './hexGrid.js';
 
 export { neighbors, hexDistance };
 
-// A monster with the Muddle condition on the map (conditions are the titles of games/common.js CONDITIONS): all its attacks have disadvantage, so it is not
-// made to avoid it.
-export const isMuddled = obj => (obj?.conditions ?? []).some(c => String(c).toLowerCase() === 'muddle');
+// The conditions of a monster on the map (the titles of games/common.js CONDITIONS) that matter for its turn.
+const hasCondition = (obj, name) => (obj?.conditions ?? []).some(c => String(c).toLowerCase() === name);
+// Muddle: all its attacks have disadvantage, so it is not made to avoid it.
+export const isMuddled = obj => hasCondition(obj, 'muddle');
+// Stun: it does nothing. Immobilize: no move abilities. Disarm: no attack abilities (it still moves as if it would attack).
+export const turnConditions = obj => ({ stunned: hasCondition(obj, 'stun'), immobilized: hasCondition(obj, 'immobilize'), disarmed: hasCondition(obj, 'disarm') });
 const INF = 1e9;
 
 const cellOf = (hs, k) => hs.cells.get(k) ?? {};

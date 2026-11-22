@@ -74,6 +74,7 @@ function subText(s, ctx) {
 
 // turnPost({ name, role, standee, from, to, towards, noAttack, attack, targets, focus, disadvantage, extras, statFx, chars, icons })
 //   name     monster name              role     'normal' | 'elite' | 'boss'     standee  number of the standee or null
+//   remove   the conditions that end with this turn ('stun', 'immobilize', 'disarm'), written at the end: remove [icons]     stunned  the monster does nothing: the text is only that it removes the stun
 //   from, to hex labels ('E5')         points   the move value of the card, written after the move icon (move 3 E5 to F4), or null for none
 //   towards  label of the hex it moves towards when it cannot attack this turn, or null
 //   noAttack null, or why there is no attack this turn ('out of range', 'no target in reach')
@@ -84,8 +85,10 @@ function subText(s, ctx) {
 // One line per monster: the move, the attack on its target, the other actions of the card, separated by commas. When an attack has several targets the first line
 // has the move and the other actions and every target has a line of its own with the attack, so that each roll can be filled in; tied groups of targets are
 // separated by a line `or`.
-export function turnPost({ name, role = 'normal', standee = null, from, to, points = null, towards = null, noAttack = null, attack = null, targets = [], focus = [], disadvantage = false, extras = [], statFx = [], chars = 4, icons = true }) {
+export function turnPost({ name, role = 'normal', standee = null, stunned = false, remove = [], from, to, points = null, towards = null, noAttack = null, attack = null, targets = [], focus = [], disadvantage = false, extras = [], statFx = [], chars = 4, icons = true }) {
   const who = `[b]${name}[/b]${role === 'elite' ? ' (elite)' : role === 'boss' ? ' (boss)' : ''}${standee != null ? ` #${standee}` : ''}`;
+  if (stunned) return `${who}: remove ${ic('stun', icons)}`;
+  const rem = remove.length ? `remove ${remove.map(n => ic(n, icons)).join(' ')}` : '';
   const move = from === to ? `stays at ${from}` : `${points > 0 ? iv('move', points, icons) : ic('move', icons)} ${from} to ${to}${towards ? `, towards ${towards}` : ''}`;
   const more = extras.map(n => extraText(n, { icons, statFx, chars })).filter(Boolean);
   const dis = n => (Array.isArray(disadvantage) ? disadvantage.includes(n) : !!disadvantage);
@@ -97,12 +100,13 @@ export function turnPost({ name, role = 'normal', standee = null, from, to, poin
   const several = attack && targets.some(g => g.length > 1);                      // several targets: a line for each of them
   if (!several) {
     const on = attack && targets.length ? `${[...parts, ...effects].join(' ')} on ${targets.map(g => g.map(n => name_(n, g)).join(' and ')).join(' or ')}` : '';
-    return `${who}: ${[move, on, !on && noAttack ? `no attack: ${noAttack}` : '', ...more].filter(Boolean).join(', ')}`;
+    return `${who}: ${[move, on, !on && noAttack ? `no attack: ${noAttack}` : '', ...more, rem].filter(Boolean).join(', ')}`;
   }
   const lines = [`${who}: ${[move, ...more].join(', ')}`];
   targets.forEach((g, i) => {
     if (i > 0) lines.push('or');
     for (const n of g) lines.push(`${[...parts, ...effects].join(' ')} on ${name_(n, g)}`);
   });
+  if (rem) lines.push(rem);
   return lines.join('\n');
 }

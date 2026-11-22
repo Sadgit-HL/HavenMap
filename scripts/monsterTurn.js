@@ -13,11 +13,11 @@ import { activeCardsFor } from './decks.js';
 import { cardOptions, cardCandidates, distinctCards, areaIndexes, infusedNames } from './monsterCard.js';
 import { colLabel, hexCenter, HEX_W, HEX_H } from './hex.js';
 import { buildHexState, hexKey } from './hexState.js';
-import { solveMove, areaOffsets, isMuddled } from './monsterMove.js';
+import { solveMove, areaOffsets, isMuddled, turnConditions } from './monsterMove.js';
 import { makeSightLine } from './los.js';
 import { hexDistance, edgeKey } from './hexGrid.js';
 import { turnPost } from './monsterPost.js';
-import { turnView, viewStatus } from './monsterView.js';
+import { turnView, viewStatus, withoutAttack } from './monsterView.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 // The floor masks are for the Gloomhaven 2e tiles only (game 'gh2'); tiles of other games have none and the floor is then unknown.
@@ -91,11 +91,19 @@ function run(obj) {
   const sight = makeSightLine(hs);
   const initiatives = {};                                                   // typed per figure (kind and id), the solver wants them by hex
   for (const f of figs) if (T.init[figKey(f)] != null) initiatives[hexKey(f.col, f.row)] = T.init[figKey(f)];
-  const res = solveMove(hs, {
-    active: { col: Number(obj.x), row: Number(obj.y) }, move: T.move, range: T.range, attack: !T.noAttack, targets: T.all ? 6 : T.targets, area: T.cells ?? areaOffsets(T.area, !(T.range > 0)),
+  const st = turnConditions(obj), eff = effective(obj);                     // stun, immobilize and disarm override the values of the panel
+  let res = st.stunned ? { focuses: [], canAttackFocus: false, actions: [], floorKnown: hs.floorKnown } : solveMove(hs, {
+    active: { col: Number(obj.x), row: Number(obj.y) }, move: eff.move, range: T.range, attack: !T.noAttack, targets: T.all ? 6 : T.targets, area: T.cells ?? areaOffsets(T.area, !(T.range > 0)),
     flying: T.fly, jumping: T.jump, teleport: T.tele, muddled: isMuddled(obj), initiatives, canSee: (a, b) => sight(a, b) !== null,
-  });
-  return { hs, res, figs, sight, choices: choicesOf(res), here: { col: Number(obj.x), row: Number(obj.y) }, view: turnView(res, { moves: T.move > 0, attacks: !T.noAttack }) };
+  });                                                                       // a disarmed monster still moves as if it would attack: attack is the card's
+  if (st.disarmed) res = withoutAttack(res);
+  return { hs, res, figs, sight, choices: choicesOf(res), here: { col: Number(obj.x), row: Number(obj.y) }, view: turnView(res, { moves: eff.move > 0, attacks: eff.attacks, stunned: st.stunned }) };
+}
+
+// What the monster can do this turn: the values of the panel, taken away by its conditions. Stun: nothing. Immobilize: no move. Disarm: no attack.
+function effective(obj) {
+  const T = uiState.turn, st = turnConditions(obj);
+  return { move: st.stunned || st.immobilized ? 0 : T.move, attacks: !T.noAttack && !st.disarmed && !st.stunned };
 }
 
 function hexPoints(col, row) {
@@ -215,16 +223,17 @@ function idleChoice(obj) {
 function buildPost(obj, c) {
   const T = uiState.turn, mon = MONSTERS.byId.get(Number(obj.id)), info = cardInfo(obj), o = info?.opts;
   const names = new Map(last.hs.figures.map(f => [hexKey(f.col, f.row), figName(f)]));
-  const attacking = c.attack && !T.noAttack;
+  const st = turnConditions(obj), eff = effective(obj), attacking = c.attack && eff.attacks;
   const adjacentTo = t => { const [tc, tr] = t.split(',').map(Number); return hexDistance(c.col, c.row, tc, tr) === 1 && !last.hs.walls?.has(edgeKey(c.key, t)); };
   // The targets it attacks with disadvantage: all of them when it is muddled, otherwise the adjacent ones of a ranged attack.
   const disadvantage = !attacking ? [] : isMuddled(obj) ? true : T.range > 0 ? c.groups.flat().filter(adjacentTo).map(t => names.get(t) ?? t) : [];
   const lab = k => { const [kc, kr] = k.split(',').map(Number); return label({ col: kc, row: kr }); };
   return turnPost({
     name: titleCase(mon?.title ?? 'monster'), role: obj.role, standee: obj.standeeNum ?? null, from: label({ col: Number(obj.x), row: Number(obj.y) }), to: label(c),
-    points: T.move > 0 ? T.move : null,
+    stunned: st.stunned, remove: st.stunned ? ['stun'] : [st.immobilized && 'immobilize', st.disarmed && 'disarm'].filter(Boolean),
+    points: eff.move > 0 ? eff.move : null,
     towards: !c.attack && c.towards.length ? lab(c.towards[0]) : null,
-    noAttack: !T.noAttack && !c.attack ? (last.res.focuses.length ? 'out of range' : 'no target in reach') : null,
+    noAttack: eff.attacks && !c.attack ? (last.res.focuses.length ? 'out of range' : 'no target in reach') : null,
     attack: attacking ? { damage: o?.damage ?? null, range: T.range, targets: T.all ? 6 : T.targets, effects: o?.effects ?? [] } : null,
     targets: attacking ? c.groups.map(g => g.map(t => names.get(t) ?? t)) : [], focus: c.focus.map(k => names.get(k) ?? k), disadvantage,
     extras: o?.extras ?? [], statFx: o?.statFx ?? [], chars: info?.chars ?? 4,
@@ -244,7 +253,7 @@ function confirmMove() {
 }
 
 async function copyPost() {
-  const T = uiState.turn, obj = selectedMonster(), idle = last?.view.kind === 'idle';
+  const T = uiState.turn, obj = selectedMonster(), idle = ['idle', 'stunned'].includes(last?.view.kind);
   const c = idle && obj ? idleChoice(obj) : last?.choices.find(x => x.key === T.choice);
   const cur = obj ? hexKey(Number(obj.x), Number(obj.y)) : null;
   // a hex to move to: its text; nothing to move to after a move: the text of that move; neither a move nor an attack: it stays, with the other actions of the card
@@ -287,9 +296,13 @@ function areaEditor(T) {
 const num = (field, value) => `<input type="number" class="sp-turn-num" data-turn-field="${field}" min="0" max="20" value="${value}">`;
 
 function resultHtml() {
-  if (!last || last.view.kind === 'idle') return '';
+  if (!last) return '';
+  const mon = selectedMonster(), st = turnConditions(mon), eff = mon ? effective(mon) : { attacks: true };
+  const conds = [st.stunned && 'Stunned: no action', !st.stunned && st.immobilized && 'Immobilized: cannot move', !st.stunned && st.disarmed && 'Disarmed: cannot attack'].filter(Boolean);
+  if (last.view.kind === 'idle' && !conds.length) return '';
   const { res, hs, view, here } = last, T = uiState.turn, lines = [];
-  if (view.kind === 'nofocus') lines.push(T.noAttack ? 'No focus: nothing to move towards' : 'No focus: nothing can be reached or attacked');
+  if (view.kind === 'stunned' || view.kind === 'idle') { /* nothing to reach or attack: only the conditions below */ }
+  else if (view.kind === 'nofocus') lines.push(!eff.attacks ? 'No focus: nothing to move towards' : 'No focus: nothing can be reached or attacked');
   else {
     lines.push(`Focus: ${res.focuses.map(f => `${esc(figName(f))} ${label(f)}`).join(' or ')}`);
     const names = new Map(last.hs.figures.map(f => [hexKey(f.col, f.row), figName(f)]));
@@ -305,8 +318,8 @@ function resultHtml() {
       if (dest.length) lines.push(`Towards: ${dest.join(', ')}`);
     }
   }
-  const mon = selectedMonster();
-  if (mon && isMuddled(mon) && !T.noAttack && T.range > 0) lines.push('Muddled: does not step away from adjacent targets');
+  lines.push(...conds);
+  if (mon && isMuddled(mon) && eff.attacks && T.range > 0) lines.push('Muddled: does not step away from adjacent targets');
   if (!hs.floorKnown) lines.push('Floor unknown on this map: hexes outside the tiles are not excluded');
   return `<div class="sp-turn-res">${lines.map(l => `<div>${l}</div>`).join('')}</div>`;
 }
@@ -332,7 +345,7 @@ function statusText() {
   if (info?.none) return 'No ability card drawn';
   if (info?.unmatched) return `No matching card in the data for initiative ${info.unmatched.join(', ')}`;
   if (!last) return '';
-  const { view, choices } = last, T = uiState.turn, attacks = !T.noAttack, cur = sel ? hexKey(Number(sel.x), Number(sel.y)) : null;
+  const { view, choices } = last, T = uiState.turn, attacks = effective(sel).attacks, cur = sel ? hexKey(Number(sel.x), Number(sel.y)) : null;
   const c = choices.find(x => x.key === T.choice) ?? choices[0];
   const names = new Map(last.hs.figures.map(f => [hexKey(f.col, f.row), figName(f)]));
   const targets = c ? c.groups.map(g => g.map(t => esc(names.get(t) ?? t)).join(', ')).join(' or ') : '';
@@ -343,7 +356,7 @@ function statusText() {
 function barHtml() {
   const T = uiState.turn, sel = selectedMonster(), cur = sel ? hexKey(Number(sel.x), Number(sel.y)) : null;
   const chosen = last?.choices.find(c => c.key === T.choice), next = nextInfo();
-  const canMove = T.on && !!chosen && chosen.key !== cur, canPost = (T.on && (!!chosen || last?.view.kind === 'idle')) || !!T.lastPost;
+  const canMove = T.on && !!chosen && chosen.key !== cur, canPost = (T.on && (!!chosen || ['idle', 'stunned'].includes(last?.view.kind))) || !!T.lastPost;
   return `<div class="sp-turn-bar">` +
     `<button type="button" class="sp-turn-btn${T.on ? ' on' : ''}" data-turn="toggle" aria-pressed="${T.on}">${T.on ? 'Hide' : 'Show'}</button>` +
     `<button type="button" class="sp-turn-btn" data-turn="post"${canPost ? '' : ' disabled'}>${T.copied ? 'Copied' : 'BGG text'}</button>` +

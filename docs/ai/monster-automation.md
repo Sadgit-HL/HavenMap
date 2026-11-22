@@ -1,6 +1,6 @@
 # Monster automation (map page)
 
-In `main` since 2026-11-22 (owner decision; branch `explore/monster-automation`). The Node checks pass (288). The panel was last driven in headless Edge on 2026-11-21; the changes since (details layout, settings popover in the sidebar header, consume icons, stat card effects) were checked by the Node tests only. The Gloomhaven game only.
+In `main` since 2026-11-22 (owner decision; branch `explore/monster-automation`). The Node checks pass (288). The panel was last driven in headless Edge on 2026-11-21; the changes since (details layout, settings popover in the sidebar header, consume icons, stat card effects) were checked by the Node tests only; the Frosthaven page loads in headless Edge (2026-11-22). The monster turn works for the Gloomhaven game only.
 
 The map page can work out a monster's turn: who it goes for (the focus), where it ends its move, whom it attacks. The players check it, move the monster with one click and copy a forum text. The attack roll stays in GeekRoller (forum play: everyone can verify those rolls). Nothing runs until the player asks (the Monster turn section of a selected monster).
 
@@ -28,6 +28,11 @@ The bar `Show | BGG text | Move`, a small arrow for the next monster, one for th
   - Neither: no marks, no status, no focus ring.
   - No character: `No target in reach`, or `No target to move towards` for a card without an attack.
   The hex a monster already stands on is marked only for an attack.
+- Conditions of the monster on the map are read like Muddle and override the values of the panel while they are on:
+  - Stun: the monster does nothing. No marks and no focus, the status line says `Stunned: no action`, the BGG text is only `Name: remove <stun icon>`.
+  - Immobilize: the move counts as 0 (no towards hexes, a stay in the text).
+  - Disarm: the attack is off, but the monster moves as if it would attack (same focus and end hex, shown as a move, no attack line, no `out of range`).
+  - The BGG text ends with `remove <icons>` for the conditions that end with this turn (stun, immobilize, disarm); nothing else is written about them.
 - Show and the details are per session (`uiState.turn`), not in the map link and not across reloads. Initiatives are typed per figure and not saved.
 
 ## Modules (pure logic with Node checks, except `monsterTurn.js`)

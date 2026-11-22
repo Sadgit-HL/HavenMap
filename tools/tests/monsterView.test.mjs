@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { solveMove } from '../../scripts/monsterMove.js';
-import { turnView, viewStatus } from '../../scripts/monsterView.js';
+import { turnView, viewStatus, withoutAttack } from '../../scripts/monsterView.js';
 import { hexKey } from '../../scripts/hexState.js';
 
 // An open field of floor, cols 1..12, rows 0..9; `figs` are [side, col, row].
@@ -55,6 +55,26 @@ export const tests = {
     assert.equal(viewStatus('nofocus', { attacks: true }), 'No target in reach');
     assert.equal(viewStatus('nofocus', { attacks: false }), 'No target to move towards');
     assert.deepEqual([none.v.showFocus, none.v.showDest, none.v.showEnd], [false, false, false]);
+  },
+  'monster view: a stunned monster does nothing'() {
+    const res = solveMove(field([M(3, 5), C(5, 5)]), { active: { col: 3, row: 5 }, move: 3, range: 0 });
+    assert.deepEqual(turnView(res, { moves: false, attacks: false, stunned: true }), { kind: 'stunned', showFocus: false, showDest: false, showEnd: false });
+    assert.equal(viewStatus('stunned', { attacks: false }), 'Stunned: no action');
+  },
+  'monster view: an immobilized monster attacks only from where it stands'() {
+    const near = view([C(5, 5)], { move: 0, range: 3 }), far = view([C(9, 5)], { move: 0, range: 3 });
+    assert.deepEqual([near.v.kind, far.v.kind, far.v.showDest], ['attack', 'out', false]);
+  },
+  'monster view: a disarmed monster moves as if it would attack, without the attack'() {
+    const hs = field([M(3, 5), C(8, 5)]), o = { active: { col: 3, row: 5 }, move: 5, range: 2 };
+    const plain = solveMove(hs, o), res = withoutAttack(plain);
+    assert.equal(plain.canAttackFocus, true);
+    assert.ok(res.actions.length >= 1 && res.actions.every(a => !a.attack && !a.targets.length && !a.area.length), 'no attack, targets or area');
+    const hexes = r => r.actions.map(a => `${a.col},${a.row}`).sort().join(' ');
+    assert.equal(hexes(res), hexes(plain), 'the same end hexes as for the attack');
+    assert.equal(turnView(res, { moves: true, attacks: false }).kind, 'move', 'shown as a move');
+    const far = withoutAttack(solveMove(field([M(3, 5), C(12, 8)]), { ...o, move: 3 }));
+    assert.equal(turnView(far, { moves: true, attacks: false }).kind, 'approach', 'too far: it moves towards the focus');
   },
   'monster view: several end hexes to choose from'() {
     assert.equal(viewStatus('attack', { attacks: true, targets: 'A', hex: 'D5', options: 3 }), '3 options: pick a hex');

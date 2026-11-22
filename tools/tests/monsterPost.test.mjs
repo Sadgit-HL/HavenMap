@@ -81,6 +81,16 @@ export const tests = {
     assert.deepEqual([o([]).damage, o([]).area.length, o([]).multi], [2, 3, false]);
     assert.deepEqual([o(['air']).damage, o(['air']).area.length, o(['air']).multi], [3, 6, false], 'attack +1, a bigger area, still one attack');
   },
+  'monster post: the conditions to remove come at the end of the turn, a stunned monster only that'() {
+    assert.equal(turnPost({ name: 'Guard', from: 'A1', to: 'B1', remove: ['immobilize'], icons: false }), '[b]Guard[/b]: move A1 to B1, remove immobilize');
+    const both = turnPost({ name: 'Guard', from: 'A1', to: 'A1', extras: [{ t: 'heal', v: 2 }], remove: ['immobilize', 'disarm'], icons: false });
+    assert.equal(both, '[b]Guard[/b]: stays at A1, heal 2, remove immobilize disarm', 'after the other actions of the card');
+    assert.equal(turnPost({ name: 'Guard', from: 'A1', to: 'A1', stunned: true, remove: ['stun'], extras: [{ t: 'heal', v: 2 }], icons: false }), '[b]Guard[/b]: remove stun', 'stunned: nothing else');
+    assert.equal(turnPost({ name: 'Guard', role: 'elite', standee: 2, from: 'A1', to: 'A1', stunned: true, remove: ['stun'] }), `[b]Guard[/b] (elite) #2: remove ${iconCode('stun')}`, 'with the icon');
+    assert.equal(turnPost({ name: 'Guard', from: 'A1', to: 'B1', icons: false }), '[b]Guard[/b]: move A1 to B1', 'nothing to remove: unchanged');
+    const several = turnPost({ name: 'Guard', from: 'A1', to: 'B1', attack: { damage: 2, range: 0, targets: 2, effects: [] }, targets: [['Anaphi', 'Brute']], remove: ['disarm'], icons: false });
+    assert.equal(several.split(String.fromCharCode(10)).pop(), 'remove disarm', 'several targets: the last line');
+  },
   'monster post: advantage and disadvantage are words on the attack, the stat card effects come with the attack'() {
     const post = (slug, kind, icons) => {
       const m = GH2_MONSTERS[slug], c = GH2_MONSTER_DECKS[m.deck].find(x => cardOptions({ monster: m, kind, level: 0, card: x }).attack), o = cardOptions({ monster: m, kind, level: 0, card: c });
