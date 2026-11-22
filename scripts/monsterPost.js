@@ -12,10 +12,16 @@ export const iconCode = name => CODES.get(name) ?? null;
 // An icon, or its name as a word.
 const ic = (name, icons) => (icons ? iconCode(name) : null) ?? name;
 
+// An icon and its value: a BGG code has no space before a number ([ImageID=7410466 inline]3), a word keeps one (attack 3), and so does a value that is a word (all).
+const iv = (name, value, icons) => {
+  const code = icons ? iconCode(name) : null;
+  return code && /^[+-]?\d+$/.test(String(value)) ? code + value : `${ic(name, icons)} ${value}`.trim();
+};
+
 // The effects of an attack on a card as text: pierce 3, wound, push 1, fire ...
 function effectText(e, icons) {
   if (['condition', 'element', 'elementHalf'].includes(e.t)) return ic(String(e.v), icons);
-  if (typeof e.v === 'number') return `${ic(e.t, icons)} ${e.v}`;
+  if (typeof e.v === 'number') return iv(e.t, e.v, icons);
   return ic(e.t, icons);
 }
 
@@ -44,17 +50,18 @@ export function extraText(n, { icons = true, statFx = [], chars = 4 } = {}) {
   if (n.t === 'element') return n.vt === 'minus' ? join(`consume ${ic(String(n.v), icons)}`, n.sub?.length ? `: ${subs(n.sub)}` : '').replace(' :', ':') : join(ic(String(n.v), icons), subs(n.sub));
   if (n.t === 'condition') return join(ic(String(n.v), icons), subs(n.sub));
   if (n.t === 'elementHalf') return join(String(n.v).split(':').map(e => ic(e, icons)).join('/'), subs(n.sub));
-  if (n.t === 'sufferDamage') return join(`suffers ${ic('damage', icons)}`, valueText(n, statFx, chars));
+  if (n.t === 'sufferDamage') return `suffers ${iv('damage', valueText(n, statFx, chars), icons)}`;
   if (n.t === 'spawn') return 'spawns a monster';
   if (n.t === 'area') return '';
-  return join(ic(n.t, icons), valueText(n, statFx, chars), subs(n.sub));
+  const val = valueText(n, statFx, chars);
+  return join(val ? iv(n.t, val, icons) : ic(n.t, icons), subs(n.sub));
 }
 
 // The parts inside an action: range, targets, who, jump, the area, effects.
 function subText(s, ctx) {
   const { icons } = ctx;
-  if (s.t === 'range') return `${ic('range', icons)} ${s.v}`;
-  if (s.t === 'target') return `${ic('target', icons)} ${s.v === 'all' ? 'all' : (s.v ?? '')}`.trim();
+  if (s.t === 'range') return iv('range', s.v, icons);
+  if (s.t === 'target') return iv('target', s.v === 'all' ? 'all' : (s.v ?? ''), icons);
   if (s.t === 'specialTarget') return SPECIAL[s.v] ?? String(s.v);
   if (s.t === 'jump') return ic('jump', icons);
   if (s.t === 'area') return 'area';
@@ -77,8 +84,8 @@ export function turnPost({ name, role = 'normal', standee = null, from, to, towa
   const move = from === to ? `stays at ${from}${towards ? `, towards ${towards}` : ''}` : `${ic('move', icons)} ${from} to ${to}${towards ? `, towards ${towards}` : ''}`;
   const more = extras.map(n => extraText(n, { icons, statFx, chars })).filter(Boolean);
   const dis = n => (Array.isArray(disadvantage) ? disadvantage.includes(n) : !!disadvantage);
-  const parts = attack ? [`${ic('attack', icons)} ${attack.damage ?? '?'}`] : [];
-  if (attack && attack.range > 0) parts.push(`${ic('range', icons)} ${attack.range}`);
+  const parts = attack ? [iv('attack', attack.damage ?? '?', icons)] : [];
+  if (attack && attack.range > 0) parts.push(iv('range', attack.range, icons));
   const effects = attack ? (attack.effects ?? []).map(e => effectText(e, icons)) : [];
   const name_ = (n, g) => `[b]${n}[/b]${g.length > 1 && focus.includes(n) ? ' (focus)' : ''}${dis(n) ? ' (disadvantage)' : ''}`;
 

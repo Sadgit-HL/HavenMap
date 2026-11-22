@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import { statValue, cardOptions, candidatesFor, distinctCards, areaIndexes, infusedNames } from '../../scripts/monsterCard.js';
+import { statValue, cardOptions, candidatesFor, cardCandidates, distinctCards, areaIndexes, infusedNames } from '../../scripts/monsterCard.js';
+import { GH2_CARD_IDS } from '../../scripts/games/gh2_card_ids.js';
 import { areaOffsets } from '../../scripts/monsterMove.js';
 import { GH2_MONSTERS, GH2_MONSTER_DECKS } from '../../scripts/games/gh2_monsters.js';
 import { GH_DECKS } from '../../scripts/games/gh_decks.js';
@@ -54,6 +55,29 @@ export const tests = {
       const base = cardOptions({ monster: m, kind: 'normal', level: 0, card: c });
       assert.deepEqual(cardOptions({ monster: m, kind: 'normal', level: 0, card: c, infused: [] }), base);
       cardOptions({ monster: m, kind: 'normal', level: 0, card: c, infused: ['fire', 'ice', 'air', 'earth', 'light', 'dark'] });
+    }
+  },
+  'monster card: a map card that shares its initiative is told apart by the id of its image'() {
+    const ooze = GH_DECKS.ooze, sec = GH2_MONSTER_DECKS.ooze, byN = n => ooze.find(c => c.n === n);
+    assert.equal(candidatesFor(sec, 66, false).length, 2, 'initiative alone: Calculated Strike or Feed');
+    assert.deepEqual(cardCandidates('ooze', sec, byN(5)).map(c => c.name), ['Feed']);
+    assert.deepEqual(cardCandidates('ooze', sec, byN(8)).map(c => c.name), ['Calculated Strike']);
+    assert.deepEqual(cardCandidates('ooze', sec, byN(2)).map(c => c.name), ['Nothing Special'], 'a card without an entry: by initiative');
+  },
+  'monster card: every map card that needs an id entry has one, and every entry fits its card'() {
+    for (const [slug, cards] of Object.entries(GH_DECKS)) {
+      const sec = GH2_MONSTER_DECKS[slug], map = GH2_CARD_IDS[slug] ?? {}, seen = new Set();
+      for (const c of cards) {
+        const id = map[c.n];
+        if (id === undefined) { assert.equal(distinctCards(candidatesFor(sec, c.init, c.s)).length, 1, `${slug} card ${c.n} (initiative ${c.init}) needs an entry in games/gh2_card_ids.js`); continue; }
+        const card = sec.find(x => x.id === id);
+        assert.ok(card, `${slug} card ${c.n}: id ${id} is not in the deck`);
+        assert.equal(card.init, c.init, `${slug} card ${c.n}: initiative`);
+        assert.equal(!!card.shuffle, !!c.s, `${slug} card ${c.n}: shuffle mark`);
+        assert.ok(!seen.has(id), `${slug}: id ${id} used twice`);
+        seen.add(id);
+      }
+      for (const n of Object.keys(map)) assert.ok(cards.some(c => c.n === Number(n)), `${slug}: entry for a card ${n} that the deck does not have`);
     }
   },
   'monster card: a ranged area and a melee area'() {

@@ -19,6 +19,7 @@
 //   multi    the card has more than one attack or move; the first of each is used
 import { toAxial, toBoard } from './tileMask.js';
 import { ELEMENTS } from './games/common.js';
+import { GH2_CARD_IDS } from './games/gh2_card_ids.js';
 
 // The value of a stat card entry: a number, or a formula of C (characters) and numbers such as 'Cx9', '7xC', 'C+1'; null when it cannot be worked out.
 export function statValue(v, chars) {
@@ -197,6 +198,14 @@ export function candidatesFor(deck, init, shuffle) {
   const same = (deck ?? []).filter(c => c.init === init);
   const exact = same.filter(c => !!c.shuffle === !!shuffle);
   return exact.length ? exact : same;
+}
+
+// The cards of a deck that a map card can be: the one its number is mapped to (games/gh2_card_ids.js, for the cards that share their initiative with another
+// one of the deck), otherwise candidatesFor(). c is a card of the map's deck: { n, init, s }.
+export function cardCandidates(slug, deck, c) {
+  const id = GH2_CARD_IDS[slug]?.[c.n];
+  const exact = id ? (deck ?? []).filter(x => x.id === id) : [];
+  return exact.length ? exact : candidatesFor(deck, c.init, c.s);
 }
 
 // Candidates that differ in what they do (equal cards, such as two copies of one card, count once).

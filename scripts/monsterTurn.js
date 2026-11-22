@@ -10,7 +10,7 @@ import { state, patch } from './state.js';
 import { centerBoardPoint } from './controls.js';
 import { TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES, SUMMONS, GAME_ID } from './data.js';
 import { activeCardsFor } from './decks.js';
-import { cardOptions, candidatesFor, distinctCards, areaIndexes, infusedNames } from './monsterCard.js';
+import { cardOptions, cardCandidates, distinctCards, areaIndexes, infusedNames } from './monsterCard.js';
 import { colLabel, hexCenter, HEX_W, HEX_H } from './hex.js';
 import { buildHexState, hexKey } from './hexState.js';
 import { solveMove, areaOffsets } from './monsterMove.js';
@@ -52,7 +52,7 @@ function cardInfo(obj) {
   if (!act) return { rec, kind, level, chars, none: true };
   const deck = data.GH2_MONSTER_DECKS[act.slug] ?? [];
   const options = [];
-  for (const c of act.cards) for (const g of distinctCards(candidatesFor(deck, c.init, c.s))) options.push({ n: c.n, init: c.init, card: g, pickKey: `${act.slug}:${c.n}` });
+  for (const c of act.cards) for (const g of distinctCards(cardCandidates(act.slug, deck, c))) options.push({ n: c.n, init: c.init, card: g, pickKey: `${act.slug}:${c.n}` });
   if (!options.length) return { rec, kind, level, chars, none: false, unmatched: act.cards.map(c => c.init) };
   const byCard = new Map();
   for (const o of options) byCard.set(o.pickKey, [...(byCard.get(o.pickKey) ?? []), o]);

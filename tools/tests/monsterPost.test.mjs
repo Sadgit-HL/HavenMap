@@ -14,7 +14,7 @@ export const tests = {
   },
   'monster post: one line for a monster with one target, with forum codes'() {
     const t = turnPost({ name: 'Ancient Artillery', role: 'elite', standee: 3, from: 'E5', to: 'F4', attack, targets: [['Anaphi']] });
-    assert.deepEqual(lines(t), ['[b]Ancient Artillery[/b] (elite) #3: [ImageID=7410469 inline] E5 to F4, [ImageID=7410466 inline] 3 [ImageID=7410470 inline] 4 [ImageID=4113446 inline] [ImageID=4123143 inline] 2 on [b]Anaphi[/b]']);
+    assert.deepEqual(lines(t), ['[b]Ancient Artillery[/b] (elite) #3: [ImageID=7410469 inline] E5 to F4, [ImageID=7410466 inline]3 [ImageID=7410470 inline]4 [ImageID=4113446 inline] [ImageID=4123143 inline]2 on [b]Anaphi[/b]']);
   },
   'monster post: words instead of icons, disadvantage on the target, tied single targets on one line'() {
     const one = turnPost({ name: 'Bandit Archer', from: 'A1', to: 'B2', attack: { damage: 2, range: 3, targets: 1, effects: [{ t: 'condition', v: 'poison' }] }, targets: [['Anaphi']], disadvantage: ['Anaphi'], icons: false });
