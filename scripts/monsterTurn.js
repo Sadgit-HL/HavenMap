@@ -357,7 +357,7 @@ function barHtml() {
 function detailsHtml() {
   const T = uiState.turn;
   if (!T.detailsOpen) return '';
-  const sel = selectedMonster(), card = sel ? cardHtml(cardInfo(sel)) : '';
+  const sel = selectedMonster(), info = sel ? cardInfo(sel) : null, card = sel ? cardHtml(info) : '';
   const figs = last ? last.figs : buildHexState(state, lookup).figures.filter(f => f.side === 'characters');
   const inits = figs.length ? `<div class="sp-turn-inits"><div class="sp-subhead">Initiatives</div>${figs.map(f => {
     const k = figKey(f);
@@ -366,7 +366,7 @@ function detailsHtml() {
   const values = `<button type="button" class="sp-turn-fold" data-turn="valuesOpen" aria-expanded="${T.valuesOpen}">Values</button>` + (T.valuesOpen ? `<div class="sp-turn-values">
       <div class="sp-turn-row"><label>Move ${num('move', T.move)}</label><label>Range ${num('range', T.range)}</label><label>Targets ${num('targets', T.targets)}</label>${chip('all', 'All', T.all)}</div>
       <div class="sp-turn-row">${chip('fly', 'Fly', T.fly)}${chip('jump', 'Jump', T.jump)}${chip('tele', 'Teleport', T.tele)}${chip('noAttack', 'No attack', T.noAttack)}</div>
-      ${areaEditor(T)}</div>` : '');
+      ${info === null ? areaEditor(T) : ''}</div>` : '');          // the area comes from the card where there is card data: the grid is only for the rest
   return `<div class="sp-turn-details">
       ${card}
       ${inits}
