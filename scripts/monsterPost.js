@@ -81,7 +81,7 @@ function subText(s, ctx) {
 // separated by a line `or`.
 export function turnPost({ name, role = 'normal', standee = null, from, to, towards = null, noAttack = null, attack = null, targets = [], focus = [], disadvantage = false, extras = [], statFx = [], chars = 4, icons = true }) {
   const who = `[b]${name}[/b]${role === 'elite' ? ' (elite)' : role === 'boss' ? ' (boss)' : ''}${standee != null ? ` #${standee}` : ''}`;
-  const move = from === to ? `stays at ${from}${towards ? `, towards ${towards}` : ''}` : `${ic('move', icons)} ${from} to ${to}${towards ? `, towards ${towards}` : ''}`;
+  const move = from === to ? `stays at ${from}` : `${ic('move', icons)} ${from} to ${to}${towards ? `, towards ${towards}` : ''}`;
   const more = extras.map(n => extraText(n, { icons, statFx, chars })).filter(Boolean);
   const dis = n => (Array.isArray(disadvantage) ? disadvantage.includes(n) : !!disadvantage);
   const parts = attack ? [iv('attack', attack.damage ?? '?', icons)] : [];

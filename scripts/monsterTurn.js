@@ -13,7 +13,7 @@ import { activeCardsFor } from './decks.js';
 import { cardOptions, cardCandidates, distinctCards, areaIndexes, infusedNames } from './monsterCard.js';
 import { colLabel, hexCenter, HEX_W, HEX_H } from './hex.js';
 import { buildHexState, hexKey } from './hexState.js';
-import { solveMove, areaOffsets } from './monsterMove.js';
+import { solveMove, areaOffsets, isMuddled } from './monsterMove.js';
 import { makeSightLine } from './los.js';
 import { hexDistance, edgeKey } from './hexGrid.js';
 import { turnPost } from './monsterPost.js';
@@ -91,7 +91,7 @@ function run(obj) {
   for (const f of figs) if (T.init[figKey(f)] != null) initiatives[hexKey(f.col, f.row)] = T.init[figKey(f)];
   const res = solveMove(hs, {
     active: { col: Number(obj.x), row: Number(obj.y) }, move: T.move, range: T.range, attack: !T.noAttack, targets: T.all ? 6 : T.targets, area: T.cells ?? areaOffsets(T.area, !(T.range > 0)),
-    flying: T.fly, jumping: T.jump, teleport: T.tele, muddled: T.muddled, initiatives, canSee: (a, b) => sight(a, b) !== null,
+    flying: T.fly, jumping: T.jump, teleport: T.tele, muddled: isMuddled(obj), initiatives, canSee: (a, b) => sight(a, b) !== null,
   });
   return { hs, res, figs, sight, choices: choicesOf(res) };
 }
@@ -208,7 +208,8 @@ function buildPost(obj, c) {
   const names = new Map(last.hs.figures.map(f => [hexKey(f.col, f.row), figName(f)]));
   const attacking = c.attack && !T.noAttack;
   const adjacentTo = t => { const [tc, tr] = t.split(',').map(Number); return hexDistance(c.col, c.row, tc, tr) === 1 && !last.hs.walls?.has(edgeKey(c.key, t)); };
-  const disadvantage = attacking && T.range > 0 && !T.muddled ? c.groups.flat().filter(adjacentTo).map(t => names.get(t) ?? t) : [];   // the targets it attacks with disadvantage
+  // The targets it attacks with disadvantage: all of them when it is muddled, otherwise the adjacent ones of a ranged attack.
+  const disadvantage = !attacking ? [] : isMuddled(obj) ? true : T.range > 0 ? c.groups.flat().filter(adjacentTo).map(t => names.get(t) ?? t) : [];
   const lab = k => { const [kc, kr] = k.split(',').map(Number); return label({ col: kc, row: kr }); };
   return turnPost({
     name: titleCase(mon?.title ?? 'monster'), role: obj.role, standee: obj.standeeNum ?? null, from: label({ col: Number(obj.x), row: Number(obj.y) }), to: label(c),
@@ -291,23 +292,20 @@ function resultHtml() {
       if (dest.length) lines.push(`Towards: ${dest.join(', ')}`);
     }
   }
+  const mon = selectedMonster();
+  if (mon && isMuddled(mon) && uiState.turn.range > 0) lines.push('Muddled: does not step away from adjacent targets');
   if (!hs.floorKnown) lines.push('Floor unknown on this map: hexes outside the tiles are not excluded');
   return `<div class="sp-turn-res">${lines.map(l => `<div>${l}</div>`).join('')}</div>`;
 }
 
-// The panel for the selected monster (empty for other objects).
+// What the card says about this turn: why there is no card, or the notes (consumes that apply or not, texts the solver cannot act on). The card itself is
+// shown in the sidebar (Active ability).
 function cardHtml(info) {
   if (!info) return '';
-  if (info.none) return '<div class="sp-turn-card sp-turn-dim">No ability card drawn</div>';
-  if (info.unmatched) return `<div class="sp-turn-card sp-turn-dim">No matching card in the data for initiative ${info.unmatched.join(', ')}</div>`;
-  const c = info.chosen.card, o = info.opts;
-  const pick = info.ambiguous
-    ? `<select class="sp-turn-pick" data-turn-field="pick" data-key="${esc(info.chosen.pickKey)}">${info.alts.map(a => `<option value="${esc(a.card.id ?? '')}"${a.card === c ? ' selected' : ''}>${esc(a.card.name ?? a.card.id)}</option>`).join('')}</select>`
-    : `<b>${esc(c.name ?? c.id)}</b>`;
-  const parts = [`Move ${o.move}`, o.attack ? `Attack ${o.damage ?? '?'}` : 'No attack', o.attack && o.range ? `Range ${o.range}` : '', o.targets > 1 ? (o.targets >= 6 ? 'All targets' : `${o.targets} targets`) : '', o.area.length ? (o.areaMelee ? 'Area around it' : 'Area') : '', o.jumping ? 'Jump' : '', o.flying ? 'Flying' : ''].filter(Boolean);
-  return `<div class="sp-turn-card"><div class="sp-turn-cardhd">${pick}<span class="sp-turn-dim">init ${info.chosen.init}</span><button type="button" class="sp-turn-chip" data-turn="useCard" title="Take the values of the card again">Use card</button></div>` +
-    `<div class="sp-turn-dim">${parts.join(', ')}${info.more ? '; more than one card is drawn, the first is used' : ''}</div>` +
-    (o.notes.length ? `<ul class="sp-turn-notes">${o.notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul>` : '') + '</div>';
+  if (info.none) return '<div class="sp-turn-dim sp-turn-msg">No ability card drawn</div>';
+  if (info.unmatched) return `<div class="sp-turn-dim sp-turn-msg">No matching card in the data for initiative ${info.unmatched.join(', ')}</div>`;
+  const notes = info.opts.notes;
+  return notes.length ? `<ul class="sp-turn-notes">${notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul>` : '';
 }
 
 // The choice between end hexes, one row for each (the hexes on the board can be clicked as well).
@@ -358,7 +356,7 @@ function detailsHtml() {
   return `<div class="sp-turn-details">
       ${card}
       <div class="sp-turn-row"><label>Move ${num('move', T.move)}</label><label>Range ${num('range', T.range)}</label><label>Targets ${num('targets', T.targets)}</label>${chip('all', 'All', T.all)}</div>
-      <div class="sp-turn-row">${chip('fly', 'Fly', T.fly)}${chip('jump', 'Jump', T.jump)}${chip('tele', 'Teleport', T.tele)}${chip('muddled', 'Muddled', T.muddled)}${chip('noAttack', 'No attack', T.noAttack)}</div>
+      <div class="sp-turn-row">${chip('fly', 'Fly', T.fly)}${chip('jump', 'Jump', T.jump)}${chip('tele', 'Teleport', T.tele)}${chip('noAttack', 'No attack', T.noAttack)}</div>
       ${areaEditor(T)}
       ${inits}
       ${resultHtml()}
@@ -391,7 +389,6 @@ export function initTurnPanel(panel) {
     else if (k === 'next') goNext();
     else if (k === 'fly') setTurn({ fly: !T.fly, jump: T.fly ? T.jump : false });
     else if (k === 'clearArea') setTurn({ area: [], cells: null });
-    else if (k === 'useCard') setTurn({ appliedKey: null });
     else if (k === 'jump') setTurn({ jump: !T.jump, fly: T.jump ? T.fly : false });
     else if (k in T) setTurn({ [k]: !T[k] });
   });
@@ -401,7 +398,6 @@ export function initTurnPanel(panel) {
     const n = Math.round(Number(e.target.value));
     if (f === 'move' || f === 'range') setTurn({ [f]: Number.isFinite(n) ? Math.max(0, Math.min(20, n)) : 0 });
     else if (f === 'targets') setTurn({ targets: Number.isFinite(n) ? Math.max(0, Math.min(5, n)) : 1 });
-    else if (f === 'pick') setTurn({ pick: { ...uiState.turn.pick, [e.target.dataset.key]: e.target.value } });
     else if (f === 'init') {
       const init = { ...uiState.turn.init };
       if (e.target.value === '' || !Number.isFinite(n)) delete init[e.target.dataset.key]; else init[e.target.dataset.key] = Math.max(1, Math.min(99, n));

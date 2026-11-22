@@ -32,6 +32,10 @@ import { hexKey } from './hexState.js';
 import { neighbors, neighborAt, hexDistance, edgeKey } from './hexGrid.js';
 
 export { neighbors, hexDistance };
+
+// A monster with the Muddle condition on the map (conditions are the titles of games/common.js CONDITIONS): all its attacks have disadvantage, so it is not
+// made to avoid it.
+export const isMuddled = obj => (obj?.conditions ?? []).some(c => String(c).toLowerCase() === 'muddle');
 const INF = 1e9;
 
 const cellOf = (hs, k) => hs.cells.get(k) ?? {};

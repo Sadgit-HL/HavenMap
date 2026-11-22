@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { solveMove, neighbors, hexDistance } from '../../scripts/monsterMove.js';
+import { solveMove, neighbors, hexDistance, isMuddled } from '../../scripts/monsterMove.js';
 import { hexKey } from '../../scripts/hexState.js';
 
 // An open field of floor, cols 1..12, rows 0..9; `figs` are [side, col, row]; `only(col, row)` limits the floor.
@@ -75,6 +75,11 @@ export const tests = {
     for (const a of r.actions) assert.notEqual(dist(a, ch), 1, 'no disadvantage');
     const muddled = run(hs, me, { move: 3, range: 3, muddled: true });
     assert.deepEqual(muddled.actions.map(a => [a.col, a.row]), [[4, 5]], 'muddled: no reason to move');
+  },
+  'monster move: muddled comes from the Muddle condition on the monster'() {
+    assert.equal(isMuddled({ conditions: ['Muddle'] }), true);
+    assert.equal(isMuddled({ conditions: ['Poison', 'muddle'] }), true);
+    assert.deepEqual([isMuddled({ conditions: ['Poison'] }), isMuddled({}), isMuddled(null)], [false, false, false]);
   },
   'monster move: no characters, the monster stays'() {
     const r = run(field([M(3, 5)]), { col: 3, row: 5 }, { move: 4, range: 0 });

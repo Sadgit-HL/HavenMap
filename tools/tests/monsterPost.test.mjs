@@ -19,6 +19,8 @@ export const tests = {
   'monster post: words instead of icons, disadvantage on the target, tied single targets on one line'() {
     const one = turnPost({ name: 'Bandit Archer', from: 'A1', to: 'B2', attack: { damage: 2, range: 3, targets: 1, effects: [{ t: 'condition', v: 'poison' }] }, targets: [['Anaphi']], disadvantage: ['Anaphi'], icons: false });
     assert.deepEqual(lines(one), ['[b]Bandit Archer[/b]: move A1 to B2, attack 2 range 3 poison on [b]Anaphi[/b] (disadvantage)']);
+    const muddled = turnPost({ name: 'Guard', from: 'A1', to: 'B1', attack: { damage: 2, range: 0, targets: 2, effects: [] }, targets: [['Anaphi', 'Brute']], disadvantage: true, icons: false });
+    assert.deepEqual(lines(muddled), ['[b]Guard[/b]: move A1 to B1', 'attack 2 on [b]Anaphi[/b] (disadvantage)', 'attack 2 on [b]Brute[/b] (disadvantage)'], 'muddled: every target');
     const tie = turnPost({ name: 'Bandit Archer', from: 'A1', to: 'B2', attack: { damage: 2, range: 3, targets: 1, effects: [] }, targets: [['Anaphi'], ['Brute']], icons: false });
     assert.deepEqual(lines(tie), ['[b]Bandit Archer[/b]: move A1 to B2, attack 2 range 3 on [b]Anaphi[/b] or [b]Brute[/b]']);
   },
@@ -38,6 +40,7 @@ export const tests = {
     assert.ok(!/Ability/.test(out));
     assert.equal(turnPost({ name: 'Guard', role: 'boss', from: 'C3', to: 'C3', icons: false }), '[b]Guard[/b] (boss): stays at C3');
     assert.equal(turnPost({ name: 'Guard', from: 'C3', to: 'D3', towards: 'G7', icons: false }), '[b]Guard[/b]: move C3 to D3, towards G7');
+    assert.equal(turnPost({ name: 'Guard', from: 'C3', to: 'C3', towards: 'G7', icons: false }), '[b]Guard[/b]: stays at C3', 'staying put: no towards');
   },
   'monster post: the other actions of the card on the same line, shield and retaliate added to the stat card'() {
     const extras = [{ t: 'shield', v: 1, vt: 'plus' }, { t: 'retaliate', v: 2, vt: 'plus', sub: [{ t: 'range', v: 1 }] }, { t: 'heal', v: 3, sub: [{ t: 'range', v: 2 }, { t: 'target', v: 2 }] }, { t: 'heal', v: 1, sub: [{ t: 'specialTarget', v: 'self' }] }, { t: 'condition', v: 'strengthen', sub: [{ t: 'specialTarget', v: 'all' }, { t: 'range', v: 2 }] }, { t: 'element', v: 'ice', vt: 'minus', sub: [{ t: 'shield', v: 2 }] }, { t: 'summon', v: 'monsterStandee', obj: [{ monster: { name: 'living-bones', type: 'normal' } }] }, { t: 'custom', txt: 'Target all adjacent enemies' }];

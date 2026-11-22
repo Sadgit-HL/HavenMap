@@ -2495,13 +2495,9 @@ body {
 .sp-aoe-cell.on { fill: #ff9f43; stroke: #ff9f43; }
 .sp-aoe-cell.mid { stroke: #ffd23f; stroke-width: 2; }
 .sp-aoe-m { fill: rgba(255 255 255 / 0.6); font-size: 10px; font-weight: 700; pointer-events: none; }
-.sp-turn-card { margin: 0 0 8px; padding: 6px 8px; border: 1px solid rgba(255 255 255 / 0.1); border-radius: 5px; background: rgba(255 255 255 / 0.03); font-size: 12px; line-height: 1.45; color: rgba(255 255 255 / 0.9); }
-.sp-turn-cardhd { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 2px; }
-.sp-turn-cardhd .sp-turn-chip { margin-left: auto; }
 .sp-turn-dim { color: rgba(255 255 255 / 0.55); font-size: 11px; }
-.sp-turn-notes { margin: 4px 0 0; padding-left: 16px; font-size: 11px; color: rgba(255 255 255 / 0.7); }
-.sp-turn-pick { max-width: 100%; padding: 2px 4px; font: inherit; font-size: 12px; color: #fff; background: rgba(255 255 255 / 0.07); border: 1px solid rgba(255 255 255 / 0.14); border-radius: 4px; }
-.sp-turn-pick option { color: #000; }
+.sp-turn-notes { margin: 0 0 8px; padding-left: 16px; font-size: 11px; color: rgba(255 255 255 / 0.7); }
+.sp-turn-msg { margin: 0 0 8px; }
 .sp-turn-choices { display: grid; gap: 4px; margin-top: 8px; }
 .sp-turn-choice { padding: 4px 8px; text-align: left; font: inherit; font-size: 12px; color: rgba(255 255 255 / 0.85); background: rgba(255 255 255 / 0.05); border: 1px solid rgba(255 255 255 / 0.12); border-radius: 4px; cursor: pointer; }
 .sp-turn-choice.on { color: #1a1a2e; background: #fff; border-color: #fff; font-weight: 700; }
