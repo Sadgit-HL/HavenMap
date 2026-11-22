@@ -1,6 +1,6 @@
 import { init as initRender, renderAll, renderSelection, setGridLabelsVisible } from './render.js';
 import { state, load, subscribe, undo, redo, canUndo, canRedo } from './state.js';
-import { initControls, setZoom, setZoomAroundClient, getZoom, resetView, ZOOM_STEP, centerBoardPoint } from './controls.js';
+import { initControls, setZoom, setZoomAroundClient, getZoom, resetView, ZOOM_STEP, centerBoardPoint, panBy, getWheelMode } from './controls.js';
 import { initDrag }                                    from './drag.js';
 import { initSidebar }                                 from './sidebar.js';
 import { initElements, renderElements }                from './elements.js';
@@ -92,10 +92,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (redo()) clearSelection();
   });
 
-  // Mouse wheel zooms the board directly; page scrollbars are intentionally hidden.
+  // Wheel on the board; page scrollbars are intentionally hidden. Mode is a setting (controls.js):
+  // 'zoom' = wheel zooms in fixed steps; 'pan' = scroll pans, Ctrl+wheel and touchpad pinch zoom smoothly.
   svgEl.addEventListener('wheel', e => {
     e.preventDefault();
-    applyZoom(getZoom() + (e.deltaY < 0 ? ZOOM_STEP : -ZOOM_STEP), { x: e.clientX, y: e.clientY });
+    const focus = { x: e.clientX, y: e.clientY };
+    if (getWheelMode() === 'pan') {
+      if (e.ctrlKey || e.metaKey) {
+        applyZoom(getZoom() * Math.exp(-e.deltaY * 0.01), focus);
+      } else {
+        const k = e.deltaMode === 1 ? 16 : 1;   // lines to pixels
+        panBy(-e.deltaX * k, -e.deltaY * k);
+      }
+      return;
+    }
+    applyZoom(getZoom() + (e.deltaY < 0 ? ZOOM_STEP : -ZOOM_STEP), focus);
   }, { passive: false });
 
   window.addEventListener('keydown', e => {

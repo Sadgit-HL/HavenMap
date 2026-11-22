@@ -60,6 +60,15 @@ export function setZoomAroundClient(z, clientX, clientY) {
   return view.zoom;
 }
 
+// Wheel behavior on the board: 'zoom' (wheel zooms) or 'pan' (scroll pans, Ctrl+wheel or pinch zooms; for touchpads).
+const WHEEL_MODE_KEY = 'havenmap.wheelMode';
+export function getWheelMode() {
+  try { return localStorage.getItem(WHEEL_MODE_KEY) === 'pan' ? 'pan' : 'zoom'; } catch { return 'zoom'; }
+}
+export function setWheelMode(mode) {
+  try { localStorage.setItem(WHEEL_MODE_KEY, mode === 'pan' ? 'pan' : 'zoom'); } catch { /* blocked */ }
+}
+
 export function getZoom() { return view.zoom; }
 export function panBy(dx, dy) {
   view.panX += dx;
