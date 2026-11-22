@@ -116,6 +116,7 @@ Dated, newest first within each group. "Owner" marks decisions the owner made. C
 ## Process
 
 - 2026-11-21: the branch `explore/monster-automation` is not merged into `main` until the owner says so (owner).
+- 2026-11-22: the branch `explore/monster-automation` is merged into `main` (owner; replaces the entry of 2026-11-21). The licence of the Secretariat data stays an open item (`roadmap.md` 57).
 - Commit and push only when asked. Work on `main` (the owner asked for direct commits to `main` for campaign work).
 - Co-author line on commits: unresolved. Earlier repo rule (2026-11-07) added a `Co-Authored-By` line; the global `~/.claude/CLAUDE.md` says never add the assistant as co-author. Until the owner decides, follow the global CLAUDE.md (no line). Commits from 2026-11-10 (`01a5263` onward) have no line.
 - Destructive or high blast-radius actions need confirmation (global CLAUDE.md). Reorganising docs was done by moving files into `docs/archive/`, not by deleting them.

@@ -5,7 +5,7 @@ Open work in priority order. Items marked (owner) need a decision or data from t
 ## 1. Stabilise what exists
 
 1. Done 2026-11-19 (see `ui-guidelines.md` section 8; open: modifier cards are tiny at 911x512). Browser-test the 2026-11-14 layout changes at the sizes in `ui-guidelines.md` section 9. Scope: top bar on one line, modifier and modal card sizes, tile modals close (Escape, overlay, footer), Stickers toggle.
-2. Done 2026-11-19: `tools/tests/` holds 194 Node checks (269 on the branch `explore/monster-automation`) (edit functions, record, history, events, outcomes, modifier decks, advantage rules, short rest, random draws, monsters, flow, sync merge and invite links); run `node tools/tests/run.mjs`. The merge tests found that two players adding a character at the same time got the same id; fixed (new ids are `c` plus six random characters, `nextCharId` in `edit.js`; old records keep `c1`, `c2`). No checks for the DOM code.
+2. Done 2026-11-19: `tools/tests/` holds 288 Node checks (194 before the monster turn was merged) (edit functions, record, history, events, outcomes, modifier decks, advantage rules, short rest, random draws, monsters, flow, sync merge and invite links); run `node tools/tests/run.mjs`. The merge tests found that two players adding a character at the same time got the same id; fixed (new ids are `c` plus six random characters, `nextCharId` in `edit.js`; old records keep `c1`, `c2`). No checks for the DOM code.
 
 - Rename to HavenTracker, map side (when the map is free): `index.html` title and heading. Repository rename only together with the move away from URL links (`design/map-integration.md`). See `decisions.md` 2026-11-17.
 
@@ -85,6 +85,6 @@ Open work in priority order. Items marked (owner) need a decision or data from t
 54. Boss footprints (several hexes) in the hex state and the solver. Figures are one hex each.
 55. Check the initiatives and shuffle marks of the map's monster decks card by card against the card images. The comparison with the Secretariat sees only sets per deck; only the lurker soldier was checked against its images. `gh2_monster_abilities.xlsx`, the source of `gh_decks.js`, is not in the repo and still has the old values (living corpse card 3, lurker soldier cards 6 and 7).
 56. Match drawn cards to Secretariat card ids: 33 of 248 cards share an initiative with another card, so the panel asks. The card images would have to be read.
-57. Licence: `scripts/games/gh2_monsters.js` is generated from the Secretariat data (AGPL-3.0); extends item 36 and must be settled before the branch goes to `main`.
-58. Merge into `main`: the owner said not yet. When it happens: update `docs/player-guide.md`, run all checks, hard refresh, and check the Frosthaven game still loads (the new overlay ids 70 and 71 are Gloomhaven only).
+57. Licence: `scripts/games/gh2_monsters.js` is generated from the Secretariat data (AGPL-3.0); extends item 36. Still open: the branch was merged into `main` on 2026-11-22 by the owner without settling it. (owner)
+58. Done 2026-11-22: merged into `main`; the player guide is updated and all Node checks pass. Not checked in a browser: that the Frosthaven game still loads (the new overlay ids 70 and 71 are Gloomhaven only), and the settings popover and the turn panel on phone width. (owner)
 59. Not planned: the attack roll and damage in the app (GeekRoller stays), marking monsters as done for the round, allies and summons as actors.

@@ -5,7 +5,7 @@ Verified 2026-11-21 against `main` at `1bdb799` and the branch `explore/monster-
 ## Map app (standalone HavenMap)
 
 Done:
-- Monster turn (branch `explore/monster-automation`, not in `main`, owner: do not merge yet): optional bar `Show | BGG text | Move` above the Active ability card of a selected monster, Next, details. Focus, end hex, targets, areas, ice, tile borders as walls, line of sight from any point to any point, floor masks for the Gloomhaven 2e tiles, Secretariat monster data. 269 Node checks, panel driven in headless Edge. Details and limits in `monster-automation.md`.
+- Monster turn (in `main` since 2026-11-22): optional bar `Show | BGG text | Move` above the Active ability card of a selected monster, Next, details. Focus, end hex, targets, areas, ice, tile borders as walls, line of sight from any point to any point, floor masks for the Gloomhaven 2e tiles, Secretariat monster data. 288 Node checks; the panel was last driven in headless Edge on 2026-11-21. Details and limits in `monster-automation.md`.
 - Map editing, state in the URL hash (`#lz:`), `mapVersion` 5.0.0 with migrations in `scripts/state.js`.
 - Monster and ally attack modifier decks, with Bless and Curse, draw, return, shuffle and GeekRoller code (`scripts/attackMods.js`, `scripts/decks.js`).
 - Per-hero attack modifier decks from class perks (43 classes, 711 perk entries in `scripts/games/perks.js`). Tabs per hero, perk list with repeated and multi-box perks. Verified.

@@ -40,14 +40,16 @@ Items with a real back (shown by a flip button) turn over with the F key. Solo i
 
 The **Monsters** tab draws monster ability cards and monster modifier cards the same way (Draw, Std / Adv / Dis). In the Scenarios tab, Draw random scenario unlocks one of the side scenarios 67 to 74, and Draw random item design unlocks one of items 81 to 96. Every draw shows in the **History** tab, marked (random) or (BGG roll); filter it with the type drop-down.
 
-## Monster turn on the map (branch only, not in the main app yet)
+## Monster turn on the map
 
 Select a monster on the map page. **Monster turn** sits above its ability card.
 
 - **Show** marks the monster's focus (gold ring), the hex it attacks from (green) and the hexes it only moves to (blue). **Hide** clears it.
 - **Move** puts the monster on the chosen hex. With several equal options, click one of the hexes on the board first. Ctrl+Z undoes the move.
-- **BGG text** copies the monster's turn for the forum: the move, the attack with its targets, and the other actions of the card. The attack roll stays in GeekRoller.
-- The two small arrows: the next monster in turn order, and the details (values from the card, area, initiatives).
+- **BGG text** copies the monster's turn for the forum: the move, the attack with its targets, and the other actions of the card. Elements consumed show with the consume icon, and advantage, disadvantage and effects of the stat card are part of the attack. The attack roll stays in GeekRoller.
+- The two small arrows: the next monster in turn order, and the details: notes of the card, the initiatives of the characters (type them in; they decide ties), and a **Values** button for move, range and targets.
+- Elements follow the element bar: a consume that needs an infused element counts when that element is on. Muddle comes from the condition on the monster.
+- Nothing shows for a monster without a drawn card; the line under the buttons says so.
 
 Gloomhaven 2e tiles only so far.
 
