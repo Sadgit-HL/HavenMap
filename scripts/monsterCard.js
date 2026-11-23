@@ -14,6 +14,7 @@
 //   damage   the attack value (stat card plus or minus the card), null when it cannot be worked out
 //   effects  what the first attack does besides damage: [{ t, v }] pierce, push, pull, conditions and elements by name
 //   extras   the other actions of the card (shield, retaliate, heal, conditions, summons, custom text ...) as they are in the data, without the moves and attacks
+//   order    where things stand on the card, top to bottom: 'move' (the first move), 'attack' (the first attack) and the index of each extra in `extras`
 //   statFx   the extras of the stat card (shield, retaliate ...), the base of a relative shield or retaliate on the card
 //   notes    texts the solver cannot act on (custom card text, special targets, formulas), to show to the player
 //   multi    the card has more than one attack or move; the first of each is used
@@ -127,15 +128,27 @@ function findActions(nodes, kind, infused, notes, out = []) {
   return out;
 }
 
-// The actions of a card that are not moves or attacks, in reading order (grids and concatenations opened, monster types only for this kind).
-function findExtras(nodes, kind, out = []) {
+// The actions of a card in reading order, top to bottom: { t: 'move' }, { t: 'attack' } for every move and attack findActions finds, and { t: 'extra', node } for
+// every other action (grids and concatenations opened, monster types only for this kind). A consume that is infused opens its move or attack where it stands;
+// the actions inside another action are only searched for moves and attacks (extras: false), the action itself is the extra.
+function readingOrder(nodes, kind, infused, extras = true, seq = []) {
   for (const n of nodes ?? []) {
-    if (n.t === 'move' || n.t === 'attack') continue;
-    if (n.t === 'monsterType') { if (n.v === kind || kind === 'boss') findExtras(n.sub, kind, out); }
-    else if (n.t === 'grid' || n.t === 'concatenation') findExtras(n.sub, kind, out);
-    else out.push(n);
+    if (n.t === 'move' || n.t === 'attack') seq.push({ t: n.t });
+    else if (n.t === 'monsterType') { if (n.v === kind || kind === 'boss') readingOrder(n.sub, kind, infused, extras, seq); }
+    else if (isConsume(n)) {
+      if (extras) seq.push({ t: 'extra', node: n });
+      if (consumeOn(n, infused)) {
+        const mod = (n.sub ?? []).some(s => s.t === 'attack' && (s.vt === 'add' || s.vt === 'subtract'));
+        if (!(mod && seq.some(s => s.t === 'attack'))) readingOrder(attackWithSiblings(n.sub, n.v), kind, infused, false, seq);   // a modifier of the attack before it adds no attack
+      }
+    }
+    else if (n.t === 'grid' || n.t === 'concatenation') readingOrder(n.sub, kind, infused, extras, seq);
+    else {
+      if (extras) seq.push({ t: 'extra', node: n });
+      if (n.sub) readingOrder(n.sub, kind, infused, false, seq);
+    }
   }
-  return out;
+  return seq;
 }
 
 // Texts of a card the solver cannot act on: custom text outside the move and attack nodes, and inside them.
@@ -151,9 +164,15 @@ export function cardOptions({ monster, kind = 'normal', level = 0, card, chars =
   const notes = [];
   collectNotes(card.actions, notes);
   const found = findActions(card.actions, kind, infused, notes), moves = found.filter(n => n.t === 'move'), attacks = found.filter(n => n.t === 'attack');
-  const out = { move: 0, range: 0, targets: 1, area: [], areaMelee: false, attack: attacks.length > 0, jumping: false, flying: !!monster?.flying, damage: null, effects: [], extras: findExtras(card.actions, kind), statFx: stat?.fx ?? [], notes, multi: moves.length > 1 || attacks.length > 1 };
+  const out = { move: 0, range: 0, targets: 1, area: [], areaMelee: false, attack: attacks.length > 0, jumping: false, flying: !!monster?.flying, damage: null, effects: [], extras: [], order: [], statFx: stat?.fx ?? [], notes, multi: moves.length > 1 || attacks.length > 1 };
 
-  out.extras = resolveExtras(out.extras, infused, notes);
+  // The extras one by one (a consume that is not infused is dropped), and where the first move, the first attack and each extra stand on the card.
+  let sawMove = false, sawAttack = false;
+  for (const it of readingOrder(card.actions, kind, infused)) {
+    if (it.t === 'move') { if (!sawMove) { sawMove = true; out.order.push('move'); } }
+    else if (it.t === 'attack') { if (!sawAttack) { sawAttack = true; out.order.push('attack'); } }
+    else for (const x of resolveExtras([it.node], infused, notes)) { out.extras.push(x); out.order.push(out.extras.length - 1); }
+  }
   const base = (v) => statValue(v, chars);
   const rel = (n, statNumber) => (n.vt ? (statNumber ?? 0) + (n.vt === 'minus' ? -1 : 1) * (statValue(n.v, chars) ?? 0) : statValue(n.v, chars));
   if (moves[0]) {

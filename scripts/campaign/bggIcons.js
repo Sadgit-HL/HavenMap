@@ -17,7 +17,7 @@ export const BGG_ICON_GROUPS = [
     {"n": "retaliate", "c": "[ImageID=7410471 inline]", "img": "../images/common/perk-icons/retaliate.png"},
     {"n": "rolling", "c": "[ImageID=5238116 inline]", "img": "../images/common/perk-icons/flip.png"},
     {"n": "shield", "c": "[ImageID=7410417 inline]", "img": "../images/common/perk-icons/shield.png"},
-    {"n": "target", "c": "[ImageID=4123145 inline]", "img": "../images/common/perk-icons/target.png"},
+    {"n": "target", "c": "[ImageID=7410472 inline]", "img": "../images/common/perk-icons/target.png"},
     {"n": "teleport", "c": "[ImageID=7410473 inline]", "img": "../images/common/perk-icons/teleport.png"},
     {"n": "xp", "c": "[ImageID=4184470 inline]", "img": "../images/common/icons/xp.png", "inv": 1},
   ] },

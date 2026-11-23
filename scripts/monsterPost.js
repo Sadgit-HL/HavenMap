@@ -79,15 +79,16 @@ function subText(s, ctx) {
 //   targets  [[names]]: the groups of targets that tie (one group is the usual case)    focus  names of the focus, marked when there are several targets
 //   extras   the other actions of the card (shield, retaliate, heal ...), statFx the stat card's extras, chars the number of characters
 //   disadvantage  the attack is made with disadvantage: true, or the names of the targets it is made with disadvantage on
-// One line per monster: the move, the attack on its target, the other actions of the card, separated by commas. When an attack has several targets the first line
+//   order    where things stand on the card, top to bottom: 'move', 'attack' and the index of each extra (cardOptions().order); the text follows it. Without it: move, attack, extras
+// One line per monster: the move, the attack on its target, the other actions of the card, in the order of the card, separated by commas. When an attack has several targets the first line
 // has the move and the other actions and every target has a line of its own with the attack, so that each roll can be filled in; tied groups of targets are
 // separated by a line `or`.
-export function turnPost({ name, role = 'normal', standee = null, stunned = false, remove = [], from, to, points = null, towards = null, noAttack = null, attack = null, targets = [], focus = [], disadvantage = false, extras = [], statFx = [], chars = 4, icons = true }) {
+export function turnPost({ name, role = 'normal', standee = null, stunned = false, remove = [], from, to, points = null, towards = null, noAttack = null, attack = null, targets = [], focus = [], disadvantage = false, extras = [], statFx = [], chars = 4, order = null, icons = true }) {
   const who = `[b]${name}[/b]${role === 'elite' ? ' (elite)' : role === 'boss' ? ' (boss)' : ''}${standee != null ? ` #${standee}` : ''}`;
   if (stunned) return `${who}: remove ${ic('stun', icons)}`;
   const rem = remove.length ? `remove ${remove.map(n => ic(n, icons)).join(' ')}` : '';
   const move = from === to ? `stays at ${from}` : `${points > 0 ? iv('move', points, icons) : ic('move', icons)} ${from} to ${to}${towards ? `, towards ${towards}` : ''}`;
-  const more = extras.map(n => extraText(n, { icons, statFx, chars })).filter(Boolean);
+  const moreAt = extras.map(n => extraText(n, { icons, statFx, chars }));        // by index of the extra, '' for one with no text
   const dis = n => (Array.isArray(disadvantage) ? disadvantage.includes(n) : !!disadvantage);
   const parts = attack ? [iv('attack', attack.damage ?? '?', icons)] : [];
   if (attack && attack.range > 0) parts.push(iv('range', attack.range, icons));
@@ -95,15 +96,24 @@ export function turnPost({ name, role = 'normal', standee = null, stunned = fals
   const name_ = (n, g) => `[b]${n}[/b]${g.length > 1 && focus.includes(n) ? ' (focus)' : ''}${dis(n) ? ' (disadvantage)' : ''}`;
 
   const several = attack && targets.some(g => g.length > 1);                      // several targets: a line for each of them
-  if (!several) {
-    const on = attack && targets.length ? `${[...parts, ...effects].join(' ')} on ${targets.map(g => g.map(n => name_(n, g)).join(' and ')).join(' or ')}` : '';
-    return `${who}: ${[move, on, !on && noAttack ? `no attack: ${noAttack}` : '', ...more, rem].filter(Boolean).join(', ')}`;
-  }
-  const lines = [`${who}: ${[move, ...more].join(', ')}`];
+  // The parts in the order of the card, top to bottom (`order`: 'move', 'attack', the index of each extra). Without an order: the move, the attack, the
+  // other actions (with several targets the other actions come before the attack, on the first line). A card without a move starts with where it stays.
+  let seq = order && order.length ? [...order] : several ? ['move', ...moreAt.map((_, i) => i), 'attack'] : ['move', 'attack', ...moreAt.map((_, i) => i)];
+  if (!seq.includes('move')) seq.unshift('move');
+  if (!seq.includes('attack') && (attack || noAttack)) seq.splice(seq.indexOf('move') + 1, 0, 'attack');
+  moreAt.forEach((_, i) => { if (!seq.includes(i)) seq.push(i); });
+  const on = attack && targets.length ? `${[...parts, ...effects].join(' ')} on ${targets.map(g => g.map(n => name_(n, g)).join(' and ')).join(' or ')}` : '';
+  const text = t => (t === 'move' ? move : t === 'attack' ? (on || (noAttack ? `no attack: ${noAttack}` : '')) : moreAt[t]);
+  if (!several) return `${who}: ${[...seq.map(text), rem].filter(Boolean).join(', ')}`;
+
+  const ai = seq.indexOf('attack');
+  const before = seq.slice(0, ai).map(text).filter(Boolean), after = seq.slice(ai + 1).map(text).filter(Boolean);
+  const lines = before.length ? [`${who}: ${before.join(', ')}`] : [];
   targets.forEach((g, i) => {
     if (i > 0) lines.push('or');
-    for (const n of g) lines.push(`${[...parts, ...effects].join(' ')} on ${name_(n, g)}`);
+    for (const n of g) lines.push(`${lines.length ? '' : `${who}: `}${[...parts, ...effects].join(' ')} on ${name_(n, g)}`);
   });
+  if (after.length) lines.push(after.join(', '));                                 // what the card does after the attack: one line at the end
   if (rem) lines.push(rem);
   return lines.join('\n');
 }

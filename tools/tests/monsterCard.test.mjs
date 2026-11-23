@@ -168,4 +168,10 @@ export const tests = {
     assert.ok(n >= 25, `${n} patterns`);
     assert.deepEqual([...new Set(misfit)].sort(), ['deep-terror / Beam of Annihilation', 'deep-terror-scenario-51 / Beam of Annihilation'], 'only the line of five hexes, reaching 5 out, is too big for the editor');
   },
+  'monster card: the order of a card is top to bottom, extras by their index'() {
+    const m = GH2_MONSTERS['savvas-icestorm'], c = GH2_MONSTER_DECKS[m.deck].find(x => x.id === 686);
+    const o = cardOptions({ monster: m, kind: 'normal', level: 1, card: c });
+    assert.deepEqual(o.order, [0, 'move', 'attack', 1], 'an action above the move, the move, the attack, an action below');
+    assert.deepEqual(o.extras.map(e => e.t), ['condition', 'element']);
+  },
 };

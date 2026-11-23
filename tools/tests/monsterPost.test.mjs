@@ -119,4 +119,16 @@ export const tests = {
     assert.ok(seen.size >= 15, [...seen].join());
     for (const name of seen) assert.ok(iconCode(name) || ['advantage', 'disadvantage'].includes(name), `${name} has no icon`);   // advantage and disadvantage are words
   },
+  'monster post: the parts follow the order of the card'() {
+    const base = { name: 'Guard', from: 'A1', to: 'B1', points: 2, attack: { damage: 3, range: 0, targets: 1, effects: [] }, extras: [{ t: 'heal', v: 2 }, { t: 'shield', v: 1 }], icons: false };
+    assert.equal(turnPost({ ...base, targets: [['Mira']], order: [0, 'move', 'attack', 1] }), '[b]Guard[/b]: heal 2, move 2 A1 to B1, attack 3 on [b]Mira[/b], shield 1');
+    assert.equal(turnPost({ ...base, targets: [['Mira']] }), '[b]Guard[/b]: move 2 A1 to B1, attack 3 on [b]Mira[/b], heal 2, shield 1', 'without an order: move, attack, extras');
+    assert.equal(turnPost({ ...base, targets: [['Mira']], order: ['attack', 0] }), '[b]Guard[/b]: move 2 A1 to B1, attack 3 on [b]Mira[/b], heal 2, shield 1', 'a card without a move starts with where it ends up; an extra not in the order is added');
+  },
+  'monster post: several targets, what comes before the attack on the first line, what comes after on the last'() {
+    const out = turnPost({ name: 'Guard', from: 'A1', to: 'B1', points: 2, attack: { damage: 3, range: 0, targets: 2, effects: [] }, targets: [['A', 'B']], extras: [{ t: 'heal', v: 2 }, { t: 'shield', v: 1 }], order: ['move', 0, 'attack', 1], icons: false });
+    assert.deepEqual(lines(out), ['[b]Guard[/b]: move 2 A1 to B1, heal 2', 'attack 3 on [b]A[/b]', 'attack 3 on [b]B[/b]', 'shield 1']);
+    const first = turnPost({ name: 'Guard', from: 'A1', to: 'A1', attack: { damage: 3, range: 0, targets: 2, effects: [] }, targets: [['A', 'B']], extras: [], order: ['attack', 'move'], icons: false });
+    assert.deepEqual(lines(first), ['[b]Guard[/b]: attack 3 on [b]A[/b]', 'attack 3 on [b]B[/b]', 'stays at A1'], 'an attack at the top: the name starts the first target line, the rest follows the last target');
+  },
 };

@@ -236,7 +236,7 @@ function buildPost(obj, c) {
     noAttack: eff.attacks && !c.attack ? (last.res.focuses.length ? 'out of range' : 'no target in reach') : null,
     attack: attacking ? { damage: o?.damage ?? null, range: T.range, targets: T.all ? 6 : T.targets, effects: o?.effects ?? [] } : null,
     targets: attacking ? c.groups.map(g => g.map(t => names.get(t) ?? t)) : [], focus: c.focus.map(k => names.get(k) ?? k), disadvantage,
-    extras: o?.extras ?? [], statFx: o?.statFx ?? [], chars: info?.chars ?? 4,
+    extras: o?.extras ?? [], order: o?.order ?? null, statFx: o?.statFx ?? [], chars: info?.chars ?? 4,
   });
 }
 
