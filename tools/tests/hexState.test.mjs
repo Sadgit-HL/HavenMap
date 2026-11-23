@@ -58,6 +58,10 @@ export const tests = {
     assert.deepEqual(hs.figures.map(f => [f.kind, f.side, f.col, f.row, f.role]),
       [['monster', 'monsters', 3, 4, 'elite'], ['mercenary', 'characters', 4, 4, null], ['summon', 'characters', 4, 5, null]]);
   },
+  'hex state: a character name is kept on the figure, a missing name is null'() {
+    const hs = buildHexState({ mercenaries: [{ id: 2, x: 4, y: 4, name: 'Mira' }, { id: 3, x: 5, y: 4 }] }, lookup);
+    assert.deepEqual(hs.figures.map(f => f.name), ['Mira', null]);
+  },
   'hex state: an empty or missing state is an empty hex state'() {
     for (const s of [undefined, {}]) {
       const hs = buildHexState(s, lookup);

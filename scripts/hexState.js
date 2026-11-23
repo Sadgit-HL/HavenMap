@@ -76,7 +76,7 @@ export function buildHexState(state, lookup) {
     }
   }
 
-  const figure = (kind, side, list) => { for (const f of list ?? []) figures.push({ kind, side, id: Number(f.id), col: Number(f.x), row: Number(f.y), role: f.role ?? null }); };
+  const figure = (kind, side, list) => { for (const f of list ?? []) figures.push({ kind, side, id: Number(f.id), col: Number(f.x), row: Number(f.y), role: f.role ?? null, name: f.name ? String(f.name) : null }); };
   figure('monster', 'monsters', state?.monsters);
   figure('mercenary', 'characters', state?.mercenaries);
   figure('summon', 'characters', state?.summons);

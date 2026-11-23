@@ -2536,3 +2536,11 @@ body {
 .sp-aoe-cell.on { fill: #ff9f43; stroke: #ff9f43; }
 .sp-aoe-cell.mid { stroke: #ffd23f; stroke-width: 2; }
 .sp-aoe-m { fill: rgba(255 255 255 / 0.6); font-size: 10px; font-weight: 700; pointer-events: none; }
+
+.sp-obj-header--named { cursor: pointer; }
+.sp-obj-header--named:hover .sp-name { color: #fff; }
+.sp-name-input {
+  font: inherit; font-size: 16px; font-weight: 600; width: 100%; box-sizing: border-box;
+  color: rgba(255 255 255 / 0.92); background: rgba(255 255 255 / 0.08);
+  border: 1px solid rgba(255 255 255 / 0.3); border-radius: 4px; padding: 2px 6px; margin-bottom: 6px;
+}

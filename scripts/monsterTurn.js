@@ -27,7 +27,7 @@ const lookup = {
 };
 const TABLES = { monster: MONSTERS, mercenary: MERCENARIES, summon: SUMMONS };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const figName = f => TABLES[f.kind]?.byId.get(f.id)?.title ?? f.kind;
+const figName = f => f.name || (TABLES[f.kind]?.byId.get(f.id)?.title ?? f.kind);   // a character's name, else the class
 const label = h => `${colLabel(h.col)}${h.row}`;
 const figKey = f => `${f.kind}:${f.id}`;
 

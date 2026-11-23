@@ -134,8 +134,15 @@ function objectType(kind, obj) {
 }
 
 function objectName(kind, obj) {
+  if (kind === 'mercenary' && obj.name) return escHtml(obj.name);          // the character name (set by a click on the banner)
   const entry = KIND_MAP[kind]?.data?.byId.get(Number(obj.id));
   return titleCase(entry?.title ?? `${objectType(kind, obj)} #${obj.id}`);
+}
+
+// The class of a named character, shown next to the type.
+function classTitle(kind, obj) {
+  const entry = KIND_MAP[kind]?.data?.byId.get(Number(obj.id));
+  return titleCase(entry?.title ?? '');
 }
 
 function objectImageSrc(kind, obj) {
@@ -481,7 +488,47 @@ function editCounter(span) {
   });
 }
 
+// A click on the banner of a mercenary: type the character name. The name is kept in the map state and used for the character in the BGG text
+// of the monster turn. An empty name goes back to the class name.
+function editMercName(header) {
+  const nameEl = header.querySelector('.sp-name');
+  const sel = uiState.selected;
+  if (!nameEl || !sel || sel.kind !== 'mercenary') return;
+  const obj = arrForKind('mercenary')[sel.idx];
+  if (!obj) return;
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.className = 'sp-name-input';
+  input.maxLength = 24;
+  input.value = obj.name || '';
+  input.placeholder = classTitle('mercenary', obj);
+  input.setAttribute('aria-label', 'Character name');
+  nameEl.replaceWith(input);
+  input.focus();
+  input.select();
+  let done = false;
+  const finish = save => {
+    if (done) return;
+    done = true;
+    if (!save) { input.replaceWith(nameEl); return; }
+    const name = input.value.trim().replace(/[ \t]+/g, ' ').slice(0, 24);
+    if (name === (obj.name || '')) { input.replaceWith(nameEl); return; }
+    patchKind('mercenary', arrForKind('mercenary').map((x, i) => {
+      if (i !== sel.idx) return x;
+      const { name: _old, ...rest } = x;
+      return name ? { ...rest, name } : rest;
+    }));
+  };
+  input.addEventListener('blur', () => finish(true));
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); finish(true); }
+    else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); finish(false); }
+  });
+}
+
 function handlePanelClick(e) {
+  const nameHd = e.target.closest('[data-merc-name]');
+  if (nameHd && !e.target.closest('.sp-name-input')) { editMercName(nameHd); return; }
   const editableCounter = e.target.closest('.sp-counter-editable');
   if (editableCounter && !editableCounter.hasAttribute('data-editing')) {
     editCounter(editableCounter);
@@ -990,11 +1037,11 @@ function objectPanel(kind, idx) {
 
   return `
     ${backBtn}
-    <div class="sp-obj-header sp-obj-header--selected${kind === 'monster' ? ' sp-obj-header--monster' : ''}">
+    <div class="sp-obj-header sp-obj-header--selected${kind === 'monster' ? ' sp-obj-header--monster' : ''}${kind === 'mercenary' ? ' sp-obj-header--named' : ''}"${kind === 'mercenary' ? ' data-merc-name title="Character name"' : ''}>
       ${imgSrc ? `<img class="sp-obj-thumb" src="${imgSrc}" alt="">` : ''}
       <div class="sp-obj-info">
         <div class="sp-title-row">
-          <div class="sp-type">${objectType(kind, obj)}</div>
+          <div class="sp-type">${objectType(kind, obj)}${kind === 'mercenary' && obj.name ? ` &middot; ${escHtml(classTitle(kind, obj))}` : ''}</div>
           ${monsterRoleChip}
         </div>
         <div class="sp-name">${objectName(kind, obj)}</div>
