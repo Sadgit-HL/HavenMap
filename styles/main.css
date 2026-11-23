@@ -2558,7 +2558,7 @@ body {
 .sp-ability-slot .sp-active-card { display: block; width: 100%; }
 .sp-ability-drawer { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 10px; }
 .sp-ability-opt { position: relative; padding: 0; border: 2px solid transparent; border-radius: 8px; background: none; cursor: pointer; }
-.sp-ability-opt img { display: block; width: 100%; border-radius: 6px; }
+.sp-ability-opt img { display: block; width: 100%; margin-bottom: 0; border-radius: 6px; }
 .sp-ability-opt:hover { border-color: rgba(255 255 255 / 0.5); }
 .sp-ability-opt.is-active { border-color: #f0b428; }
 .sp-ability-init {

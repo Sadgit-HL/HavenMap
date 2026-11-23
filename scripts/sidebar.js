@@ -156,7 +156,7 @@ function abilityPickerHtml(obj) {
   const slot = `<button type="button" class="sp-ability-slot${cur ? ' has-card' : ''}" data-ability-open aria-expanded="${open}" aria-label="Active ability card">` +
     (cur ? `<img class="sp-stat-card sp-active-card" src="${cur.src}" alt="Initiative ${cur.init}">` : '<span>Select card</span>') + `</button>`;
   const drawer = open
-    ? `<div class="sp-ability-drawer">${dk.cards.map(c => `<button type="button" class="sp-ability-opt${c.active ? ' is-active' : ''}" data-ability-pick="${c.n}" title="Initiative ${c.init}"><img src="${c.src}" alt="Initiative ${c.init}" loading="lazy" draggable="false"><span class="sp-ability-init">${c.init}</span></button>`).join('')}</div>`
+    ? `<div class="sp-ability-drawer">${dk.cards.map(c => `<button type="button" class="sp-ability-opt${c.active ? ' is-active' : ''}" data-ability-pick="${c.n}" title="Initiative ${c.init}"><img class="sp-stat-card" data-zoom-w="400" src="${c.src}" alt="Initiative ${c.init}" loading="lazy" draggable="false"><span class="sp-ability-init">${c.init}</span></button>`).join('')}</div>`
     : '';
   return `
         <div class="sp-card-section sp-active-section sp-active-section--pick">
