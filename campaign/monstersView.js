@@ -6,6 +6,7 @@ import { MONSTERS, MON_MAX, monOf, monsterById, deckSlug, deckCards, deckState, 
 import { drawState, amOwner, amdRollCode, shuffleDue, canDraw } from '../scripts/campaign/amdDeck.js';
 import { normalDifficulty, scenarioLevel, scenarioLevelRange } from '../scripts/campaign/record.js';
 import { amViewHtml, amModeBtn } from './playmat.js';
+import { appRoll, onlyApp, onlyGeek } from './rollmode.js';
 
 const UP = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>';
 const DN = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
@@ -39,7 +40,7 @@ export function monstersHtml(r, V, esc) {
     <span class="monfield"><span class="lab">Scenario level</span><span class="sp"><b>${lvl}</b><span class="spc"><button type="button" data-monlv="1" aria-label="Raise the monster level"${lvl >= lvMax ? ' disabled' : ''}>${UP}</button><button type="button" data-monlv="-1" aria-label="Lower the monster level"${lvl <= lvMin ? ' disabled' : ''}>${DN}</button></span></span>${diff}</span>
     <span class="monfield"><span class="lab">Round</span><b class="monround">${m.round}</b></span>
     ${add}
-    <span class="monacts"><button type="button" class="btn6" data-mdrawall${cardsToDraw ? '' : ' disabled'} title="${cardsToDraw ? 'Draw a random ability card for every monster type that has none' : 'Every deck has a card, or nothing is left to draw'}">Draw cards</button><button type="button" class="btn6" data-monnew title="Shuffle every deck and start at round 1">New scenario</button><button type="button" class="btn6 monend" data-monend title="Drawn ability cards to the discard, shuffle the decks that need it, next round">End of round</button></span>
+    <span class="monacts"><button type="button" class="btn6" data-mdrawall${onlyApp()}${cardsToDraw ? '' : ' disabled'} title="${cardsToDraw ? 'Draw a random ability card for every monster type that has none' : 'Every deck has a card, or nothing is left to draw'}">Draw cards</button><button type="button" class="btn6" data-monnew title="Shuffle every deck and start at round 1">New scenario</button><button type="button" class="btn6 monend" data-monend title="Drawn ability cards to the discard, shuffle the decks that need it, next round">End of round</button></span>
   </div>`;
 
   const tog = `<span class="tog" role="group" aria-label="Modifier deck">${[['m', 'Monsters'], ['a', 'Allies']].map(([k, l]) => `<button type="button" data-monamg="${k}" aria-pressed="${g === k}">${l}</button>`).join('')}</span>`;
@@ -49,8 +50,8 @@ export function monstersHtml(r, V, esc) {
   const open = !!V.amOpen || !!V.amEdit;
   const chip = (t, n) => `<button type="button" class="mamc" data-mamdraw="${esc(t.key)}" title="Draw ${esc(t.face ?? t.label)}${n > 1 ? ` (${n} left)` : ''}">${t.img ? `<img src="${esc(t.img)}" alt="${esc(t.face ?? t.label)}" draggable="false">` : `<span class="mamf">${esc(t.face ?? t.label)}</span>`}${n > 1 ? `<span class="nb">${n}</span>` : ''}</button>`;
   const chips = [...A.tiles.filter(t => t.n > 0).map(t => chip(t, t.n)), ...A.specials.filter(t => t.n > 0).map(t => chip(t, t.n))].join('');
-  const strip = `<span class="mamdeck"><span class="lab">Deck &middot; <b>${A.pool}</b></span><button type="button" class="btn6" data-code="${esc(amdRollCode(A.faces))}" title="Copy GeekRoller code" aria-label="Copy GeekRoller code"${A.faces.length ? '' : ' disabled'}>${DICE}</button></span>
-    <button type="button" class="btn6 mamdraw" data-amact="rdraw"${canDraw(A) ? '' : ' disabled'} title="${canDraw(A) ? 'Draw AMD card' : 'Nothing left to draw'}" aria-label="Draw a random card of the deck"><img src="${imageFile('images/common/icons/draw', '../')}" width="20" height="19" alt="" draggable="false"></button>${amModeBtn(mode, ' btn6 mammode')}
+  const strip = `<span class="mamdeck"><span class="lab">Deck &middot; <b>${A.pool}</b></span><button type="button" class="btn6"${onlyGeek()} data-code="${esc(amdRollCode(A.faces))}" title="Copy GeekRoller code" aria-label="Copy GeekRoller code"${A.faces.length ? '' : ' disabled'}>${DICE}</button></span>
+    <button type="button" class="btn6 mamdraw" data-amact="rdraw"${onlyApp()}${canDraw(A) ? '' : ' disabled'} title="${canDraw(A) ? 'Draw AMD card' : 'Nothing left to draw'}" aria-label="Draw a random card of the deck"><img src="${imageFile('images/common/icons/draw', '../')}" width="20" height="19" alt="" draggable="false"></button>${amModeBtn(mode, ' btn6 mammode')}
     <span class="mamchips" aria-label="Cards left in the deck: a click draws the card">${chips || '<span class="lab">Empty</span>'}</span>
     <span class="mamdisc" title="Last discarded card"><span class="lab">Discard &middot; <b>${A.disc}</b></span>${A.top?.img ? `<img src="${esc(A.top.img)}" alt="${esc(A.top.face ?? '')}" draggable="false">` : '<span class="mamempty"></span>'}</span>
     <button type="button" class="btn6" data-amact="shuffle" title="${shuffleDue(A) ? 'A x2 or Miss was drawn, or nothing is left to draw: shuffle the discard back into the deck' : 'Shuffle the discard back into the deck'}" aria-label="Shuffle the discard back into the deck">${SHUFFLE}${shuffleDue(A) ? '<i class="amdot" aria-hidden="true"></i>' : ''}</button>`;
@@ -64,7 +65,7 @@ export function monstersHtml(r, V, esc) {
     const active = ds.active.map(n => cards.find(c => c.n === n)).filter(Boolean).sort((a, b) => a.init - b.init);
     const big = active.length
       ? active.map(c => `<div class="mab big" data-mcard="${c.n}" data-mslug="${slug}"><img src="${esc(abilityUrl(slug, c.n))}" alt="${esc(`${title(slug.replace(/-/g, ' '))} ${c.n}`)}" draggable="false"><span class="mini6">${c.init}</span><button type="button" class="mdisc" data-mdisc="${c.n}" data-mslug="${slug}" title="Discard now" aria-label="Discard now">${TO_DISCARD}</button></div>`).join('')
-      : `<button type="button" class="mab big back" data-mdraw="${slug}"${ds.deck.length ? '' : ' disabled'} title="${ds.deck.length ? 'Draw a random card' : 'Nothing left to draw: shuffle the deck'}" aria-label="Draw a random card, ${ds.deck.length} left"><span>${ds.deck.length}</span></button>`;
+      : `<button type="button" class="mab big back" data-mdraw="${slug}"${ds.deck.length && appRoll() ? '' : ' disabled'} title="${!ds.deck.length ? 'Nothing left to draw: shuffle the deck' : appRoll() ? 'Draw a random card' : 'Cards left in the deck'}" aria-label="Draw a random card, ${ds.deck.length} left"><span>${ds.deck.length}</span></button>`;
     const row = [...cards].sort((a, b) => a.init - b.init || a.n - b.n).map(c => {
       const s = status(c.n);
       return `<button type="button" class="mab sm ${s}" data-mcard="${c.n}" data-mslug="${slug}" title="Initiative ${c.init}${c.s ? ', shuffle' : ''}: ${s === 'deck' ? 'mark as drawn' : 'back to the deck'}"><img src="${esc(abilityUrl(slug, c.n))}" alt="" loading="lazy" draggable="false"><span class="mini6${c.s ? ' s' : ''}">${c.init}</span></button>`;
@@ -72,7 +73,7 @@ export function monstersHtml(r, V, esc) {
     const code = deckRollCode(slug, ds);
     return `<article class="mpanel${t.boss ? ' boss' : ''}" data-mtype="${t.id}">
       <div class="mhd"><h3>${esc(title(t.title))}</h3>${shared ? '<span class="mshared" title="Shares the ability deck with another chosen type">shared deck</span>' : ''}<span class="mcount" title="Cards left in the deck">${ds.deck.length}/${cards.length}</span>${deckNeedsShuffle(slug, ds) ? '<i class="mdot" title="Shuffles at end of round"></i>' : ''}
-        <span class="mtools"><button type="button" class="btn6" data-mcode="${esc(code)}"${code ? '' : ' disabled'} title="Copy GeekRoller code" aria-label="Copy GeekRoller code">${DICE}</button><button type="button" class="btn6" data-mshuffle="${slug}" title="Shuffle the deck now" aria-label="Shuffle the deck now">${SHUFFLE}</button><button type="button" class="btn6" data-mremove="${t.id}" title="Remove ${esc(title(t.title))}" aria-label="Remove ${esc(title(t.title))}">${CLOSE}</button></span></div>
+        <span class="mtools"><button type="button" class="btn6"${onlyGeek()} data-mcode="${esc(code)}"${code ? '' : ' disabled'} title="Copy GeekRoller code" aria-label="Copy GeekRoller code">${DICE}</button><button type="button" class="btn6" data-mshuffle="${slug}" title="Shuffle the deck now" aria-label="Shuffle the deck now">${SHUFFLE}</button><button type="button" class="btn6" data-mremove="${t.id}" title="Remove ${esc(title(t.title))}" aria-label="Remove ${esc(title(t.title))}">${CLOSE}</button></span></div>
       <div class="mbody"><div class="mstat" data-img="${esc(statUrl(t, lvl))}"><img src="${esc(statUrl(t, lvl))}" alt="${esc(`${title(t.title)} level ${lvl}`)}" loading="lazy" draggable="false"></div>
       <div class="mact">${big}</div></div>
       <div class="mrow">${row}</div>

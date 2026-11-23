@@ -1266,3 +1266,6 @@ header .actions button { height:32px; }
 .syncstate[data-state="offline"] { color:#e08a7a; border-color:rgba(201,96,79,.5); }
 html.phone .syncstate { padding:2px 8px; font-size:11px; }
 html.phone .syncwho { display:none; }
+
+/* Roll mode (campaign/rollmode.js): buttons of the other mode are hidden */
+button[hidden] { display:none !important; }

@@ -5,6 +5,7 @@
 import { handList, handLimit, zoneOf, pendingPicks } from '../scripts/campaign/record.js';
 import { tokenDefs, tokenImage } from '../scripts/campaign/classTokens.js';
 import { canShortRest } from '../scripts/campaign/rest.js';
+import { onlyApp, onlyGeek } from './rollmode.js';
 import { modalHtml, amViewHtml, XP_STEPS, levelOfXp, markersHtml } from './playmat.js';
 
 const UP = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>';
@@ -82,7 +83,7 @@ export function phoneHtml(c, X, S = {}) {
     sheet = `<h3>${esc(nameOf(sh.id))}<button type="button" data-sheetclose aria-label="Close">&times;</button></h3><div class="prev">${card(sh.id)}<div class="meta">Level ${esc(k?.lv ?? '?')}<br>Initiative ${k?.ini ?? 'unknown'}<br>Now in: ${esc(ZONE_NAME[z] || z)}</div></div><div class="opts">${opts}${ord}<button type="button" data-mkopen="c:${sh.id}" data-char="${cid}">Markers</button></div>`;
   } else if (sh && sh.kind === 'pile') {
     const a = piled(sh.z);
-    const rest = sh.z === 'lost' ? '' : `<div class="opts"><button type="button" data-shortrest data-char="${cid}"${canShortRest(c) ? '' : ' disabled'}>Short rest</button><button type="button" data-restroll="rest" data-char="${cid}"${canShortRest(c) ? '' : ' disabled'}>Short rest by BGG roll</button></div>`;
+    const rest = sh.z === 'lost' ? '' : `<div class="opts"><button type="button" data-shortrest${onlyApp()} data-char="${cid}"${canShortRest(c) ? '' : ' disabled'}>Short rest</button><button type="button" data-restroll="rest"${onlyGeek()} data-char="${cid}"${canShortRest(c) ? '' : ' disabled'}>Short rest by BGG roll</button></div>`;
     sheet = `<h3>${sh.z === 'lost' ? 'Lost' : 'Discard'} &middot; ${a.length}<button type="button" data-sheetclose aria-label="Close">&times;</button></h3>${rest}${a.length ? `<div class="grid">${a.map(card).join('')}</div>` : '<div class="note">empty</div>'}`;
   } else if (sh && sh.kind === 'chars') {
     sheet = `<h3>Characters<button type="button" data-sheetclose aria-label="Close">&times;</button></h3><div class="chpick">${(S.chars || []).map(t => `<button type="button" data-sub="${esc(t.id)}"${t.id === c.id ? ' aria-current="true"' : ''}>${t.id === 'add' ? '+ Add character' : esc(t.label)}</button>`).join('')}</div>`;

@@ -22,6 +22,7 @@ import { ask, notify, showDraw } from './dialog.js';
 import { scenarioPool, itemDesignPool, pickOne } from '../scripts/campaign/draws.js';
 import { phoneHtml } from './phone.js';
 import { monstersHtml } from './monstersView.js';
+import { setRollMode, appRoll, onlyApp, onlyGeek } from './rollmode.js';
 import { monOf, deckState as monDeckState } from '../scripts/campaign/monsters.js';
 import {
   normalize, validate, prosperityLevel, partyAvg, normalDifficulty, scenarioLevel, scenarioLevelRange, handOf, handList, zoneOf, CARD_ZONES, shopCopies, itemsInUse, ownsItem, unlockedBy, classByName, SCN_STATE_NAME, SCN_STATE, ownedCards, cardLevel, pendingPicks, handLimit,
@@ -419,7 +420,7 @@ function rollerCodeOf(faces) {
 // Roll buttons of the Scenarios and Items tabs: the merc tab's roll button style (dice icon and label; copies the code, shows Copied).
 function rollerBtn(attr, noun, code, emptyTitle) {
   const title = code ? `Copy the GeekRoller code for a random ${noun}` : emptyTitle;
-  return `<button type="button" class="btn6 rollbtn" ${attr} ${code ? '' : 'disabled'} title="${esc(title)}">${ICON_DICE}<span>BGG code for roll</span></button>`;
+  return `<button type="button" class="btn6 rollbtn"${onlyGeek()} ${attr} ${code ? '' : 'disabled'} title="${esc(title)}">${ICON_DICE}<span>BGG code for roll</span></button>`;
 }
 async function copyRollerCode(btn, code) {
   const orig = btn.innerHTML, origTitle = btn.title;
@@ -468,7 +469,7 @@ const itemRollerBtn = r => rollerBtn('data-itemroll', 'item design', itemRollerC
 // are hidden (touch.css), so the draw button has its own icon, the crossing arrows of the shuffle buttons.
 const ICON_DRAW = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M10.59 9.17 5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>';
 function drawBtn(attr, label, title) {
-  return `<button type="button" class="btn6 rollbtn" ${attr} ${title.ok ? '' : 'disabled'} title="${esc(title.text)}" aria-label="${esc(title.text)}">${ICON_DRAW}<span>${esc(label)}</span></button>`;
+  return `<button type="button" class="btn6 rollbtn"${onlyApp()} ${attr} ${title.ok ? '' : 'disabled'} title="${esc(title.text)}" aria-label="${esc(title.text)}">${ICON_DRAW}<span>${esc(label)}</span></button>`;
 }
 const scenarioRollButtons = r => {
   const n = scenarioPool(r).length;
@@ -921,7 +922,8 @@ markPhone();
 phoneMQ.addEventListener?.('change', () => { markPhone(); pageSheet = false; pm.sheet = null; if (record) render(); });
 const SET_KEY = 'havenmap.campaign.pmset';
 let pmset = (() => { try { return cleanSettings(JSON.parse(localStorage.getItem(SET_KEY) || 'null')); } catch { return cleanSettings(null); } })();
-const saveSet = () => { try { localStorage.setItem(SET_KEY, JSON.stringify(pmset)); } catch { /* ignore */ } };
+const saveSet = () => { setRollMode(pmset.roll); try { localStorage.setItem(SET_KEY, JSON.stringify(pmset)); } catch { /* ignore */ } };
+setRollMode(pmset.roll);
 const loadCodes = () => { try { const a = JSON.parse(localStorage.getItem(CODES_KEY) || '[]'); return Array.isArray(a) ? a : []; } catch { return []; } };
 const saveCodes = a => { try { localStorage.setItem(CODES_KEY, JSON.stringify(a)); } catch { /* ignore */ } };
 const matSlug = c => matSlugOf(c.cls);   // the class slug, as the portrait focus table and the banner files name it
@@ -2418,7 +2420,7 @@ document.addEventListener('keydown', e => {
   if (!under || !main.contains(under)) return;
   if (key === 'r') {                                                                                  // R over the discard pile: short rest
     const p = under.closest?.('.pm .pile6[data-pile="discard"]'), c = p && record?.chars.find(x => x.id === p.dataset.char);
-    if (c && canShortRest(c)) { e.preventDefault(); doShortRest(c.id); }
+    if (c && appRoll() && canShortRest(c)) { e.preventDefault(); doShortRest(c.id); }
     return;
   }
   const card = key === 'f' ? null : under.closest?.('.pm .ac[data-card], .pm .flipcard[data-card]');
