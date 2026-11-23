@@ -14,7 +14,7 @@ export const tests = {
   },
   'monster post: one line for a monster with one target, with forum codes'() {
     const t = turnPost({ name: 'Ancient Artillery', role: 'elite', standee: 3, from: 'E5', to: 'F4', attack, targets: [['Anaphi']] });
-    assert.deepEqual(lines(t), ['[b]Ancient Artillery[/b] (elite) #3: [ImageID=7410469 inline] E5 to F4, [ImageID=7410466 inline]3 [ImageID=7410470 inline]4 [ImageID=4113446 inline] [ImageID=4123143 inline]2 on [b]Anaphi[/b]']);
+    assert.deepEqual(lines(t), ['[b]Ancient Artillery[/b] (elite) #3: [ImageID=7410469 inline] E5 to F4, [ImageID=7410466 inline] 3 [ImageID=7410470 inline] 4 [ImageID=4113446 inline] [ImageID=4123143 inline] 2 on [b]Anaphi[/b]']);
   },
   'monster post: words instead of icons, disadvantage on the target, tied single targets on one line'() {
     const one = turnPost({ name: 'Bandit Archer', from: 'A1', to: 'B2', attack: { damage: 2, range: 3, targets: 1, effects: [{ t: 'condition', v: 'poison' }] }, targets: [['Anaphi']], disadvantage: ['Anaphi'], icons: false });
@@ -42,7 +42,7 @@ export const tests = {
     assert.equal(turnPost({ name: 'Guard', from: 'C3', to: 'D3', towards: 'G7', icons: false }), '[b]Guard[/b]: move C3 to D3, towards G7');
     assert.equal(turnPost({ name: 'Guard', from: 'C3', to: 'C3', towards: 'G7', icons: false }), '[b]Guard[/b]: stays at C3', 'staying put: no towards');
     assert.equal(turnPost({ name: 'Guard', from: 'A1', to: 'B1', points: 3, icons: false }), '[b]Guard[/b]: move 3 A1 to B1', 'the move value after the move');
-    assert.equal(turnPost({ name: 'Guard', from: 'A1', to: 'B1', points: 3 }), `[b]Guard[/b]: ${iconCode('move')}3 A1 to B1`, 'glued to the icon');
+    assert.equal(turnPost({ name: 'Guard', from: 'A1', to: 'B1', points: 3 }), `[b]Guard[/b]: ${iconCode('move')} 3 A1 to B1`, 'a space between the icon and the value');
     assert.equal(turnPost({ name: 'Guard', from: 'A1', to: 'A1', points: 3, icons: false }), '[b]Guard[/b]: stays at A1', 'no value when it stays');
   },
   'monster post: the other actions of the card on the same line, shield and retaliate added to the stat card'() {
@@ -104,7 +104,7 @@ export const tests = {
   'monster post: a consumed element is the icon with the red cross, a created one the plain icon'() {
     for (const el of ['air', 'dark', 'earth', 'fire', 'ice', 'light', 'wild']) assert.ok(iconCode(`${el}_x`) && iconCode(el) && iconCode(`${el}_x`) !== iconCode(el), `${el} has both icons`);
     assert.equal(extraText({ t: 'element', v: 'dark' }), iconCode('dark'), 'a create');
-    assert.equal(extraText({ t: 'element', v: 'dark', vt: 'minus', sub: [{ t: 'heal', v: 2 }] }), `${iconCode('dark_x')}: ${iconCode('heal')}2`, 'a consume, no word');
+    assert.equal(extraText({ t: 'element', v: 'dark', vt: 'minus', sub: [{ t: 'heal', v: 2 }] }), `${iconCode('dark_x')}: ${iconCode('heal')} 2`, 'a consume, no word');
     assert.equal(extraText({ t: 'element', v: 'dark', vt: 'minus' }, { icons: false }), 'consume dark', 'words keep the word');
     const o = cardOptions({ monster: GH2_MONSTERS.ooze, card: GH2_MONSTER_DECKS.ooze.find(c => c.name === 'Feed'), infused: ['dark'] });
     assert.ok(extraText(o.extras.find(n => n.t === 'heal')).endsWith(iconCode('dark_x')), 'the merged heal ends with the consumed element');

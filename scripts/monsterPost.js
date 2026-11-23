@@ -12,11 +12,8 @@ export const iconCode = name => CODES.get(name) ?? null;
 // An icon, or its name as a word.
 const ic = (name, icons) => (icons ? iconCode(name) : null) ?? name;
 
-// An icon and its value: a BGG code has no space before a number ([ImageID=7410466 inline]3), a word keeps one (attack 3), and so does a value that is a word (all).
-const iv = (name, value, icons) => {
-  const code = icons ? iconCode(name) : null;
-  return code && /^[+-]?\d+$/.test(String(value)) ? code + value : `${ic(name, icons)} ${value}`.trim();
-};
+// An icon and its value, a space between them: [ImageID=7410466 inline] 3, or as words attack 3 and range all.
+const iv = (name, value, icons) => `${ic(name, icons)} ${value}`.trim();
 
 // A consumed element: the element with the small red cross (`fire_x`), or the words `consume fire` where there is no icon.
 const consumeText = (v, icons) => (icons ? iconCode(`${v}_x`) : null) ?? `consume ${ic(String(v), icons)}`;
