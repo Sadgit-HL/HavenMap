@@ -131,4 +131,15 @@ export const tests = {
     const first = turnPost({ name: 'Guard', from: 'A1', to: 'A1', attack: { damage: 3, range: 0, targets: 2, effects: [] }, targets: [['A', 'B']], extras: [], order: ['attack', 'move'], icons: false });
     assert.deepEqual(lines(first), ['[b]Guard[/b]: attack 3 on [b]A[/b]', 'attack 3 on [b]B[/b]', 'stays at A1'], 'an attack at the top: the name starts the first target line, the rest follows the last target');
   },
+  'monster post: stays at takes the place of the move, and a card without a move does not say it'() {
+    const base = { name: 'Guard', from: 'A1', to: 'A1', attack: { damage: 3, range: 0, targets: 1, effects: [] }, targets: [['Mira']], extras: [{ t: 'heal', v: 2 }], icons: false };
+    assert.equal(turnPost({ ...base, order: [0, 'move', 'attack'] }), '[b]Guard[/b]: heal 2, stays at A1, attack 3 on [b]Mira[/b]', 'in the place of the move');
+    assert.equal(turnPost({ ...base, order: ['attack', 0] }), '[b]Guard[/b]: attack 3 on [b]Mira[/b], heal 2', 'no move on the card: nothing about staying');
+    assert.equal(turnPost({ ...base, attack: null, targets: [], order: [0] }), '[b]Guard[/b]: heal 2');
+    assert.equal(turnPost({ ...base, attack: null, targets: [], extras: [], order: [] }), '[b]Guard[/b]: stays at A1', 'nothing at all to say: where it stays');
+    assert.equal(turnPost({ ...base, to: 'B1', points: 2, extras: [], order: ['attack'] }), '[b]Guard[/b]: move 2 A1 to B1, attack 3 on [b]Mira[/b]', 'a move made anyway is written');
+  },
+  'monster post: no LOS as the reason for no attack'() {
+    assert.equal(turnPost({ name: 'Guard', from: 'A1', to: 'A1', noAttack: 'no LOS', order: ['attack'], icons: false }), '[b]Guard[/b]: no attack: no LOS');
+  },
 };

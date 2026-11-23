@@ -64,6 +64,15 @@ function cardInfo(obj) {
     opts: cardOptions({ monster: rec, kind, level, card: sel.card, chars, infused: infusedNames(state.elements) }) };
 }
 
+// The values of the panel that a card gives (the monster turn works from these; the panel lets the player change them).
+function cardValues(o) {
+  const ai = o.area.length ? areaIndexes(o.area, o.areaMelee) : { indexes: [] };
+  return {
+    move: Math.min(20, o.move), range: Math.min(20, o.range), targets: o.targets >= 6 ? 1 : o.targets, all: o.targets >= 6,
+    fly: o.flying, jump: o.jumping && !o.flying, tele: false, noAttack: !o.attack, cells: o.area.length ? o.area : null, area: ai.indexes,
+  };
+}
+
 // Puts the values of the card into the panel when the monster, its card, the level or the party size change; manual changes stay until then.
 function autoApply(obj) {
   const info = cardInfo(obj), T = uiState.turn;
@@ -72,26 +81,36 @@ function autoApply(obj) {
   const outcome = JSON.stringify([info.opts.move, info.opts.range, info.opts.targets, info.opts.attack, info.opts.damage, info.opts.jumping, info.opts.area.length]);
   const key = [obj.id, info.chosen.pickKey, info.chosen.card.id ?? info.chosen.card.name, info.kind, info.level, info.chars, outcome].join('|');
   if (T.appliedKey === key) return;
-  const o = info.opts, ai = o.area.length ? areaIndexes(o.area, o.areaMelee) : { indexes: [] };
-  Object.assign(T, {
-    appliedKey: key, areaOpen: false, move: Math.min(20, o.move), range: Math.min(20, o.range), targets: o.targets >= 6 ? 1 : o.targets, all: o.targets >= 6,
-    fly: o.flying, jump: o.jumping && !o.flying, tele: false, noAttack: !o.attack, cells: o.area.length ? o.area : null, area: ai.indexes,
-  });
+  Object.assign(T, { appliedKey: key, areaOpen: false, ...cardValues(info.opts) });
 }
 
 let last = null;                                                          // { hs, res, figs } of the latest run, for the panel
+
+// The end hex the player picked for a standee among tied ones is remembered (uiState.turn.picks) for the batch (the All button). A pick belongs to the standee
+// where it stands and to the card and level it was made for (pickSig): after a move or another card it no longer counts.
+const standeeKey = (obj, idx) => `${obj.id}:${obj.standeeNum ?? 'i' + idx}`;
+function pickSig(obj) {
+  const info = cardInfo(obj);
+  return [obj.x, obj.y, info?.chosen?.card?.id ?? info?.chosen?.card?.name ?? '', info?.level ?? ''].join('|');
+}
+function pickChoice(hk) {
+  const obj = selectedMonster(), sel = uiState.selected;
+  if (!obj) { setTurn({ choice: hk }); return; }
+  setTurn({ choice: hk, picks: { ...(uiState.turn.picks ?? {}), [standeeKey(obj, sel.idx)]: { hex: hk, sig: pickSig(obj) } } });
+}
 
 function selectedMonster() {
   const sel = uiState.selected;
   return sel?.kind === 'monster' ? state.monsters?.[sel.idx] ?? null : null;
 }
 
-function run(obj) {
-  const T = uiState.turn, hs = buildHexState(state, lookup), figs = hs.figures.filter(f => f.side === 'characters');
+// T: the values to solve with (the panel's, or the card's for the batch), board: the map state (the batch moves the standees on a copy).
+function run(obj, T = uiState.turn, board = state) {
+  const hs = buildHexState(board, lookup), figs = hs.figures.filter(f => f.side === 'characters');
   const sight = makeSightLine(hs);
   const initiatives = {};                                                   // typed per figure (kind and id), the solver wants them by hex
-  for (const f of figs) if (T.init[figKey(f)] != null) initiatives[hexKey(f.col, f.row)] = T.init[figKey(f)];
-  const st = turnConditions(obj), eff = effective(obj);                     // stun, immobilize and disarm override the values of the panel
+  for (const f of figs) if (uiState.turn.init[figKey(f)] != null) initiatives[hexKey(f.col, f.row)] = uiState.turn.init[figKey(f)];
+  const st = turnConditions(obj), eff = effective(obj, T);                  // stun, immobilize and disarm override the values of the panel
   let res = st.stunned ? { focuses: [], canAttackFocus: false, actions: [], floorKnown: hs.floorKnown } : solveMove(hs, {
     active: { col: Number(obj.x), row: Number(obj.y) }, move: eff.move, range: T.range, attack: !T.noAttack, targets: T.all ? 6 : T.targets, area: T.cells ?? areaOffsets(T.area, !(T.range > 0)),
     flying: T.fly, jumping: T.jump, teleport: T.tele, muddled: isMuddled(obj), initiatives, canSee: (a, b) => sight(a, b) !== null,
@@ -101,8 +120,8 @@ function run(obj) {
 }
 
 // What the monster can do this turn: the values of the panel, taken away by its conditions. Stun: nothing. Immobilize: no move. Disarm: no attack.
-function effective(obj) {
-  const T = uiState.turn, st = turnConditions(obj);
+function effective(obj, T = uiState.turn) {
+  const st = turnConditions(obj);
   return { move: st.stunned || st.immobilized ? 0 : T.move, attacks: !T.noAttack && !st.disarmed && !st.stunned };
 }
 
@@ -151,7 +170,7 @@ function draw(run_) {
       shape.setAttribute('pointer-events', 'all');
       shape.style.cursor = 'pointer';
       for (const ev of ['mousedown', 'touchstart', 'pointerdown']) shape.addEventListener(ev, e => e.stopPropagation());
-      shape.addEventListener('click', e => { e.stopPropagation(); setTurn({ choice: hk }); });
+      shape.addEventListener('click', e => { e.stopPropagation(); pickChoice(hk); });
     }
     layer.appendChild(shape);
   }
@@ -201,9 +220,10 @@ function nextInfo() {
   if (!list.length) return null;
   const cur = sel?.kind === 'monster' ? list.findIndex(x => x.idx === sel.idx) : -1, n = list[(cur + 1) % list.length];
   if (sel?.kind === 'monster' && n.idx === sel.idx) return null;
-  const title = MONSTERS.byId.get(Number(n.m.id))?.title ?? 'monster';
-  return { idx: n.idx, m: n.m, name: `${titleCase(title)}${n.m.role === 'elite' ? ' (elite)' : n.m.role === 'boss' ? ' (boss)' : ''}${n.m.standeeNum != null ? ` #${n.m.standeeNum}` : ''}` };
+  return { idx: n.idx, m: n.m, name: standeeName(n.m) };
 }
+
+const standeeName = m => `${titleCase(MONSTERS.byId.get(Number(m.id))?.title ?? 'monster')}${m.role === 'elite' ? ' (elite)' : m.role === 'boss' ? ' (boss)' : ''}${m.standeeNum != null ? ` #${m.standeeNum}` : ''}`;
 
 function goNext() {
   const n = nextInfo();
@@ -219,12 +239,12 @@ function idleChoice(obj) {
   return { key: hexKey(col, row), col, row, attack: false, groups: [], towards: [], focus: [] };
 }
 
-// The forum text of the chosen end hex for this monster.
-function buildPost(obj, c) {
-  const T = uiState.turn, mon = MONSTERS.byId.get(Number(obj.id)), info = cardInfo(obj), o = info?.opts;
-  const names = new Map(last.hs.figures.map(f => [hexKey(f.col, f.row), figName(f)]));
-  const st = turnConditions(obj), eff = effective(obj), attacking = c.attack && eff.attacks;
-  const adjacentTo = t => { const [tc, tr] = t.split(',').map(Number); return hexDistance(c.col, c.row, tc, tr) === 1 && !last.hs.walls?.has(edgeKey(c.key, t)); };
+// The forum text of the chosen end hex for this monster. ctx: the values and the result it was worked out with (the panel's and the latest run by default).
+function buildPost(obj, c, ctx = { T: uiState.turn, r: last }) {
+  const { T, r } = ctx, mon = MONSTERS.byId.get(Number(obj.id)), info = cardInfo(obj), o = info?.opts;
+  const names = new Map(r.hs.figures.map(f => [hexKey(f.col, f.row), figName(f)]));
+  const st = turnConditions(obj), eff = effective(obj, T), attacking = c.attack && eff.attacks;
+  const adjacentTo = t => { const [tc, tr] = t.split(',').map(Number); return hexDistance(c.col, c.row, tc, tr) === 1 && !r.hs.walls?.has(edgeKey(c.key, t)); };
   // The targets it attacks with disadvantage: all of them when it is muddled, otherwise the adjacent ones of a ranged attack.
   const disadvantage = !attacking ? [] : isMuddled(obj) ? true : T.range > 0 ? c.groups.flat().filter(adjacentTo).map(t => names.get(t) ?? t) : [];
   const lab = k => { const [kc, kr] = k.split(',').map(Number); return label({ col: kc, row: kr }); };
@@ -233,7 +253,7 @@ function buildPost(obj, c) {
     stunned: st.stunned, remove: st.stunned ? ['stun'] : [st.immobilized && 'immobilize', st.disarmed && 'disarm'].filter(Boolean),
     points: eff.move > 0 ? eff.move : null,
     towards: !c.attack && c.towards.length ? lab(c.towards[0]) : null,
-    noAttack: eff.attacks && !c.attack ? (last.res.focuses.length ? 'out of range' : 'no target in reach') : null,
+    noAttack: eff.attacks && !c.attack ? (r.res.sightBlocked ? 'no LOS' : r.res.focuses.length ? 'out of range' : 'no target in reach') : null,
     attack: attacking ? { damage: o?.damage ?? null, range: T.range, targets: T.all ? 6 : T.targets, effects: o?.effects ?? [] } : null,
     targets: attacking ? c.groups.map(g => g.map(t => names.get(t) ?? t)) : [], focus: c.focus.map(k => names.get(k) ?? k), disadvantage,
     extras: o?.extras ?? [], order: o?.order ?? null, statFx: o?.statFx ?? [], chars: info?.chars ?? 4,
@@ -250,6 +270,44 @@ function confirmMove() {
   patch({ monsters: state.monsters.map((m, i) => (i === sel.idx ? { ...m, x: c.col, y: c.row } : m)) });
   Object.assign(T, { lastPost: post, postFor: sel.idx, choice: null });
   selectObject('monster', sel.idx, c.col, c.row);
+}
+
+// The standees of the selected monster's type that act this round, in the order they act (see turnOrder).
+function typeStandees() {
+  const sel = selectedMonster();
+  return sel ? turnOrder().filter(x => x.m.id === sel.id) : [];
+}
+
+// The forum texts of all standees of the selected type, one after the other. Each is solved with the values of its own card (elite and normal differ) on a
+// copy of the map where the standees before it have moved to their end hex, so they do not share a hex and block or open ways for each other. Where several
+// end hexes tie, the hex the player picked for that standee is used when it is still one of them after the moves before it, otherwise the first one; those
+// standees are reported. Nothing is moved on the map.
+function batchPost() {
+  const board = { ...state, monsters: state.monsters.map(m => ({ ...m })) }, texts = [], ties = [], lost = [], skipped = [];
+  for (const x of typeStandees()) {
+    const obj = board.monsters[x.idx], name = standeeName(obj), info = cardInfo(obj);
+    if (!info?.opts) { skipped.push(name); continue; }
+    const T = { ...uiState.turn, ...cardValues(info.opts) }, r = run(obj, T, board);
+    const pick = uiState.turn.picks?.[standeeKey(obj, x.idx)], mine = pick && pick.sig === pickSig(obj) ? r.choices.find(ch => ch.key === pick.hex) : null;
+    const c = r.choices[0] && !['idle', 'stunned'].includes(r.view.kind) ? (mine ?? r.choices[0]) : idleChoice(obj);   // no way and nothing to do: it stays
+    if (r.choices.length > 1 && !mine) (pick && pick.sig === pickSig(obj) ? lost : ties).push(name);
+    texts.push(buildPost(obj, c, { T, r }));
+    if (c.key !== hexKey(Number(obj.x), Number(obj.y))) board.monsters[x.idx] = { ...obj, x: c.col, y: c.row };
+  }
+  return { text: texts.join(texts.some(s => s.includes('\n')) ? '\n\n' : '\n'), count: texts.length, ties, lost, skipped };
+}
+
+async function copyAll() {
+  const r = batchPost();
+  if (!r.text) return;
+  try { await navigator.clipboard.writeText(r.text); } catch { return; }
+  const note = [`Copied ${r.count} texts`];
+  if (r.ties.length) note.push(`first choice taken for ${r.ties.join(', ')}`);
+  if (r.lost.length) note.push(`the picked hex is not available after the earlier moves for ${r.lost.join(', ')}: first choice taken`);
+  if (r.skipped.length) note.push(`no card data for ${r.skipped.join(', ')}`);
+  setTurn({ copiedAll: true, batchNote: note.join('; ') });
+  setTimeout(() => setTurn({ copiedAll: false }), 1500);
+  setTimeout(() => setTurn({ batchNote: '' }), 12000);
 }
 
 async function copyPost() {
@@ -349,13 +407,14 @@ function statusText() {
   const c = choices.find(x => x.key === T.choice) ?? choices[0];
   const names = new Map(last.hs.figures.map(f => [hexKey(f.col, f.row), figName(f)]));
   const targets = c ? c.groups.map(g => g.map(t => esc(names.get(t) ?? t)).join(', ')).join(' or ') : '';
-  return viewStatus(view.kind, { attacks, targets, hex: c ? label(c) : '', stays: !!c && c.key === cur, options: choices.length });
+  return viewStatus(view.kind, { attacks, targets, hex: c ? label(c) : '', stays: !!c && c.key === cur, options: choices.length, sight: !!last.res.sightBlocked });
 }
 
 // Show, BGG text and Move, with the arrow for the next monster and the one for the details.
 function barHtml() {
   const T = uiState.turn, sel = selectedMonster(), cur = sel ? hexKey(Number(sel.x), Number(sel.y)) : null;
   const chosen = last?.choices.find(c => c.key === T.choice), next = nextInfo();
+  const all = sel ? typeStandees().length : 0, allReady = all >= 2 && !!cardInfo(sel)?.opts;
   const canMove = T.on && !!chosen && chosen.key !== cur, canPost = (T.on && (!!chosen || ['idle', 'stunned'].includes(last?.view.kind))) || !!T.lastPost;
   return `<div class="sp-turn-bar">` +
     `<button type="button" class="sp-turn-btn${T.on ? ' on' : ''}" data-turn="toggle" aria-pressed="${T.on}">${T.on ? 'Hide' : 'Show'}</button>` +
@@ -363,7 +422,8 @@ function barHtml() {
     `<button type="button" class="sp-turn-btn" data-turn="confirm"${canMove ? '' : ' disabled'}>Move${canMove ? ' ' + label(chosen) : ''}</button>` +
     `<button type="button" class="sp-turn-icon" data-turn="next" title="${next ? 'Next: ' + esc(next.name) : 'No other monster to act'}" aria-label="Next monster"${next ? '' : ' disabled'}>&#9654;</button>` +
     `<button type="button" class="sp-turn-icon" data-turn="detailsOpen" aria-expanded="${T.detailsOpen}" aria-label="Details">${T.detailsOpen ? '&#9662;' : '&#9656;'}</button>` +
-    `</div>`;
+    `</div>` +
+    (all >= 2 ? `<div class="sp-turn-bar sp-turn-bar--all"><button type="button" class="sp-turn-btn" data-turn="postAll"${allReady ? '' : ' disabled'} title="BGG text of all ${all} of this type, in the order they act, each after the move of the ones before it">${T.copiedAll ? 'Copied' : `BGG text for all ${all}`}</button></div>` : '');
 }
 
 // The details: the notes of the card, the initiatives, the values with the area (behind a button), the result and the choice.
@@ -392,13 +452,14 @@ function detailsHtml() {
 export function turnPanelHtml(kind) {
   if (kind !== 'monster') return '';
   const status = statusText();
-  return `<div class="sp-action-section sp-turn"><div class="sp-subhead">Monster turn</div>${barHtml()}${status ? `<div class="sp-turn-status">${status}</div>` : ''}${detailsHtml()}</div>`;
+  const note = uiState.turn.batchNote;
+  return `<div class="sp-action-section sp-turn"><div class="sp-subhead">Monster turn</div>${barHtml()}${status ? `<div class="sp-turn-status">${status}</div>` : ''}${note ? `<div class="sp-turn-status">${esc(note)}</div>` : ''}${detailsHtml()}</div>`;
 }
 
 export function initTurnPanel(panel) {
   panel.addEventListener('click', e => {
     const hexEl = e.target.closest('[data-turn-hex]');
-    if (hexEl) { setTurn({ choice: hexEl.dataset.turnHex }); return; }
+    if (hexEl) { pickChoice(hexEl.dataset.turnHex); return; }
     const cellEl = e.target.closest('[data-turn-aoe]');
     if (cellEl) {
       const T0 = uiState.turn, i = Number(cellEl.dataset.turnAoe), a = T0.cells ? areaIndexes(T0.cells, !(T0.range > 0)).indexes : T0.area;
@@ -411,6 +472,7 @@ export function initTurnPanel(panel) {
     if (k === 'toggle') setTurn({ on: !T.on });
     else if (k === 'confirm') confirmMove();
     else if (k === 'post') copyPost();
+    else if (k === 'postAll') copyAll();
     else if (k === 'next') goNext();
     else if (k === 'fly') setTurn({ fly: !T.fly, jump: T.fly ? T.jump : false });
     else if (k === 'clearArea') setTurn({ area: [], cells: null });

@@ -26,15 +26,16 @@ export function turnView(res, { moves, attacks, stunned = false }) {
 }
 
 // The line under the buttons for a view. `targets` the names it attacks, `hex` the end hex label, `stays` the end hex is where it stands, `options` the
-// number of end hexes to choose from.
-export function viewStatus(kind, { attacks, targets = '', hex = '', stays = false, options = 1 } = {}) {
+// number of end hexes to choose from, `sight` (res.sightBlocked) the reason for no attack is sight, not the distance: No LOS instead of Out of range.
+export function viewStatus(kind, { attacks, targets = '', hex = '', stays = false, options = 1, sight = false } = {}) {
   if (kind === 'stunned') return 'Stunned: no action';
   if (kind === 'idle') return '';
-  if (kind === 'nofocus') return attacks ? 'No target in reach' : 'No target to move towards';
+  if (kind === 'nofocus') return attacks ? (sight ? 'No LOS' : 'No target in reach') : 'No target to move towards';
   if (options > 1) return `${options} options: pick a hex`;
   if (kind === 'attack') return `Attack ${targets} from ${hex}`;
-  if (kind === 'out') return 'Out of range';
-  if (kind === 'approach') return attacks ? (stays ? 'Out of range' : `Out of range, to ${hex}`) : (stays ? 'Cannot get closer' : `Moves to ${hex}`);
+  const none = sight ? 'No LOS' : 'Out of range';
+  if (kind === 'out') return none;
+  if (kind === 'approach') return attacks ? (stays ? none : `${none}, to ${hex}`) : (stays ? 'Cannot get closer' : `Moves to ${hex}`);
   return stays ? `Stays at ${hex}` : `Moves to ${hex}`;
 }
 

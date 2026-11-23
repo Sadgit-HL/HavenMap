@@ -135,4 +135,13 @@ export const tests = {
     assert.deepEqual([two.canAttackFocus, two.actions.map(a => [a.col, a.row, a.attack])], [false, [[4, 6, false]]], 'slide to row 5, one step to row 6');
     assert.equal(run(hs, me, { move: 4, range: 0 }).canAttackFocus, true, 'slide, then three steps to the hex next to the character');
   },
+  'monster move: no attack because of sight is told apart from the distance'() {
+    const hs = field([M(2, 5), C(5, 5)]), me = { col: 2, row: 5 };
+    assert.equal(run(hs, me, { move: 0, range: 4, canSee: () => false }).sightBlocked, true, 'in range, out of sight');
+    const seen = run(hs, me, { move: 0, range: 4 });
+    assert.deepEqual([seen.sightBlocked, seen.canAttackFocus], [false, true], 'in range and in sight: it attacks');
+    assert.equal(run(field([M(2, 5), C(10, 5)]), me, { move: 0, range: 4 }).sightBlocked, false, 'too far: the distance');
+    assert.equal(run(hs, me, { move: 0, range: 4, attack: false, canSee: () => false }).sightBlocked, false, 'without an attack sight is not the reason');
+    assert.equal(run(field([M(2, 5), C(10, 5)]), me, { move: 3, range: 4, canSee: () => false }).sightBlocked, false, 'out of sight and also out of range from every hex it can reach');
+  },
 };

@@ -15,8 +15,10 @@
 //   area         area attack: axial offsets [q, r] of the pattern (areaOffsets() makes them from a 7 by 7 drawing); from the monster for range 0
 //   canSee(a, b) line of sight between two hexes (scripts/los.js makeSightLine), default always true
 //
-// Output: { focuses, canAttackFocus, actions, floorKnown }
+// Output: { focuses, canAttackFocus, actions, floorKnown, sightBlocked }
 //   focuses         the tied focus figures; the players choose among them
+//   sightBlocked    an attack is not possible this turn and the reason is sight: from an end hex the monster can reach, a character is in range but out of sight
+//                   (and none is in range and in sight). Otherwise the reason is the distance.
 //   canAttackFocus  the focus can be attacked this turn
 //   actions         [{ col, row, focus: [key], attack: bool, targets: [key], area: [key], destinations: [key] }], one per end hex and group of targets that tie.
 //                   attack: the monster attacks from there, targets are the figures it attacks (the focus is always one of them). Without a
@@ -213,6 +215,16 @@ export function solveMove(hs, o) {
     return false;
   };
 
+  // no attack is possible this turn because of sight: some reachable end hex has a character in range that it cannot see, and no reachable end hex has one it can
+  const sightBlocked = attack && (() => {
+    let blocked = false;
+    for (const k of endHexes) {
+      if (from.get(k).d > move) continue;
+      for (const f of characters) if (proxFrom.get(keyOf(f)).has(k)) { if (canSee(f, cell(k))) return false; blocked = true; }
+    }
+    return blocked;
+  })();
+
   // focus: for each character the hexes it can be attacked from; the best by (traps, distance, proximity, initiative)
   const options = [];
   for (const f of characters) {
@@ -224,7 +236,7 @@ export function solveMove(hs, o) {
   }
   const focusTuple = x => [from.get(x.k).t, from.get(x.k).d, proxFromActive.get(x.fk) ?? INF, initOf(x.f)];
   const bestFocus = minimize(options, focusTuple);
-  if (!bestFocus.items.length) return { ...stay, floorKnown: hs.floorKnown };
+  if (!bestFocus.items.length) return { ...stay, floorKnown: hs.floorKnown, sightBlocked };
   const focuses = [...new Map(bestFocus.items.map(x => [x.fk, x.f])).values()];
   const canAttackFocus = bestFocus.best[1] <= move;
 
@@ -357,6 +369,6 @@ export function solveMove(hs, o) {
       }
     }
   }
-  if (!actions.size) return { ...stay, focuses, canAttackFocus, floorKnown: hs.floorKnown };
-  return { focuses, canAttackFocus, actions: [...actions.values()], floorKnown: hs.floorKnown };
+  if (!actions.size) return { ...stay, focuses, canAttackFocus, floorKnown: hs.floorKnown, sightBlocked };
+  return { focuses, canAttackFocus, actions: [...actions.values()], floorKnown: hs.floorKnown, sightBlocked };
 }

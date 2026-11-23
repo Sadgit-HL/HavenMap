@@ -74,7 +74,7 @@ function subText(s, ctx) {
 //   remove   the conditions that end with this turn ('stun', 'immobilize', 'disarm'), written at the end: remove [icons]     stunned  the monster does nothing: the text is only that it removes the stun
 //   from, to hex labels ('E5')         points   the move value of the card, written after the move icon (move 3 E5 to F4), or null for none
 //   towards  label of the hex it moves towards when it cannot attack this turn, or null
-//   noAttack null, or why there is no attack this turn ('out of range', 'no target in reach')
+//   noAttack null, or why there is no attack this turn ('out of range', 'no LOS', 'no target in reach')
 //   attack   null without an attack, or { damage, range, targets: number, effects: [{ t, v }] }
 //   targets  [[names]]: the groups of targets that tie (one group is the usual case)    focus  names of the focus, marked when there are several targets
 //   extras   the other actions of the card (shield, retaliate, heal ...), statFx the stat card's extras, chars the number of characters
@@ -96,15 +96,21 @@ export function turnPost({ name, role = 'normal', standee = null, stunned = fals
   const name_ = (n, g) => `[b]${n}[/b]${g.length > 1 && focus.includes(n) ? ' (focus)' : ''}${dis(n) ? ' (disadvantage)' : ''}`;
 
   const several = attack && targets.some(g => g.length > 1);                      // several targets: a line for each of them
-  // The parts in the order of the card, top to bottom (`order`: 'move', 'attack', the index of each extra). Without an order: the move, the attack, the
-  // other actions (with several targets the other actions come before the attack, on the first line). A card without a move starts with where it stays.
-  let seq = order && order.length ? [...order] : several ? ['move', ...moreAt.map((_, i) => i), 'attack'] : ['move', 'attack', ...moreAt.map((_, i) => i)];
-  if (!seq.includes('move')) seq.unshift('move');
+  // The parts in the order of the card, top to bottom (`order`: 'move', 'attack', the index of each extra); "stays at" takes the place of the move. Without an
+  // order: the move, the attack, the other actions (with several targets the other actions come before the attack, on the first line). A card without a
+  // move does not say where it stays.
+  const known = Array.isArray(order);                                                // the card is known: its order says where the move stands
+  let seq = known ? [...order] : several ? ['move', ...moreAt.map((_, i) => i), 'attack'] : ['move', 'attack', ...moreAt.map((_, i) => i)];
+  if (!seq.includes('move') && (!known || from !== to)) seq.unshift('move');          // a card without a move says nothing about staying; a move made anyway is written first
   if (!seq.includes('attack') && (attack || noAttack)) seq.splice(seq.indexOf('move') + 1, 0, 'attack');
   moreAt.forEach((_, i) => { if (!seq.includes(i)) seq.push(i); });
   const on = attack && targets.length ? `${[...parts, ...effects].join(' ')} on ${targets.map(g => g.map(n => name_(n, g)).join(' and ')).join(' or ')}` : '';
   const text = t => (t === 'move' ? move : t === 'attack' ? (on || (noAttack ? `no attack: ${noAttack}` : '')) : moreAt[t]);
-  if (!several) return `${who}: ${[...seq.map(text), rem].filter(Boolean).join(', ')}`;
+  if (!several) {
+    const out = seq.map(text).filter(Boolean);
+    if (!out.length) out.push(move);                                                 // nothing else to say: where it stays
+    return `${who}: ${[...out, rem].filter(Boolean).join(', ')}`;
+  }
 
   const ai = seq.indexOf('attack');
   const before = seq.slice(0, ai).map(text).filter(Boolean), after = seq.slice(ai + 1).map(text).filter(Boolean);

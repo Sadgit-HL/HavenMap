@@ -80,4 +80,13 @@ export const tests = {
     assert.equal(viewStatus('attack', { attacks: true, targets: 'A', hex: 'D5', options: 3 }), '3 options: pick a hex');
     assert.equal(viewStatus('attack', { attacks: true, targets: 'A', hex: 'D5', options: 1 }), 'Attack A from D5');
   },
+  'monster view: No LOS instead of Out of range when sight is the reason'() {
+    assert.equal(viewStatus('out', { attacks: true, sight: true }), 'No LOS');
+    assert.equal(viewStatus('approach', { attacks: true, hex: 'E5', sight: true }), 'No LOS, to E5');
+    assert.equal(viewStatus('approach', { attacks: true, hex: 'C5', stays: true, sight: true }), 'No LOS');
+    assert.equal(viewStatus('nofocus', { attacks: true, sight: true }), 'No LOS');
+    assert.equal(viewStatus('nofocus', { attacks: true }), 'No target in reach');
+    assert.equal(viewStatus('out', { attacks: true }), 'Out of range');
+    assert.equal(viewStatus('nofocus', { attacks: false, sight: true }), 'No target to move towards', 'a card without an attack never talks about sight');
+  },
 };
