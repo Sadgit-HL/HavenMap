@@ -7,6 +7,7 @@
 | `index.html`, `scripts/`, `styles/main.css` | the map app (standalone HavenMap) |
 | `scripts/state.js` | map state, `mapVersion` 5.0.0, migration chain, URL hash codec |
 | `scripts/attackMods.js`, `scripts/decks.js` | attack modifier decks and the deck panel |
+| `scripts/mapOptions.js` | map page options kept in the browser: which deck features are shown (`mapOption`, `setMapOption`, `subscribeMapOptions`); read by `decks.js`, `sidebar.js`, `mobile.js` |
 | `scripts/hexGrid.js`, `tileMask.js`, `hexState.js`, `los.js`, `monsterMove.js`, `monsterCard.js`, `monsterPost.js`, `monsterTurn.js` | the monster turn of the map page (branch `explore/monster-automation`, not merged; see `monster-automation.md`). Pure logic except `monsterTurn.js`, which holds the panel and the board marks (`layer-solver` in `index.html`) |
 | `scripts/amd/` | app-agnostic card rendering and hero deck model (see `hero-decks.md`) |
 | `scripts/campaign/` | campaign logic, no DOM: `record.js`, `edit.js`, `events.js`, `outcomes.js`, `flow.js`, `amdDeck.js`, `amdCompare.js` (advantage and disadvantage card comparison), `rest.js` (short rest), `draws.js` (random side scenario and item design pools), `itemList.js`, `changelog.js`, `store.js`, `classMap.js`, `classList.js`, `classTokens.js`, `traits.js`, `cardImages.js`, `bggIcons.js`, `bggBanners.js`, `monsters.js` (Monsters tab), `sync.js` (shared campaign) |

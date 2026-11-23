@@ -2,11 +2,15 @@
 
 Verified 2026-11-21 against `main` at `1bdb799` and the branch `explore/monster-automation` (pushed, not merged, see `monster-automation.md`). "Verified" means the file or function exists and was read or grepped. Behaviour in a browser is only claimed where the log says so.
 
+Changes of 2026-11-23 (roll mode, character name, deck options, monster text order, All button, No LOS) are listed in `decisions.md` and below. They are checked by the Node checks (303 pass) and, where said, by a Node run with browser stubs; none of them was driven in a browser (no Playwright on the machine that day).
+
 ## Map app (standalone HavenMap)
 
 Done:
 - Monster turn (in `main` since 2026-11-22): optional bar `Show | BGG text | Move` above the Active ability card of a selected monster, Next, details. Focus, end hex, targets, areas, ice, tile borders as walls, line of sight from any point to any point, floor masks for the Gloomhaven 2e tiles, Secretariat monster data. 288 Node checks; the panel was last driven in headless Edge on 2026-11-21. Details and limits in `monster-automation.md`.
-- Character name (2026-11-23): a click on a mercenary's banner in the sidebar sets a name (`name` on the mercenary); the monster turn text writes `Name (Class)`. The BGG text puts a space between an icon and its value. Node checks pass (294); not driven in a browser.
+- Character name (2026-11-23): a click on a mercenary's banner in the sidebar sets a name (`name` on the mercenary); the monster turn text writes `Name (Class)`. The BGG text puts a space between an icon and its value. Not driven in a browser.
+- Map deck options (2026-11-23, `scripts/mapOptions.js`): section Decks of the map settings panel, two options (monster ability decks, attack modifier decks), per browser, both on by default; with the ability decks off the Active ability section of a monster is a picker with a drawer of the deck's cards (`abilityPickerHtml`, `setActiveCard`). Node check of the option storage only; the picker and the hidden buttons were not driven in a browser.
+- Monster turn additions (2026-11-23): the BGG text follows the order of the card (`order` of `cardOptions`, `readingOrder`), a card without a move does not say `stays at`, the All button copies the texts of all standees of a type in one go (sequential, picks for ties remembered per standee), and No LOS replaces Out of range when sight is the reason (`sightBlocked`). Node checks for the order, the text and the solver flag; the All button was also run in Node with browser stubs on a small map. Not driven in a browser.
 - Map editing, state in the URL hash (`#lz:`), `mapVersion` 5.0.0 with migrations in `scripts/state.js`.
 - Monster and ally attack modifier decks, with Bless and Curse, draw, return, shuffle and GeekRoller code (`scripts/attackMods.js`, `scripts/decks.js`).
 - Per-hero attack modifier decks from class perks (43 classes, 711 perk entries in `scripts/games/perks.js`). Tabs per hero, perk list with repeated and multi-box perks. Verified.

@@ -1,6 +1,6 @@
 # Monster automation (map page)
 
-In `main` since 2026-11-22 (owner decision; branch `explore/monster-automation`). The Node checks pass (288). The panel was last driven in headless Edge on 2026-11-21; the changes since (details layout, settings popover in the sidebar header, consume icons, stat card effects) were checked by the Node tests only; the Frosthaven page loads in headless Edge (2026-11-22). The monster turn works for the Gloomhaven game only.
+In `main` since 2026-11-22 (owner decision; branch `explore/monster-automation`). The Node checks pass (303). The panel was last driven in headless Edge on 2026-11-21; the changes since (details layout, settings popover in the sidebar header, consume icons, stat card effects) were checked by the Node tests only; the Frosthaven page loads in headless Edge (2026-11-22). The monster turn works for the Gloomhaven game only.
 
 The map page can work out a monster's turn: who it goes for (the focus), where it ends its move, whom it attacks. The players check it, move the monster with one click and copy a forum text. The attack roll stays in GeekRoller (forum play: everyone can verify those rolls). Nothing runs until the player asks (the Monster turn section of a selected monster).
 
