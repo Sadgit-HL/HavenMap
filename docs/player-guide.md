@@ -2,7 +2,7 @@
 
 ## Where we are
 
-The Gloomhaven 2e campaign in the app has been brought up to date with where our play-by-forum game stands now: scenarios, items, prosperity, reputation and characters. Check your own character and tell the campaign owner if something looks off.
+The Gloomhaven 2e campaign in the app has been brought up to date with where our play-by-forum game stands now: scenarios, items, prosperity, reputation and characters.
 
 ## Getting in
 
@@ -12,7 +12,7 @@ Open the invite link you got. It is personal, so keep it to yourself. Your chang
 
 Go to the **Mercenaries** tab and pick your character from the name in the top bar. It works on a phone too, with its own layout.
 
-- **Hand:** your ability cards. Drag them around freely, no Edit mode needed.
+- **Hand:** your ability cards. Drag them around freely
 - **Play slots:** drag two cards from your hand into the two slots. Slot 1 sets your initiative. Click a card to flip it.
 - **Active, discard and lost:** drag cards there as the game goes. At the end of a round, drag your played cards to discard.
 - **Pick your hand for a scenario:** click your level badge to open the hand editor. Lock, unlock or choose your cards, then hit Confirm hand. At level-up you pick your new card there too.
@@ -53,11 +53,3 @@ Select a monster on the map page. **Monster turn** sits above its ability card.
 - Conditions on the monster count: stunned does nothing, immobilized does not move, disarmed does not attack (it still moves as if it would). The BGG text ends with the conditions to remove.
 
 Gloomhaven 2e tiles only so far.
-
-## Oops
-
-Mis-click? **Undo** (or Ctrl+Z) takes it back. **History** shows who changed what.
-
-## Leave alone
-
-Edit mode and the Overview and Scenarios settings are mostly for the campaign owner. Look around, but ask before changing campaign things.
