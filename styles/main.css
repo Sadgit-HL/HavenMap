@@ -2544,3 +2544,24 @@ body {
   color: rgba(255 255 255 / 0.92); background: rgba(255 255 255 / 0.08);
   border: 1px solid rgba(255 255 255 / 0.3); border-radius: 4px; padding: 2px 6px; margin-bottom: 6px;
 }
+
+/* Deck options (scripts/mapOptions.js): hidden buttons, and the ability card picker of the monster inspect panel */
+.deck-toggle-btn[hidden], .el-divider[hidden], .mobile-tab[hidden] { display: none !important; }
+.sp-ability-slot {
+  display: block; width: 100%; padding: 0; margin-bottom: 10px; cursor: pointer; background: none; border: 0; text-align: center;
+}
+.sp-ability-slot > span {
+  display: block; padding: 28px 8px; border: 1px dashed rgba(255 255 255 / 0.3); border-radius: 8px;
+  color: rgba(255 255 255 / 0.6); font-size: 13px;
+}
+.sp-ability-slot:hover > span { border-color: rgba(255 255 255 / 0.6); color: rgba(255 255 255 / 0.9); }
+.sp-ability-slot .sp-active-card { display: block; width: 100%; }
+.sp-ability-drawer { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 10px; }
+.sp-ability-opt { position: relative; padding: 0; border: 2px solid transparent; border-radius: 8px; background: none; cursor: pointer; }
+.sp-ability-opt img { display: block; width: 100%; border-radius: 6px; }
+.sp-ability-opt:hover { border-color: rgba(255 255 255 / 0.5); }
+.sp-ability-opt.is-active { border-color: #f0b428; }
+.sp-ability-init {
+  position: absolute; left: 6px; top: 6px; min-width: 22px; padding: 1px 5px; border-radius: 10px;
+  background: rgba(0 0 0 / 0.7); color: #fff; font-size: 11px; font-weight: 600; text-align: center;
+}

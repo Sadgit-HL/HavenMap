@@ -9,6 +9,7 @@ import { colLabel } from './hex.js';
 import { displayCurrentHp } from './hp.js';
 import { openDeckPanel, closeDeckPanel, isDeckPanelOpen, toggleDeckView, deckPanelView } from './decks.js';
 import { assetPath } from './data.js';
+import { mapOption, subscribeMapOptions } from './mapOptions.js';
 
 const KIND_TABLE = {
   tile: TILES,
@@ -191,8 +192,8 @@ function decksHtml() {
         title="${title}" aria-label="${title}"><img src="${src}" alt="" draggable="false"></button>`;
   return `
     <div class="mobile-panel-row mobile-panel-row--decks">
-      ${btn('am', 'am-toggle', 'Attack modifier deck', assetPath.amBack())}
-      ${btn('abilities', 'decks-toggle', 'Monster ability decks', assetPath.maBack())}
+      ${mapOption('am') ? btn('am', 'am-toggle', 'Attack modifier deck', assetPath.amBack()) : ''}
+      ${mapOption('abilities') ? btn('abilities', 'decks-toggle', 'Monster ability decks', assetPath.maBack()) : ''}
     </div>`;
 }
 
@@ -246,6 +247,7 @@ function render() {
     selectionHtml();
 
   document.querySelectorAll('[data-mobile-panel]').forEach(btn => {
+    if (btn.dataset.mobilePanel === 'decks') btn.hidden = !mapOption('abilities') && !mapOption('am');   // no deck feature left: no Decks tab
     btn.classList.toggle('is-active', btn.dataset.mobilePanel === active);
   });
 }
@@ -409,5 +411,6 @@ export function initMobile() {
 
   subscribe(render);
   subscribeUI(render);
+  subscribeMapOptions(render);
   render();
 }

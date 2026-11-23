@@ -12,6 +12,7 @@ import { buildCard } from './amd/card.js?v=6';
 import { createHoverPreview, previewImage } from './hoverPreview.js';
 import { perkTextHtml, perkRuleNote } from './amd/perkText.js';
 import { escapeHtml as esc } from './escape.js';
+import { mapOption, subscribeMapOptions } from './mapOptions.js';
 import {
   AM_SPECIAL, amDecks, amSupportsImbue, amIsPartySpecial, amSpecialCap, amCardLocked, amState, amClassName, amHeroPerks, amToggleBox, amDeckInfo, amDraw, amReturn, amAdjust,
   amShuffleNow, amEndRoundPatch, amRollerCode, amEditCard, amSetImbue, amResetComposition, AM_MAX_PER_TYPE,
@@ -182,6 +183,24 @@ export function activeCardsFor(monsterId) {
     .sort((a, b) => a.init - b.init || a.n - b.n)
     .map(c => ({ n: c.n, init: c.init, s: Boolean(c.s), src: assetPath.abilityCard(slug, c.n) }));
   return cards.length ? { slug, label: deckLabel(slug), cards } : null;
+}
+
+// The ability cards of a monster's deck for the picker (sidebar, when the ability decks are hidden): lowest initiative first, active marked.
+export function monsterDeckCards(monsterId) {
+  const slug = deckSlugFor(monsterId);
+  if (!slug) return null;
+  const ds = deckState(slug);
+  const cards = cardsOf(slug).map(c => ({ n: c.n, init: c.init, s: Boolean(c.s), src: assetPath.abilityCard(slug, c.n), active: ds.active.includes(c.n) }))
+    .sort((a, b) => a.init - b.init || a.n - b.n);
+  return cards.length ? { slug, label: deckLabel(slug), cards } : null;
+}
+
+// Sets the one active card of a deck by hand (the picker): an earlier active card goes back to the deck, a card of the discard is taken from it.
+export function setActiveCard(slug, n) {
+  if (!cardOf(slug, n)) return;
+  const ds = deckState(slug);
+  const pool = [...ds.deck, ...ds.active].filter(x => x !== n).sort(byNumber);
+  patch({ decks: withDeck(slug, { deck: pool, discard: ds.discard.filter(x => x !== n), active: [n] }) });
 }
 
 let selectedSlug = null; // which tab is shown; view state only, not saved in the map link
@@ -367,9 +386,14 @@ function amHtml() {
   </div>`;
 }
 
-export function openDeckPanel(v = 'abilities') { view = v; renderDecks(); }
+// Which deck views are shown is a browser option (scripts/mapOptions.js); a hidden view never opens.
+const viewShown = v => mapOption(v);
+export function openDeckPanel(v = 'abilities') {
+  view = viewShown(v) ? v : viewShown('abilities') ? 'abilities' : viewShown('am') ? 'am' : null;
+  renderDecks();
+}
 export function closeDeckPanel() { if (view) { view = null; renderDecks(); } }
-export function toggleDeckView(v) { view = view === v ? null : v; renderDecks(); }
+export function toggleDeckView(v) { if (!viewShown(v)) return; view = view === v ? null : v; renderDecks(); }
 export function isDeckPanelOpen() { return view !== null; }
 export function deckPanelView() { return view; }
 
@@ -383,6 +407,7 @@ function mountAmCards(panel) {
 }
 
 export function renderDecks() {
+  if (view && !viewShown(view)) view = null;
   hoverPreview?.hide(); // the hovered card is about to be replaced
   document.getElementById('deck-toggle')?.classList.toggle('is-active', view === 'abilities');
   document.getElementById('am-toggle')?.classList.toggle('is-active', view === 'am');
@@ -436,6 +461,7 @@ export function initDecks() {
     };
     const divider = document.createElement('div');
     divider.className = 'el-divider';
+    divider.id = 'deck-divider';
     playGroup.insertBefore(makeBtn('am-toggle', 'Attack modifier deck', assetPath.amBack(), 'am'), endBtn);
     playGroup.insertBefore(makeBtn('deck-toggle', 'Monster ability decks', assetPath.maBack(), 'abilities'), endBtn);
     playGroup.insertBefore(divider, endBtn);
@@ -463,9 +489,20 @@ export function initDecks() {
     if (view === 'am') renderDecks();
   });
 
+  // The bottom bar buttons follow the options (the panel closes when its view is hidden).
+  const applyOptions = () => {
+    const a = mapOption('abilities'), m = mapOption('am');
+    const show = (id, on) => { const el = document.getElementById(id); if (el) el.hidden = !on; };
+    show('am-toggle', m); show('deck-toggle', a); show('deck-divider', a || m);
+    renderDecks();
+  };
+  subscribeMapOptions(applyOptions);
+
   const panel = document.createElement('div');
   panel.id = 'deck-panel';
   document.body.appendChild(panel);
+
+  applyOptions();   // the hidden deck buttons from the start
 
   hoverPreview = createHoverPreview({
     panel,

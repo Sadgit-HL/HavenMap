@@ -6,7 +6,7 @@ import {
   closeMobileDetails,
   toggleCondPicker, closeCondPicker,
   deselectObject, selectFromStack,
-  selectHex, selectObject, showStack, showStackWithSelection, clearSelection,
+  selectHex, selectObject, showStack, showStackWithSelection, clearSelection, setAbilityDrawer,
 } from './uiState.js';
 import { state, patch, subscribe, withoutAm } from './state.js';
 import { getShareMode, setShareMode, SHARE_MODES } from './share.js';
@@ -14,7 +14,8 @@ import { assetPath, TILES, OVERLAY_OBJECTS, MONSTERS, MERCENARIES, SUMMONS, COND
 import { colLabel, footprintHexes, hexCenter } from './hex.js';
 import { centerBoardPoint, getWheelMode, setWheelMode } from './controls.js';
 import { displayCurrentHp, displayMaxHp } from './hp.js';
-import { activeCardsFor } from './decks.js';
+import { activeCardsFor, monsterDeckCards, setActiveCard } from './decks.js';
+import { mapOption, setMapOption, subscribeMapOptions } from './mapOptions.js';
 import { refreshSolver, turnPanelHtml, initTurnPanel } from './monsterTurn.js';
 
 // ─── Kind → state key + data table ───────────────────────────────────────────
@@ -145,6 +146,25 @@ function classTitle(kind, obj) {
   return titleCase(entry?.title ?? '');
 }
 
+// The Active ability section when the map's ability decks are hidden (scripts/mapOptions.js): the card of the monster's type, and a drawer with
+// the cards of its deck. A click on the section opens the drawer, a click on a card sets it for every monster of the type and closes the drawer.
+function abilityPickerHtml(obj) {
+  const dk = monsterDeckCards(obj.id);
+  if (!dk) return '';
+  const open = uiState.abilityDrawer != null && uiState.abilityDrawer === uiState.selected?.idx;
+  const cur = dk.cards.find(c => c.active);
+  const slot = `<button type="button" class="sp-ability-slot${cur ? ' has-card' : ''}" data-ability-open aria-expanded="${open}" aria-label="Active ability card">` +
+    (cur ? `<img class="sp-stat-card sp-active-card" src="${cur.src}" alt="Initiative ${cur.init}">` : '<span>Select card</span>') + `</button>`;
+  const drawer = open
+    ? `<div class="sp-ability-drawer">${dk.cards.map(c => `<button type="button" class="sp-ability-opt${c.active ? ' is-active' : ''}" data-ability-pick="${c.n}" title="Initiative ${c.init}"><img src="${c.src}" alt="Initiative ${c.init}" loading="lazy" draggable="false"><span class="sp-ability-init">${c.init}</span></button>`).join('')}</div>`
+    : '';
+  return `
+        <div class="sp-card-section sp-active-section sp-active-section--pick">
+          <div class="sp-subhead">Active ability &middot; ${dk.label}</div>
+          ${slot}${drawer}
+        </div>`;
+}
+
 function objectImageSrc(kind, obj) {
   const entry = KIND_MAP[kind]?.data?.byId.get(Number(obj.id));
   if (!entry) return null;
@@ -212,6 +232,17 @@ export function initSidebar() {
       `</label>` +
       `</div>` +
       `<div class="settings-section">` +
+      `<div class="settings-label">Decks</div>` +
+      `<button class="sg-row sg-toggle-row${mapOption('abilities') ? ' active' : ''}" data-map-option="abilities">` +
+      `<span class="sg-row-label">Monster ability decks</span>` +
+      `<span class="sg-switch" aria-hidden="true"></span>` +
+      `</button>` +
+      `<button class="sg-row sg-toggle-row${mapOption('am') ? ' active' : ''}" data-map-option="am">` +
+      `<span class="sg-row-label">Attack modifier decks</span>` +
+      `<span class="sg-switch" aria-hidden="true"></span>` +
+      `</button>` +
+      `</div>` +
+      `<div class="settings-section">` +
       `<div class="settings-label">Help</div>` +
       `<button class="sg-row sg-help-row" data-action="show-shortcuts">` +
       `<span class="sg-row-label">Keyboard shortcuts</span>` +
@@ -223,6 +254,12 @@ export function initSidebar() {
   buildSettingsPanel();
 
   settingsPanel.addEventListener('click', e => {
+    const mapOpt = e.target.closest('[data-map-option]');
+    if (mapOpt) {
+      setMapOption(mapOpt.dataset.mapOption, !mapOption(mapOpt.dataset.mapOption));
+      buildSettingsPanel();
+      return;
+    }
     const toggle = e.target.closest('[data-toggle]');
     if (toggle) {
       const key = toggle.dataset.toggle;
@@ -351,6 +388,7 @@ export function initSidebar() {
 
   subscribeUI(render);
   subscribe(render);
+  subscribeMapOptions(render);
   const panel = document.getElementById('sidebar-panel');
   panel.addEventListener('click', handlePanelClick);
   initTurnPanel(panel);
@@ -527,6 +565,19 @@ function editMercName(header) {
 }
 
 function handlePanelClick(e) {
+  const abilityOpen = e.target.closest('[data-ability-open]');
+  if (abilityOpen) {
+    const idx = uiState.selected?.kind === 'monster' ? uiState.selected.idx : null;
+    setAbilityDrawer(uiState.abilityDrawer === idx ? null : idx);
+    return;
+  }
+  const abilityPick = e.target.closest('[data-ability-pick]');
+  if (abilityPick) {
+    const sel = uiState.selected, m = sel?.kind === 'monster' ? state.monsters[sel.idx] : null, dk = m && monsterDeckCards(m.id);
+    if (dk) { setAbilityDrawer(null); setActiveCard(dk.slug, Number(abilityPick.dataset.abilityPick)); }
+    return;
+  }
+
   const nameHd = e.target.closest('[data-merc-name]');
   if (nameHd && !e.target.closest('.sp-name-input')) { editMercName(nameHd); return; }
   const editableCounter = e.target.closest('.sp-counter-editable');
@@ -1002,7 +1053,8 @@ function objectPanel(kind, idx) {
   let activeHtml = '';
   if (kind === 'monster') {
     const act = activeCardsFor(obj.id);
-    if (act) {
+    if (!mapOption('abilities')) activeHtml = abilityPickerHtml(obj);
+    else if (act) {
       activeHtml = `
         <div class="sp-card-section sp-active-section">
           <div class="sp-subhead">Active ability &middot; ${act.label}</div>

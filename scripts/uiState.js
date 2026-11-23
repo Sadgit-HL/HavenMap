@@ -13,6 +13,7 @@ export const uiState = {
   mobilePanel:      'selection',
   mobileDetailsOpen:false,
   mobileMoveMode:   false,
+  abilityDrawer:    null,   // index of the monster whose ability card drawer is open (the picker, when the map's ability decks are hidden)
   // Monster turn panel (scripts/monsterTurn.js): on = Show: the solver runs and the board is marked (off: nothing runs, nothing is drawn); detailsOpen = the details under the buttons are open (the data loads then too); action
   // values, movement type, initiatives by figure ('kind:id'), areaOpen / valuesOpen = the area grid and the manual values are opened by hand. Session only.
   turn: { on: false, move: 3, range: 0, fly: false, jump: false, tele: false, noAttack: false, targets: 1, all: false, area: [], cells: null, appliedKey: null, pick: {}, areaOpen: false, valuesOpen: false, detailsOpen: false, choice: null, lastPost: '', postFor: null, copied: false, init: {} },
@@ -36,6 +37,7 @@ export function selectHex(col, row) {
 export function selectObject(kind, idx, col, row) {
   uiState.selectedHex  = { col, row };
   uiState.selected     = { kind, idx };
+  uiState.abilityDrawer = null;
   uiState.stack        = [];
   uiState.addPanelOpen = false;
   uiState.mobilePanel  = 'selection';
@@ -105,6 +107,7 @@ export function rememberAdd(kind, id) {
   ].slice(0, 6);
   notify();
 }
+export function setAbilityDrawer(idx) { uiState.abilityDrawer = idx; notify(); }
 export function toggleCondPicker() { uiState.condPickerOpen = !uiState.condPickerOpen; notify(); }
 export function closeCondPicker()  { uiState.condPickerOpen = false; notify(); }
 export function setMobilePanel(panel) {
