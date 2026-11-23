@@ -1,0 +1,3723 @@
+{
+ "v": 1,
+ "ver": 268,
+ "name": "",
+ "players": [
+  {
+   "seat": 0,
+   "name": "Guido"
+  },
+  {
+   "seat": 1,
+   "name": "Mad"
+  },
+  {
+   "seat": 2,
+   "name": "Kevin"
+  },
+  {
+   "seat": 3,
+   "name": "Jeroen"
+  }
+ ],
+ "party": {
+  "insp": 0,
+  "avg": 4,
+  "diff": 1,
+  "diffName": "Normal"
+ },
+ "rep": {
+  "demons": 2,
+  "merchants": 0,
+  "guard": 7
+ },
+ "pros": 12,
+ "imb": 0,
+ "don": 20,
+ "stk": [
+  "Power Of Enhancement",
+  "The Drake Aided"
+ ],
+ "cls": [
+  "Bruiser",
+  "Tinkerer",
+  "Hail",
+  "Cragheart",
+  "Cassandra",
+  "Mindthief",
+  "Silent Knife",
+  "Quartermaster",
+  "Anaphi",
+  "Spellweaver",
+  "Satha"
+ ],
+ "scn": {
+  "0": {
+   "s": 1
+  },
+  "1": {
+   "s": 2,
+   "l": 1,
+   "p": 4,
+   "ch": [
+    53
+   ],
+   "d": "2026-05-21"
+  },
+  "2": {
+   "s": 2,
+   "l": 1,
+   "p": 4,
+   "ch": [
+    17,
+    49
+   ],
+   "d": "2026-06-04"
+  },
+  "3": {
+   "s": 2,
+   "l": 1,
+   "p": 4,
+   "ch": [
+    4
+   ],
+   "d": "2026-06-16"
+  },
+  "4": {
+   "s": 1
+  },
+  "5": {
+   "s": 2,
+   "l": 1,
+   "p": 4,
+   "ch": [
+    32
+   ],
+   "d": "2026-07-09"
+  },
+  "6": {
+   "s": 0
+  },
+  "7": {
+   "s": 1
+  },
+  "8": {
+   "s": 0
+  },
+  "9": {
+   "s": 1
+  },
+  "10": {
+   "s": 2,
+   "l": 2,
+   "p": 4,
+   "ch": [
+    18
+   ],
+   "d": "2026-09-07"
+  },
+  "11": {
+   "s": 0
+  },
+  "12": {
+   "s": 0
+  },
+  "13": {
+   "s": 1
+  },
+  "14": {
+   "s": 2,
+   "l": 2,
+   "p": 4,
+   "ch": [
+    54
+   ],
+   "d": "2026-09-22"
+  },
+  "15": {
+   "s": 0
+  },
+  "16": {
+   "s": 0
+  },
+  "17": {
+   "s": 0
+  },
+  "18": {
+   "s": 0
+  },
+  "19": {
+   "s": 0
+  },
+  "20": {
+   "s": 0
+  },
+  "21": {
+   "s": 0
+  },
+  "22": {
+   "s": 0
+  },
+  "23": {
+   "s": 0
+  },
+  "24": {
+   "s": 0
+  },
+  "25": {
+   "s": 0
+  },
+  "26": {
+   "s": 0
+  },
+  "27": {
+   "s": 0
+  },
+  "28": {
+   "s": 1
+  },
+  "29": {
+   "s": 0
+  },
+  "30": {
+   "s": 1
+  },
+  "31": {
+   "s": 2,
+   "l": 2,
+   "p": 4,
+   "d": "2026-10-07"
+  },
+  "32": {
+   "s": 2,
+   "l": 2,
+   "p": 4,
+   "d": "2026-11-03"
+  },
+  "33": {
+   "s": 1
+  },
+  "34": {
+   "s": 0
+  },
+  "35": {
+   "s": 0
+  },
+  "36": {
+   "s": 0
+  },
+  "37": {
+   "s": 0
+  },
+  "38": {
+   "s": 0
+  },
+  "39": {
+   "s": 0
+  },
+  "40": {
+   "s": 0
+  },
+  "41": {
+   "s": 0
+  },
+  "42": {
+   "s": 0
+  },
+  "43": {
+   "s": 0
+  },
+  "44": {
+   "s": 0
+  },
+  "45": {
+   "s": 0
+  },
+  "46": {
+   "s": 0
+  },
+  "47": {
+   "s": 0
+  },
+  "48": {
+   "s": 0
+  },
+  "49": {
+   "s": 0
+  },
+  "50": {
+   "s": 0
+  },
+  "51": {
+   "s": 0
+  },
+  "52": {
+   "s": 0
+  },
+  "53": {
+   "s": 0
+  },
+  "54": {
+   "s": 0
+  },
+  "55": {
+   "s": 0
+  },
+  "56": {
+   "s": 0
+  },
+  "57": {
+   "s": 0
+  },
+  "58": {
+   "s": 0
+  },
+  "59": {
+   "s": 0
+  },
+  "60": {
+   "s": 0
+  },
+  "61": {
+   "s": 0
+  },
+  "62": {
+   "s": 0
+  },
+  "63": {
+   "s": 0
+  },
+  "64": {
+   "s": 0
+  },
+  "65": {
+   "s": 0
+  },
+  "66": {
+   "s": 0
+  },
+  "67": {
+   "s": 0
+  },
+  "68": {
+   "s": 0
+  },
+  "69": {
+   "s": 0
+  },
+  "70": {
+   "s": 1
+  },
+  "71": {
+   "s": 0
+  },
+  "72": {
+   "s": 0
+  },
+  "73": {
+   "s": 0
+  },
+  "74": {
+   "s": 0
+  },
+  "75": {
+   "s": 0
+  },
+  "76": {
+   "s": 0
+  },
+  "77": {
+   "s": 0
+  },
+  "78": {
+   "s": 0
+  },
+  "79": {
+   "s": 0
+  },
+  "80": {
+   "s": 0
+  },
+  "81": {
+   "s": 0
+  },
+  "82": {
+   "s": 0
+  },
+  "83": {
+   "s": 0
+  },
+  "84": {
+   "s": 0
+  },
+  "85": {
+   "s": 0
+  },
+  "86": {
+   "s": 1
+  },
+  "87": {
+   "s": 0
+  },
+  "88": {
+   "s": 0
+  },
+  "89": {
+   "s": 0
+  },
+  "90": {
+   "s": 1
+  },
+  "91": {
+   "s": 0
+  },
+  "92": {
+   "s": 0
+  },
+  "93": {
+   "s": 0
+  },
+  "94": {
+   "s": 0
+  },
+  "95": {
+   "s": 0
+  },
+  "96": {
+   "s": 0
+  },
+  "97": {
+   "s": 2,
+   "l": 1,
+   "p": 4,
+   "d": "2026-06-25"
+  },
+  "98": {
+   "s": 0
+  },
+  "99": {
+   "s": 1
+  },
+  "100": {
+   "s": 0
+  }
+ },
+ "chars": [
+  {
+   "traits": [
+    "Educated",
+    "Nimble",
+    "Resourceful"
+   ],
+   "special": [],
+   "deck": [
+    2115,
+    2103,
+    2122,
+    2105,
+    2107,
+    2120,
+    2110,
+    2116,
+    2119,
+    2111,
+    2106,
+    2125
+   ],
+   "disc": [],
+   "act": [],
+   "lost": [],
+   "bench": [
+    2109,
+    2101,
+    2104,
+    2114,
+    2108,
+    2102,
+    2113,
+    2112
+   ],
+   "items": [
+    {
+     "id": 5,
+     "st": [
+      false,
+      false,
+      false
+     ],
+     "s": 0
+    },
+    {
+     "id": 14,
+     "st": [
+      true,
+      false,
+      false
+     ],
+     "s": 0
+    },
+    {
+     "id": 8,
+     "st": [
+      true,
+      false,
+      false
+     ],
+     "s": 0
+    },
+    {
+     "id": 9,
+     "st": [
+      false,
+      false,
+      false
+     ],
+     "s": 0
+    },
+    {
+     "id": 1,
+     "st": [
+      false,
+      false,
+      false
+     ],
+     "s": 0
+    },
+    {
+     "id": 12,
+     "st": [
+      false,
+      false,
+      false
+     ],
+     "s": 0
+    },
+    {
+     "id": 21,
+     "st": [
+      false,
+      true,
+      false
+     ],
+     "s": 0
+    },
+    {
+     "id": 149,
+     "st": [
+      false,
+      true,
+      false
+     ],
+     "s": 0
+    }
+   ],
+   "play": [
+    null,
+    null
+   ],
+   "hord": [
+    2103,
+    2110,
+    2107,
+    2111,
+    2106,
+    2105,
+    2115,
+    2116,
+    2119,
+    2120,
+    2122,
+    2125
+   ],
+   "hgrid": null,
+   "tok": {},
+   "bgo": null,
+   "pqo": null,
+   "pqc": {},
+   "notes": "",
+   "mk": {
+    "c:2107": [
+     {
+      "k": "plus_one",
+      "s": 1,
+      "x": 30.2,
+      "y": 23
+     },
+     {
+      "k": "hex_attack",
+      "s": 1,
+      "x": 81.2,
+      "y": 23.7
+     }
+    ],
+    "c:2110": [
+     {
+      "k": "bless",
+      "s": 1,
+      "x": 50.2,
+      "y": 26.1
+     }
+    ]
+   },
+   "mp": {},
+   "pk": {
+    "chk": 12,
+    "perks": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     10,
+     11,
+     12,
+     13,
+     14
+    ],
+    "boxes": {},
+    "ms": [
+     0,
+     1
+    ]
+   },
+   "id": "c1",
+   "sheet": "Simon",
+   "cls": "Tinkerer",
+   "name": "Simon",
+   "lv": 6,
+   "xp": 309,
+   "gold": 6,
+   "inh": null,
+   "extra": [
+    "Friend of Hero"
+   ],
+   "am": {
+    "n": 24,
+    "code": "1custom24{+0;+0;+0;+0;+0;+0;+1;+1;+1;+1;-0 heal1;-0 heal1;-1;-1;-1;+2;+0;x2;Miss;Bless;+0 heal1 ';+2 strengthen ally';+2 strengthen ally';+2 strengthen ally'}",
+    "faces": [
+     {
+      "f": "+0",
+      "out": false
+     },
+     {
+      "f": "+0",
+      "out": false
+     },
+     {
+      "f": "+0",
+      "out": false
+     },
+     {
+      "f": "+0",
+      "out": false
+     },
+     {
+      "f": "+0",
+      "out": false
+     },
+     {
+      "f": "+0",
+      "out": false
+     },
+     {
+      "f": "+1",
+      "out": true
+     },
+     {
+      "f": "+1",
+      "out": false
+     },
+     {
+      "f": "+1",
+      "out": false
+     },
+     {
+      "f": "+1",
+      "out": false
+     },
+     {
+      "f": "+1",
+      "out": false
+     },
+     {
+      "f": "-0 heal1",
+      "out": false
+     },
+     {
+      "f": "-0 heal1",
+      "out": false
+     },
+     {
+      "f": "-1",
+      "out": false
+     },
+     {
+      "f": "-1",
+      "out": false
+     },
+     {
+      "f": "-1",
+      "out": false
+     },
+     {
+      "f": "+2",
+      "out": false
+     },
+     {
+      "f": "+0",
+      "out": false
+     },
+     {
+      "f": "x2",
+      "out": false
+     },
+     {
+      "f": "Miss",
+      "out": false
+     },
+     {
+      "f": "Curse",
+      "out": true
+     },
+     {
+      "f": "Curse",
+      "out": true
+     },
+     {
+      "f": "Curse",
+      "out": true
+     },
+     {
+      "f": "Bless",
+      "out": false
+     },
+     {
+      "f": "Bless",
+      "out": true
+     },
+     {
+      "f": "Bless",
+      "out": true
+     },
+     {
+      "f": "Curse",
+      "out": true
+     },
+     {
+      "f": "Curse",
+      "out": true
+     },
+     {
+      "f": "Curse",
+      "out": true
+     },
+     {
+      "f": "+0 heal1 '",
+      "out": false
+     },
+     {
+      "f": "+2 strengthen ally'",
+      "out": false
+     },
+     {
+      "f": "+2 strengthen ally'",
+      "out": false
+     },
+     {
+      "f": "+2 strengthen ally'",
+      "out": false
+     }
+    ]
+   },
+   "hand": 12,
+   "own": [
+    1,
+    9,
+    149,
+    12,
+    21,
+    14,
+    8,
+    5
+   ],
+   "seat": 3,
+   "amd": {
+    "curse": 1
+   }
+  },
+  {
+   "traits": [
+    "Nimble",
+    "Outcast",
+    "Persuasive"
+   ],
+   "special": [
+    "friend of the hero"
+   ],
+   "deck": [
+    1019,
+    1020,
+    1003,
+    1004,
+    1001,
+    1015,
+    1010,
+    1023,
+    1011,
+    1012
+   ],
+   "disc": [],
+   "act": [],
+   "lost": [],
+   "bench": [
+    1007,
+    1009,
+    1013,
+    1005,
+    1002,
+    1008,
+    1006
+   ],
+   "items": [
+    {
+     "id": 5,
+     "st": [
+      false,
+      false,
+      false
+     ],
+     "s": 0
+    },
+    {
+     "id": 98,
+     "st": [
+      false,
+      false,
+      false
+     ],
+     "s": 0
+    },
+    {
+     "id": 7,
+     "st": [
+      false,
+      false,
+      false
+     ],
+     "s": 0
+    },
+    {
+     "id": 99,
+     "st": [
+      false,
+      false,
+      false
+     ],
+     "s": 0
+    },
+    {
+     "id": 1,
+     "st": [
+      false,
+      false,
+      false
+     ],
+     "s": 0
+    },
+    {
+     "id": 12,
+     "st": [
+      false,
+      false,
+      false
+     ],
+     "s": 0
+    },
+    {
+     "id": 13,
+     "st": [
+      false,
+      true,
+      false
+     ],
+     "s": 0
+    },
+    {
+     "id": 11,
+     "st": [
+      false,
+      false,
+      false
+     ],
+     "s": 0
+    }
+   ],
+   "play": [
+    null,
+    null
+   ],
+   "hord": null,
+   "hgrid": null,
+   "tok": {},
+   "bgo": null,
+   "pqo": null,
+   "pqc": {},
+   "notes": "",
+   "mk": {
+    "c:1007": [
+     {
+      "k": "plus_one",
+      "s": 1,
+      "x": 62.2,
+      "y": 36.3
+     }
+    ]
+   },
+   "mp": {},
+   "pk": {
+    "chk": 18,
+    "perks": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     11,
+     12,
+     13,
+     14,
+     15
+    ],
+    "boxes": {},
+    "ms": [
+     0,
+     1
+    ]
+   },
+   "id": "c2",
+   "sheet": "Scabs",
+   "cls": "Mindthief",
+   "name": "Scabs",
+   "lv": 6,
+   "xp": 286,
+   "gold": 43,
+   "inh": null,
+   "extra": [
+    "Friend of Hero",
+    "Educated"
+   ],
+   "am": {
+    "n": 14,
+    "code": "1custom14{+0;+0;+2;+2;+1;-1;-2;x2;Miss;+1 -> ;Invis -> ;Invis -> ;+1 Immob;+1 Immob}",
+    "faces": [
+     {
+      "f": "+0",
+      "out": true
+     },
+     {
+      "f": "+0",
+      "out": true
+     },
+     {
+      "f": "+0",
+      "out": false
+     },
+     {
+      "f": "+0",
+      "out": false
+     },
+     {
+      "f": "+2",
+      "out": false
+     },
+     {
+      "f": "+2",
+      "out": false
+     },
+     {
+      "f": "+1",
+      "out": true
+     },
+     {
+      "f": "+1",
+      "out": true
+     },
+     {
+      "f": "+1",
+      "out": true
+     },
+     {
+      "f": "+1",
+      "out": true
+     },
+     {
+      "f": "+1",
+      "out": false
+     },
+     {
+      "f": "-1",
+      "out": false
+     },
+     {
+      "f": "+2",
+      "out": true
+     },
+     {
+      "f": "-2",
+      "out": false
+     },
+     {
+      "f": "x2",
+      "out": false
+     },
+     {
+      "f": "Miss",
+      "out": false
+     },
+     {
+      "f": "+0 control move1",
+      "out": true
+     },
+     {
+      "f": "+0 control move1",
+      "out": true
+     },
+     {
+      "f": "+1 ->",
+      "out": false
+     },
+     {
+      "f": "Invis ->",
+      "out": false
+     },
+     {
+      "f": "Invis ->",
+      "out": false
+     },
+     {
+      "f": "+1 Immob",
+      "out": false
+     },
+     {
+      "f": "+1 Immob",
+      "out": false
+     },
+     {
+      "f": "Bless",
+      "out": true
+     },
+     {
+      "f": "Bless",
+      "out": true
+     },
+     {
+      "f": "Bless",
+      "out": true
+     },
+     {
+      "f": "Curse",
+      "out": true
+     },
+     {
+      "f": "Curse",
+      "out": true
+     },
+     {
+      "f": "Curse",
+      "out": true
+     }
+    ]
+   },
+   "hand": 10,
+   "own": [
+    5,
+    7,
+    99,
+    98,
+    1,
+    12,
+    13,
+    4,
+    11
+   ],
+   "amd": {
+    "curse": 1
+   },
+   "seat": 1
+  },
+  {
+   "traits": [
+    "Chaotic",
+    "Educated",
+    "Resourceful"
+   ],
+   "special": [
+    "friend of the hero"
+   ],
+   "deck": [
+    902,
+    916,
+    920,
+    907,
+    914,
+    918,
+    901,
+    912,
+    911
+   ],
+   "disc": [
+    916
+   ],
+   "act": [
+    902
+   ],
+   "lost": [],
+   "bench": [
+    905,
+    909,
+    903,
+    906,
+    908,
+    910,
+    904
+   ],
+   "items": [
+    {
+     "id": 14,
+     "st": [
+      false,
+      false,
+      false
+     ],
+     "s": 0
+    },
+    {
+     "id": 10,
+     "st": [
+      false,
+      false,
+      false
+     ],
+     "s": 0
+    },
+    {
+     "id": 12,
+     "st": [
+      false,
+      false,
+      false
+     ],
+     "s": 0
+    },
+    {
+     "id": 102,
+     "st": [
+      false,
+      false,
+      false
+     ],
+     "s": 0
+    },
+    {
+     "id": 105,
+     "st": [
+      false,
+      false,
+      false
+     ],
+     "s": 0
+    }
+   ],
+   "play": [
+    {
+     "id": 920,
+     "up": true
+    },
+    {
+     "id": 918,
+     "up": true
+    }
+   ],
+   "hord": null,
+   "hgrid": null,
+   "tok": {
+    "resolve": 2
+   },
+   "bgo": null,
+   "pqo": null,
+   "pqc": {
+    "PQ08": [
+     10,
+     1
+    ]
+   },
+   "notes": "",
+   "mk": {
+    "c:901": [
+     {
+      "k": "plus_one",
+      "s": 1,
+      "x": 62.5,
+      "y": 14.8
+     },
+     {
+      "k": "plus_one",
+      "s": 1,
+      "x": 46.5,
+      "y": 64.6
+     }
+    ],
+    "c:907": [
+     {
+      "k": "plus_one",
+      "s": 1,
+      "x": 46.5,
+      "y": 24.6
+     }
+    ],
+    "c:914": [
+     {
+      "k": "plus_one",
+      "s": 1,
+      "x": 63.5,
+      "y": 31.4
+     }
+    ],
+    "c:912": [
+     {
+      "k": "plus_one",
+      "s": 1,
+      "x": 29.2,
+      "y": 14.5
+     },
+     {
+      "k": "plus_one",
+      "s": 1,
+      "x": 38.5,
+      "y": 14.5
+     },
+     {
+      "k": "plus_one",
+      "s": 1,
+      "x": 47.2,
+      "y": 14
+     },
+     {
+      "k": "plus_one",
+      "s": 1,
+      "x": 56.2,
+      "y": 14
+     },
+     {
+      "k": "plus_one",
+      "s": 1,
+      "x": 64.5,
+      "y": 14
+     },
+     {
+      "k": "plus_one",
+      "s": 1,
+      "x": 73.2,
+      "y": 14.3
+     },
+     {
+      "k": "plus_one",
+      "s": 1,
+      "x": 29.2,
+      "y": 22.5
+     },
+     {
+      "k": "plus_one",
+      "s": 1,
+      "x": 37.5,
+      "y": 22.7
+     }
+    ]
+   },
+   "mp": {},
+   "pk": {
+    "chk": 12,
+    "perks": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     12,
+     13,
+     15,
+     16
+    ],
+    "boxes": {},
+    "ms": [
+     0
+    ]
+   },
+   "id": "c3",
+   "sheet": "Hail",
+   "cls": "Hail",
+   "name": "Hail",
+   "lv": 5,
+   "xp": 255,
+   "gold": 30,
+   "inh": 0,
+   "extra": [
+    "Friend of Hero"
+   ],
+   "am": {
+    "n": 18,
+    "code": "1custom18{+0;+0;+0;+0;+0;+1;+1;+1;+1;+1;-1;+0,w/i);+0,w/i);+2;+0;x2;Miss;Curse}",
+    "faces": [
+     {
+      "f": "+0",
+      "out": true
+     },
+     {
+      "f": "+0",
+      "out": false
+     },
+     {
+      "f": "+0",
+      "out": false
+     },
+     {
+      "f": "+0",
+      "out": false
+     },
+     {
+      "f": "+0",
+      "out": false
+     },
+     {
+      "f": "+0",
+      "out": false
+     },
+     {
+      "f": "+1",
+      "out": false
+     },
+     {
+      "f": "+1",
+      "out": false
+     },
+     {
+      "f": "+1",
+      "out": false
+     },
+     {
+      "f": "+1",
+      "out": false
+     },
+     {
+      "f": "+1",
+      "out": false
+     },
+     {
+      "f": "-1",
+      "out": false
+     },
+     {
+      "f": "+1 wild",
+      "out": true
+     },
+     {
+      "f": "+1 wild",
+      "out": true
+     },
+     {
+      "f": "+0,w/i)",
+      "out": false
+     },
+     {
+      "f": "+0,w/i)",
+      "out": false
+     },
+     {
+      "f": "+2",
+      "out": false
+     },
+     {
+      "f": "+0",
+      "out": false
+     },
+     {
+      "f": "x2",
+      "out": false
+     },
+     {
+      "f": "Miss",
+      "out": false
+     },
+     {
+      "f": "-1",
+      "out": true
+     },
+     {
+      "f": "Bless",
+      "out": true
+     },
+     {
+      "f": "Bless",
+      "out": true
+     },
+     {
+      "f": "Bless",
+      "out": true
+     },
+     {
+      "f": "Bless",
+      "out": true
+     },
+     {
+      "f": "Bless",
+      "out": true
+     },
+     {
+      "f": "Curse",
+      "out": false
+     },
+     {
+      "f": "Curse",
+      "out": true
+     },
+     {
+      "f": "Curse",
+      "out": true
+     }
+    ]
+   },
+   "hand": 9,
+   "own": [
+    14,
+    10,
+    12,
+    102,
+    105
+   ],
+   "amd": {
+    "curse": 1
+   },
+   "seat": 0
+  },
+  {
+   "traits": [
+    "Arcane",
+    "Outcast",
+    "Strong"
+   ],
+   "special": [],
+   "deck": [
+    612,
+    603,
+    604,
+    605,
+    606,
+    608,
+    610,
+    611,
+    613,
+    614,
+    616
+   ],
+   "disc": [],
+   "act": [],
+   "lost": [],
+   "bench": [
+    602,
+    601,
+    607,
+    609
+   ],
+   "items": [
+    {
+     "id": 18,
+     "st": [
+      false,
+      false,
+      false
+     ],
+     "s": 0
+    },
+    {
+     "id": 3,
+     "st": [
+      true,
+      false,
+      true
+     ],
+     "s": 0
+    },
+    {
+     "id": 7,
+     "st": [
+      true,
+      false,
+      false
+     ],
+     "s": 0
+    },
+    {
+     "id": 2,
+     "st": [
+      false,
+      false,
+      false
+     ],
+     "s": 0
+    },
+    {
+     "id": 11,
+     "st": [
+      false,
+      false,
+      false
+     ],
+     "s": 0
+    },
+    {
+     "id": 51,
+     "st": [
+      false,
+      false,
+      false
+     ],
+     "s": 0
+    }
+   ],
+   "play": [
+    null,
+    null
+   ],
+   "hord": null,
+   "hgrid": null,
+   "tok": {},
+   "bgo": null,
+   "pqo": null,
+   "pqc": {},
+   "notes": "",
+   "mk": {
+    "i:3": [
+     {
+      "k": "cragheart",
+      "x": 33.5,
+      "y": 79.2
+     }
+    ]
+   },
+   "mp": {},
+   "pk": {
+    "chk": 5,
+    "perks": [
+     13,
+     15,
+     16
+    ],
+    "boxes": {},
+    "ms": [
+     1
+    ]
+   },
+   "id": "c4",
+   "sheet": "Shale",
+   "cls": "Cragheart",
+   "name": "Shale",
+   "lv": 2,
+   "xp": 60,
+   "gold": 10,
+   "inh": 1,
+   "extra": [],
+   "am": {
+    "n": 15,
+    "code": "1custom15{+0;+0;+0;+0;+1;+1;+1;+1;-1;-1;-1;-1;x2;Miss;-1}",
+    "faces": [
+     {
+      "f": "+0",
+      "out": true
+     },
+     {
+      "f": "+0",
+      "out": true
+     },
+     {
+      "f": "+0",
+      "out": false
+     },
+     {
+      "f": "+0",
+      "out": false
+     },
+     {
+      "f": "+0",
+      "out": false
+     },
+     {
+      "f": "+0",
+      "out": false
+     },
+     {
+      "f": "+1",
+      "out": true
+     },
+     {
+      "f": "+1",
+      "out": false
+     },
+     {
+      "f": "+1",
+      "out": false
+     },
+     {
+      "f": "+1",
+      "out": false
+     },
+     {
+      "f": "+1",
+      "out": false
+     },
+     {
+      "f": "-1",
+      "out": false
+     },
+     {
+      "f": "-1",
+      "out": false
+     },
+     {
+      "f": "-1",
+      "out": true
+     },
+     {
+      "f": "-1",
+      "out": false
+     },
+     {
+      "f": "-1",
+      "out": false
+     },
+     {
+      "f": "+2",
+      "out": true
+     },
+     {
+      "f": "-2",
+      "out": true
+     },
+     {
+      "f": "x2",
+      "out": false
+     },
+     {
+      "f": "Miss",
+      "out": false
+     },
+     {
+      "f": "-1",
+      "out": false
+     },
+     {
+      "f": "Curse",
+      "out": true
+     },
+     {
+      "f": "Curse",
+      "out": true
+     },
+     {
+      "f": "Bless",
+      "out": true
+     },
+     {
+      "f": "Bless",
+      "out": true
+     },
+     {
+      "f": "Bless",
+      "out": true
+     },
+     {
+      "f": "Curse",
+      "out": true
+     },
+     {
+      "f": "Curse",
+      "out": true
+     },
+     {
+      "f": "Curse",
+      "out": true
+     },
+     {
+      "f": "Curse",
+      "out": true
+     },
+     {
+      "f": "Curse",
+      "out": true
+     },
+     {
+      "f": "Curse",
+      "out": true
+     },
+     {
+      "f": "Curse",
+      "out": true
+     },
+     {
+      "f": "Curse",
+      "out": true
+     },
+     {
+      "f": "Curse",
+      "out": true
+     },
+     {
+      "f": "Curse",
+      "out": true
+     },
+     {
+      "f": "Curse",
+      "out": true
+     },
+     {
+      "f": "Curse",
+      "out": true
+     }
+    ]
+   },
+   "hand": 11,
+   "own": [
+    3,
+    18,
+    11,
+    2,
+    7,
+    51,
+    119
+   ],
+   "amd": {
+    "curse": 2
+   },
+   "seat": 2
+  }
+ ],
+ "items": {
+  "unl": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21,
+   22,
+   23,
+   24,
+   51,
+   99,
+   102,
+   114,
+   116,
+   165,
+   98,
+   105,
+   119,
+   93
+  ],
+  "taken": {
+   "1": 2,
+   "2": 1,
+   "3": 1,
+   "4": 1,
+   "5": 2,
+   "7": 2,
+   "8": 1,
+   "9": 1,
+   "10": 1,
+   "11": 1,
+   "12": 3,
+   "13": 1,
+   "14": 1,
+   "18": 1,
+   "21": 1,
+   "99": 1,
+   "102": 1
+  }
+ },
+ "events": {
+  "city": {
+   "top": [],
+   "bottom": [],
+   "out": [
+    4,
+    7,
+    10,
+    13,
+    15,
+    17,
+    18,
+    20,
+    39
+   ],
+   "locked": [
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    42,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    69,
+    70,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77,
+    78,
+    79,
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87,
+    88,
+    89,
+    90,
+    91,
+    92,
+    93,
+    94,
+    95,
+    96,
+    97,
+    98,
+    99,
+    100,
+    40
+   ]
+  },
+  "road": {
+   "top": [],
+   "bottom": [],
+   "out": [
+    6,
+    8,
+    9,
+    14,
+    16,
+    18,
+    3
+   ],
+   "locked": [
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77
+   ]
+  },
+  "marks": {
+   "road:4": [
+    1
+   ]
+  },
+  "notes": {
+   "road:4": "option 2 marked"
+  }
+ },
+ "evlog": [],
+ "decks": {
+  "bg": [
+   1301,
+   1303,
+   1304,
+   1309,
+   1350,
+   1320,
+   1353,
+   1322,
+   1354,
+   1358,
+   1360,
+   1343
+  ],
+  "tre": [
+   18,
+   32,
+   49,
+   53,
+   54,
+   19
+  ],
+  "mp": []
+ },
+ "bgs": {},
+ "pq": {
+  "PQ08": {
+   "st": "done",
+   "c": "c3"
+  }
+ },
+ "enh": [
+  {
+   "cls": "Satha",
+   "card": "Combined Might",
+   "top": null,
+   "bottom": "Move +1"
+  },
+  {
+   "cls": "Satha",
+   "card": "Dazing Sweep",
+   "top": null,
+   "bottom": "Move +1"
+  },
+  {
+   "cls": "Satha",
+   "card": "Lead the charge",
+   "top": null,
+   "bottom": "Move +1"
+  },
+  {
+   "cls": "Satha",
+   "card": "Wolf Pack Tactics",
+   "top": "Attack +1 (Satha)",
+   "bottom": null
+  },
+  {
+   "cls": "Satha",
+   "card": "Bring them down",
+   "top": null,
+   "bottom": "Move +1"
+  },
+  {
+   "cls": "Satha",
+   "card": "Combined might",
+   "top": "Attack +1",
+   "bottom": null
+  },
+  {
+   "cls": "Tinkerer",
+   "card": "Net Shooter",
+   "top": "Attack +1",
+   "bottom": null
+  },
+  {
+   "cls": "Mindthief",
+   "card": "Scurry",
+   "top": "Attack +1",
+   "bottom": null
+  }
+ ],
+ "retired": [
+  {
+   "cls": "Satha",
+   "player": "Kevin",
+   "name": "Satha",
+   "lv": 4,
+   "perks": 5,
+   "masteries": 1,
+   "note": null
+  }
+ ],
+ "resLinks": {},
+ "log": [
+  {
+   "t": 1794930738484,
+   "u": "Mad",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Scabs: Empathetic Assault (level 1, initiative 12): hand to active area"
+  },
+  {
+   "t": 1794930739669,
+   "u": "Mad",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Scabs: Empathetic Assault (level 1, initiative 12): active area to hand"
+  },
+  {
+   "t": 1794930834992,
+   "u": "Mad",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Scabs: gold 10 to 11"
+  },
+  {
+   "t": 1794930844022,
+   "u": "Mad",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Scabs: gold 11 to 10"
+  },
+  {
+   "t": 1795156930157,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Item state",
+   "d": "Hail: item #10 available to spent"
+  },
+  {
+   "t": 1795156931652,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Item state",
+   "d": "Hail: item #10 spent to available"
+  },
+  {
+   "t": 1795156932332,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Item state",
+   "d": "Hail: item #10 available to spent"
+  },
+  {
+   "t": 1795156932524,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Item state",
+   "d": "Hail: item #10 spent to available"
+  },
+  {
+   "t": 1795156933141,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Item state",
+   "d": "Hail: item #10 available to spent"
+  },
+  {
+   "t": 1795156933805,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Item state",
+   "d": "Hail: item #102 available to spent"
+  },
+  {
+   "t": 1795156934772,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Item state",
+   "d": "Hail: item #102 spent to available"
+  },
+  {
+   "t": 1795156935132,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Item state",
+   "d": "Hail: item #10 spent to available"
+  },
+  {
+   "t": 1795156937452,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Hail: Fading Presence (level 3, initiative 15): hand to discard pile"
+  },
+  {
+   "t": 1795156950509,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Hail: Fading Presence (level 3, initiative 15): discard pile to hand"
+  },
+  {
+   "t": 1795156951812,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Hail: Miniaturize (level 4, initiative 86): hand to play slot 1"
+  },
+  {
+   "t": 1795156953493,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Hail: Miniaturize (level 4, initiative 86): turned face up"
+  },
+  {
+   "t": 1795156953646,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Hail: Miniaturize (level 4, initiative 86): play slot 1 to discard pile"
+  },
+  {
+   "t": 1795156956620,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Hail: Miniaturize (level 4, initiative 86): discard pile to hand"
+  },
+  {
+   "t": 1795156957838,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Hail: Miniaturize (level 4, initiative 86): hand to play slot 1"
+  },
+  {
+   "t": 1795156959987,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Hail: Miniaturize (level 4, initiative 86): turned face up"
+  },
+  {
+   "t": 1795156960278,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Hail: Miniaturize (level 4, initiative 86): play slot 1 to lost pile"
+  },
+  {
+   "t": 1795156962286,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Hail: Miniaturize (level 4, initiative 86): lost pile to hand"
+  },
+  {
+   "t": 1795156963460,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Hail: Interesting Specimen (level 1, initiative 80): lost pile to hand"
+  },
+  {
+   "t": 1795156964492,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Hail: Trial And Success (level X, initiative 95): discard pile to hand"
+  },
+  {
+   "t": 1795156965336,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Hail: Bizarre Antics (level 1, initiative 13): discard pile to hand"
+  },
+  {
+   "t": 1795156968537,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Hail: Trying To Remember (level 5, initiative 55): discard pile to hand"
+  },
+  {
+   "t": 1795156968537,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Hail: Not Amused (level 1, initiative 47): discard pile to hand"
+  },
+  {
+   "t": 1795156968537,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Hail: Outsource (level 2, initiative 68): discard pile to hand"
+  },
+  {
+   "t": 1795156988821,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Battle goal",
+   "d": "Hail: drew Mugger, Pincushion, Dynamo"
+  },
+  {
+   "t": 1795156999497,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Battle goal",
+   "d": "Mugger: in the deck to held by another player"
+  },
+  {
+   "t": 1795156999497,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Battle goal",
+   "d": "Dynamo: in the deck to held by another player"
+  },
+  {
+   "t": 1795156999497,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Battle goal",
+   "d": "Pincushion: in the deck to held by Hail"
+  },
+  {
+   "t": 1795157007528,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Battle goal",
+   "d": "Mugger: held by another player to in the deck"
+  },
+  {
+   "t": 1795157007528,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Battle goal",
+   "d": "Dynamo: held by another player to in the deck"
+  },
+  {
+   "t": 1795157007528,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Battle goal",
+   "d": "Pincushion: held by Hail to in the deck"
+  },
+  {
+   "t": 1795157011511,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Personal quest",
+   "d": "Hail: drew 13 Merchant Class, 08 Take Back the Trees"
+  },
+  {
+   "t": 1795157014581,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Personal quest",
+   "d": "08 Take Back the Trees: in the deck to held by Hail"
+  },
+  {
+   "t": 1795157019673,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Personal quest",
+   "d": "Hail: quest 08 Take Back the Trees, Road Events: 0 to 10 of 10 (+10)"
+  },
+  {
+   "t": 1795157026655,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Personal quest",
+   "d": "08 Take Back the Trees: held by Hail to completed by Hail"
+  },
+  {
+   "t": 1795157026655,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Personal quest",
+   "d": "Hail: quest 08 Take Back the Trees, Read section 64.3: 0 to 1"
+  },
+  {
+   "t": 1795188056560,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Simon: XP 264 to 309"
+  },
+  {
+   "t": 1795188067436,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Simon: level 5 to 6"
+  },
+  {
+   "t": 1795188067436,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Simon: XP 309 to 275"
+  },
+  {
+   "t": 1795188087313,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card pool",
+   "d": "Simon: +Invigorating Aerosol (level 6, initiative 21)"
+  },
+  {
+   "t": 1795188257556,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Simon: Volatile Concoction (level X, initiative 18): discard pile to hand"
+  },
+  {
+   "t": 1795188257556,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Simon: Flamethrower (level 1, initiative 16): lost pile to hand"
+  },
+  {
+   "t": 1795188257556,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Simon: Ink Bomb (level 1, initiative 80): discard pile to hand"
+  },
+  {
+   "t": 1795188257556,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Hand selection",
+   "d": "Simon: 11 cards selected for the scenario (-Reinvigorating Elixir (level 1, initiative 37))"
+  },
+  {
+   "t": 1795188867755,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Hand selection",
+   "d": "Simon: 12 cards selected for the scenario (+Invigorating Aerosol (level 6, initiative 21))"
+  },
+  {
+   "t": 1795188884736,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Simon: XP 275 to 309"
+  },
+  {
+   "t": 1795188896007,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Simon: gold 42 to 6 (-36)"
+  },
+  {
+   "t": 1795188899607,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Item state",
+   "d": "Simon: item #149 spent to available"
+  },
+  {
+   "t": 1795188900087,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Item state",
+   "d": "Simon: item #21 spent to available"
+  },
+  {
+   "t": 1795188900575,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Item state",
+   "d": "Simon: item #14 spent to available"
+  },
+  {
+   "t": 1795188901119,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Item state",
+   "d": "Simon: item #8 spent to available"
+  },
+  {
+   "t": 1795188915806,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character items",
+   "d": "Simon: items reordered"
+  },
+  {
+   "t": 1795188938260,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Simon: took perk perk 1"
+  },
+  {
+   "t": 1795188938810,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Simon: took perk perk 2"
+  },
+  {
+   "t": 1795188939249,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Simon: took perk perk 3"
+  },
+  {
+   "t": 1795188939722,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Simon: took perk perk 4"
+  },
+  {
+   "t": 1795188943969,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Simon: took perk perk 5"
+  },
+  {
+   "t": 1795188944306,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Simon: took perk perk 6"
+  },
+  {
+   "t": 1795188952826,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Simon: took perk perk 11"
+  },
+  {
+   "t": 1795188953188,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Simon: took perk perk 12"
+  },
+  {
+   "t": 1795188953559,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Simon: took perk perk 13"
+  },
+  {
+   "t": 1795188956082,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Simon: took perk Ignore scenario effects and add one +0\"%heal%1, %target%1 ally\" card"
+  },
+  {
+   "t": 1795188958128,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Simon: took perk Once each scenario, one adjacent ally may use one of your potion items during their turn without it becoming lost"
+  },
+  {
+   "t": 1795188967612,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Mastery",
+   "d": "Simon: mastery achieved: For an entire scenario, during each of your turns, give an enemy a negative condition, give an ally a positive condition, heal an ally, or grant an ally shield"
+  },
+  {
+   "t": 1795188968730,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Mastery",
+   "d": "Simon: mastery achieved: Perform 11 different lost actions"
+  },
+  {
+   "t": 1795189016214,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character player",
+   "d": "Simon: Jeroen (was nobody)"
+  },
+  {
+   "t": 1795189224927,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Marker",
+   "d": "Simon: added sticker plus one to Net Shooter (level 1, initiative 19)"
+  },
+  {
+   "t": 1795189252828,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Marker",
+   "d": "Simon: added sticker bless to Restorative Mist (level 1, initiative 17)"
+  },
+  {
+   "t": 1795189296649,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Marker",
+   "d": "Simon: added sticker hex attack to Net Shooter (level 1, initiative 19)"
+  },
+  {
+   "t": 1795189298422,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Marker",
+   "d": "Simon: added sticker hex attack to Net Shooter (level 1, initiative 19)"
+  },
+  {
+   "t": 1795189300582,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Marker",
+   "d": "Simon: removed sticker hex attack from Net Shooter (level 1, initiative 19)"
+  },
+  {
+   "t": 1795189387819,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Scabs: level 5 to 6"
+  },
+  {
+   "t": 1795189387819,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Scabs: XP 242 to 275"
+  },
+  {
+   "t": 1795189394444,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Scabs: XP 275 to 286"
+  },
+  {
+   "t": 1795189399168,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Scabs: gold 10 to 43"
+  },
+  {
+   "t": 1795189405204,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Scabs: Perverse Edge (level 1, initiative 8): discard pile to hand"
+  },
+  {
+   "t": 1795189406030,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Scabs: Gangling Abomination (level 5, initiative 81): active area to hand"
+  },
+  {
+   "t": 1795189409177,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Scabs: Possession (level X, initiative 71): discard pile to hand"
+  },
+  {
+   "t": 1795189409177,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Scabs: Feedback Loop (level X, initiative 51): discard pile to hand"
+  },
+  {
+   "t": 1795189409177,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Scabs: Scurry (level 1, initiative 20): discard pile to hand"
+  },
+  {
+   "t": 1795189409177,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Scabs: Hidden In The Shadows (level 1, initiative 14): discard pile to hand"
+  },
+  {
+   "t": 1795189416419,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character items",
+   "d": "Scabs: items reordered"
+  },
+  {
+   "t": 1795189530153,
+   "u": "Guido",
+   "tab": "Items",
+   "kind": "Item unlock",
+   "d": "Unlocked item #98"
+  },
+  {
+   "t": 1795189544031,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character items",
+   "d": "Scabs: -#4"
+  },
+  {
+   "t": 1795189549926,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Item state",
+   "d": "Scabs: item #13 spent to available"
+  },
+  {
+   "t": 1795189586085,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Scabs: gold 43 to 33"
+  },
+  {
+   "t": 1795189586085,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Scabs: own +11"
+  },
+  {
+   "t": 1795189591136,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Scabs: gold 33 to 43"
+  },
+  {
+   "t": 1795189595663,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character items",
+   "d": "Scabs: +#11"
+  },
+  {
+   "t": 1795189606169,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Scabs: took perk Replace two -1 cards with one +0 \"After the attack ability, control the target: %move% 1\" card"
+  },
+  {
+   "t": 1795189606556,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Scabs: took perk Replace two -1 cards with one +0 \"After the attack ability, control the target: %move% 1\" card"
+  },
+  {
+   "t": 1795189607764,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Scabs: took perk Replace one +0 card with one +1 \"Add + 1 %attack% for each negative condition the target has\" card"
+  },
+  {
+   "t": 1795189608082,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Scabs: took perk Replace one +0 card with one +1 \"Add + 1 %attack% for each negative condition the target has\" card"
+  },
+  {
+   "t": 1795189608455,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Scabs: took perk Replace one +0 card with one +1 \"Add + 1 %attack% for each negative condition the target has\" card"
+  },
+  {
+   "t": 1795189610783,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Scabs: took perk perk 6"
+  },
+  {
+   "t": 1795189611139,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Scabs: took perk perk 7"
+  },
+  {
+   "t": 1795189612774,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Scabs: took perk perk 8"
+  },
+  {
+   "t": 1795189617145,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Scabs: took perk perk 12"
+  },
+  {
+   "t": 1795189617501,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Scabs: took perk perk 13"
+  },
+  {
+   "t": 1795189619814,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Scabs: took perk Ignore scenario effects and add one +1%flip% card"
+  },
+  {
+   "t": 1795189622428,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Scabs: took perk Whenever you control the attack of an enemy, you may have the enemy use your attack modifier deck"
+  },
+  {
+   "t": 1795189624985,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Scabs: took perk You are considered to be last in initiative order when determining monster focus"
+  },
+  {
+   "t": 1795189630939,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Mastery",
+   "d": "Scabs: mastery achieved: In a single scenario, kill 5 or more enemies with control abilities"
+  },
+  {
+   "t": 1795189631803,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Mastery",
+   "d": "Scabs: mastery achieved: In a single scenario, trigger the on-attack effect from four different Augments at least 3 times each"
+  },
+  {
+   "t": 1795189646898,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card pool",
+   "d": "Scabs: +Telepathic Command (level 6, initiative 17)"
+  },
+  {
+   "t": 1795189730134,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Hand selection",
+   "d": "Scabs: 10 cards selected for the scenario (+Brain Leech (level 3, initiative 21), +Hostile Takeover (level 2, initiative 9), +Withering Claw (level 1, initiative 18), +Telepathic Command (level 6, initiative 17) -Possession (level X, initiative 71), -Feedback Loop (level X, initiative 51), -Scurry (level 1, initiative 20))"
+  },
+  {
+   "t": 1795189852354,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Hand selection",
+   "d": "Scabs: 10 cards selected for the scenario (+Scurry (level 1, initiative 20) -The Minds Weakness (level 1, initiative 75))"
+  },
+  {
+   "t": 1795189858249,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Marker",
+   "d": "Scabs: added sticker plus one to Scurry (level 1, initiative 20)"
+  },
+  {
+   "t": 1795189960845,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card pool",
+   "d": "Scabs: -Brain Leech (level 3, initiative 21)"
+  },
+  {
+   "t": 1795189976147,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Hand selection",
+   "d": "Scabs: 10 cards selected for the scenario (+Feedback Loop (level X, initiative 51), +Gnawing Horde (level X, initiative 82) -Scurry (level 1, initiative 20))"
+  },
+  {
+   "t": 1795190006863,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Hail: took perk perk 1"
+  },
+  {
+   "t": 1795190008235,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Hail: took perk Replace one -1 card with one +0 %wound% or %immobilize%"
+  },
+  {
+   "t": 1795190008576,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Hail: took perk Replace one -1 card with one +0 %wound% or %immobilize%"
+  },
+  {
+   "t": 1795190010064,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Hail: took perk perk 4"
+  },
+  {
+   "t": 1795190010424,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Hail: took perk perk 5"
+  },
+  {
+   "t": 1795190013748,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Hail: took perk perk 11"
+  },
+  {
+   "t": 1795190014174,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Hail: took perk perk 12"
+  },
+  {
+   "t": 1795190014839,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Hail: gave up perk perk 12"
+  },
+  {
+   "t": 1795190015227,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Hail: gave up perk perk 11"
+  },
+  {
+   "t": 1795190016672,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Hail: took perk perk 8"
+  },
+  {
+   "t": 1795190017000,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Hail: took perk perk 9"
+  },
+  {
+   "t": 1795190026270,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Hail: gave up perk perk 9"
+  },
+  {
+   "t": 1795190026731,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Hail: gave up perk perk 8"
+  },
+  {
+   "t": 1795190027987,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Hail: took perk perk 13"
+  },
+  {
+   "t": 1795190028495,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Hail: took perk perk 14"
+  },
+  {
+   "t": 1795190031569,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Hail: took perk Whenever you short rest,you may choose which card to lose"
+  },
+  {
+   "t": 1795190033926,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Hail: took perk Your and your allies' enhancements cost five gold less and whenever an ally enhances a card, you gain five gold"
+  },
+  {
+   "t": 1795190040807,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Mastery",
+   "d": "Hail: mastery achieved: For an entire scenario, gain at least 1 mp resolve each round"
+  },
+  {
+   "t": 1795190060834,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Hail: perk checkmarks 0 to 9 of 18 (+9)"
+  },
+  {
+   "t": 1795190066361,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Hail: perk checkmarks 9 to 12 of 18 (+3)"
+  },
+  {
+   "t": 1795190079119,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Simon: perk checkmarks 0 to 12 of 18 (+12)"
+  },
+  {
+   "t": 1795190097839,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Scabs: perk checkmarks 0 to 18 of 18"
+  },
+  {
+   "t": 1795190104657,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Class token",
+   "d": "Hail: Resolve 0 to 1"
+  },
+  {
+   "t": 1795190114882,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Hail: XP 214 to 255"
+  },
+  {
+   "t": 1795190117524,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Hail: gold 8 to 30"
+  },
+  {
+   "t": 1795190359631,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Hand selection",
+   "d": "Hail: 9 cards selected for the scenario (+Leave Me Alone (level X, initiative 70) -Interesting Specimen (level 1, initiative 80))"
+  },
+  {
+   "t": 1795190364815,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Marker",
+   "d": "Hail: added sticker plus one to Bizarre Antics (level 1, initiative 13)"
+  },
+  {
+   "t": 1795190367414,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Marker",
+   "d": "Hail: added sticker plus one to Bizarre Antics (level 1, initiative 13)"
+  },
+  {
+   "t": 1795190378057,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Marker",
+   "d": "Hail: added sticker plus one to Not Amused (level 1, initiative 47)"
+  },
+  {
+   "t": 1795190391744,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Marker",
+   "d": "Hail: added sticker plus one to Outsource (level 2, initiative 68)"
+  },
+  {
+   "t": 1795190399394,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Marker",
+   "d": "Hail: added sticker plus one to Trial And Success (level X, initiative 95)"
+  },
+  {
+   "t": 1795190402038,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Marker",
+   "d": "Hail: added sticker plus one to Trial And Success (level X, initiative 95)"
+  },
+  {
+   "t": 1795190404062,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Marker",
+   "d": "Hail: added sticker plus one to Trial And Success (level X, initiative 95)"
+  },
+  {
+   "t": 1795190406119,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Marker",
+   "d": "Hail: added sticker plus one to Trial And Success (level X, initiative 95)"
+  },
+  {
+   "t": 1795190408336,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Marker",
+   "d": "Hail: added sticker plus one to Trial And Success (level X, initiative 95)"
+  },
+  {
+   "t": 1795190410789,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Marker",
+   "d": "Hail: added sticker plus one to Trial And Success (level X, initiative 95)"
+  },
+  {
+   "t": 1795190415180,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Marker",
+   "d": "Hail: added sticker plus one to Trial And Success (level X, initiative 95)"
+  },
+  {
+   "t": 1795190417462,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Marker",
+   "d": "Hail: added sticker plus one to Trial And Success (level X, initiative 95)"
+  },
+  {
+   "t": 1795190446234,
+   "u": "Guido",
+   "tab": "Items",
+   "kind": "Item unlock",
+   "d": "Unlocked item #105"
+  },
+  {
+   "t": 1795190503113,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Hail: own +105"
+  },
+  {
+   "t": 1795190510027,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character items",
+   "d": "Hail: +#105"
+  },
+  {
+   "t": 1795190544208,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Enhancement",
+   "d": "Removed Hail, Outsource (top Attack +1)"
+  },
+  {
+   "t": 1795190544942,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Enhancement",
+   "d": "Removed Hail, Fleeing Interest (top Attack +1)"
+  },
+  {
+   "t": 1795190545542,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Enhancement",
+   "d": "Removed Hail, Bizarre Antics (bottom Attack +1)"
+  },
+  {
+   "t": 1795190546038,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Enhancement",
+   "d": "Removed Hail, Trial and Success (top Attack +8)"
+  },
+  {
+   "t": 1795190546615,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Enhancement",
+   "d": "Removed Hail, Bizarre Antics (top Teleport +1)"
+  },
+  {
+   "t": 1795190548072,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Enhancement",
+   "d": "Removed Hail, Not Amused (top Attack +1)"
+  },
+  {
+   "t": 1795190614328,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Hail: special +friend of the hero"
+  },
+  {
+   "t": 1795190644357,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Scabs: special +friend of the hero"
+  },
+  {
+   "t": 1795190707534,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Item state",
+   "d": "Shale: item #3 spent to available"
+  },
+  {
+   "t": 1795190710776,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character items",
+   "d": "Shale: items reordered"
+  },
+  {
+   "t": 1795190718950,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Item state",
+   "d": "Shale: item #7 spent to available"
+  },
+  {
+   "t": 1795190729112,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Shale: gold 1 to 100"
+  },
+  {
+   "t": 1795190750632,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Shale: own +51"
+  },
+  {
+   "t": 1795190759005,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character items",
+   "d": "Shale: +#51"
+  },
+  {
+   "t": 1795190773096,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Shale: gold 100 to 10"
+  },
+  {
+   "t": 1795190778447,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Shale: level 1 to 2"
+  },
+  {
+   "t": 1795190778447,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Shale: XP 19 to 45"
+  },
+  {
+   "t": 1795190783644,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Shale: Burrow (level X, initiative 94): lost pile to hand"
+  },
+  {
+   "t": 1795190783644,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Shale: Backup Ammunition (level 1, initiative 77): lost pile to hand"
+  },
+  {
+   "t": 1795190783644,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Shale: Crushing Grasp (level 1, initiative 35): discard pile to hand"
+  },
+  {
+   "t": 1795190788560,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Shale: XP 45 to 60"
+  },
+  {
+   "t": 1795190796963,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Shale: perk checkmarks 0 to 5 of 18"
+  },
+  {
+   "t": 1795190800871,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Mastery",
+   "d": "Shale: mastery achieved: In a single scenario, heal 8 or more hit points during a single round, deal 8 or more damage with a ranged attack ability, and deal 8 or more damage with a melee attack ability"
+  },
+  {
+   "t": 1795190807713,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Shale: took perk Ignore item - 1 effects"
+  },
+  {
+   "t": 1795190812672,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Shale: perk Whenever a new room is revealed, control all enemies in the newly revealed room: %move% 1, this movement must end in an empty hex, boxes 0 to 1 of 2"
+  },
+  {
+   "t": 1795190813263,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Shale: took perk Whenever a new room is revealed, control all enemies in the newly revealed room: %move% 1, this movement must end in an empty hex"
+  },
+  {
+   "t": 1795190820667,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Perk",
+   "d": "Shale: took perk At the end of each of your rests, you may destroy one 1-hex obstacle within %range% 3 to %earth%"
+  },
+  {
+   "t": 1795190838529,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card pool",
+   "d": "Shale: +Sentient Growth (level 2, initiative 78)"
+  },
+  {
+   "t": 1795190944128,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Hand selection",
+   "d": "Shale: 10 cards selected for the scenario (+Petrify (level X, initiative 53) -Backup Ammunition (level 1, initiative 77), -Avalanche (level 1, initiative 75))"
+  },
+  {
+   "t": 1795190996928,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Hand selection",
+   "d": "Shale: 11 cards selected for the scenario (+Sentient Growth (level 2, initiative 78))"
+  },
+  {
+   "t": 1795191106915,
+   "u": "Guido",
+   "tab": "Overview",
+   "kind": "Reputation",
+   "d": "City Guard 8 to 7"
+  },
+  {
+   "t": 1795191121691,
+   "u": "Guido",
+   "tab": "Overview",
+   "kind": "Prosperity",
+   "d": "Checkmarks 10 to 12 (+2)"
+  },
+  {
+   "t": 1795191126335,
+   "u": "Guido",
+   "tab": "Overview",
+   "kind": "Great Oak sanctuary",
+   "d": "Gold donated 18 to 20 (+2)"
+  },
+  {
+   "t": 1795191140311,
+   "u": "Guido",
+   "tab": "Overview",
+   "kind": "Campaign sticker",
+   "d": "Added The Drake Aided"
+  },
+  {
+   "t": 1795191153000,
+   "u": "Guido",
+   "tab": "Overview",
+   "kind": "Party",
+   "d": "Difficulty 2 to 1"
+  },
+  {
+   "t": 1795191160636,
+   "u": "Guido",
+   "tab": "Monsters",
+   "kind": "Monster type",
+   "d": "Added Cave Bear"
+  },
+  {
+   "t": 1795191177091,
+   "u": "Guido",
+   "tab": "Monsters",
+   "kind": "Monster type",
+   "d": "Added Living Corpse"
+  },
+  {
+   "t": 1795191179712,
+   "u": "Guido",
+   "tab": "Monsters",
+   "kind": "Monster type",
+   "d": "Removed Cave Bear"
+  },
+  {
+   "t": 1795191217258,
+   "u": "Guido",
+   "tab": "Cards",
+   "kind": "Modifier deck",
+   "d": "Simon: curse cards 0 to 1"
+  },
+  {
+   "t": 1795191221635,
+   "u": "Guido",
+   "tab": "Cards",
+   "kind": "Modifier deck",
+   "d": "Scabs: curse cards 0 to 1"
+  },
+  {
+   "t": 1795191224365,
+   "u": "Guido",
+   "tab": "Cards",
+   "kind": "Modifier deck",
+   "d": "Hail: curse cards 0 to 1"
+  },
+  {
+   "t": 1795191227676,
+   "u": "Guido",
+   "tab": "Cards",
+   "kind": "Modifier deck",
+   "d": "Shale: curse cards 0 to 2 (+2)"
+  },
+  {
+   "t": 1795191250493,
+   "u": "Guido",
+   "tab": "Monsters",
+   "kind": "Ability deck",
+   "d": "Living Corpse: drew card 5 (initiative 82)"
+  },
+  {
+   "t": 1795191365179,
+   "u": "Guido",
+   "tab": "Items",
+   "kind": "Item unlock",
+   "d": "Unlocked item #119"
+  },
+  {
+   "t": 1795191370876,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character",
+   "d": "Shale: own +119"
+  },
+  {
+   "t": 1795191477251,
+   "u": "Guido",
+   "tab": "Items",
+   "kind": "Item unlock",
+   "d": "Unlocked item #93"
+  },
+  {
+   "t": 1795191607954,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Marker",
+   "d": "Shale: added token cragheart to item #3"
+  },
+  {
+   "t": 1795191656431,
+   "u": "Guido",
+   "tab": "Items",
+   "kind": "Item unlock",
+   "d": "Locked item #163"
+  },
+  {
+   "t": 1795191657251,
+   "u": "Guido",
+   "tab": "Items",
+   "kind": "Item unlock",
+   "d": "Locked item #161"
+  },
+  {
+   "t": 1795191657978,
+   "u": "Guido",
+   "tab": "Items",
+   "kind": "Item unlock",
+   "d": "Locked item #160"
+  },
+  {
+   "t": 1795191658843,
+   "u": "Guido",
+   "tab": "Items",
+   "kind": "Item unlock",
+   "d": "Locked item #159"
+  },
+  {
+   "t": 1795191659620,
+   "u": "Guido",
+   "tab": "Items",
+   "kind": "Item unlock",
+   "d": "Locked item #155"
+  },
+  {
+   "t": 1795191669557,
+   "u": "Guido",
+   "tab": "Items",
+   "kind": "Item unlock",
+   "d": "Locked item #164"
+  },
+  {
+   "t": 1795191670739,
+   "u": "Guido",
+   "tab": "Items",
+   "kind": "Item unlock",
+   "d": "Locked item #162"
+  },
+  {
+   "t": 1795191674832,
+   "u": "Guido",
+   "tab": "Items",
+   "kind": "Item unlock",
+   "d": "Locked item #166"
+  },
+  {
+   "t": 1795191676604,
+   "u": "Guido",
+   "tab": "Items",
+   "kind": "Item unlock",
+   "d": "Locked item #170"
+  },
+  {
+   "t": 1795191678537,
+   "u": "Guido",
+   "tab": "Items",
+   "kind": "Item unlock",
+   "d": "Locked item #167"
+  },
+  {
+   "t": 1795191679822,
+   "u": "Guido",
+   "tab": "Items",
+   "kind": "Item unlock",
+   "d": "Locked item #168"
+  },
+  {
+   "t": 1795191683834,
+   "u": "Guido",
+   "tab": "Items",
+   "kind": "Item unlock",
+   "d": "Locked item #169"
+  },
+  {
+   "t": 1795191690652,
+   "u": "Guido",
+   "tab": "Items",
+   "kind": "Item unlock",
+   "d": "Locked item #153"
+  },
+  {
+   "t": 1795191691470,
+   "u": "Guido",
+   "tab": "Items",
+   "kind": "Item unlock",
+   "d": "Locked item #154"
+  },
+  {
+   "t": 1795191692113,
+   "u": "Guido",
+   "tab": "Items",
+   "kind": "Item unlock",
+   "d": "Locked item #156"
+  },
+  {
+   "t": 1795191692751,
+   "u": "Guido",
+   "tab": "Items",
+   "kind": "Item unlock",
+   "d": "Locked item #157"
+  },
+  {
+   "t": 1795191693466,
+   "u": "Guido",
+   "tab": "Items",
+   "kind": "Item unlock",
+   "d": "Locked item #158"
+  },
+  {
+   "t": 1795191838824,
+   "u": "Guido",
+   "tab": "Events",
+   "kind": "Event pile",
+   "d": "city out: +39"
+  },
+  {
+   "t": 1795191838824,
+   "u": "Guido",
+   "tab": "Events",
+   "kind": "Event pile",
+   "d": "city locked: -39"
+  },
+  {
+   "t": 1795191839902,
+   "u": "Guido",
+   "tab": "Events",
+   "kind": "Event pile",
+   "d": "city out: +40"
+  },
+  {
+   "t": 1795191839902,
+   "u": "Guido",
+   "tab": "Events",
+   "kind": "Event pile",
+   "d": "city locked: -40"
+  },
+  {
+   "t": 1795191863436,
+   "u": "Guido",
+   "tab": "Events",
+   "kind": "Event pile",
+   "d": "city out: -40"
+  },
+  {
+   "t": 1795191863436,
+   "u": "Guido",
+   "tab": "Events",
+   "kind": "Event pile",
+   "d": "city locked: +40"
+  },
+  {
+   "t": 1795191907084,
+   "u": "Guido",
+   "tab": "Events",
+   "kind": "Event pile",
+   "d": "road out: +3"
+  },
+  {
+   "t": 1795191984809,
+   "u": "Guido",
+   "tab": "Events",
+   "kind": "Event pile",
+   "d": "road locked: -32"
+  },
+  {
+   "t": 1795192031338,
+   "u": "Guido",
+   "tab": "Resources",
+   "kind": "Treasure",
+   "d": "Claimed +19"
+  },
+  {
+   "t": 1795192265921,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character player",
+   "d": "Shale: Kevin (was nobody)"
+  },
+  {
+   "t": 1795192275040,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character player",
+   "d": "Scabs: Mad (was nobody)"
+  },
+  {
+   "t": 1795192281508,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Character player",
+   "d": "Hail: Guido (was nobody)"
+  },
+  {
+   "t": 1795451359810,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Hail: Cant Be Bothered (level 1, initiative 75): hand to active area"
+  },
+  {
+   "t": 1795451366249,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Hail: Trying To Remember (level 5, initiative 55): hand to play slot 1"
+  },
+  {
+   "t": 1795451374760,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Hail: Fading Presence (level 3, initiative 15): hand to discard pile"
+  },
+  {
+   "t": 1795451382844,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Hail: Miniaturize (level 4, initiative 86): hand to play slot 2"
+  },
+  {
+   "t": 1795451383992,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Hail: Miniaturize (level 4, initiative 86): turned face up"
+  },
+  {
+   "t": 1795451384365,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Card",
+   "d": "Hail: Trying To Remember (level 5, initiative 55): turned face up"
+  },
+  {
+   "t": 1795451416319,
+   "u": "Guido",
+   "tab": "Mercenaries",
+   "kind": "Class token",
+   "d": "Hail: Resolve 1 to 2"
+  }
+ ],
+ "mon": {
+  "round": 1,
+  "types": [
+   23
+  ],
+  "decks": {
+   "living-corpse": {
+    "deck": [
+     1,
+     2,
+     3,
+     4,
+     6,
+     7,
+     8
+    ],
+    "active": [
+     5
+    ],
+    "discard": []
+   }
+  },
+  "am": {}
+ }
+}
