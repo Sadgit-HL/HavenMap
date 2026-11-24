@@ -479,6 +479,7 @@ top:
     - range: 4
   - custom: "Gain %xp1% for each two enemies targeted."
   lost: t
+  remove: t
 bottom:
   actions:
   - custom: "%doom% DOOM"

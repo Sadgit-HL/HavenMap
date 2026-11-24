@@ -341,6 +341,8 @@ def half(card, labels, bottom):
         h['xp'] = xp
     if card.get(k('lost')) or card.get(k('loss')):
         h['lost'] = True
+    if card.get(k('loss')):                                   # the card is removed from the game for good, not only lost for the scenario
+        h['remove'] = True
     if card.get(k('persistent')):
         h['duration'] = 'persistent'
     elif card.get(k('round')):
@@ -460,6 +462,8 @@ def half_lines(h, name):
         out.append('  xp: %s' % h['xp'])
     if h.get('lost'):
         out.append('  lost: t')
+    if h.get('remove'):
+        out.append('  remove: t')
     if h.get('duration'):
         out.append('  duration: ' + h['duration'])
     return out

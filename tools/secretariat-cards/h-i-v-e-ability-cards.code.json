@@ -757,7 +757,8 @@
      ]
     }
    ],
-   "lost": true
+   "lost": true,
+   "remove": true
   }
  },
  {
@@ -1399,7 +1400,8 @@
      "text": "Play two cards from your lost pile to perform the summon actions of both cards without gaining the experience."
     }
    ],
-   "lost": true
+   "lost": true,
+   "remove": true
   },
   "bottom": {
    "actions": [

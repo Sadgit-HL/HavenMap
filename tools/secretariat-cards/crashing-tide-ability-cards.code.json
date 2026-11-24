@@ -1811,6 +1811,7 @@
    ],
    "xp": 2,
    "lost": true,
+   "remove": true,
    "duration": "persistent"
   },
   "bottom": {

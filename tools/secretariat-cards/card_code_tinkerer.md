@@ -155,6 +155,7 @@ bottom:
   - custom: "One ally within %range%3 may %recover% all their cards from their discard pile."
   xp: 3
   lost: t
+  remove: t
 
 name: Restorative Mist
 initiative: 17
@@ -344,6 +345,7 @@ bottom:
   - custom: "One ally within %range%3 may %recover% one card from their lost pile."
   xp: 3
   lost: t
+  remove: t
 
 name: Dangerous Contraption
 initiative: 10
@@ -598,3 +600,4 @@ bottom:
   - custom: "One ally within %range%3 may %recover% one card from the lost pile of one ally adjacent to them."
   xp: 3
   lost: t
+  remove: t

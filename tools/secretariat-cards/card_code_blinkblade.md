@@ -285,6 +285,7 @@ top:
     - self
   - custom: "%recover% one of your lost cards."
   lost: t
+  remove: t
 bottom:
   actions:
   - custom: "This action may be performed while you have %stun%. Remove all negative conditions you have."
@@ -569,6 +570,7 @@ bottom:
     - self
   - custom: "%recover% up to two of your lost cards."
   lost: t
+  remove: t
 
 name: Fractured Timeline
 initiative: 55

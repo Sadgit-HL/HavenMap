@@ -1619,7 +1619,8 @@
      "text": "%recover% one of your lost cards."
     }
    ],
-   "lost": true
+   "lost": true,
+   "remove": true
   },
   "bottom": {
    "actions": [
@@ -3073,7 +3074,8 @@
      "text": "%recover% up to two of your lost cards."
     }
    ],
-   "lost": true
+   "lost": true,
+   "remove": true
   },
   "identityInitiative": [
    58,

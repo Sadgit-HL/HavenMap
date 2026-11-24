@@ -404,6 +404,7 @@ top:
   - custom: "where X is the amount of %damage% you chose to suffer."
   xp: 2
   lost: t
+  remove: t
 bottom:
   actions:
   - move: 5
@@ -536,6 +537,7 @@ bottom:
   - attack: 2
   xp: 2
   lost: t
+  remove: t
 
 name: Bathe in Blood
 initiative: 83

@@ -861,7 +861,8 @@
     }
    ],
    "xp": 1,
-   "lost": true
+   "lost": true,
+   "remove": true
   }
  },
  {
@@ -1492,6 +1493,7 @@
     }
    ],
    "lost": true,
+   "remove": true,
    "duration": "round"
   }
  },

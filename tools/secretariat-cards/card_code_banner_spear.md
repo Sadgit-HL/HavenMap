@@ -635,3 +635,4 @@ bottom:
   - move: 4
   - custom: "%recover% up to two of your lost cards with Banner summon abilities. Immediately play the recovered cards and perform their Banner summon abilities."
   lost: t
+  remove: t

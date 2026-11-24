@@ -818,7 +818,7 @@
        "value": 3
       },
       {
-       "type": "push",
+       "type": "pull",
        "value": 2
       }
      ]

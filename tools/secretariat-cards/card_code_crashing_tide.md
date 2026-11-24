@@ -644,6 +644,7 @@ top:
   - custom: "Play two cards from your lost pile for their %fh-tides% actions and place character tokens on them. You may choose not to discard these cards when you rest. If they are removed from your active area, return them to your lost pile."
   xp: 2
   lost: t
+  remove: t
   duration: persistent
 bottom:
   actions:

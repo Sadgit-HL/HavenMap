@@ -420,7 +420,8 @@
     }
    ],
    "xp": 2,
-   "lost": true
+   "lost": true,
+   "remove": true
   },
   "bottom": {
    "actions": [
@@ -1627,7 +1628,8 @@
     }
    ],
    "xp": 2,
-   "lost": true
+   "lost": true,
+   "remove": true
   }
  },
  {

@@ -286,6 +286,7 @@ bottom:
   - move: 2
     enhancement: [circle]
   lost: t
+  remove: t
 
 name: Force Field
 initiative: 78
@@ -530,6 +531,7 @@ top:
   actions:
   - custom: "Play two cards from your lost pile to perform the summon actions of both cards without gaining the experience."
   lost: t
+  remove: t
 bottom:
   actions:
   - move: 3

@@ -314,6 +314,7 @@ bottom:
   - custom: "%low-note%"
   xp: 1
   lost: t
+  remove: t
 
 name: Ode to the Gambler
 initiative: 15
@@ -541,6 +542,7 @@ bottom:
     enhancement: [circle]
   - custom: "You may immediately play any number of cards from your hand and discard pile to perform %song% actions of the cards, ignoring all Note requirements. Skip moving your character token on active %song% this round."
   lost: t
+  remove: t
   duration: round
 
 name: Captivating Performance

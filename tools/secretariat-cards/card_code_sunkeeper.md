@@ -144,6 +144,7 @@ top:
   - custom: "One adjacent ally may %recover% one card from their lost pile."
   xp: 2
   lost: t
+  remove: t
 bottom:
   actions:
   - move: 2
@@ -555,6 +556,7 @@ bottom:
     noLine: true
   xp: 2
   lost: t
+  remove: t
 
 name: Illuminate the Target
 initiative: 91

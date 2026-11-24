@@ -344,7 +344,7 @@ top:
     sub:
     - target: 2
     - range: 3
-    - push: 2
+    - pull: 2
   - custom: "Add %muddle% and gain %xp1% if your current hit point value is half your maximum or less."
 bottom:
   actions:

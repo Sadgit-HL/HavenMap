@@ -10,6 +10,7 @@ top:
   - mandatory:
     - wild
   lost: t
+  remove: t
 bottom:
   actions:
   - move: 4

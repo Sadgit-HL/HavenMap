@@ -1186,7 +1186,8 @@
      "text": "Gain %xp% 1 for each two enemies targeted."
     }
    ],
-   "lost": true
+   "lost": true,
+   "remove": true
   },
   "bottom": {
    "actions": [

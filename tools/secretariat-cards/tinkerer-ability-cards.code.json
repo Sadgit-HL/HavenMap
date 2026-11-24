@@ -408,7 +408,8 @@
     }
    ],
    "xp": 3,
-   "lost": true
+   "lost": true,
+   "remove": true
   }
  },
  {
@@ -859,7 +860,8 @@
     }
    ],
    "xp": 3,
-   "lost": true
+   "lost": true,
+   "remove": true
   }
  },
  {
@@ -1533,7 +1535,8 @@
     }
    ],
    "xp": 3,
-   "lost": true
+   "lost": true,
+   "remove": true
   }
  }
 ]

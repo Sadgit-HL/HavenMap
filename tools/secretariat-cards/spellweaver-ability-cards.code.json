@@ -20,7 +20,8 @@
      ]
     }
    ],
-   "lost": true
+   "lost": true,
+   "remove": true
   },
   "bottom": {
    "actions": [
