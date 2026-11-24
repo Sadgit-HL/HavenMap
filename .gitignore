@@ -1,2 +1,5 @@
 # Screenshots and notes kept next to the server files, not part of the repo
 server/*.png
+
+# Python caches of the tools
+__pycache__/

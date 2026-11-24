@@ -3,7 +3,7 @@
 Usage: python tools/convert-card-code.py <card code .md> [more card code .md ...] <output .json>
 Needs PyYAML (a tool only, the app has no dependencies). The input is the structured text the owner writes the cards with (import/card_code_hail.md).
 
-Card:    { name, level, initiative, top, bottom }; a half: { actions, xp?, lost?, remove?, duration?, infuse?, infuseEither? }
+Card:    { name, level, initiative, top, bottom }; a half: { actions, xp?, lost?, remove?, duration?, infuse?, infuseEither?, namedAbility? }
 Action:  { type, value?, enhancement?, subActions? }   type is attack, move, heal, teleport, loot, push, pierce, range, target ... or condition (value = wound ...) or element
          { type: 'custom', text }       text with %tokens%: %resolve%, %xp% 1 ...; the layout tokens (%lf%, %nbsp1%, banners) are removed
          { type: 'mandatory', actions } a dark banner row with "!": the effect that must be applied (the target rule of an ability above)
@@ -258,7 +258,14 @@ def optional(kids):
 def half(h, where):
     if not h:
         return {'actions': []}
-    out = {'actions': [a for a in (item(x, where) for x in (h.get('actions') or [])) if a]}
+    raw = list(h.get('actions') or [])
+    aug = None
+    if h.get('namedAbility') and 'divider' in raw:                    # augment: the band above the first divider is the standing effect, active while the card is in play; the rest is done once, when the card is played
+        cut = raw.index('divider')
+        aug, raw = raw[:cut], raw[cut + 1:]
+    out = {'actions': [a for a in (item(x, where) for x in raw) if a]}
+    if aug is not None:
+        out['augment'] = [a for a in (item(x, where) for x in aug) if a]
     if h.get('xp') is not None:
         out['xp'] = number(h['xp'])
     if h.get('lost'):
@@ -267,6 +274,8 @@ def half(h, where):
         out['remove'] = True
     if h.get('duration'):
         out['duration'] = str(h['duration']).strip()
+    if h.get('namedAbility'):                                        # the keyword ribbon at the top left of a half (AUGMENT)
+        out['namedAbility'] = (h['namedAbility'] or {}).get('name') if isinstance(h['namedAbility'], dict) else str(h['namedAbility'])
     if h.get('infuse'):                                              # the banner at the end of a half that creates an element: infuse: [light] or [light/dark] (either)
         names = [e for v in (h['infuse'] if isinstance(h['infuse'], list) else [h['infuse']]) for e in str(v).split('/')]
         out['infuse'] = names
