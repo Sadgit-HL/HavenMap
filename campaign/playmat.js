@@ -52,7 +52,7 @@ function markPanel(c, S, esc, key, stickers = true) {
 const AM_MODES = [['std', 'Std', 'standard draw'], ['adv', 'Adv', 'draw with advantage'], ['dis', 'Dis', 'draw with disadvantage']];
 export const amModeBtn = (mode = 'std', cls = '') => {
   const i = Math.max(0, AM_MODES.findIndex(m => m[0] === mode)), cur = AM_MODES[i], next = AM_MODES[(i + 1) % AM_MODES.length];
-  return `<button type="button" class="amode${cls}"${onlyApp()} data-ammode="${next[0]}" data-mode="${cur[0]}" aria-label="Draw mode: ${cur[2]}. Click to change to ${next[2]}">${cur[1]}</button>`;
+  return `<button type="button" class="amode${cls}" data-ammode="${next[0]}" data-mode="${cur[0]}" aria-label="Draw mode: ${cur[2]}. Click to change to ${next[2]}">${cur[1]}</button>`;
 };
 export function amViewHtml(A, esc, edit, mode = 'std') {
   const stack = (t, n, zone, sp) => {
@@ -69,9 +69,10 @@ export function amViewHtml(A, esc, edit, mode = 'std') {
   const deck = deckList.join(''), perRow = Math.max(4, Math.ceil(deckList.length / 2));   // the stacks are sized so the deck fits two rows
   const disc = A.top ? stack(A.top, A.disc, 'disc', false) : '';
   const next = A.topList[0] ? { z: 'top', t: A.topList[0] } : !A.pool && A.botList[0] ? { z: 'bot', t: A.botList[0] } : null;   // a known card is drawn next: the button draws it instead of rolling
-  const O = drawOdds(A), pc = p => (p <= 0 ? '0%' : p < 0.005 ? '&lt;1%' : `${Math.round(100 * p)}%`);
+  const O = drawOdds(A, mode), pc = p => (p <= 0 ? '0%' : p < 0.005 ? '&lt;1%' : `${Math.round(100 * p)}%`);
   const cell = (k, lab, tip, tone) => `<span class="odd ${tone}${O[k] > 0 ? '' : ' zero'}" title="${tip}"><i>${lab}</i><b>${pc(O[k])}</b></span>`;
-  const stats = O ? `<div class="amstats" aria-label="Odds of the next random draw">${[
+  const modeTip = mode === 'adv' ? ' with advantage: the better of two cards' : mode === 'dis' ? ' with disadvantage: the worse of two cards' : '';
+  const stats = O ? `<div class="amstats" aria-label="Odds of the next random draw${modeTip}"${modeTip ? ` title="Odds of the card that counts,${modeTip}"` : ''}>${[
     cell('miss', 'Miss', 'Miss or Curse', 'neg'), cell('le2', '&le;-2', '-2 or worse, misses included', 'neg'), cell('le1', '&le;-1', '-1 or worse, misses included', 'neg'),
     cell('z', '0', 'Exactly +0', 'mid'), cell('ge1', '&ge;+1', '+1 or better, crits included', 'pos'), cell('ge2', '&ge;+2', '+2 or better, crits included', 'pos'), cell('crit', 'Crit', 'x2 or Bless', 'pos'),
   ].join('')}</div>` : '';

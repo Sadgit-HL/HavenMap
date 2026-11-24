@@ -280,4 +280,29 @@ export const tests = {
     assert.equal(canDraw(drawState(M, { disc: STD, order: Object.keys(STD), top: ['p0'] })), true, 'a card placed on top');
     assert.equal(canDraw(drawState(M, NO_CARDS)), false);
   },
+  'odds with advantage and disadvantage: the better or the worse of two cards, x2 above every number, a miss below'() {
+    const A = (...cards) => ({ tiles: cards.map(([value, n = 1, rolling = false], i) => ({ key: 'k' + i, n, value, rolling })), specials: [] });
+    const two = A(['+1'], ['-1']);
+    near(drawOdds(two).ge1, 1 / 2); near(drawOdds(two, 'adv').ge1, 1); near(drawOdds(two, 'adv').le1, 0); near(drawOdds(two, 'dis').le1, 1); near(drawOdds(two, 'dis').ge1, 0);
+    const crit = A(['x2'], ['+2']);
+    near(drawOdds(crit, 'adv').crit, 1); near(drawOdds(crit, 'dis').crit, 0); near(drawOdds(crit, 'dis').ge2, 1);
+    const miss = A(['null'], ['+0']);
+    near(drawOdds(miss, 'adv').miss, 0); near(drawOdds(miss, 'adv').z, 1); near(drawOdds(miss, 'dis').miss, 1);
+    const one = A(['+2']);
+    near(drawOdds(one, 'adv').ge2, 1); near(drawOdds(one, 'dis').ge2, 1);                  // no second card: N counts alone
+    assert.equal(drawOdds(A(), 'adv'), null);
+  },
+  'odds with advantage and disadvantage on the monster deck follow the pairs without replacement'() {
+    const adv = drawOdds(drawState(M, {}), 'adv'), dis = drawOdds(drawState(M, {}), 'dis');
+    near(adv.ge1, 1 - (13 / 20) * (12 / 19)); near(dis.ge1, (7 / 20) * (6 / 19));
+    near(adv.miss, (1 / 20) * (0 / 19)); near(dis.miss, 1 - (19 / 20) * (18 / 19));
+    near(adv.crit, 1 - (19 / 20) * (18 / 19)); near(dis.crit, (1 / 20) * 0);
+    for (const o of [adv, dis]) near(o.le1 + o.z + o.ge1, 1);                                // at most -1, zero and at least +1 cover every result
+  },
+  'odds with advantage: rolling cards before N are added to the counted card, with disadvantage they are ignored'() {
+    const A = { tiles: [{ key: 'r', n: 1, value: '+1', rolling: true }, { key: 'a', n: 1, value: '+0', rolling: false }, { key: 'b', n: 1, value: '+2', rolling: false }], specials: [] };
+    const adv = drawOdds(A, 'adv'), dis = drawOdds(A, 'dis');
+    near(adv.ge2, 5 / 6); near(adv.ge1, 1); near(adv.z, 0);
+    near(dis.z, 5 / 6); near(dis.ge1, 1 / 6); near(dis.ge2, 0);
+  },
 };

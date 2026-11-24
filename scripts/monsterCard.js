@@ -74,7 +74,7 @@ function resolveNode(n, infused, notes) {
   const sub = [];
   const setOrAdd = (c, rel) => {
     const i = sub.findIndex(x => x.t === c.t);
-    if (i < 0) sub.push(rel ? { t: c.t, v: signed(c) } : c);
+    if (i < 0) sub.push(rel ? { t: c.t, v: c.t === 'target' ? Math.max(1, 1 + signed(c)) : signed(c) } : c);   // an action with no target hits one: target +1 is target 2
     else sub[i] = { ...sub[i], v: rel && typeof sub[i].v === 'number' ? sub[i].v + signed(c) : c.v };
   };
   for (const s of n.sub) {

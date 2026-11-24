@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { extraText } from '../../scripts/monsterPost.js';
 import { statValue, cardOptions, candidatesFor, cardCandidates, distinctCards, areaIndexes, infusedNames } from '../../scripts/monsterCard.js';
 import { GH2_CARD_IDS } from '../../scripts/games/gh2_card_ids.js';
 import { areaOffsets } from '../../scripts/monsterMove.js';
@@ -220,5 +221,11 @@ export const tests = {
       for (const c of deck) if (cardOptions({ monster: mon, kind: 'normal', level: 1, card: c }).focusFarthest) n++;
     }
     assert.equal(n, 1, 'only one card of the data');
+  },
+  'monster card: a consume that adds a target to an action with no target of its own makes it target 2 (Rise and Fall)'() {
+    const heal = infused => inf('crystal-rot', 'Rise and Fall', infused).extras.find(e => e.t === 'heal');
+    assert.equal(heal([]).sub.find(s => s.t === 'target'), undefined, 'not infused: no target');
+    assert.deepEqual(heal(['dark']).sub.find(s => s.t === 'target'), { t: 'target', v: 2 });
+    assert.match(extraText(heal(['dark']), { icons: false }), /target 2/);
   },
 };

@@ -108,7 +108,11 @@ function oddsValue(t) {
 
 // Odds of one random draw from the pool, rolling cards chained (drawn without replacement): { miss, le2, le1, z, ge1, ge2, crit } as fractions,
 // cumulative (le2 and le1 include the misses, ge1 and ge2 include the crits). null when the pool is empty.
-export function drawOdds(A) {
+// mode 'adv' or 'dis': the odds of the card that counts. The draw goes on until a card that is not rolling (N, with the rolling cards drawn before it, R), then
+// one more card C comes from what is left (its rolling icon is ignored); advantage counts the better of N and C plus R, disadvantage the worse of the two and
+// no R (the rules of amdCompare.js, by number only: a x2 card is above every number, a Miss below every number). A hero chooses with advantage, so this is the
+// best of the two for a hero. With no card left after N, N counts alone.
+export function drawOdds(A, mode = 'std') {
   const kinds = [];
   for (const t of [...A.tiles, ...A.specials]) if (t.n > 0) { const o = oddsValue(t), k = kinds.find(x => x.v === o.v && x.roll === o.roll); if (k) k.n += t.n; else kinds.push({ ...o, n: t.n }); }
   const N = kinds.reduce((s, k) => s + k.n, 0);
@@ -124,12 +128,24 @@ export function drawOdds(A) {
     if (r >= 2) out.ge2 += p;
   };
   const left = kinds.map(k => k.n);
+  const rank = v => (v === 'miss' ? -Infinity : v === 'x2' ? Infinity : v);
+  const counted = (n, c, sum) => {                                      // the card that counts out of N and C (null: none left)
+    const v = c === null ? n : mode === 'adv' ? (rank(c) > rank(n) ? c : n) : (rank(c) < rank(n) ? c : n);
+    return typeof v === 'number' ? (mode === 'adv' ? v + sum : v) : v;
+  };
   const walk = (p, sum, rem) => {                                       // sum = the rolling modifiers drawn so far, rem = cards left
     if (!rem) { end(p, sum); return; }                                  // only rolling cards were left: their sum is the result
     kinds.forEach((k, i) => {
       if (!left[i]) return;
       const q = p * left[i] / rem;
-      if (!k.roll) { end(q, typeof k.v === 'number' ? sum + k.v : k.v); return; }
+      if (!k.roll) {
+        if (mode !== 'adv' && mode !== 'dis') { end(q, typeof k.v === 'number' ? sum + k.v : k.v); return; }
+        left[i]--;
+        const rest = rem - 1;
+        if (!rest) end(q, counted(k.v, null, sum)); else kinds.forEach((c, j) => { if (left[j]) end(q * left[j] / rest, counted(k.v, c.v, sum)); });
+        left[i]++;
+        return;
+      }
       left[i]--; walk(q, typeof k.v === 'number' ? sum + k.v : sum, rem - 1); left[i]++;
     });
   };
