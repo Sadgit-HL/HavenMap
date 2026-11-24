@@ -1,0 +1,344 @@
+[
+ {
+  "id": 901,
+  "dashed": [
+   {
+    "half": "top",
+    "lines": 1,
+    "firstWords": "-1 [person]: You and all allies gain",
+    "above": "dark banner row '! [?] all allies, enemies, and self' under the move/jump 3 ability"
+   },
+   {
+    "half": "bottom",
+    "lines": 1,
+    "firstWords": "-1 [person]: [..] instead of [..]",
+    "above": "banner row '! [..] all allies adjacent to the target of the attack ability and self' under attack 1 range 3"
+   }
+  ],
+  "nonResolveDashed": false
+ },
+ {
+  "id": 902,
+  "dashed": [
+   {
+    "half": "top",
+    "lines": 2,
+    "firstWords": "-X [person]: Instead of once, perform",
+    "above": "top of card, applies to the following grant ability (grant one ally within range 3: move 2, attack 2)"
+   }
+  ],
+  "nonResolveDashed": true
+ },
+ {
+  "id": 903,
+  "dashed": [
+   {
+    "half": "top",
+    "lines": 1,
+    "firstWords": "-2 [person]: Ignore [..] on this card.",
+    "above": "attack 5 with range 4"
+   },
+   {
+    "half": "bottom",
+    "lines": 1,
+    "firstWords": "-1 [person]: [heal] 2 [range] 3",
+    "above": "push/ability 3 (stacked icon)"
+   },
+   {
+    "half": "bottom",
+    "lines": 1,
+    "firstWords": "-1 [person]: [attack] 2 [range] 3, [..]",
+    "above": "same ability 3 row (second box under the heal box)"
+   }
+  ],
+  "nonResolveDashed": false
+ },
+ {
+  "id": 904,
+  "dashed": [
+   {
+    "half": "top",
+    "lines": 1,
+    "firstWords": "-1 [person]: +1 [target], [..]",
+    "above": "attack 1 with range 4 and element"
+   },
+   {
+    "half": "bottom",
+    "lines": 1,
+    "firstWords": "-2 [person]: +1 [..], [..]",
+    "above": "ability 1 (upward arrow icon) under move 1"
+   }
+  ],
+  "nonResolveDashed": false
+ },
+ {
+  "id": 905,
+  "dashed": [
+   {
+    "half": "bottom",
+    "lines": 1,
+    "firstWords": "-1 [person]: +1 [..], [..]",
+    "above": "heal 1 range 2"
+   }
+  ],
+  "nonResolveDashed": false
+ },
+ {
+  "id": 906,
+  "dashed": [],
+  "nonResolveDashed": false
+ },
+ {
+  "id": 907,
+  "dashed": [
+   {
+    "half": "top",
+    "lines": 1,
+    "firstWords": "-2 [person]: +5 [attack], [..]",
+    "above": "attack 2 range 3 with element"
+   },
+   {
+    "half": "bottom",
+    "lines": 2,
+    "firstWords": "-1 [person]: [..], [..] -1 [person]: [..]",
+    "above": "ability with element, target 3 range 3"
+   }
+  ],
+  "nonResolveDashed": false
+ },
+ {
+  "id": 908,
+  "dashed": [
+   {
+    "half": "top",
+    "lines": 1,
+    "firstWords": "-1 [person]: [target] 3, [attack mod]",
+    "above": "attack 2 with range 3 and purple lightning icon"
+   }
+  ],
+  "nonResolveDashed": false
+ },
+ {
+  "id": 909,
+  "dashed": [
+   {
+    "half": "bottom",
+    "lines": 1,
+    "firstWords": "-1 [person]: +3 [teleport], [xp]",
+    "above": "teleport 3"
+   }
+  ],
+  "nonResolveDashed": false
+ },
+ {
+  "id": 910,
+  "dashed": [],
+  "nonResolveDashed": false
+ },
+ {
+  "id": 911,
+  "dashed": [],
+  "nonResolveDashed": false
+ },
+ {
+  "id": 912,
+  "dashed": [],
+  "nonResolveDashed": false
+ },
+ {
+  "id": 913,
+  "dashed": [
+   {
+    "half": "top",
+    "lines": 1,
+    "firstWords": "-1 [person]: Add [icon] to your next",
+    "above": "banner row '! [icon] self' (self condition)"
+   }
+  ],
+  "nonResolveDashed": false
+ },
+ {
+  "id": 914,
+  "dashed": [
+   {
+    "half": "bottom",
+    "lines": 1,
+    "firstWords": "-1 [person]: [icon], [icon], [xp]",
+    "above": "move 2 with strengthen pill 'target 1 ally, range 1'"
+   }
+  ],
+  "nonResolveDashed": false
+ },
+ {
+  "id": 915,
+  "dashed": [
+   {
+    "half": "bottom",
+    "lines": 2,
+    "firstWords": "-1 [person]: +3 [attack], [!] -1 [person]:",
+    "above": "attack 6 with range 3"
+   }
+  ],
+  "nonResolveDashed": false
+ },
+ {
+  "id": 916,
+  "dashed": [
+   {
+    "half": "bottom",
+    "lines": 1,
+    "firstWords": "-1 [person]: +2 [move], [!]",
+    "above": "move 3 (jump-like icon) 3"
+   }
+  ],
+  "nonResolveDashed": false
+ },
+ {
+  "id": 917,
+  "dashed": [
+   {
+    "half": "top",
+    "lines": 2,
+    "firstWords": "-1 [person]: +1 [attack], [!] -1 [person]:",
+    "above": "attack 1 with target 2, range 3, orange condition"
+   }
+  ],
+  "nonResolveDashed": false
+ },
+ {
+  "id": 918,
+  "dashed": [
+   {
+    "half": "bottom",
+    "lines": 1,
+    "firstWords": "-2 [person]: If the target is a",
+    "above": "unknown-icon ability with range 3 (target text block inside box, 5 text lines)"
+   }
+  ],
+  "nonResolveDashed": false
+ },
+ {
+  "id": 919,
+  "dashed": [
+   {
+    "half": "bottom",
+    "lines": 1,
+    "firstWords": "-1 [person]: +1 [wound], [!]",
+    "above": "text: all enemies that have [condition] suffer 1 damage"
+   }
+  ],
+  "nonResolveDashed": false
+ },
+ {
+  "id": 920,
+  "dashed": [
+   {
+    "half": "bottom",
+    "lines": 2,
+    "firstWords": "-1 [person]: Play any level card",
+    "above": "text: immediately play one level 1 card from discard pile to perform its bottom action"
+   }
+  ],
+  "nonResolveDashed": false
+ },
+ {
+  "id": 921,
+  "dashed": [
+   {
+    "half": "top",
+    "lines": 1,
+    "firstWords": "-1 [person]: +1 [push], +1 [range], [!]",
+    "above": "push 2 with target 1 ally, range 1"
+   }
+  ],
+  "nonResolveDashed": false
+ },
+ {
+  "id": 922,
+  "dashed": [
+   {
+    "half": "top",
+    "lines": 2,
+    "firstWords": "-1 [person]: [icon] -2 [person]: [icon]",
+    "above": "'?' diamond (infuse/element) row at top; box hangs below it"
+   }
+  ],
+  "nonResolveDashed": false
+ },
+ {
+  "id": 923,
+  "dashed": [
+   {
+    "half": "top",
+    "lines": 2,
+    "firstWords": "-1 [person]: +3 [attack], [icon]",
+    "above": "attack 3 with range 3"
+   },
+   {
+    "half": "bottom",
+    "lines": 2,
+    "firstWords": "Place one damage token on this",
+    "above": "[up-arrow] 1 (bottom action); text block with -1 [person] persistent/loss clause, 5 rendered lines"
+   }
+  ],
+  "nonResolveDashed": true
+ },
+ {
+  "id": 924,
+  "dashed": [
+   {
+    "half": "top",
+    "lines": 1,
+    "firstWords": "-1 [person]: +1 [attack], [icon] 1,",
+    "above": "attack 3 with range 3"
+   },
+   {
+    "half": "top",
+    "lines": 1,
+    "firstWords": "-2 [person]: Ignore [card] on this card.",
+    "above": "the -1 dashed box above (below attack 3 row)"
+   },
+   {
+    "half": "bottom",
+    "lines": 1,
+    "firstWords": "-4 [person]: Ignore [card] on this card.",
+    "above": "Gain 5 [person]"
+   }
+  ],
+  "nonResolveDashed": false
+ },
+ {
+  "id": 925,
+  "dashed": [],
+  "nonResolveDashed": false
+ },
+ {
+  "id": 926,
+  "dashed": [
+   {
+    "half": "bottom",
+    "lines": 1,
+    "firstWords": "-1 [person]: Your allies gain advantage",
+    "above": "attack 2 with range 3 and [icon] 3 (bottom action)"
+   }
+  ],
+  "nonResolveDashed": false
+ },
+ {
+  "id": 927,
+  "dashed": [
+   {
+    "half": "bottom",
+    "lines": 2,
+    "firstWords": "-1 [person]: +1 [attack], [icon], [!]",
+    "above": "attack 4 with range 4"
+   }
+  ],
+  "nonResolveDashed": false
+ },
+ {
+  "id": 928,
+  "dashed": [],
+  "nonResolveDashed": false
+ }
+]

@@ -1,0 +1,354 @@
+{
+  "about": "Icon dictionary for the Hail (Mercenary Pack) ability cards, from the trial extraction. Entries are tried in order, the first whose `match` (case-insensitive regular expressions) hits a description wins. `source`: user = given by the owner, sheet = matched against HavenMap's own icon images (images/icons/conditions-*, attack-modifiers/common/icons/center/conditions-*, Wordhaven_Assets/MP/abilities), context = read from the card text around the icon, guess = best reading, to confirm.",
+  "entries": [
+    {
+      "id": "irritation",
+      "type": "irritation",
+      "token": "irritation",
+      "source": "sheet",
+      "label": "Irritation: the name of a persistent effect, printed on a ribbon (white head with a burst); not a resource",
+      "match": [
+        "ribbon",
+        "label",
+        "\\btag\\b"
+      ]
+    },
+    {
+      "id": "resolve",
+      "type": "resolve",
+      "token": "resolve",
+      "source": "sheet",
+      "label": "Resolve, the class resource (white head silhouette with a star on the chest, also in a circle); the cost in a dashed pill",
+      "match": [
+        "irritation icon",
+        "head silhouette with star",
+        "person silhouette in white circle",
+        "hail resource",
+        "white round person",
+        "person-in-circle",
+        "resolve"
+      ]
+    },
+    {
+      "id": "move",
+      "type": "move",
+      "token": "move",
+      "source": "user",
+      "label": "Move (white boot with speed lines)",
+      "match": [
+        "boot",
+        "speed lines",
+        "^move$",
+        "move icon"
+      ]
+    },
+    {
+      "id": "attack",
+      "type": "attack",
+      "token": "attack",
+      "source": "user",
+      "label": "Attack (white wand with sparkles)",
+      "match": [
+        "wand",
+        "^attack( icon)?$"
+      ]
+    },
+    {
+      "id": "pierce",
+      "type": "pierce",
+      "token": "pierce",
+      "source": "sheet",
+      "label": "Pierce (orange diamond with up and down arrows)",
+      "match": [
+        "up/down arrows",
+        "pierce"
+      ]
+    },
+    {
+      "id": "push",
+      "type": "push",
+      "token": "push",
+      "source": "sheet",
+      "label": "Push (grey or white diamond with a tower)",
+      "match": [
+        "tower",
+        "stacked-block",
+        "^push"
+      ]
+    },
+    {
+      "id": "curse",
+      "type": "condition",
+      "value": "curse",
+      "token": "curse",
+      "source": "sheet",
+      "label": "Curse (purple diamond with a lightning bolt)",
+      "match": [
+        "purple diamond with.*lightning"
+      ]
+    },
+    {
+      "id": "bless",
+      "type": "condition",
+      "value": "bless",
+      "token": "bless",
+      "source": "sheet",
+      "label": "Bless (gold diamond with a circle and a triangle)",
+      "match": [
+        "circle-and-triangle",
+        "circle and triangle",
+        "gold/yellow diamond",
+        "gold diamond"
+      ]
+    },
+    {
+      "id": "wound",
+      "type": "condition",
+      "value": "wound",
+      "token": "wound",
+      "source": "sheet",
+      "label": "Wound (orange diamond with dripping blood)",
+      "match": [
+        "dripping",
+        "pitchfork",
+        "comb-like",
+        "orange diamond( \\(wound\\??\\))?$",
+        "orange diamond icon"
+      ]
+    },
+    {
+      "id": "ward",
+      "type": "condition",
+      "value": "ward",
+      "token": "ward",
+      "source": "sheet",
+      "label": "Ward (pink diamond with a shield)",
+      "match": [
+        "pink.*(shield|ring|pendant)"
+      ]
+    },
+    {
+      "id": "safeguard",
+      "type": "condition",
+      "value": "safeguard",
+      "token": "safeguard",
+      "source": "sheet",
+      "label": "Safeguard (green diamond with a heart)",
+      "match": [
+        "green.*heart"
+      ]
+    },
+    {
+      "id": "strengthen",
+      "type": "condition",
+      "value": "strengthen",
+      "token": "strengthen",
+      "source": "sheet",
+      "label": "Strengthen (blue diamond with a flexed arm)",
+      "match": [
+        "flexed arm",
+        "strengthen"
+      ]
+    },
+    {
+      "id": "poison",
+      "type": "condition",
+      "value": "poison",
+      "token": "poison",
+      "source": "sheet",
+      "label": "Poison (grey diamond with a skull)",
+      "match": [
+        "skull"
+      ]
+    },
+    {
+      "id": "muddle",
+      "type": "condition",
+      "value": "muddle",
+      "token": "muddle",
+      "source": "sheet",
+      "label": "Muddle (brown diamond with a question mark)",
+      "match": [
+        "question mark"
+      ]
+    },
+    {
+      "id": "stun",
+      "type": "condition",
+      "value": "stun",
+      "token": "stun",
+      "source": "sheet",
+      "label": "Stun (dark blue diamond with a starburst)",
+      "match": [
+        "diamond.*(starburst|sparkle|snowflake)"
+      ]
+    },
+    {
+      "id": "immobilize",
+      "type": "condition",
+      "value": "immobilize",
+      "token": "immobilize",
+      "source": "sheet",
+      "label": "Immobilize (dark red diamond with a boot)",
+      "match": [
+        "red diamond"
+      ]
+    },
+    {
+      "id": "invisible",
+      "type": "condition",
+      "value": "invisible",
+      "token": "invisible",
+      "source": "sheet",
+      "label": "Invisible (black diamond with a dotted figure)",
+      "match": [
+        "black diamond"
+      ]
+    },
+    {
+      "id": "loot",
+      "type": "loot",
+      "token": "loot",
+      "source": "context",
+      "label": "Loot (white arrow up from a flat base; 'for each token looted' on Collect Essence)",
+      "match": [
+        "flat base",
+        "platform"
+      ]
+    },
+    {
+      "id": "teleport",
+      "type": "teleport",
+      "token": "teleport",
+      "source": "guess",
+      "label": "Teleport (stacked discs with ripples), to confirm",
+      "match": [
+        "stacked",
+        "pedestal",
+        "discs",
+        "fountain",
+        "ripples"
+      ]
+    },
+    {
+      "id": "range",
+      "type": "range",
+      "token": "range",
+      "source": "sheet",
+      "label": "Range (arrow in a circle)",
+      "match": [
+        "^range",
+        "range icon",
+        "arrow-in-circle"
+      ]
+    },
+    {
+      "id": "target",
+      "type": "target",
+      "token": "target",
+      "source": "sheet",
+      "label": "Target (bullseye)",
+      "match": [
+        "^target"
+      ]
+    },
+    {
+      "id": "heal",
+      "type": "heal",
+      "token": "heal",
+      "source": "sheet",
+      "label": "Heal (white drop with a cross)",
+      "match": [
+        "^heal"
+      ]
+    },
+    {
+      "id": "damage",
+      "type": "damage",
+      "token": "damage",
+      "source": "sheet",
+      "label": "Damage (spiky gear-like star, 'suffers')",
+      "match": [
+        "damage",
+        "gear"
+      ]
+    },
+    {
+      "id": "xp",
+      "type": "xp",
+      "token": "xp",
+      "source": "sheet",
+      "label": "Experience (burst with a number)",
+      "match": [
+        "experience",
+        "^xp",
+        "burst"
+      ]
+    },
+    {
+      "id": "persistent",
+      "type": "persistent",
+      "token": "persistent",
+      "source": "context",
+      "label": "Persistent (S-shaped loop with a red arrow, in a banner box with '!')",
+      "match": [
+        "s-?shaped loop",
+        "s-loop",
+        "loop.*red arrow",
+        "persistent",
+        "loop card"
+      ]
+    },
+    {
+      "id": "lost",
+      "type": "lost",
+      "token": "lost",
+      "source": "sheet",
+      "label": "Lost (white card with a red X)",
+      "match": [
+        "red x",
+        "red cross"
+      ]
+    },
+    {
+      "id": "recover",
+      "type": "recover",
+      "token": "recover",
+      "source": "sheet",
+      "label": "Recover (white card with a check mark)",
+      "match": [
+        "recover",
+        "check mark"
+      ]
+    },
+    {
+      "id": "marker",
+      "type": "marker",
+      "token": null,
+      "source": "context",
+      "label": "Enhancement dot or square, +1 sticker: not part of the ability",
+      "match": [
+        "^\\+1",
+        "sticker",
+        "small dot",
+        "^grey square",
+        "separator"
+      ]
+    },
+    {
+      "id": "unresolved",
+      "type": "unresolved",
+      "token": null,
+      "source": "none",
+      "label": "Not identified yet",
+      "match": [
+        "moon in a circle",
+        "ring with a small red dot",
+        "ring with a red dot",
+        "ring and a red dot",
+        "dashed circle",
+        "orange/gold diamond with white icon"
+      ]
+    }
+  ]
+}

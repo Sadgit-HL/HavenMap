@@ -9,6 +9,8 @@ Rule: never hand-edit a file marked GENERATED. Fix the generator (or its input t
 | `scripts/games/gh2_classes.js`, `gh2_cards.js`, `gh2_items.js`, `gh2_scenarios.js` (incl. stickers), `gh2_events.js`, `gh2_quests.js`, `battle_goals.js` | `tools/extract-campaign-tables.py` | the Card DB and GH2 Flow sheets of `WHTracker.xlsx`. Also reads `tools/card-initiative.json` |
 | `scripts/games/gh2_event_front.js`, `gh2_event_back.js` (lazy), `gh2_event_boxes.js`, `gh2_class_traits.js`; copies art to `images/events/` | `tools/extract-event-text.py` | Secretariat `data/gh2e/events.json`, class folders, `src/assets/artwork/events` |
 | `scripts/games/gh2_prosperity.js` | `tools/extract-prosperity.py` | Secretariat gh2e data |
+| `tools/card-extraction/` (2026-11-24, not used by the app) | `prepare.py` builds briefs, readers (Claude agents) write card code from the pictures, `check.py` validates and compares; see its README | ability card pictures of the classes without Secretariat data (11 Gloomhaven 2e classes, Anaphi, Satha) |
+| `tools/hail-ability-cards.json` (trial, not used by the app) | `tools/normalise-icons.mjs` with `tools/hail-icon-dictionary.json` | `tools/hail-ability-cards.raw.json`: a transcription of the 28 Hail (Mercenary Pack) ability card images by reading them (2026-11-24). The dictionary maps icon descriptions to types and `%tokens%`; 3 icons and 1 text icon are unresolved, teleport is a guess. The Secretariat has no data for Hail |
 | `scripts/games/gh2_reputation.js` | `tools/extract-reputation.py` | Secretariat gh2e data |
 | `scripts/games/masteries.js` | `tools/extract-masteries.py` | Secretariat data |
 | `scripts/games/gh2_pq_text.js` | `tools/extract-pq-text.py` | Secretariat gh2e data |

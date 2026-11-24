@@ -1,0 +1,2231 @@
+[
+ {
+  "id": 901,
+  "slug": "bizarre-antics",
+  "name": "Bizarre Antics",
+  "level": 1,
+  "initiative": 13,
+  "cardLevelOnImage": "1",
+  "initiativeOnImage": 13,
+  "top": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "unknown",
+     "iconDescription": "white wand with sparkles",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "unknown",
+     "icon": "white pedestal/stacked discs with an upward arrow",
+     "value": 3
+    },
+    {
+     "type": "custom",
+     "banner": true,
+     "text": "! [dark diamond with a question mark] [target] all allies, enemies, and self"
+    },
+    {
+     "type": "custom",
+     "text": "-1 [white head silhouette with star on chest]: You and all allies gain [blue diamond with flexed arm (strengthen)] instead of [dark diamond with a question mark], [xp 1]."
+    }
+   ]
+  },
+  "bottom": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "right",
+     "icon": "unknown",
+     "iconDescription": "white boot with swoosh",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "unknown",
+     "icon": "white wand with sparkles",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "condition",
+       "value": "wound"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "banner": true,
+     "text": "! [orange diamond (wound?)] [target] all allies adjacent to the target of the attack ability and self"
+    },
+    {
+     "type": "custom",
+     "text": "-1 [white head silhouette with star on chest]: [pink diamond with shield outline (ward?)] instead of [orange diamond (wound?)], [xp 1]"
+    }
+   ]
+  },
+  "uncertain": [
+   "Wand-with-sparkles and boot icons on tabs are class-specific, left as unknown.",
+   "Pedestal-with-arrow icon unknown.",
+   "Dark diamond with '?' unknown (possibly an element or placeholder condition).",
+   "Orange dripping-dagger diamond read as wound, not certain.",
+   "Pink diamond with shield outline read as ward, not certain.",
+   "Head-with-star icon (resource tied to the 'IRRITATION' label on other cards) not typed, kept as description in text.",
+   "Top-row dot between icon and value region ignored as separator."
+  ]
+ },
+ {
+  "id": 902,
+  "slug": "cant-be-bothered",
+  "name": "Can't Be Bothered",
+  "level": 1,
+  "initiative": 75,
+  "cardLevelOnImage": "1",
+  "initiativeOnImage": 75,
+  "top": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "unknown",
+     "iconDescription": "white wand with sparkles",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "custom",
+     "text": "-X [white head silhouette with star on chest]: Instead of once, perform the following grant ability X+1 times."
+    },
+    {
+     "type": "custom",
+     "text": "Grant one ally within [range] 3:"
+    },
+    {
+     "type": "unknown",
+     "icon": "white boot with swoosh",
+     "value": 2
+    },
+    {
+     "type": "unknown",
+     "icon": "white wand with sparkles",
+     "value": 2
+    },
+    {
+     "type": "xp",
+     "value": 1,
+     "note": "shown in a banner at right end of the band, preceded by '!'"
+    }
+   ]
+  },
+  "bottom": {
+   "lost": false,
+   "persistent": true,
+   "sideTabs": [
+    {
+     "side": "right",
+     "icon": "unknown",
+     "iconDescription": "white boot with swoosh",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "custom",
+     "text": "At the end of each of your turns, if you end your turn occupying the same hex you started the turn occupying, gain 1 [white head silhouette with star on chest]."
+    },
+    {
+     "type": "custom",
+     "text": "Increase all printed [range] values on your ability cards by 1."
+    }
+   ]
+  },
+  "uncertain": [
+   "A yellow 'IRRITATION' label with head icon sits at the left of the band below the left tab; recorded here only, not as an action.",
+   "Bottom-right icon (card with infinity loop and red arrow, preceded by '!') read as persistent.",
+   "XP 1 banner at band right assigned to top half; position is on the band so could be either.",
+   "Wand and boot tab icons unknown."
+  ]
+ },
+ {
+  "id": 903,
+  "slug": "fleeting-interest",
+  "name": "Fleeting Interest",
+  "level": 1,
+  "initiative": 76,
+  "cardLevelOnImage": "1",
+  "initiativeOnImage": 76,
+  "top": {
+   "lost": true,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "unknown",
+     "iconDescription": "white wand with sparkles",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "unknown",
+     "icon": "white wand with sparkles",
+     "value": 5,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      },
+      {
+       "type": "condition",
+       "value": "wound"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "-2 [white head silhouette with star on chest]: Ignore [lost icon (card with red X)] on this card."
+    },
+    {
+     "type": "xp",
+     "value": 1,
+     "note": "banner at right of band with '!' then xp 1 then lost icon"
+    }
+   ]
+  },
+  "bottom": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "right",
+     "icon": "unknown",
+     "iconDescription": "white boot with swoosh",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "unknown",
+     "icon": "white pedestal/stacked discs with an upward arrow",
+     "value": 3
+    },
+    {
+     "type": "custom",
+     "text": "-1 [white head silhouette with star on chest]: [heal] 2 [range] 3"
+    },
+    {
+     "type": "custom",
+     "text": "-1 [white head silhouette with star on chest]: [white wand with sparkles] 2 [range] 3, [xp 1]"
+    }
+   ]
+  },
+  "uncertain": [
+   "Lost icon (card with red X) assumed; it is the thing the text says to ignore.",
+   "Orange diamond read as wound, not certain.",
+   "Banner at band right assigned to top half.",
+   "Heal in the box read from the drop-with-cross icon.",
+   "Wand and boot icons unknown."
+  ]
+ },
+ {
+  "id": 904,
+  "slug": "gather-reagents",
+  "name": "Gather Reagents",
+  "level": 1,
+  "initiative": 21,
+  "cardLevelOnImage": "1",
+  "initiativeOnImage": 21,
+  "top": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "unknown",
+     "iconDescription": "white wand with sparkles",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "unknown",
+     "icon": "white wand with sparkles",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      },
+      {
+       "type": "unknown",
+       "icon": "dark red diamond with a white figure/hand"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "-1 [white head silhouette with star on chest]: +1 [target], [xp 1]"
+    }
+   ]
+  },
+  "bottom": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "right",
+     "icon": "unknown",
+     "iconDescription": "white boot with swoosh",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "unknown",
+     "icon": "white boot with swoosh",
+     "value": 1
+    },
+    {
+     "type": "unknown",
+     "icon": "white pedestal/stacked discs with an upward arrow",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "-2 [white head silhouette with star on chest]: +1 [pedestal with upward arrow], [xp 1]"
+    }
+   ]
+  },
+  "uncertain": [
+   "Dark red diamond icon after range 4 unidentified (small, possibly a condition).",
+   "Boot icon in the bottom row looks like the right-tab icon; both left unknown.",
+   "The bullet dot between icon and extras ignored."
+  ]
+ },
+ {
+  "id": 905,
+  "slug": "interesting-specimen",
+  "name": "Interesting Specimen",
+  "level": 1,
+  "initiative": 80,
+  "cardLevelOnImage": "1",
+  "initiativeOnImage": 80,
+  "top": {
+   "lost": false,
+   "persistent": true,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "unknown",
+     "iconDescription": "white wand with sparkles",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Gain 1 [white head silhouette with star on chest]."
+    },
+    {
+     "type": "custom",
+     "text": "The first time each round you loot any number of tokens, gain 1 [white head silhouette with star on chest]."
+    },
+    {
+     "type": "custom",
+     "text": "At the start of each of your turns, perform [white boot with swoosh] 2."
+    }
+   ]
+  },
+  "bottom": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "right",
+     "icon": "unknown",
+     "iconDescription": "white boot with swoosh",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "heal",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "-1 [white head silhouette with star on chest]: +1 [heal], [xp 1]"
+    },
+    {
+     "type": "area",
+     "value": "7-hex flower, all hexes red with X",
+     "note": "all hexes marked with red X"
+    }
+   ]
+  },
+  "uncertain": [
+   "Persistent assigned to top half (icon sits just above the band at right), read from the loop-with-red-arrow icon.",
+   "Yellow 'IRRITATION' label at top-left.",
+   "Area pattern with all hexes red X: meaning not certain.",
+   "Wand and boot icons unknown."
+  ]
+ },
+ {
+  "id": 906,
+  "slug": "minor-inconvenience",
+  "name": "Minor Inconvenience",
+  "level": 1,
+  "initiative": 28,
+  "cardLevelOnImage": "1",
+  "initiativeOnImage": 28,
+  "top": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "unknown",
+     "iconDescription": "white wand with sparkles",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "heal",
+     "value": 4,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "banner": true,
+     "text": "! [orange diamond (wound?)] [target] the target of the heal ability"
+    },
+    {
+     "type": "custom",
+     "text": "-1 [white head silhouette with star on chest]: [heal] 3 [range] 2, [green diamond with heart (regenerate?)], [xp 1]"
+    }
+   ]
+  },
+  "bottom": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "right",
+     "icon": "unknown",
+     "iconDescription": "white boot with swoosh",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "condition",
+     "value": "wound",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "-2 [white head silhouette with star on chest]: [dark blue diamond with white starburst] [range] 3, [xp 1]"
+    }
+   ]
+  },
+  "uncertain": [
+   "Orange diamond read as wound, not certain.",
+   "Green diamond with heart assumed regenerate.",
+   "Dark blue diamond with starburst not identified (could be chill or similar).",
+   "Wand and boot tab icons unknown."
+  ]
+ },
+ {
+  "id": 907,
+  "slug": "not-amused",
+  "name": "Not Amused",
+  "level": 1,
+  "initiative": 47,
+  "cardLevelOnImage": "1",
+  "initiativeOnImage": 47,
+  "top": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "unknown",
+     "iconDescription": "white wand with sparkles",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "unknown",
+     "icon": "white wand with sparkles",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "unknown",
+       "icon": "dark diamond with a question mark"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "-2 [white head silhouette with star on chest]: +5 [white wand with sparkles], [xp 1]"
+    }
+   ]
+  },
+  "bottom": {
+   "lost": true,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "right",
+     "icon": "unknown",
+     "iconDescription": "white boot with swoosh",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "unknown",
+     "icon": "dark blue diamond with white starburst",
+     "subActions": [
+      {
+       "type": "target",
+       "value": 3
+      },
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "-1 [white head silhouette with star on chest]: [grey diamond with skull] , [xp 1]"
+    },
+    {
+     "type": "custom",
+     "text": "-1 [white head silhouette with star on chest]: [orange diamond (wound?)]"
+    },
+    {
+     "type": "xp",
+     "value": 2,
+     "note": "banner at bottom right with '!' then xp 2 then lost icon"
+    }
+   ]
+  },
+  "uncertain": [
+   "Dark diamond with '?' unknown.",
+   "Grey skull diamond not identified (possibly bane).",
+   "Orange diamond read as wound, not certain.",
+   "Lost flag from the card-with-red-X icon at bottom right.",
+   "Wand and boot tab icons unknown."
+  ]
+ },
+ {
+  "id": 908,
+  "slug": "perpetual-annoyance",
+  "name": "Perpetual Annoyance",
+  "level": 1,
+  "initiative": 30,
+  "cardLevelOnImage": "1",
+  "initiativeOnImage": 30,
+  "top": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "unknown: white wand with sparkle",
+     "value": 2
+    },
+    {
+     "side": "right",
+     "icon": "unknown: white running-boot/head silhouette with speed lines",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "unknown",
+     "icon": "white wand with sparkle (in the attack position)",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "unknown",
+       "icon": "purple diamond with white lightning bolt"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "-1 [person silhouette in white circle] : [dark grey diamond with white stacked tower] 3, [experience burst] 1",
+     "dashed": true
+    }
+   ]
+  },
+  "bottom": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [],
+   "actions": [
+    {
+     "type": "unknown",
+     "icon": "white boot/head silhouette with speed lines (looks like a move icon)",
+     "value": 4
+    }
+   ]
+  },
+  "uncertain": [
+   "Wand-with-sparkle icon is not the standard attack icon; used unknown.",
+   "Purple lightning diamond is probably a custom condition, not identified.",
+   "Dark grey diamond with stacked tower not identified.",
+   "Boot icon looks like Hail's move icon but not a standard one; left as unknown.",
+   "Person-in-circle icon is probably Hail's Irritation resource.",
+   "Dashed box is an optional-enhancement style row; recorded as custom text.",
+   "Side tab icons are the same on all cards; identity unknown."
+  ]
+ },
+ {
+  "id": 909,
+  "slug": "somewhere-to-be",
+  "name": "Somewhere to Be",
+  "level": 1,
+  "initiative": 10,
+  "cardLevelOnImage": "1",
+  "initiativeOnImage": 10,
+  "top": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "unknown: white wand with sparkle",
+     "value": 2
+    },
+    {
+     "side": "right",
+     "icon": "unknown: white running-boot/head silhouette with speed lines",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "custom",
+     "text": "[white stacked-discs icon] any normal or elite enemy to a hex occupied by a different normal or elite enemy and simultaneously [white stacked-discs icon] that enemy to the hex occupied by the first. Both enemies gain [dark grey diamond with skull/face with crossed eyes]."
+    },
+    {
+     "type": "element",
+     "value": "air",
+     "banner": true
+    }
+   ]
+  },
+  "bottom": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [],
+   "actions": [
+    {
+     "type": "unknown",
+     "icon": "white stacked-discs icon with ripples (verb in the text, move-like)",
+     "value": 3
+    },
+    {
+     "type": "custom",
+     "text": "-1 [person silhouette in white circle] : +3 [white stacked-discs icon], [experience burst] 1",
+     "dashed": true
+    }
+   ]
+  },
+  "uncertain": [
+   "Stacked-discs icon not identified (maybe swap/relocate).",
+   "Dark grey skull-face diamond is probably a custom condition; not identified.",
+   "Air element banner: pale blue circle with swirl on a dark box with '!'; no red cross visible, so consume not set; unsure whether it is a banner or an element requirement.",
+   "Text layout and line breaks approximated."
+  ]
+ },
+ {
+  "id": 910,
+  "slug": "abundant-nuisance",
+  "name": "Abundant Nuisance",
+  "level": "X",
+  "initiative": 90,
+  "cardLevelOnImage": "X",
+  "initiativeOnImage": 90,
+  "top": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "unknown: white wand with sparkle",
+     "value": 2
+    },
+    {
+     "side": "right",
+     "icon": "unknown: white running-boot/head silhouette with speed lines",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "custom",
+     "text": "One enemy within [range] 3 [grey square] [damage/wound-like gear burst icon] suffers [gear icon] 1 for each occupied hex adjacent to it."
+    }
+   ]
+  },
+  "bottom": {
+   "lost": false,
+   "persistent": true,
+   "sideTabs": [],
+   "actions": [
+    {
+     "type": "custom",
+     "text": "[IRRITATION tan ribbon with person-in-circle icon]"
+    },
+    {
+     "type": "custom",
+     "text": "The first time each round you perform an ability that gives any negative condition to an enemy who already had a different negative condition, gain 1 [person silhouette in white circle]."
+    },
+    {
+     "type": "custom",
+     "text": "Enemy healing does not remove negative conditions."
+    }
+   ]
+  },
+  "uncertain": [
+   "Persistent flag set from a red/pink loop-with-arrow icon in a dark notch at bottom right with '!'; not sure it is the standard persistent icon.",
+   "The word before 'suffers' is a small gear-burst icon (it also reads 'suffers [gear] 1'); text between '3' and 'suffers' is a grey square plus an icon, possibly 'and' marker; gear icon may be damage-type, not identified.",
+   "IRRITATION ribbon sits at the left of the initiative band; placed in bottom actions, may belong to the band itself."
+  ]
+ },
+ {
+  "id": 911,
+  "slug": "leave-me-alone",
+  "name": "Leave Me Alone",
+  "level": "X",
+  "initiative": 70,
+  "cardLevelOnImage": "X",
+  "initiativeOnImage": 70,
+  "top": {
+   "lost": false,
+   "persistent": true,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "unknown: white wand with sparkle",
+     "value": 2
+    },
+    {
+     "side": "right",
+     "icon": "unknown: white running-boot/head silhouette with speed lines",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "custom",
+     "text": "[IRRITATION tan ribbon with person-in-circle icon]"
+    },
+    {
+     "type": "custom",
+     "text": "Gain 1 [person silhouette in white circle]."
+    },
+    {
+     "type": "custom",
+     "text": "At the end of each of your turns, if there are no allies or enemies within [range] 2, gain 1 [person silhouette in white circle]."
+    },
+    {
+     "type": "custom",
+     "text": "Whenever you are attacked by an adjacent enemy, after the attack perform:"
+    },
+    {
+     "type": "unknown",
+     "icon": "dark grey diamond with white stacked tower",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "target",
+       "text": "the attacker"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [],
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one ally within [range] 2:"
+    },
+    {
+     "type": "unknown",
+     "icon": "white boot/head silhouette with speed lines (looks like a move icon)",
+     "value": 2
+    },
+    {
+     "type": "custom",
+     "text": "This movement cannot enter a hex adjacent to Hail."
+    },
+    {
+     "type": "unknown",
+     "icon": "white wand with sparkle (in the attack position)",
+     "value": 2
+    }
+   ]
+  },
+  "uncertain": [
+   "Persistent flag set from loop-with-arrow icon with '!' at right of the initiative band above the right tab; assigned to top half; unsure it is the standard persistent icon.",
+   "Dark grey tower diamond not identified.",
+   "Target pill reads 'the attacker' with a bullseye icon; recorded as target text.",
+   "Wand and boot icons not standard."
+  ]
+ },
+ {
+  "id": 912,
+  "slug": "trial-and-success",
+  "name": "Trial and Success",
+  "level": "X",
+  "initiative": 95,
+  "cardLevelOnImage": "X",
+  "initiativeOnImage": 95,
+  "top": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "unknown: white wand with sparkle",
+     "value": 2
+    },
+    {
+     "side": "right",
+     "icon": "unknown: white running-boot/head silhouette with speed lines",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "unknown",
+     "icon": "white wand with sparkle (in the attack position)",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ],
+     "note": "18 small grey enhancement-dot squares (3 rows of 6) surround the row"
+    },
+    {
+     "type": "custom",
+     "text": "Whenever this attack kills an enemy, place one [+1] sticker on one of the enhancement dots."
+    },
+    {
+     "type": "custom",
+     "text": "! [experience burst] 2 [stack of cards with red cross] [white card/sheet with red cross]",
+     "banner": true
+    }
+   ]
+  },
+  "bottom": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [],
+   "actions": [
+    {
+     "type": "unknown",
+     "icon": "white stacked-discs icon with ripples (move-like)",
+     "value": 4
+    }
+   ]
+  },
+  "uncertain": [
+   "Box at right above the band: xp 2 plus two icons with red crosses (possibly lost/discard-related); meaning not confirmed, so lost not set.",
+   "Enhancement dots counted as 18 from image, approximate.",
+   "Wand, boot and stacked-discs icons not standard."
+  ]
+ },
+ {
+  "id": 913,
+  "slug": "experimental-insights",
+  "name": "Experimental Insights",
+  "level": 2,
+  "initiative": 24,
+  "cardLevelOnImage": "2",
+  "initiativeOnImage": 24,
+  "top": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "unknown: white wand with sparkle",
+     "value": 2
+    },
+    {
+     "side": "right",
+     "icon": "unknown: white running-boot/head silhouette with speed lines",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "custom",
+     "text": "! [dark grey diamond with skull/face with crossed eyes] self",
+     "banner": true
+    },
+    {
+     "type": "custom",
+     "text": "-1 [person silhouette in white circle] : Add [dark grey diamond with skull/face with crossed eyes] to your next attack this turn instead, [experience burst] 1.",
+     "dashed": true
+    },
+    {
+     "type": "unknown",
+     "icon": "white wand with sparkle (in the attack position)",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [],
+   "actions": [
+    {
+     "type": "unknown",
+     "icon": "white stacked-discs icon with ripples (move-like)",
+     "value": 6
+    },
+    {
+     "type": "custom",
+     "text": "! Add one [gold/yellow diamond with small person/flame icon] to the monster attack modifier deck",
+     "banner": true
+    }
+   ]
+  },
+  "uncertain": [
+   "Skull-face diamond not identified (could be a condition).",
+   "Gold diamond in the bottom banner not identified (maybe a curse/bless-like card).",
+   "Wand, boot and stacked-discs icons not standard."
+  ]
+ },
+ {
+  "id": 914,
+  "slug": "outsource",
+  "name": "Outsource",
+  "level": 2,
+  "initiative": 68,
+  "cardLevelOnImage": "2",
+  "initiativeOnImage": 68,
+  "top": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "unknown: white wand with sparkle",
+     "value": 2
+    },
+    {
+     "side": "right",
+     "icon": "unknown: white running-boot/head silhouette with speed lines",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one ally withing [range] 3:"
+    },
+    {
+     "type": "unknown",
+     "icon": "white wand with sparkle (in the attack position)",
+     "value": 4
+    }
+   ]
+  },
+  "bottom": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [],
+   "actions": [
+    {
+     "type": "unknown",
+     "icon": "white boot/head silhouette with speed lines (looks like a move icon)",
+     "value": 2
+    },
+    {
+     "type": "condition",
+     "value": "strengthen",
+     "subActions": [
+      {
+       "type": "target",
+       "text": "1 ally"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "-1 [person silhouette in white circle] : [green diamond with heart], [pink diamond with ring/pendant], [experience burst] 1",
+     "dashed": true
+    }
+   ]
+  },
+  "uncertain": [
+   "'withing' is printed on the card (typo kept).",
+   "Blue diamond with flexed arm taken as strengthen; green heart diamond (maybe regenerate) and pink ring diamond (maybe ward) not confirmed, so kept as descriptions.",
+   "Wand and boot icons not standard."
+  ]
+ },
+ {
+  "id": 915,
+  "slug": "beneath-me",
+  "name": "Beneath Me",
+  "level": 3,
+  "initiative": 85,
+  "cardLevelOnImage": "3",
+  "initiativeOnImage": 85,
+  "top": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "attack",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "unknown",
+     "icon": "tan/orange label banner at top-left with white head-with-burst icon and the word IRRITATION",
+     "text": "IRRITATION"
+    },
+    {
+     "type": "custom",
+     "text": "Gain 1 [irritation icon: white head silhouette with burst, in rounded shape]."
+    },
+    {
+     "type": "custom",
+     "text": "The first time each round one of your allies within [range icon] 3 attacks, they gain advantage on the attack and you gain 1 [irritation icon]."
+    },
+    {
+     "type": "custom",
+     "banner": true,
+     "text": "You cannot perform attack abilities."
+    },
+    {
+     "type": "unknown",
+     "icon": "dark box with exclamation mark at right edge, white rounded square containing an S-shaped loop with a red arrow pointing right",
+     "banner": true
+    }
+   ]
+  },
+  "bottom": {
+   "lost": true,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "right",
+     "icon": "move",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "attack",
+     "value": 6,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "-1 [irritation icon]: +3 [attack icon], [experience 1]"
+    },
+    {
+     "type": "custom",
+     "text": "-1 [irritation icon]: +3 [attack icon]"
+    },
+    {
+     "type": "xp",
+     "value": 2,
+     "note": "dark box at bottom-right with exclamation mark, star with 2, and red X"
+    }
+   ]
+  },
+  "uncertain": [
+   "Bottom-right box (! , star with 2, red X) read as experience 2 plus lost icon; the red X could mean something else.",
+   "Top-right box with exclamation mark and S-loop/red arrow icon not recognised, kept as unknown banner.",
+   "Attack icon here is a wand-with-sparkle; assumed to be Hail's attack icon.",
+   "Right side tab icon (boot with speed lines) assumed to be move.",
+   "Range icon (circle with arrow) assumed to be range.",
+   "Dashed box rows grouped as custom text, not as subActions of the attack."
+  ]
+ },
+ {
+  "id": 916,
+  "slug": "fading-presence",
+  "name": "Fading Presence",
+  "level": 3,
+  "initiative": 15,
+  "cardLevelOnImage": "3",
+  "initiativeOnImage": 15,
+  "top": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "attack",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "unknown",
+     "icon": "blue-white diamond with white sparkle/starburst",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "When the next enemy dies this round, the target suffers [damage icon: spiky gear-like star] 2."
+    },
+    {
+     "type": "unknown",
+     "icon": "dark box with exclamation mark and white crescent moon in a circle",
+     "banner": true
+    },
+    {
+     "type": "unknown",
+     "icon": "dark box at right edge with exclamation mark, white rounded square with a small ring and a red dot/line",
+     "banner": true
+    }
+   ]
+  },
+  "bottom": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "right",
+     "icon": "move",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Designate the hex you are occupying."
+    },
+    {
+     "type": "unknown",
+     "icon": "white stacked tiered discs (fountain-like), possibly teleport",
+     "value": 3
+    },
+    {
+     "type": "custom",
+     "text": "-1 [irritation icon]: +2 [stacked discs icon], [experience 1]"
+    },
+    {
+     "type": "custom",
+     "text": "At the end of your turn, you may [stacked discs icon] to the designated hex."
+    }
+   ]
+  },
+  "uncertain": [
+   "Blue diamond icon at top not recognised; nothing printed besides range 3.",
+   "Moon box and right-hand ! box on the top half not recognised.",
+   "Stacked discs icon not named; possibly teleport.",
+   "Whether the diamond action's text applies to its own target is assumed, not printed as target icon.",
+   "Side tab icons assumed attack and move."
+  ]
+ },
+ {
+  "id": 917,
+  "slug": "fools-errand",
+  "name": "Fool's Errand",
+  "level": 4,
+  "initiative": 26,
+  "cardLevelOnImage": "4",
+  "initiativeOnImage": 26,
+  "top": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "attack",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "unknown",
+       "icon": "orange diamond with white pitchfork/comb-like glyph"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "-1 [irritation icon]: +1 [attack icon], [experience 1]"
+    },
+    {
+     "type": "custom",
+     "text": "-1 [irritation icon]: +1 [target icon]"
+    }
+   ]
+  },
+  "bottom": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "right",
+     "icon": "move",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one adjacent ally:"
+    },
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "custom",
+     "text": "[stacked discs icon] to an empty hex adjacent to the target of the grant ability."
+    }
+   ]
+  },
+  "uncertain": [
+   "Orange diamond condition icon not recognised.",
+   "Boot icon assumed to be move.",
+   "Stacked discs icon in the text not named (possibly teleport).",
+   "Small square after move 3 taken as a separator, not recorded."
+  ]
+ },
+ {
+  "id": 918,
+  "slug": "miniaturize",
+  "name": "Miniaturize",
+  "level": 4,
+  "initiative": 86,
+  "cardLevelOnImage": "4",
+  "initiativeOnImage": 86,
+  "top": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "attack",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "unknown",
+     "icon": "black diamond with white glyph (small figure on a stand)",
+     "note": "target: self"
+    },
+    {
+     "type": "custom",
+     "text": "Replace all adjacent traps and 1-hex obstacles with money tokens."
+    },
+    {
+     "type": "unknown",
+     "icon": "white platform/disc with a large upward arrow",
+     "value": 1
+    }
+   ]
+  },
+  "bottom": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "right",
+     "icon": "move",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "unknown",
+     "icon": "beige diamond with a question mark",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "-2 [irritation icon]: If the target is a normal monster, it suffer [damage icon] equal to half (rounded up) its maximum hit point value. If the target is a elite monster, replace it with a normal monster of the same set, retaining its damage and conditions, [experience 1]."
+    }
+   ]
+  },
+  "uncertain": [
+   "Black diamond icon with 'self' pill not recognised.",
+   "Platform with up arrow icon not recognised.",
+   "Question-mark diamond not recognised; it may be a literal 'any' marker.",
+   "Printed typos kept verbatim (suffer, a elite).",
+   "Text box begins with -2 irritation, indent layout may differ."
+  ]
+ },
+ {
+  "id": 919,
+  "slug": "dont-be-a-baby",
+  "name": "Don't Be a Baby",
+  "level": 5,
+  "initiative": 33,
+  "cardLevelOnImage": "5",
+  "initiativeOnImage": 33,
+  "top": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "attack",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If one or more of the heals would cause the target's current hit point value to increase beyond their maximum, gain [irritation icon]."
+    }
+   ]
+  },
+  "bottom": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "right",
+     "icon": "move",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "custom",
+     "text": "All enemies that have [orange diamond icon with white pitchfork/comb-like glyph] suffer [damage icon] 1."
+    },
+    {
+     "type": "custom",
+     "text": "-1 [irritation icon]: +1 [damage icon], [experience 1]"
+    }
+   ]
+  },
+  "uncertain": [
+   "Orange diamond icon not recognised.",
+   "Boot icon assumed move.",
+   "Damage icon (spiky star) shown generically.",
+   "Irritation icon in the text shown without the rounded pill; same glyph assumed."
+  ]
+ },
+ {
+  "id": 920,
+  "slug": "trying-to-remember",
+  "name": "Trying to Remember",
+  "level": 5,
+  "initiative": 55,
+  "cardLevelOnImage": "5",
+  "initiativeOnImage": 55,
+  "top": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "attack",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "custom",
+     "text": "You may gain [purple diamond with white lightning bolt] to gain 1 [irritation icon]."
+    },
+    {
+     "type": "condition",
+     "value": "strengthen",
+     "note": "target: self"
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "unknown",
+       "icon": "beige diamond with a question mark"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "right",
+     "icon": "move",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "custom",
+     "text": "Immediately play one level 1 card from your discard pile to perform its bottom action."
+    },
+    {
+     "type": "custom",
+     "text": "-1 [irritation icon]: Play any level card instead, [experience 1]."
+    },
+    {
+     "type": "custom",
+     "text": "-1 [irritation icon, outline variant]: Perform the top action instead."
+    }
+   ]
+  },
+  "uncertain": [
+   "Purple lightning diamond not recognised.",
+   "Strengthen read from blue diamond with flexed arm.",
+   "Question-mark diamond not recognised.",
+   "Second irritation icon looks like an outline variant.",
+   "Boot assumed move."
+  ]
+ },
+ {
+  "id": 921,
+  "slug": "dismissive-comment",
+  "name": "Dismissive Comment",
+  "level": 6,
+  "initiative": 20,
+  "cardLevelOnImage": "6",
+  "initiativeOnImage": 20,
+  "top": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "attack",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "push",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": 1,
+       "note": "1 ally"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "-1 [irritation icon]: +1 [push icon], +1 [range icon], [experience 1]"
+    },
+    {
+     "type": "custom",
+     "text": "Grant the target of the push ability:"
+    },
+    {
+     "type": "attack",
+     "value": 2
+    },
+    {
+     "type": "custom",
+     "text": "Add +2 [attack icon] for each hex pushed."
+    }
+   ]
+  },
+  "bottom": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "right",
+     "icon": "move",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "unknown",
+     "icon": "white stacked tiered discs (fountain-like), possibly teleport",
+     "value": 5
+    }
+   ]
+  },
+  "uncertain": [
+   "Push read from the diamond icon plus the printed text 'push ability'; icon itself is a pillar-with-arrows glyph in a diamond.",
+   "Stacked discs icon not named; possibly teleport.",
+   "Boot assumed move.",
+   "Small diamond after attack 2 taken as separator."
+  ]
+ },
+ {
+  "id": 922,
+  "slug": "withering-stare",
+  "name": "Withering Stare",
+  "level": 6,
+  "initiative": 38,
+  "cardLevelOnImage": "6",
+  "initiativeOnImage": 38,
+  "top": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "attack",
+     "value": 2
+    },
+    {
+     "side": "right",
+     "icon": "move",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "unknown",
+     "icon": "brown diamond with a white question mark",
+     "value": null
+    },
+    {
+     "type": "custom",
+     "text": "-1 [Hail resource icon: white round person with sparkle]: [red diamond with white icon]"
+    },
+    {
+     "type": "custom",
+     "text": "-2 [Hail resource icon: white round person with sparkle]: [blue diamond with white starburst/snowflake icon]"
+    },
+    {
+     "type": "area",
+     "note": "4 hexes in two staggered rows of 2: three red hexes with white X, one grey hex (bottom-left, presumably self); top two red, bottom-right red",
+     "value": null
+    },
+    {
+     "type": "custom",
+     "banner": true,
+     "text": "[experience 1]",
+     "subActions": [
+      {
+       "type": "xp",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [],
+   "actions": [
+    {
+     "type": "unknown",
+     "icon": "white stacked discs/pile with horizontal arrows",
+     "value": 6,
+     "note": "followed by enhancement dot"
+    },
+    {
+     "type": "custom",
+     "text": "This [white stacked discs icon] must end adjacent to at least one enemy."
+    },
+    {
+     "type": "unknown",
+     "icon": "white diamond with white tower/stacked-block icon",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ],
+     "note": "pill reads 'all, [range] 1'; enhancement square before pill"
+    }
+   ]
+  },
+  "uncertain": [
+   "Hail resource icon (round person with sparkle) not named, written as description.",
+   "Brown ? diamond, red diamond, blue diamond icons unidentified.",
+   "Stacked discs icon and white diamond tower icon unidentified (possibly a different Hail move/push-like action).",
+   "Side tab icons assumed attack 2 (left) and move 2 (right); the attack icon looks like a wand/star rather than the standard sword.",
+   "Hex area pattern read approximately.",
+   "Burst with 1 assumed to be experience 1."
+  ]
+ },
+ {
+  "id": 923,
+  "slug": "collect-essence",
+  "name": "Collect Essence",
+  "level": 7,
+  "initiative": 41,
+  "cardLevelOnImage": "7",
+  "initiativeOnImage": 41,
+  "top": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "attack",
+     "value": 2
+    },
+    {
+     "side": "right",
+     "icon": "move",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ],
+     "note": "enhancement square after value"
+    },
+    {
+     "type": "custom",
+     "text": "-1 [Hail resource icon]: +3 [attack], [experience 1]"
+    },
+    {
+     "type": "custom",
+     "text": "-1 [Hail resource icon]: +3 [attack]"
+    },
+    {
+     "type": "custom",
+     "text": "If the attack killed an enemy, perform:"
+    },
+    {
+     "type": "unknown",
+     "icon": "gold/yellow diamond with white circle-and-triangle symbol",
+     "value": null,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ],
+     "note": "pill reads 'self'; small diamond bullet before pill"
+    }
+   ]
+  },
+  "bottom": {
+   "lost": false,
+   "persistent": true,
+   "sideTabs": [],
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "note": "enhancement dot after value"
+    },
+    {
+     "type": "unknown",
+     "icon": "white arrow pointing up from a flat base",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "Place one damage token on this card for each token looted. -1 [Hail resource icon]: Whenever you attack, you may discard this card and add +2 [attack] for each damage token on this card."
+    }
+   ]
+  },
+  "uncertain": [
+   "Gold diamond icon unidentified.",
+   "Up-arrow-on-base icon unidentified.",
+   "The card-with-loop-and-red-arrow icon at box right edge taken as persistent; not certain.",
+   "Move icon is an ornate boot; assumed move.",
+   "Burst assumed experience 1.",
+   "Attack tab icon is wand-like."
+  ]
+ },
+ {
+  "id": 924,
+  "slug": "tear-a-new-one",
+  "name": "Tear a New One",
+  "level": 7,
+  "initiative": 19,
+  "cardLevelOnImage": "7",
+  "initiativeOnImage": 19,
+  "top": {
+   "lost": true,
+   "persistent": false,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "attack",
+     "value": 2
+    },
+    {
+     "side": "right",
+     "icon": "move",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "area",
+     "note": "7-hex flower, all hexes red with white X",
+     "value": null
+    },
+    {
+     "type": "custom",
+     "text": "-1 [Hail resource icon]: +1 [attack], [orange/gold diamond with white icon] 1, [experience 1]"
+    },
+    {
+     "type": "custom",
+     "text": "-2 [Hail resource icon]: Ignore [lost icon: white card with red X] on this card."
+    },
+    {
+     "type": "custom",
+     "banner": true,
+     "text": "[experience 1] [lost icon: white card with red X]",
+     "subActions": [
+      {
+       "type": "xp",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "lost": true,
+   "persistent": false,
+   "sideTabs": [],
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Gain 5 [Hail resource icon]."
+    },
+    {
+     "type": "custom",
+     "text": "-4 [Hail resource icon]: Ignore [lost icon: white card with red X] on this card."
+    },
+    {
+     "type": "custom",
+     "banner": true,
+     "text": "[lost icon: white card with red X]"
+    }
+   ]
+  },
+  "uncertain": [
+   "Orange diamond icon unidentified.",
+   "White card with red X taken as lost icon (text says ignore it)."
+  ]
+ },
+ {
+  "id": 925,
+  "slug": "closed-for-buisness",
+  "name": "Closed for Business",
+  "level": 8,
+  "initiative": 23,
+  "cardLevelOnImage": "8",
+  "initiativeOnImage": 23,
+  "top": {
+   "lost": true,
+   "persistent": true,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "attack",
+     "value": 2
+    },
+    {
+     "side": "right",
+     "icon": "move",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "custom",
+     "text": "At the end of this and your next three turns, place a damage token on one of the following abilities without a damage token and perform that ability. At the start of your turn, if there are four damage tokens on this card, remove it to your lost pile. When this card is moved to your lost pile, you exhaust."
+    },
+    {
+     "type": "attack",
+     "value": 10,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "heal",
+     "value": 10,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "unknown",
+     "icon": "white stacked discs/pile icon (same as Withering Stare bottom)",
+     "value": 10
+    },
+    {
+     "type": "unknown",
+     "icon": "white arrow pointing up from a flat base",
+     "value": 3
+    },
+    {
+     "type": "custom",
+     "banner": true,
+     "text": "[experience 2] [persistent loop card with red arrow] [lost icon: white card with red X]",
+     "subActions": [
+      {
+       "type": "xp",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "lost": false,
+   "persistent": true,
+   "sideTabs": [],
+   "actions": [
+    {
+     "type": "custom",
+     "text": "[recover icon: white card with check mark] all your spent items."
+    },
+    {
+     "type": "custom",
+     "text": "The next two times an enemy ends their move ability adjacent to you, perform:"
+    },
+    {
+     "type": "unknown",
+     "icon": "white diamond with white tower/stacked-block icon",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "the enemy"
+      }
+     ]
+    },
+    {
+     "type": "unknown",
+     "icon": "dashed circle with arrow to solid circle with small red marks",
+     "value": null
+    },
+    {
+     "type": "custom",
+     "banner": true,
+     "text": "[persistent loop card with red arrow]"
+    }
+   ]
+  },
+  "uncertain": [
+   "Card title printed 'Closed for Business' (file name spelling differs).",
+   "Order of ability row (attack, heal, stacked icon) read left to right; positions approximate.",
+   "Up-arrow icon 3 sits just above initiative; assigned to top.",
+   "Which banner icons mean persistent vs lost is inferred.",
+   "Dashed-to-solid circle graphic meaning unclear.",
+   "Burst with 2 assumed experience 2."
+  ]
+ },
+ {
+  "id": 926,
+  "slug": "kill-that-one-first",
+  "name": "Kill That One First",
+  "level": 8,
+  "initiative": 7,
+  "cardLevelOnImage": "8",
+  "initiativeOnImage": 7,
+  "top": {
+   "lost": false,
+   "persistent": true,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "attack",
+     "value": 2
+    },
+    {
+     "side": "right",
+     "icon": "move",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "unknown",
+     "icon": "grey diamond with white skull with X eyes",
+     "value": null
+    },
+    {
+     "type": "unknown",
+     "icon": "blue diamond with white flexed arm (resembles strengthen)",
+     "value": null,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 enemy"
+      },
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Your allies add +2 [attack] to all attacks targeting enemies that have [blue diamond flexed arm]. The next time an enemy that has [blue diamond flexed arm] is killed by one of your allies, move this card to your discard pile and that ally performs:"
+    },
+    {
+     "type": "heal",
+     "value": 6,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      },
+      {
+       "type": "unknown",
+       "icon": "green diamond with white heart",
+       "value": null
+      },
+      {
+       "type": "unknown",
+       "icon": "pink diamond with white shield-heart",
+       "value": null
+      },
+      {
+       "type": "unknown",
+       "icon": "blue diamond with white flexed arm",
+       "value": null
+      },
+      {
+       "type": "unknown",
+       "icon": "gold diamond with white circle-and-triangle",
+       "value": null
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "banner": true,
+     "text": "[persistent loop card with red arrow]"
+    }
+   ]
+  },
+  "bottom": {
+   "lost": false,
+   "persistent": true,
+   "sideTabs": [],
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "unknown",
+       "icon": "orange diamond with white up/down arrows",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "-1 [Hail resource icon]: Your allies gain advantage on and add [orange diamond with up/down arrows] 3 to all attacks targeting the target this round, [experience 1]."
+    }
+   ]
+  },
+  "uncertain": [
+   "Blue flexed-arm diamond may be strengthen but is applied to enemies, so left unknown.",
+   "Grey skull, green heart, pink diamond, gold diamond, orange diamond icons unidentified.",
+   "Heal 6 pill lists 'self' then four diamonds.",
+   "Persistent loop icon beside bottom box: unclear if persistent or a 'this round' marker.",
+   "Top persistent flag inferred from banner and text."
+  ]
+ },
+ {
+  "id": 927,
+  "slug": "fired-up",
+  "name": "Fired Up",
+  "level": 9,
+  "initiative": 70,
+  "cardLevelOnImage": "9",
+  "initiativeOnImage": 70,
+  "top": {
+   "lost": false,
+   "persistent": true,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "attack",
+     "value": 2
+    },
+    {
+     "side": "right",
+     "icon": "move",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "custom",
+     "text": "[IRRITATION: tag with white fist/head icon] IRRITATION"
+    },
+    {
+     "type": "custom",
+     "text": "At the end of each of your turns, if you have 0 [Hail resource icon], place one damage token on this card and then gain 1 [Hail resource icon] for each damage token. Otherwise, move this card to your discard pile."
+    },
+    {
+     "type": "custom",
+     "text": "When this card is moved to your discard pile, lose all [Hail resource icon] and suffer [damage icon] 1 for each damage token on this card."
+    },
+    {
+     "type": "custom",
+     "banner": true,
+     "text": "[persistent loop card with red arrow]"
+    }
+   ]
+  },
+  "bottom": {
+   "lost": false,
+   "persistent": false,
+   "sideTabs": [],
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ],
+     "note": "enhancement dot after value"
+    },
+    {
+     "type": "custom",
+     "text": "-1 [Hail resource icon]: +1 [attack], [red diamond with white mace/hammer-like icon], [experience 1]"
+    },
+    {
+     "type": "custom",
+     "text": "-1 [Hail resource icon]: +1 [attack], advantage"
+    },
+    {
+     "type": "element",
+     "value": "fire",
+     "note": "in banner at bottom of card, orange circle with flame",
+     "banner": true
+    }
+   ]
+  },
+  "uncertain": [
+   "Resource icon likely tied to Irritation but not named.",
+   "Red diamond icon unidentified.",
+   "Fire element read from orange flame circle in banner; not shown as consumed.",
+   "Header tag IRRITATION icon not described precisely."
+  ]
+ },
+ {
+  "id": 928,
+  "slug": "the-power-of-enchancement",
+  "name": "The Power of Enhancement",
+  "level": 9,
+  "initiative": 98,
+  "cardLevelOnImage": "9",
+  "initiativeOnImage": 98,
+  "top": {
+   "lost": false,
+   "persistent": true,
+   "sideTabs": [
+    {
+     "side": "left",
+     "icon": "attack",
+     "value": 2
+    },
+    {
+     "side": "right",
+     "icon": "move",
+     "value": 2
+    }
+   ],
+   "actions": [
+    {
+     "type": "custom",
+     "text": "The first time each turn an ally performs an action with an enhancement, if there are less than five damage tokens on this card, add one."
+    },
+    {
+     "type": "custom",
+     "text": "At the end of any of your turns, you may discard this card to have one enemy within [range] 3 suffer [damage icon] 2 for each damage token on this card."
+    },
+    {
+     "type": "custom",
+     "banner": true,
+     "text": "[persistent loop card with red arrow]"
+    }
+   ]
+  },
+  "bottom": {
+   "lost": false,
+   "persistent": true,
+   "sideTabs": [],
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Your allies perform all their abilities as if they had a [+1 sticker] on all empty enhancement dots except on summon stats."
+    },
+    {
+     "type": "custom",
+     "banner": true,
+     "text": "[persistent loop card with red arrow]"
+    }
+   ]
+  },
+  "uncertain": [
+   "Card title printed 'The Power of Enhancement' (file name spelling differs).",
+   "Level numeral 9 sits in a differently shaped title tab.",
+   "Persistent inferred from loop icon banners."
+  ]
+ }
+]
