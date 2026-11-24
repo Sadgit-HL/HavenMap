@@ -32,6 +32,8 @@ export const AM_TYPES = [
   { key: 'i1h',  face: '+1 Heal1',  count: 0, img: 'imbuement/plus1heal1',  shuffle: false, extra: true },
   { key: 'i1c',  face: '+1 Curse',  count: 0, img: 'imbuement/plus1curse',  shuffle: false, extra: true },
   { key: 'i0w',  face: '+0 Wound',  count: 0, img: 'imbuement/plus0wound',  shuffle: false, extra: true },
+  // Hail's last perk (Mercenary Pack, perk 17) adds it to the monster deck (amToggleBox)
+  { key: 'hr',   face: '+1 Resolve', count: 0, img: 'monster/hail-resolve', shuffle: false, extra: true },
 ];
 
 // Added and removed by hand, temporary. Face text is what goes into the roller code.
@@ -354,6 +356,13 @@ function applyPerk(st, perk, sign) {
   st.perks = sign > 0 ? [...st.perks, perk.index].sort((a, b) => a - b) : st.perks.filter(i => i !== perk.index);
 }
 
+// Hail's last perk puts one +1 Resolve card into the monster deck (and takes it out again when the perk is unticked).
+const HAIL_PERK = 17;
+function hailCard(delta) {
+  const m = amState('m');
+  if (applyBase(m, 'hr', delta)) save('m', m);
+}
+
 // Tick or untick one checkbox of a perk (box = 0..boxes-1). A multi-box perk is applied only when all
 // its boxes are ticked, and reverted as soon as one is unticked.
 export function amToggleBox(index, box, g) {
@@ -365,7 +374,10 @@ export function amToggleBox(index, box, g) {
   const was = perk.on || perk.mask === full;
   const mask = (perk.on ? full : perk.mask) ^ (1 << box);
   const now = mask === full;
-  if (was !== now) applyPerk(st, perk, now ? 1 : -1);
+  if (was !== now) {
+    applyPerk(st, perk, now ? 1 : -1);
+    if (heroTitle(heroIndex(g)) === 'Hail' && index === HAIL_PERK) hailCard(now ? 1 : -1);
+  }
   const boxes = { ...st.boxes };
   if (mask && !now) boxes[index] = mask; else delete boxes[index];   // a taken perk needs no mask
   st.boxes = boxes;
@@ -395,6 +407,7 @@ export function amSetImbue(level, g = 'm') {
 // Back to the standard 20 cards (bless and curse cards in the deck are kept).
 export function amResetComposition(g = 'm') {
   const st = amState(g);
+  if (heroTitle(heroIndex(g)) === 'Hail' && st.perks.includes(HAIL_PERK)) hailCard(-1);
   const base = defaultBase(st.catalog);
   save(g, { ...st, base, lvl: 0, perks: [], boxes: {}, discard: {}, deck: reshuffled({ ...st, base }) });
 }

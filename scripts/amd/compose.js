@@ -20,7 +20,7 @@ const TRIPLE_SCALE = 0.42;
 // the minus2curse2 scan: diamonds ~131 px wide, icon box is 235).
 const CURSE2_POS = [[258, 157], [340, 238]];
 const CURSE2_SCALE = 0.557;
-const NO_FRAME = new Set(['heal', 'shield', 'retaliate']); // no Modifier Type in the template
+const NO_FRAME = new Set(['heal', 'shield', 'retaliate']); // no Modifier Type of their own: the standard frame of the value
 const MIXED = new Set([
   'earth-dark', 'earth-fire', 'earth-ice', 'earth-light', 'earth-wind', 'fire-dark', 'fire-ice',
   'fire-light', 'fire-wind', 'ice-dark', 'ice-wind', 'light-dark', 'light-ice', 'light-wind', 'wind-dark',
@@ -190,9 +190,7 @@ export function compose(card, diag = false) {
       fname = FRAME_ALIAS[first.icon] || first.icon;
     }
     if (NO_FRAME.has(first.icon) && elems.length < 2) {
-      frameOk = false;
-      frame = 'p0';
-      note('warn', `no frame for ${first.icon}`);
+      frame = PLAIN_FRAME[card.value] || 'p0';   // heal, shield and retaliate cards use the standard frame of their value
     } else {
       frame = fname;
     }

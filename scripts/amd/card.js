@@ -3,7 +3,7 @@
 // Plain (base) cards are built from our own frame+number layers. Decorated (shared) cards are
 // composed by compose.js; unique cards use their baked image, class badge included.
 
-import { composedShared, badges, PLAIN_FRAME, PLAIN_NUMBER } from './compose.js?v=4';
+import { composedShared, badges, PLAIN_FRAME, PLAIN_NUMBER } from './compose.js?v=5';
 import { amImg } from './paths.js?v=3';
 import { img, layer } from './dom.js';
 
