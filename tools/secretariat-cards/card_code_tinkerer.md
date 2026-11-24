@@ -1,7 +1,7 @@
 # Tinkerer (Gloomhaven 2nd edition), card code converted from the Gloomhaven Secretariat data (data/gh2e) with tools/convert-secretariat-cards.py.
 # Not checked against the cards. Level X cards are level 1 there; custom hexes on the board are written as blank hexes (b); a sentence under an ability is a dashed box without cost.
 
-name: Potent Potable
+name: Potent Potables
 initiative: 46
 level: 1
 top:
@@ -57,7 +57,7 @@ bottom:
   - shield: 1
   duration: round
 
-name: Potent Potables
+name: Disorienting Flash
 initiative: 73
 level: 1
 top:

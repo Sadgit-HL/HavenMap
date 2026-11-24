@@ -1,6 +1,6 @@
 [
  {
-  "name": "Potent Potable",
+  "name": "Potent Potables",
   "level": 1,
   "initiative": 46,
   "sourceId": 30,
@@ -145,7 +145,7 @@
   }
  },
  {
-  "name": "Potent Potables",
+  "name": "Disorienting Flash",
   "level": 1,
   "initiative": 73,
   "sourceId": 33,

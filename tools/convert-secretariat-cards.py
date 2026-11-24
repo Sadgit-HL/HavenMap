@@ -30,6 +30,11 @@ FH_CLASS = {
 JOTL_CLASS = {'demolitionist': 'Demolitionist', 'hatchet': 'Hatchet', 'red-guard': 'Red Guard', 'voidwarden': 'Voidwarden'}
 EDITIONS = {'gh2e': ICON_CLASS, 'fh': FH_CLASS, 'jotl': JOTL_CLASS}
 
+NAME_FIX = {   # (class, name in the Secretariat, initiative): the name printed on the card (the app's card list, initiatives read from the pictures)
+    ('Tinkerer', 'Potent Potable', 46): 'Potent Potables',
+    ('Tinkerer', 'Potent Potables', 73): 'Disorienting Flash',
+}
+
 SIMPLE = {'attack', 'move', 'heal', 'shield', 'retaliate', 'push', 'pull', 'pierce', 'teleport', 'jump', 'loot', 'range', 'target', 'damage', 'fly'}
 ENH = {'diamond_plus': 'diamondPlus'}
 SPECIAL_TARGET = {'alliesAdjacent': 'all adjacent allies', 'allyAdjacent': '1 adjacent ally', 'enemyAdjacent': '1 adjacent enemy', 'selfAlliesAdjacentAffect': 'self and all adjacent allies', 'self': 'self', 'all': 'all', 'enemiesAdjacent': 'all adjacent enemies', 'enemiesMovedThrough': 'all enemies moved through', 'ally': '1 ally', 'allies': 'all allies'}
@@ -510,12 +515,12 @@ def main():
         for c in deck['abilities']:
             ini = c['initiative'] if 'initiative' in c else c['identityInitiative'][0]
             mine = app_ini.get((cls, re.sub(r'[^a-z0-9]+', '-', c['name'].lower()).strip('-'), str(c['level'])))
-            if 'initiative' in c and mine is not None and mine != ini and any(o is not c and o.get('initiative') == mine for o in deck['abilities']):
+            if 'initiative' in c and mine is not None and mine != ini and (cls, c['name'], ini) not in NAME_FIX and any(o is not c and o.get('initiative') == mine for o in deck['abilities']):
                 print('  initiative of %s kept at %s: the app has %s, which is the initiative of another card of the deck (a name differs)' % (c['name'], ini, mine))
-            elif 'initiative' in c and mine is not None and mine != ini:
+            elif 'initiative' in c and mine is not None and mine != ini and (cls, c['name'], ini) not in NAME_FIX:
                 print('  initiative of %s: %s from the app (the Secretariat has %s)' % (c['name'], mine, ini))
                 c = dict(c, initiative=mine)
-            cards.append({'name': c['name'], 'level': c['level'], 'initiative': c['initiative'] if 'initiative' in c else c['identityInitiative'][0], 'sourceId': c['cardId'], 'top': half(c, labels, False), 'bottom': half(c, labels, True), **({'identityInitiative': c['identityInitiative']} if 'identityInitiative' in c else {})})
+            cards.append({'name': NAME_FIX.get((cls, c['name'], c.get('initiative')), c['name']), 'level': c['level'], 'initiative': c['initiative'] if 'initiative' in c else c['identityInitiative'][0], 'sourceId': c['cardId'], 'top': half(c, labels, False), 'bottom': half(c, labels, True), **({'identityInitiative': c['identityInitiative']} if 'identityInitiative' in c else {})})
         slug = re.sub(r'[^a-z0-9]+', '-', cls.lower()).strip('-')
         path = os.path.join(out, slug + '-ability-cards.code.json')
         with open(path, 'w', encoding='utf-8', newline='\n') as f:
