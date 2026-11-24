@@ -1,0 +1,1558 @@
+[
+ {
+  "name": "Mobilizing Measure",
+  "level": 1,
+  "initiative": 8,
+  "sourceId": 351,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%song% SONG: %low-note%"
+    },
+    {
+     "type": "custom",
+     "text": "At the end of each of your turns, grant the ally closest to you:"
+    },
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      1,
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Grant one adjacent ally:"
+    },
+    {
+     "type": "retaliate",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Bewildering Instrumental",
+  "level": 1,
+  "initiative": 11,
+  "sourceId": 352,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%song% SONG: %high-note%"
+    },
+    {
+     "type": "custom",
+     "text": "At the end of each of your turns, the enemy with the highest current hit point value suffers %damage%1 and gains %muddle%."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      1,
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Grant one adjacent ally:"
+    },
+    {
+     "type": "shield",
+     "value": 1
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Wearying Chant",
+  "level": 1,
+  "initiative": 19,
+  "sourceId": 353,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%song% SONG: %high-note% %low-note%"
+    },
+    {
+     "type": "custom",
+     "text": "At the end of each of your turns, the closest enemy to you that does not have %disarm% or %stun% gains %disarm%."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      1,
+      0
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%low-note%"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Power Ballad",
+  "level": 1,
+  "initiative": 12,
+  "sourceId": 354,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%song% SONG: %high-note% %high-note% %low-note%"
+    },
+    {
+     "type": "custom",
+     "text": "You and each ally add +1 %attack% to your first attack each turn."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      1,
+      0,
+      1
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Dissonant Rhythm",
+  "level": 1,
+  "initiative": 14,
+  "sourceId": 355,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%song% SONG: %high-note% %low-note% %low-note%"
+    },
+    {
+     "type": "custom",
+     "text": "At the end of each of your turns, perform:"
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "the enemy closest to you"
+      },
+      {
+       "type": "push",
+       "value": 2
+      },
+      {
+       "type": "pierce",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      1,
+      0,
+      1
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "muddle",
+     "subActions": [
+      {
+       "type": "target",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%high-note%"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Increase Cadence",
+  "level": 1,
+  "initiative": 32,
+  "sourceId": 356,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      },
+      {
+       "type": "condition",
+       "value": "muddle"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%high-note%"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "At the end of this an your next five turns, gain one Note of your choice in addition to any other Note gained."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      1,
+      0,
+      1,
+      0,
+      1,
+      0
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Intensifying Amplitude",
+  "level": 1,
+  "initiative": 56,
+  "sourceId": 357,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "condition",
+       "value": "wound"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%low-note%"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On your allies' next five attacks, add +X%attack% where X is the number of use slots the character token has passed (0, 1, 2, 3, 4)."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      1,
+      0,
+      1,
+      0
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Marching Beat",
+  "level": 1,
+  "initiative": 21,
+  "sourceId": 358,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "strengthen",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%high-note%"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one ally within %range%3 :"
+    },
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%low-note%"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Tuning the Outcome",
+  "level": 1,
+  "initiative": 44,
+  "sourceId": 359,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "bless",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%low-note%"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "curse",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%high-note%"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Call to Action",
+  "level": 1,
+  "initiative": 27,
+  "sourceId": 360,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one ally within %range%3 :"
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%low-note%"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Singing Arrow",
+  "level": 1,
+  "initiative": 85,
+  "sourceId": 361,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "condition",
+       "value": "curse"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%high-note%"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one ally within %range%3 :"
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%low-note%"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Defensive Ditty",
+  "level": "X",
+  "initiative": 9,
+  "sourceId": 362,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%song% SONG: %high-note% %high-note%"
+    },
+    {
+     "type": "custom",
+     "text": "You and all allies gain %shield%1."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      1,
+      0
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Echoing Aria",
+  "level": "X",
+  "initiative": 5,
+  "sourceId": 363,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%song% SONG: %low-note% %low-note%"
+    },
+    {
+     "type": "custom",
+     "text": "You and all allies gain %retaliate%1 %range%2."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      1,
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "%high-note%"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Provoke Terror",
+  "level": "X",
+  "initiative": 89,
+  "sourceId": 364,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "push",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ],
+       "subActions": [
+        {
+         "type": "range",
+         "value": 4
+        },
+        {
+         "type": "condition",
+         "value": "stun"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "xtt_ttx"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%low-note%"
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Onward to Battle",
+  "level": 2,
+  "initiative": 91,
+  "sourceId": 365,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one ally within %range%3 :"
+    },
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%high-note%"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Soothing Lullaby",
+  "level": 2,
+  "initiative": 20,
+  "sourceId": 366,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%song% SONG: %high-note%"
+    },
+    {
+     "type": "custom",
+     "text": "At the end of each of your turns, perform:"
+    },
+    {
+     "type": "heal",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      }
+     ]
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      1,
+      0,
+      0
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Place your character token on a monster within %range%3. At the end of that enemy's turn this round, remove your character token and that enemy gains %disarm%."
+    },
+    {
+     "type": "custom",
+     "text": "%low-note%"
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Symphonic Medley",
+  "level": 3,
+  "initiative": 62,
+  "sourceId": 367,
+  "top": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%low-note%"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "You may immediately play up to three cards from your hand to perform one 1-Note %song% action, one 2-Note %song% action, and one 3-Note %song% action, ignoring the Note requirements of those actions."
+    },
+    {
+     "type": "custom",
+     "text": "%low-note%"
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "Ode to the Gambler",
+  "level": 3,
+  "initiative": 15,
+  "sourceId": 368,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%song% SONG: %high-note% %low-note%"
+    },
+    {
+     "type": "custom",
+     "text": "You and each ally may individually choose (after revealing the card) to treat the first attack modifier card drawn each turn as %rolling%."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      1,
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Hymn to the Oak",
+  "level": 4,
+  "initiative": 10,
+  "sourceId": 369,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "ward",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%low-note%"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant all allies:"
+    },
+    {
+     "type": "shield",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "%high-note%"
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Alluring Serenade",
+  "level": 4,
+  "initiative": 24,
+  "sourceId": 370,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%song% SONG: %low-note% %low-note%"
+    },
+    {
+     "type": "custom",
+     "text": "At the end of each of your turns, perform:"
+    },
+    {
+     "type": "pull",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 5
+      },
+      {
+       "type": "condition",
+       "value": "curse"
+      }
+     ]
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      1,
+      0,
+      0
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      },
+      {
+       "type": "pull",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%high-note%"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Change Tempo",
+  "level": 5,
+  "initiative": 25,
+  "sourceId": 371,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "condition",
+         "value": "immobilize"
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "condition",
+         "value": "muddle",
+         "subActions": [
+          {
+           "type": "range",
+           "value": 4
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "etx_tt"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%high-note%"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "curse",
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "bless",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%low-note%"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Thrilling Solo",
+  "level": 5,
+  "initiative": 60,
+  "sourceId": 372,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%song% SONG: %high-note% %low-note% %low-note%"
+    },
+    {
+     "type": "custom",
+     "text": "Immediately after you perform your first attack ability from your ability cards each round, you may repeat that attack ability, adding +1 %attack% (you may choose a new target)."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      1,
+      0,
+      1,
+      0
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%low-note%"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Pull the Strings",
+  "level": 6,
+  "initiative": 34,
+  "sourceId": 373,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Control the target of the attach ability:"
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%high-note%"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Control one enemy within %range%5:"
+    },
+    {
+     "type": "attack",
+     "value": 0,
+     "relative": true
+    }
+   ]
+  }
+ },
+ {
+  "name": "Disorienting Dirge",
+  "level": 6,
+  "initiative": 13,
+  "sourceId": 374,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%song% SONG: %high-note% %high-note%"
+    },
+    {
+     "type": "custom",
+     "text": "All enemies gain disadvantage on all their attacks."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      1,
+      0,
+      0
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Negate the next %damage% an ally within %range%2 would suffer this round."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Inspiring Anthem",
+  "level": 7,
+  "initiative": 50,
+  "sourceId": 375,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one ally:"
+    },
+    {
+     "type": "move",
+     "value": 5,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "strengthen",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%low-note%"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one ally:"
+    },
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Wistful Wounding",
+  "level": 7,
+  "initiative": 6,
+  "sourceId": 376,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%song% SONG: %low-note%"
+    },
+    {
+     "type": "custom",
+     "text": "You and each ally add %wound% to your first attack each turn."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      1,
+      0
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one ally within %range%3 :"
+    },
+    {
+     "type": "retaliate",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%high-note%"
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Commanding Presence",
+  "level": 8,
+  "initiative": 65,
+  "sourceId": 377,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one ally within %range%3 :"
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%high-note%"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 6,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Toughening Trill",
+  "level": 8,
+  "initiative": 78,
+  "sourceId": 378,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%song% SONG: %high-note% %low-note%"
+    },
+    {
+     "type": "custom",
+     "text": "You and all allies gain %shield%1 and %retaliate%1 %range%2."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      1,
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Grand Finale",
+  "level": 9,
+  "initiative": 46,
+  "sourceId": 379,
+  "top": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Control all enemies moved through with the move ability:"
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Gain one Note of your choice in addition to any other Note you gain this round."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "You may immediately play any number of cards from your hand and discard pile to perform %song% actions of the cards, ignoring all Note requirements. Skip moving your character token on active %song% this round."
+    }
+   ],
+   "lost": true,
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Captivating Performance",
+  "level": 9,
+  "initiative": 71,
+  "sourceId": 380,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%song% SONG: %high-note% %high-note% %low-note% %low-note%"
+    },
+    {
+     "type": "custom",
+     "text": "At the end of each of your turns, perform:"
+    },
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "disarm",
+       "subActions": [
+        {
+         "type": "range",
+         "value": 3
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "et_tt"
+      }
+     ]
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      1,
+      1
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Move you character tokens on each of your active %song% abilities backward one slot."
+    }
+   ]
+  }
+ }
+]

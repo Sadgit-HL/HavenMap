@@ -1,0 +1,1991 @@
+[
+ {
+  "name": "Ethereal Gust",
+  "level": 1,
+  "initiative": 14,
+  "sourceId": 235,
+  "top": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant two of your summons:",
+     "actions": [
+      {
+       "type": "move",
+       "value": 0,
+       "relative": true
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Forged Ferocity",
+  "level": 1,
+  "initiative": 37,
+  "sourceId": 236,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Iron Beast",
+     "stats": {
+      "health": 7,
+      "move": 2,
+      "attack": 1,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "shield",
+       "value": 1
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "strengthen",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 of your summons"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Living Night",
+  "level": 1,
+  "initiative": 96,
+  "sourceId": 237,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Shadow Wolf",
+     "stats": {
+      "health": 2,
+      "move": 3,
+      "attack": 2,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "pierce",
+       "value": 1
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Whenever a Shadow Wolf dies, %dark% and all Shadow Wolves gain %invisible%."
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On the next two attacks targeting one of your summons, the attacker gains disadvantage for the attack and suffers %damage%1 after the attack."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      0
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Wild Animation",
+  "level": 1,
+  "initiative": 92,
+  "sourceId": 238,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Thorn Shooter",
+     "stats": {
+      "health": 3,
+      "move": 2,
+      "attack": "%poison%",
+      "range": 4
+     },
+     "special": [],
+     "enhancement": [
+      "heal",
+      "move",
+      "range"
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Planar Protection",
+  "level": 1,
+  "initiative": 94,
+  "sourceId": 239,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "disarm",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Rift Spirit",
+     "stats": {
+      "health": 2,
+      "move": 2,
+      "attack": "%muddle%",
+      "range": 3
+     },
+     "special": [
+      {
+       "type": "grant",
+       "text": "At end of turn, grant one ally within %range%3:",
+       "actions": [
+        {
+         "type": "shield",
+         "value": 1
+        }
+       ]
+      }
+     ],
+     "enhancement": [
+      "heal"
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Mighty Bond",
+  "level": 1,
+  "initiative": 51,
+  "sourceId": 240,
+  "top": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant one of your summons:",
+     "actions": [
+      {
+       "type": "move",
+       "value": 0,
+       "relative": true
+      },
+      {
+       "type": "attack",
+       "value": 0,
+       "relative": true
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "teleport",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "teleport",
+         "value": 2,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Bonded Might",
+  "level": 1,
+  "initiative": 61,
+  "sourceId": 241,
+  "top": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant one of your summons:",
+     "actions": [
+      {
+       "type": "move",
+       "value": 0,
+       "relative": true
+      },
+      {
+       "type": "attack",
+       "value": 0,
+       "relative": true
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "move",
+         "value": 2
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "loot",
+     "value": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "Burning Passion",
+  "level": 1,
+  "initiative": 12,
+  "sourceId": 242,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "strengthen",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Negate the next %damage% one of your summons would suffer this round."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Unending Dominance",
+  "level": 1,
+  "initiative": 22,
+  "sourceId": 243,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%recover% one card from your lost pile."
+    },
+    {
+     "type": "condition",
+     "value": "invisible",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "On the next summon action you perform, any summons summoned by that action gain %invisible%."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Grant one of your summons:"
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Shadow Dart",
+  "level": 1,
+  "initiative": 28,
+  "sourceId": 244,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      },
+      {
+       "type": "condition",
+       "value": "curse"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "All your summons' attacks are unaffected by %retaliate%."
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Burning Tether",
+  "level": 1,
+  "initiative": 43,
+  "sourceId": 245,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      },
+      {
+       "type": "condition",
+       "value": "wound"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "target",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "teleport",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Primal Assault",
+  "level": 1,
+  "initiative": 20,
+  "sourceId": 246,
+  "top": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant two of your summons:",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 1,
+       "relative": true
+      },
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "fire"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "condition",
+           "value": "wound"
+          }
+         ]
+        }
+       ],
+       "noLine": true
+      },
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "air"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "pierce",
+           "value": 2
+          }
+         ]
+        }
+       ],
+       "noLine": true
+      },
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "dark"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "condition",
+           "value": "curse"
+          }
+         ]
+        }
+       ],
+       "noLine": true
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Drifting Stingers",
+  "level": "X",
+  "initiative": 90,
+  "sourceId": 247,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Floating Jellyfish",
+     "stats": {
+      "health": 5,
+      "move": 1,
+      "attack": 3,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "fly"
+      }
+     ],
+     "enhancement": [
+      "heal"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "teleport",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Biting Wind",
+  "level": "X",
+  "initiative": 82,
+  "sourceId": 248,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      },
+      {
+       "type": "push",
+       "value": 1,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "range",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "push",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant one of your summons:",
+     "actions": [
+      {
+       "type": "move",
+       "value": 0,
+       "relative": true
+      },
+      {
+       "type": "push",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "target",
+         "value": "all"
+        },
+        {
+         "type": "range",
+         "value": 1
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "Each target suffers %damage%2 after the push."
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  }
+ },
+ {
+  "name": "Unwavering Hand",
+  "level": "X",
+  "initiative": 31,
+  "sourceId": 249,
+  "top": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant one of your summons:",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 1,
+       "relative": true
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Control one enemy within %range%4:",
+     "actions": [
+      {
+       "type": "move",
+       "value": 1,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Intervening Apparitions",
+  "level": 2,
+  "initiative": 34,
+  "sourceId": 250,
+  "top": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant one of your summons:",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 0,
+       "relative": true
+      },
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "fire"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "area",
+         "pattern": "ett_st"
+        }
+       ],
+       "noLine": true
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On the next three sources of %damage% that would kill one of your summons, negate the %damage% and that summon gains %invisible%, %stun%."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Void Imbuement",
+  "level": 2,
+  "initiative": 23,
+  "sourceId": 251,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On the next three attacks performed by your summons, add +1 %attack%, %pierce%1 to the attack."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      0,
+      1
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant one of your summons:",
+     "actions": [
+      {
+       "type": "move",
+       "value": 1,
+       "relative": true,
+       "subActions": [
+        {
+         "type": "jump"
+        }
+       ]
+      },
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "air"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "custom",
+           "text": "Grant two of your summons the move ability instead, %xp% 1."
+          }
+         ]
+        }
+       ],
+       "noLine": true
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Shaping the Void",
+  "level": 3,
+  "initiative": 41,
+  "sourceId": 252,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "ward",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "teleport",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "heal",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all your summons"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Deadly Mischief",
+  "level": 3,
+  "initiative": 81,
+  "sourceId": 253,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Covetous Imp",
+     "stats": {
+      "health": 5,
+      "move": 3,
+      "attack": 3,
+      "range": "-"
+     },
+     "special": [],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Strength in Numbers",
+  "level": 4,
+  "initiative": 45,
+  "sourceId": 254,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %heal% on each target adjacent to two or more allies."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": "X",
+     "subActions": [
+      {
+       "type": "range",
+       "value": "X+1"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "where X is the number of your summons."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Volatile Flame",
+  "level": 4,
+  "initiative": 97,
+  "sourceId": 255,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "curse",
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "condition",
+         "value": "stun"
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Ember Sprite",
+     "stats": {
+      "health": 3,
+      "move": 3,
+      "attack": 1,
+      "range": 3
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "All allies within %range%3 gain %retaliate%1 %range%3 while %fire% is strong or waning."
+      }
+     ],
+     "enhancement": [
+      "heal"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Living Mountain",
+  "level": 5,
+  "initiative": 19,
+  "sourceId": 256,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Rock Colossus",
+     "stats": {
+      "health": 12,
+      "move": 2,
+      "attack": 1,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "condition",
+       "value": "muddle"
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "teleport",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "grant",
+     "text": "Grant one of your summons:",
+     "actions": [
+      {
+       "type": "teleport",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Primal Infusion",
+  "level": 5,
+  "initiative": 88,
+  "sourceId": 257,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one of your summons:"
+    },
+    {
+     "type": "move",
+     "value": 1,
+     "relative": true
+    },
+    {
+     "type": "attack",
+     "value": 1,
+     "relative": true
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Your summons gain +1 %attack% while %fire% is strong or waning, +1 %move% and %jump% while %air% is strong or waning, and %shield%1 while %dark% is strong or waning."
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Tear the Fabric",
+  "level": 6,
+  "initiative": 11,
+  "sourceId": 258,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      },
+      {
+       "type": "condition",
+       "value": "curse"
+      }
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "invisible",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 of your summons"
+      },
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant all your summons:",
+     "actions": [
+      {
+       "type": "shield",
+       "value": 1,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "retaliate",
+       "value": 1,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ],
+     "multiTarget": true
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Oozing Manifestation",
+  "level": 6,
+  "initiative": 86,
+  "sourceId": 259,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Slime Spirit",
+     "stats": {
+      "health": 5,
+      "move": 2,
+      "attack": 2,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "condition",
+       "value": "poison"
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "teleport",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "poison",
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Divided Mind",
+  "level": 7,
+  "initiative": 30,
+  "sourceId": 260,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 5,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "grant",
+     "text": "Grant the target of the heal ability:",
+     "actions": [
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "air"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "push",
+           "value": 1,
+           "subActions": [
+            {
+             "type": "range",
+             "value": 1
+            },
+            {
+             "type": "condition",
+             "value": "immobilize"
+            }
+           ]
+          }
+         ]
+        }
+       ],
+       "noLine": true
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant one of your summons:",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 0,
+       "relative": true
+      },
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "fire"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "custom",
+           "text": "Grant two of your summons the attack ability instead, %xp% 1."
+          }
+         ]
+        }
+       ],
+       "noLine": true
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Negative Energy",
+  "level": 7,
+  "initiative": 95,
+  "sourceId": 261,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Void Eater",
+     "stats": {
+      "health": 6,
+      "move": 3,
+      "attack": 4,
+      "range": "-"
+     },
+     "special": [],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "teleport",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "strengthen",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 ally"
+      },
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Otherworldly Rage",
+  "level": 8,
+  "initiative": 35,
+  "sourceId": 262,
+  "top": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant one of your summons:",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2,
+       "relative": true,
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "wound"
+        },
+        {
+         "type": "condition",
+         "value": "poison"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%recover% one card from your lost pile that has a summon action and immediately play that card to perform the summon action. Any summons summoned by that action gain %ward%, %invisible%, and %strengthen%."
+    },
+    {
+     "type": "condition",
+     "value": "invisible",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Interplanar Mastery",
+  "level": 8,
+  "initiative": 27,
+  "sourceId": 263,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "condition",
+         "value": "wound"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant one of your summons:",
+     "actions": [
+      {
+       "type": "teleport",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "shield",
+       "value": 1,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "custom",
+         "text": "All adjacent enemies suffer %damage%1 and gain %muddle%."
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Imposed Will",
+  "level": 9,
+  "initiative": 98,
+  "sourceId": 264,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Fey Subjugator",
+     "stats": {
+      "health": 4,
+      "move": 2,
+      "attack": 1,
+      "range": 4
+     },
+     "special": [
+      {
+       "type": "fly"
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack",
+      "range"
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Whenever one of your summons is attacked, if that summon does not have %ward%, it gains %ward% after the attack and the attacker suffers %damage%1."
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Horned Nightmare",
+  "level": 9,
+  "initiative": 80,
+  "sourceId": 265,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Prismatic Unicorn",
+     "stats": {
+      "health": 8,
+      "move": 4,
+      "attack": 3,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "pierce",
+       "value": 2
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "teleport",
+     "value": 6,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ }
+]

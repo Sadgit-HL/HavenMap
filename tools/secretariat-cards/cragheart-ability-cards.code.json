@@ -1,0 +1,2109 @@
+[
+ {
+  "name": "Opposing Strike",
+  "level": 1,
+  "initiative": 46,
+  "sourceId": 116,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "diamond"
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "xtstx"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "muddle"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "At the end of this an your next four turns, perform:"
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      1,
+      0,
+      1,
+      0,
+      1
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Crushing Grasp",
+  "level": 1,
+  "initiative": 35,
+  "sourceId": 117,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create a 1-hex obstacle tile in an adjacent empty hex. All allies an enemies adjacent to the created tile suffer %damage%1."
+    },
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Avalanche",
+  "level": 1,
+  "initiative": 75,
+  "sourceId": 118,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 4,
+       "enhancement": [
+        "diamond"
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "etx_st"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 2
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Rumbling Advance",
+  "level": 1,
+  "initiative": 38,
+  "sourceId": 119,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 4,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "All adjacent allies and enemies suffer %damage%1."
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Massive Boulder",
+  "level": 1,
+  "initiative": 87,
+  "sourceId": 120,
+  "top": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "range",
+         "value": 2,
+         "enhancement": [
+          "square"
+         ]
+        }
+       ]
+      },
+      {
+       "type": "mandatory",
+       "actions": [
+        {
+         "type": "custom",
+         "text": "All allies and enemies adjacent to the target suffer %damage%1."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Backup Ammunition",
+  "level": 1,
+  "initiative": 77,
+  "sourceId": 121,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On your next four single-target ranged attack abilities, add +1 %target%."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      1,
+      0,
+      1
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Earthen Bulwark",
+  "level": 1,
+  "initiative": 41,
+  "sourceId": 122,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create two 1-hex obstacle tiles in empty hexes within %range%3 ."
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "All allies adjacent to at least one created tile suffer %damage%1 and gain %ward%, %xp% 1."
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "heal",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Unstable Upheaval",
+  "level": 1,
+  "initiative": 13,
+  "sourceId": 123,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "target",
+       "value": "all enemies up to two hexes away instead"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "All adjacent allies suffer %damage%2."
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    }
+   ]
+  }
+ },
+ {
+  "name": "Crater",
+  "level": 1,
+  "initiative": 61,
+  "sourceId": 124,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "push",
+       "value": 2
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "All adjacent allies and enemies suffer %damage%1."
+      }
+     ]
+    },
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "mandatory",
+       "actions": [
+        {
+         "type": "custom",
+         "text": "All adjacent allies and enemies suffer %damage%1."
+        }
+       ]
+      },
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "earth"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "damage",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ],
+       "noLine": true
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "Dirt Tornado",
+  "level": 1,
+  "initiative": 82,
+  "sourceId": 125,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 1,
+       "subActions": [
+        {
+         "type": "range",
+         "value": 2
+        },
+        {
+         "type": "condition",
+         "value": "muddle"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "ett_ttt_ett"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "muddle",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "all allies in the red hexes of the attack ability."
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Earthen Clod",
+  "level": 1,
+  "initiative": 29,
+  "sourceId": 126,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 5
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "immobilize"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "range",
+         "value": 5
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "Add +1 %attack% for each obstacle or objective adjacent to the target."
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  }
+ },
+ {
+  "name": "Heaving Swing",
+  "level": "X",
+  "initiative": 57,
+  "sourceId": 127,
+  "top": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "push",
+         "value": "1",
+         "enhancement": [
+          "square"
+         ]
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "You may push the target into hexes containing obstacles. In each case, destroy the obstacle, the target suffers %damage%2, and you gain %xp% 1."
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Destroy an adjacent obstacle or suffer %damage%1 to add +3 %attack% to your next melee attack this round."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Petrify",
+  "level": "X",
+  "initiative": 53,
+  "sourceId": 128,
+  "top": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "group",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 4,
+         "enhancement": [
+          "diamond"
+         ],
+         "subActions": [
+          {
+           "type": "range",
+           "value": 3
+          }
+         ]
+        },
+        {
+         "type": "area",
+         "pattern": "etx_tt"
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "For each target killed, gain %xp% 1 and create one 1-hex obstacle tile in the featureless hex they occupied."
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Burrow",
+  "level": "X",
+  "initiative": 94,
+  "sourceId": 129,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 7,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "immobilize",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "all enemies moved through"
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "noLine": true
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "Mud Eruption",
+  "level": 2,
+  "initiative": 25,
+  "sourceId": 130,
+  "top": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "target",
+         "value": "4 enemies within 4 hexes"
+        },
+        {
+         "type": "push",
+         "value": 1
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "Create one 1-hex obstacle tile in the featureless hex each target previously occupied."
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Sentient Growth",
+  "level": 2,
+  "initiative": 78,
+  "sourceId": 131,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ],
+       "subActions": [
+        {
+         "type": "range",
+         "value": 3
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "etx_tt"
+      }
+     ]
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all allies in the red hexes of the attack ability"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "heal",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Clear the Way",
+  "level": 3,
+  "initiative": 30,
+  "sourceId": 132,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Relocate one adjacent 1-hex obstacle tile to an empty hex within %range%4 to perform:"
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all enemies adjacent to the relocated tile"
+      },
+      {
+       "type": "pierce",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "move",
+       "value": 3,
+       "enhancement": [
+        "circle"
+       ],
+       "subActions": [
+        {
+         "type": "jump"
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "Destroy all obstacles, hazardous terrain, difficult terrain, and traps in hexes you enter."
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Blunt Force",
+  "level": 3,
+  "initiative": 21,
+  "sourceId": 133,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 5
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 1,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "ward"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Rock Slide",
+  "level": 4,
+  "initiative": 81,
+  "sourceId": 134,
+  "top": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Create three 1-hex obstacle tiles in empty hexes within %range%3 ."
+      },
+      {
+       "type": "custom",
+       "text": "All allies and enemies adjacent to at least one created tile suffer %damage%1 and gain %muddle%."
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Designate one enemy within %range%4. Destroy all obstacles within %range%2 of the designated enemy to perform:"
+      },
+      {
+       "type": "attack",
+       "value": "X",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "the designated enemy"
+        },
+        {
+         "type": "condition",
+         "value": "immobilize"
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "where X is twice the number of destroyed obstacles."
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  }
+ },
+ {
+  "name": "Kinetic Assault",
+  "level": 4,
+  "initiative": 19,
+  "sourceId": 135,
+  "top": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 1,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 4,
+       "enhancement": [
+        "diamond"
+       ]
+      },
+      {
+       "type": "mandatory",
+       "actions": [
+        {
+         "type": "custom",
+         "text": "All allies and enemies adjacent to the target suffer %damage%1."
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "ward",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "retaliate",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Solidify",
+  "level": 5,
+  "initiative": 17,
+  "sourceId": 136,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one ally within %range%3:"
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Suffer %damage%1."
+      }
+     ]
+    },
+    {
+     "type": "shield",
+     "value": 2
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Stone Pummel",
+  "level": 5,
+  "initiative": 32,
+  "sourceId": 137,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 4,
+       "enhancement": [
+        "diamond"
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "eetx_tst_xt"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Whenever you attack an adjacent enemy, you may destroy one 1-hex obstacle adjacent to both you and that enemy to add +2 %attack% to the attack."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Dig Pit",
+  "level": 6,
+  "initiative": 88,
+  "sourceId": 138,
+  "top": {
+   "actions": [
+    {
+     "type": "push",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Create one %damage%2, %stun% trap in an adjacent empty hex."
+    },
+    {
+     "type": "custom",
+     "text": "Create one 1-hex obstacle tile in an empty hex adjacent to the created trap."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "target",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Cataclysm",
+  "level": 6,
+  "initiative": 26,
+  "sourceId": 139,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 4,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "immobilize"
+        }
+       ]
+      },
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "earth"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ],
+       "effects": [
+        {
+         "type": "attack",
+         "value": 2
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "ettx_stt_ettx"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "immobilize",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "all allies in the red hexes of the attack ability."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "move",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Meteor",
+  "level": 7,
+  "initiative": 85,
+  "sourceId": 140,
+  "top": {
+   "actions": [
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Whenever you perform a ranged attack this round, all allies and enemies adjacent to the target suffer %damage%1, %xp% 1."
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "custom",
+     "text": "Destroy any number of adjacent obstacles. For each obstacle destroyed, perform:"
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "All adjacent allies and enemies suffer %damage%1."
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Brutal Momentum",
+  "level": 7,
+  "initiative": 37,
+  "sourceId": 141,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "push",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %attack%, +1 %push% for each hex containing an obstacle or wall adjacent to you."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "At the start of your next four turns, perform:"
+    },
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "custom",
+     "text": "Add +3 %attack% to your next melee attack this turn."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      1,
+      0,
+      1
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Rocky End",
+  "level": 8,
+  "initiative": 31,
+  "sourceId": 142,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 5,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "muddle"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "et_tt_stt"
+      }
+     ]
+    },
+    {
+     "type": "heal",
+     "value": 5,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all allies in the red hexes of the attack ability"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Create 1-hex obstacle tiles in each empty red hex of the attack ability, %xp% 1."
+      }
+     ],
+     "noLine": true
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "push",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Create 1-hex obstacle tiles in each featureless hex the target exists with the push."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Entomb",
+  "level": 8,
+  "initiative": 23,
+  "sourceId": 143,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Create two 1-hex obstacle tiles in empty hexes adjacent to the target but not adjacent to you. All allies and enemies adjacent to at least one created tile suffer %damage%1, %xp% 1."
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Create 1-hex obstacle tiles in an adjacent empty hex."
+    },
+    {
+     "type": "custom",
+     "text": "Destroy any number of obstacles within %range%3. For each obstacle destroyed, give %ward% to one ally adjacent to the hex that obstacle occupied."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Wave of Destruction",
+  "level": 9,
+  "initiative": 74,
+  "sourceId": 144,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 1
+      },
+      {
+       "type": "area",
+       "pattern": "st_ttt_eettt_eeettx_eeeeex"
+      },
+      {
+       "type": "custom",
+       "text": "For each target, add +X%attack%, where X is the %range% to the target."
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "You may enter hexes containing obstacles with this movement. When you do, destroy the obstacle."
+    },
+    {
+     "type": "custom",
+     "text": "Add +X%attack% to your next attack this turn, where X is twice the number of obstacles destroyed with the move ability."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Earth's Embrace",
+  "level": 9,
+  "initiative": 52,
+  "sourceId": 145,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      },
+      {
+       "type": "push",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "You may push the targets into hexes containing obstacles. In each case, destroy the obstacle, the target suffers %damage%2, and you gain %xp% 1."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "At the end of each of your turns, perform:"
+    },
+    {
+     "type": "heal",
+     "value": "X",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "where X is the number of adjacent obstacles."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ }
+]

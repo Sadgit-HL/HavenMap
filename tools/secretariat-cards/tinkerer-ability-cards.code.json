@@ -1,0 +1,1539 @@
+[
+ {
+  "name": "Potent Potable",
+  "level": 1,
+  "initiative": 46,
+  "sourceId": 30,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "condition",
+       "value": "muddle"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On your next four single-target heal abilities, add +1 %target%."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      1,
+      1,
+      1,
+      0
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Harmless Contraption",
+  "level": 1,
+  "initiative": 74,
+  "sourceId": 31,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Decoy",
+     "stats": {
+      "health": "10",
+      "move": "3",
+      "attack": null,
+      "range": "-"
+     },
+     "special": [],
+     "enhancement": [
+      "heal",
+      "move"
+     ]
+    }
+   ],
+   "xp": 3,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Flamethrower",
+  "level": 1,
+  "initiative": 16,
+  "sourceId": 32,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "pierce",
+         "value": 2
+        },
+        {
+         "type": "condition",
+         "value": "wound"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "ex_tt_stx"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ],
+   "xp": 3,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant all adjacent allies and self:"
+    },
+    {
+     "type": "shield",
+     "value": 1
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Potent Potables",
+  "level": 1,
+  "initiative": 73,
+  "sourceId": 33,
+  "top": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "stun",
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "target",
+         "value": 3,
+         "enhancement": [
+          "square"
+         ]
+        },
+        {
+         "type": "range",
+         "value": 3
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "Gain %xp% 1 for each enemy targeted."
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "light"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Ink Bomb",
+  "level": 1,
+  "initiative": 80,
+  "sourceId": 34,
+  "top": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "group",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 4,
+         "enhancement": [
+          "diamond"
+         ],
+         "subActions": [
+          {
+           "type": "range",
+           "value": 3
+          },
+          {
+           "type": "condition",
+           "value": "muddle"
+          }
+         ]
+        },
+        {
+         "type": "area",
+         "pattern": "etx_tt"
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "Gain %xp% 1 for each enemy targeted."
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Net Shooter",
+  "level": 1,
+  "initiative": 19,
+  "sourceId": 35,
+  "top": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "group",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 3,
+         "enhancement": [
+          "diamond"
+         ],
+         "subActions": [
+          {
+           "type": "range",
+           "value": 3
+          },
+          {
+           "type": "condition",
+           "value": "immobilize"
+          }
+         ]
+        },
+        {
+         "type": "area",
+         "pattern": "etx_tt"
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "Gain %xp% 1 for each enemy targeted."
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "immobilize",
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Stun Shot",
+  "level": 1,
+  "initiative": 20,
+  "sourceId": 36,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "stun",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 1
+    },
+    {
+     "type": "loot",
+     "value": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "Reinvigorating Elixir",
+  "level": 1,
+  "initiative": 37,
+  "sourceId": 37,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 4,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "One ally within %range%3 may %recover% all their cards from their discard pile."
+    }
+   ],
+   "xp": 3,
+   "lost": true
+  }
+ },
+ {
+  "name": "Restorative Mist",
+  "level": 1,
+  "initiative": 17,
+  "sourceId": 38,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 4,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "heal",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all allies"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Jet Propulsion",
+  "level": 1,
+  "initiative": 34,
+  "sourceId": 39,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 8,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  }
+ },
+ {
+  "name": "Enhancement Field",
+  "level": 1,
+  "initiative": 61,
+  "sourceId": 40,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Place the \"Enhancement Field\" token in an empty hex within %range%3."
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %attack% to all attacks you and all allies perform while within %range%1 of the token."
+    }
+   ],
+   "xp": 3,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "You and all adjacent allies add +1 %attack% to all attacks this round."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Toxic Bolt",
+  "level": 1,
+  "initiative": 76,
+  "sourceId": 41,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "condition",
+       "value": "poison"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 6,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    }
+   ],
+   "xp": 3,
+   "lost": true
+  }
+ },
+ {
+  "name": "Gas Canister",
+  "level": "X",
+  "initiative": 22,
+  "sourceId": 42,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create one %damage%4 ,%muddle% trap in an adjacent empty hey."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Volatile Concoction",
+  "level": "X",
+  "initiative": 18,
+  "sourceId": 43,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "strengthen",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 ally"
+      },
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "The target may %recover% one level 1 card from their discard pile."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create one %damage%2 ,%poison% trap in an adjacent empty hey."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Hook Gun",
+  "level": "X",
+  "initiative": 72,
+  "sourceId": 44,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "pull",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "loot",
+     "value": 2
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "Repulsor Gun",
+  "level": 2,
+  "initiative": 35,
+  "sourceId": 45,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "push",
+       "value": 1,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "push",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Crank Bow",
+  "level": 2,
+  "initiative": 23,
+  "sourceId": 46,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 8,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 5
+      }
+     ]
+    }
+   ],
+   "xp": 3,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Teleportation Pad",
+  "level": 3,
+  "initiative": 62,
+  "sourceId": 47,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Place two \"Teleportation Pad\" tokens in empty hexes within %range%5."
+    },
+    {
+     "type": "custom",
+     "text": "You and all allies may threat the two hexes containing the tokens as being adjacent to each other during move abilities."
+    }
+   ],
+   "xp": 3,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "teleport",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Stamina Booster",
+  "level": 3,
+  "initiative": 48,
+  "sourceId": 48,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 5,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "One ally within %range%3 may %recover% one card from their lost pile."
+    }
+   ],
+   "xp": 3,
+   "lost": true
+  }
+ },
+ {
+  "name": "Dangerous Contraption",
+  "level": 4,
+  "initiative": 10,
+  "sourceId": 49,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Battle Bot",
+     "stats": {
+      "health": "7",
+      "move": "3",
+      "attack": "3",
+      "range": "-"
+     },
+     "special": [],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    }
+   ],
+   "xp": 3,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Grant one adjacent ally:"
+    },
+    {
+     "type": "shield",
+     "value": 1,
+     "enhancement": [
+      "diamondPlus"
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Proximity Mine",
+  "level": 4,
+  "initiative": 14,
+  "sourceId": 50,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All enemies adjacent to the target gain %muddle%."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create one %damage%2 ,%immobilize% trap in an empty hey within %range%2 ."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Noxious Vials",
+  "level": 5,
+  "initiative": 75,
+  "sourceId": 51,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "condition",
+       "value": "wound"
+      },
+      {
+       "type": "condition",
+       "value": "disarm"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "range",
+         "value": 3
+        },
+        {
+         "type": "condition",
+         "value": "poison"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "etx_tt"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Gain %xp% 1 for each enemy targeted."
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Disintegration Beam",
+  "level": 5,
+  "initiative": 36,
+  "sourceId": 52,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Kill all enemies in the targeted area whose current hit point value is less than or equal to 5. Gain %xp% 1 for each enemy killed."
+    },
+    {
+     "type": "area",
+     "pattern": "eet_et_et_t_s"
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Invigorating Aerosol",
+  "level": 6,
+  "initiative": 21,
+  "sourceId": 53,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "heal",
+     "value": 4,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "At the end of this and your next four turns, perform:"
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 5
+      },
+      {
+       "type": "condition",
+       "value": "safeguard"
+      },
+      {
+       "type": "condition",
+       "value": "ward"
+      },
+      {
+       "type": "condition",
+       "value": "strengthen"
+      },
+      {
+       "type": "condition",
+       "value": "bless"
+      }
+     ]
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      1,
+      0,
+      1,
+      0,
+      1
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Auto Turret",
+  "level": 6,
+  "initiative": 32,
+  "sourceId": 54,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "At the end of this and your next three turns, perform the following twice:"
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 5
+      },
+      {
+       "type": "pierce",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      1,
+      1,
+      1,
+      0
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "ward",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "poison",
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Murderous Contraption",
+  "level": 7,
+  "initiative": 84,
+  "sourceId": 55,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Kill Bot",
+     "stats": {
+      "health": "8",
+      "move": "4",
+      "attack": "3",
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "area",
+       "pattern": "et_t_s"
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    }
+   ],
+   "xp": 3,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 5,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Pernicious Fogger",
+  "level": 7,
+  "initiative": 71,
+  "sourceId": 56,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Place the \"Pernicious Fogger\" token in an empty hex within %range%3."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "At the end of each of their turns, all allies and enemies within %range%1 of the token suffer %damage%2."
+      }
+     ]
+    }
+   ],
+   "xp": 3,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "strengthen",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Cryonic Snare",
+  "level": 8,
+  "initiative": 15,
+  "sourceId": 57,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create one %damage%4 ,%wound%, %stun% trap in an empty hey within %range%2 ."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Grant one adjacent ally:"
+    },
+    {
+     "type": "retaliate",
+     "value": 2,
+     "enhancement": [
+      "diamondPlus"
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Harsh Stimulants",
+  "level": 8,
+  "initiative": 27,
+  "sourceId": 58,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one ally within %range%3:"
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Suffer %damage%2."
+      }
+     ]
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 6,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Control one enemy within %range%3 :"
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "relative": true,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "then that enemy gains %stun%."
+    }
+   ],
+   "xp": 3,
+   "lost": true
+  }
+ },
+ {
+  "name": "Gravity Bomb",
+  "level": 9,
+  "initiative": 85,
+  "sourceId": 59,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Place the \"Gravity Bomb\" token in an empty hex within %range%4. At the end of your next turn, perform:"
+    },
+    {
+     "type": "pull",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all enemies within %range%2 of the token"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Pull toward the token. Then any enemy occupying the hex containing the token suffers %damage%5, all enemies occupying hexes adjacent to the token suffer %damage%1, and you discard this card."
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "range",
+         "value": 3
+        },
+        {
+         "type": "condition",
+         "value": "immobilize"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "et_tt"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Chimeric Formula",
+  "level": 9,
+  "initiative": 33,
+  "sourceId": 60,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 ally"
+      },
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "condition",
+       "value": "strengthen"
+      },
+      {
+       "type": "condition",
+       "value": "bless"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "The target of the heal ability may immediately play up to two cards from their hand, performing at most one top and one bottom action of the cards."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "One ally within %range%3 may %recover% one card from the lost pile of one ally adjacent to them."
+    }
+   ],
+   "xp": 3,
+   "lost": true
+  }
+ }
+]

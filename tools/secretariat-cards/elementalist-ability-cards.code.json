@@ -1,0 +1,2384 @@
+[
+ {
+  "name": "Ice Spikes",
+  "level": 1,
+  "initiative": 48,
+  "sourceId": 446,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "wild"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "element",
+       "value": "wild"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice/earth",
+       "either": true
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  }
+ },
+ {
+  "name": "Malleable Evocation",
+  "level": 1,
+  "initiative": 26,
+  "sourceId": 447,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "fire"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "condition",
+         "value": "strengthen"
+        }
+       ],
+       "noLine": true
+      },
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "ice"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "condition",
+         "value": "ward"
+        }
+       ],
+       "noLine": true
+      },
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "air"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "condition",
+         "value": "bless"
+        }
+       ],
+       "noLine": true
+      },
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "earth"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "condition",
+         "value": "safeguard"
+        }
+       ],
+       "noLine": true
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %target% and gain %xp% 1 if you consume two or more elements."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Move one waning element to the strong column."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Formless Power",
+  "level": 1,
+  "initiative": 45,
+  "sourceId": 448,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "wild"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "At the start of each of your turns, you may %wild% to add +1 %attack% to all your attacks this turn."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Shaping the Ether",
+  "level": 1,
+  "initiative": 54,
+  "sourceId": 449,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "fire"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "condition",
+         "value": "wound"
+        }
+       ],
+       "noLine": true
+      },
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "ice"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "condition",
+         "value": "immobilize"
+        }
+       ],
+       "noLine": true
+      },
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "air"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "push",
+         "value": 3
+        }
+       ],
+       "noLine": true
+      },
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "earth"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "condition",
+         "value": "poison"
+        }
+       ],
+       "noLine": true
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %target% and gain %xp% 1 if you consume two or more elements."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Stoking Hail",
+  "level": 1,
+  "initiative": 29,
+  "sourceId": 450,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "pierce",
+       "value": 2
+      },
+      {
+       "type": "element",
+       "value": "ice"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %move% if one or more elements are strong or waning."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Magma Scales",
+  "level": 1,
+  "initiative": 14,
+  "sourceId": 451,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one ally within %range%3 :"
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "disarm",
+       "subActions": [
+        {
+         "type": "range",
+         "value": 1
+        }
+       ]
+      },
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one ally within %range%3 :"
+    },
+    {
+     "type": "shield",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "retaliate",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire/earth",
+       "either": true
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Infernal Vortex",
+  "level": 1,
+  "initiative": 35,
+  "sourceId": 452,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire/air",
+       "either": true
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %move% if one or more elements are strong or waning."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Frigid Torrent",
+  "level": 1,
+  "initiative": 39,
+  "sourceId": 453,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      },
+      {
+       "type": "condition",
+       "value": "disarm"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice/air",
+       "either": true
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %move% if one or more elements are strong or waning."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Pulsing Cores",
+  "level": 1,
+  "initiative": 40,
+  "sourceId": 454,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "area",
+       "pattern": "et_tt"
+      },
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "At the end of this and your next five turns, in order: %fire%/%ice%, %air%/%earth%, %light%/%dark% (repeat the same order for turns 4-6)."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      1,
+      0,
+      1,
+      0,
+      1
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Dual Nature",
+  "level": 1,
+  "initiative": 27,
+  "sourceId": 455,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "heal",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "range",
+         "value": 3
+        }
+       ]
+      },
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %move% if one or more elements are strong or waning."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Lingering Essence",
+  "level": "X",
+  "initiative": 50,
+  "sourceId": 456,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Whenever an enemy consumes an element, you may infuse that element."
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Flash of Brilliance",
+  "level": "X",
+  "initiative": 67,
+  "sourceId": 457,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "You or one ally within %range%3 may %recover% one level 1 card from the discard pile."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "light"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "heal",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "wild"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Encompassing Shadow",
+  "level": "X",
+  "initiative": 12,
+  "sourceId": 458,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "invisible",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 ally"
+      },
+      {
+       "type": "range",
+       "value": 4,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All attacks targeting you or adjacent allies this round gain disadvantage."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Gravel Guard",
+  "level": 2,
+  "initiative": 10,
+  "sourceId": 459,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one ally within %range%3 :"
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "shield",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "muddle",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Create one %damage%2 trap in an empty hex within %range%3. All enemies adjacent to the trap suffer %damage%1."
+      },
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Wave of Frost",
+  "level": 2,
+  "initiative": 47,
+  "sourceId": 460,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 1,
+       "subActions": [
+        {
+         "type": "range",
+         "value": 3
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "xt_tt_ett_ex"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ],
+     "effects": [
+      {
+       "type": "move",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Arresting Gale",
+  "level": 3,
+  "initiative": 65,
+  "sourceId": 461,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "condition",
+       "value": "stun"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "ward",
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ],
+     "effects": [
+      {
+       "type": "target",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Empowering Flame",
+  "level": 3,
+  "initiative": 15,
+  "sourceId": 462,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "strengthen",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Grant one ally within %range%2:"
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "retaliate",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "range",
+         "value": 2
+        }
+       ]
+      },
+      {
+       "type": "element",
+       "value": "ice"
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  }
+ },
+ {
+  "name": "Burial",
+  "level": 4,
+  "initiative": 77,
+  "sourceId": 463,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 4,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "range",
+         "value": 4
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "t_tt_t"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "immobilize"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Chain Lightning",
+  "level": 4,
+  "initiative": 23,
+  "sourceId": 464,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 3
+      },
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1
+      },
+      {
+       "type": "target",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add -1 %attack%, +2 %range% to each attack for each enemy already attacked with this ability. Each target after the first must be within %range%2 of the previous target."
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 4,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "light"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Obsidian Shards",
+  "level": 5,
+  "initiative": 19,
+  "sourceId": 465,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire",
+        "earth"
+       ],
+       "either": true
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "muddle"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 2"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice",
+        "earth"
+       ],
+       "either": true
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "On the next two sources of %damage% you or an adjacent ally would suffer, negate the %damage%."
+      },
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "element",
+         "value": "ice/earth",
+         "either": true
+        },
+        {
+         "type": "tokens",
+         "slots": [
+          0,
+          1
+         ]
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  }
+ },
+ {
+  "name": "Winter's Edge",
+  "level": 5,
+  "initiative": 43,
+  "sourceId": 466,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice",
+        "air"
+       ],
+       "either": true
+      }
+     },
+     "actions": [
+      {
+       "type": "pierce",
+       "value": 4
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 2"
+      }
+     ],
+     "effects": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire",
+        "air"
+       ],
+       "either": true
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "condition",
+         "value": "strengthen"
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "condition",
+         "value": "bless",
+         "subActions": [
+          {
+           "type": "target",
+           "value": "2 allies"
+          },
+          {
+           "type": "range",
+           "value": 3
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "element",
+         "value": "fire/air",
+         "either": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "custom",
+     "text": "Grant one ally within %range%3 :"
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Pragmatic Reinforcement",
+  "level": 6,
+  "initiative": 13,
+  "sourceId": 467,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      },
+      {
+       "type": "element",
+       "value": "air/earth",
+       "either": true
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "The target may %recover% one level 1 card from the discard pile, %air%/%earth%."
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice/earth",
+       "either": true
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Duskstorm",
+  "level": 6,
+  "initiative": 17,
+  "sourceId": 468,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "range",
+         "value": 4
+        },
+        {
+         "type": "element",
+         "value": "fire/ice",
+         "either": true
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "etx_tt"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "All allies in the red hexes gain %invisible%."
+      },
+      {
+       "type": "element",
+       "value": "fire/ice",
+       "either": true
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire/air",
+       "either": true
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Elemental Juggernaut",
+  "level": 7,
+  "initiative": 94,
+  "sourceId": 469,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Chromatic Construct",
+     "stats": {
+      "health": "7",
+      "move": "3",
+      "attack": "0",
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "Add +1 %attack% for each element that is strong or waning."
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "move"
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice/air",
+       "either": true
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Confluence of Elements",
+  "level": 7,
+  "initiative": 64,
+  "sourceId": 470,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "wild",
+        "wild"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire/earth",
+       "either": true
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Prismatic Barrage",
+  "level": 8,
+  "initiative": 33,
+  "sourceId": 471,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "stun"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "range",
+         "value": 4
+        }
+       ]
+      },
+      {
+       "type": "optional",
+       "cost": null,
+       "actions": [
+        {
+         "type": "custom",
+         "text": "Create one 1-hex hazardous terrain tile in the featureless hex occupied by the target, %xp% 1."
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "range",
+         "value": 4
+        },
+        {
+         "type": "push",
+         "value": 3
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "ward"
+      },
+      {
+       "type": "element",
+       "value": "ice"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %heal%, gain %xp% 1, and %light% if you consume two or more elements."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Eye of the Hurricane",
+  "level": 8,
+  "initiative": 25,
+  "sourceId": 472,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "strengthen"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "wound"
+      },
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %attack%, gain %xp% 1, and %dark% if you consume two or more elements."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Ethereal Manifestation",
+  "level": 9,
+  "initiative": 98,
+  "sourceId": 473,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Elemental Conduit",
+     "stats": {
+      "health": "3",
+      "move": "3",
+      "attack": "2",
+      "range": "3"
+     },
+     "special": [
+      {
+       "type": "fly"
+      },
+      {
+       "type": "custom",
+       "text": "After each attack, %wild%."
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "move"
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "wild"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Primal Duality",
+  "level": 9,
+  "initiative": 11,
+  "sourceId": 474,
+  "top": {
+   "actions": [
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire",
+        "ice"
+       ],
+       "either": true
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "muddle",
+       "subActions": [
+        {
+         "type": "range",
+         "value": 4
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "The target suffers %damage%5."
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air",
+        "earth"
+       ],
+       "either": true
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Grant one ally within %range%4:"
+      },
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "shield",
+         "value": 2
+        },
+        {
+         "type": "retaliate",
+         "value": 2
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light",
+        "dark"
+       ],
+       "either": true
+      }
+     },
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "target",
+         "value": 2
+        },
+        {
+         "type": "range",
+         "value": 4
+        },
+        {
+         "type": "condition",
+         "value": "curse"
+        }
+       ]
+      },
+      {
+       "type": "optional",
+       "cost": null,
+       "actions": [
+        {
+         "type": "custom",
+         "text": "advantage"
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%recover% one card from your discard pile, %dark%."
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "teleport",
+       "value": 4
+      },
+      {
+       "type": "element",
+       "value": "light"
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "wild",
+        "wild"
+       ]
+      }
+     },
+     "actions": [],
+     "effects": [
+      {
+       "type": "loot",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ }
+]

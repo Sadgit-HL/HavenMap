@@ -1,0 +1,1719 @@
+[
+ {
+  "name": "Battlefield Medicine",
+  "level": 1,
+  "initiative": 83,
+  "sourceId": 411,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "disarm",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Give one adjacent ally one medical pack to gain %xp% 1."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5
+    }
+   ]
+  }
+ },
+ {
+  "name": "First Aid",
+  "level": 1,
+  "initiative": 19,
+  "sourceId": 412,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 4,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4
+    }
+   ]
+  }
+ },
+ {
+  "name": "Curative Mixture",
+  "level": 1,
+  "initiative": 8,
+  "sourceId": 413,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Before the heal, remove one negative condition from the target."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Remove one negative condition from one adjacent ally."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Bloody Saw",
+  "level": 1,
+  "initiative": 25,
+  "sourceId": 414,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %attack%, %wound% and gain %xp% 1 if an ally has an active %prescription%."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "safeguard",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "loot",
+     "value": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "Prevention Is Key",
+  "level": 1,
+  "initiative": 13,
+  "sourceId": 415,
+  "top": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "wound"
+      },
+      {
+       "type": "custom",
+       "text": ","
+      },
+      {
+       "type": "condition",
+       "value": "disarm",
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "target",
+         "value": "all"
+        },
+        {
+         "type": "range",
+         "value": 1
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "safeguard",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "When you next perform a %prescription% action this round, grant all adjacent allies and self:"
+    },
+    {
+     "type": "shield",
+     "value": 1
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Hand of the Surgeon",
+  "level": 1,
+  "initiative": 62,
+  "sourceId": 416,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 1,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Give one adjacent ally one medical pack to gain %xp% 1."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Booster Shot",
+  "level": 1,
+  "initiative": 42,
+  "sourceId": 417,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%prescription% Prescription"
+    },
+    {
+     "type": "custom",
+     "text": "On the next four source of %damage% from attacks targeting you, gain %shield%1 for the attack."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "xp": 1,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "strengthen",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 ally"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Syringe",
+  "level": 1,
+  "initiative": 57,
+  "sourceId": 418,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%prescription% Prescription"
+    },
+    {
+     "type": "custom",
+     "text": "On the next four attacks, add +1 %attack%."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "xp": 1,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "wound",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Needle Gun",
+  "level": 1,
+  "initiative": 44,
+  "sourceId": 419,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "pierce",
+       "value": 1,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "condition",
+       "value": "poison"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "poison"
+      },
+      {
+       "type": "condition",
+       "value": "stun"
+      }
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "poison"
+      },
+      {
+       "type": "condition",
+       "value": "stun"
+      }
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "poison"
+      },
+      {
+       "type": "condition",
+       "value": "stun"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  }
+ },
+ {
+  "name": "Vital Strikes",
+  "level": 1,
+  "initiative": 53,
+  "sourceId": 420,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Add +1 %attack% to all your attacks targeting damaged enemies."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5
+    }
+   ]
+  }
+ },
+ {
+  "name": "Vaccine",
+  "level": "X",
+  "initiative": 15,
+  "sourceId": 421,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %target% and gain %xp% 1 if the target is damaged (for a maximum of one additional target)."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On the next three negative conditions an enemy would apply to you, prevent the condition."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "xp": 1,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Teamwork",
+  "level": "X",
+  "initiative": 89,
+  "sourceId": 422,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Grant one adjacent ally:"
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Grant one adjacent ally:"
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Prep for Surgery",
+  "level": "X",
+  "initiative": 22,
+  "sourceId": 423,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add %stun% and gain %xp% 1 if the target is damaged."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "You may treat all your attack abilities and move abilities from your ability cards as heal abilities of equal value plus one. In such cases, ignore all added effects of those abilities. When treating a move ability as a heal ability, it has %range%1."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Hamstring",
+  "level": 2,
+  "initiative": 72,
+  "sourceId": 424,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 6
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "immobilize",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Precaution",
+  "level": 2,
+  "initiative": 9,
+  "sourceId": 425,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant all allies and self:"
+    },
+    {
+     "type": "shield",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "Each ally may move the character token backward one slot on one active %prescription% they have."
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "ward",
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Regenerative Tissue",
+  "level": 3,
+  "initiative": 52,
+  "sourceId": 426,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 4,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      },
+      {
+       "type": "condition",
+       "value": "ward"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "At the start of your next three turns where your current hit point value is less than your maximum hit point value, perform:"
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "xp": 1,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Blood Transfusion",
+  "level": 3,
+  "initiative": 79,
+  "sourceId": 427,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "heal",
+     "value": "X",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 ally"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Where X is the amount of %damage% enemies suffered from the attack ability."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "safeguard",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Remove all negative conditions from the target and give them one medical pack."
+    }
+   ],
+   "xp": 1
+  }
+ },
+ {
+  "name": "Experimental Stimulants",
+  "level": 4,
+  "initiative": 12,
+  "sourceId": 428,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one adjacent ally:"
+    },
+    {
+     "type": "retaliate",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If the target has an active %prescription%, gain %xp% 1 and negate the next %damage% they would suffer this round."
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Do No Harm",
+  "level": 4,
+  "initiative": 18,
+  "sourceId": 429,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "wound"
+      },
+      {
+       "type": "condition",
+       "value": "stun"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Place a character token on the target. The next three times they lose %stun%, they gain %stun%."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "disarm",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "poison"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Hack to Bits",
+  "level": 5,
+  "initiative": 38,
+  "sourceId": 430,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If this attack kills the target, all enemies adjacent to the hex the target occupied gain %wound%."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "muddle",
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "strengthen",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 ally"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Fortifying Injection",
+  "level": 5,
+  "initiative": 5,
+  "sourceId": 431,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%prescription% Prescription"
+    },
+    {
+     "type": "custom",
+     "text": "At the start of your next four turns where you do not have %ward%, perform:"
+    },
+    {
+     "type": "condition",
+     "value": "ward",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "xp": 1,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Whenever an adjacent ally would suffer %damage% this round, negate the %damage%."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Amputate",
+  "level": 6,
+  "initiative": 86,
+  "sourceId": 432,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "wound"
+      },
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 7,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 ally, enemy, or self"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "stun",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "the target of the heal ability"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Return the Favor",
+  "level": 6,
+  "initiative": 40,
+  "sourceId": 433,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Grant one adjacent ally who has an active %prescription%:"
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Remove one negative condition from one adjacent ally. If you do, gain %xp% 1 and you may give one adjacent enemey the negative condition you removed."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Surgeon's Satchel",
+  "level": 7,
+  "initiative": 14,
+  "sourceId": 434,
+  "top": {
+   "actions": [
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "heal",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Give one adjacent ally one medical pack to gain %xp% 1."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Exacting Anger",
+  "level": 7,
+  "initiative": 49,
+  "sourceId": 435,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "disarm"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%prescription% Prescription"
+    },
+    {
+     "type": "custom",
+     "text": "At the start of your next three turns, perform:"
+    },
+    {
+     "type": "condition",
+     "value": "strengthen",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "xp": 1,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Take Your Medicine",
+  "level": 8,
+  "initiative": 6,
+  "sourceId": 436,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%prescription% Prescription"
+    },
+    {
+     "type": "custom",
+     "text": "At the start of your next three turns, gain one medical pack."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "xp": 1,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "In initiative order, each of your allies may immediately play one \"Medical Pack\" ability card from their hand to perform one action of the card."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Euthanize",
+  "level": 8,
+  "initiative": 27,
+  "sourceId": 437,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Kill one adjacent damaged enemy that has at least two negative conditions and whose current hit point value is 8 or less."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "wound"
+      },
+      {
+       "type": "custom",
+       "text": ","
+      },
+      {
+       "type": "condition",
+       "value": "poison"
+      },
+      {
+       "type": "custom",
+       "text": ","
+      },
+      {
+       "type": "condition",
+       "value": "muddle"
+      },
+      {
+       "type": "custom",
+       "text": ","
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "The target suffers %damage%1."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Secret of the Oak",
+  "level": 9,
+  "initiative": 10,
+  "sourceId": 438,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 6,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      },
+      {
+       "type": "condition",
+       "value": "safeguard"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Before the heal, remove all negative conditions from the target."
+    },
+    {
+     "type": "custom",
+     "text": "If the target of the heal ability has an active %prescription%, gain %xp% 1 and grant them:"
+    },
+    {
+     "type": "shield",
+     "value": 2
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Whenever you or an ally perform a heal ability on a \"Medical Pack\" ability card, that character may add +4 %attack% to their next attack that round of +4 %move% to their next move ability that round."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Grisly Trauma",
+  "level": 9,
+  "initiative": 81,
+  "sourceId": 439,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      },
+      {
+       "type": "condition",
+       "value": "wound"
+      },
+      {
+       "type": "condition",
+       "value": "poison"
+      },
+      {
+       "type": "condition",
+       "value": "stun"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %target% to your next melee attack ability this round."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Medical Pack",
+  "level": "M",
+  "initiative": 50,
+  "sourceId": 440,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 4,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 6,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "immobilize",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Medical Pack",
+  "level": "M",
+  "initiative": 50,
+  "sourceId": 441,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 4,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      },
+      {
+       "type": "condition",
+       "value": "ward"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Medical Pack",
+  "level": "M",
+  "initiative": 50,
+  "sourceId": 442,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 4,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      },
+      {
+       "type": "condition",
+       "value": "safeguard"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Medical Pack",
+  "level": "M",
+  "initiative": 50,
+  "sourceId": 443,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 4,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      },
+      {
+       "type": "condition",
+       "value": "bless"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Medical Pack",
+  "level": "M",
+  "initiative": 50,
+  "sourceId": 444,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 4,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      },
+      {
+       "type": "condition",
+       "value": "strengthen"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "poison",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Medical Pack",
+  "level": "M",
+  "initiative": 50,
+  "sourceId": 445,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 4,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%data.custom.gh2e.saw.abilities.445.1%"
+    },
+    {
+     "type": "heal",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  }
+ }
+]
