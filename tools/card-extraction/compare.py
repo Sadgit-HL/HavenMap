@@ -143,6 +143,8 @@ def half_facts(h):
         flags.add(str(h['duration']))
     for e in (h or {}).get('infuse') or []:
         out.append('element ' + str(e))
+    if (h or {}).get('consume'):
+        out.append('consume ' + '+'.join(sorted(h['consume'])))
     c = Counter(out)
     for f in flags:
         c[f] = 1

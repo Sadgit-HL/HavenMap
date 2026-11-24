@@ -27,7 +27,7 @@ KEYS = set('actions top bottom name initiative level xp lost remove duration inf
 TOKENS = set('lf ls nbsp1 nbsp2 nbsp3 nbsp6 nbsp7 nbsp10 attack move heal range target push pull pierce damage teleport loot shield retaliate jump flying stun wound poison muddle disarm '
              'immobilize invisible strengthen ward regenerate safeguard bless curse bane brittle impair infect chill light dark fire ice air earth wild xp1 xp2 recover lost persistent '
              'round resol irri classToken0 classToken1 classToken2 scry amd-double amd-null amd-minus-1 amd-rolling shuffle enhancement-square enhancement-circle enhancement-diamond '
-             'enhance1 banner_t banner_b range3 self_dmg plague gain_pressure lose_pressure low_pressure regular_pressure high_pressure over_pressure'.split())
+             'enhance1 banner_t banner_b range3 infusion self_dmg plague gain_pressure lose_pressure low_pressure regular_pressure high_pressure over_pressure'.split())
 LAYOUT = set('margin padding position left top transform lineHeight fontSize flexDirection noLine height width marginLeft marginRight marginTop marginBottom hpColor hpTextColor size image url name'.split())
 
 

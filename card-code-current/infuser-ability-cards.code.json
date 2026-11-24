@@ -7,20 +7,27 @@
    "actions": [
     {
      "type": "custom",
-     "text": "INFUSION: %airc% / %wildc% : Add +1 %move% and %jump% to all your move abilities."
-    },
-    {
-     "type": "custom",
-     "text": "When this %rift% or another %rift% is played, perform:"
+     "text": "When this %infusion% or another %infusion% is played, perform:"
     },
     {
      "type": "attack",
      "value": 3
     }
    ],
+   "augment": [
+    {
+     "type": "custom",
+     "text": "Add +1 %move% and %jump% to all your move abilities."
+    }
+   ],
    "xp": 2,
    "lost": true,
-   "duration": "persistent"
+   "duration": "persistent",
+   "namedAbility": "Infusion",
+   "consume": [
+    "air",
+    "wild"
+   ]
   },
   "bottom": {
    "actions": [
@@ -71,21 +78,7 @@
    "actions": [
     {
      "type": "custom",
-     "text": "INFUSION: %earthc% / %wildc% :"
-    },
-    {
-     "type": "retaliate",
-     "value": 1,
-     "subActions": [
-      {
-       "type": "range",
-       "value": 2
-      }
-     ]
-    },
-    {
-     "type": "custom",
-     "text": "When this %rift% or another %rift% is played, perform:"
+     "text": "When this %infusion% or another %infusion% is played, perform:"
     },
     {
      "type": "heal",
@@ -98,9 +91,26 @@
      ]
     }
    ],
+   "augment": [
+    {
+     "type": "retaliate",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    }
+   ],
    "xp": 2,
    "lost": true,
-   "duration": "persistent"
+   "duration": "persistent",
+   "namedAbility": "Infusion",
+   "consume": [
+    "earth",
+    "wild"
+   ]
   }
  },
  {
@@ -111,11 +121,7 @@
    "actions": [
     {
      "type": "custom",
-     "text": "INFUSION: %darkc% / %wildc% : Add %wound% and %muddle% to all your melee attacks."
-    },
-    {
-     "type": "custom",
-     "text": "When this %rift% or another %rift% is played, perform:"
+     "text": "When this %infusion% or another %infusion% is played, perform:"
     },
     {
      "type": "condition",
@@ -128,9 +134,20 @@
      ]
     }
    ],
+   "augment": [
+    {
+     "type": "custom",
+     "text": "Add %wound% and %muddle% to all your melee attacks."
+    }
+   ],
    "xp": 2,
    "lost": true,
-   "duration": "persistent"
+   "duration": "persistent",
+   "namedAbility": "Infusion",
+   "consume": [
+    "dark",
+    "wild"
+   ]
   },
   "bottom": {
    "actions": [
@@ -348,7 +365,7 @@
     },
     {
      "type": "custom",
-     "text": "+1 %attack% for each pair of active %rift%."
+     "text": "+1 %attack% for each pair of active %infusion%."
     },
     {
      "type": "optional",
@@ -379,7 +396,7 @@
     },
     {
      "type": "custom",
-     "text": "+1 %move% for each pair of active %rift%."
+     "text": "+1 %move% for each pair of active %infusion%."
     },
     {
      "type": "optional",
@@ -506,18 +523,9 @@
       {
        "type": "consume",
        "elements": [
-        "air"
-       ]
-      },
-      {
-       "type": "consume",
-       "elements": [
+        "air",
         "earth"
        ]
-      },
-      {
-       "type": "custom",
-       "text": ":"
       }
      ]
     },
@@ -611,18 +619,9 @@
       {
        "type": "consume",
        "elements": [
-        "air"
-       ]
-      },
-      {
-       "type": "consume",
-       "elements": [
+        "air",
         "dark"
        ]
-      },
-      {
-       "type": "custom",
-       "text": ":"
       }
      ]
     },
@@ -738,7 +737,7 @@
     },
     {
      "type": "custom",
-     "text": "Add +1 %target% for each pair of active %rift%."
+     "text": "Add +1 %target% for each pair of active %infusion%."
     }
    ],
    "xp": 1
@@ -826,7 +825,7 @@
     },
     {
      "type": "custom",
-     "text": "This summon is affected by all your active %rift%."
+     "text": "This summon is affected by all your active %infusion%."
     }
    ],
    "duration": "persistent"
@@ -974,33 +973,12 @@
   "bottom": {
    "actions": [
     {
-     "type": "mandatory",
-     "actions": [
-      {
-       "type": "consume",
-       "elements": [
-        "earth"
-       ]
-      },
-      {
-       "type": "consume",
-       "elements": [
-        "dark"
-       ]
-      }
-     ]
-    },
-    {
      "type": "custom",
-     "text": "Your current and maximum hit point values are increased by 3. You are immune to %curse%."
-    },
-    {
-     "type": "custom",
-     "text": "When this %rift% or another %rift% is played, perform:"
+     "text": "When this %infusion% or another %infusion% is played, perform:"
     },
     {
      "type": "condition",
-     "value": "ward",
+     "value": "regenerate",
      "subActions": [
       {
        "type": "target",
@@ -1009,9 +987,20 @@
      ]
     }
    ],
+   "augment": [
+    {
+     "type": "custom",
+     "text": "Your current and maximum hit point values are increased by 3. You are immune to %curse%."
+    }
+   ],
    "xp": 2,
    "lost": true,
-   "duration": "persistent"
+   "duration": "persistent",
+   "namedAbility": "Infusion",
+   "consume": [
+    "earth",
+    "dark"
+   ]
   }
  },
  {
@@ -1159,7 +1148,7 @@
     },
     {
      "type": "custom",
-     "text": "Add +1 %retaliate% for each pair of active %rift%."
+     "text": "Add +1 %retaliate% for each pair of active %infusion%."
     },
     {
      "type": "optional",
@@ -1213,28 +1202,8 @@
   "top": {
    "actions": [
     {
-     "type": "group",
-     "actions": [
-      {
-       "type": "custom",
-       "text": "%rift% INFUSION:"
-      },
-      {
-       "type": "consume",
-       "elements": [
-        "air",
-        "dark"
-       ]
-      }
-     ]
-    },
-    {
      "type": "custom",
-     "text": "After an adjacent enemy attacks you, that enemy gains %curse%."
-    },
-    {
-     "type": "custom",
-     "text": "When this %rift% or another %rift% is played, perform:"
+     "text": "When this %infusion% or another %infusion% is played, perform:"
     },
     {
      "type": "condition",
@@ -1247,9 +1216,20 @@
      ]
     }
    ],
+   "augment": [
+    {
+     "type": "custom",
+     "text": "After an adjacent enemy attacks you, that enemy gains %curse%."
+    }
+   ],
    "xp": 2,
    "lost": true,
-   "duration": "persistent"
+   "duration": "persistent",
+   "namedAbility": "Infusion",
+   "consume": [
+    "air",
+    "dark"
+   ]
   },
   "bottom": {
    "actions": [
@@ -1366,25 +1346,6 @@
   "top": {
    "actions": [
     {
-     "type": "group",
-     "actions": [
-      {
-       "type": "custom",
-       "text": "%rift% INFUSION:"
-      },
-      {
-       "type": "consume",
-       "elements": [
-        "earth"
-       ]
-      }
-     ]
-    },
-    {
-     "type": "custom",
-     "text": "Add %?magenta diamond with a tower or crown% to all your heal abilities."
-    },
-    {
      "type": "heal",
      "value": 2,
      "enhancement": [
@@ -1402,8 +1363,18 @@
      ]
     }
    ],
+   "augment": [
+    {
+     "type": "custom",
+     "text": "Add %regenerate% to all your heal abilities."
+    }
+   ],
    "xp": 1,
-   "duration": "round"
+   "duration": "round",
+   "namedAbility": "Infusion",
+   "consume": [
+    "earth"
+   ]
   },
   "bottom": {
    "actions": [
@@ -1416,7 +1387,7 @@
     },
     {
      "type": "custom",
-     "text": "While this card is in your active area this round, your abilities and attack modifier cards treat it as a pair of active %rift%."
+     "text": "While this card is in your active area this round, your abilities and attack modifier cards treat it as a pair of active %infusion%."
     }
    ],
    "duration": "round"
@@ -1455,7 +1426,7 @@
       },
       {
        "type": "area",
-       "pattern": "tt"
+       "pattern": "sbttx"
       }
      ]
     }
@@ -1575,28 +1546,8 @@
   "top": {
    "actions": [
     {
-     "type": "group",
-     "actions": [
-      {
-       "type": "custom",
-       "text": "%rift% INFUSION:"
-      },
-      {
-       "type": "consume",
-       "elements": [
-        "air",
-        "earth"
-       ]
-      }
-     ]
-    },
-    {
      "type": "custom",
-     "text": "After each of your attack abilities, perform %move% 2."
-    },
-    {
-     "type": "custom",
-     "text": "When this %rift% or another %rift% is played, perform:"
+     "text": "When this %infusion% or another %infusion% is played, perform:"
     },
     {
      "type": "push",
@@ -1613,9 +1564,20 @@
      ]
     }
    ],
+   "augment": [
+    {
+     "type": "custom",
+     "text": "After each of your attack abilities, perform %move% 2."
+    }
+   ],
    "xp": 2,
    "lost": true,
-   "duration": "persistent"
+   "duration": "persistent",
+   "namedAbility": "Infusion",
+   "consume": [
+    "air",
+    "earth"
+   ]
   },
   "bottom": {
    "actions": [
@@ -1672,11 +1634,11 @@
     },
     {
      "type": "custom",
-     "text": "Add +1 %shield% for each pair of active %rift%."
+     "text": "Add +1 %shield% for each pair of active %infusion%."
     },
     {
      "type": "condition",
-     "value": "ward",
+     "value": "regenerate",
      "subActions": [
       {
        "type": "target",
@@ -1782,7 +1744,7 @@
      "actions": [
       {
        "type": "custom",
-       "text": "-1 %move% : %earth/dark%"
+       "text": "-1 %move% : %earth%/%dark%"
       }
      ]
     },
@@ -1886,11 +1848,11 @@
     },
     {
      "type": "custom",
-     "text": "Whenever you play an %rift%, you may have this summon perform all abilities triggered by that %rift% instead of you."
+     "text": "Whenever you play an %infusion%, you may have this summon perform all abilities triggered by that %infusion% instead of you."
     },
     {
      "type": "custom",
-     "text": "This summon is affected by all your active %rift%."
+     "text": "This summon is affected by all your active %infusion%."
     }
    ],
    "xp": 1,
@@ -1927,15 +1889,7 @@
    "actions": [
     {
      "type": "custom",
-     "text": "%rift% INFUSION: %airc% %earthc% %darkc%"
-    },
-    {
-     "type": "custom",
-     "text": "Add +1 %target% to all your melee attack abilities."
-    },
-    {
-     "type": "custom",
-     "text": "When this %rift% or another %rift% is played, perform:"
+     "text": "When this %infusion% or another %infusion% is played, perform:"
     },
     {
      "type": "condition",
@@ -1948,9 +1902,21 @@
      ]
     }
    ],
+   "augment": [
+    {
+     "type": "custom",
+     "text": "Add +1 %target% to all your melee attack abilities."
+    }
+   ],
    "xp": 2,
    "lost": true,
-   "duration": "persistent"
+   "duration": "persistent",
+   "namedAbility": "Infusion",
+   "consume": [
+    "air",
+    "earth",
+    "dark"
+   ]
   },
   "bottom": {
    "actions": [

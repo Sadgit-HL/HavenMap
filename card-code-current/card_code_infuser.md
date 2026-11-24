@@ -3,10 +3,13 @@ name: Boon of the Tempest
 initiative: 28
 level: 1
 top:
+  namedAbility:
+    name: Infusion
+  consume: [air, wild]
   actions:
-    # check: the INFUSION header (air consume, either-element consume) is written as text
-    - custom: "INFUSION: %airc% / %wildc% : Add +1 %move% and %jump% to all your move abilities."
-    - custom: "When this %classToken0% or another %classToken0% is played, perform:"
+    - custom: "Add +1 %move% and %jump% to all your move abilities."
+    - divider
+    - custom: "When this %infusion% or another %infusion% is played, perform:"
     - attack: 3
   xp: 2
   duration: persistent
@@ -28,14 +31,15 @@ top:
         - custom: "-1 %shield% : %earth%, %xp1%"
   duration: round
 bottom:
+  namedAbility:
+    name: Infusion
+  consume: [earth, wild]
   actions:
-    # check: the INFUSION box (earth consume, either-element consume) has no text next to it; it sits above the retaliate row
-    - custom: "INFUSION: %earthc% / %wildc% :"
     - retaliate: 1
       sub:
         - range: 2
     - divider
-    - custom: "When this %classToken0% or another %classToken0% is played, perform:"
+    - custom: "When this %infusion% or another %infusion% is played, perform:"
     - heal: 3
       sub:
         - self
@@ -47,10 +51,13 @@ name: Caress of the Night
 initiative: 87
 level: 1
 top:
+  namedAbility:
+    name: Infusion
+  consume: [dark, wild]
   actions:
-    # check: the INFUSION header is dark consume, either-element consume
-    - custom: "INFUSION: %darkc% / %wildc% : Add %wound% and %muddle% to all your melee attacks."
-    - custom: "When this %classToken0% or another %classToken0% is played, perform:"
+    - custom: "Add %wound% and %muddle% to all your melee attacks."
+    - divider
+    - custom: "When this %infusion% or another %infusion% is played, perform:"
     - strengthen: ''
       sub:
         - self
@@ -138,7 +145,7 @@ top:
   actions:
     - attack: 3
       enhancement: [square]
-    - custom: "+1 %attack% for each pair of active %classToken0%."
+    - custom: "+1 %attack% for each pair of active %infusion%."
     - optional:
         - consume: [earth]
         - custom: "%earth%"
@@ -146,7 +153,7 @@ bottom:
   actions:
     - move: 3
       enhancement: [square]
-    - custom: "+1 %move% for each pair of active %classToken0%."
+    - custom: "+1 %move% for each pair of active %infusion%."
     - optional:
         - consume: [air]
         - custom: "%air%"
@@ -195,11 +202,8 @@ initiative: 83
 level: 1
 top:
   actions:
-    # check: the banner (air and earth consumes, colon) has no action text; written as a banner
     - mandatory:
-        - consume: [air]
-        - consume: [earth]
-        - custom: ":"
+        - consume: [air, earth]
     - group:
         - attack: 4
           sub:
@@ -228,11 +232,8 @@ top:
         - custom: "-1 %attack% : %dark%"
 bottom:
   actions:
-    # check: the banner (air and dark consumes, colon) stands above the four actions
     - mandatory:
-        - consume: [air]
-        - consume: [dark]
-        - custom: ":"
+        - consume: [air, dark]
     - push: 2
       sub:
         - range: 1
@@ -256,7 +257,6 @@ top:
     - attack: 3
       enhancement: [square]
     - optional:
-        # check: first icon dark with red cross (consume), second dark (infuse); both look like the dark icon
         - consume: [dark]
         - custom: "%dark%"
 bottom:
@@ -273,11 +273,10 @@ initiative: 17
 level: X
 top:
   actions:
-    # check: the teal cracked diamond is brittle
     - brittle: ''
       sub:
         - range: 1
-    - custom: "Add +1 %target% for each pair of active %classToken0%."
+    - custom: "Add +1 %target% for each pair of active %infusion%."
   xp: 1
 bottom:
   actions:
@@ -310,7 +309,7 @@ top:
     - mandatory:
         - custom: "Whenever you do not have %regenerate%, gain %regenerate%."
     - divider
-    - custom: "This summon is affected by all your active %classToken0%."
+    - custom: "This summon is affected by all your active %infusion%."
   duration: persistent
 bottom:
   actions:
@@ -365,15 +364,14 @@ top:
     - optional:
         - custom: "-2 %heal% : %earth%, %xp1%"
 bottom:
+  namedAbility:
+    name: Infusion
+  consume: [earth, dark]
   actions:
-    # check: INFUSION box (class icon, earth and dark with red crosses) is a consume condition for the text next to it
-    - mandatory:
-        - consume: [earth]
-        - consume: [dark]
     - custom: "Your current and maximum hit point values are increased by 3. You are immune to %curse%."
     - divider
-    - custom: "When this %classToken0% or another %classToken0% is played, perform:"
-    - ward: ''
+    - custom: "When this %infusion% or another %infusion% is played, perform:"
+    - regenerate: ''
       sub:
         - self
   xp: 2
@@ -420,9 +418,8 @@ top:
     - retaliate: 1
       sub:
         - range: 2
-    - custom: "Add +1 %retaliate% for each pair of active %classToken0%."
+    - custom: "Add +1 %retaliate% for each pair of active %infusion%."
     - optional:
-        # check: left icon is dark with a red cross, right icon dark without
         - consume: [dark]
         - custom: '%dark%'
   duration: round
@@ -441,14 +438,13 @@ name: Coalescing Darkness
 initiative: 85
 level: 4
 top:
+  namedAbility:
+    name: Infusion
+  consume: [air, dark]
   actions:
-    # check: INFUSION band at the top left (consume air and dark), then the standing text
-    - group:
-        - custom: "%classToken0% INFUSION:"
-        - consume: [air, dark]
     - custom: "After an adjacent enemy attacks you, that enemy gains %curse%."
     - divider
-    - custom: "When this %classToken0% or another %classToken0% is played, perform:"
+    - custom: "When this %infusion% or another %infusion% is played, perform:"
     - disarm: ''
       sub:
         - range: 1
@@ -503,12 +499,11 @@ name: Gemstone Resonance
 initiative: 30
 level: 5
 top:
+  namedAbility:
+    name: Infusion
+  consume: [earth]
   actions:
-    # check: INFUSION band (consume earth) then the standing text; the magenta diamond could not be named
-    - group:
-        - custom: "%classToken0% INFUSION:"
-        - consume: [earth]
-    - custom: "Add %?magenta diamond with a tower or crown% to all your heal abilities."
+    - custom: "Add %regenerate% to all your heal abilities."
     - divider
     - heal: 2
       enhancement: [square]
@@ -522,7 +517,7 @@ bottom:
     - move: 2
       enhancement: [circle]
     - divider
-    - custom: "While this card is in your active area this round, your abilities and attack modifier cards treat it as a pair of active %classToken0%."
+    - custom: "While this card is in your active area this round, your abilities and attack modifier cards treat it as a pair of active %infusion%."
   duration: round
 
 name: Obsidian Spear
@@ -536,11 +531,9 @@ top:
               enhancement: [diamond]
             - optional:
                 - custom: "-1 %attack% : %push% 1, %dark%, %xp1%"
-        # check: the picture shows self, a dashed empty hex, two red hexes and a dot; area written as measured
-        - hex: tt
+        - hex: sbttx
 bottom:
   actions:
-    # check: banner at the left edge of the middle band (consume earth and dark), placed before the bottom attack
     - mandatory:
         - consume: [earth, dark]
     - attack: 4
@@ -556,7 +549,6 @@ initiative: 44
 level: 6
 top:
   actions:
-    # check: banner at the top left (consume air and dark)
     - mandatory:
         - consume: [air, dark]
     - attack: 2
@@ -580,14 +572,13 @@ name: Propulsive Tailwind
 initiative: 91
 level: 6
 top:
+  namedAbility:
+    name: Infusion
+  consume: [air, earth]
   actions:
-    # check: INFUSION band (consume air and earth) then the standing text
-    - group:
-        - custom: "%classToken0% INFUSION:"
-        - consume: [air, earth]
     - custom: "After each of your attack abilities, perform %move% 2."
     - divider
-    - custom: "When this %classToken0% or another %classToken0% is played, perform:"
+    - custom: "When this %infusion% or another %infusion% is played, perform:"
     - push: 2
       sub:
         - range: 1
@@ -614,10 +605,9 @@ top:
   actions:
     - shield: 1
       enhancement: [plus]
-    # check: %?infusion rosette% is the Infuser's infusion icon, assumed %classToken0%
-    - custom: "Add +1 %shield% for each pair of active %classToken0%."
+    - custom: "Add +1 %shield% for each pair of active %infusion%."
     - divider
-    - ward: ''
+    - regenerate: ''
       sub:
         - self
   infuse: [earth/dark]
@@ -655,9 +645,7 @@ bottom:
     - move: 4
       enhancement: [square]
     - optional:
-        # check: the dashed box shows -1 move : then the earth/dark infusion icon (infusion created)
-        - custom: "-1 %move% :"
-        - custom: "%earth/dark%"
+        - custom: "-1 %move% : %earth%/%dark%"
     - divider
     - custom: "All adjacent enemies suffer %damage% 1."
 
@@ -703,8 +691,8 @@ top:
           url: https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/MP/images/spiritbound_falchion.jpg
           size: 100%
           position: '0px 0px'
-    - custom: "Whenever you play an %classToken0%, you may have this summon perform all abilities triggered by that %classToken0% instead of you."
-    - custom: "This summon is affected by all your active %classToken0%."
+    - custom: "Whenever you play an %infusion%, you may have this summon perform all abilities triggered by that %infusion% instead of you."
+    - custom: "This summon is affected by all your active %infusion%."
   xp: 1
   duration: persistent
   lost: t
@@ -720,12 +708,13 @@ name: Ancient Rites of Power
 initiative: 94
 level: 9
 top:
+  namedAbility:
+    name: Infusion
+  consume: [air, earth, dark]
   actions:
-    # check: INFUSION band with air, earth, dark each crossed out (consumed)
-    - custom: "%classToken0% INFUSION: %airc% %earthc% %darkc%"
     - custom: "Add +1 %target% to all your melee attack abilities."
     - divider
-    - custom: "When this %classToken0% or another %classToken0% is played, perform:"
+    - custom: "When this %infusion% or another %infusion% is played, perform:"
     - bless: ''
       sub:
         - self

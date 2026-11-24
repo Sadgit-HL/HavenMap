@@ -276,6 +276,10 @@ def half(h, where):
         out['duration'] = str(h['duration']).strip()
     if h.get('namedAbility'):                                        # the keyword ribbon at the top left of a half (AUGMENT)
         out['namedAbility'] = (h['namedAbility'] or {}).get('name') if isinstance(h['namedAbility'], dict) else str(h['namedAbility'])
+    if h.get('consume'):                                             # the elements consumed to play the card (Infusion header): consume: [air, wild] ('wild' = any element, 'a/b' = either)
+        out['consume'] = [e for v in (h['consume'] if isinstance(h['consume'], list) else [h['consume']]) for e in str(v).split('/')]
+        if any('/' in str(v) for v in (h['consume'] if isinstance(h['consume'], list) else [h['consume']])):
+            out['consumeEither'] = True
     if h.get('infuse'):                                              # the banner at the end of a half that creates an element: infuse: [light] or [light/dark] (either)
         names = [e for v in (h['infuse'] if isinstance(h['infuse'], list) else [h['infuse']]) for e in str(v).split('/')]
         out['infuse'] = names
