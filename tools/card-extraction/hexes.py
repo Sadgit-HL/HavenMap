@@ -1,7 +1,7 @@
 """Reads the hex areas of an ability card picture by colour and shape, and writes them as `hex:` patterns of the card creator. No reading by eye, no tokens.
 
 Usage: python tools/card-extraction/hexes.py <picture> [more pictures]      prints the areas found, per half of the card
-       python tools/card-extraction/hexes.py --test [path to Wordhaven_Assets]    runs the cards whose pattern the owner confirmed and reports the agreement
+       python tools/card-extraction/hexes.py --test [path to an older Wordhaven_Assets clone]    runs the cards whose pattern the owner confirmed and reports the agreement
 Needs Pillow and numpy (a tool only; the app has no dependencies).
 
 How: the red target hexes (with a lighter X) and the grey self hex are found as blobs of colour, closed over the X, and kept when their size and shape are those of a
@@ -179,12 +179,12 @@ def read(path):
     return sorted(out, key=lambda a: (a['half'] != 'top', a['pattern']))
 
 
-# cards whose hex pattern the owner confirmed: picture under wh_character_ability_cards, half, pattern
+# cards whose hex pattern the owner confirmed: (source, class code, slug) of the picture, half, pattern
 CONFIRMED = [
-    ('mp/hl/mp-withering-stare.png', 'top', 'ett_st'), ('mp/hl/mp-tear-a-new-one.png', 'top', 'ett_ttt_ett'), ('mp/hl/mp-interesting-specimen.png', 'bottom', 'ett_ttt_ett'),
-    ('mp/ca/mp-tear-reality.png', 'top', 'ete_tt_tst_tt_ete'), ('mp/ca/mp-ethereal-vortex.png', 'top', 'ett_ttt_ett'), ('mp/ca/mp-careful-attunement.png', 'top', 'etx_xtt_etx'),
-    ('gh2/BE2/devil-horns.jpeg', 'top', 'et_st_et'), ('mp/sa/mp-implacable-advance.png', 'top', 'et_st'), ('mp/sa/mp-take-comman.png', 'top', 'et_st_et'),
-    ('mp/sa/mp-send-them-reeling.png', 'top', 'et_st_et'), ('mp/sa/mp-dazing-sweep.png', 'top', 'et_st_ex'),
+    (('mp', 'hl', 'withering-stare'), 'top', 'ett_st'), (('mp', 'hl', 'tear-a-new-one'), 'top', 'ett_ttt_ett'), (('mp', 'hl', 'interesting-specimen'), 'bottom', 'ett_ttt_ett'),
+    (('mp', 'ca', 'tear-reality'), 'top', 'ete_tt_tst_tt_ete'), (('mp', 'ca', 'ethereal-vortex'), 'top', 'ett_ttt_ett'), (('mp', 'ca', 'careful-attunement'), 'top', 'etx_xtt_etx'),
+    (('gh2', 'be2', 'devil-horns'), 'top', 'et_st_et'), (('mp', 'sa', 'implacable-advance'), 'top', 'et_st'), (('mp', 'sa', 'take-comman'), 'top', 'et_st_et'),
+    (('mp', 'sa', 'send-them-reeling'), 'top', 'et_st_et'), (('mp', 'sa', 'dazing-sweep'), 'top', 'et_st_ex'),
 ]
 
 
@@ -194,10 +194,13 @@ def main():
         print(__doc__)
         return 2
     if args[0] == '--test':
-        base = (args[1] if len(args) > 1 else 'D:/github/Wordhaven_Assets') + '/wh_character_ability_cards/'
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import pictures
+        assets = args[1] if len(args) > 1 else None
         ok = 0
-        for rel, half, expected in CONFIRMED:
-            got = [a for a in read(base + rel) if a['half'] == half]
+        for pic, half, expected in CONFIRMED:
+            rel = '/'.join(pic)
+            got = [a for a in read(pictures.card_picture(*pic, assets=assets)) if a['half'] == half]
             pat = got[0]['pattern'] if got else '(none)'
             norm = lambda p: '_'.join(row.rstrip('e') for row in p.split('_'))
             good = norm(pat) == norm(expected)

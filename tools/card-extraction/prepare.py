@@ -1,6 +1,6 @@
 """Prepares the briefs for reading the ability cards of a class from their pictures.
 
-Usage: python tools/card-extraction/prepare.py <class code, name or index> [--batch 8] [--out DIR] [--only slug,slug] [--assets PATH] [--examples N]
+Usage: python tools/card-extraction/prepare.py <class code, name or index> [--batch 8] [--out DIR] [--only slug,slug] [--assets PATH, an older Wordhaven_Assets clone; default: images/character-abilities] [--examples N]
   Writes DIR/<class>/batch<N>.md for each batch of cards: the instructions (brief.md), the worked examples (pictures with the card code the owner wrote for them) and the
   cards of the batch (name, level, initiative, picture) with the output file to write. Give one batch to one reader (a Claude agent or a person), then run check.py on the
   output files. Also writes DIR/icons.png (make-icon-sheet.py) once.
@@ -19,6 +19,7 @@ from PIL import Image, ImageFilter
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import hexes
+import pictures as picpath
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
@@ -26,9 +27,9 @@ spec = importlib.util.spec_from_file_location('ccc', os.path.join(ROOT, 'tools',
 ccc = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(ccc)
 
-# (card code file, picture under wh_character_ability_cards, card name): cards whose card code is known to be right
-EXAMPLES = [('import/card_code_hail.md', 'mp/hl/mp-interesting-specimen.png', 'Interesting Specimen'), ('import/card_code_cassandra.md', 'mp/ca/mp-tear-reality.png', 'Tear Reality'),
-            ('import/card_code_berserker.md', 'gh2/BE2/blood-pact.jpeg', 'Blood Pact')]
+# (card code file, (source, class code, slug) of the picture, card name): cards whose card code is known to be right
+EXAMPLES = [('import/card_code_hail.md', ('mp', 'hl', 'interesting-specimen'), 'Interesting Specimen'), ('import/card_code_cassandra.md', ('mp', 'ca', 'tear-reality'), 'Tear Reality'),
+            ('import/card_code_berserker.md', ('gh2', 'be2', 'blood-pact'), 'Blood Pact')]
 
 
 def strip_layout(x):
@@ -65,7 +66,7 @@ def main():
     if not args:
         print(__doc__)
         return 2
-    cls, batch, out, only, assets, n_ex = args.pop(0), 8, os.path.join(HERE, 'work'), None, 'D:/github/Wordhaven_Assets', len(EXAMPLES)
+    cls, batch, out, only, assets, n_ex = args.pop(0), 8, os.path.join(HERE, 'work'), None, None, len(EXAMPLES)
     while args:
         a = args.pop(0)
         if a == '--batch':
@@ -84,7 +85,7 @@ def main():
         raise SystemExit('unknown class ' + cls)
     c = match[0]
     cards = [json.loads(m) for m in re.findall(r'\{"id":\d+,"cls":%d,[^}]*\}' % c['i'], open(os.path.join(ROOT, 'scripts/games/gh2_cards.js'), encoding='utf-8').read())]
-    if 'img' in cards[0]:
+    if 'img' in cards[0] and c['src'] not in ('fh', 'jotl'):
         raise SystemExit('%s has its own card pictures and Secretariat data; this tool is for the classes without it' % c['name'])
     known = set()
     for path, _, _ in EXAMPLES:
@@ -92,10 +93,7 @@ def main():
             known.add(first.replace('name:', '').strip().lower())
 
     def picture(card):
-        slug = re.sub(r'[\u2010-\u2015]', '-', card['slug'])
-        if c['src'] == 'mp':
-            return '%s/wh_character_ability_cards/mp/%s/mp-%s.png' % (assets, c['code'].lower(), slug)
-        return '%s/wh_character_ability_cards/gh2/%s/%s.jpeg' % (assets, c['code'].upper(), slug)
+        return picpath.card_picture(c['src'], c['code'], card['slug'], assets)
 
     cards = [k for k in cards if (only is None or k['slug'] in only)]
     directory = os.path.join(out, c['code'].lower())
@@ -113,11 +111,11 @@ def main():
             k['areas'] = '; '.join('%s: hex: %s' % (a['half'], a['pattern']) for a in found) or 'none'
     sheet = os.path.join(out, 'icons.png')
     if not os.path.exists(sheet):
-        subprocess.run([sys.executable, os.path.join(HERE, 'make-icon-sheet.py'), sheet, assets], check=True)
+        subprocess.run([sys.executable, os.path.join(HERE, 'make-icon-sheet.py'), sheet] + ([assets] if assets else []), check=True)
     brief = open(os.path.join(HERE, 'brief.md'), encoding='utf-8').read()
     examples = ''
-    for path, rel, name in EXAMPLES[:n_ex]:
-        examples += '### %s\n\nPicture: %s/wh_character_ability_cards/%s\n\n```\n%s\n```\n\n' % (name, assets, rel, card_yaml(path, name))
+    for path, pic, name in EXAMPLES[:n_ex]:
+        examples += '### %s\n\nPicture: %s\n\n```\n%s\n```\n\n' % (name, picpath.card_picture(*pic, assets=assets), card_yaml(path, name))
     n = 0
     for i in range(0, len(cards), batch):
         n += 1

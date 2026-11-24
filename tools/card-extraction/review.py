@@ -24,11 +24,12 @@ def load(name, file):
 
 ccc = load('ccc', 'convert-card-code.py')
 chk = load('chk', 'check.py')
+pictures = load('pictures', 'pictures.py')
 
 
 def main():
     args = sys.argv[1:]
-    files, cls, out, assets = [], None, os.path.join(HERE, 'work', 'review.html'), 'D:/github/Wordhaven_Assets'
+    files, cls, out, assets = [], None, os.path.join(HERE, 'work', 'review.html'), None
     while args:
         a = args.pop(0)
         if a == '--class':
@@ -53,10 +54,7 @@ def main():
         known[(k['ini'], str(k['lv']))] = k
 
     def picture(k):
-        slug = re.sub(r'[\u2010-\u2015]', '-', k['slug'])
-        if c['src'] == 'mp':
-            return 'file:///%s/wh_character_ability_cards/mp/%s/mp-%s.png' % (assets, c['code'].lower(), slug)
-        return 'file:///%s/wh_character_ability_cards/gh2/%s/%s.jpeg' % (assets, c['code'].upper(), slug)
+        return 'file:///' + pictures.card_picture(c['src'], c['code'], k['slug'], assets)
 
     text = '\n\n'.join(open(f, encoding='utf-8').read().replace('\r\n', '\n') for f in files)
     cards, errors = ccc.parse_text(text)
