@@ -76,6 +76,9 @@ def main():
         name = first.replace('name:', '').strip()
         card = parsed.get(first)
         k = known.get((card['initiative'], str(card['level']))) if card else None
+        if card and not k:                                    # the level on the picture may differ from the card list: an initiative used once in the class is enough
+            same = [v for key, v in known.items() if key[0] == card['initiative']]
+            k = same[0] if len(same) == 1 else None
         pic = '<img class="card" src="%s" alt="%s">' % (picture(k), html.escape(name)) if k else '<div class="card missing">no picture: level and initiative are not a card of %s</div>' % html.escape(c['name'])
         body = []
         for line in chunk.split('\n'):

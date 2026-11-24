@@ -26,7 +26,7 @@ KEYS = set('actions top bottom name initiative level xp lost remove duration inf
            'namedAbility corner number style baseAttack baseMove snap hexIcons icon reverse h lines wind'.split())
 TOKENS = set('lf ls nbsp1 nbsp2 nbsp3 nbsp6 nbsp7 nbsp10 attack move heal range target push pull pierce damage teleport loot shield retaliate jump flying stun wound poison muddle disarm '
              'immobilize invisible strengthen ward regenerate safeguard bless curse bane brittle impair infect chill light dark fire ice air earth wild xp1 xp2 recover lost persistent '
-             'resol irri rift classToken0 classToken1 scry amd-double amd-null amd-minus-1 amd-rolling self shuffle enhancement-square enhancement-circle enhancement-diamond '
+             'round resol irri rift classToken0 classToken1 scry amd-double amd-null amd-minus-1 amd-rolling self shuffle enhancement-square enhancement-circle enhancement-diamond '
              'enhance1 banner_t banner_b range3'.split())
 LAYOUT = set('margin padding position left top transform lineHeight fontSize flexDirection noLine height width marginLeft marginRight marginTop marginBottom hpColor hpTextColor size image url name'.split())
 
@@ -53,6 +53,8 @@ def vocabulary(text):
                 for k, v in x.items():
                     if k not in KEYS and k not in LAYOUT:
                         problems[name].append('unknown key ' + str(k))
+                    if k in ('range', 'target') and ctx != 'sub' and not (ctx == '' and k == 'target'):    # the card creator accepts them only in a sub block
+                        problems[name].append(k + ' outside a sub block (the card creator gives an error): put it in sub: of the action it belongs to')
                     if k == 'hex':
                         bad = set(str(v)) - set('etsabxdhfc_')
                         if bad:

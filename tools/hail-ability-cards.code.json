@@ -275,7 +275,8 @@
        "type": "xp",
        "value": 1
       }
-     ]
+     ],
+     "noLine": true
     }
    ]
   },
@@ -316,7 +317,8 @@
        "type": "xp",
        "value": 1
       }
-     ]
+     ],
+     "noLine": true
     }
    ]
   }
@@ -491,7 +493,8 @@
        "type": "custom",
        "text": "Instead of once, perform the following grant ability X+1 times."
       }
-     ]
+     ],
+     "noLine": true
     },
     {
      "type": "custom",
@@ -558,7 +561,8 @@
        "type": "custom",
        "text": "Ignore %lost% on this card."
       }
-     ]
+     ],
+     "noLine": true
     }
    ],
    "xp": 1,
@@ -589,7 +593,8 @@
         }
        ]
       }
-     ]
+     ],
+     "noLine": true
     },
     {
      "type": "optional",
@@ -613,7 +618,8 @@
        "type": "xp",
        "value": 1
       }
-     ]
+     ],
+     "noLine": true
     }
    ]
   }
@@ -1719,7 +1725,8 @@
        "type": "custom",
        "text": "Ignore %lost% on this card."
       }
-     ]
+     ],
+     "noLine": true
     }
    ],
    "xp": 1,
@@ -1741,7 +1748,8 @@
        "type": "custom",
        "text": "Ignore %lost% on this card."
       }
-     ]
+     ],
+     "noLine": true
     }
    ],
    "lost": true

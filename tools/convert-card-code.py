@@ -8,7 +8,7 @@ Action:  { type, value?, enhancement?, subActions? }   type is attack, move, hea
          { type: 'custom', text }       text with %tokens%: %resolve%, %xp% 1 ...; the layout tokens (%lf%, %nbsp1%, banners) are removed
          { type: 'mandatory', actions } a dark banner row with "!": the effect that must be applied (the target rule of an ability above)
          { type: 'optional', cost: { resolve: n | 'X' } | { consume: { elements, either? } } | null, actions, effects?, persistent? }   a dashed pill: only done if the ability above is performed;
-         several lines in one dashed box: { type: 'optional', options: [{ cost, actions, effects? }] }
+         several lines in one dashed box: { type: 'optional', options: [{ cost, actions, effects? }] }; noLine: true when the box is an ability of its own
          { type: 'group', direction, actions }   { type: 'inline', actions }   { type: 'irritation' } the ribbon   { type: 'summon', name, stats: { health, move, attack, range }, special, enhancement?, image? }   { type: 'tokens', slots: [0, 1] } token slots, a 1 gives experience   { type: 'consume', elements } outside a pill   { type: 'area', pattern }
 Layout keys (margin, padding, position, left, top, transform, lineHeight, fontSize, flexDirection, noLine) are dropped; 'divider' rows are dropped.
 """
@@ -21,7 +21,7 @@ import yaml
 LAYOUT = {'margin', 'padding', 'position', 'left', 'top', 'transform', 'lineHeight', 'fontSize', 'flexDirection', 'noLine', 'enhancement', 'sub', 'duration', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom', 'height', 'width', 'hpColor', 'hpTextColor', 'size'}
 CONDITIONS = {'wound', 'stun', 'immobilize', 'poison', 'muddle', 'curse', 'bless', 'strengthen', 'ward', 'safeguard', 'invisible', 'disarm', 'bane', 'brittle', 'impair', 'regenerate', 'infect', 'chill'}
 ELEMENTS = {'air', 'fire', 'ice', 'earth', 'light', 'dark', 'wild'}
-TOKEN_TYPES = CONDITIONS | {'scry', 'attack', 'move', 'heal', 'teleport', 'loot', 'push', 'pierce', 'range', 'target', 'damage', 'xp', 'resolve', 'lost', 'persistent', 'recover', 'jump', 'fly', 'pull'}
+TOKEN_TYPES = CONDITIONS | {'scry', 'attack', 'move', 'heal', 'teleport', 'loot', 'push', 'pierce', 'range', 'target', 'damage', 'xp', 'resolve', 'lost', 'persistent', 'recover', 'jump', 'fly', 'pull', 'retaliate', 'shield'}
 COST = re.compile(r'^-(\d+|X)\s*%resolve%\s*:\s*(.*)$', re.S)
 unknown = {}
 
@@ -138,7 +138,10 @@ def item(x, where=''):
         kids = [a for a in (item(k, where + '/' + key) for k in (val or [])) if a]
         if key == 'mandatory':
             return {'type': 'mandatory', 'actions': kids}
-        return optional(kids)
+        out = optional(kids)
+        if x.get('noLine'):                                            # an ability of its own, not hung from the ability above (no T-shaped line)
+            out['noLine'] = True
+        return out
     if key == 'divider':                                             # "- divider:" written as a mapping
         return None
     if key == 'self' and val is None:                                # "- self:" inside a sub list

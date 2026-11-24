@@ -23,7 +23,10 @@ spec = importlib.util.spec_from_file_location('ccc', os.path.join(ROOT, 'tools',
 ccc = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(ccc)
 
-EXAMPLES = [('import/card_code_hail.md', 'mp/hl', 'Interesting Specimen'), ('import/card_code_hail.md', 'mp/hl', 'Kill That One First'), ('import/card_code_cassandra.md', 'mp/ca', 'Tear Reality'), ('import/card_code_cassandra.md', 'mp/ca', 'Peer into Battle')]
+# (card code file, picture under wh_character_ability_cards, card name): cards whose card code is known to be right
+EXAMPLES = [('import/card_code_hail.md', 'mp/hl/mp-interesting-specimen.png', 'Interesting Specimen'), ('import/card_code_cassandra.md', 'mp/ca/mp-tear-reality.png', 'Tear Reality'),
+            ('import/card_code_cassandra.md', 'mp/ca/mp-peer-into-battle.png', 'Peer into Battle'), ('import/card_code_berserker_draft.md', 'gh2/BE2/blood-pact.jpeg', 'Blood Pact'),
+            ('import/card_code_berserker_draft.md', 'gh2/BE2/flurry-of-axes.jpeg', 'Flurry of Axes')]
 
 
 def strip_layout(x):
@@ -114,9 +117,8 @@ def main():
         subprocess.run([sys.executable, os.path.join(HERE, 'make-icon-sheet.py'), sheet, assets], check=True)
     brief = open(os.path.join(HERE, 'brief.md'), encoding='utf-8').read()
     examples = ''
-    for path, folder, name in EXAMPLES[:n_ex]:
-        slug = re.sub(r'[^a-z0-9]+', '-', name.lower()).strip('-')
-        examples += '### %s\n\nPicture: %s/wh_character_ability_cards/%s/mp-%s.png\n\n```\n%s\n```\n\n' % (name, assets, folder, slug, card_yaml(path, name))
+    for path, rel, name in EXAMPLES[:n_ex]:
+        examples += '### %s\n\nPicture: %s/wh_character_ability_cards/%s\n\n```\n%s\n```\n\n' % (name, assets, rel, card_yaml(path, name))
     n = 0
     for i in range(0, len(cards), batch):
         n += 1
