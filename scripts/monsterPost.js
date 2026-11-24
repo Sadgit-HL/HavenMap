@@ -123,3 +123,42 @@ export function turnPost({ name, role = 'normal', standee = null, stunned = fals
   if (rem) lines.push(rem);
   return lines.join('\n');
 }
+
+// The forum text of a turn with several actions (attack, move, attack ...): the same lines as turnPost, one part for every action of the card in the order
+// they are made. Several attacks on the same target are written one after the other.
+// stepsPost({ name, role, standee, stunned, remove, items, extras, statFx, chars, icons })
+//   items  the parts in the order of the card (cardOptions().plan):
+//            { t: 'move', from, to, points, towards }     as turnPost: hex labels, the move value or null, the hex it moves towards when it cannot attack
+//            { t: 'attack', attack, targets, focus, disadvantage, noAttack }    as turnPost (attack is null for an attack that is not made)
+//            { t: 'extra', i }                            the other action number i of `extras`
+// Parts that are one line each are joined by commas into one line; an attack with several targets has a line for each of them (with `or` between tied
+// groups), what is written before it is a line of its own, what is written after it too.
+export function stepsPost({ name, role = 'normal', standee = null, stunned = false, remove = [], items = [], extras = [], statFx = [], chars = 4, icons = true }) {
+  const who = `[b]${name}[/b]${role === 'elite' ? ' (elite)' : role === 'boss' ? ' (boss)' : ''}${standee != null ? ` #${standee}` : ''}`;
+  if (stunned) return `${who}: remove ${ic('stun', icons)}`;
+  const rem = remove.length ? `remove ${remove.map(n => ic(n, icons)).join(' ')}` : '';
+  const moveText = it => (it.from === it.to ? `stays at ${it.from}` : `${it.points > 0 ? iv('move', it.points, icons) : ic('move', icons)} ${it.from} to ${it.to}${it.towards ? `, towards ${it.towards}` : ''}`);
+  const attackText = it => {
+    const a = it.attack, dis = n => (Array.isArray(it.disadvantage) ? it.disadvantage.includes(n) : !!it.disadvantage), focus = it.focus ?? [];
+    const label = (n, g) => `[b]${n}[/b]${g.length > 1 && focus.includes(n) ? ' (focus)' : ''}${dis(n) ? ' (disadvantage)' : ''}`;
+    const parts = a ? [iv('attack', a.damage ?? '?', icons), ...(a.range > 0 ? [iv('range', a.range, icons)] : []), ...(a.effects ?? []).map(e => effectText(e, icons))] : [];
+    const targets = it.targets ?? [];
+    if (!a || !targets.length) return { inline: it.noAttack ? `no attack: ${it.noAttack}` : '' };
+    if (!targets.some(g => g.length > 1)) return { inline: `${parts.join(' ')} on ${targets.map(g => g.map(n => label(n, g)).join(' and ')).join(' or ')}` };
+    const lines = [];
+    targets.forEach((g, i) => { if (i > 0) lines.push('or'); for (const n of g) lines.push(`${parts.join(' ')} on ${label(n, g)}`); });
+    return { lines };
+  };
+  const out = [];                                                                     // finished lines
+  let cur = [], several = false;
+  const flush = () => { if (cur.length) out.push(cur.join(', ')); cur = []; };
+  for (const it of items) {
+    const r = it.t === 'move' ? { inline: moveText(it) } : it.t === 'attack' ? attackText(it) : { inline: it.i != null && extras[it.i] ? extraText(extras[it.i], { icons, statFx, chars }) : '' };
+    if (r.lines) { several = true; flush(); out.push(...r.lines); } else if (r.inline) cur.push(r.inline);
+  }
+  if (rem && !several) cur.push(rem);
+  flush();
+  if (rem && several) out.push(rem);
+  if (!out.length) { const m = items.find(x => x.t === 'move'); if (m) out.push(moveText(m)); }
+  return out.length ? [`${who}: ${out[0]}`, ...out.slice(1)].join('\n') : `${who}:`;
+}

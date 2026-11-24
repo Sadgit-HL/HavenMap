@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { solveMove } from '../../scripts/monsterMove.js';
-import { turnView, viewStatus, withoutAttack } from '../../scripts/monsterView.js';
+import { turnView, viewStatus, stagesStatus, withoutAttack } from '../../scripts/monsterView.js';
 import { hexKey } from '../../scripts/hexState.js';
 
 // An open field of floor, cols 1..12, rows 0..9; `figs` are [side, col, row].
@@ -88,5 +88,14 @@ export const tests = {
     assert.equal(viewStatus('nofocus', { attacks: true }), 'No target in reach');
     assert.equal(viewStatus('out', { attacks: true }), 'Out of range');
     assert.equal(viewStatus('nofocus', { attacks: false, sight: true }), 'No target to move towards', 'a card without an attack never talks about sight');
+  },
+  'monster view: status of a turn with several actions'() {
+    const hit = { moves: false, attacks: true, did: true, targets: 'Anaphi' };
+    assert.equal(stagesStatus([hit, { moves: true, attacks: true, did: true, targets: 'Anaphi', hex: 'F4' }]), 'Attack Anaphi; Attack Anaphi from F4');
+    assert.equal(stagesStatus([{ moves: false, attacks: true, did: false }, { moves: true, attacks: true, did: true, targets: 'Brute', hex: 'C2' }]), 'Out of range; Attack Brute from C2');
+    assert.equal(stagesStatus([{ moves: false, attacks: true, did: false }], { sight: true }), 'No LOS');
+    assert.equal(stagesStatus([{ moves: true, attacks: true, did: false, hex: 'E5' }]), 'Out of range, to E5');
+    assert.equal(stagesStatus([{ moves: true, attacks: false, hex: 'E5' }, { moves: false, attacks: true, did: true, targets: 'Anaphi' }]), 'Moves to E5; Attack Anaphi');
+    assert.equal(stagesStatus([{ moves: true, attacks: true, did: true, options: 3 }]), '3 options: pick a hex');
   },
 };

@@ -174,4 +174,40 @@ export const tests = {
     assert.deepEqual(o.order, [0, 'move', 'attack', 1], 'an action above the move, the move, the attack, an action below');
     assert.deepEqual(o.extras.map(e => e.t), ['condition', 'element']);
   },
+  'monster card: steps list every move and attack in reading order, the flat fields are the first of each'() {
+    const byId = (slug, id) => GH2_MONSTER_DECKS[GH2_MONSTERS[slug].deck].find(c => String(c.id) === String(id));
+    const at = (slug, id, kind = 'normal') => cardOptions({ monster: GH2_MONSTERS[slug], kind, level: 0, card: byId(slug, id) });
+    const shape = o => o.steps.map(s => s.t === 'move' ? `M${s.move}` : `A${s.damage}r${s.range}`).join(' ');
+    const hound = at('hound', 719), drake = at('rending-drake', 721), frenzy = at('rending-drake', 726);
+    assert.deepEqual(hound.steps.map(s => s.t), ['attack', 'move', 'attack'], 'hound Sharp Fangs: attack, move, attack');
+    assert.deepEqual(drake.steps.map(s => s.t), ['attack', 'move', 'attack']);
+    assert.deepEqual(frenzy.steps.map(s => s.t), ['attack', 'attack', 'attack'], 'three attacks');
+    assert.equal(hound.steps[1].move, hound.move, 'the flat move is the first move step');
+    assert.equal(hound.steps[0].damage, hound.damage, 'the flat attack is the first attack step');
+    assert.deepEqual(hound.steps[2].effects, hound.steps[0].effects, 'pierce on both attacks');
+    assert.ok(hound.multi && drake.multi && frenzy.multi);
+    assert.equal(shape(frenzy).split(' ').length, 3);
+    const night = at('night-demon', 590);
+    assert.ok(night.steps[1].effects.some(e => e.t === 'pierce') && !night.steps[0].effects.some(e => e.t === 'pierce'), 'each attack keeps its own effects');
+  },
+  'monster card: a card with one move and one attack has one step of each, and every card has a step per move and attack'() {
+    const o = opts('ancient-artillery', 'normal', 3, 'Long Shot');
+    assert.deepEqual(o.steps.map(s => s.t), ['attack']);
+    assert.equal(o.steps[0].range, 7);
+    let cards = 0;
+    for (const [slug, deck] of Object.entries(GH2_MONSTER_DECKS)) {
+      const mon = Object.values(GH2_MONSTERS).find(m => m.deck === slug);
+      if (!mon) continue;
+      for (const c of deck) for (const kind of ['normal', 'elite']) {
+        const x = cardOptions({ monster: mon, kind, level: 1, card: c });
+        const a = x.steps.filter(s => s.t === 'attack'), m = x.steps.filter(s => s.t === 'move');
+        assert.equal(x.attack, a.length > 0, `${slug} ${c.id}`);
+        assert.equal(x.multi, a.length > 1 || m.length > 1, `${slug} ${c.id}`);
+        if (a[0]) assert.deepEqual([x.damage, x.range, x.targets, x.areaMelee], [a[0].damage, a[0].range, a[0].targets, a[0].areaMelee]);
+        if (m[0]) assert.equal(x.move, m[0].move);
+        cards++;
+      }
+    }
+    assert.ok(cards > 600);
+  },
 };

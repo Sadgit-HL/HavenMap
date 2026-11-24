@@ -16,8 +16,9 @@ import { buildHexState, hexKey } from './hexState.js';
 import { solveMove, areaOffsets, isMuddled, turnConditions } from './monsterMove.js';
 import { makeSightLine } from './los.js';
 import { hexDistance, edgeKey } from './hexGrid.js';
-import { turnPost } from './monsterPost.js';
-import { turnView, viewStatus, withoutAttack } from './monsterView.js';
+import { turnPost, stepsPost } from './monsterPost.js';
+import { turnView, viewStatus, stagesStatus, withoutAttack } from './monsterView.js';
+import { choicesOf, panelSteps, solveMulti, postItems, stageSummaries } from './monsterTurnMulti.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 // The floor masks are for the Gloomhaven 2e tiles only (game 'gh2'); tiles of other games have none and the floor is then unknown.
@@ -111,12 +112,24 @@ function run(obj, T = uiState.turn, board = state) {
   const initiatives = {};                                                   // typed per figure (kind and id), the solver wants them by hex
   for (const f of figs) if (uiState.turn.init[figKey(f)] != null) initiatives[hexKey(f.col, f.row)] = uiState.turn.init[figKey(f)];
   const st = turnConditions(obj), eff = effective(obj, T);                  // stun, immobilize and disarm override the values of the panel
+  const card = cardInfo(obj)?.opts;
+  if (card?.multi) return runMulti(obj, T, { hs, figs, sight, initiatives, st, eff, card });   // several moves or attacks: stage by stage (scripts/monsterTurnMulti.js)
   let res = st.stunned ? { focuses: [], canAttackFocus: false, actions: [], floorKnown: hs.floorKnown } : solveMove(hs, {
     active: { col: Number(obj.x), row: Number(obj.y) }, move: eff.move, range: T.range, attack: !T.noAttack, targets: T.all ? 6 : T.targets, area: T.cells ?? areaOffsets(T.area, !(T.range > 0)),
     flying: T.fly, jumping: T.jump, teleport: T.tele, muddled: isMuddled(obj), initiatives, canSee: (a, b) => sight(a, b) !== null,
   });                                                                       // a disarmed monster still moves as if it would attack: attack is the card's
   if (st.disarmed) res = withoutAttack(res);
   return { hs, res, figs, sight, choices: choicesOf(res), here: { col: Number(obj.x), row: Number(obj.y) }, view: turnView(res, { moves: eff.move > 0, attacks: eff.attacks, stunned: st.stunned }) };
+}
+
+// A card with several moves or attacks: the stages from solveTurn. `res` is the result at the stage where the player picks (the end hexes), `multi` the rest.
+function runMulti(obj, T, { hs, figs, sight, initiatives, st, eff, card }) {
+  const here = { col: Number(obj.x), row: Number(obj.y) }, steps = panelSteps(card.steps, T);
+  const o = { active: here, steps, immobilized: st.immobilized, disarmed: st.disarmed, stunned: st.stunned, flying: T.fly, teleport: T.tele, muddled: isMuddled(obj), initiatives, canSee: (a, b) => sight(a, b) !== null };
+  const solved = solveMulti(hs, o, T.choice);
+  const res = solved.res;
+  return { hs, res, figs, sight, choices: solved.choices, here, view: turnView(res, { moves: eff.move > 0, attacks: eff.attacks, stunned: st.stunned }),
+    multi: { ...solved, steps, again: key => solveMulti(hs, o, key) } };
 }
 
 // What the monster can do this turn: the values of the panel, taken away by its conditions. Stun: nothing. Immobilize: no move. Disarm: no attack.
@@ -186,24 +199,29 @@ function draw(run_) {
       layer.appendChild(e);
     }
   }
+  drawStages(layer, run_);
+}
+
+// The other stages of a turn with several actions: where each attack is made from, its area and the line to each target.
+function drawStages(layer, run_) {
+  const m = run_.multi;
+  if (!m) return;
+  m.stages.forEach((st, n) => {
+    const a = st.chosen;
+    if (n === m.pickIdx || !a.attack) return;
+    for (const k of a.area ?? []) { const [c, r] = k.split(',').map(Number); layer.appendChild(hexShape(c, r, { fill: 'rgba(255,159,67,0.28)', stroke: '#ff9f43', 'stroke-width': 2 })); }
+    layer.appendChild(hexShape(a.col, a.row, { fill: 'rgba(80,200,120,0.38)', stroke: '#50c878', 'stroke-width': 3 }));
+    for (const t of a.targets) {
+      const [tc, tr] = t.split(',').map(Number), l = run_.sight(a, { col: tc, row: tr });
+      if (!l || (l.x1 === l.x2 && l.y1 === l.y2)) continue;
+      const e = document.createElementNS(SVG_NS, 'line');
+      for (const [k, v] of Object.entries({ x1: l.x1 + 45, y1: l.y1 + 78, x2: l.x2 + 45, y2: l.y2 + 78, stroke: '#ffd23f', 'stroke-width': 2, opacity: 0.85 })) e.setAttribute(k, v);
+      layer.appendChild(e);
+    }
+  });
 }
 
 // Called by the sidebar on every render: works out and draws the result for the selected monster, or clears the board.
-// The end hexes to choose from, one per hex, with the groups of targets that tie there and the hexes it moves towards.
-function choicesOf(res) {
-  const by = new Map();
-  for (const a of res.actions) {
-    if (!a.focus.length) continue;
-    const k = a.col + ',' + a.row;
-    if (!by.has(k)) by.set(k, { key: k, col: a.col, row: a.row, attack: false, groups: [], towards: [], focus: [] });
-    const c = by.get(k);
-    for (const f of a.focus) if (!c.focus.includes(f)) c.focus.push(f);
-    if (a.attack) { c.attack = true; if (!c.groups.some(g => g.join() === a.targets.join())) c.groups.push(a.targets); }
-    for (const d of a.destinations) if (!c.towards.includes(d)) c.towards.push(d);
-  }
-  return [...by.values()];
-}
-
 const titleCase = s => String(s).replace(/\b\w/g, c => c.toUpperCase());
 
 // The monsters in the order they act: the initiative of the card drawn this round, elites before normal monsters, then the standee number. Monsters of a deck
@@ -244,6 +262,14 @@ function buildPost(obj, c, ctx = { T: uiState.turn, r: last }) {
   const { T, r } = ctx, mon = MONSTERS.byId.get(Number(obj.id)), info = cardInfo(obj), o = info?.opts;
   const names = new Map(r.hs.figures.map(f => [hexKey(f.col, f.row), figName(f)]));
   const st = turnConditions(obj), eff = effective(obj, T), attacking = c.attack && eff.attacks;
+  if (r.multi && o) {                                                                // several actions: the stages of the run for this choice
+    const items = postItems({ plan: o.plan, steps: r.multi.steps, stages: r.multi.again(c.key).stages, names, label, here: r.here, attacks: eff.attacks, immobilized: st.immobilized, muddled: isMuddled(obj), walls: r.hs.walls });
+    return stepsPost({
+      name: titleCase(mon?.title ?? 'monster'), role: obj.role, standee: obj.standeeNum ?? null, stunned: st.stunned,
+      remove: st.stunned ? ['stun'] : [st.immobilized && 'immobilize', st.disarmed && 'disarm'].filter(Boolean),
+      items, extras: o.extras, statFx: o.statFx, chars: info?.chars ?? 4,
+    });
+  }
   const adjacentTo = t => { const [tc, tr] = t.split(',').map(Number); return hexDistance(c.col, c.row, tc, tr) === 1 && !r.hs.walls?.has(edgeKey(c.key, t)); };
   // The targets it attacks with disadvantage: all of them when it is muddled, otherwise the adjacent ones of a ranged attack.
   const disadvantage = !attacking ? [] : isMuddled(obj) ? true : T.range > 0 ? c.groups.flat().filter(adjacentTo).map(t => names.get(t) ?? t) : [];
@@ -260,16 +286,19 @@ function buildPost(obj, c, ctx = { T: uiState.turn, r: last }) {
   });
 }
 
+// The hex the monster ends the turn on for a choice: the chosen hex, or for several actions where the last stage ends.
+const endFor = (r, c) => (r.multi ? { ...r.multi.again(c.key).end, key: null } : c);
+
 // Move: the monster goes to the chosen hex, the text of this turn is kept for the Forum text button.
 function confirmMove() {
   const T = uiState.turn, sel = uiState.selected, obj = selectedMonster();
   if (!obj || !last) return;
   const c = last.choices.find(x => x.key === T.choice);
   if (!c) return;
-  const post = buildPost(obj, c);
-  patch({ monsters: state.monsters.map((m, i) => (i === sel.idx ? { ...m, x: c.col, y: c.row } : m)) });
+  const post = buildPost(obj, c), end = endFor(last, c);
+  patch({ monsters: state.monsters.map((m, i) => (i === sel.idx ? { ...m, x: end.col, y: end.row } : m)) });
   Object.assign(T, { lastPost: post, postFor: sel.idx, choice: null });
-  selectObject('monster', sel.idx, c.col, c.row);
+  selectObject('monster', sel.idx, end.col, end.row);
 }
 
 // The standees of the selected monster's type that act this round, in the order they act (see turnOrder).
@@ -292,7 +321,8 @@ function batchPost() {
     const c = r.choices[0] && !['idle', 'stunned'].includes(r.view.kind) ? (mine ?? r.choices[0]) : idleChoice(obj);   // no way and nothing to do: it stays
     if (r.choices.length > 1 && !mine) (pick && pick.sig === pickSig(obj) ? lost : ties).push(name);
     texts.push(buildPost(obj, c, { T, r }));
-    if (c.key !== hexKey(Number(obj.x), Number(obj.y))) board.monsters[x.idx] = { ...obj, x: c.col, y: c.row };
+    const end = endFor(r, c);
+    if (hexKey(end.col, end.row) !== hexKey(Number(obj.x), Number(obj.y))) board.monsters[x.idx] = { ...obj, x: end.col, y: end.row };
   }
   return { text: texts.join(texts.some(s => s.includes('\n')) ? '\n\n' : '\n'), count: texts.length, ties, lost, skipped };
 }
@@ -376,6 +406,10 @@ function resultHtml() {
       if (dest.length) lines.push(`Towards: ${dest.join(', ')}`);
     }
   }
+  if (last.multi && !['stunned', 'idle', 'nofocus'].includes(view.kind) && last.multi.stages.length > 1) {
+    lines.push('Actions:');
+    stageList(esc).forEach((s, i) => lines.push(`${i + 1}: ${stagesStatus([s], { sight: !!res.sightBlocked })}`));
+  }
   lines.push(...conds);
   if (mon && isMuddled(mon) && eff.attacks && T.range > 0) lines.push('Muddled: does not step away from adjacent targets');
   if (!hs.floorKnown) lines.push('Floor unknown on this map: hexes outside the tiles are not excluded');
@@ -396,6 +430,12 @@ function choicesHtml() {
   return `<div class="sp-turn-choices">${last.choices.map(c => `<button type="button" class="sp-turn-choice${c.key === T.choice ? ' on' : ''}" data-turn-hex="${c.key}">${label(c)}${c.groups.length ? ': ' + c.groups.map(g => g.map(t => esc(names.get(t) ?? t)).join(', ')).join(' / ') : ''}</button>`).join('')}</div>`;
 }
 
+// What each stage of a turn with several actions does, for the status line and the details.
+function stageList(escape = x => x) {
+  const m = last.multi, names = new Map(last.hs.figures.map(f => [hexKey(f.col, f.row), escape(figName(f))])), sel = selectedMonster();
+  return stageSummaries({ steps: m.steps, stages: m.stages, pickIdx: m.pickIdx, choices: m.choices, names, label, attacks: sel ? effective(sel).attacks : true });
+}
+
 // The line under the buttons: what Move will do, or why there is nothing to show (no card drawn, no card in the data).
 function statusText() {
   if (!uiState.turn.on) return '';
@@ -407,6 +447,7 @@ function statusText() {
   const c = choices.find(x => x.key === T.choice) ?? choices[0];
   const names = new Map(last.hs.figures.map(f => [hexKey(f.col, f.row), figName(f)]));
   const targets = c ? c.groups.map(g => g.map(t => esc(names.get(t) ?? t)).join(', ')).join(' or ') : '';
+  if (last.multi && !['stunned', 'idle', 'nofocus'].includes(view.kind)) return stagesStatus(stageList(esc), { sight: !!last.res.sightBlocked });
   return viewStatus(view.kind, { attacks, targets, hex: c ? label(c) : '', stays: !!c && c.key === cur, options: choices.length, sight: !!last.res.sightBlocked });
 }
 

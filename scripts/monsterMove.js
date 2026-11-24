@@ -14,6 +14,7 @@
 //   targets      number of targets of the attack, default 1; 6 means all targets in range
 //   area         area attack: axial offsets [q, r] of the pattern (areaOffsets() makes them from a 7 by 7 drawing); from the monster for range 0
 //   canSee(a, b) line of sight between two hexes (scripts/los.js makeSightLine), default always true
+//   focus        keys ('col,row') of the characters that may be the focus, default all of them: a turn with several actions keeps the focus of its first stage
 //
 // Output: { focuses, canAttackFocus, actions, floorKnown, sightBlocked }
 //   focuses         the tied focus figures; the players choose among them
@@ -229,6 +230,7 @@ export function solveMove(hs, o) {
   const options = [];
   for (const f of characters) {
     const fk = keyOf(f);
+    if (o.focus && !o.focus.includes(fk)) continue;                                  // a focus fixed by an earlier stage of the turn (scripts/monsterSteps.js)
     for (const k of endHexes) {
       if (!canHit(f, k) || !canSee(f, cell(k))) continue;
       options.push({ f, k, fk });

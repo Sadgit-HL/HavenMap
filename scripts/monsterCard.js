@@ -17,7 +17,10 @@
 //   order    where things stand on the card, top to bottom: 'move' (the first move), 'attack' (the first attack) and the index of each extra in `extras`
 //   statFx   the extras of the stat card (shield, retaliate ...), the base of a relative shield or retaliate on the card
 //   notes    texts the solver cannot act on (custom card text, special targets, formulas), to show to the player
-//   multi    the card has more than one attack or move; the first of each is used
+//   multi    the card has more than one attack or move (the panel works out every step, scripts/monsterTurnMulti.js; the fields above are the first of each)
+//   plan     where everything stands on the card, top to bottom, with every move and attack: 's0', 's1' ... are the indexes into `steps`, a number the index of an extra
+//   steps    every move and attack in reading order: { t: 'move', move, jumping } and { t: 'attack', damage, range, targets, area, areaMelee, effects, applied }; a step after
+//            the first of its kind also has its own `notes`. The fields above (move, range, damage ...) are the first move and the first attack.
 import { toAxial, toBoard } from './tileMask.js';
 import { ELEMENTS } from './games/common.js';
 import { GH2_CARD_IDS } from './games/gh2_card_ids.js';
@@ -164,71 +167,90 @@ export function cardOptions({ monster, kind = 'normal', level = 0, card, chars =
   const notes = [];
   collectNotes(card.actions, notes);
   const found = findActions(card.actions, kind, infused, notes), moves = found.filter(n => n.t === 'move'), attacks = found.filter(n => n.t === 'attack');
-  const out = { move: 0, range: 0, targets: 1, area: [], areaMelee: false, attack: attacks.length > 0, jumping: false, flying: !!monster?.flying, damage: null, effects: [], extras: [], order: [], statFx: stat?.fx ?? [], notes, multi: moves.length > 1 || attacks.length > 1 };
+  const out = { move: 0, range: 0, targets: 1, area: [], areaMelee: false, attack: attacks.length > 0, jumping: false, flying: !!monster?.flying, damage: null, effects: [], extras: [], order: [], plan: [], statFx: stat?.fx ?? [], notes, multi: moves.length > 1 || attacks.length > 1 };
 
   // The extras one by one (a consume that is not infused is dropped), and where the first move, the first attack and each extra stand on the card.
-  let sawMove = false, sawAttack = false;
+  let sawMove = false, sawAttack = false, stepNo = 0;
   for (const it of readingOrder(card.actions, kind, infused)) {
-    if (it.t === 'move') { if (!sawMove) { sawMove = true; out.order.push('move'); } }
-    else if (it.t === 'attack') { if (!sawAttack) { sawAttack = true; out.order.push('attack'); } }
-    else for (const x of resolveExtras([it.node], infused, notes)) { out.extras.push(x); out.order.push(out.extras.length - 1); }
+    if (it.t === 'move') { if (!sawMove) { sawMove = true; out.order.push('move'); } out.plan.push(`s${stepNo++}`); }
+    else if (it.t === 'attack') { if (!sawAttack) { sawAttack = true; out.order.push('attack'); } out.plan.push(`s${stepNo++}`); }
+    else for (const x of resolveExtras([it.node], infused, notes)) { out.extras.push(x); out.order.push(out.extras.length - 1); out.plan.push(out.extras.length - 1); }
   }
   const base = (v) => statValue(v, chars);
   const rel = (n, statNumber) => (n.vt ? (statNumber ?? 0) + (n.vt === 'minus' ? -1 : 1) * (statValue(n.v, chars) ?? 0) : statValue(n.v, chars));
-  if (moves[0]) {
-    const m = moves[0], statMove = stat ? base(stat.move) : 0;
-    out.move = Math.max(0, rel(m, statMove) ?? 0);
-    out.jumping = expandConsumes(m.sub, infused, notes).some(s => s.t === 'jump');
-    if (stat && base(stat.move) === null) notes.push(`Stat card movement ${stat.move} not worked out`);
-  }
-  const applied = [];                                                              // the permanent effects of the stat card that went into the attack
-  if (attacks[0]) {
-    const a = attacks[0], statAttack = stat ? base(stat.attack) : null;
-    out.damage = a.vt ? (statAttack === null ? null : rel(a, statAttack)) : statValue(a.v, chars);
+
+  // One move of the card as a step. `into` takes the notes of the step (the card's own notes for the first move, a list of the step for the others).
+  const moveStep = (m, into) => {
+    const statMove = stat ? base(stat.move) : 0;
+    const step = { t: 'move', move: Math.max(0, rel(m, statMove) ?? 0), jumping: expandConsumes(m.sub, infused, into).some(s => s.t === 'jump') };
+    if (stat && base(stat.move) === null) into.push(`Stat card movement ${stat.move} not worked out`);
+    return step;
+  };
+
+  // One attack of the card as a step: damage, range, targets, area and what it does besides damage, with the permanent effects of the stat card (conditions,
+  // pierce, advantage or disadvantage) that belong to every attack. `applied` lists those, for the note.
+  const attackStep = (a, into) => {
+    const step = { t: 'attack', damage: null, range: 0, targets: 1, area: [], areaMelee: false, effects: [], applied: [] };
+    const applied = step.applied, statAttack = stat ? base(stat.attack) : null;
+    step.damage = a.vt ? (statAttack === null ? null : rel(a, statAttack)) : statValue(a.v, chars);
     const statTarget = (stat?.fx ?? []).find(f => f.t === 'target'), baseTargets = statTarget ? (statTarget.v === 'all' ? 6 : statValue(statTarget.v, chars)) : null;
-    if (baseTargets > 1) { out.targets = baseTargets; applied.push(baseTargets >= 6 ? 'all targets' : `target ${baseTargets}`); }   // the base of the targets: the card sets it again or adds to it
+    if (baseTargets > 1) { step.targets = baseTargets; applied.push(baseTargets >= 6 ? 'all targets' : `target ${baseTargets}`); }   // the base of the targets: the card sets it again or adds to it
     let dmgMod = 0, rangeMod = 0, targetMod = 0;                                   // modifiers of an infused consume: attack +2, range -1, target +1
-    for (const s of expandConsumes(a.sub, infused, notes)) {
-      if (['pierce', 'push', 'pull', 'condition', 'element', 'elementHalf'].includes(s.t)) out.effects.push(s.vt === 'minus' ? { t: s.t, v: s.v, vt: 'minus' } : { t: s.t, v: s.v });
-      if (s.t === 'custom' && ADVANTAGE.test((s.txt ?? '').trim())) { const t = s.txt.trim().toLowerCase(); if (!out.effects.some(e => e.t === t)) out.effects.push({ t }); }
+    for (const s of expandConsumes(a.sub, infused, into)) {
+      if (['pierce', 'push', 'pull', 'condition', 'element', 'elementHalf'].includes(s.t)) step.effects.push(s.vt === 'minus' ? { t: s.t, v: s.v, vt: 'minus' } : { t: s.t, v: s.v });
+      if (s.t === 'custom' && ADVANTAGE.test((s.txt ?? '').trim())) { const t = s.txt.trim().toLowerCase(); if (!step.effects.some(e => e.t === t)) step.effects.push({ t }); }
       if (s.t === 'attack') dmgMod += signed(s);
-      else if (s.t === 'range' && typeof s.v === 'number') { if (s.vt === 'add' || s.vt === 'subtract') rangeMod += signed(s); else out.range = s.v; }
+      else if (s.t === 'range' && typeof s.v === 'number') { if (s.vt === 'add' || s.vt === 'subtract') rangeMod += signed(s); else step.range = s.v; }
       else if (s.t === 'target') {
         const t = s.v === 'all' ? 6 : statValue(s.v, chars);
-        if (t === null) notes.push(`Target ${typeof s.v === 'string' ? s.v : ''}`.trim());
+        if (t === null) into.push(`Target ${typeof s.v === 'string' ? s.v : ''}`.trim());
         else if (s.vt === 'add') targetMod += t;
-        else out.targets = t;
+        else step.targets = t;
       } else if (s.t === 'specialTarget') {
-        if (s.v === 'enemiesAdjacent' || s.v === 'all') out.targets = 6;
-        else notes.push(`Special target: ${s.v}`);
+        if (s.v === 'enemiesAdjacent' || s.v === 'all') step.targets = 6;
+        else into.push(`Special target: ${s.v}`);
       } else if (s.t === 'area' && s.area) {
-        out.area = s.area.cells;
-        out.areaMelee = s.area.melee;
-        if (s.area.active > 1) notes.push('The area is drawn for a monster of several hexes');
+        step.area = s.area.cells;
+        step.areaMelee = s.area.melee;
+        if (s.area.active > 1) into.push('The area is drawn for a monster of several hexes');
       }
     }
-    if (out.damage !== null) out.damage += dmgMod;
-    if (rangeMod) out.range = Math.max(0, out.range + rangeMod);
-    if (targetMod && out.targets < 6) out.targets += targetMod;
-    if (out.area.length && out.areaMelee && out.range > 0) out.range = 0;                  // a melee area attack has no range
-    if (out.area.length && !out.areaMelee && !(out.range > 0)) notes.push('Ranged area without a range on the card');
-    // the permanent effects of the stat card belong to every attack: conditions, pierce (added to the card's), advantage or disadvantage
+    if (step.damage !== null) step.damage += dmgMod;
+    if (rangeMod) step.range = Math.max(0, step.range + rangeMod);
+    if (targetMod && step.targets < 6) step.targets += targetMod;
+    if (step.area.length && step.areaMelee && step.range > 0) step.range = 0;                  // a melee area attack has no range
+    if (step.area.length && !step.areaMelee && !(step.range > 0)) into.push('Ranged area without a range on the card');
     for (const f of stat?.fx ?? []) {
-      if (f.t === 'condition' && !out.effects.some(e => e.t === 'condition' && e.v === f.v)) { out.effects.push({ t: 'condition', v: f.v }); applied.push(String(f.v)); }
+      if (f.t === 'condition' && !step.effects.some(e => e.t === 'condition' && e.v === f.v)) { step.effects.push({ t: 'condition', v: f.v }); applied.push(String(f.v)); }
       else if (f.t === 'pierce' && typeof f.v === 'number') {
-        const e = out.effects.find(x => x.t === 'pierce');
-        if (e) e.v += f.v; else out.effects.push({ t: 'pierce', v: f.v });
+        const e = step.effects.find(x => x.t === 'pierce');
+        if (e) e.v += f.v; else step.effects.push({ t: 'pierce', v: f.v });
         applied.push(`pierce ${f.v}`);
       } else if (f.t === 'custom' && ADVANTAGE.test((f.txt ?? '').trim())) {
         const t = f.txt.trim().toLowerCase();
-        if (!out.effects.some(e => e.t === t)) out.effects.push({ t });
+        if (!step.effects.some(e => e.t === t)) step.effects.push({ t });
         applied.push(t);
       }
     }
+    return step;
+  };
+
+  // The first move and the first attack go first, so that the card's notes keep their order; the others carry their notes with them (`notes` of the step).
+  const made = new Map();
+  if (moves[0]) made.set(moves[0], moveStep(moves[0], notes));
+  if (attacks[0]) made.set(attacks[0], attackStep(attacks[0], notes));
+  for (const n of found) if (!made.has(n)) { const own = []; const s = n.t === 'move' ? moveStep(n, own) : attackStep(n, own); s.notes = own; made.set(n, s); }
+  out.steps = found.map(n => made.get(n));                                          // every move and attack in reading order
+
+  const m0 = moves[0] && made.get(moves[0]), a0 = attacks[0] && made.get(attacks[0]);
+  if (m0) { out.move = m0.move; out.jumping = m0.jumping; }
+  const applied = a0 ? a0.applied : [];
+  if (a0) {
+    out.damage = a0.damage; out.range = a0.range; out.targets = a0.targets; out.area = a0.area; out.areaMelee = a0.areaMelee; out.effects = a0.effects;
     if (applied.length) notes.push(`Stat card effects on the attack: ${applied.join(', ')}`);
   }
   for (const f of stat?.fx ?? []) if (f.t === 'custom' && f.txt && !ADVANTAGE.test(f.txt.trim())) addNote(notes, `Stat card: ${f.txt}`);   // auras and the like: not part of the attack
-  if (out.multi) notes.push(`The card has several moves or attacks: the first of each is used${applied.length ? '; the stat card effects apply to every attack' : ''}`);
+  if (out.multi && applied.length) notes.push('The stat card effects apply to every attack');
   return out;
 }
 

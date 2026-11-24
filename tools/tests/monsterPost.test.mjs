@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { turnPost, iconCode, extraText } from '../../scripts/monsterPost.js';
+import { turnPost, stepsPost, iconCode, extraText } from '../../scripts/monsterPost.js';
 import { cardOptions } from '../../scripts/monsterCard.js';
 import { GH2_MONSTERS, GH2_MONSTER_DECKS } from '../../scripts/games/gh2_monsters.js';
 
@@ -141,5 +141,57 @@ export const tests = {
   },
   'monster post: no LOS as the reason for no attack'() {
     assert.equal(turnPost({ name: 'Guard', from: 'A1', to: 'A1', noAttack: 'no LOS', order: ['attack'], icons: false }), '[b]Guard[/b]: no attack: no LOS');
+  },
+  'monster post: several actions, attack move attack on one line, in the order of the card'() {
+    const a = { damage: 1, range: 0, effects: [{ t: 'pierce', v: 1 }] };
+    const items = [
+      { t: 'attack', attack: a, targets: [['Anaphi']] },
+      { t: 'move', from: 'A1', to: 'B2', points: 1 },
+      { t: 'attack', attack: a, targets: [['Anaphi']] },
+    ];
+    assert.equal(stepsPost({ name: 'Hound', standee: 2, items, icons: false }), '[b]Hound[/b] #2: attack 1 pierce 1 on [b]Anaphi[/b], move 1 A1 to B2, attack 1 pierce 1 on [b]Anaphi[/b]');
+  },
+  'monster post: several actions, an attack that is not made says why, a move that does not move says where it stays'() {
+    const a = { damage: 2, range: 0, effects: [] };
+    const t = stepsPost({ name: 'Drake', items: [{ t: 'attack', attack: a, targets: [], noAttack: 'out of range' }, { t: 'move', from: 'C3', to: 'C3', points: 2 }, { t: 'attack', attack: null, targets: [], noAttack: 'out of range' }], icons: false });
+    assert.equal(t, '[b]Drake[/b]: no attack: out of range, stays at C3, no attack: out of range');
+  },
+  'monster post: several actions, an attack with several targets has a line per target, the rest joins around it'() {
+    const a = { damage: 2, range: 0, effects: [] }, b = { damage: 3, range: 0, effects: [] };
+    const items = [
+      { t: 'move', from: 'A1', to: 'B1', points: 2 },
+      { t: 'attack', attack: a, targets: [['Anaphi', 'Brute']], focus: ['Anaphi'] },
+      { t: 'attack', attack: b, targets: [['Anaphi']] },
+      { t: 'extra', i: 0 },
+    ];
+    const t = stepsPost({ name: 'Guard', items, extras: [{ t: 'shield', v: 1 }], remove: ['immobilize'], icons: false });
+    assert.deepEqual(lines(t), ['[b]Guard[/b]: move 2 A1 to B1', 'attack 2 on [b]Anaphi[/b] (focus)', 'attack 2 on [b]Brute[/b]', 'attack 3 on [b]Anaphi[/b], shield 1', 'remove immobilize']);
+  },
+  'monster post: several actions, tied groups, stun and disadvantage per attack'() {
+    const a = { damage: 2, range: 3, effects: [] };
+    const t = stepsPost({ name: 'Archer', items: [{ t: 'attack', attack: a, targets: [['Anaphi'], ['Brute']], disadvantage: ['Anaphi'] }, { t: 'attack', attack: a, targets: [['Anaphi']] }], icons: false });
+    assert.equal(t, '[b]Archer[/b]: attack 2 range 3 on [b]Anaphi[/b] (disadvantage) or [b]Brute[/b], attack 2 range 3 on [b]Anaphi[/b]');
+    assert.equal(stepsPost({ name: 'Archer', stunned: true, items: [], icons: false }), '[b]Archer[/b]: remove stun');
+  },
+  'monster post: one action through stepsPost reads like turnPost'() {
+    const a = { damage: 3, range: 4, targets: 1, effects: [{ t: 'condition', v: 'wound' }] };
+    const old = turnPost({ name: 'Archer', role: 'elite', standee: 3, from: 'E5', to: 'F4', points: 3, attack: a, targets: [['Anaphi']], remove: ['disarm'] });
+    const now = stepsPost({ name: 'Archer', role: 'elite', standee: 3, remove: ['disarm'], items: [{ t: 'move', from: 'E5', to: 'F4', points: 3 }, { t: 'attack', attack: a, targets: [['Anaphi']] }] });
+    assert.equal(now, old);
+  },
+  'monster post: cards of the data, the plan has a step for every move and attack'() {
+    let n = 0;
+    for (const [slug, deck] of Object.entries(GH2_MONSTER_DECKS)) {
+      const mon = Object.values(GH2_MONSTERS).find(m => m.deck === slug);
+      if (!mon) continue;
+      for (const c of deck) for (const kind of ['normal', 'elite']) {
+        const o = cardOptions({ monster: mon, kind, level: 1, card: c });
+        const idx = o.plan.filter(x => typeof x === 'string').map(x => Number(x.slice(1)));
+        assert.deepEqual(idx, o.steps.map((_, i) => i), `${slug} ${c.id}: ${JSON.stringify(o.plan)}`);
+        assert.deepEqual(o.plan.filter(x => typeof x === 'number'), o.extras.map((_, i) => i), `${slug} ${c.id}`);
+        n++;
+      }
+    }
+    assert.ok(n > 600);
   },
 };

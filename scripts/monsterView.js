@@ -44,3 +44,17 @@ export function viewStatus(kind, { attacks, targets = '', hex = '', stays = fals
 export function withoutAttack(res) {
   return { ...res, actions: res.actions.map(a => ({ ...a, attack: false, targets: [], area: [] })) };
 }
+
+// The line under the buttons for a turn with several actions (scripts/monsterSteps.js): what each stage does, one after the other, separated by `;`.
+// stages  [{ moves, attacks, did, targets, hex, stays, options }]   moves: the stage has a move   attacks: it has an attack   did: the attack is made
+//         targets: the names it attacks   hex: the end hex label   stays: the end hex is where it stands   options: end hexes to choose from
+// An attack made after a move says where from, one made where the monster stands does not. `sight` as for viewStatus.
+export function stagesStatus(stages, { sight = false } = {}) {
+  const none = sight ? 'No LOS' : 'Out of range';
+  return stages.map(s => {
+    if (s.moves && (s.options ?? 1) > 1) return `${s.options} options: pick a hex`;
+    if (s.attacks && s.did) return s.moves ? `Attack ${s.targets} from ${s.hex}` : `Attack ${s.targets}`;
+    if (s.attacks) return s.moves && !s.stays ? `${none}, to ${s.hex}` : none;
+    return s.stays ? 'Cannot get closer' : `Moves to ${s.hex}`;
+  }).join('; ');
+}
