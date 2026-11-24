@@ -16,7 +16,7 @@ export const uiState = {
   abilityDrawer:    null,   // index of the monster whose ability card drawer is open (the picker, when the map's ability decks are hidden)
   // Monster turn panel (scripts/monsterTurn.js): on = Show: the solver runs and the board is marked (off: nothing runs, nothing is drawn); detailsOpen = the details under the buttons are open (the data loads then too); action
   // values, movement type, initiatives by figure ('kind:id'), areaOpen / valuesOpen = the area grid and the manual values are opened by hand. Session only.
-  turn: { on: false, move: 3, range: 0, fly: false, jump: false, tele: false, noAttack: false, targets: 1, all: false, area: [], cells: null, appliedKey: null, pick: {}, areaOpen: false, valuesOpen: false, detailsOpen: false, choice: null, lastPost: '', postFor: null, copied: false, init: {} },
+  turn: { on: false, move: 3, range: 0, fly: false, jump: false, tele: false, farthest: false, noAttack: false, targets: 1, all: false, area: [], cells: null, appliedKey: null, pick: {}, areaOpen: false, valuesOpen: false, detailsOpen: false, choice: null, lastPost: '', postFor: null, copied: false, init: {} },
 };
 
 const listeners = [];

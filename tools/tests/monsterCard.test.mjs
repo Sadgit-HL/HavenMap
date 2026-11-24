@@ -210,4 +210,15 @@ export const tests = {
     }
     assert.ok(cards > 600);
   },
+  'monster card: Long Shot makes the focus the farthest enemy, other cards do not'() {
+    assert.equal(opts('ancient-artillery', 'normal', 3, 'Long Shot').focusFarthest, true);
+    assert.equal(opts('ancient-artillery', 'elite', 3, 'Long Shot').focusFarthest, true);
+    let n = 0;
+    for (const [slug, deck] of Object.entries(GH2_MONSTER_DECKS)) {
+      const mon = Object.values(GH2_MONSTERS).find(m => m.deck === slug);
+      if (!mon) continue;
+      for (const c of deck) if (cardOptions({ monster: mon, kind: 'normal', level: 1, card: c }).focusFarthest) n++;
+    }
+    assert.equal(n, 1, 'only one card of the data');
+  },
 };

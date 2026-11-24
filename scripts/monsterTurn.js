@@ -70,7 +70,7 @@ function cardValues(o) {
   const ai = o.area.length ? areaIndexes(o.area, o.areaMelee) : { indexes: [] };
   return {
     move: Math.min(20, o.move), range: Math.min(20, o.range), targets: o.targets >= 6 ? 1 : o.targets, all: o.targets >= 6,
-    fly: o.flying, jump: o.jumping && !o.flying, tele: false, noAttack: !o.attack, cells: o.area.length ? o.area : null, area: ai.indexes,
+    fly: o.flying, jump: o.jumping && !o.flying, tele: false, farthest: !!o.focusFarthest, noAttack: !o.attack, cells: o.area.length ? o.area : null, area: ai.indexes,
   };
 }
 
@@ -116,7 +116,7 @@ function run(obj, T = uiState.turn, board = state) {
   if (card?.multi) return runMulti(obj, T, { hs, figs, sight, initiatives, st, eff, card });   // several moves or attacks: stage by stage (scripts/monsterTurnMulti.js)
   let res = st.stunned ? { focuses: [], canAttackFocus: false, actions: [], floorKnown: hs.floorKnown } : solveMove(hs, {
     active: { col: Number(obj.x), row: Number(obj.y) }, move: eff.move, range: T.range, attack: !T.noAttack, targets: T.all ? 6 : T.targets, area: T.cells ?? areaOffsets(T.area, !(T.range > 0)),
-    flying: T.fly, jumping: T.jump, teleport: T.tele, muddled: isMuddled(obj), initiatives, canSee: (a, b) => sight(a, b) !== null,
+    flying: T.fly, jumping: T.jump, teleport: T.tele, farthest: !!T.farthest, muddled: isMuddled(obj), initiatives, canSee: (a, b) => sight(a, b) !== null,
   });                                                                       // a disarmed monster still moves as if it would attack: attack is the card's
   if (st.disarmed) res = withoutAttack(res);
   return { hs, res, figs, sight, choices: choicesOf(res), here: { col: Number(obj.x), row: Number(obj.y) }, view: turnView(res, { moves: eff.move > 0, attacks: eff.attacks, stunned: st.stunned }) };
@@ -125,7 +125,7 @@ function run(obj, T = uiState.turn, board = state) {
 // A card with several moves or attacks: the stages from solveTurn. `res` is the result at the stage where the player picks (the end hexes), `multi` the rest.
 function runMulti(obj, T, { hs, figs, sight, initiatives, st, eff, card }) {
   const here = { col: Number(obj.x), row: Number(obj.y) }, steps = panelSteps(card.steps, T);
-  const o = { active: here, steps, immobilized: st.immobilized, disarmed: st.disarmed, stunned: st.stunned, flying: T.fly, teleport: T.tele, muddled: isMuddled(obj), initiatives, canSee: (a, b) => sight(a, b) !== null };
+  const o = { active: here, steps, immobilized: st.immobilized, disarmed: st.disarmed, stunned: st.stunned, flying: T.fly, teleport: T.tele, farthest: !!T.farthest, muddled: isMuddled(obj), initiatives, canSee: (a, b) => sight(a, b) !== null };
   const solved = solveMulti(hs, o, T.choice);
   const res = solved.res;
   return { hs, res, figs, sight, choices: solved.choices, here, view: turnView(res, { moves: eff.move > 0, attacks: eff.attacks, stunned: st.stunned }),
@@ -479,7 +479,7 @@ function detailsHtml() {
   }).join('')}</div>` : '';
   const values = `<button type="button" class="sp-turn-fold" data-turn="valuesOpen" aria-expanded="${T.valuesOpen}">Values</button>` + (T.valuesOpen ? `<div class="sp-turn-values">
       <div class="sp-turn-row"><label>Move ${num('move', T.move)}</label><label>Range ${num('range', T.range)}</label><label>Targets ${num('targets', T.targets)}</label>${chip('all', 'All', T.all)}</div>
-      <div class="sp-turn-row">${chip('fly', 'Fly', T.fly)}${chip('jump', 'Jump', T.jump)}${chip('tele', 'Teleport', T.tele)}${chip('noAttack', 'No attack', T.noAttack)}</div>
+      <div class="sp-turn-row">${chip('fly', 'Fly', T.fly)}${chip('jump', 'Jump', T.jump)}${chip('tele', 'Teleport', T.tele)}${chip('farthest', 'Farthest', T.farthest)}${chip('noAttack', 'No attack', T.noAttack)}</div>
       ${info === null ? areaEditor(T) : ''}</div>` : '');          // the area comes from the card where there is card data: the grid is only for the rest
   return `<div class="sp-turn-details">
       ${card}

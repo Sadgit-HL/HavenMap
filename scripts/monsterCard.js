@@ -17,6 +17,7 @@
 //   order    where things stand on the card, top to bottom: 'move' (the first move), 'attack' (the first attack) and the index of each extra in `extras`
 //   statFx   the extras of the stat card (shield, retaliate ...), the base of a relative shield or retaliate on the card
 //   notes    texts the solver cannot act on (custom card text, special targets, formulas), to show to the player
+//   focusFarthest  the card makes the focus the farthest enemy in range instead of the closest (solveMove: farthest)
 //   multi    the card has more than one attack or move (the panel works out every step, scripts/monsterTurnMulti.js; the fields above are the first of each)
 //   plan     where everything stands on the card, top to bottom, with every move and attack: 's0', 's1' ... are the indexes into `steps`, a number the index of an extra
 //   steps    every move and attack in reading order: { t: 'move', move, jumping } and { t: 'attack', damage, range, targets, area, areaMelee, effects, applied }; a step after
@@ -154,6 +155,10 @@ function readingOrder(nodes, kind, infused, extras = true, seq = []) {
   return seq;
 }
 
+// A custom text of the card that matches `re`, inside the actions too.
+const hasText = (nodes, re) => (nodes ?? []).some(n => (n.t === 'custom' && re.test(n.txt ?? '')) || hasText(n.sub, re));
+const FARTHEST = /^focus on the enemy farthest away/i;                          // Long Shot: the focus is the farthest enemy in range, not the closest
+
 // Texts of a card the solver cannot act on: custom text outside the move and attack nodes, and inside them.
 function collectNotes(nodes, notes) {
   for (const n of nodes ?? []) {
@@ -167,7 +172,7 @@ export function cardOptions({ monster, kind = 'normal', level = 0, card, chars =
   const notes = [];
   collectNotes(card.actions, notes);
   const found = findActions(card.actions, kind, infused, notes), moves = found.filter(n => n.t === 'move'), attacks = found.filter(n => n.t === 'attack');
-  const out = { move: 0, range: 0, targets: 1, area: [], areaMelee: false, attack: attacks.length > 0, jumping: false, flying: !!monster?.flying, damage: null, effects: [], extras: [], order: [], plan: [], statFx: stat?.fx ?? [], notes, multi: moves.length > 1 || attacks.length > 1 };
+  const out = { focusFarthest: hasText(card.actions, FARTHEST), move: 0, range: 0, targets: 1, area: [], areaMelee: false, attack: attacks.length > 0, jumping: false, flying: !!monster?.flying, damage: null, effects: [], extras: [], order: [], plan: [], statFx: stat?.fx ?? [], notes, multi: moves.length > 1 || attacks.length > 1 };
 
   // The extras one by one (a consume that is not infused is dropped), and where the first move, the first attack and each extra stand on the card.
   let sawMove = false, sawAttack = false, stepNo = 0;

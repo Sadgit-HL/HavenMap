@@ -70,6 +70,10 @@ Tests: `tools/tests/` `tileMasks`, `tileMask`, `hexState`, `los`, `monsterMove`,
 - Stat card effects apply to every attack of the card.
 - Checked in headless Chromium on 2026-11-24 with hound Sharp Fangs (attack, move, attack): status, Actions list, marks, BGG text, Move. Not driven: ties at the picking stage, the All button with such a card, cards with an area on a later attack.
 
+## Farthest focus (2026-11-24)
+
+Long Shot (Ancient Artillery, the only card of the data) says "Focus on the enemy farthest away within range 7". `cardOptions().focusFarthest` reads the text; `solveMove` takes `farthest`, which turns the closest enemy of the focus step into the farthest one (the proximity term of the focus tuple, negated). Owner decision: ties are resolved as usual (initiative), the change is in the first focus step only (the ranking of the other targets is unchanged), and only enemies that can be attacked (range and sight) count. The panel sets it from the card and shows a `Farthest` chip in the Values. Checked in headless Chromium with Long Shot: the focus is the far character, the chip off gives the close one.
+
 ## Hex state
 
 - Floor: tile masks plus corridor overlays and door hexes. `floorKnown` is false when a placed tile has no mask (all Frosthaven tiles): hexes are then not ruled out by floor.

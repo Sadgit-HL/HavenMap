@@ -14,6 +14,7 @@
 //   targets      number of targets of the attack, default 1; 6 means all targets in range
 //   area         area attack: axial offsets [q, r] of the pattern (areaOffsets() makes them from a 7 by 7 drawing); from the monster for range 0
 //   canSee(a, b) line of sight between two hexes (scripts/los.js makeSightLine), default always true
+//   farthest     the focus is the farthest enemy that can be attacked instead of the closest (only the focus step: ties go to the initiative, the other targets are ranked as usual)
 //   focus        keys ('col,row') of the characters that may be the focus, default all of them: a turn with several actions keeps the focus of its first stage
 //
 // Output: { focuses, canAttackFocus, actions, floorKnown, sightBlocked }
@@ -236,7 +237,8 @@ export function solveMove(hs, o) {
       options.push({ f, k, fk });
     }
   }
-  const focusTuple = x => [from.get(x.k).t, from.get(x.k).d, proxFromActive.get(x.fk) ?? INF, initOf(x.f)];
+  // farthest (a card such as Long Shot): the closest enemy of the focus step becomes the farthest one; ties and the ranking of the other targets are as usual
+  const focusTuple = x => [from.get(x.k).t, from.get(x.k).d, o.farthest ? -(proxFromActive.get(x.fk) ?? INF) : proxFromActive.get(x.fk) ?? INF, initOf(x.f)];
   const bestFocus = minimize(options, focusTuple);
   if (!bestFocus.items.length) return { ...stay, floorKnown: hs.floorKnown, sightBlocked };
   const focuses = [...new Map(bestFocus.items.map(x => [x.fk, x.f])).values()];

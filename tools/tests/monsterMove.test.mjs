@@ -144,4 +144,22 @@ export const tests = {
     assert.equal(run(hs, me, { move: 0, range: 4, attack: false, canSee: () => false }).sightBlocked, false, 'without an attack sight is not the reason');
     assert.equal(run(field([M(2, 5), C(10, 5)]), me, { move: 3, range: 4, canSee: () => false }).sightBlocked, false, 'out of sight and also out of range from every hex it can reach');
   },
+  'monster move: farthest makes the farthest enemy in range the focus, ties still go to the initiative'() {
+    const hs = field([M(6, 5), C(6, 3), C(6, 8)]), me = { col: 6, row: 5 };
+    const key = r => r.focuses.map(f => hexKey(f.col, f.row));
+    assert.deepEqual(key(run(hs, me, { move: 0, range: 7 })), ['6,3'], 'usually the closest');
+    const far = run(hs, me, { move: 0, range: 7, farthest: true });
+    assert.deepEqual(key(far), ['6,8']);
+    assert.equal(far.actions[0].attack, true);
+    assert.deepEqual(far.actions[0].targets, ['6,8']);
+    const tie = field([M(6, 5), C(6, 3), C(6, 7)]);
+    assert.deepEqual(key(run(tie, me, { move: 0, range: 7, farthest: true, initiatives: { '6,3': 20, '6,7': 10 } })), ['6,7'], 'equal distance: the lower initiative');
+    assert.deepEqual(key(run(tie, me, { move: 0, range: 7, farthest: true })).sort(), ['6,3', '6,7'], 'no initiatives: tied');
+  },
+  'monster move: farthest only reaches enemies that can be attacked (range and sight)'() {
+    const hs = field([M(6, 5), C(6, 3), C(6, 9)]), me = { col: 6, row: 5 };
+    assert.deepEqual(run(hs, me, { move: 0, range: 3, farthest: true }).focuses.map(f => hexKey(f.col, f.row)), ['6,3'], 'the far one is out of range');
+    const blind = run(hs, me, { move: 0, range: 7, farthest: true, canSee: (a, b) => !(a.col === 6 && a.row === 9) });
+    assert.deepEqual(blind.focuses.map(f => hexKey(f.col, f.row)), ['6,3'], 'the far one is out of sight');
+  },
 };
