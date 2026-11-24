@@ -34,11 +34,35 @@
    "actions": [
     {
      "type": "custom",
-     "text": "%self%"
+     "text": "You and all allies add"
+    },
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "\""
+      },
+      {
+       "type": "heal",
+       "value": 1,
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "\""
+      }
+     ],
+     "direction": "row"
     },
     {
      "type": "custom",
-     "text": "You and all allies add \"%heal% 1 \" to all positive and %amd-double% attack modifier cards this round. Enemies add \"suffer %damage% 1\" to all negative and %amd-null% attack modifier cards this round."
+     "text": "to all positive and %amd-double% attack modifier cards this round. Enemies add \"suffer %damage% 1\" to all negative and %amd-null% attack modifier cards this round."
     }
    ],
    "duration": "round"
@@ -1324,7 +1348,21 @@
     },
     {
      "type": "custom",
-     "text": "Each character performs %heal% X %self%, where X ist equal the number of revealed positive and %amd-double% cards in that character's attack modifier deck."
+     "text": "Each character performs"
+    },
+    {
+     "type": "heal",
+     "value": "X",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": ", where X ist equal the number of revealed positive and %amd-double% cards in that character's attack modifier deck."
     }
    ],
    "xp": 2,

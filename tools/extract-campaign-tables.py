@@ -58,6 +58,14 @@ CARD_FIX = {
     'voice-of-the-night': ('ns2', None),
     'lead-from-the-fron': ('sa', 'lead-from-the-front'),
 }
+# Levels the Card DB has wrong: (class code, slug) -> the level printed on the card. Found 2026-11-24 on a contact sheet of the printed levels of the Berserker
+# cards: Inner Fire is level 4 and Into the Fight level 2 (the DB has them the other way round); confirmed by the owner. Only the level changes: card ids
+# come from the DB's order (sorted by its levels) and are kept, because saved campaigns refer to them.
+LEVEL_FIX = {('be2', 'inner-fire'): 4, ('be2', 'into-the-fight'): 2}
+# Rows of the Card DB that are not cards: (class code, slug, level). Satha has 29 cards, numbered 01 to 29 on the pictures (the folder has 29 pictures); the DB has a
+# second "Blade of the North" at level 9 with the same picture as the level 1 card. Found 2026-11-24 with the owner. Its id (1428) is left unused, the ids of the
+# cards after it (1429, 1430) stay, because saved campaigns refer to them.
+CARD_DROP = {('sa', 'blade-of-the-north', 9)}
 # Boss scenarios: the skull on the box in the owner's GH2 Flow image (campaign_assets/scenario_flow.jpeg, lower left corner of the box).
 # Owner, 2026-11-20.
 BOSS_SCENARIOS = {8, 16, 20, 23, 24, 25, 26, 27, 29, 43, 50, 51, 52, 67, 80}
@@ -347,6 +355,10 @@ def main():
         classes.append({'i': ci, 'code': code, 'name': CLASS_NAME_FIX.get(names[code][0], names[code][0]), 'src': names[code][1]})
         for n, r in enumerate(sorted(by_class[code], key=level_key), start=1):
             cards.append({'id': ci * 100 + n, 'cls': ci, 'slug': r[30], 'lv': 'M' if r[5] == 'M' else 'X' if num(r[5]) == 1.1 else num(r[5])})   # X = the level 1.1 cards, sorted between 1 and 2
+            if (code, r[30]) in LEVEL_FIX:                  # after the ids are given: the ids follow the Card DB's order and stay as they are
+                cards[-1]['lv'] = LEVEL_FIX[(code, r[30])]
+            if (code, r[30], num(r[5])) in CARD_DROP:       # dropped after the ids are given: the other ids stay, the id of the dropped row is left unused
+                cards.pop()
     ini = load_initiative(sys.argv[3] if len(sys.argv) > 3 else DEFAULT_GHS_DECKS, classes, by_class)
     for c in cards:
         v = ini.get((classes[c['cls'] - 1]['code'], c['slug']))

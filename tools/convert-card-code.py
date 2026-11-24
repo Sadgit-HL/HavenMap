@@ -282,7 +282,7 @@ def split_cards(text):
     def is_start(i):
         if not re.match(r'^\s*(?:-\s+)?name:\s*\S', lines[i]):
             return False
-        nxt = next((l for l in lines[i + 1:] if l.strip()), '')
+        nxt = next((l for l in lines[i + 1:] if l.strip() and not l.strip().startswith('#')), '')       # a comment may stand between name and initiative
         return bool(re.match(r'^\s*initiative:', nxt))
 
     starts = [i for i in range(len(lines)) if is_start(i)]

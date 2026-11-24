@@ -26,7 +26,7 @@ KEYS = set('actions top bottom name initiative level xp lost remove duration inf
            'namedAbility corner number style baseAttack baseMove snap hexIcons icon reverse h lines wind'.split())
 TOKENS = set('lf ls nbsp1 nbsp2 nbsp3 nbsp6 nbsp7 nbsp10 attack move heal range target push pull pierce damage teleport loot shield retaliate jump flying stun wound poison muddle disarm '
              'immobilize invisible strengthen ward regenerate safeguard bless curse bane brittle impair infect chill light dark fire ice air earth wild xp1 xp2 recover lost persistent '
-             'round resol irri rift classToken0 classToken1 scry amd-double amd-null amd-minus-1 amd-rolling self shuffle enhancement-square enhancement-circle enhancement-diamond '
+             'round resol irri classToken0 classToken1 classToken2 scry amd-double amd-null amd-minus-1 amd-rolling shuffle enhancement-square enhancement-circle enhancement-diamond '
              'enhance1 banner_t banner_b range3'.split())
 LAYOUT = set('margin padding position left top transform lineHeight fontSize flexDirection noLine height width marginLeft marginRight marginTop marginBottom hpColor hpTextColor size image url name'.split())
 
@@ -199,6 +199,9 @@ def odd_words(cards):
     if not os.path.exists(path):
         return []
     vocab = set(open(path, encoding='utf-8').read().split())
+    confirmed = os.path.join(HERE, 'vocab-confirmed.txt')                 # words the owner confirmed as printed
+    if os.path.exists(confirmed):
+        vocab |= {w.strip() for w in open(confirmed, encoding='utf-8').read().splitlines() if w.strip() and not w.startswith('#')}
     out = []
     for c in cards:
         for h in ('top', 'bottom'):

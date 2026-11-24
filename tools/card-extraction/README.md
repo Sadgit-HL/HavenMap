@@ -30,7 +30,11 @@ python tools/card-extraction/check.py extracted.md --truth import/card_code_hail
 
 The checker lists unreadable cards, unknown keys and tokens, unidentified icons, empty halves, cards that are not in the class, missing cards, and with `--truth` the share of halves whose actions agree. The owner then looks at the `%?...%` icons and `# check:` comments, completes the class tokens, and the card code joins `import/`.
 
-Needs PyYAML and Pillow (tools only; the app has no dependencies).
+Needs PyYAML, Pillow and numpy (tools only; the app has no dependencies).
+
+## Cost
+
+About 75,000 tokens for a batch of 6 or 7 cards (roughly 11,000 per card) in the first runs: three pictures per card (the original and two enlarged halves), 21 to 24 calls per reader, five worked examples. Since 2026-11-24: one enlarged picture per card (2.2 times), all pictures opened in one message, three examples, 8 cards per batch, and the hex areas measured by `hexes.py` instead of read by the reader. Measured on 8 confirmed Berserker cards: 68,900 tokens and 11 calls (8,600 per card), against 76,400 tokens and 24 calls for 7 cards (10,900 per card) before, and 74,000 for 6 Satha cards (12,300 per card); the 16 halves agree with the confirmed card code (text similarity 1.000). That is about 20 to 30 percent less, not the half hoped for: the brief and examples are read on every turn. The same batch with the Haiku model: 84,500 tokens (23 percent more than the session model), 11 calls, 86 seconds against 29, 15 of 16 halves right (the token-slot row of Defiance of Death was left as an unidentified icon, correctly flagged), text similarity 0.987. Whether it is cheaper in money depends on the price per token of the two models, which is not measured here.
 
 ## First blind test (2026-11-24)
 
@@ -56,6 +60,8 @@ Treat the output as a first draft for the owner to correct: area patterns and `#
 | `brief.md` | the instructions for a reader: format, actions, flags, icons, quality rules |
 | `prepare.py` | builds the batches for a class |
 | `make-icon-sheet.py` | builds `icons.png`, the reference sheet |
+| `hexes.py` | reads the hex areas of a card picture by colour and shape (red target hexes, the grey self hex, the small enhancement hexagons) and writes the `hex:` pattern: exact, no tokens; `--test` checks it against the confirmed patterns; `prepare.py` puts the result in the task table |
+| `merge.py` | merges the readers' batch files into one card code file in the order of the class's card list; a card read twice is kept once and the two readings are compared |
 | `review.py` | builds a page with each card picture next to its extracted card code, the checker's notes, a copy button and a frame for a screenshot of the rendered card |
 | `check.py` | validates extracted card code (also `unusual:` notes from the priors and `word:` notes from `vocab.txt`), compares with known card code |
 | `gh2e-patterns.md` | what 205 Gloomhaven 2e cards look like: structures, marker shapes, values, flags, texts |

@@ -9,19 +9,23 @@ top:
     - curse:   
       margin: 10px 50px 10px 50px  
       sub:
-      - custom: "%target% all enemies occupying hexes containing %rift%"
+      - custom: "%target% all enemies occupying hexes containing %classToken0%"
         margin: 5px 0px 5px 0px 
     - mandatory:
       - dark
   margin: 40px 0px 10px 0px    
 bottom:
   actions:
-    - custom: "%self%"
-      transform: scale(1.3)
-      position: absolute
-      top: 40px
-      left: 265px
-    - custom: You and all allies add "%heal% 1 %nbsp10%" to %lf% all positive and %amd-double% attack modifier %lf% cards this round. %lf% Enemies add "suffer %damage% 1" to all %lf%negative and %amd-null% attack modifier %lf%cards this round.
+    - custom: You and all allies add
+      lineHeight: 22px
+    - group:
+      - custom: '"'
+      - heal: 1
+        sub:
+        - self
+      - custom: '"'
+      flexDirection: row
+    - custom: to %lf% all positive and %amd-double% attack modifier %lf% cards this round. %lf% Enemies add "suffer %damage% 1" to all %lf%negative and %amd-null% attack modifier %lf%cards this round.
       lineHeight: 22px
   duration: round
 
@@ -42,7 +46,7 @@ bottom:
   actions:
     - optional:
       - consume: [light]
-      - custom: "Place one %rift% in an occupied %lf% hex within %range% 4, %xp1%"
+      - custom: "Place one %classToken0% in an occupied %lf% hex within %range% 4, %xp1%"
         fontSize: 19px
       noLine: true
       padding: 1px 15px 1px 15px
@@ -50,12 +54,12 @@ bottom:
     - divider
     - heal: 2
       sub:
-        - custom: "%target% 1 ally occupying a %lf%hex containing  a %rift%"
+        - custom: "%target% 1 ally occupying a %lf%hex containing  a %classToken0%"
           fontSize: 19px
           padding: 0px 15px 0px 15px
       padding: 5px 0px 5px 0px
     - divider
-    - custom: "Your allies treat hexes %lf% containing %rift% as linked%lf% hexes this round."
+    - custom: "Your allies treat hexes %lf% containing %classToken0% as linked%lf% hexes this round."
       fontSize: 19px
   duration: round
 name: Void Snare
@@ -70,7 +74,7 @@ top:
     - immobilize:   
       margin: 10px 50px 10px 50px  
       sub:
-      - custom: "%target% all allies occupying hexes containing %rift%"
+      - custom: "%target% all allies occupying hexes containing %classToken0%"
 bottom:
   actions:
     - teleport: 3
@@ -80,7 +84,7 @@ bottom:
       margin: 15px 
       sub:
       - custom: "%target% 1 ally or enemy, %range%2"
-    - custom: "Perform this ability as if you occupied a hex containing a %rift%."     
+    - custom: "Perform this ability as if you occupied a hex containing a %classToken0%."     
       margin: 15px 
 
 name: Approach the Void
@@ -91,7 +95,7 @@ top:
     - custom: "Place one %classToken0% in an hex within %range%3 %enhancement-square% ."
       fontSize: 21px       
     - divider
-    - custom: "All enemies occupying hexes %lf% containing %rift% suffer%lf%2 %damage% and gain %muddle%." 
+    - custom: "All enemies occupying hexes %lf% containing %classToken0% suffer%lf%2 %damage% and gain %muddle%." 
       fontSize: 21px  
       marginTop: 5px
        
@@ -128,7 +132,7 @@ bottom:
     - divider
     - optional:
       - consume: [dark]
-      - custom: "Place one %rift% in an unoccupied%lf% hex within %range% 4,  %xp1%"
+      - custom: "Place one %classToken0% in an unoccupied%lf% hex within %range% 4,  %xp1%"
       noLine: true
       padding: 5px
 name: Duality Shards
@@ -206,7 +210,7 @@ top:
       padding: 5px
       sub:
         - custom: "%target% 1 ally or enemy, %range% 3 %enhancement-square%"
-    - custom: "Place one %rift% in the hex the target is occupying."
+    - custom: "Place one %classToken0% in the hex the target is occupying."
       fontSize: 18px
       padding: 10px
     - divider
@@ -298,7 +302,7 @@ top:
     - bless: 
       margin: 10px 50px 10px 50px  
       sub:
-      - custom: "%target% all allies occupying hexes containing %rift%"           
+      - custom: "%target% all allies occupying hexes containing %classToken0%"           
     - mandatory:
       - light
       margin: 25px 0px 0px 0px  
@@ -361,7 +365,7 @@ top:
 
 bottom:
   actions:
-    - custom: "Now and at the end of your next two %lf% turns, place one %rift% in an occupied hex %lf% and all enemies occupying hexes %lf% containing %rift% suffer %damage% 1."    
+    - custom: "Now and at the end of your next two %lf% turns, place one %classToken0% in an occupied hex %lf% and all enemies occupying hexes %lf% containing %classToken0% suffer %damage% 1."    
       fontSize: 22px
       margin: 0px 0px -5px 0px 
     - tokens: [1,0,1]
@@ -468,7 +472,7 @@ top:
             - custom: '%range% 3, %muddle%'
           margin: 2px 0px -7px 0px
         - divider
-        - custom: "Place one %rift% in each %lf% unoccupied red hex of %lf% the attack ability."
+        - custom: "Place one %classToken0% in each %lf% unoccupied red hex of %lf% the attack ability."
           lineHeight: 19px
           margin: -3px 0px -7px 0px 
         - divider
@@ -487,7 +491,7 @@ top:
 
 bottom:
   actions:
-    - custom: Place one %rift% in a hex within %range% 3 %enhancement-square%. 
+    - custom: Place one %classToken0% in a hex within %range% 3 %enhancement-square%. 
     - divider
     - optional:
       - consume: [light]
@@ -495,7 +499,7 @@ bottom:
         transform: scale(1.2)
       - group:
         sub:
-            - custom: "%target% all allies occupying%lf%hexes containing %rift%"
+            - custom: "%target% all allies occupying%lf%hexes containing %classToken0%"
       - custom: ",%xp1%"
         transform: scale(1.5)
         padding: 0px 8px 0px 8px
@@ -506,7 +510,7 @@ bottom:
       - consume: [dark]
       - attack: 1 
         sub:
-          - custom: "%target% all enemies occupying%lf%hexes containing %rift%, %pierce% 2"
+          - custom: "%target% all enemies occupying%lf%hexes containing %classToken0%, %pierce% 2"
       noLine: true
 
 name: Protective Aura
@@ -518,7 +522,7 @@ top:
       fontSize: 21px     
       margin: 40px 0px 00px 0px  
     - divider
-    - custom: "Allies occupying hexes containing  %lf% %rift% this round gain %shield% 2. " 
+    - custom: "Allies occupying hexes containing  %lf% %classToken0% this round gain %shield% 2. " 
       fontSize: 21px  
       marginTop: 5px
     - mandatory:
@@ -580,7 +584,12 @@ top:
       fontSize: 22px
       margin: 0px -10px 0px -10px  
     - divider
-    - custom: Each character performs %heal% X %self%, where %lf% X ist equal the number of revealed positive %lf% and %amd-double% cards in that character's attack %lf% modifier deck.
+    - custom: Each character performs
+      fontSize: 22px
+    - heal: X
+      sub:
+      - self
+    - custom: ", where %lf% X ist equal the number of revealed positive %lf% and %amd-double% cards in that character's attack %lf% modifier deck."
       margin: 0px -10px 0px -10px 
       fontSize: 22px
       lineHeight: 20px
@@ -615,12 +624,12 @@ bottom:
       sub: 
       - target: 2 allies or enemies
       - range: 3
-    - custom: Perform this ability as if you occupied a %lf% hex containing a %rift%.
+    - custom: Perform this ability as if you occupied a %lf% hex containing a %classToken0%.
     - divider
     - disarm:
       enhancement: [diamond]  
       sub:  
-      - custom: "%target% 1 enemy occupying %lf% a hex containing a %rift%"
+      - custom: "%target% 1 enemy occupying %lf% a hex containing a %classToken0%"
         padding: 0px 10px 0px 10px
     - optional:
       - consume: [dark]
@@ -656,10 +665,10 @@ top:
       
 bottom:
  actions:
-    - custom: "Place one %rift% in a hex within %range% 4 %enhancement-square%."
+    - custom: "Place one %classToken0% in a hex within %range% 4 %enhancement-square%."
       margin: 0px 0px 0px -1px   
     - divider:
-    - custom: "Simultaneously %teleport% any numer of figures %lf%occupying hexes containing %rift% to other %lf%hexes containing %rift% (figures may exchange hexes with other figures)."
+    - custom: "Simultaneously %teleport% any numer of figures %lf%occupying hexes containing %classToken0% to other %lf%hexes containing %classToken0% (figures may exchange hexes with other figures)."
  margin: 0px 0px 20px 0px
  infuse: [light/dark]
 
@@ -716,11 +725,11 @@ bottom:
       width: 75px
       hpColor: '#73859A'
       hpTextColor: '#FFFFFF'
-  - custom: 'You control how these summons perform %lf% their abilities. They treat hexes containing %rift% %lf% as linked hexes and may only attack enemies'
+  - custom: 'You control how these summons perform %lf% their abilities. They treat hexes containing %classToken0% %lf% as linked hexes and may only attack enemies'
     lineHeight: 16px
     fontSize: 20px
     margin: -10px -18px 0px -18px
-  - custom: "occupying hexes %lf% containing %rift%."
+  - custom: "occupying hexes %lf% containing %classToken0%."
     fontSize: 20px
     margin: 0px -0px 5px -50px
     lineHeight: 16px
@@ -772,7 +781,7 @@ top:
           sub:
           - pierce: 2
           marginBottom: 10px
-        - custom: 'Perform this ability as if you occupied a hex containing a %rift%.'
+        - custom: 'Perform this ability as if you occupied a hex containing a %classToken0%.'
         - optional:
           - consume: [light/dark]
           - custom: +1 %attack%, %xp1%
@@ -807,7 +816,7 @@ top:
       fontSize: 21px     
       margin: px 0px 00px 0px  
     - divider
-    - custom: "Each enemy occupying a hex containing a %lf%%rift% gains one of the following conditions of your choice:"
+    - custom: "Each enemy occupying a hex containing a %lf%%classToken0% gains one of the following conditions of your choice:"
       fontSize: 21px  
       marginTop: 5px
     - custom: "%wound%,%poison%,%disarm%,%stun%,%muddle%,%curse%." 
@@ -822,11 +831,11 @@ bottom:
     - divider
     - optional:
       - consume: [light]
-      - custom: Place one %rift% in a hex %lf%within %range% 2, %xp1%.  
+      - custom: Place one %classToken0% in a hex %lf%within %range% 2, %xp1%.  
       noLine: true
       margin: 5px 0px 5px 0px 
     - divider
-    - custom: "%teleport% one ally to an unoccupied %lf% hex containing a %rift%."
+    - custom: "%teleport% one ally to an unoccupied %lf% hex containing a %classToken0%."
 
 
 name: Deep Contemplation
@@ -896,7 +905,7 @@ top:
       width: 75px
       hpColor: '#73859A'
       hpTextColor: '#FFFFFF'
-  - custom: "Whenever this summon attacks, if %light% %lf% or %dark% is strong or waning, you may place%lf% one %rift% in the hex the target is%lf% occupying."
+  - custom: "Whenever this summon attacks, if %light% %lf% or %dark% is strong or waning, you may place%lf% one %classToken0% in the hex the target is%lf% occupying."
     lineHeight: 22px
     fontSize: 21px
     margin: -10px -14px 0px -18px
@@ -905,22 +914,22 @@ top:
  duration: persistent
 bottom:
  actions:
-  - custom: "%rift%"
+  - custom: "%classToken0%"
     transform: scale(0.9)
     position: absolute
     top: 0px
     left: 245px 
-  - custom: "%rift%"
+  - custom: "%classToken0%"
     transform: scale(0.9)
     position: absolute
     top: 19px
     left: 235px
-  - custom: "%rift%"
+  - custom: "%classToken0%"
     transform: scale(0.9)
     position: absolute
     top: 56px
     left: 172px
-  - custom: "%rift%"
+  - custom: "%classToken0%"
     transform: scale(0.9)
     position: absolute
     top: 92px

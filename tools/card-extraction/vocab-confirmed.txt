@@ -1,0 +1,6 @@
+# Words printed on the cards that check.py would flag as a misread known word, confirmed by the owner (one per line).
+negated
+chose
+caused
+space
+spaces

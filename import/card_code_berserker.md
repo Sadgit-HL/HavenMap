@@ -1,5 +1,5 @@
-# Berserker (Gloomhaven 2nd edition), card code read from the card pictures with tools/card-extraction. Blood Pact, Glass Hammer, Flurry of Axes and Unbridled Power were checked by the owner and are right;
-# the other 24 are a first draft: look at the lines marked # check first. Inner Fire is level 4 and Into the Fight level 2 on the pictures (confirmed for Inner Fire); the card list (scripts/games/gh2_cards.js) has them the other way round.
+# Berserker (Gloomhaven 2nd edition), card code read from the card pictures with tools/card-extraction and checked card by card by the owner: all 28 cards are right (2026-11-24).
+# Inner Fire is level 4 and Into the Fight level 2 on the pictures (the Card DB had them the other way round; fixed with LEVEL_FIX in tools/extract-campaign-tables.py).
 name: Blood Pact
 initiative: 76
 level: 1
@@ -73,7 +73,6 @@ top:
 bottom:
   actions:
   - custom: "On the next source of %damage% you would suffer that would reduce your current hit point value to less than 1, negate the %damage%."
-  # check: dashed circle with a red arrow and an xp 1 burst, no solid circle printed; read as one experience slot
   - tokens: [1]
   duration: persistent
 
@@ -174,7 +173,6 @@ bottom:
   - divider
   - retaliate: 1
   - custom: "Gain %xp1% the next time you retaliate this round."
-  # check: the lower right icon is the card with a red bar and circular arrow (round bonus)
   duration: round
 
 name: From the Brink
@@ -195,12 +193,10 @@ bottom:
     enhancement:
     - square
   - divider
-  # check: the grey diamond with an arrow down may be pull
   - pull: 1
     enhancement:
     - square
     sub:
-    # check: icon before 2 is a hexagon with an arrow, taken as range
     - range: 2
       enhancement:
       - square
@@ -304,7 +300,6 @@ top:
   - attack: 5
     sub:
     - custom: advantage
-  # check: first slot dashed, the last solid circle has a small red mark at its lower right
   - tokens: [0, 1, 1, 1]
   duration: persistent
   lost: t
@@ -317,7 +312,6 @@ bottom:
   - optional:
     - consume:
       - fire
-    # check: the round bonus icon at the right end of the box, written %round% by analogy with %persistent%
     - custom: "Add +1 %attack% to all your attacks this round. %round%"
     noLine: true
 
@@ -332,14 +326,12 @@ top:
   - custom: "Gain %xp1% the next time you retaliate this round."
   - divider
   - custom: "All attacks targeting you this round gain disadvantage."
-  # check: round bonus icon at the right
   duration: round
 bottom:
   actions:
   - custom: "If you short rest at the end of this round, gain all the benefits of a long rest."
   - mandatory:
     - fire
-  # check: round bonus icon at the lower right
   duration: round
 
 name: Into the Fight
@@ -417,7 +409,6 @@ level: 5
 top:
   actions:
   - custom: "On the next six sources of %damage% you suffer while an enemy is adjacent to you, after the ability that caused you to suffer the %damage%, perform %attack% 4."
-  # check: first circle dashed (no xp), xp marks printed on circles 2, 4 and 6
   - tokens: [0, 1, 0, 1, 0, 1]
   duration: persistent
   lost: t
@@ -430,7 +421,6 @@ bottom:
   - optional:
     - consume: [fire]
     - custom: "+1 %retaliate%"
-  # check: round bonus flag (card with red arrow and circular arrow) assumed
   duration: round
 
 name: Devil Horns
@@ -443,8 +433,7 @@ top:
       enhancement: [diamond]
       sub:
       - wound
-    # check: hex, self (grey) with three red hexes diagonal-adjacent
-    - hex: ese_tet_ete
+    - hex: et_st_et
   - mandatory:
     - fire
 bottom:
@@ -463,7 +452,6 @@ top:
         - target: all enemies within 3 hexes
     - custom: "where X is the amount of %damage% you chose to suffer."
   xp: 2
-  # check: stack of cards with red X (remove) and white card with red X (lost) are both printed
   remove: t
   lost: t
 bottom:
@@ -489,7 +477,6 @@ bottom:
     enhancement: [circle]
   - divider
   - custom: "Whenever you are attacked this round, gain %retaliate%X for the attack, where X is the number of enemies adjacent to you when the attack is performed."
-  # check: round bonus flag (card with red arrow and circular arrow) assumed
   duration: round
 
 name: Fueled by Pain
@@ -540,7 +527,6 @@ bottom:
     - diamond
     sub:
     - range: 4
-  # check: the icon after "loses" is a wing, read as flying
   - custom: "Place your character token on the target. The target loses %flying%."
   duration: persistent
 
