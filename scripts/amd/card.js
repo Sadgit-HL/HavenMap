@@ -3,7 +3,7 @@
 // Plain (base) cards are built from our own frame+number layers. Decorated (shared) cards are
 // composed by compose.js; unique cards use their baked image, class badge included.
 
-import { composedShared, badges, PLAIN_FRAME, PLAIN_NUMBER } from './compose.js?v=3';
+import { composedShared, badges, PLAIN_FRAME, PLAIN_NUMBER } from './compose.js?v=4';
 import { amImg } from './paths.js?v=3';
 import { img, layer } from './dom.js';
 
@@ -27,7 +27,8 @@ function buildBase(card, className, isAdded) {
   root.appendChild(lazyImg(`${amImg(`frames/${FRAME_BY_VALUE[card.value] || 'p0'}`)}`, 'pc-frame'));
   // Removed base cards come from the standard deck (no class icon); base cards a perk adds are class cards.
   // Same class badge (circle + sized icon) as the composed shared cards.
-  if (isAdded && className) root.appendChild(badges(null, className));
+  if (card.badge) root.appendChild(badges(null, null, card.badge));   // monster and ally decks: a letter in the badge circle
+  else if (isAdded && className) root.appendChild(badges(null, className));
   if (card.value !== 'null') root.appendChild(lazyImg(`${amImg(`numbers/c-${NUMBER_FILE[card.value]}`)}`, 'pc-full'));
   // x2 and null cards reshuffle the deck: shuffle mark in the bottom-right corner.
   if (card.value === 'x2' || card.value === 'null') root.appendChild(lazyImg(`${amImg(`spheres/shuffle`)}`, 'pc-full'));

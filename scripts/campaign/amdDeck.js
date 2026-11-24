@@ -21,11 +21,10 @@ export const AM_SPECIAL = [
   { key: 'curse', label: 'Curse', face: 'C', max: 10, img: imageFile('images/common/attack_mods/hero/curse', '../') },
 ];
 
-// The monster deck and the ally deck (Monsters tab, scripts/campaign/monsters.js): whole-card pictures, no class and no perks. The
+// The monster deck and the ally deck (Monsters tab, scripts/campaign/monsters.js): standard cards built from layers with an M or A badge, imbuement cards and bless and curse as pictures, no class and no perks. The
 // monster deck can be imbued (level 2 includes level 1), as in the map app (scripts/attackMods.js). An owner object
 // { group: 'm' | 'a', imb } stands in for the character in deckOf, drawState and amdAct.
 const amPic = k => imageFile(`images/common/attack_mods/${k}`, '../');
-const STD_PIC = { p0: 'plus0', p1: 'plus1', m1: 'minus1', p2: 'plus2', m2: 'minus2', x2: 'x2', miss: 'miss' };
 const IMBUE_CARDS = [
   { key: 'i2m', face: '+2 Muddle', value: '+2', pic: 'plus2muddle' }, { key: 'i0p', face: '+0 Poison', value: '+0', pic: 'plus0poison' },
   { key: 'i3', face: '+3', value: '+3', pic: 'plus3' }, { key: 'i1h', face: '+1 Heal1', value: '+1', pic: 'plus1heal1' },
@@ -33,7 +32,7 @@ const IMBUE_CARDS = [
 ];
 export const IMBUE = { 1: { m1: -3, p1: 3, i2m: 1, i0p: 1 }, 2: { m2: -1, p0: -2, i3: 1, i1h: 2, i1c: 1, i0w: 1 } };
 const groupCatalog = g => [
-  ...AM_STANDARD.map(t => ({ ...t, img: amPic(`${g === 'a' ? 'ally' : 'monster'}/${STD_PIC[t.key]}`) })),
+  ...AM_STANDARD.map(t => ({ ...t, card: { kind: 'base', value: t.value, badge: g === 'a' ? 'A' : 'M' } })),   // plain cards with an M or A badge (scripts/amd/card.js)
   ...(g === 'm' ? IMBUE_CARDS.map(t => ({ key: t.key, face: t.face, value: t.value, count: 0, shuffle: false, extra: true, img: amPic(`imbuement/${t.pic}`) })) : []),
 ];
 const groupSpecial = g => AM_SPECIAL.map(s => (g === 'm' ? { ...s, img: amPic(`monster/${s.key}`) } : s));

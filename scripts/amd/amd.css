@@ -38,6 +38,12 @@
 .cb .cb-full { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: fill; }
 .cb-classgroup { position: absolute; inset: 0; }
 .cb-class { border-radius: 50%; }
+.cb-class { container-type: inline-size; }
+.cb-letter {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font: 400 62cqw/1 "Pirata One Local", "Times New Roman", serif; color: #e9dcc0; -webkit-text-stroke: 0.02em #e9dcc0;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
+}
 .cb-class img { position: absolute; left: 20%; top: 20%; width: 60%; height: 60%; object-fit: contain; }
 
 /* Small dark digit on the push arrow: centred on its point, sized from the stack width (cqw). */

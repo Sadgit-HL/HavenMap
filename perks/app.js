@@ -1,5 +1,5 @@
 import { PERKS } from '../scripts/amd/perkData.js?v=1';
-import { buildCard } from '../scripts/amd/card.js?v=4';
+import { buildCard } from '../scripts/amd/card.js?v=7';
 import { perkTextHtml, perkRuleNote } from '../scripts/amd/perkText.js';
 
 const editionSelect = document.getElementById('edition');

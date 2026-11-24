@@ -1820,6 +1820,7 @@ function render() {
   sizePlaymat();
   if (tab === 'Cards' && view.cardType === 'am') hydrateAm();
   if (pm.modal === 'amd' || pm.modal === 'amdpile' || pm.hview === 'amd' || pm.ptab === 'amd') hydrateAmdModal();
+  if (tab === 'Monsters') hydrateMonAm();
   if (pm.modal === 'perks') hydratePerkCards();
   if (flowPage && (view.scnSel ?? flowFound) != null) flowRest();
 }
@@ -1944,15 +1945,24 @@ function hydratePerkCards() {
 function hydrateAmdModal() {
   const c = record?.chars.find(x => x.id === currentSub());
   if (!c) return;
-  const byKey = new Map([...deckOf(c, c.amd?.adj), ...drawState(c, c.amd).missing].map(t => [t.key, t]));
+  fillAmSlots(c, c.amd);
+  const slot = main.querySelector('[data-amslot][data-big]'), big = slot?.closest('.pcbig');       // the enlarged card: size and side follow the display settings
+  if (slot?.firstChild && big) { const w = dockPreview(big, previewW()); slot.firstChild.style.setProperty('--pc-width', `${w}px`); big.style.setProperty('--zw', `${w}px`); }
+}
+// The Monsters tab: the monster and ally decks, with an owner object in place of the character (amOwner).
+function hydrateMonAm() {
+  const g = main.querySelector('.monamv')?.dataset.amg === 'a' ? 'a' : 'm', st = monOf(record).am[g] || {};
+  fillAmSlots(amOwner(g, st), st);
+}
+function fillAmSlots(c, st) {
+  const A = drawState(c, st);
+  const byKey = new Map([...deckOf(c, st?.adj), ...A.missing, ...A.pile].map(t => [t.key, t]));
   main.querySelectorAll('[data-amslot]').forEach(el => {
     const t = byKey.get(el.dataset.amslot);
     if (!t || el.dataset.shown === el.dataset.amslot) return;
     el.dataset.shown = el.dataset.amslot;
     el.replaceChildren(buildCard(t.card, c.cls, !!t.extra));
   });
-  const slot = main.querySelector('[data-amslot][data-big]'), big = slot?.closest('.pcbig');       // the enlarged card: size and side follow the display settings
-  if (slot?.firstChild && big) { const w = dockPreview(big, previewW()); slot.firstChild.style.setProperty('--pc-width', `${w}px`); big.style.setProperty('--zw', `${w}px`); }
 }
 
 // Edits: inputs and selects report on `change`, buttons on `click`; each maps to one pure function in edit.js.

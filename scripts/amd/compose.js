@@ -103,23 +103,30 @@ function fitClassIcon(icon, square) {
   if (icon.complete && icon.naturalWidth) apply(); else icon.addEventListener('load', apply, { once: true });
 }
 
-function classBadge(cls) {
-  if (!cls) return null;
+function classBadge(cls, letter) {
+  if (!cls && !letter) return null;
   const g = layer('cb-classgroup');
   const circle = img(`${amImg(`spheres/class-circle`)}`, 'cb-full');
   const wrap = layer('cb-class');
   box(wrap, CLASS_BADGE);
-  const ic = img(`${amImg(`class_icons/${cls}`)}`);
-  ic.onerror = () => ic.remove();
-  fitClassIcon(ic, 0.6);
-  wrap.appendChild(ic);
+  if (letter) {
+    // The monster and ally decks: a letter (M, A) in the circle instead of a class icon.
+    const t = layer('cb-letter');
+    t.textContent = letter;
+    wrap.appendChild(t);
+  } else {
+    const ic = img(`${amImg(`class_icons/${cls}`)}`);
+    ic.onerror = () => ic.remove();
+    fitClassIcon(ic, 0.6);
+    wrap.appendChild(ic);
+  }
   g.append(circle, wrap);
   return g;
 }
 
-export function badges(value, cls) {
+export function badges(value, cls, letter) {
   const g = layer('cb');
-  for (const b of [value ? valueBadge(value) : null, classBadge(cls)]) if (b) g.appendChild(b);
+  for (const b of [value ? valueBadge(value) : null, classBadge(cls, letter)]) if (b) g.appendChild(b);
   return g;
 }
 

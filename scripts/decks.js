@@ -8,7 +8,7 @@
 import { state, patch } from './state.js';
 import { DECKS, deckSlugFor, assetPath } from './data.js';
 import { uiState, subscribeUI } from './uiState.js';
-import { buildCard } from './amd/card.js?v=6';
+import { buildCard } from './amd/card.js?v=7';
 import { createHoverPreview, previewImage } from './hoverPreview.js';
 import { perkTextHtml, perkRuleNote } from './amd/perkText.js';
 import { escapeHtml as esc } from './escape.js';
@@ -242,6 +242,9 @@ function tabsHtml(slugs, active) {
   </div>`;
 }
 
+// The card of a catalog entry: hero decks carry theirs; the standard cards of the monster and ally decks are plain cards with an M or A badge
+// (imbuement cards and bless and curse stay pictures).
+const stdCard = (c, g) => c.card || ((g === 'm' || g === 'a') && !c.extra && c.value ? { kind: 'base', value: c.value, badge: g === 'a' ? 'A' : 'M' } : null);
 function amTileHtml(c, s, special, g, editMode) {
   const edit = editMode && !amCardLocked(g, c);
   const n = s.deck[c.key] || 0, disc = s.discard[c.key] || 0;
@@ -258,7 +261,8 @@ function amTileHtml(c, s, special, g, editMode) {
     foot = `<button class="am-ret" type="button" data-am-ret="${c.key}" data-am-g="${g}" ${disc ? '' : 'disabled'}
          title="Return one ${label} from the discard to the deck">&#8630; ${disc}</button>`;
   }
-  const src = c.card ? null : assetPath.attackMod(
+  const card = !special && stdCard(c, g);
+  const src = card ? null : assetPath.attackMod(
     g === 'a' && c.allyImg ? c.allyImg :
     special && c.heroImg && amIsPartySpecial(g) ? c.heroImg :
     c.img
@@ -266,7 +270,7 @@ function amTileHtml(c, s, special, g, editMode) {
   return `<div class="am-tile${!special && !base && !n && !disc ? ' am-tile--none' : ''}">
     <button class="am-card${n ? '' : ' is-empty'}" type="button" data-am-draw="${c.key}" data-am-g="${g}" ${n ? '' : 'disabled'}
         title="${special ? 'Draw (removes the card from the game)' : 'Draw one ' + label}">
-      ${c.card ? `<span class="am-slot" data-am-slot="${c.key}" data-am-g="${g}" title="${label}"></span>`
+      ${card ? `<span class="am-slot" data-am-slot="${c.key}" data-am-g="${g}" title="${label}"></span>`
                : `<img src="${src}" data-dk-full="${src}" alt="${label}" draggable="false">`}
       <span class="am-n">${n}${special ? '' : '/' + base}</span>
       ${c.shuffle ? '<span class="dk-mark">&#8635;</span>' : ''}
@@ -298,7 +302,7 @@ function amCardOf(el, cache = new Map()) {
   c.className ??= amClassName(g);
   if (el.dataset.amSlot) {
     c.catalog ??= amState(g).catalog;
-    const card = c.catalog.find(e => e.key === el.dataset.amSlot)?.card;
+    const e = c.catalog.find(e => e.key === el.dataset.amSlot), card = e && stdCard(e, g);
     return card && { card, className: c.className, isAdded: false };
   }
   c.perks ??= amHeroPerks(g)?.perks;

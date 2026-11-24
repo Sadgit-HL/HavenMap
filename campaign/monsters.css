@@ -40,6 +40,9 @@
 .pm.mon .mamc { position:relative; flex:none; height:58px; aspect-ratio:3 / 2; padding:0; overflow:hidden; border:1px solid var(--line); border-radius:6px; background:#120f0b; color:var(--text); cursor:pointer; }
 .pm.mon .mamc:hover { border-color:var(--accent); transform:translateY(-2px); }
 .pm.mon .mamc img { display:block; width:100%; height:100%; object-fit:cover; pointer-events:none; }
+.pm.mon .mamc .amslot, .pm.mon .mamtop .amslot { display:block; width:100%; height:100%; }
+.pm.mon .mamc .pc, .pm.mon .mamtop .pc { --pc-width:100%; width:100%; height:100%; border-radius:0; }
+.pm.mon .mamtop { display:block; height:58px; aspect-ratio:3 / 2; border-radius:6px; border:1px solid var(--line); box-shadow:0 2px 8px rgba(0,0,0,.5); overflow:hidden; }
 .pm.mon .mamc .mamf { display:flex; align-items:center; justify-content:center; height:100%; font-weight:700; }
 .pm.mon .mamc .nb { position:absolute; right:3px; bottom:3px; min-width:18px; padding:0 4px; border-radius:9px; background:rgba(18,15,11,.88); color:var(--accent); font-size:11px; font-weight:800; text-align:center; }
 .pm.mon .mamdisc img, .pm.mon .mamempty { display:block; height:58px; aspect-ratio:3 / 2; border-radius:6px; border:1px solid var(--line); box-shadow:0 2px 8px rgba(0,0,0,.5); }
@@ -115,7 +118,7 @@ html.phone .pm.mon .monam:not(.open) .mamchips { grid-area:chips; }
 html.phone .pm.mon .monam:not(.open) .mamdisc { grid-area:disc; justify-self:end; }
 html.phone .pm.mon .monam:not(.open) .mamdisc .lab { display:none; }
 html.phone .pm.mon .monamhd .btn6 { width:40px; min-height:40px; }
-html.phone .pm.mon .mamc, html.phone .pm.mon .mamdisc img, html.phone .pm.mon .mamempty { height:48px; }
+html.phone .pm.mon .mamc, html.phone .pm.mon .mamdisc img, html.phone .pm.mon .mamempty, html.phone .pm.mon .mamtop { height:48px; }
 html.phone .pm.mon .mamc:hover { transform:none; }
 html.phone .pm.mon .monam.open { position:fixed; left:0; right:0; bottom:0; z-index:60; max-height:88dvh; overflow-y:auto; overscroll-behavior:contain; margin:0; box-shadow:0 -10px 30px rgba(0,0,0,.7); }
 html.phone .pm.mon .monam.open .monamhd { position:sticky; top:-6px; z-index:2; margin:-6px -8px 8px; padding:8px; background:rgba(24,20,15,.98); border-bottom:1px solid var(--line); }
