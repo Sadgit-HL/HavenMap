@@ -766,6 +766,10 @@
         {
          "type": "custom",
          "text": "Add +1 %attack% to all your attacks this round."
+        },
+        {
+         "type": "custom",
+         "text": "%round%"
         }
        ]
       }

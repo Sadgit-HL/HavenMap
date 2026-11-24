@@ -65,6 +65,7 @@ level: 1
 top:
   actions:
   - custom: "%augment% Augment"
+  - custom: "Add %poison%, %muddle% to all your melee attacks."
   - attack: 2
     enhancement: [diamond]
     sub:
@@ -106,6 +107,7 @@ level: 1
 top:
   actions:
   - custom: "%augment% Augment"
+  - custom: "Add +1 %attack% to all your melee attacks."
   - attack: 2
     enhancement: [diamond]
   - custom: "Control the target of the attack ability:"
@@ -188,6 +190,7 @@ level: 1
 top:
   actions:
   - custom: "%augment% Augment"
+  - custom: "Your single-target melee attack abilities may target enemies within 2 hexes (of you)."
   - attack: 3
     enhancement: [diamond]
     sub:
@@ -209,6 +212,9 @@ level: 1
 top:
   actions:
   - custom: "%augment% Augment"
+  - custom: "After each of your melee attack abilities, grant one of your summons:"
+  - attack: 0
+  - divider
   - attack: 2
     enhancement: [square]
   - custom: "Grant one of your summons:"
@@ -382,6 +388,11 @@ level: 4
 top:
   actions:
   - custom: "%augment% Augment"
+  - custom: "After each of your melee attack abilities, perform:"
+  - heal: 2
+    sub:
+    - range: 2
+  - divider
   - attack: 2
     enhancement: [diamond]
     sub:
@@ -504,6 +515,7 @@ level: 7
 top:
   actions:
   - custom: "%augment% Augment"
+  - custom: "Add +1 %attack% to your melee attacks for each negative condition the target has."
   - pull: 2
     sub:
     - range: 3
@@ -607,6 +619,14 @@ level: 9
 top:
   actions:
   - custom: "%augment% Augment"
+  - multi:
+    - custom: "After each of your melee attack abilities, control one target of the attack ability:"
+    - attack: 3
+  - custom: "After each of your control abilities, you may perform:"
+  - optional:
+    - consume: [dark]
+    - custom: "One controlled enemy suffers %damage%3."
+    noLine: true
   - attack: 3
     sub:
     - wound

@@ -411,6 +411,7 @@ bottom:
       sub:
       - range: 2
     - ice
+    - custom: "%round%"
     noLine: true
 
 name: Burial
@@ -491,6 +492,7 @@ bottom:
     - multi:
       - consume: [ice/earth]
       - tokens: [0, 1]
+      - custom: "%persistent%"
     noLine: true
 
 name: Winter's Edge
@@ -717,6 +719,7 @@ top:
     - multi:
       - shield: 2
       - retaliate: 2
+      - custom: "%round%"
     noLine: true
   - optional:
     - consume: [light/dark]

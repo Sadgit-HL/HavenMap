@@ -1638,6 +1638,10 @@
       {
        "type": "custom",
        "text": "This attack does not cause you to gain %invisible% at the end of the round, %xp% 1."
+      },
+      {
+       "type": "custom",
+       "text": "%round%"
       }
      ]
     },

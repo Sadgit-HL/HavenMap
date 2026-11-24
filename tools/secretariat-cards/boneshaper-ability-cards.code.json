@@ -1,0 +1,2249 @@
+[
+ {
+  "name": "Life in Death",
+  "level": 1,
+  "initiative": 91,
+  "sourceId": 120,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Shambling Skeleton",
+     "stats": {
+      "health": 3,
+      "move": 2,
+      "attack": 2,
+      "range": "-"
+     },
+     "special": [],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "damage",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On the next three sources of %damage% to you, negate the %damage%."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      0,
+      1
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Returned Servant",
+  "level": 1,
+  "initiative": 81,
+  "sourceId": 121,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Shambling Skeleton",
+     "stats": {
+      "health": 3,
+      "move": 2,
+      "attack": 2,
+      "range": "-"
+     },
+     "special": [],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "damage",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Damned Horde",
+  "level": 1,
+  "initiative": 71,
+  "sourceId": 122,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Shambling Skeleton",
+     "stats": {
+      "health": 3,
+      "move": 2,
+      "attack": 2,
+      "range": "-"
+     },
+     "special": [],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "damage",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "curse",
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "range",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Transfer of Essence",
+  "level": 1,
+  "initiative": 62,
+  "sourceId": 123,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "strengthen",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 ally"
+      },
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "target",
+         "value": 1,
+         "relative": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "poison",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "target",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 5,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 ally"
+      },
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "damage",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Decaying Will",
+  "level": 1,
+  "initiative": 46,
+  "sourceId": 124,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 5
+      },
+      {
+       "type": "condition",
+       "value": "poison"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %attack% if the target is adjacent to at least one of your summons."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "All of your summons' attacks are unaffected by %retaliate%."
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Dark Tidings",
+  "level": 1,
+  "initiative": 43,
+  "sourceId": 125,
+  "top": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant three of your summons:",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 0,
+       "relative": true,
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "curse"
+        }
+       ]
+      },
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "dark"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "condition",
+           "value": "poison"
+          },
+          {
+           "type": "custom",
+           "text": ","
+          },
+          {
+           "type": "custom",
+           "text": "%xp% 1"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Angry Spirits",
+  "level": 1,
+  "initiative": 76,
+  "sourceId": 126,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Wraith",
+     "stats": {
+      "health": 1,
+      "move": 2,
+      "attack": 1,
+      "range": 3
+     },
+     "special": [
+      {
+       "type": "fly"
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "move",
+      "range"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On the next death of one of your summons due to %damage% from an attack, the attacker suffers %damage%2."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0
+     ]
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Fell Remedy",
+  "level": 1,
+  "initiative": 30,
+  "sourceId": 127,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 ally"
+      },
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "heal",
+         "value": 2,
+         "relative": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If an enemy has died this round, perform:"
+    },
+    {
+     "type": "heal",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Flow of the Black River",
+  "level": 1,
+  "initiative": 18,
+  "sourceId": 128,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": "X+1",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Where X is the number of your summons."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "grant",
+     "text": "Grant one of your summons:",
+     "actions": [
+      {
+       "type": "move",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Command the Wretched",
+  "level": 1,
+  "initiative": 83,
+  "sourceId": 129,
+  "top": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant one of your summons:",
+     "actions": [
+      {
+       "type": "move",
+       "value": 0,
+       "relative": true
+      },
+      {
+       "type": "attack",
+       "value": 0,
+       "relative": true
+      },
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "dark"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "pierce",
+           "value": 2
+          }
+         ]
+        }
+       ],
+       "noLine": true
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant one ally:",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 5
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "Eternal Torment",
+  "level": 1,
+  "initiative": 70,
+  "sourceId": 130,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "curse",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 5
+      }
+     ]
+    },
+    {
+     "type": "grant",
+     "text": "Grant one of your summons adjacent to the target of the curse ability:",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 0,
+       "relative": true
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant one of your summons:",
+     "actions": [
+      {
+       "type": "loot",
+       "value": 1
+      },
+      {
+       "type": "custom",
+       "text": "with you gaining all looted tokens and tiles."
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Malicious Conversion",
+  "level": 1,
+  "initiative": 26,
+  "sourceId": 131,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If this attack kills the target, immediately play a card from your discard pile to perform a summon action of the card, reducing any %damage% you suffer by 2."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth/dark",
+       "either": true
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "move",
+         "value": 2,
+         "relative": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Approach Oblivion",
+  "level": "X",
+  "initiative": 53,
+  "sourceId": 132,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 4,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all allies"
+      },
+      {
+       "type": "range",
+       "value": 2
+      },
+      {
+       "type": "condition",
+       "value": "bless"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "damage",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "curse",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant one of your summons:",
+     "actions": [
+      {
+       "type": "move",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Exploding Corpse",
+  "level": "X",
+  "initiative": 21,
+  "sourceId": 133,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Designate one of your summons and perform:"
+    },
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all enemies adjacent to the designated summon"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Kill the designated summon."
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "When the next enemy dies this round, all allies and enemies adjacent to the hex in which it died suffer %damage%2."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Wrath of the Turned Earth",
+  "level": "X",
+  "initiative": 80,
+  "sourceId": 134,
+  "top": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant one of your summons:",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 1,
+       "relative": true
+      },
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "earth"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "condition",
+           "value": "poison"
+          },
+          {
+           "type": "custom",
+           "text": ","
+          },
+          {
+           "type": "custom",
+           "text": "%xp% 1"
+          }
+         ]
+        }
+       ],
+       "noLine": true
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On the next three sources of %damage% to one of your summons, negate the %damage%."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      1,
+      0,
+      1
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Unearthed Horror",
+  "level": 2,
+  "initiative": 94,
+  "sourceId": 135,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Raging Corpse",
+     "stats": {
+      "health": 6,
+      "move": 2,
+      "attack": 3,
+      "range": "-"
+     },
+     "special": [],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant one of your summons:",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "poison",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "all"
+        },
+        {
+         "type": "range",
+         "value": 1
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Bone Dagger",
+  "level": 2,
+  "initiative": 29,
+  "sourceId": 136,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "curse"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %attack% for each of your summons."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "curse",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "range",
+         "value": 2,
+         "relative": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If the target dies this round, immediately play a card from your discard pile to perform a summon action of the card, reducing any %damage% you suffer by 2."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Grave Digging",
+  "level": 3,
+  "initiative": 96,
+  "sourceId": 137,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Shambling Skeleton",
+     "stats": {
+      "health": 3,
+      "move": 2,
+      "attack": 2,
+      "range": "-"
+     },
+     "special": [],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "damage",
+       "value": 1,
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Play a card from your discard pile to perform a summon action of the card."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "damage",
+       "value": 1,
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Putrid Cloud",
+  "level": 3,
+  "initiative": 28,
+  "sourceId": 138,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Designate one of your summons and perform:"
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all enemies adjacent to the designated summon"
+      },
+      {
+       "type": "condition",
+       "value": "poison"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Kill the designated summon."
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Whenever an enemy attacks you or one of your summons, that enemy gains %poison%. If that enemy already has %poison%, it suffers %damage%1 after the attack instead."
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Critical Failure",
+  "level": 4,
+  "initiative": 95,
+  "sourceId": 139,
+  "top": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant one of your summons:",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 1,
+       "relative": true
+      },
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "dark"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "custom",
+           "text": "Grant two of your summons the attack ability instead."
+          }
+         ]
+        }
+       ],
+       "noLine": true
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "If %curse% causes an enemy to deal no %damage% during its attack, grant all your summons adjacent to that enemy:",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 0,
+       "relative": true,
+       "subActions": [
+        {
+         "type": "target",
+         "value": "that enemy"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Flesh Shield",
+  "level": 4,
+  "initiative": 16,
+  "sourceId": 140,
+  "top": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant one ally within %range%3:",
+     "actions": [
+      {
+       "type": "shield",
+       "value": 1
+      },
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "earth"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "shield",
+           "value": 1,
+           "relative": true
+          }
+         ]
+        }
+       ],
+       "noLine": true
+      },
+      {
+       "type": "retaliate",
+       "value": 1,
+       "enhancement": [
+        "diamondPlus"
+       ]
+      },
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "dark"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "retaliate",
+           "value": 1,
+           "relative": true
+          },
+          {
+           "type": "custom",
+           "text": ","
+          },
+          {
+           "type": "custom",
+           "text": "%xp% 1"
+          }
+         ]
+        }
+       ],
+       "noLine": true
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "damage",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "On the next source of %damage% to one of your summons, negate the %damage%."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0
+     ]
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Unforgivable Methods",
+  "level": 5,
+  "initiative": 98,
+  "sourceId": 141,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Stitched Atrocity",
+     "stats": {
+      "health": 8,
+      "move": 2,
+      "attack": 3,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "condition",
+       "value": "wound"
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "damage",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "heal",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "range",
+         "value": 1,
+         "relative": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Solid Bones",
+  "level": 5,
+  "initiative": 32,
+  "sourceId": 142,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "All Shambling Skeletons have +1 %heal%, +1 %move%, and %pierce%1."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Rotting Multitude",
+  "level": 6,
+  "initiative": 66,
+  "sourceId": 143,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Shambling Skeleton",
+     "stats": {
+      "health": 3,
+      "move": 2,
+      "attack": 2,
+      "range": "-"
+     },
+     "special": [],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "damage",
+       "value": 6,
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "move",
+         "value": 4
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "grant",
+     "text": "Grant one of your summons:",
+     "actions": [
+      {
+       "type": "move",
+       "value": 4
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Twisted Decree",
+  "level": 6,
+  "initiative": 85,
+  "sourceId": 144,
+  "top": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant one of your summons:",
+     "actions": [
+      {
+       "type": "move",
+       "value": 1,
+       "relative": true
+      },
+      {
+       "type": "attack",
+       "value": 1,
+       "relative": true
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      },
+      {
+       "type": "condition",
+       "value": "poison"
+      },
+      {
+       "type": "condition",
+       "value": "curse"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Recycled Limbs",
+  "level": 7,
+  "initiative": 52,
+  "sourceId": 145,
+  "top": {
+   "actions": [
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth",
+        "dark"
+       ],
+       "either": true
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "custom",
+         "text": "Play a card from your discard pile to perform a summon action of the card."
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "grant",
+     "text": "Grant all your summons:",
+     "actions": [
+      {
+       "type": "move",
+       "value": 0,
+       "relative": true
+      },
+      {
+       "type": "attack",
+       "value": 1,
+       "relative": true
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On the next three deaths of any figure, perform:"
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 ally"
+      },
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      0,
+      1
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Soul Claim",
+  "level": 7,
+  "initiative": 23,
+  "sourceId": 146,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On the next three monster deaths within %range%3, add 1 %curse% card to the monster attack modifier deck."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      0,
+      1
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "When the next monster dies this round, immediately play a card from your discard pile to perform a summon action of the card, reducing any %damage% you suffer by 2 and acting as if you occupied the hex in which that monster died."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Endless Numbers",
+  "level": 8,
+  "initiative": 86,
+  "sourceId": 147,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Bone Horde",
+     "stats": {
+      "health": 7,
+      "move": 3,
+      "attack": 3,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "+1 %attack% for each token on this card."
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Shambling Skeletons may end their move abilities on this summon. If they do, kill them and add a token to this card, up to a maximum of five. Whenever this summon would suffer %damage%, you may remove a token to negate the %damage%."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant one of your summons:",
+     "actions": [
+      {
+       "type": "move",
+       "value": 0,
+       "relative": true
+      }
+     ]
+    },
+    {
+     "type": "grant",
+     "text": "Grant one of your summons:",
+     "actions": [
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "dark"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "condition",
+           "value": "wound"
+          },
+          {
+           "type": "custom",
+           "text": ","
+          },
+          {
+           "type": "target",
+           "value": "all"
+          },
+          {
+           "type": "custom",
+           "text": ","
+          },
+          {
+           "type": "range",
+           "value": 1
+          }
+         ]
+        }
+       ],
+       "noLine": true
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Wailing from Beyond",
+  "level": 8,
+  "initiative": 73,
+  "sourceId": 148,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "condition",
+         "value": "muddle"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All targets adjacent to at least one of your summons gain %curse%."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 ally"
+      },
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "condition",
+         "value": "ward"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Unholy Prowess",
+  "level": 9,
+  "initiative": 97,
+  "sourceId": 149,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Skeleton Sorcerer",
+     "stats": {
+      "health": 6,
+      "move": 3,
+      "attack": 3,
+      "range": 3
+     },
+     "special": [],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack",
+      "range"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All Shambling Skeletons have +1 %heal%."
+    },
+    {
+     "type": "custom",
+     "text": "Whenever one of your summons kills an enemy with a ranged attack, %earth%/%dark%."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Ignore all"
+      },
+      {
+       "type": "mandatory",
+       "actions": [
+        {
+         "type": "damage",
+         "value": "X",
+         "subActions": [
+          {
+           "type": "target",
+           "value": "self"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "abilities"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "on your ability cards."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth/dark",
+       "either": true
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Behold the Shrouded Sun",
+  "level": 9,
+  "initiative": 10,
+  "sourceId": 150,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "The next enemy that kills one of your summons this round gains %bane%."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "damage",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All enemies within %range%5 suffer %damage%1."
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth",
+        "dark"
+       ],
+       "either": true
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "damage",
+         "value": 1,
+         "relative": true
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  }
+ }
+]

@@ -1,0 +1,2639 @@
+[
+ {
+  "name": "Black Boon",
+  "level": "A",
+  "initiative": 43,
+  "sourceId": 143,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4
+    }
+   ]
+  }
+ },
+ {
+  "name": "Turn Out the Lights",
+  "level": "A",
+  "initiative": 49,
+  "sourceId": 144,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Force one enemy within %range%3 to perform."
+    },
+    {
+     "type": "attack",
+     "value": 2
+    },
+    {
+     "type": "custom",
+     "text": "targeting an enemy of your choice adjacent to them."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Wicked Scratch",
+  "level": "A",
+  "initiative": 68,
+  "sourceId": 145,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "One ally within %range%2 may perform."
+    },
+    {
+     "type": "attack",
+     "value": 4
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "condition",
+     "value": "strengthen",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Suggestion",
+  "level": "A",
+  "initiative": 23,
+  "sourceId": 146,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Force one enemy within %range%3 to perform."
+    },
+    {
+     "type": "attack",
+     "value": 3
+    },
+    {
+     "type": "custom",
+     "text": "targeting an enemy of your choice adjacent to them."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "condition",
+     "value": "muddle",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Gift of the Void",
+  "level": "A",
+  "initiative": 89,
+  "sourceId": 147,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "One ally within %range%3 may perform."
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Lure of the Void",
+  "level": "A",
+  "initiative": 67,
+  "sourceId": 148,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "stun",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "One ally within %range%3 may perform."
+    },
+    {
+     "type": "attack",
+     "value": 3
+    },
+    {
+     "type": "custom",
+     "text": "If they do, this ally suffers %damage%1."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Lure of the Void",
+  "level": "B",
+  "initiative": 67,
+  "sourceId": 149,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "disarm",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Force the target to perform."
+    },
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "custom",
+     "text": "with you controlling the action."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "One ally within %range%3 may perform."
+    },
+    {
+     "type": "attack",
+     "value": 6
+    },
+    {
+     "type": "custom",
+     "text": "If they do, this ally suffers %damage%2."
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Wicked Scratch",
+  "level": "B",
+  "initiative": 68,
+  "sourceId": 150,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "One ally within %range%2 may perform."
+    },
+    {
+     "type": "attack",
+     "value": 4
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "condition",
+     "value": "strengthen",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Signs of the Void",
+  "level": 1,
+  "initiative": 15,
+  "sourceId": 151,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "One ally within %range%3 may perform."
+    },
+    {
+     "type": "shield",
+     "value": 1,
+     "enhancement": [
+      "diamondPlus"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "This same ally may perform."
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "At the start of your next five turns, perform a \"%curse%, %range%2\" action."
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%persistent%"
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%lost%"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Close to the Abyss",
+  "level": 1,
+  "initiative": 72,
+  "sourceId": 152,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2,
+       "enhancement": [
+        "circle"
+       ]
+      },
+      {
+       "type": "target",
+       "value": 2,
+       "enhancement": [
+        "circle"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "All allies who remove %poison% with this heal gain %bless%."
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Force all enemies within %range%3 to perform."
+    },
+    {
+     "type": "move",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "with you controlling the actions."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Gift of the Void",
+  "level": 1,
+  "initiative": 89,
+  "sourceId": 153,
+  "top": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "poison",
+       "subActions": [
+        {
+         "type": "range",
+         "value": 3
+        }
+       ]
+      },
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "One adjacent ally may perform."
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "targeting the target of the %poison%. If they do, this ally suffers %damage%2."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Black Boon",
+  "level": 1,
+  "initiative": 43,
+  "sourceId": 154,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 5,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "condition",
+       "value": "poison"
+      }
+     ]
+    },
+    {
+     "type": "element",
+     "value": "dark"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "custom",
+     "text": "One ally within %range%3 may perform."
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Freeze the Soul",
+  "level": 1,
+  "initiative": 58,
+  "sourceId": 155,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "poison"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "condition",
+         "value": "muddle"
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "stun",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "circle"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "curse",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Ignore the %curse% instead."
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Wicked Scratch",
+  "level": 1,
+  "initiative": 68,
+  "sourceId": 156,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "One ally within %range%2 may perform."
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "condition",
+     "value": "strengthen",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Turn Out the Lights",
+  "level": 1,
+  "initiative": 49,
+  "sourceId": 157,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "circle"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "condition",
+         "value": "curse"
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "<small>Force one enemy within %range%3 to perform</small>"
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "<small>targeting an enemy of your choice. The acting enemy suffers damage equal to the damage suffered by the target.</small>"
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Lure of the Void",
+  "level": 1,
+  "initiative": 67,
+  "sourceId": 158,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "disarm",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "circle"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Force the target to perform."
+    },
+    {
+     "type": "move",
+     "value": 1
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "move",
+         "value": 2,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "custom",
+     "text": "with you controlling the action."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "One ally within %range%3 may perform."
+    },
+    {
+     "type": "attack",
+     "value": 5
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 2,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "custom",
+     "text": "If they do, gain %xp% 1 and this ally suffers %damage%2."
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Grasp of Doom",
+  "level": 1,
+  "initiative": 36,
+  "sourceId": 159,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "poison"
+      },
+      {
+       "type": "condition",
+       "value": "wound"
+      },
+      {
+       "type": "condition",
+       "value": "curse"
+      },
+      {
+       "type": "condition",
+       "value": "stun"
+      },
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "element",
+         "value": "ice"
+        },
+        {
+         "type": "element",
+         "value": "dark"
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 2"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [],
+     "effects": [
+      {
+       "type": "move",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Master Influence",
+  "level": 1,
+  "initiative": 83,
+  "sourceId": 160,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "The first attack performed in each of your attack granting actions gains Advantage, and you may %wild% to add +1 %attack% to it. In addition, when you grant monsters attacks, they use your attack modifier deck."
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 2"
+      },
+      {
+       "type": "custom",
+       "text": "%persistent%"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "bless",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "poison",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "element",
+     "value": "ice"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Suggestion",
+  "level": 1,
+  "initiative": 23,
+  "sourceId": 161,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "<small>Force one enemy within %range%4 to perform</small>"
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "<small>with you controlling the action and</small>"
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "diamond"
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 2"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "<small>targeting an enemy of your choice adjacent to them.</small>"
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%stun% the acting enemy."
+      }
+     ],
+     "noLine": true
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "curse",
+       "subActions": [
+        {
+         "type": "range",
+         "value": 3
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  }
+ },
+ {
+  "name": "Resigned Frenzy",
+  "level": "X",
+  "initiative": 26,
+  "sourceId": 162,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Force all enemies within %range%3 to perform."
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "targeting enemies of your choice adjacent to them."
+    },
+    {
+     "type": "custom",
+     "text": "%xp% 2"
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "move",
+         "value": -1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      },
+      {
+       "type": "attack",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Cold Embrace",
+  "level": "X",
+  "initiative": 71,
+  "sourceId": 163,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "curse",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "target",
+       "value": 3,
+       "enhancement": [
+        "circle"
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "range",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "target",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "move",
+       "value": 3
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "custom",
+     "text": "All adjacent allies suffer %damage%1."
+    },
+    {
+     "type": "condition",
+     "value": "bless",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent allies"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Sap Warmth",
+  "level": "X",
+  "initiative": 59,
+  "sourceId": 164,
+  "top": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "poison",
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "range",
+         "value": 3
+        }
+       ]
+      },
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "<small>The next three times after an ally attacks an enemy with %poison%, that ally may perform a \"%heal%1, self\" action.</small>"
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%persistent%"
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "heal",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self and all allies within 2 hexes"
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Give and Take",
+  "level": 2,
+  "initiative": 21,
+  "sourceId": 165,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "poison"
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Target self or one ally within %range%2."
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%bless%, %strengthen%"
+    },
+    {
+     "type": "custom",
+     "text": "Target a different ally within %range%3."
+    },
+    {
+     "type": "element",
+     "value": "dark"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "curse"
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Target all enemies moved through during the movement."
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      },
+      {
+       "type": "element",
+       "value": "ice"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Crushing Cold",
+  "level": 2,
+  "initiative": 86,
+  "sourceId": 166,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "One ally within %range%3 may perform."
+    },
+    {
+     "type": "attack",
+     "value": 4,
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "condition",
+         "value": "muddle"
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "custom",
+     "text": "%xp% 1"
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "condition",
+     "value": "muddle",
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "element",
+     "value": "ice"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Taunting Fate",
+  "level": 3,
+  "initiative": 13,
+  "sourceId": 167,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 6,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Shuffle one %bless% card into the monster attack modifier deck."
+    },
+    {
+     "type": "custom",
+     "text": "%xp% 1"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "<small>The next time you grant an attack this turn, add +1 %attack% to the entire Attack action.</small>"
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "custom",
+         "text": "Add +2 %attack% instead."
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "custom",
+     "text": "<small>All attacks targeting you add +2 %attack% this round. This card cannot be discarded before the end of the round.</small>"
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Commanding Presence",
+  "level": 3,
+  "initiative": 75,
+  "sourceId": 168,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "<small>At the start of your next five turns, one ally within %range%3 may perform an \"%attack%2\" action.</small>"
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%persistent%"
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%lost%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "curse",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Ignore the %curse% instead."
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "One ally within %range%3 may perform."
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Savage Instinct",
+  "level": 4,
+  "initiative": 51,
+  "sourceId": 169,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Force one enemy within %range%3 to perform."
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "targeting all other enemies adjacent to it. The acting enemy suffers %damage%1 for each enemy targeted."
+    },
+    {
+     "type": "custom",
+     "text": "%xp% 2"
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "condition",
+       "value": "strengthen"
+      },
+      {
+       "type": "condition",
+       "value": "poison"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "bless"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "The Last Journey",
+  "level": 4,
+  "initiative": 38,
+  "sourceId": 170,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "condition",
+       "value": "curse"
+      }
+     ]
+    },
+    {
+     "type": "element",
+     "value": "dark"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4
+    },
+    {
+     "type": "custom",
+     "text": "Force one adjacent enemy to perform."
+    },
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "custom",
+     "text": "with you controlling the action. This enemy gains %immobilize%."
+    },
+    {
+     "type": "custom",
+     "text": "%xp% 1"
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Stand Fast",
+  "level": 5,
+  "initiative": 90,
+  "sourceId": 172,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "<small>Place the Ward in an adjacent empty hex. It is considered an obstacle for all purposes. All enemies that enter a hex adjacent to the Ward gain %poison%. All enemies gain Disadvantage on all their attacks not granted by you while within %range%3 of the Ward.</small>"
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 2"
+      },
+      {
+       "type": "custom",
+       "text": "%persistent%"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "One ally or enemy within %range%3 may perform."
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "targeting an enemy of your choice."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Withering Conviction",
+  "level": 6,
+  "initiative": 44,
+  "sourceId": 173,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "<small>Two allies within %range%2 may each suffer %damage%2. Each ally who does may perform</small>"
+    },
+    {
+     "type": "attack",
+     "value": 6,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%xp% 2"
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "curse",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Ignore the %curse% instead."
+      }
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "curse",
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      },
+      {
+       "type": "target",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Surge of Power",
+  "level": 6,
+  "initiative": 81,
+  "sourceId": 174,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Heal all damage on one ally within %range%3. If you do, that ally gains %muddle%."
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 2"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Any time you or any ally loses %poison%, that figure gains %strengthen%."
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 2"
+      },
+      {
+       "type": "custom",
+       "text": "%persistent%"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Hateful Blast",
+  "level": 7,
+  "initiative": 29,
+  "sourceId": 175,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "condition",
+       "value": "muddle"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "condition",
+         "value": "wound"
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "<small>Force one enemy within %range%3 to perform</small>"
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "range",
+         "value": 2
+        },
+        {
+         "type": "condition",
+         "value": "wound"
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 2"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "range",
+       "value": 1,
+       "relative": true
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "custom",
+     "text": "<small>targeting three enemies of your choice.</small>"
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Spirit Hunger",
+  "level": 7,
+  "initiative": 68,
+  "sourceId": 176,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "One ally within %range%2 may perform."
+    },
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If they do, this ally may perform."
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "heal",
+       "value": "X"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 2"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "where X is the amount of damage suffered by the target of the attack."
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "heal",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "range",
+         "value": 1,
+         "relative": true
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Lull into Oblivion",
+  "level": 8,
+  "initiative": 11,
+  "sourceId": 177,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%stun%, %curse%"
+    },
+    {
+     "type": "range",
+     "value": 3
+    },
+    {
+     "type": "target",
+     "value": 2
+    },
+    {
+     "type": "custom",
+     "text": "If this card is discarded before the end of the round or either target suffers damage this round, both targets lose %stun%."
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      },
+      {
+       "type": "custom",
+       "text": "%round%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "You and all allies within %range%2 may perform."
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "move",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  }
+ },
+ {
+  "name": "Empowered Link",
+  "level": 8,
+  "initiative": 59,
+  "sourceId": 178,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On your next three Heal abilities when possible, target an additional ally."
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%persistent%"
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%lost%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "bless",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self and all adjacent allies"
+      }
+     ]
+    },
+    {
+     "type": "element",
+     "value": "ice"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Eye of the Void",
+  "level": 9,
+  "initiative": 19,
+  "sourceId": 179,
+  "top": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "poison",
+       "subActions": [
+        {
+         "type": "range",
+         "value": 4
+        }
+       ]
+      },
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Force all other enemies within %range%3 of the target to perform."
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "range",
+         "value": 3
+        }
+       ]
+      },
+      {
+       "type": "optional",
+       "cost": null,
+       "actions": [
+        {
+         "type": "custom",
+         "text": "targeting that target."
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 2"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All allies and enemies within %range%3 suffer %damage%1."
+    },
+    {
+     "type": "condition",
+     "value": "strengthen",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all allies within 3 hexes"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Possessed by Fate",
+  "level": 9,
+  "initiative": 66,
+  "sourceId": 180,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      },
+      {
+       "type": "target",
+       "value": 3
+      },
+      {
+       "type": "condition",
+       "value": "poison"
+      },
+      {
+       "type": "condition",
+       "value": "wound"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "condition",
+         "value": "curse"
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "One ally within %range%3 may perform."
+    },
+    {
+     "type": "attack",
+     "value": 8,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "condition",
+         "value": "stun"
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "custom",
+     "text": "If they do, gain %xp% 1 and this ally gains %poison%."
+    }
+   ],
+   "lost": true
+  }
+ }
+]

@@ -1,6 +1,6 @@
 """Convert the Gloomhaven 2e character ability decks of the Gloomhaven Secretariat into the action JSON of tools/*-ability-cards.code.json.
 
-Usage: python tools/convert-secretariat-cards.py <data/gh2e folder of a clone of Lurkars/gloomhavensecretariat> [output folder] [class name ...]
+Usage: python tools/convert-secretariat-cards.py <clone of Lurkars/gloomhavensecretariat, or its data/<edition> folder> [--edition gh2e|fh|jotl] [output folder] [class name ...]
 Default output folder: tools/secretariat-cards/. No dependencies.
 
 Input:  data/gh2e/character/deck/<icon>.json (cards with actions and bottomActions), label/en.json and label/spoiler/en.json (card texts).
@@ -22,9 +22,17 @@ ICON_CLASS = {
     'two-mini': 'Wildfury',
 }   # lightning, three-spears and triangles are not named in the Secretariat labels; matched by the card names against gh2_cards.js
 
+FH_CLASS = {
+    'astral': 'Infuser', 'banner-spear': 'Banner Spear', 'blinkblade': 'Blinkblade', 'boneshaper': 'Boneshaper', 'coral': 'Crashing Tide', 'deathwalker': 'Deathwalker',
+    'drifter': 'Drifter', 'drill': 'Metal Mosaic', 'fist': 'Frozen Fist', 'geminate': 'Geminate', 'kelp': 'Deepwraith', 'meteor': 'Pyroclast', 'prism': 'H.I.V.E.',
+    'shackles': 'Pain Conduit', 'shards': 'Shattersong', 'snowflake': 'Snowdancer', 'trap': 'Trapper',
+}   # the Secretariat names the Frosthaven decks by icon; names from label/spoiler/en.json
+JOTL_CLASS = {'demolitionist': 'Demolitionist', 'hatchet': 'Hatchet', 'red-guard': 'Red Guard', 'voidwarden': 'Voidwarden'}
+EDITIONS = {'gh2e': ICON_CLASS, 'fh': FH_CLASS, 'jotl': JOTL_CLASS}
+
 SIMPLE = {'attack', 'move', 'heal', 'shield', 'retaliate', 'push', 'pull', 'pierce', 'teleport', 'jump', 'loot', 'range', 'target', 'damage', 'fly'}
 ENH = {'diamond_plus': 'diamondPlus'}
-SPECIAL_TARGET = {'self': 'self', 'all': 'all', 'enemiesAdjacent': 'all adjacent enemies', 'enemiesMovedThrough': 'all enemies moved through', 'ally': '1 ally', 'allies': 'all allies'}
+SPECIAL_TARGET = {'alliesAdjacent': 'all adjacent allies', 'allyAdjacent': '1 adjacent ally', 'enemyAdjacent': '1 adjacent enemy', 'selfAlliesAdjacentAffect': 'self and all adjacent allies', 'self': 'self', 'all': 'all', 'enemiesAdjacent': 'all adjacent enemies', 'enemiesMovedThrough': 'all enemies moved through', 'ally': '1 ally', 'allies': 'all allies'}
 unmapped = {}
 
 
@@ -49,7 +57,7 @@ class Labels:
 
     def get(self, key):
         """'%data.custom.gh2e.lightning.abilities.323.1%' -> the text."""
-        node = self.tree.get('gh2e', {})
+        node = self.tree.get(key.split('.')[2], {})
         for part in key.split('.')[3:]:
             if not isinstance(node, dict) or part not in node:
                 note('label missing', key)
@@ -82,12 +90,23 @@ def token(m):
     m2 = re.fullmatch(r'game\.elementHalf(?:\.consume)?', t)
     if m2 and arg:
         return '/'.join('%' + e + '%' for e in arg.split('|'))
+    m2 = re.fullmatch(r'game\.(range|target)', t)
+    if m2:
+        return '%' + m2.group(1) + '%' + (arg or '')
+    m2 = re.fullmatch(r'data\.damage', t)
+    if m2:
+        return '%damage%' + (arg or '')
+    m2 = re.fullmatch(r'(?:data|game)\.(?:characterToken|characterIconIdentity)\.([\w.-]+)', t)
+    if m2:
+        return '%' + m2.group(1).replace('.', '-') + '%'     # a class token or identity icon: the name is kept for the owner to resolve
+    if t == 'game.specialTarget.self':
+        return 'self'
     if t == 'game.enhancement.square' or t.startswith('game.enhancement.'):
         return ''
     m2 = re.fullmatch(r'game\.itemSlot', t)
     if m2 and arg:
         return '%' + arg + '%'
-    m2 = re.fullmatch(r'(?:data\.action\.custom|data\.customAction|game\.customAction|game\.custom|data\.condition)[.:]?(?:gh2e-)?([\w-]+)', t + (':' + arg if arg and 'Action' in t else ''))
+    m2 = re.fullmatch(r'(?:data\.action\.custom|data\.customAction|game\.customAction|game\.action\.custom|game\.custom|data\.condition)[.:]?(?:gh2e-)?([\w-]+)', t + (':' + arg if arg and 'Action' in t else ''))
     if m2:
         return '%' + m2.group(1) + '%'
     note('text token', m.group(0))
@@ -113,7 +132,7 @@ def enhancement(a):
     return e
 
 
-HEX = {'target': 't', 'active': 's', 'enhance': 'x'}
+HEX = {'target': 't', 'active': 's', 'enhance': 'x', 'ally': 'a'}
 
 
 def hex_pattern(value):
@@ -233,6 +252,9 @@ def one(a, labels, where):
         return [r]
     if t == 'specialTarget':
         v = SPECIAL_TARGET.get(a['value'])
+        m = re.fullmatch(r'(enemies|allies|selfAllies)Range:(\d+)', a['value'])
+        if v is None and m:
+            v = {'enemies': 'all enemies', 'allies': 'all allies', 'selfAllies': 'self and all allies'}[m.group(1)] + ' within %s hexes' % m.group(2)
         if v is None:
             note('special target', a['value'])
             v = a['value']
@@ -244,7 +266,7 @@ def one(a, labels, where):
         return kids
     if t == 'concatenation':
         cards = [s for s in subs or [] if s['type'] == 'card']
-        if subs and len(cards) + sum(1 for s in subs if s['type'] == 'concatenationSpacer') == len(subs) and cards:
+        if subs and len(cards) + sum(1 for s in subs if s['type'] == 'concatenationSpacer') == len(subs) and cards and all(c['value'].startswith('slot') for c in cards):
             slots = []
             for c in cards:
                 v = c['value']
@@ -261,7 +283,9 @@ def one(a, labels, where):
         v = a['value']
         if v.startswith('experience'):
             return [{'type': 'custom', 'text': '%xp% ' + v.split(':')[1]}]
-        if v in ('round', 'persistent'):
+        if v in ('round', 'persistent', 'lost'):
+            if where.count('/') >= 1:                         # an icon inside a row of text
+                return [{'type': 'custom', 'text': '%' + v + '%'}]
             return []                                         # the flag of the half, set from the card
         if v.startswith('slot'):                              # a single token slot (a number gives that much experience)
             return [{'type': 'tokens', 'slots': [int(v.split(':')[1]) if ':' in v else 0]}]
@@ -269,12 +293,18 @@ def one(a, labels, where):
         return [{'type': 'raw', 'secretariat': a}]
     if t == 'concatenationSpacer':
         return []
+    if t == 'hint':                                           # a hint of the Secretariat's own app, not printed on the card
+        note('hint dropped', where)
+        return []
+    if t == 'extra':
+        return convert(subs, labels, where + '/extra')
     if t == 'fontSize':
         return convert(subs, labels, where + '/fontSize')
     if t == 'boxFhSubActions':
         return [{'type': 'group', 'actions': convert(subs, labels, where + '/boxFh')}]
     if t == 'box':
-        return [{'type': 'custom', 'text': sentence(text(a['value'], labels))}]
+        head = [{'type': 'custom', 'text': sentence(text(a['value'], labels))}] if a.get('value') else []
+        return head + convert(subs, labels, where + '/box')
     if t == 'grant':
         r = {'type': 'grant', 'text': text(a['value'], labels), 'actions': convert(subs, labels, where + '/grant')}
         if a.get('multiTarget'):
@@ -444,26 +474,35 @@ def main():
     if not args:
         print(__doc__)
         return 2
+    edition = 'gh2e'
+    if '--edition' in args:
+        i = args.index('--edition')
+        edition = args[i + 1]
+        del args[i:i + 2]
     root = args.pop(0)
-    root = os.path.join(root, 'data', 'gh2e') if os.path.isdir(os.path.join(root, 'data', 'gh2e')) else root
+    root = os.path.join(root, 'data', edition) if os.path.isdir(os.path.join(root, 'data', edition)) else root
     out = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'secretariat-cards')
     if args and re.search(r'[/\\:]', args[0]):
         out = args.pop(0)
     only = {a.lower() for a in args}
     os.makedirs(out, exist_ok=True)
     labels = Labels(root)
-    for icon, cls in ICON_CLASS.items():
+    for icon, cls in EDITIONS[edition].items():
         if only and cls.lower() not in only:
             continue
         deck = json.load(open(os.path.join(root, 'character', 'deck', icon + '.json'), encoding='utf-8'))
         cards = []
+        if all('character.abilities.wip' in json.dumps(c) for c in deck['abilities']):
+            print('%-12s skipped: the Secretariat has only placeholders (wip) for all %d cards' % (cls, len(deck['abilities'])))
+            continue
         for c in deck['abilities']:
-            cards.append({'name': c['name'], 'level': c['level'], 'initiative': c['initiative'], 'sourceId': c['cardId'], 'top': half(c, labels, False), 'bottom': half(c, labels, True)})
-        path = os.path.join(out, cls.lower().replace(' ', '-') + '-ability-cards.code.json')
+            cards.append({'name': c['name'], 'level': c['level'], 'initiative': c['initiative'] if 'initiative' in c else c['identityInitiative'][0], 'sourceId': c['cardId'], 'top': half(c, labels, False), 'bottom': half(c, labels, True), **({'identityInitiative': c['identityInitiative']} if 'identityInitiative' in c else {})})
+        slug = re.sub(r'[^a-z0-9]+', '-', cls.lower()).strip('-')
+        path = os.path.join(out, slug + '-ability-cards.code.json')
         with open(path, 'w', encoding='utf-8', newline='\n') as f:
             json.dump(cards, f, indent=1, ensure_ascii=False)
             f.write('\n')
-        with open(os.path.join(out, 'card_code_' + cls.lower().replace(' ', '_') + '.md'), 'w', encoding='utf-8', newline='\n') as f:
+        with open(os.path.join(out, 'card_code_' + slug.replace('-', '_') + '.md'), 'w', encoding='utf-8', newline='\n') as f:
             f.write(card_code(cls, cards))
         print('%-12s %2d cards -> %s' % (cls, len(cards), path))
     if unmapped:

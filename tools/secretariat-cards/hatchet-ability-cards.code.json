@@ -1,0 +1,2236 @@
+[
+ {
+  "name": "Stopping Power",
+  "level": "A",
+  "initiative": 35,
+  "sourceId": 2,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "immobilize",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 adjacent enemy"
+      }
+     ]
+    },
+    {
+     "type": "move",
+     "value": 3
+    }
+   ]
+  }
+ },
+ {
+  "name": "Double Throw",
+  "level": "A",
+  "initiative": 64,
+  "sourceId": 3,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "target",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Add +1 %attack% to all your attacks this turn."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Disorienting Barrage",
+  "level": "A",
+  "initiative": 51,
+  "sourceId": 4,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "target",
+       "value": 3
+      },
+      {
+       "type": "condition",
+       "value": "muddle"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "custom",
+     "text": "All adjacent enemies suffer %damage%1."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Second Wind",
+  "level": "A",
+  "initiative": 18,
+  "sourceId": 5,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5
+    }
+   ]
+  }
+ },
+ {
+  "name": "Center Mass",
+  "level": "A",
+  "initiative": 24,
+  "sourceId": 6,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    }
+   ]
+  }
+ },
+ {
+  "name": "Close Cuts",
+  "level": "A",
+  "initiative": 25,
+  "sourceId": 7,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4
+    }
+   ]
+  }
+ },
+ {
+  "name": "Center Mass",
+  "level": "B",
+  "initiative": 24,
+  "sourceId": 8,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "push",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 adjacent enemy"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Close Cuts",
+  "level": "B",
+  "initiative": 25,
+  "sourceId": 9,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3
+      },
+      {
+       "type": "area",
+       "pattern": "et_st"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4
+    },
+    {
+     "type": "loot",
+     "value": 1
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "The Favorite",
+  "level": 1,
+  "initiative": 17,
+  "sourceId": 10,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "<small>Place one of your character tokens on this card. You may add +3 %attack% to any of your ranged attacks by moving the token from this card to the target after the attack ability is resolved. When the target dies, place the token on the hex in which it died. If you loot that hex, return the token to this card.</small>"
+    },
+    {
+     "type": "custom",
+     "text": "%xp% 2"
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "wound",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 adjacent enemy"
+      }
+     ]
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Retrieval",
+  "level": 1,
+  "initiative": 46,
+  "sourceId": 11,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "If the target has your Favorite token, return the token to its card."
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 1
+    },
+    {
+     "type": "loot",
+     "value": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "Close Cuts",
+  "level": 1,
+  "initiative": 25,
+  "sourceId": 12,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "subActions": [
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "et_st_ex"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "move",
+     "value": 2
+    }
+   ]
+  }
+ },
+ {
+  "name": "Center Mass",
+  "level": 1,
+  "initiative": 24,
+  "sourceId": 13,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "circle"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "push",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 adjacent enemy"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Stopping Power",
+  "level": 1,
+  "initiative": 35,
+  "sourceId": 14,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2,
+       "enhancement": [
+        "circle"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "range",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "push",
+         "value": 2
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "immobilize"
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Target all enemies adjacent to any hex you entered during the movement."
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Double Throw",
+  "level": 1,
+  "initiative": 64,
+  "sourceId": 15,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      },
+      {
+       "type": "target",
+       "value": 2,
+       "enhancement": [
+        "circle"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 2"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Double the value of your next attack this round."
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      },
+      {
+       "type": "custom",
+       "text": "%round%"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Disorienting Barrage",
+  "level": 1,
+  "initiative": 51,
+  "sourceId": 16,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "circle"
+       ]
+      },
+      {
+       "type": "target",
+       "value": 3,
+       "enhancement": [
+        "circle"
+       ]
+      },
+      {
+       "type": "condition",
+       "value": "muddle"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "custom",
+     "text": "All adjacent enemies suffer %damage%1."
+    },
+    {
+     "type": "move",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "All adjacent enemies suffer %damage%2."
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      },
+      {
+       "type": "move",
+       "value": 1
+      }
+     ]
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Power Pitch",
+  "level": 1,
+  "initiative": 60,
+  "sourceId": 17,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 6,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%xp% 2"
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "element",
+     "value": "air"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Follow Through",
+  "level": 1,
+  "initiative": 39,
+  "sourceId": 18,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4,
+       "enhancement": [
+        "circle"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Add +2 %attack% and gain %xp% 1 if the target has your Favorite token."
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "push",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 adjacent enemy"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "move",
+       "value": 2
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  }
+ },
+ {
+  "name": "Second Wind",
+  "level": 1,
+  "initiative": 18,
+  "sourceId": 19,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 6,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 2"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Add +2 %move% and gain %xp% 1 if you killed an enemy this round."
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Care Package",
+  "level": "X",
+  "initiative": 30,
+  "sourceId": 20,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "diamondPlus"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Target one ally adjacent to the target of the attack."
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "heal",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1,
+       "enhancement": [
+        "circle"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "element",
+     "value": "earth"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Extra Lift",
+  "level": "X",
+  "initiative": 21,
+  "sourceId": 21,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "circle"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "range",
+         "value": 2,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "move",
+       "value": 4
+      },
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "On your next four Move abilities, add +2 %move%."
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%persistent%"
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%lost%"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Fancy Hat",
+  "level": "X",
+  "initiative": 12,
+  "sourceId": 22,
+  "top": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "shield",
+     "value": 2,
+     "enhancement": [
+      "diamondPlus"
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      },
+      {
+       "type": "custom",
+       "text": "%round%"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Add +1 %attack% to all your attacks this round."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Repeat Shot",
+  "level": 2,
+  "initiative": 31,
+  "sourceId": 23,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Add +2 %attack% and gain %xp% 1 if the target has your Favorite token."
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "circle"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Ricochet",
+  "level": 2,
+  "initiative": 56,
+  "sourceId": 24,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Target a different enemy within %range%2 of the target of the previous Attack ability."
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On your next four attacks when possible, one enemy adjacent to the target suffers %damage%2."
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%persistent%"
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%lost%"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Fearsome Efficiency",
+  "level": 3,
+  "initiative": 58,
+  "sourceId": 25,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 6,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4,
+       "enhancement": [
+        "circle"
+       ]
+      },
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "element",
+         "value": "air"
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 2"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "<small>If this attack kills the target, one enemy adjacent to the hex in which it died suffers X damage, where X is the amount of damage the target would have suffered in excess of what was needed to kill it.</small>"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Add +2 %attack% and gain %xp% 1 if you killed an enemy this round."
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Sharpened Blades",
+  "level": 3,
+  "initiative": 44,
+  "sourceId": 26,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On your next five attacks, add +1 %attack% and %wound%"
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%persistent%"
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%lost%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [],
+     "effects": [
+      {
+       "type": "move",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Ripped From the Flesh",
+  "level": 4,
+  "initiative": 20,
+  "sourceId": 27,
+  "top": {
+   "actions": [
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "If an adjacent enemy has your Favorite token, you may return the token to its card. If you do, the adjacent enemy suffers %damage%2 and gains %wound%."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Add %strengthen% and gain %xp% 1 if you killed an enemy this round."
+      }
+     ]
+    },
+    {
+     "type": "element",
+     "value": "air"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Overwatch",
+  "level": 4,
+  "initiative": 40,
+  "sourceId": 28,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4,
+       "enhancement": [
+        "circle"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "range",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "<small>The next five times an enemy ends a Move ability within %range%5, perform an \"%attack%2, %range%5\" action targeting that enemy.</small>"
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%persistent%"
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%lost%"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "The New Favorite",
+  "level": 5,
+  "initiative": 15,
+  "sourceId": 30,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "<small>Place the Axe token on this card. You may add +3 %attack%, %wound%, and %push%1 to any of your ranged attacks by moving the token from this card to the target after the attack ability is resolved. When the target dies, place the token on the hex in which it died. If you loot that hex, return the token to this card. This card cannot be active while \"The Favorite\" is active.</small>"
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 2"
+      },
+      {
+       "type": "custom",
+       "text": "%persistent%"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
+    },
+    {
+     "type": "move",
+     "value": 4
+    },
+    {
+     "type": "element",
+     "value": "air"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Bombardment",
+  "level": 6,
+  "initiative": 54,
+  "sourceId": 31,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      },
+      {
+       "type": "attack",
+       "value": 3,
+       "subActions": [
+        {
+         "type": "range",
+         "value": 3
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 2"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All adjacent enemies suffer %damage%1."
+    },
+    {
+     "type": "push",
+     "value": 1,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Quick Turnaround",
+  "level": 6,
+  "initiative": 11,
+  "sourceId": 32,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "circle"
+       ]
+      },
+      {
+       "type": "push",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "range",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "push",
+         "value": 2,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "custom",
+     "text": "If your Favorite token is in or adjacent to your hex, you may perform."
+    },
+    {
+     "type": "loot",
+     "value": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "Excessive Force",
+  "level": 7,
+  "initiative": 47,
+  "sourceId": 33,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On your next five attacks targeting an enemy that has your Favorite token, add +2 %attack%."
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%persistent%"
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%lost%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 2,
+         "subActions": [
+          {
+           "type": "range",
+           "value": 2
+          }
+         ]
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  }
+ },
+ {
+  "name": "Brutalize",
+  "level": 7,
+  "initiative": 22,
+  "sourceId": 34,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Add +2 %attack% and gain %xp% 1 if the target has your Favorite token, then return the token to its card."
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      },
+      {
+       "type": "condition",
+       "value": "stun"
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Shrapnel",
+  "level": 8,
+  "initiative": 37,
+  "sourceId": 35,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "circle"
+       ]
+      },
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "condition",
+       "value": "wound"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "target",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "<small>The next five times you kill an enemy, all enemies adjacent to the hex in which it died suffer %damage%2.</small>"
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%persistent%"
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%lost%"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Camaraderie",
+  "level": 8,
+  "initiative": 75,
+  "sourceId": 36,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 adjacent ally"
+      }
+     ]
+    },
+    {
+     "type": "element",
+     "value": "air"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "custom",
+     "text": "Add +2 %attack% to your next attack this turn if you are adjacent to an ally."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Executioner's Axe",
+  "level": 9,
+  "initiative": 79,
+  "sourceId": 37,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "One adjacent normal or elite enemy suffers %damage%12."
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 2"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "If you killed an enemy this round, return your Favorite token to its card and gain %xp% 1."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Heart Seeker",
+  "level": 9,
+  "initiative": 32,
+  "sourceId": 38,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      },
+      {
+       "type": "condition",
+       "value": "stun"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "condition",
+         "value": "wound"
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "<small>The next four times you kill an enemy, perform a \"%heal%3, %range%2, %bless%\" action.</small>"
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%persistent%"
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%lost%"
+      }
+     ]
+    }
+   ]
+  }
+ }
+]

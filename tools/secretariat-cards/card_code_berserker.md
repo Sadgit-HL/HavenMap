@@ -283,6 +283,7 @@ bottom:
     - consume: [fire]
     - multi:
       - custom: "Add +1 %attack% to all your attacks this round."
+      - custom: "%round%"
     noLine: true
 
 name: Tireless Retribution

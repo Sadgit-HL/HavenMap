@@ -164,6 +164,7 @@ bottom:
     - consume: [fire]
     - multi:
       - custom: "Gain advantage on all your attacks this round, %xp1%."
+      - custom: "%round%"
     noLine: true
 
 name: Emberfrost
@@ -404,6 +405,7 @@ bottom:
     - consume: [wild]
     - multi:
       - custom: "Add +1 %attack% to all your attacks this round, %xp1%."
+      - custom: "%round%"
     noLine: true
 
 name: Warm Up

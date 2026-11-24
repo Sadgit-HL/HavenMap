@@ -567,6 +567,7 @@ bottom:
   - optional:
     - consume: [dark]
     - custom: "This attack does not cause you to gain %invisible% at the end of the round, %xp1%."
+    - custom: "%round%"
   - mandatory:
     - dark
 

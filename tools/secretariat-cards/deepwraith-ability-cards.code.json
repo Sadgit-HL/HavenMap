@@ -1,0 +1,1846 @@
+[
+ {
+  "name": "Skull Collection",
+  "level": 1,
+  "initiative": 22,
+  "sourceId": 445,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "During your turn, you may perform any number of the following abilities:"
+    },
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %fh-trophy%:"
+      },
+      {
+       "type": "condition",
+       "value": "poison",
+       "subActions": [
+        {
+         "type": "range",
+         "value": 1
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %fh-trophy%:"
+      },
+      {
+       "type": "condition",
+       "value": "muddle",
+       "subActions": [
+        {
+         "type": "range",
+         "value": 1
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %fh-trophy%:"
+      },
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Hollow Aura",
+  "level": 1,
+  "initiative": 88,
+  "sourceId": 446,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "pierce",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "wild"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Gain 1 %fh-trophy%."
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  }
+ },
+ {
+  "name": "Skewer the Flesh",
+  "level": 1,
+  "initiative": 86,
+  "sourceId": 447,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "teleport",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %fh-trophy% %dark%:"
+      },
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "condition",
+         "value": "invisible",
+         "subActions": [
+          {
+           "type": "target",
+           "value": "self"
+          }
+         ]
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Succumb to Fear",
+  "level": 1,
+  "initiative": 20,
+  "sourceId": 448,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %fh-trophy%:"
+      },
+      {
+       "type": "condition",
+       "value": "bane",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "1 adjacent normal or elite enemy that has three or more negative conditions"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "teleport",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "muddle",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Ink Cloud",
+  "level": 1,
+  "initiative": 28,
+  "sourceId": 449,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "invisible",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "Lacerating Stabs",
+  "level": 1,
+  "initiative": 14,
+  "sourceId": 450,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "wound"
+      }
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "wound"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %attack% if the target is different from the target of the previous attack ability."
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "wound"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +2 %attack% if the target is different from the targets of both previous attack abilities."
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "teleport",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "wound",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Staring into the Abyss",
+  "level": 1,
+  "initiative": 63,
+  "sourceId": 451,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "stun",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      },
+      {
+       "type": "group",
+       "actions": [
+        {
+         "type": "custom",
+         "text": "-1 %fh-trophy% %dark%:"
+        },
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "target",
+           "value": 1,
+           "relative": true
+          },
+          {
+           "type": "custom",
+           "text": ","
+          },
+          {
+           "type": "custom",
+           "text": "%xp% 1"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %fh-trophy%:"
+      },
+      {
+       "type": "condition",
+       "value": "disarm",
+       "subActions": [
+        {
+         "type": "range",
+         "value": 1
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Mantle of Dread",
+  "level": 1,
+  "initiative": 96,
+  "sourceId": 452,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "poison",
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "After one of your move or teleport abilities each turn, give %wound% or %muddle% to one adjacent enemy."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Black Scythe",
+  "level": 1,
+  "initiative": 45,
+  "sourceId": 453,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "curse"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "Gain 1 %fh-trophy%."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Tumultuous Panic",
+  "level": 1,
+  "initiative": 66,
+  "sourceId": 454,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "teleport",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "immobilize",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "teleport",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "disarm",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "Soul Hunger",
+  "level": "X",
+  "initiative": 91,
+  "sourceId": 455,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "bane",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 adjacent normal or elite enemy that has two or more negative conditions"
+      }
+     ]
+    },
+    {
+     "type": "heal",
+     "value": 5,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "If you have %invisible%, gain 1 %fh-trophy%."
+    },
+    {
+     "type": "teleport",
+     "value": 3
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Morbid Camouflage",
+  "level": "X",
+  "initiative": 31,
+  "sourceId": 456,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If this attack kills an enemy, gain %invisible% and %xp% 1."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If this movement ends in a hex with a loot token, gain %invisible%."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Haunting Brutality",
+  "level": "X",
+  "initiative": 23,
+  "sourceId": 457,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "wound"
+      },
+      {
+       "type": "condition",
+       "value": "poison"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "teleport",
+     "value": 6,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All adjacent enemies suffer %damage%2."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "Slipping into Death",
+  "level": 2,
+  "initiative": 89,
+  "sourceId": 458,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If you killed an enemy with the attack ability, perform:"
+    },
+    {
+     "type": "condition",
+     "value": "bane",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 normal enemy adjacent to the hex the killed enemy occupied"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "bane",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 adjacent damaged enemy that has 4 or fewer hit points"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Lie in Wait",
+  "level": 2,
+  "initiative": 98,
+  "sourceId": 459,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "curse",
+     "subActions": [
+      {
+       "type": "target",
+       "value": 3
+      },
+      {
+       "type": "range",
+       "value": 1
+      },
+      {
+       "type": "group",
+       "actions": [
+        {
+         "type": "custom",
+         "text": "-1 %fh-trophy%:"
+        },
+        {
+         "type": "target",
+         "value": 1,
+         "relative": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %range% if you have %invisible%."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "teleport",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %fh-trophy%:"
+      },
+      {
+       "type": "heal",
+       "value": 3,
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Crippling Terror",
+  "level": 3,
+  "initiative": 15,
+  "sourceId": 460,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "group",
+       "actions": [
+        {
+         "type": "custom",
+         "text": "-1 %fh-trophy%:"
+        },
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "push",
+           "value": 2
+          },
+          {
+           "type": "custom",
+           "text": ","
+          },
+          {
+           "type": "condition",
+           "value": "immobilize"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "teleport",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "You and all allies add %pierce%3 to all your attacks this round targeting enemies within %range%2 (of yourself) that have any negative conditions."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Pinning Spines",
+  "level": 3,
+  "initiative": 25,
+  "sourceId": 461,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "disarm"
+      }
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "immobilize",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 5
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All enemies that have %immobilize% suffer %damage%2."
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "Crushing Darkness",
+  "level": 4,
+  "initiative": 40,
+  "sourceId": 462,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "group",
+       "actions": [
+        {
+         "type": "custom",
+         "text": "-1 %fh-trophy%:"
+        },
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "attack",
+           "value": 1,
+           "relative": true
+          },
+          {
+           "type": "custom",
+           "text": ","
+          },
+          {
+           "type": "condition",
+           "value": "curse"
+          },
+          {
+           "type": "custom",
+           "text": ","
+          },
+          {
+           "type": "custom",
+           "text": "%xp% 1"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "muddle",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [],
+     "effects": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Grim Trophies",
+  "level": 4,
+  "initiative": 18,
+  "sourceId": 463,
+  "top": {
+   "actions": [
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "Gain 1 %fh-trophy% for each loot token looted."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Spend any number of %fh-trophy%. For each %fh-trophy% spent, perform:"
+    },
+    {
+     "type": "move",
+     "value": 1
+    },
+    {
+     "type": "attack",
+     "value": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "Extra Decoration",
+  "level": 5,
+  "initiative": 92,
+  "sourceId": 464,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +2 %attack% and gain %xp% 1 if you have %invisible%."
+    },
+    {
+     "type": "custom",
+     "text": "If you killed an enemy with the attack ability, gain 1 (additional) %fh-trophy%."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All adjacent enemies suffer %damage%1."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Death Spiral",
+  "level": 5,
+  "initiative": 48,
+  "sourceId": 465,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Add %stun%, %curse%, and %curse% to your next bane ability."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      1
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Gain advantage on and add %pierce%2 to all your attacks this round."
+    },
+    {
+     "type": "custom",
+     "text": "If you have %invisible%, perform:"
+    },
+    {
+     "type": "teleport",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Claw of Doom",
+  "level": 6,
+  "initiative": 30,
+  "sourceId": 466,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "stun"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "teleport",
+     "value": 5,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "The Remorseless Deep",
+  "level": 6,
+  "initiative": 22,
+  "sourceId": 467,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "brittle",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 adjacent enemy that has %bane%"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Gain 1 %fh-trophy%."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "teleport",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "wound",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Hasten the End",
+  "level": 7,
+  "initiative": 65,
+  "sourceId": 468,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "bane",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 adjacent damaged normal or elite enemy that has %wound%"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "teleport",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "damage",
+       "value": 10,
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "bane",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  }
+ },
+ {
+  "name": "Dire frenzy",
+  "level": 7,
+  "initiative": 26,
+  "sourceId": 469,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2
+    },
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If you have %invisible%, perform:"
+    },
+    {
+     "type": "condition",
+     "value": "poison",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Unseen Horror",
+  "level": 8,
+  "initiative": 19,
+  "sourceId": 470,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %attack%, %brittle%, and gain %xp% 1 if the target has none of its allies in line-of-sight."
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Ignore the line-of-sight restriction."
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "While you have %invisible%, once during your turn, you may spend 1 %fh-trophy% to add +1 %attack% and %wound% to all your attacks for the turn."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Rip from the Bone",
+  "level": 8,
+  "initiative": 11,
+  "sourceId": 471,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      },
+      {
+       "type": "condition",
+       "value": "wound"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Gain 1 %fh-trophy% for each enemy targeted with the attack ability."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "teleport",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "disarm",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Black Night of the Deep",
+  "level": 9,
+  "initiative": 26,
+  "sourceId": 472,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %fh-trophy% %dark%:"
+      },
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "condition",
+         "value": "invisible",
+         "subActions": [
+          {
+           "type": "target",
+           "value": "self"
+          }
+         ]
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 3
+      },
+      {
+       "type": "range",
+       "value": 2
+      },
+      {
+       "type": "condition",
+       "value": "curse"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "teleport",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "immobilize",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Consume the Helpless",
+  "level": 9,
+  "initiative": 12,
+  "sourceId": 473,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "bane",
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 adjacent enemy that has %immobilize% or %stun%"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "At the end of each round, if you gained at least 1 %fh-trophy% this round, perform:"
+    },
+    {
+     "type": "heal",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ }
+]

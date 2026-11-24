@@ -1,0 +1,2746 @@
+[
+ {
+  "name": "Icebound Quills",
+  "level": 1,
+  "initiative": 14,
+  "sourceId": 151,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "pierce",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "pierce",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "shield",
+     "value": 1
+    },
+    {
+     "type": "retaliate",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Draining Pincers",
+  "level": 1,
+  "initiative": 72,
+  "sourceId": 152,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "diamond"
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "sttt"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "custom",
+         "text": "%advantage%"
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%fh-switch-range%"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Hornet Stingers",
+  "level": 1,
+  "initiative": 23,
+  "sourceId": 153,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 1,
+       "subActions": [
+        {
+         "type": "pierce",
+         "value": 3
+        },
+        {
+         "type": "condition",
+         "value": "poison"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "ttt_st_et"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "poison",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "all allies in the red hexes of the attack ability"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%fh-switch-range%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All attacks targeting you this round gain disadvantage."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Changeling's Boon",
+  "level": 1,
+  "initiative": 40,
+  "sourceId": 154,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "bless",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "At the end of each of your turns, you may %wild% to %fire%/%light%."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%fh-switch-range%"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Flailing Tendrils",
+  "level": 1,
+  "initiative": 12,
+  "sourceId": 155,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 1,
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "muddle"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "eeet_ext_ttsx_ext_eeet"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 1,
+         "relative": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "muddle",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "all allies in the red hexes of the attack ability"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "wound",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "wound",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "all allies"
+        },
+        {
+         "type": "range",
+         "value": 2
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "Drag Down",
+  "level": 1,
+  "initiative": 34,
+  "sourceId": 156,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ],
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "immobilize"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "tt_et_es"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%fh-switch-range%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "disarm",
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "Hornbeetle Carapace",
+  "level": 1,
+  "initiative": 20,
+  "sourceId": 157,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On your next four attacks, add +1 %attack% if you are in %geminate-0% or +2 %attack% if you are in %geminate-1%."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      1,
+      0,
+      1
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "shield",
+     "value": 1
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "shield",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Reckless Jab",
+  "level": "X",
+  "initiative": 38,
+  "sourceId": 158,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "group",
+       "actions": [
+        {
+         "type": "custom",
+         "text": "If you do not have %wound%, gain %wound% to add %disarm%."
+        },
+        {
+         "type": "custom",
+         "text": "If you do not have %poison%, gain %poison% to add +2 %attack%."
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "element",
+       "value": "ice/light",
+       "either": true
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "Feeding Frenzy",
+  "level": "X",
+  "initiative": 62,
+  "sourceId": 159,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Whenever you kill one or more enemies during your turn, you may switch forms or ignore any switch form icons at the end of this turn."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "light"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "All adjacent allies and enemies suffer %damage%1."
+    },
+    {
+     "type": "loot",
+     "value": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "Selfless Offering",
+  "level": 1,
+  "initiative": 27,
+  "sourceId": 160,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 ally"
+      },
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "condition",
+         "value": "regenerate"
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%fh-switch-melee%"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Into My Embrace",
+  "level": 1,
+  "initiative": 36,
+  "sourceId": 161,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "pull",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "only %range%3/4"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%fh-switch-melee%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 4,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      },
+      {
+       "type": "condition",
+       "value": "regenerate"
+      },
+      {
+       "type": "element",
+       "value": "fire/light",
+       "either": true
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "Firefly Swarm",
+  "level": 1,
+  "initiative": 76,
+  "sourceId": 162,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3
+      },
+      {
+       "type": "area",
+       "pattern": "tt_t"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4
+    }
+   ]
+  }
+ },
+ {
+  "name": "Scarab flight",
+  "level": 1,
+  "initiative": 30,
+  "sourceId": 163,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "push",
+         "value": 1,
+         "enhancement": [
+          "square"
+         ]
+        }
+       ]
+      },
+      {
+       "type": "optional",
+       "cost": null,
+       "actions": [
+        {
+         "type": "custom",
+         "text": "only %range%3/4"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "xttt"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On the next four sources of %damage% from attacks targeting you, gain %shield%1 if you are in %geminate-1% or %shield%2 if you are in %geminate-0%."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      1,
+      0,
+      1
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Mind Spike",
+  "level": 1,
+  "initiative": 18,
+  "sourceId": 164,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "immobilize",
+     "subActions": [
+      {
+       "type": "target",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "only %range%4/5"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All targets of the immobilize ability suffer %damage%1."
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "damage",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "only %range%3/4"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%fh-switch-melee%"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Harvest the Essence",
+  "level": 1,
+  "initiative": 60,
+  "sourceId": 165,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "ward",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "At the end of each of your turns, you may %wild% to %ice%/%light%."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%fh-switch-melee%"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Hail of Thorns",
+  "level": 1,
+  "initiative": 88,
+  "sourceId": 166,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 2
+      },
+      {
+       "type": "condition",
+       "value": "muddle"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "muddle",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "all allies"
+        },
+        {
+         "type": "range",
+         "value": 2
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "condition",
+         "value": "wound",
+         "subActions": [
+          {
+           "type": "range",
+           "value": 1
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  }
+ },
+ {
+  "name": "Smoldering Hatred",
+  "level": "X",
+  "initiative": 32,
+  "sourceId": 167,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "group",
+       "actions": [
+        {
+         "type": "group",
+         "actions": [
+          {
+           "type": "inline",
+           "actions": [
+            {
+             "type": "condition",
+             "value": "muddle",
+             "subActions": [
+              {
+               "type": "target",
+               "value": "self"
+              }
+             ]
+            },
+            {
+             "type": "custom",
+             "text": ":"
+            }
+           ]
+          },
+          {
+           "type": "attack",
+           "value": 2,
+           "relative": true
+          },
+          {
+           "type": "inline",
+           "actions": [
+            {
+             "type": "condition",
+             "value": "curse",
+             "subActions": [
+              {
+               "type": "target",
+               "value": "self"
+              }
+             ]
+            },
+            {
+             "type": "custom",
+             "text": ":"
+            }
+           ]
+          },
+          {
+           "type": "area",
+           "pattern": "tt"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "only %range%4/5"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "immobilize",
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "Reshape the Guise",
+  "level": "X",
+  "initiative": 38,
+  "sourceId": 168,
+  "top": {
+   "actions": [
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "condition",
+     "value": "regenerate",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "During your short rests, you may choose which discarded card to lose instead of losing a discarded card at random and you may switch forms."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "light"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Venomous Barbs",
+  "level": 2,
+  "initiative": 17,
+  "sourceId": 169,
+  "top": {
+   "actions": [
+    {
+     "type": "retaliate",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      },
+      {
+       "type": "group",
+       "actions": [
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "condition",
+           "value": "disarm",
+           "subActions": [
+            {
+             "type": "target",
+             "value": "self"
+            }
+           ]
+          },
+          {
+           "type": "custom",
+           "text": ":"
+          }
+         ]
+        },
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "retaliate",
+           "value": 1,
+           "relative": true
+          },
+          {
+           "type": "custom",
+           "text": ","
+          },
+          {
+           "type": "range",
+           "value": 1,
+           "relative": true
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Gain %xp% 1 whenever you retaliate this round."
+    }
+   ],
+   "lost": true,
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "poison"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Locust Host",
+  "level": 2,
+  "initiative": 23,
+  "sourceId": 170,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "group",
+         "actions": [
+          {
+           "type": "group",
+           "actions": [
+            {
+             "type": "inline",
+             "actions": [
+              {
+               "type": "condition",
+               "value": "curse",
+               "subActions": [
+                {
+                 "type": "target",
+                 "value": "self"
+                }
+               ]
+              },
+              {
+               "type": "custom",
+               "text": ":"
+              }
+             ]
+            },
+            {
+             "type": "area",
+             "pattern": "tttt_tttt"
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "tt_ttt"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "only %range%2/3"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 1,
+     "enhancement": [
+      "square",
+      "square"
+     ]
+    },
+    {
+     "type": "push",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "only %range%2"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Mandible Storm",
+  "level": 3,
+  "initiative": 30,
+  "sourceId": 171,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "immobilize"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "tt_s_tt"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "muddle",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%fh-switch-range%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "shield",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "element",
+       "value": "ice/light",
+       "either": true
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Dragonfly Surge",
+  "level": 3,
+  "initiative": 50,
+  "sourceId": 172,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 6,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "element",
+       "value": "fire/light",
+       "either": true
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "only %range%4/5"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Gain advantage on and add %pierce%2 to all your attacks this round."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "poison",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%fh-switch-melee%"
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Thresh and Flail",
+  "level": 4,
+  "initiative": 43,
+  "sourceId": 173,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "light"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "pull",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "target",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "element",
+         "value": "fire/ice",
+         "either": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Luminous Descent",
+  "level": 4,
+  "initiative": 67,
+  "sourceId": 174,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 4,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 ally"
+      },
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "target",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "element",
+         "value": "fire/ice",
+         "either": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "stun",
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "light"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "Formless Grace",
+  "level": 5,
+  "initiative": 75,
+  "sourceId": 175,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all allies"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Once during each of your turns, you may suffer %damage%2 to %fire%/%light%."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%fh-switch-range%"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "condition",
+         "value": "ward",
+         "subActions": [
+          {
+           "type": "target",
+           "value": "self"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  }
+ },
+ {
+  "name": "Chitinous Horde",
+  "level": 5,
+  "initiative": 15,
+  "sourceId": 176,
+  "top": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant one ally within %range%3:",
+     "actions": [
+      {
+       "type": "shield",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "condition",
+         "value": "strengthen",
+         "subActions": [
+          {
+           "type": "target",
+           "value": "self"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "All adjacent enemies suffer %damage%2."
+    },
+    {
+     "type": "custom",
+     "text": "Once during each of your turns, you may have one adjacent ally suffer %damage%2 to %ice%/%light%."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%fh-switch-melee%"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Corrosive Acids",
+  "level": 6,
+  "initiative": 28,
+  "sourceId": 177,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ],
+       "subActions": [
+        {
+         "type": "group",
+         "actions": [
+          {
+           "type": "inline",
+           "actions": [
+            {
+             "type": "condition",
+             "value": "brittle",
+             "subActions": [
+              {
+               "type": "target",
+               "value": "self"
+              }
+             ]
+            },
+            {
+             "type": "custom",
+             "text": ":"
+            }
+           ]
+          },
+          {
+           "type": "condition",
+           "value": "brittle"
+          },
+          {
+           "type": "inline",
+           "actions": [
+            {
+             "type": "condition",
+             "value": "impair",
+             "subActions": [
+              {
+               "type": "target",
+               "value": "self"
+              }
+             ]
+            },
+            {
+             "type": "custom",
+             "text": ":"
+            }
+           ]
+          },
+          {
+           "type": "condition",
+           "value": "poison"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "xt_st_et"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All figures gain -2 %shield% this round while adjacent to you."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%fh-switch-range%"
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Hirudotherapy",
+  "level": 6,
+  "initiative": 92,
+  "sourceId": 178,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Up to two enemies at exactly %range%2/3 suffer %damage%2."
+    },
+    {
+     "type": "heal",
+     "value": "X",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "where X is equal to the %damage% enemies suffered with the damage ability."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%fh-switch-melee%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "group",
+       "actions": [
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "condition",
+           "value": "immobilize",
+           "subActions": [
+            {
+             "type": "target",
+             "value": "self"
+            }
+           ]
+          },
+          {
+           "type": "custom",
+           "text": ":"
+          }
+         ]
+        },
+        {
+         "type": "condition",
+         "value": "immobilize"
+        },
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "condition",
+           "value": "curse",
+           "subActions": [
+            {
+             "type": "target",
+             "value": "self"
+            }
+           ]
+          },
+          {
+           "type": "custom",
+           "text": ":"
+          }
+         ]
+        },
+        {
+         "type": "target",
+         "value": 1,
+         "relative": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "only %range%3/4"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Two Pronged Entrapment",
+  "level": 7,
+  "initiative": 21,
+  "sourceId": 179,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "shield",
+     "value": 1
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "wild"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "mandatory",
+         "actions": [
+          {
+           "type": "element",
+           "value": "ice/light",
+           "either": true
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "push",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "brittle"
+        },
+        {
+         "type": "group",
+         "actions": [
+          {
+           "type": "optional",
+           "cost": {
+            "consume": {
+             "elements": [
+              "ice"
+             ]
+            }
+           },
+           "actions": [
+            {
+             "type": "inline",
+             "actions": [
+              {
+               "type": "condition",
+               "value": "immobilize"
+              },
+              {
+               "type": "custom",
+               "text": ","
+              },
+              {
+               "type": "custom",
+               "text": "%xp% 1"
+              }
+             ]
+            }
+           ],
+           "noLine": true
+          },
+          {
+           "type": "optional",
+           "cost": {
+            "consume": {
+             "elements": [
+              "light"
+             ]
+            }
+           },
+           "actions": [
+            {
+             "type": "inline",
+             "actions": [
+              {
+               "type": "condition",
+               "value": "disarm"
+              }
+             ]
+            }
+           ],
+           "noLine": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "stt_t_et"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "Alluring Pheromones",
+  "level": 7,
+  "initiative": 49,
+  "sourceId": 180,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "subActions": [
+        {
+         "type": "pull",
+         "value": 2
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "et_xt_et"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "only %range%4/5"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "wild"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "mandatory",
+         "actions": [
+          {
+           "type": "element",
+           "value": "fire/light",
+           "either": true
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "heal",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "regenerate"
+        },
+        {
+         "type": "condition",
+         "value": "bless"
+        },
+        {
+         "type": "group",
+         "actions": [
+          {
+           "type": "optional",
+           "cost": {
+            "consume": {
+             "elements": [
+              "fire"
+             ]
+            }
+           },
+           "actions": [
+            {
+             "type": "inline",
+             "actions": [
+              {
+               "type": "condition",
+               "value": "strengthen"
+              }
+             ]
+            }
+           ],
+           "noLine": true
+          },
+          {
+           "type": "optional",
+           "cost": {
+            "consume": {
+             "elements": [
+              "light"
+             ]
+            }
+           },
+           "actions": [
+            {
+             "type": "inline",
+             "actions": [
+              {
+               "type": "condition",
+               "value": "bless"
+              },
+              {
+               "type": "custom",
+               "text": ","
+              },
+              {
+               "type": "custom",
+               "text": "%xp% 1"
+              }
+             ]
+            }
+           ],
+           "noLine": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "et_tt_stt"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "Accelerated Metabolism",
+  "level": 8,
+  "initiative": 85,
+  "sourceId": 181,
+  "top": {
+   "actions": [
+    {
+     "type": "element",
+     "value": "fire/ice",
+     "either": true
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "pierce",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 6,
+     "enhancement": [
+      "circle",
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "At the start of your next turn, play one %geminate-0% card from your hand and immediately perform the top or bottom action of the card, then lose this card."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%fh-switch-range%"
+      }
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Oscillating Entity",
+  "level": 8,
+  "initiative": 55,
+  "sourceId": 182,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond",
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "only %range%2/3"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "At the start of your next turn, play one %geminate-1% card from your hand and immediately perform the top or bottom action of the card, then lose this card."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%fh-switch-melee%"
+      }
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "bless",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      },
+      {
+       "type": "element",
+       "value": "fire/ice",
+       "either": true
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Harbinger of Ruin",
+  "level": 9,
+  "initiative": 11,
+  "sourceId": 183,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On the next four sources of %damage% from melee attacks targeting you, gain %ward%, then the attacking enemy suffers %damage%5."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      1,
+      0,
+      1
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
+    },
+    {
+     "type": "retaliate",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Voice of Salvation",
+  "level": 9,
+  "initiative": 39,
+  "sourceId": 184,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "All allies within %range%3 add +2 %attack% to all their attacks and all enemies within %range%3 add -1 %attack% to all their attacks this round."
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On the next four cards allies would lose to negate %damage%, they instead do not lose a card."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      1,
+      0,
+      1
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  }
+ }
+]

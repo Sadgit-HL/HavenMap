@@ -1,0 +1,3136 @@
+[
+ {
+  "name": "Blurry Jab",
+  "level": 1,
+  "initiative": 20,
+  "sourceId": 32,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 0,
+        "subActions": [
+         {
+          "type": "concatenation",
+          "value": ",",
+          "subActions": [
+           {
+            "type": "attack",
+            "value": 1,
+            "valueType": "add",
+            "small": true
+           },
+           {
+            "type": "condition",
+            "value": "wound",
+            "small": true
+           },
+           {
+            "type": "card",
+            "value": "experience:1",
+            "small": true
+           }
+          ]
+         }
+        ]
+       }
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "concatenation",
+          "value": ",",
+          "subActions": [
+           {
+            "type": "attack",
+            "value": 1,
+            "valueType": "subtract",
+            "small": true
+           },
+           {
+            "type": "condition",
+            "value": "muddle",
+            "small": true
+           }
+          ]
+         }
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 0,
+        "subActions": [
+         {
+          "type": "move",
+          "value": 2,
+          "valueType": "add",
+          "small": true
+         }
+        ]
+       }
+      },
+      {
+       "type": "move",
+       "value": 3,
+       "enhancement": [
+        "circle"
+       ]
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "move",
+          "value": 1,
+          "valueType": "subtract",
+          "small": true
+         }
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 1,
+      "subActions": [
+       {
+        "type": "custom",
+        "value": "%data.custom.fh.blinkblade.abilities.32.1%",
+        "small": true
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "identityInitiative": [
+   20,
+   50
+  ]
+ },
+ {
+  "name": "Twin Strike",
+  "level": 1,
+  "initiative": 24,
+  "sourceId": 33,
+  "top": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "attack",
+          "value": 1,
+          "valueType": "subtract",
+          "small": true
+         }
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 0,
+      "subActions": [
+       {
+        "type": "concatenation",
+        "value": ",",
+        "subActions": [
+         {
+          "type": "move",
+          "value": 2
+         },
+         {
+          "type": "card",
+          "value": "experience:1",
+          "small": true
+         }
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "diamond"
+       ]
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "attack",
+          "value": 1,
+          "valueType": "subtract",
+          "small": true
+         }
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "move",
+       "value": 3,
+       "enhancement": [
+        "circle"
+       ]
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "move",
+          "value": 2,
+          "valueType": "subtract",
+          "small": true
+         }
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 0,
+        "subActions": [
+         {
+          "type": "custom",
+          "value": "%data.custom.fh.blinkblade.abilities.33.1%",
+          "small": true
+         },
+         {
+          "type": "concatenation",
+          "value": "",
+          "subActions": [
+           {
+            "type": "element",
+            "value": "air"
+           },
+           {
+            "type": "card",
+            "value": "round",
+            "small": true
+           }
+          ]
+         }
+        ]
+       }
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "heal",
+          "value": 2,
+          "subActions": [
+           {
+            "type": "specialTarget",
+            "value": "self",
+            "small": true
+           }
+          ]
+         },
+         {
+          "type": "element",
+          "value": "earth"
+         }
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "identityInitiative": [
+   24,
+   54
+  ]
+ },
+ {
+  "name": "Sap Speed",
+  "level": 1,
+  "initiative": 45,
+  "sourceId": 34,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2
+      },
+      {
+       "type": "area",
+       "pattern": "et_st"
+      }
+     ]
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 0,
+      "subActions": [
+       {
+        "type": "concatenation",
+        "value": ",",
+        "subActions": [
+         {
+          "type": "attack",
+          "value": 1,
+          "valueType": "add",
+          "small": true
+         },
+         {
+          "type": "custom",
+          "value": "%game.custom.advantage%",
+          "small": true
+         },
+         {
+          "type": "card",
+          "value": "experience:1",
+          "small": true
+         }
+        ]
+       }
+      ],
+      "noDivider": true
+     }
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 0,
+        "subActions": [
+         {
+          "type": "target",
+          "value": 2,
+          "valueType": "add",
+          "small": true
+         }
+        ]
+       }
+      },
+      {
+       "type": "condition",
+       "value": "immobilize",
+       "subActions": [
+        {
+         "type": "range",
+         "value": 1
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 1,
+      "subActions": [
+       {
+        "type": "custom",
+        "value": "%data.custom.fh.blinkblade.abilities.34.1%",
+        "small": true
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "identityInitiative": [
+   45,
+   75
+  ]
+ },
+ {
+  "name": "Kinetic Transfer",
+  "level": 1,
+  "initiative": 36,
+  "sourceId": 35,
+  "top": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "move",
+       "value": 2,
+       "enhancement": [
+        "circle"
+       ]
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "move",
+          "value": 1,
+          "valueType": "subtract",
+          "small": true
+         }
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 0,
+        "subActions": [
+         {
+          "type": "push",
+          "value": 3
+         }
+        ]
+       }
+      },
+      {
+       "type": "attack",
+       "value": 2,
+       "enhancement": [
+        "diamond"
+       ]
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "range",
+          "value": 1,
+          "valueType": "add",
+          "small": true
+         }
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 0,
+        "subActions": [
+         {
+          "type": "element",
+          "value": "fire"
+         }
+        ]
+       }
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "element",
+          "value": "ice"
+         }
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "move",
+       "value": 4,
+       "enhancement": [
+        "circle"
+       ]
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "move",
+          "value": 1,
+          "valueType": "subtract",
+          "small": true
+         }
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 0,
+      "subActions": [
+       {
+        "type": "custom",
+        "value": "%data.custom.fh.blinkblade.abilities.35.1%",
+        "small": true
+       }
+      ]
+     }
+    },
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %fh-hourglass%:"
+      },
+      {
+       "type": "push",
+       "value": 3,
+       "subActions": [
+        {
+         "type": "target",
+         "value": "all"
+        },
+        {
+         "type": "range",
+         "value": 1
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "identityInitiative": [
+   36,
+   66
+  ]
+ },
+ {
+  "name": "Overdrive",
+  "level": 1,
+  "initiative": 60,
+  "sourceId": 36,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Gain %shield%1 while %blinkblade-1%."
+    },
+    {
+     "type": "custom",
+     "text": "Add %jump% to all your move abilities while %blinkblade-0%."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "muddle",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "all"
+        },
+        {
+         "type": "range",
+         "value": 2
+        }
+       ]
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "range",
+          "value": 1,
+          "valueType": "add",
+          "small": true
+         }
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 0,
+      "subActions": [
+       {
+        "type": "custom",
+        "value": "%data.custom.fh.blinkblade.abilities.36.3%",
+        "small": true
+       },
+       {
+        "type": "card",
+        "value": "round"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "identityInitiative": [
+   60,
+   90
+  ]
+ },
+ {
+  "name": "Power Leak",
+  "level": 1,
+  "initiative": 17,
+  "sourceId": 37,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 0,
+      "subActions": [
+       {
+        "type": "custom",
+        "value": "%data.custom.fh.blinkblade.abilities.37.1%",
+        "small": true
+       }
+      ],
+      "noDivider": true
+     }
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 1,
+      "subActions": [
+       {
+        "type": "condition",
+        "value": "muddle",
+        "subActions": [
+         {
+          "type": "specialTarget",
+          "value": "self",
+          "small": true
+         }
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 0,
+        "subActions": [
+         {
+          "type": "move",
+          "value": 4,
+          "valueType": "add",
+          "small": true
+         }
+        ]
+       }
+      },
+      {
+       "type": "move",
+       "value": 3,
+       "enhancement": [
+        "circle"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 1,
+      "subActions": [
+       {
+        "type": "heal",
+        "value": 2,
+        "subActions": [
+         {
+          "type": "specialTarget",
+          "value": "all",
+          "small": true
+         },
+         {
+          "type": "range",
+          "value": 1,
+          "small": true
+         }
+        ]
+       }
+      ]
+     }
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "identityInitiative": [
+   17,
+   47
+  ]
+ },
+ {
+  "name": "Hit and Run",
+  "level": 1,
+  "initiative": 41,
+  "sourceId": 38,
+  "top": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "circle"
+       ],
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "immobilize"
+        }
+       ]
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "attack",
+          "value": 1,
+          "valueType": "subtract",
+          "small": true
+         }
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 0,
+      "subActions": [
+       {
+        "type": "concatenation",
+        "value": ",",
+        "subActions": [
+         {
+          "type": "move",
+          "value": 2
+         },
+         {
+          "type": "card",
+          "value": "experience:1",
+          "small": true
+         }
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On your next five attack actions while %blinkblade-0%, perform %move%3 at the end of the action."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      0,
+      1,
+      0,
+      1
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  },
+  "identityInitiative": [
+   41,
+   71
+  ]
+ },
+ {
+  "name": "Drive Recharge",
+  "level": 1,
+  "initiative": 69,
+  "sourceId": 39,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Gain 2 %fh-hourglass%."
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "ward"
+      },
+      {
+       "type": "custom",
+       "text": ","
+      },
+      {
+       "type": "condition",
+       "value": "bless"
+      },
+      {
+       "type": "custom",
+       "text": ","
+      },
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "heal",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "condition",
+          "value": "regenerate"
+         }
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "identityInitiative": [
+   69,
+   99
+  ]
+ },
+ {
+  "name": "Cascading Reaction",
+  "level": 1,
+  "initiative": 19,
+  "sourceId": 40,
+  "top": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 0,
+        "subActions": [
+         {
+          "type": "concatenation",
+          "value": ",",
+          "subActions": [
+           {
+            "type": "condition",
+            "value": "wound"
+           },
+           {
+            "type": "card",
+            "value": "experience:1",
+            "small": true
+           }
+          ]
+         }
+        ]
+       }
+      },
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "circle"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "move",
+       "value": 3
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "move",
+          "value": 1,
+          "valueType": "subtract",
+          "small": true
+         }
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 0,
+        "subActions": [
+         {
+          "type": "concatenation",
+          "value": ",",
+          "subActions": [
+           {
+            "type": "condition",
+            "value": "wound"
+           },
+           {
+            "type": "card",
+            "value": "experience:1",
+            "small": true
+           }
+          ]
+         }
+        ]
+       }
+      },
+      {
+       "type": "attack",
+       "value": 3
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "move",
+       "value": 4
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "move",
+          "value": 1,
+          "valueType": "subtract",
+          "small": true
+         }
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 0,
+      "subActions": [
+       {
+        "type": "custom",
+        "value": "%data.custom.fh.blinkblade.abilities.40.1%",
+        "small": true
+       },
+       {
+        "type": "card",
+        "value": "round"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "identityInitiative": [
+   19,
+   49
+  ]
+ },
+ {
+  "name": "Temporal Displacement",
+  "level": 1,
+  "initiative": 44,
+  "sourceId": 41,
+  "top": {
+   "actions": [
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 0,
+      "subActions": [
+       {
+        "type": "move",
+        "value": 2
+       }
+      ]
+     }
+    },
+    {
+     "type": "loot",
+     "value": 1
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 0,
+        "subActions": [
+         {
+          "type": "range",
+          "value": 2,
+          "valueType": "add",
+          "small": true
+         }
+        ]
+       }
+      },
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "circle"
+       ]
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "attack",
+          "value": 1,
+          "valueType": "subtract",
+          "small": true
+         }
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "identityInitiative": [
+   44,
+   74
+  ]
+ },
+ {
+  "name": "Experimental Adjustment",
+  "level": "X",
+  "initiative": 12,
+  "sourceId": 42,
+  "top": {
+   "actions": [
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "damage",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 0,
+        "subActions": [
+         {
+          "type": "custom",
+          "value": "%data.custom.fh.blinkblade.abilities.42.1%",
+          "small": true
+         }
+        ]
+       }
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "concatenation",
+          "value": ",",
+          "subActions": [
+           {
+            "type": "condition",
+            "value": "immobilize"
+           },
+           {
+            "type": "condition",
+            "value": "muddle"
+           }
+          ]
+         },
+         {
+          "type": "concatenation",
+          "value": ",",
+          "subActions": [
+           {
+            "type": "specialTarget",
+            "value": "all",
+            "small": true
+           },
+           {
+            "type": "range",
+            "value": 2,
+            "small": true
+           }
+          ]
+         }
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 0,
+      "subActions": [
+       {
+        "type": "condition",
+        "value": "invisible",
+        "subActions": [
+         {
+          "type": "specialTarget",
+          "value": "self",
+          "small": true
+         }
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "move",
+       "value": 2
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "move",
+          "value": 2,
+          "valueType": "add",
+          "small": true
+         }
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 0,
+        "subActions": [
+         {
+          "type": "loot",
+          "value": 1
+         }
+        ]
+       }
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "condition",
+          "value": "immobilize",
+          "subActions": [
+           {
+            "type": "specialTarget",
+            "value": "self",
+            "small": true
+           }
+          ]
+         }
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "identityInitiative": [
+   12,
+   42
+  ]
+ },
+ {
+  "name": "Sand in the Hourglass",
+  "level": "X",
+  "initiative": 52,
+  "sourceId": 43,
+  "top": {
+   "actions": [
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 0,
+      "subActions": [
+       {
+        "type": "condition",
+        "value": "wound",
+        "subActions": [
+         {
+          "type": "range",
+          "value": 1,
+          "small": true
+         }
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "type": "custom",
+     "text": "All enemies that have %wound% suffer %damage%2."
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "element",
+         "value": "dark"
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "element",
+         "value": "light"
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 0,
+      "subActions": [
+       {
+        "type": "box",
+        "value": "",
+        "subActions": [
+         {
+          "type": "concatenation",
+          "value": "",
+          "subActions": [
+           {
+            "type": "custom",
+            "value": "-1 %data.action.custom.fh-hourglass%:",
+            "small": true
+           },
+           {
+            "type": "custom",
+            "value": "%data.custom.fh.blinkblade.abilities.43.2%",
+            "small": true
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "identityInitiative": [
+   52,
+   82
+  ]
+ },
+ {
+  "name": "Borrowed Time",
+  "level": "X",
+  "initiative": 2,
+  "sourceId": 44,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On your next six actions while %blinkblade-1%, ignore all %blinkblade-1% effects and perform %immobilize% %range%3 at the end of the action."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      1,
+      0,
+      1,
+      0,
+      1
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 0,
+        "subActions": [
+         {
+          "type": "custom",
+          "value": "%data.custom.fh.blinkblade.abilities.44.2%",
+          "small": true
+         }
+        ]
+       }
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "custom",
+          "value": "%data.custom.fh.blinkblade.abilities.44.3%",
+          "small": true
+         }
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 0,
+      "subActions": [
+       {
+        "type": "move",
+        "value": "X"
+       },
+       {
+        "type": "custom",
+        "value": "%data.custom.fh.blinkblade.abilities.44.4%",
+        "small": true
+       }
+      ]
+     }
+    }
+   ],
+   "duration": "round"
+  },
+  "identityInitiative": [
+   2,
+   32
+  ]
+ },
+ {
+  "name": "Systems Reboot",
+  "level": 2,
+  "initiative": 57,
+  "sourceId": 45,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 4,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%recover% one of your lost cards."
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "This action may be performed while you have %stun%. Remove all negative conditions you have."
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 0,
+        "subActions": [
+         {
+          "type": "move",
+          "value": 2,
+          "valueType": "add",
+          "small": true
+         }
+        ]
+       }
+      },
+      {
+       "type": "move",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 1,
+      "subActions": [
+       {
+        "type": "boxFhSubActions",
+        "subActions": [
+         {
+          "type": "grid",
+          "subActions": [
+           {
+            "type": "custom",
+            "value": "-1 %data.action.custom.fh-hourglass%: ",
+            "small": true
+           },
+           {
+            "type": "custom",
+            "value": "%data.custom.fh.blinkblade.abilities.45.3%",
+            "small": true
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "identityInitiative": [
+   57,
+   87
+  ]
+ },
+ {
+  "name": "Reckless Augmentation",
+  "level": 2,
+  "initiative": 10,
+  "sourceId": 46,
+  "top": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 0,
+        "subActions": [
+         {
+          "type": "concatenation",
+          "value": ",",
+          "subActions": [
+           {
+            "type": "attack",
+            "value": 2,
+            "valueType": "add",
+            "small": true
+           },
+           {
+            "type": "pierce",
+            "value": 1,
+            "small": true
+           }
+          ]
+         }
+        ]
+       }
+      },
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "diamond"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 0,
+      "subActions": [
+       {
+        "type": "concatenation",
+        "value": ",",
+        "subActions": [
+         {
+          "type": "damage",
+          "value": 1,
+          "small": true,
+          "subActions": [
+           {
+            "type": "specialTarget",
+            "value": "self",
+            "small": true
+           }
+          ]
+         },
+         {
+          "type": "card",
+          "value": "experience:1",
+          "small": true
+         }
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 0,
+      "subActions": [
+       {
+        "type": "concatenation",
+        "value": ",",
+        "subActions": [
+         {
+          "type": "damage",
+          "value": 1,
+          "small": true,
+          "subActions": [
+           {
+            "type": "specialTarget",
+            "value": "self",
+            "small": true
+           }
+          ]
+         },
+         {
+          "type": "card",
+          "value": "experience:1",
+          "small": true
+         }
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 0,
+      "subActions": [
+       {
+        "type": "condition",
+        "value": "ward",
+        "subActions": [
+         {
+          "type": "specialTarget",
+          "value": "self",
+          "small": true
+         }
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "identityInitiative": [
+   10,
+   40
+  ]
+ },
+ {
+  "name": "Make It Count",
+  "level": 3,
+  "initiative": 51,
+  "sourceId": 47,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 1,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 3
+      },
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 0,
+      "subActions": [
+       {
+        "type": "concatenation",
+        "value": ",",
+        "subActions": [
+         {
+          "type": "heal",
+          "value": 2,
+          "valueType": "add",
+          "small": true
+         },
+         {
+          "type": "target",
+          "value": 1,
+          "valueType": "subtract",
+          "small": true
+         },
+         {
+          "type": "range",
+          "value": 1,
+          "valueType": "subtract",
+          "small": true
+         },
+         {
+          "type": "card",
+          "value": "experience:1",
+          "small": true
+         }
+        ]
+       }
+      ],
+      "noDivider": true
+     }
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 1,
+      "subActions": [
+       {
+        "type": "condition",
+        "value": "bless",
+        "subActions": [
+         {
+          "type": "specialTarget",
+          "value": "self",
+          "small": true
+         }
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 0,
+      "subActions": [
+       {
+        "type": "move",
+        "value": 1
+       }
+      ]
+     }
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 0,
+        "subActions": [
+         {
+          "type": "condition",
+          "value": "wound"
+         }
+        ]
+       }
+      },
+      {
+       "type": "attack",
+       "value": 2,
+       "enhancement": [
+        "circle"
+       ]
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "condition",
+          "value": "muddle"
+         }
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "identityInitiative": [
+   51,
+   81
+  ]
+ },
+ {
+  "name": "Double Time",
+  "level": 3,
+  "initiative": 22,
+  "sourceId": 48,
+  "top": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "circle"
+       ]
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "attack",
+          "value": 1,
+          "valueType": "subtract",
+          "small": true
+         }
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 0,
+      "subActions": [
+       {
+        "type": "concatenation",
+        "value": ",",
+        "subActions": [
+         {
+          "type": "move",
+          "value": 2
+         },
+         {
+          "type": "card",
+          "value": "experience:1",
+          "small": true
+         }
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On your next three turns while %blinkblade-0%, trigger all %blinkblade-0% effects twice."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  },
+  "identityInitiative": [
+   22,
+   52
+  ]
+ },
+ {
+  "name": "Precision Timing",
+  "level": 4,
+  "initiative": 15,
+  "sourceId": 49,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Add +1 %attack% to all your attacks while %blinkblade-1%."
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %move% to all your move abilities while %blinkblade-0%."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 0,
+      "subActions": [
+       {
+        "type": "concatenation",
+        "value": ",",
+        "subActions": [
+         {
+          "type": "attack",
+          "value": 2
+         },
+         {
+          "type": "card",
+          "value": "experience:1",
+          "small": true
+         }
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "move",
+       "value": 2,
+       "enhancement": [
+        "circle"
+       ]
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "move",
+          "value": 1,
+          "valueType": "subtract",
+          "small": true
+         }
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "identityInitiative": [
+   15,
+   45
+  ]
+ },
+ {
+  "name": "Potential Energy",
+  "level": 4,
+  "initiative": 32,
+  "sourceId": 50,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": "X+2",
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "where X is the number of %fh-hourglass% you have."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": "X+2",
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "where X is the number of %fh-hourglass% you have."
+    }
+   ]
+  },
+  "identityInitiative": [
+   32,
+   62
+  ]
+ },
+ {
+  "name": "Breakneck Speed",
+  "level": 5,
+  "initiative": 3,
+  "sourceId": 51,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On the start of the next four rounds during which you are not performing a long rest, suffer %damage%2 and play three cards instead of two, using one card as initiative. At least one top and one bottom action must still be performed."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      1,
+      0,
+      1
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "teleport",
+     "value": 5,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 1,
+      "subActions": [
+       {
+        "type": "damage",
+        "value": 2,
+        "subActions": [
+         {
+          "type": "specialTarget",
+          "value": "self",
+          "small": true
+         }
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "identityInitiative": [
+   3,
+   33
+  ]
+ },
+ {
+  "name": "Flashing Flurry",
+  "level": 5,
+  "initiative": 40,
+  "sourceId": 52,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "wild"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 1,
+         "relative": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 0,
+        "subActions": [
+         {
+          "type": "concatenation",
+          "value": ",",
+          "subActions": [
+           {
+            "type": "target",
+            "value": 1,
+            "valueType": "add",
+            "small": true
+           },
+           {
+            "type": "range",
+            "value": 2,
+            "valueType": "add",
+            "small": true
+           },
+           {
+            "type": "card",
+            "value": "experience:1",
+            "small": true
+           }
+          ]
+         }
+        ]
+       }
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "concatenation",
+          "value": ",",
+          "subActions": [
+           {
+            "type": "attack",
+            "value": 1,
+            "valueType": "subtract",
+            "small": true
+           },
+           {
+            "type": "area",
+            "value": "(0,1,active)|(1,0,target)|(1,1,target)"
+           }
+          ]
+         }
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "stun",
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Gain 1 %fh-hourglass% for each enemy targeted."
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "identityInitiative": [
+   40,
+   70
+  ]
+ },
+ {
+  "name": "Stab Them All",
+  "level": 6,
+  "initiative": 4,
+  "sourceId": 53,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 0,
+      "subActions": [
+       {
+        "type": "move",
+        "value": 2
+       }
+      ]
+     }
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 0,
+      "subActions": [
+       {
+        "type": "move",
+        "value": 2
+       }
+      ]
+     }
+    },
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "diamond"
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 0,
+        "subActions": [
+         {
+          "type": "move",
+          "value": 3
+         }
+        ]
+       }
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "condition",
+          "value": "ward",
+          "subActions": [
+           {
+            "type": "specialTarget",
+            "value": "self",
+            "small": true
+           }
+          ]
+         }
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Whenever an enemy ends its teleport or move ability adjacent to you, after their ability, perform:"
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "that enemy"
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  },
+  "identityInitiative": [
+   4,
+   34
+  ]
+ },
+ {
+  "name": "The Knife's Edge",
+  "level": 6,
+  "initiative": 65,
+  "sourceId": 54,
+  "top": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 0,
+        "subActions": [
+         {
+          "type": "specialTarget",
+          "value": "enemiesAdjacent",
+          "small": true
+         }
+        ]
+       }
+      },
+      {
+       "type": "attack",
+       "value": 3,
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "wound"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 0,
+        "subActions": [
+         {
+          "type": "custom",
+          "value": "%data.custom.fh.blinkblade.abilities.54.1%",
+          "small": true
+         }
+        ]
+       }
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "damage",
+          "value": 1,
+          "subActions": [
+           {
+            "type": "specialTarget",
+            "value": "self",
+            "small": true
+           }
+          ]
+         }
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 0,
+      "subActions": [
+       {
+        "type": "move",
+        "value": 2
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "identityInitiative": [
+   65,
+   95
+  ]
+ },
+ {
+  "name": "Phasing Blades",
+  "level": 7,
+  "initiative": 63,
+  "sourceId": 55,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Add %pierce%3 to all your attacks."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "move",
+       "value": 4,
+       "enhancement": [
+        "circle"
+       ]
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "move",
+          "value": 1,
+          "valueType": "subtract",
+          "small": true
+         }
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If you are adjacent to three or more enemies, gain 1 %fh-hourglass%."
+    }
+   ]
+  },
+  "identityInitiative": [
+   63,
+   93
+  ]
+ },
+ {
+  "name": "Rushed to the End",
+  "level": 7,
+  "initiative": 32,
+  "sourceId": 56,
+  "top": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 0,
+        "subActions": [
+         {
+          "type": "concatenation",
+          "value": ",",
+          "subActions": [
+           {
+            "type": "attack",
+            "value": 1,
+            "valueType": "add",
+            "small": true
+           },
+           {
+            "type": "card",
+            "value": "experience:1",
+            "small": true
+           }
+          ]
+         }
+        ]
+       }
+      },
+      {
+       "type": "attack",
+       "value": 4,
+       "enhancement": [
+        "diamond"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %fh-hourglass%:"
+      },
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 3,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant one ally within %range%2:",
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "move",
+         "value": 4,
+         "enhancement": [
+          "circle"
+         ]
+        },
+        {
+         "type": "raw",
+         "secretariat": {
+          "type": "identity",
+          "value": 1,
+          "subActions": [
+           {
+            "type": "move",
+            "value": 2,
+            "valueType": "add",
+            "small": true
+           }
+          ]
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "move",
+       "value": 4,
+       "enhancement": [
+        "circle"
+       ]
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "move",
+          "value": 2,
+          "valueType": "subtract",
+          "small": true
+         }
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "identityInitiative": [
+   32,
+   62
+  ]
+ },
+ {
+  "name": "Quantum Uncertainty",
+  "level": 8,
+  "initiative": 35,
+  "sourceId": 57,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 0,
+        "subActions": [
+         {
+          "type": "custom",
+          "value": "%data.custom.fh.blinkblade.abilities.57.1%",
+          "small": true
+         }
+        ]
+       }
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "custom",
+          "value": "%data.custom.fh.blinkblade.abilities.57.2%",
+          "small": true
+         }
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "move",
+       "value": 3,
+       "enhancement": [
+        "circle"
+       ]
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "move",
+          "value": 1,
+          "valueType": "subtract",
+          "small": true
+         }
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 0,
+        "subActions": [
+         {
+          "type": "condition",
+          "value": "invisible",
+          "subActions": [
+           {
+            "type": "specialTarget",
+            "value": "self",
+            "small": true
+           }
+          ]
+         }
+        ]
+       }
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "condition",
+          "value": "strengthen",
+          "subActions": [
+           {
+            "type": "specialTarget",
+            "value": "self",
+            "small": true
+           }
+          ]
+         }
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "identityInitiative": [
+   35,
+   65
+  ]
+ },
+ {
+  "name": "Fastest Alive",
+  "level": 8,
+  "initiative": 1,
+  "sourceId": 58,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": 3
+      },
+      {
+       "type": "condition",
+       "value": "muddle"
+      }
+     ]
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 0,
+      "subActions": [
+       {
+        "type": "custom",
+        "value": "%data.custom.fh.blinkblade.abilities.58.1%",
+        "small": true
+       }
+      ],
+      "noDivider": true
+     }
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 0,
+        "subActions": [
+         {
+          "type": "move",
+          "value": 2,
+          "valueType": "add",
+          "small": true
+         }
+        ]
+       }
+      },
+      {
+       "type": "move",
+       "value": 6,
+       "enhancement": [
+        "circle"
+       ]
+      },
+      {
+       "type": "raw",
+       "secretariat": {
+        "type": "identity",
+        "value": 1,
+        "subActions": [
+         {
+          "type": "move",
+          "value": 2,
+          "valueType": "subtract",
+          "small": true
+         }
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "identityInitiative": [
+   1,
+   31
+  ]
+ },
+ {
+  "name": "Reverse the Flow",
+  "level": 9,
+  "initiative": 58,
+  "sourceId": 59,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "You may perform any move abilities as attack abilities of equal value this round."
+    },
+    {
+     "type": "custom",
+     "text": "Play a card from your discard pile to perform the bottom action of the card."
+    }
+   ],
+   "xp": 1,
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%teleport% to a starting hex."
+    },
+    {
+     "type": "heal",
+     "value": 10,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%recover% up to two of your lost cards."
+    }
+   ],
+   "lost": true
+  },
+  "identityInitiative": [
+   58,
+   88
+  ]
+ },
+ {
+  "name": "Fractured Timeline",
+  "level": 9,
+  "initiative": 55,
+  "sourceId": 60,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Spawn a monster with a blue base in an adjacent empty hex that is identical (except standee number) to a normal adjacent enemy, including its current hit point value and conditions. This monster is an ally to you and an enemy to all other monsters. It uses your attack modifier deck."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "teleport",
+     "value": 7,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "raw",
+     "secretariat": {
+      "type": "identity",
+      "value": 1,
+      "subActions": [
+       {
+        "type": "damage",
+        "value": 2,
+        "small": true,
+        "subActions": [
+         {
+          "type": "specialTarget",
+          "value": "self",
+          "small": true
+         }
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "identityInitiative": [
+   55,
+   85
+  ]
+ }
+]

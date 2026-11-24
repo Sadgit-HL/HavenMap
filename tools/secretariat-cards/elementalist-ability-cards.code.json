@@ -1247,6 +1247,10 @@
       {
        "type": "element",
        "value": "ice"
+      },
+      {
+       "type": "custom",
+       "text": "%round%"
       }
      ],
      "noLine": true
@@ -1519,6 +1523,10 @@
           0,
           1
          ]
+        },
+        {
+         "type": "custom",
+         "text": "%persistent%"
         }
        ]
       }
@@ -2265,6 +2273,10 @@
         {
          "type": "retaliate",
          "value": 2
+        },
+        {
+         "type": "custom",
+         "text": "%round%"
         }
        ]
       }

@@ -1,0 +1,1902 @@
+[
+ {
+  "name": "Implode",
+  "level": "A",
+  "initiative": 88,
+  "sourceId": 74,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "muddle"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "custom",
+     "text": "Destroy one obstacle within %range%2."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Knock Out the Support",
+  "level": "A",
+  "initiative": 20,
+  "sourceId": 75,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "custom",
+     "text": "Destroy one adjacent obstacle. If you do, perform."
+    },
+    {
+     "type": "condition",
+     "value": "strengthen",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Piston Punch",
+  "level": "A",
+  "initiative": 42,
+  "sourceId": 76,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "stun",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 adjacent enemy"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Explosive Blitz",
+  "level": "A",
+  "initiative": 19,
+  "sourceId": 77,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4
+    }
+   ]
+  }
+ },
+ {
+  "name": "The Big One",
+  "level": "A",
+  "initiative": 37,
+  "sourceId": 78,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      },
+      {
+       "type": "target",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    }
+   ]
+  }
+ },
+ {
+  "name": "One-Two Punch",
+  "level": "A",
+  "initiative": 66,
+  "sourceId": 79,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2
+    },
+    {
+     "type": "attack",
+     "value": 1
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "The Big One",
+  "level": "B",
+  "initiative": 37,
+  "sourceId": 80,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "subActions": [
+        {
+         "type": "range",
+         "value": 2
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "ett_ttt_ett"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "push",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 adjacent enemy"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "One-Two Punch",
+  "level": "B",
+  "initiative": 66,
+  "sourceId": 81,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2
+    },
+    {
+     "type": "attack",
+     "value": 1
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Add %push%2 and %muddle% if this attack targets the same enemy as the previous Attack ability."
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1
+    },
+    {
+     "type": "loot",
+     "value": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "Windup",
+  "level": 1,
+  "initiative": 77,
+  "sourceId": 82,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On your next two attacks, add +2 %attack%."
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%persistent%"
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Double the value of your next Move ability."
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%persistent%"
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Crushing Weight",
+  "level": 1,
+  "initiative": 22,
+  "sourceId": 83,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Add +2 %attack% and gain %xp% 1 if the target is adjacent to a wall."
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "One adjacent enemy that is adjacent to a wall suffers %damage%2."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Knock Out the Support",
+  "level": 1,
+  "initiative": 20,
+  "sourceId": 84,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "All heals targeting the target have no effect this round. To signify this, place one of your character tokens on the target."
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      },
+      {
+       "type": "custom",
+       "text": "%round%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Destroy one adjacent obstacle. If you do, gain %xp% 1 and perform."
+    },
+    {
+     "type": "condition",
+     "value": "strengthen",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Explode",
+  "level": 1,
+  "initiative": 28,
+  "sourceId": 85,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Destroy one adjacent obstacle. If you do, gain %xp% 2 and perform."
+    },
+    {
+     "type": "condition",
+     "value": "stun"
+    },
+    {
+     "type": "custom",
+     "text": "Target all enemies adjacent to the destroyed obstacle."
+    },
+    {
+     "type": "custom",
+     "text": "Each target suffers %damage%2."
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [],
+     "effects": [
+      {
+       "type": "move",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Implode",
+  "level": 1,
+  "initiative": 88,
+  "sourceId": 86,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "condition",
+         "value": "muddle"
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Destroy one obstacle within %range%3."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Piston Punch",
+  "level": 1,
+  "initiative": 42,
+  "sourceId": 87,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "push",
+       "value": 2,
+       "enhancement": [
+        "diamond"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "push",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "stun",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 adjacent enemy"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "poison"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Explosive Blitz",
+  "level": 1,
+  "initiative": 19,
+  "sourceId": 88,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4,
+       "enhancement": [
+        "circle"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "element",
+     "value": "fire"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If you opened a door during the movement, perform."
+    },
+    {
+     "type": "condition",
+     "value": "stun",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all enemies within 3 hexes"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%xp% 1"
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "The Big One",
+  "level": 1,
+  "initiative": 37,
+  "sourceId": 89,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "subActions": [
+        {
+         "type": "range",
+         "value": 2
+        },
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "element",
+           "value": "fire"
+          },
+          {
+           "type": "element",
+           "value": "earth"
+          },
+          {
+           "type": "custom",
+           "text": "%xp% 1"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "ett_ttt_ett"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Destroy one adjacent obstacle. If you do, gain %xp% 1 and perform."
+    },
+    {
+     "type": "condition",
+     "value": "bless",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Ones-Two Punch",
+  "level": 1,
+  "initiative": 66,
+  "sourceId": 90,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Add %push%2, %muddle% and gain %xp% 1 if this attack targets the same enemy as the previous Attack ability."
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1
+    },
+    {
+     "type": "loot",
+     "value": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "Rubble",
+  "level": "X",
+  "initiative": 55,
+  "sourceId": 91,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Designate one hex within %range%3 containing a destruction token. All allies and enemies in or adjacent to that hex suffer %damage%2."
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Create one 2-damage trap in an adjacent empty hex containing a destruction token."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Level",
+  "level": "X",
+  "initiative": 0,
+  "sourceId": 92,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Add +3 %attack% and gain %xp% 1 if the target is an objective."
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Add +1 %attack% to all your melee attacks this round."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Lobbed Charge",
+  "level": "X",
+  "initiative": 52,
+  "sourceId": 93,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create one 3-damage %muddle% trap in an empty hex within %range%3."
+    },
+    {
+     "type": "element",
+     "value": "fire"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Designate one adjacent enemy. If each hex of the movement brought you closer to that enemy, perform."
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "attack",
+       "value": "X",
+       "subActions": [
+        {
+         "type": "push",
+         "value": 2
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "<small>targeting that enemy, where X is the number of hexes you moved.<small>"
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Robotic Enhancement",
+  "level": 2,
+  "initiative": 33,
+  "sourceId": 94,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "stun"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "This movement is unaffected by difficult terrain."
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Crash Protocol",
+  "level": 2,
+  "initiative": 74,
+  "sourceId": 95,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On your next four attacks targeting enemies adjacent to a wall, add +2 %attack%."
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%persistent%"
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%lost%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "All enemies moved through suffer %damage%1, %xp% 1."
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Fire Bombs",
+  "level": 3,
+  "initiative": 24,
+  "sourceId": 96,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4,
+       "enhancement": [
+        "circle"
+       ]
+      },
+      {
+       "type": "target",
+       "value": 2,
+       "enhancement": [
+        "circle"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "element",
+     "value": "fire"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Destroy one adjacent obstacle. If you do, gain %xp% 1 and all enemies adjacent to the destroyed obstacle suffer %damage%2."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Nowhere to Run",
+  "level": 3,
+  "initiative": 39,
+  "sourceId": 97,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Add +1 %attack% for each wall hex, obstacle hex, objective, figure, or trap adjacent to the target."
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%xp% 2"
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Move one adjacent trap to an enemy hex adjacent to you."
+    },
+    {
+     "type": "element",
+     "value": "earth"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Remote Detonation",
+  "level": 4,
+  "initiative": 63,
+  "sourceId": 98,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Destroy one obstacle within %range%4. If you do, perform."
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create three 3-damage traps in an empty hex within %range%4."
+    },
+    {
+     "type": "custom",
+     "text": "%xp% 2"
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Extra Fuel",
+  "level": 4,
+  "initiative": 3,
+  "sourceId": 99,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Add +2 %attack%, %wound% and gain %xp% 1 if the target is adjacent to a wall."
+      }
+     ]
+    },
+    {
+     "type": "element",
+     "value": "fire"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "attack",
+       "value": 1
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  }
+ },
+ {
+  "name": "Mech Suit",
+  "level": 5,
+  "initiative": 80,
+  "sourceId": 101,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Your maximum hit point value is increased by 5."
+    },
+    {
+     "type": "heal",
+     "value": 10,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 2"
+      },
+      {
+       "type": "shield",
+       "value": 1
+      },
+      {
+       "type": "custom",
+       "text": "%persistent%"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "loot",
+     "value": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "Dust Cloud",
+  "level": 6,
+  "initiative": 15,
+  "sourceId": 102,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      },
+      {
+       "type": "push",
+       "value": 1
+      },
+      {
+       "type": "condition",
+       "value": "muddle"
+      }
+     ]
+    },
+    {
+     "type": "element",
+     "value": "earth"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Destroy one adjacent obstacle. If you do, gain %xp% 1 and perform."
+    },
+    {
+     "type": "shield",
+     "value": 2
+    },
+    {
+     "type": "custom",
+     "text": "%round%"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Drill Fist",
+  "level": 6,
+  "initiative": 62,
+  "sourceId": 103,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1
+    },
+    {
+     "type": "attack",
+     "value": 1
+    },
+    {
+     "type": "attack",
+     "value": 2
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "<small>Ignore the Shield value of the target, add %poison%, and gain %xp% 1 if this attack targets the same enemy as the previous two Attack abilities.</small>"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Place one of your character tokens on one adjacent normal or elite enemy. You and all allies may ignore the Shield value of this enemy this round."
+    },
+    {
+     "type": "custom",
+     "text": "%round%"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Micro Missiles",
+  "level": 7,
+  "initiative": 16,
+  "sourceId": 104,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "circle"
+       ]
+      },
+      {
+       "type": "target",
+       "value": 4,
+       "enhancement": [
+        "circle"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All objectives within %range%3 suffer %damage%3."
+    },
+    {
+     "type": "element",
+     "value": "earth"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Insult to Injury",
+  "level": 7,
+  "initiative": 64,
+  "sourceId": 105,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "<small>On your next three attacks targeting enemies you attacked earlier in the same round, add +3 %attack%.</small>"
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%persistent%"
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%lost%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add %immobilize% to all your attacks this round."
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Also add %muddle%, %xp% 1."
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "custom",
+     "text": "%round%"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Gut Punch",
+  "level": 8,
+  "initiative": 26,
+  "sourceId": 106,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "push",
+         "value": 2
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "stun"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "The Bigger One",
+  "level": 8,
+  "initiative": 31,
+  "sourceId": 107,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 4,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "range",
+         "value": 2
+        },
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "element",
+           "value": "fire"
+          },
+          {
+           "type": "element",
+           "value": "earth"
+          },
+          {
+           "type": "custom",
+           "text": "%xp% 2"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "ett_ttt_tttt_ttt"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Destroy all obstacles in the targeted area. All allies in the targeted area suffer %damage%2."
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "custom",
+     "text": "All adjacent enemies that are adjacent to a wall suffer %damage%2."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Collateral Damage",
+  "level": 9,
+  "initiative": 15,
+  "sourceId": 108,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Destroy one adjacent obstacle or objective. If you do, gain %xp% 1 and perform."
+    },
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "push",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Target all enemies adjacent to the destroyed obstacle or objective."
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 2,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Destroy one adjacent obstacle. If you do, gain %xp% 1 and all enemies in the same room as the destroyed obstacle suffer %damage%2."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Wholesale Destruction",
+  "level": 9,
+  "initiative": 34,
+  "sourceId": 109,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2
+    },
+    {
+     "type": "attack",
+     "value": 2
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "condition",
+         "value": "wound"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "You may perform any destroy obstacle ability as if one empty hex within range of the ability contains an obstacle. If you do, do not place a destruction token."
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 2"
+      },
+      {
+       "type": "custom",
+       "text": "%persistent%"
+      }
+     ]
+    }
+   ]
+  }
+ }
+]

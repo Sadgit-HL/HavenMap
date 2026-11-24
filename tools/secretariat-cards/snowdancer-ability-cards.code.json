@@ -1,0 +1,2036 @@
+[
+ {
+  "name": "Blizzard",
+  "level": 1,
+  "initiative": 71,
+  "sourceId": 330,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "range",
+         "value": 3
+        },
+        {
+         "type": "condition",
+         "value": "muddle"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "ett_ttt_ett"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      },
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "push",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Enticing Breeze",
+  "level": 1,
+  "initiative": 76,
+  "sourceId": 331,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "pull",
+       "value": 2
+      },
+      {
+       "type": "custom",
+       "text": "Pull toward one of your allies."
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "pull",
+       "value": 1,
+       "enhancement": [
+        "square"
+       ],
+       "subActions": [
+        {
+         "type": "range",
+         "value": 2
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "ettt_tttt_ettt"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Chilling Impact",
+  "level": 1,
+  "initiative": 31,
+  "sourceId": 332,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "At the start of each of your turns, you may %ice%. If you do, at the end of each of your forced movement abilities performed this turn, all enemies moved with the ability suffer %damage%1."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "push",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all:1"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Gathering Force",
+  "level": 1,
+  "initiative": 89,
+  "sourceId": 333,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "At the end of each of your turns, you may %ice%/%air%. Reduce all of your %push%, %pull%, and other forced movement effects by one."
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "Gain advantage on your next attack this round."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Nature's Breath",
+  "level": 1,
+  "initiative": 90,
+  "sourceId": 334,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Snow Fox",
+     "stats": {
+      "health": "5",
+      "move": "3",
+      "attack": "2",
+      "range": "-"
+     },
+     "special": [],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Lifting Gust",
+  "level": 1,
+  "initiative": 27,
+  "sourceId": 335,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "push",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 8,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "Snowball",
+  "level": 1,
+  "initiative": 23,
+  "sourceId": 336,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "condition",
+       "value": "regenerate"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On your next five attacks, add +X%attack%, where X is the number of use slots the character token has passed (0, 1, 2, 3, 4)."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      1,
+      0,
+      0,
+      1
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Whiteout",
+  "level": 1,
+  "initiative": 21,
+  "sourceId": 337,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Control all targets of the attack ability:"
+    },
+    {
+     "type": "move",
+     "value": 1
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Cross Winds",
+  "level": 1,
+  "initiative": 32,
+  "sourceId": 338,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one ally:"
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "pull",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%target% 1 ally or enemy."
+      }
+     ]
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Frigid Growth",
+  "level": 1,
+  "initiative": 70,
+  "sourceId": 339,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create one 1-hex hazardous terrain tile in a featureless hex within %range%3."
+    },
+    {
+     "type": "condition",
+     "value": "strengthen"
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%target% one ally adjacent to the hex."
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Cold Therapy",
+  "level": 1,
+  "initiative": 20,
+  "sourceId": 340,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "condition",
+       "value": "muddle"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Once at the start of each of your turns, you may %ice% or %air% to perform:"
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "White Winds",
+  "level": "X",
+  "initiative": 11,
+  "sourceId": 341,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3
+      },
+      {
+       "type": "area",
+       "pattern": "ett_tx_et_xt_st"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "push",
+       "value": 1
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If an ally was the target of the heal ability, grant that ally:"
+    },
+    {
+     "type": "move",
+     "value": 2
+    }
+   ]
+  }
+ },
+ {
+  "name": "Blinding Vortex",
+  "level": "X",
+  "initiative": 31,
+  "sourceId": 342,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2,
+       "enhancement": [
+        "diamond"
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "s_tt_ttt_tx"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 2
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "The Spirit's Call",
+  "level": "X",
+  "initiative": 45,
+  "sourceId": 343,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "curse"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "push",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "allies:3"
+      },
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "condition",
+       "value": "bless"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "light"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "Birds in a Tempest",
+  "level": 2,
+  "initiative": 18,
+  "sourceId": 344,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "2 White Owls",
+     "stats": {
+      "health": "3",
+      "move": "3",
+      "attack": "2",
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "fly"
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All allies add +2 %move% and %jump% to their move abilities this round."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Tornado",
+  "level": 2,
+  "initiative": 59,
+  "sourceId": 345,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "range",
+         "value": 3
+        },
+        {
+         "type": "custom",
+         "text": "Control all targets of the attack ability:"
+        },
+        {
+         "type": "move",
+         "value": 1
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "ett_ttt_ett"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "push",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%target% 1 ally or enemy."
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Cold Snap",
+  "level": 3,
+  "initiative": 86,
+  "sourceId": 346,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create two 1-hex hazardous terrain tiles in adjacent featureless hexes."
+    },
+    {
+     "type": "custom",
+     "text": "Up to three enemies occupying hazardous terrain suffer %damage%2."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "ally:1"
+      },
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "condition",
+       "value": "strengthen"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Polar Vortex",
+  "level": 3,
+  "initiative": 61,
+  "sourceId": 347,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Designate a hex within %range%3."
+    },
+    {
+     "type": "pull",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%target% all enemies within %range%3 of the designated hex."
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Pull toward the designated hex."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1
+      }
+     ]
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Zephyr Barrier",
+  "level": 4,
+  "initiative": 40,
+  "sourceId": 348,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "condition",
+       "value": "ward"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "heal",
+       "value": 1
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Place this card in one adjacent character's active area and treat it as if they own the card. If removed from that character's active area, place it in the Snowdancer's lost pile."
+    },
+    {
+     "type": "shield",
+     "value": 1
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Biting Frost",
+  "level": 4,
+  "initiative": 16,
+  "sourceId": 349,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one ally:"
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 6,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 2
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All enemies occupying hazardous terrain gain %immobilize%."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Whipping Gale",
+  "level": 5,
+  "initiative": 79,
+  "sourceId": 350,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 3
+      },
+      {
+       "type": "range",
+       "value": 4
+      },
+      {
+       "type": "pull",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "At the start of each of your turns, you may %air% to perform either:"
+    },
+    {
+     "type": "push",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%target% 1 ally or enemy."
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "or"
+    },
+    {
+     "type": "pull",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%target% 1 ally or enemy."
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Shifting Snow",
+  "level": 5,
+  "initiative": 17,
+  "sourceId": 351,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Move up to two hazardous terrain tiles within %range%4 into featureless hexes adjacent to them. If any enter the same hex as a figure, that figure suffers hazardous terrain %damage% and gains %muddle%."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Create one 1-hex hazardous terrain tile in an adjacent featureless hex."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Refreshing Flurry",
+  "level": 6,
+  "initiative": 95,
+  "sourceId": 352,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 4,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      },
+      {
+       "type": "condition",
+       "value": "bless"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Grant the target of the heal ability:"
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "move",
+       "value": 3
+      }
+     ],
+     "noLine": true
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Polar Cat",
+     "stats": {
+      "health": "6",
+      "move": "3",
+      "attack": "2",
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "pierce",
+       "value": 3
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Frozen Brand",
+  "level": 6,
+  "initiative": 33,
+  "sourceId": 353,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one ally within %range%3:"
+    },
+    {
+     "type": "area",
+     "pattern": "eet_tttt_etst_tttt_eet"
+    },
+    {
+     "type": "attack",
+     "value": 4,
+     "subActions": [
+      {
+       "type": "push",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Freezing Storm",
+  "level": 7,
+  "initiative": 81,
+  "sourceId": 354,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all:1"
+      },
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Create one 1-hex hazardous terrain tile in an adjacent featureless hex."
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "pull",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Storm Wall",
+  "level": 7,
+  "initiative": 30,
+  "sourceId": 355,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "range",
+         "value": 2
+        },
+        {
+         "type": "pierce",
+         "value": 2
+        },
+        {
+         "type": "push",
+         "value": 2
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "t_t_et_et_eet"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "All enemies adjacent to the red hexes of the attack ability suffer %damage%1."
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Place this card in one adjacent character's active area and treat it as if they own the card. If removed from that character's active area, place it in the Snowdancer's lost pile."
+    },
+    {
+     "type": "custom",
+     "text": "At the start of each of your turns, peform:"
+    },
+    {
+     "type": "condition",
+     "value": "ward",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self:1"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Surging Blow",
+  "level": 8,
+  "initiative": 73,
+  "sourceId": 356,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "push",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "push",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "ally:1"
+      },
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "push",
+       "value": 3
+      },
+      {
+       "type": "condition",
+       "value": "strengthen"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "The Endless White",
+  "level": 8,
+  "initiative": 5,
+  "sourceId": 357,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "All ranged abilities this round gain -1 %range%, to a minimum of %range%1."
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice",
+        "air"
+       ],
+       "either": true
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-2 %range% instead, %xp% 1."
+      }
+     ],
+     "noLine": true
+    }
+   ],
+   "xp": 1,
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 6,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Winds of Change",
+  "level": 9,
+  "initiative": 15,
+  "sourceId": 358,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 4,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Control all targets of the attack ability:"
+    },
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "heal",
+     "value": 4,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "The target of the heal ability may lose one card from their hand or discard to %recover% one card from their lost pils of level equal to or lower than the lost card."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Snowblind",
+  "level": 9,
+  "initiative": 83,
+  "sourceId": 359,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 5
+      },
+      {
+       "type": "condition",
+       "value": "disarm"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%target%2 enemies occupying or adjacent to the same hazardous terrain tile."
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Whenever you or an ally perform a rest, the resting character may gain %bless%."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ }
+]

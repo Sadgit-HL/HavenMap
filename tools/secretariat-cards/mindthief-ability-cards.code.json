@@ -174,6 +174,10 @@
      "text": "%augment% Augment"
     },
     {
+     "type": "custom",
+     "text": "Add %poison%, %muddle% to all your melee attacks."
+    },
+    {
      "type": "attack",
      "value": 2,
      "enhancement": [
@@ -277,6 +281,10 @@
     {
      "type": "custom",
      "text": "%augment% Augment"
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %attack% to all your melee attacks."
     },
     {
      "type": "attack",
@@ -505,6 +513,10 @@
      "text": "%augment% Augment"
     },
     {
+     "type": "custom",
+     "text": "Your single-target melee attack abilities may target enemies within 2 hexes (of you)."
+    },
+    {
      "type": "attack",
      "value": 3,
      "enhancement": [
@@ -556,6 +568,15 @@
     {
      "type": "custom",
      "text": "%augment% Augment"
+    },
+    {
+     "type": "custom",
+     "text": "After each of your melee attack abilities, grant one of your summons:"
+    },
+    {
+     "type": "attack",
+     "value": 0,
+     "relative": true
     },
     {
      "type": "attack",
@@ -1024,6 +1045,20 @@
      "text": "%augment% Augment"
     },
     {
+     "type": "custom",
+     "text": "After each of your melee attack abilities, perform:"
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
      "type": "attack",
      "value": 2,
      "enhancement": [
@@ -1369,6 +1404,10 @@
      "text": "%augment% Augment"
     },
     {
+     "type": "custom",
+     "text": "Add +1 %attack% to your melee attacks for each negative condition the target has."
+    },
+    {
      "type": "pull",
      "value": 2,
      "subActions": [
@@ -1660,6 +1699,40 @@
     {
      "type": "custom",
      "text": "%augment% Augment"
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "After each of your melee attack abilities, control one target of the attack ability:"
+      },
+      {
+       "type": "attack",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "After each of your control abilities, you may perform:"
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "One controlled enemy suffers %damage%3."
+      }
+     ],
+     "noLine": true
     },
     {
      "type": "attack",

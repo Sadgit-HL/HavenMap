@@ -581,6 +581,7 @@ top:
   - optional:
     - consume: [earth]
     - custom: "Whenever you perform a ranged attack this round, all allies and enemies adjacent to the target suffer %damage%1, %xp1%."
+    - custom: "%round%"
     noLine: true
   - custom: "Destroy any number of adjacent obstacles. For each obstacle destroyed, perform:"
   - attack: 2

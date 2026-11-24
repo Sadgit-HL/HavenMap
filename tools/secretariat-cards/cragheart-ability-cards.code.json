@@ -1757,6 +1757,10 @@
       {
        "type": "custom",
        "text": "Whenever you perform a ranged attack this round, all allies and enemies adjacent to the target suffer %damage%1, %xp% 1."
+      },
+      {
+       "type": "custom",
+       "text": "%round%"
       }
      ],
      "noLine": true
