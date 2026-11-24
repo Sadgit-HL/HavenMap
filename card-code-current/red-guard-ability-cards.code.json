@@ -1,0 +1,2302 @@
+[
+ {
+  "name": "Flaming Sickle",
+  "level": "A",
+  "initiative": 63,
+  "sourceId": 216,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2
+    }
+   ]
+  }
+ },
+ {
+  "name": "Blinding Sickle",
+  "level": "A",
+  "initiative": 87,
+  "sourceId": 217,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      },
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4
+    }
+   ]
+  }
+ },
+ {
+  "name": "Twirling Stabs",
+  "level": "A",
+  "initiative": 38,
+  "sourceId": 218,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2
+    }
+   ]
+  }
+ },
+ {
+  "name": "Shocking Advance",
+  "level": "A",
+  "initiative": 14,
+  "sourceId": 219,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    }
+   ]
+  }
+ },
+ {
+  "name": "Desert Night",
+  "level": "A",
+  "initiative": 90,
+  "sourceId": 220,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "muddle"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4
+    }
+   ]
+  }
+ },
+ {
+  "name": "Shield Spikes",
+  "level": "A",
+  "initiative": 41,
+  "sourceId": 221,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Two adjacent enemies suffer 2 damage."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Desert Night",
+  "level": "B",
+  "initiative": 90,
+  "sourceId": 222,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "disarm"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Target one enemy within 2 hexes."
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 6
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Flaming Sickle",
+  "level": "B",
+  "initiative": 63,
+  "sourceId": 223,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      },
+      {
+       "type": "pull",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "loot",
+     "value": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "Swift Strength",
+  "level": 1,
+  "initiative": 16,
+  "sourceId": 224,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      },
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "pull",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "shield",
+     "value": 1,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "custom",
+       "text": "%round%"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Healing Sands",
+  "level": 1,
+  "initiative": 32,
+  "sourceId": 225,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 4,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%xp% 1"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All attacks targeting you gain Disadvantage this round."
+    },
+    {
+     "type": "custom",
+     "text": "%round%"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Shield Spikes",
+  "level": 1,
+  "initiative": 41,
+  "sourceId": 226,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Each time after an adjacent enemy attacks you, that enemy suffers damage equal to your Shield value."
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 2"
+      },
+      {
+       "type": "custom",
+       "text": "%persistent%"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "element",
+     "value": "fire"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Flaming Sickle",
+  "level": 1,
+  "initiative": 63,
+  "sourceId": 227,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      },
+      {
+       "type": "pull",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "element",
+     "value": "fire"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "All adjacent enemies suffer 1 damage."
+    },
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "element",
+     "value": "fire"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Blinding Sickle",
+  "level": 1,
+  "initiative": 87,
+  "sourceId": 228,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      },
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
+    },
+    {
+     "type": "element",
+     "value": "light"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "All adjacent enemies suffer 1 damage."
+    },
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "element",
+     "value": "light"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Twirling Stabs",
+  "level": 1,
+  "initiative": 38,
+  "sourceId": 229,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%xp% 1"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "condition",
+         "value": "wound"
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Flame Shroud",
+  "level": 1,
+  "initiative": 6,
+  "sourceId": 230,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "The next five times an enemy enters a hex adjacent to you, the enemy suffers 2 damage."
+    },
+    {
+     "type": "element",
+     "value": "fire"
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%persistent%"
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%lost%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "shield",
+         "value": 1
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  }
+ },
+ {
+  "name": "Shocking Advance",
+  "level": 1,
+  "initiative": 14,
+  "sourceId": 231,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "shield",
+         "value": 1
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "element",
+     "value": "light"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Shield of the Desert",
+  "level": 1,
+  "initiative": 10,
+  "sourceId": 232,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "area",
+       "pattern": "et_st"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "shield",
+     "value": 3,
+     "enhancement": [
+      "diamondPlus"
+     ]
+    },
+    {
+     "type": "element",
+     "value": "fire/light",
+     "either": true
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      },
+      {
+       "type": "custom",
+       "text": "%round%"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Desert Night",
+  "level": 1,
+  "initiative": 90,
+  "sourceId": 233,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "disarm"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Target one enemy within 2 hexes."
+      }
+     ]
+    },
+    {
+     "type": "element",
+     "value": "ice/dark",
+     "either": true
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 6,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%xp% 1"
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Warrior of the Sun",
+  "level": "X",
+  "initiative": 13,
+  "sourceId": 234,
+  "top": {
+   "actions": [
+    {
+     "type": "shield",
+     "value": 1,
+     "enhancement": [
+      "diamondPlus"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "immobilize",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "element",
+       "value": "light"
+      },
+      {
+       "type": "custom",
+       "text": "%round%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "condition",
+         "value": "muddle"
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Blade Dance",
+  "level": "X",
+  "initiative": 29,
+  "sourceId": 235,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "pull",
+         "value": 2
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "pull",
+         "value": 2
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All enemies moved through suffer 1 damage."
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "custom",
+         "text": "2 damage instead"
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "custom",
+     "text": "%xp% 1"
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Precision Strike",
+  "level": "X",
+  "initiative": 40,
+  "sourceId": 236,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "custom",
+         "text": "Advantage"
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%xp% 1"
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "pull",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Harvest Sickle",
+  "level": 2,
+  "initiative": 52,
+  "sourceId": 237,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "element",
+     "value": "earth/light",
+     "either": true
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%loot% each hex you enter with this movement."
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%xp% 1"
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Barbaric Instincts",
+  "level": 2,
+  "initiative": 12,
+  "sourceId": 238,
+  "top": {
+   "actions": [
+    {
+     "type": "shield",
+     "value": 1,
+     "enhancement": [
+      "diamondPlus"
+     ]
+    },
+    {
+     "type": "pull",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All adjacent enemies suffer 1 damage."
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      },
+      {
+       "type": "custom",
+       "text": "%round%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "move",
+         "value": 2
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "attack",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "wound"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Warmth of the Sun",
+  "level": 3,
+  "initiative": 23,
+  "sourceId": 239,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "subActions": [
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "et_tt_stt"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "condition",
+         "value": "muddle"
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 4,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1,
+       "enhancement": [
+        "circle"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "element",
+     "value": "light"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Strangling Chain",
+  "level": 3,
+  "initiative": 19,
+  "sourceId": 240,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "custom",
+         "text": "2 damage instead"
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "immobilize",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Radiant Sickle",
+  "level": 4,
+  "initiative": 79,
+  "sourceId": 241,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "All enemies adjacent to the target suffer 1 damage."
+      }
+     ]
+    },
+    {
+     "type": "element",
+     "value": "light"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2,
+       "enhancement": [
+        "circle"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Burn Away the Dark",
+  "level": 4,
+  "initiative": 31,
+  "sourceId": 242,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "condition",
+         "value": "wound"
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "disarm",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 adjacent enemy"
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "ice"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "element",
+         "value": "fire"
+        }
+       ],
+       "noLine": true
+      },
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "dark"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "element",
+         "value": "light"
+        }
+       ],
+       "noLine": true
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Sand Devil",
+  "level": 5,
+  "initiative": 55,
+  "sourceId": 244,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "<small>Place the Sand Devil in an adjacent empty hex. It is considered a trap for the purposes of monster focusing and movement. At the start of each of your turns, you may move it up to 2 hexes, and you may force any figure on it to move with it. Any time a figure moves onto the devil or vice versa (not when moving together), the figure suffers 1 damage and gains %muddle%</small>"
+    },
+    {
+     "type": "custom",
+     "text": "%xp% 2"
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5
+    }
+   ]
+  }
+ },
+ {
+  "name": "Fierce Brilliance",
+  "level": 6,
+  "initiative": 22,
+  "sourceId": 245,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "The next four times an enemy enters a hex adjacent to you, that enemy gains %disarm%."
+    },
+    {
+     "type": "element",
+     "value": "light"
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%persistent%"
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%lost%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All adjacent enemies suffer 2 damage."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Flying Sickle",
+  "level": 6,
+  "initiative": 91,
+  "sourceId": 246,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      },
+      {
+       "type": "pull",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "element",
+     "value": "air"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "move",
+         "value": 2
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "attack",
+     "value": 2
+    }
+   ]
+  }
+ },
+ {
+  "name": "Vicious Ballet",
+  "level": 7,
+  "initiative": 28,
+  "sourceId": 247,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "One adjacent ally may perform an \"%attack%3\" action, %xp% 1."
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "One different adjacent ally may perform an \"%attack%3\" action, %xp% 1."
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "One adjacent enemy suffers 1 damage."
+    },
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "custom",
+     "text": "One adjacent enemy suffers 1 damage."
+    },
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "custom",
+     "text": "One adjacent enemy suffers 1 damage."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Horns of the Beast",
+  "level": 7,
+  "initiative": 8,
+  "sourceId": 248,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 4,
+       "subActions": [
+        {
+         "type": "push",
+         "value": 1
+        },
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "element",
+           "value": "fire"
+          },
+          {
+           "type": "custom",
+           "text": "%xp% 1"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "et_st"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "shield",
+     "value": 3,
+     "enhancement": [
+      "diamondPlus"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "shield",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      },
+      {
+       "type": "custom",
+       "text": "%round%"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Prismatic Sickle",
+  "level": 8,
+  "initiative": 70,
+  "sourceId": 249,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "element",
+     "value": "wild/wild/wild"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "loot",
+     "value": 2
+    },
+    {
+     "type": "element",
+     "value": "wild"
+    }
+   ]
+  }
+ },
+ {
+  "name": "No Fear",
+  "level": 8,
+  "initiative": 1,
+  "sourceId": 250,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Any time you are attacked this round, gain %shield%X for the attack, where X is the number of enemies adjacent to you at the time of the attack, up to a maximum of 3."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "The next five times an enemy enters a hex adjacent to you, perform a \"%heal%3, self\" action."
+    },
+    {
+     "type": "element",
+     "value": "light"
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%persistent%"
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        1
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%lost%"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Soaring Shield",
+  "level": 9,
+  "initiative": 11,
+  "sourceId": 251,
+  "top": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 4,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      },
+      {
+       "type": "condition",
+       "value": "stun"
+      }
+     ]
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "shield",
+     "value": 2,
+     "enhancement": [
+      "diamondPlus"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "shield",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Honorable Fury",
+  "level": 9,
+  "initiative": 89,
+  "sourceId": 252,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "range",
+         "value": 2,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "all enemies adjacent to the target suffer 1 damage."
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "move",
+         "value": 3
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "custom",
+     "text": "All adjacent enemies suffer 3 damage."
+    }
+   ]
+  }
+ }
+]

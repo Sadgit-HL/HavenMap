@@ -1,0 +1,1721 @@
+[
+ {
+  "name": "Plated Defense",
+  "level": 1,
+  "initiative": 80,
+  "sourceId": 387,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Armored Tank",
+     "stats": {
+      "health": 6,
+      "move": 2,
+      "attack": 2,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "shield",
+       "value": 1
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%prism-mode%"
+    },
+    {
+     "type": "custom",
+     "text": ":"
+    },
+    {
+     "type": "shield",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "+"
+    },
+    {
+     "type": "custom",
+     "text": "Add -1 %move% to all your move abilities."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "shield",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "retaliate",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Reconstructive Aid",
+  "level": 1,
+  "initiative": 90,
+  "sourceId": 388,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Repair Drone",
+     "stats": {
+      "health": 3,
+      "move": 2,
+      "attack": 1,
+      "range": 3
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "At the end of turn perform:"
+      },
+      {
+       "type": "heal",
+       "value": 1,
+       "subActions": [
+        {
+         "type": "range",
+         "value": 3
+        }
+       ]
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "move",
+      "range"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%prism-mode%"
+    },
+    {
+     "type": "custom",
+     "text": ":"
+    },
+    {
+     "type": "custom",
+     "text": "At the start of each of your turns, perform:"
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "+"
+    },
+    {
+     "type": "custom",
+     "text": "All your ranged attacks have -1 %range%."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      },
+      {
+       "type": "condition",
+       "value": "regenerate"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Hunter Killer",
+  "level": 1,
+  "initiative": 84,
+  "sourceId": 389,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Jackal Mech",
+     "stats": {
+      "health": 4,
+      "move": 3,
+      "attack": 2,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "condition",
+       "value": "wound"
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%prism-mode%"
+    },
+    {
+     "type": "custom",
+     "text": ":"
+    },
+    {
+     "type": "custom",
+     "text": "At the start of each of your turns, suffer %damage%2."
+    },
+    {
+     "type": "custom",
+     "text": "+"
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %attack% to all your melee attacks."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Coiled Limbs",
+  "level": 1,
+  "initiative": 82,
+  "sourceId": 390,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Leaper",
+     "stats": {
+      "health": 7,
+      "move": 5,
+      "attack": 1,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "shield",
+       "value": 1
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "attack"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%prism-mode%"
+    },
+    {
+     "type": "custom",
+     "text": ":"
+    },
+    {
+     "type": "custom",
+     "text": "Add %jump% to all your move abilities."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Aimed Assault",
+  "level": 1,
+  "initiative": 88,
+  "sourceId": 391,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Sniper Turret",
+     "stats": {
+      "health": 3,
+      "move": null,
+      "attack": 2,
+      "range": 4
+     },
+     "special": [],
+     "enhancement": [
+      "heal",
+      "range"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%prism-mode%"
+    },
+    {
+     "type": "custom",
+     "text": ":"
+    },
+    {
+     "type": "custom",
+     "text": "All your single-target melee attack abilities have +2 %range%."
+    },
+    {
+     "type": "custom",
+     "text": "+"
+    },
+    {
+     "type": "custom",
+     "text": "Add -1 %move% to all your move abilities."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Launch Pod",
+  "level": 1,
+  "initiative": 77,
+  "sourceId": 392,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Play one card from your hand to perform a summon action of the card as if you were occupying a hex occupied by a target of the attack ability."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%fh-mode%"
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Faceless Entity",
+  "level": 1,
+  "initiative": 12,
+  "sourceId": 393,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2
+    },
+    {
+     "type": "custom",
+     "text": "%fh-mode%"
+    },
+    {
+     "type": "attack",
+     "value": 2
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "custom",
+     "text": "%fh-mode%"
+    },
+    {
+     "type": "move",
+     "value": 2
+    }
+   ]
+  }
+ },
+ {
+  "name": "Prepare for Deployment",
+  "level": 1,
+  "initiative": 64,
+  "sourceId": 394,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 4,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Reaper Function",
+  "level": 1,
+  "initiative": 32,
+  "sourceId": 395,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2
+      },
+      {
+       "type": "area",
+       "pattern": "xt_st_et"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%fh-mode%"
+    },
+    {
+     "type": "loot",
+     "value": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "High Impact Projectiles",
+  "level": 1,
+  "initiative": 16,
+  "sourceId": 396,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant two of your summons:",
+     "actions": [
+      {
+       "type": "move",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ],
+       "subActions": [
+        {
+         "type": "jump"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Interference",
+  "level": 1,
+  "initiative": 21,
+  "sourceId": 397,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%fh-mode%"
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All adjacent allies and enemies suffer %damage%1."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All enemies that target one of your adjacent summons with an attack this round target you with the attack instead, regardless of range or line-of-sight."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Shocking Pulse",
+  "level": "X",
+  "initiative": 86,
+  "sourceId": 398,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Arcing Generator",
+     "stats": {
+      "health": 5,
+      "move": 4,
+      "attack": 2,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "move"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%prism-mode%"
+    },
+    {
+     "type": "custom",
+     "text": ":"
+    },
+    {
+     "type": "custom",
+     "text": "Add -1 %attack% and %pierce%5 to all your attacks."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "muddle",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All adjacent allies and enemies suffer %damage%1."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Remote Control",
+  "level": "X",
+  "initiative": 48,
+  "sourceId": 399,
+  "top": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant one of your summons:",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 1,
+       "relative": true
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "grant",
+     "text": "Grant one of your summons:",
+     "actions": [
+      {
+       "type": "move",
+       "value": 1,
+       "relative": true
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Reassemble",
+  "level": "X",
+  "initiative": 27,
+  "sourceId": 400,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%fh-mode%"
+    },
+    {
+     "type": "custom",
+     "text": "Instead of placing your previous %prism-mode% card's standee on the map as a summon, move that card to your discard pile."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Play one card from your lost pile to perform a summon action of the card."
+    },
+    {
+     "type": "custom",
+     "text": "%fh-mode%"
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ],
+   "lost": true,
+   "remove": true
+  }
+ },
+ {
+  "name": "Force Field",
+  "level": 2,
+  "initiative": 78,
+  "sourceId": 401,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Dampening Unit",
+     "stats": {
+      "health": 5,
+      "move": 2,
+      "attack": 1,
+      "range": 2
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "All adjacent allies gain %shield%1."
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "move",
+      "range"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%prism-mode%"
+    },
+    {
+     "type": "custom",
+     "text": ":"
+    },
+    {
+     "type": "custom",
+     "text": "Gain %shield%2 for the first attack that damages you each round."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Long Range Missile",
+  "level": 2,
+  "initiative": 19,
+  "sourceId": 402,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 5
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Whenever one of your summons would suffer %damage%, you may instead suffer that amount of %damage% minus 1, %fh-mode% with that summon, discard this card, and gain %xp% 1."
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Rapid Fire",
+  "level": 3,
+  "initiative": 92,
+  "sourceId": 403,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Machine Bolter",
+     "stats": {
+      "health": 3,
+      "move": null,
+      "attack": 2,
+      "range": 3
+     },
+     "special": [
+      {
+       "type": "target",
+       "value": 2
+      }
+     ],
+     "enhancement": [
+      "heal"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%prism-mode%"
+    },
+    {
+     "type": "custom",
+     "text": ":"
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %target% to all your ranged attack abilities."
+    },
+    {
+     "type": "custom",
+     "text": "+"
+    },
+    {
+     "type": "custom",
+     "text": "All your ranged attacks have -1 %range%."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "grant",
+     "text": "Grant two of your summons:",
+     "actions": [
+      {
+       "type": "move",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Hijack",
+  "level": 3,
+  "initiative": 40,
+  "sourceId": 404,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%fh-mode%"
+    },
+    {
+     "type": "grant",
+     "text": "Grant the summon placed by the transfer ability:",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 1,
+       "relative": true
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Control one enemy within %range%4:"
+    },
+    {
+     "type": "move",
+     "value": 1
+    },
+    {
+     "type": "attack",
+     "value": 2
+    }
+   ]
+  }
+ },
+ {
+  "name": "Plague Protocol",
+  "level": 4,
+  "initiative": 98,
+  "sourceId": 405,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Toxin Distributor",
+     "stats": {
+      "health": 6,
+      "move": 2,
+      "attack": 2,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "condition",
+       "value": "poison"
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%prism-mode%"
+    },
+    {
+     "type": "custom",
+     "text": ":"
+    },
+    {
+     "type": "custom",
+     "text": "Heals targeting you do not increase your hit point value."
+    },
+    {
+     "type": "custom",
+     "text": "+"
+    },
+    {
+     "type": "custom",
+     "text": "Add %poison% to all your attacks."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 1,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%fh-mode%"
+    },
+    {
+     "type": "shield",
+     "value": 2
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Divergent Destruction",
+  "level": 4,
+  "initiative": 22,
+  "sourceId": 406,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2
+    },
+    {
+     "type": "custom",
+     "text": "%fh-mode%"
+    },
+    {
+     "type": "attack",
+     "value": 3
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%fh-mode%"
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All adjacent allies and enemies suffer %damage%1."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Net Dispersal",
+  "level": 5,
+  "initiative": 94,
+  "sourceId": 407,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Trapping Unit",
+     "stats": {
+      "health": 7,
+      "move": 3,
+      "attack": 2,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "When attacked reduce %damage% by 1 for each negative condition the attacker has."
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "attack"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%prism-mode%"
+    },
+    {
+     "type": "custom",
+     "text": ":"
+    },
+    {
+     "type": "custom",
+     "text": "You cannot perform move abilities."
+    },
+    {
+     "type": "custom",
+     "text": "+"
+    },
+    {
+     "type": "custom",
+     "text": "Add %immobilize% to all your attacks."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "immobilize",
+     "subActions": [
+      {
+       "type": "target",
+       "value": 3
+      },
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Code Geminate",
+  "level": 5,
+  "initiative": 28,
+  "sourceId": 408,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "If you have two %prism-mode%, you may move one %prism-mode% card from your active area to your discard pile."
+    },
+    {
+     "type": "custom",
+     "text": "If you have one %prism-mode%, you may place one card with a summon action from your hand in your active area (without gaining the experience) and place a %prism-mode% token on it. Treat this card as an additional active %prism-mode%."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "grant",
+     "text": "Grant one of your summons:",
+     "actions": [
+      {
+       "type": "move",
+       "value": 4,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Spinning Blades",
+  "level": 6,
+  "initiative": 79,
+  "sourceId": 409,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Sword Propeller",
+     "stats": {
+      "health": 1,
+      "move": 5,
+      "attack": 2,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "Give %wound% to all adjacent figures and self at the end of turn."
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%prism-mode%"
+    },
+    {
+     "type": "custom",
+     "text": ":"
+    },
+    {
+     "type": "custom",
+     "text": "At the end of each of your turns, one adjacent enemy suffers %damage%2 and you suffer %damage%1."
+    }
+   ],
+   "xp": 1,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Triage Program",
+  "level": 6,
+  "initiative": 13,
+  "sourceId": 410,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%fh-mode%"
+    },
+    {
+     "type": "heal",
+     "value": 5,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%fh-mode%"
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%fh-mode%"
+    },
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Mortar Shells",
+  "level": 7,
+  "initiative": 85,
+  "sourceId": 411,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Bombardier",
+     "stats": {
+      "health": 5,
+      "move": 1,
+      "attack": 2,
+      "range": 4
+     },
+     "special": [
+      {
+       "type": "area",
+       "pattern": "tt_t"
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "range"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%prism-mode%"
+    },
+    {
+     "type": "custom",
+     "text": ":"
+    },
+    {
+     "type": "custom",
+     "text": "Whenever you suffer %damage%, one adjacent ally suffers %damage%1."
+    },
+    {
+     "type": "custom",
+     "text": "+"
+    },
+    {
+     "type": "custom",
+     "text": "Add %push%2 to all your attacks."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Recall",
+  "level": 7,
+  "initiative": 91,
+  "sourceId": 412,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Play two cards from your lost pile to perform the summon actions of both cards without gaining the experience."
+    }
+   ],
+   "lost": true,
+   "remove": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "grant",
+     "text": "Grant one of your summons:",
+     "actions": [
+      {
+       "type": "teleport",
+       "value": 8
+      },
+      {
+       "type": "custom",
+       "text": "This teleport must end in a hex adjacent to you."
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Swarming Bulwark",
+  "level": 8,
+  "initiative": 96,
+  "sourceId": 413,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Shield Spider",
+     "stats": {
+      "health": 7,
+      "move": 3,
+      "attack": 2,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "At the end of turn perform:"
+      },
+      {
+       "type": "condition",
+       "value": "ward",
+       "subActions": [
+        {
+         "type": "range",
+         "value": 4
+        }
+       ]
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%prism-mode%"
+    },
+    {
+     "type": "custom",
+     "text": ":"
+    },
+    {
+     "type": "custom",
+     "text": "At the start of each of your turns, perform:"
+    },
+    {
+     "type": "condition",
+     "value": "ward",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%fh-mode%"
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Burning Slash",
+  "level": 8,
+  "initiative": 29,
+  "sourceId": 414,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "wound"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "xt_st_et"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%fh-mode%"
+    },
+    {
+     "type": "move",
+     "value": 1,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "wound",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Heavy metal",
+  "level": 9,
+  "initiative": 76,
+  "sourceId": 415,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Sledge Driver",
+     "stats": {
+      "health": 9,
+      "move": 2,
+      "attack": 4,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "shield",
+       "value": 1
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%prism-mode%"
+    },
+    {
+     "type": "custom",
+     "text": ":"
+    },
+    {
+     "type": "custom",
+     "text": "During ordering of initiative each round, increase your initiative value by 15."
+    },
+    {
+     "type": "custom",
+     "text": "+"
+    },
+    {
+     "type": "custom",
+     "text": "Add +3 %attack% to your first attack each turn."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All adjacent allies and enemies suffer %damage%2."
+    },
+    {
+     "type": "shield",
+     "value": 2
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Disassemble",
+  "level": 9,
+  "initiative": 20,
+  "sourceId": 416,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%fh-mode%"
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%fh-mode%"
+    },
+    {
+     "type": "attack",
+     "value": 3
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Kill all of your summons from actions with lost icons. For each summon killed, perform:"
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "brittle"
+      },
+      {
+       "type": "custom",
+       "text": ","
+      },
+      {
+       "type": "condition",
+       "value": "bane",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "1 normal or elite enemy"
+        },
+        {
+         "type": "range",
+         "value": 4
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ }
+]

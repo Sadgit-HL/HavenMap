@@ -1,0 +1,1947 @@
+[
+ {
+  "name": "Black Claws",
+  "level": 1,
+  "initiative": 79,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If the target has a negative condition, add +1 %target% (for a maximum of one additional target)."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Summon Sewer Monstrosity"
+    },
+    {
+     "type": "summon",
+     "name": "Sewer Monstrosity",
+     "stats": {
+      "health": 4,
+      "move": 3,
+      "attack": 2,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "Add +1 %attack% to all attacks granted to this summon."
+      }
+     ],
+     "enhancement": [
+      "square",
+      "square",
+      0,
+      0
+     ],
+     "image": "https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/MP/images/sewer_monstrosity.jpg"
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Bug-Body's Bidding",
+  "level": 1,
+  "initiative": 81,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one of your summons:"
+    },
+    {
+     "type": "custom",
+     "text": "%move% +0"
+    },
+    {
+     "type": "custom",
+     "text": "%attack% +0"
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1,
+       "relative": true
+      },
+      {
+       "type": "xp",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Summon Harrower's Grasp"
+    },
+    {
+     "type": "summon",
+     "name": "Harrower's Grasp",
+     "stats": {
+      "health": 2,
+      "move": 2,
+      "attack": 1,
+      "range": 3
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "%flying%"
+      },
+      {
+       "type": "custom",
+       "text": "%muddle%"
+      }
+     ],
+     "enhancement": [
+      "square",
+      "square",
+      0,
+      0
+     ],
+     "image": "https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/MP/images/harrower_s_grasp.jpg"
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Endless Biting",
+  "level": 1,
+  "initiative": 72,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Summon Duskrat Swarm"
+    },
+    {
+     "type": "summon",
+     "name": "Duskrat Swarm",
+     "stats": {
+      "health": 7,
+      "move": 2,
+      "attack": 1,
+      "range": "-"
+     },
+     "special": [],
+     "enhancement": [
+      "square",
+      "square",
+      "square",
+      0
+     ],
+     "image": "https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/MP/images/duskrat_swarm.jpg"
+    },
+    {
+     "type": "custom",
+     "text": "Whenever this summon suffers %damage%, it performs:"
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    },
+    {
+     "type": "heal",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4
+    }
+   ]
+  }
+ },
+ {
+  "name": "Howling Apparition",
+  "level": 1,
+  "initiative": 93,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4
+    }
+   ]
+  }
+ },
+ {
+  "name": "Nocturnal Feeding",
+  "level": 1,
+  "initiative": 25,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4
+    },
+    {
+     "type": "condition",
+     "value": "invisible",
+     "subActions": [
+      {
+       "type": "custom",
+       "text": "%target% all of your summons and self, %range% 2"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "Phantasmal Flurry",
+  "level": 1,
+  "initiative": 23,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "condition",
+       "value": "muddle"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "+1 %attack%, you may target enemies up to two hexes away, %xp% 1."
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Sharp Teeth",
+  "level": 1,
+  "initiative": 31,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "pierce",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "heal",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "range",
+         "value": 2
+        }
+       ]
+      }
+     ],
+     "effects": [
+      {
+       "type": "xp",
+       "value": 1
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  }
+ },
+ {
+  "name": "Sickening Betrayal",
+  "level": 1,
+  "initiative": 15,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Control one enemy within %range% 4:"
+    },
+    {
+     "type": "attack",
+     "value": 2
+    },
+    {
+     "type": "condition",
+     "value": "poison",
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "pull",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Surrounding Shadows",
+  "level": 1,
+  "initiative": 16,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "push",
+       "value": 1
+      },
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
+    }
+   ],
+   "augment": [
+    {
+     "type": "custom",
+     "text": "You may perform your melee attack abilities as if you occupied the same hex as any of your allies."
+    }
+   ],
+   "xp": 1,
+   "duration": "persistent",
+   "namedAbility": "Augment"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "invisible",
+     "subActions": [
+      {
+       "type": "custom",
+       "text": "%target% 1 of your summons"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "At the end of the round, the target of the invisible ability loses %invisible%."
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Touch of Atrophy",
+  "level": 1,
+  "initiative": 47,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "curse"
+      }
+     ]
+    }
+   ],
+   "augment": [
+    {
+     "type": "custom",
+     "text": "Add %wound% to all your melee attacks."
+    }
+   ],
+   "xp": 1,
+   "duration": "persistent",
+   "namedAbility": "Augment"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "condition",
+     "value": "poison",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Vermincall",
+  "level": 1,
+  "initiative": 7,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one of your summons:"
+    },
+    {
+     "type": "custom",
+     "text": "%move% +0"
+    },
+    {
+     "type": "custom",
+     "text": "%attack% +0"
+    }
+   ],
+   "augment": [
+    {
+     "type": "custom",
+     "text": "Whenever you grant one of your summons an attack, afterwards grant it:"
+    },
+    {
+     "type": "custom",
+     "text": "%move% +0"
+    }
+   ],
+   "xp": 1,
+   "duration": "persistent",
+   "namedAbility": "Augment"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "disarm",
+       "subActions": [
+        {
+         "type": "range",
+         "value": 1
+        }
+       ]
+      }
+     ],
+     "effects": [
+      {
+       "type": "xp",
+       "value": 1
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Anguish",
+  "level": "X",
+  "initiative": 33,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one of your summons:"
+    },
+    {
+     "type": "custom",
+     "text": "%attack% +1"
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [],
+     "effects": [
+      {
+       "type": "pierce",
+       "value": 3
+      },
+      {
+       "type": "xp",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "curse",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "You may perform this ability as if you occupied the same hex as one of your summons."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Consume with Regret",
+  "level": "X",
+  "initiative": 75,
+  "top": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "attack",
+     "value": 2
+    }
+   ],
+   "augment": [
+    {
+     "type": "custom",
+     "text": "Whenever you perform a melee attack targeting an enemy that has a negative condition, after the attack all enemies adjacent to you suffer %damage% 1."
+    }
+   ],
+   "xp": 1,
+   "duration": "persistent",
+   "namedAbility": "Augment"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 1
+    },
+    {
+     "type": "loot",
+     "value": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "Rat Surprise",
+  "level": "X",
+  "initiative": 89,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Play one card from your lost pile to perform a summon action of the card."
+    },
+    {
+     "type": "custom",
+     "text": "Grant one of your summons:"
+    },
+    {
+     "type": "custom",
+     "text": "%move% +1"
+    },
+    {
+     "type": "custom",
+     "text": "%attack% -1"
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [],
+     "effects": [
+      {
+       "type": "condition",
+       "value": "poison"
+      },
+      {
+       "type": "xp",
+       "value": 1
+      }
+     ]
+    }
+   ],
+   "lost": true,
+   "remove": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one of your summons:"
+    },
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Hidden Assault",
+  "level": 2,
+  "initiative": 17,
+  "top": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "custom",
+     "text": "Monsters that have negative conditions treat you as though you have %invisible% this round."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Tiber's Tenacity",
+  "level": 2,
+  "initiative": 12,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one ally within %range% 2 :"
+    },
+    {
+     "type": "heal",
+     "value": 4,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "shield",
+     "value": 1
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      },
+      {
+       "type": "element",
+       "value": "light"
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "custom",
+     "text": "All attacks targeting you or your summons gain disadvantage this round."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Musophobia",
+  "level": 3,
+  "initiative": 53,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Control one enemy within %range% 4:"
+    },
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "custom",
+     "text": "If the controlled enemy ends its movement adjacent to you, it gains %stun%."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "custom",
+       "text": "%target% all enemies within two hexes that have a negative condition"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "options": [
+      {
+       "cost": {
+        "consume": {
+         "elements": [
+          "air"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "custom",
+         "text": "%target% all enemies within three hexes that have a negative condition instead"
+        }
+       ]
+      },
+      {
+       "cost": {
+        "consume": {
+         "elements": [
+          "dark"
+         ]
+        }
+       },
+       "actions": [],
+       "effects": [
+        {
+         "type": "attack",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "xp",
+         "value": 1
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "Seeking Strikes",
+  "level": 3,
+  "initiative": 10,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one of your summons:"
+    },
+    {
+     "type": "custom",
+     "text": "%move% +1"
+    },
+    {
+     "type": "custom",
+     "text": "%attack% +1"
+    }
+   ],
+   "augment": [
+    {
+     "type": "custom",
+     "text": "Whenever you grant one of your summons an attack, add %pierce% 3 to the attack."
+    }
+   ],
+   "xp": 1,
+   "duration": "persistent",
+   "namedAbility": "Augment"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5
+    }
+   ]
+  }
+ },
+ {
+  "name": "Compulsive Hoarding",
+  "level": 4,
+  "initiative": 62,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%darkc% : +1 %attack%, advantage"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If this attack kills the target, loot the hex the target occupied."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 1
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%airc% : +2 %move%"
+      }
+     ]
+    },
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "If you loot at least two tokens, gain %strengthen%."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Dok's Ferocity",
+  "level": 4,
+  "initiative": 35,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "push",
+       "value": 2
+      },
+      {
+       "type": "condition",
+       "value": "wound"
+      },
+      {
+       "type": "condition",
+       "value": "muddle"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "wound",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "My Loyal Friend",
+  "level": 5,
+  "initiative": 91,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Rosie",
+     "stats": {
+      "health": 3,
+      "move": 3,
+      "attack": 3,
+      "range": "-"
+     },
+     "special": [],
+     "enhancement": [
+      0,
+      "square",
+      "square",
+      0
+     ],
+     "image": "https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/MP/images/rosie.jpg"
+    },
+    {
+     "type": "custom",
+     "text": "When this summon dies, place the miniature on this card and do not move this card to your lost pile. At the start of each of your turns, remove up to one damage from this card. Then, if there is no damage, you may resummon it."
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Nibbled to Death",
+  "level": 5,
+  "initiative": 83,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Place the Rosie miniature on this card. At the end of each of your move abilities, you may move Rosie from this card to an adjacent enemy. At the end of each of your turns, the enemy with Rosie suffers %damage% 2. When that enemy dies, move Rosie to any enemy occupying a hex adjacent to the hex in which the enemy died or back to this card."
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4
+    },
+    {
+     "type": "condition",
+     "value": "poison",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Diamartia's Dominance",
+  "level": 6,
+  "initiative": 68,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one ally within %range% 4 or control one enemy within %range% 4:"
+    },
+    {
+     "type": "attack",
+     "value": 4
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "wild"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "+1 %attack%, advantage"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      },
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 5,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "poison",
+       "subActions": [
+        {
+         "type": "custom",
+         "text": "%target% the target of the heal ability"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Revel in Misery",
+  "level": 6,
+  "initiative": 22,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "invisible",
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ],
+   "augment": [
+    {
+     "type": "custom",
+     "text": "Whenever you perform a melee attack ability targeting an enemy that has a negative condition, after the attack ability perform"
+    },
+    {
+     "type": "condition",
+     "value": "bless",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "."
+    }
+   ],
+   "xp": 1,
+   "duration": "persistent",
+   "namedAbility": "Augment"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Rat Tide",
+  "level": 7,
+  "initiative": 85,
+  "top": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "+1 %move%, all enemies moved through gain %muddle%, %xp% 1."
+      }
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1,
+       "relative": true
+      },
+      {
+       "type": "condition",
+       "value": "curse"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Control each enemy moved through with the move ability:"
+    },
+    {
+     "type": "move",
+     "value": 1
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "poison"
+      },
+      {
+       "type": "custom",
+       "text": ","
+      },
+      {
+       "type": "condition",
+       "value": "stun",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "Twin Frenzy",
+  "level": 7,
+  "initiative": 14,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 2,
+       "relative": true
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Grant one of your summons:"
+    },
+    {
+     "type": "attack",
+     "value": "+0"
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 2,
+       "relative": true
+      },
+      {
+       "type": "xp",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one of your summons:"
+    },
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "plus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Pay the Piper",
+  "level": 8,
+  "initiative": 49,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one of your summons:"
+    },
+    {
+     "type": "attack",
+     "value": "+0",
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      }
+     ]
+    }
+   ],
+   "augment": [
+    {
+     "type": "custom",
+     "text": "Whenever you grant one of your summons an attack, add +1 %attack% to the attack."
+    }
+   ],
+   "xp": 1,
+   "duration": "persistent",
+   "namedAbility": "Augment"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one of your summons:"
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%move% +0"
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "attack",
+     "value": "+1"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Powder's Ingenuity",
+  "level": 8,
+  "initiative": 39,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 5,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "range",
+         "value": 3
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "ett_ttt_ett"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      },
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "custom",
+     "text": "On your next two attacks, add +2 %attack%."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      0
+     ]
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Her Highness",
+  "level": 9,
+  "initiative": 94,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Summon Rat Queen"
+    },
+    {
+     "type": "summon",
+     "name": "Rat Queen",
+     "stats": {
+      "health": 7,
+      "move": 3,
+      "attack": "-",
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "At end of turn, grant one adjacent ally: %attack% 3"
+      }
+     ],
+     "enhancement": [
+      "square",
+      "square",
+      0,
+      0
+     ],
+     "image": "https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/MP/images/rat_queen.jpg"
+    },
+    {
+     "type": "custom",
+     "text": "You control how this summon performs its abilities and you treat abilities she grants as if you granted them for your %rift%."
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4
+    },
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All enemies adjacent to you or the target suffer %damage%1."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Treacherous Tactics",
+  "level": 9,
+  "initiative": 59,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Once during each of your turns, you may play one card from your hand to perform an %rift% action of the card."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "During this and the next two rounds, you may have any number of %rift% active at once."
+      }
+     ]
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      1,
+      0
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "wound",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "poison",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ }
+]

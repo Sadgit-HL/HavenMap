@@ -1,0 +1,2096 @@
+[
+ {
+  "name": "Boon of the Tempest",
+  "level": 1,
+  "initiative": 28,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "INFUSION: %airc% / %wildc% : Add +1 %move% and %jump% to all your move abilities."
+    },
+    {
+     "type": "custom",
+     "text": "When this %rift% or another %rift% is played, perform:"
+    },
+    {
+     "type": "attack",
+     "value": 3
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %move% : %air%"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Bounty of the Earth",
+  "level": 1,
+  "initiative": 23,
+  "top": {
+   "actions": [
+    {
+     "type": "shield",
+     "value": 2
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %shield% : %earth%, %xp% 1"
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "INFUSION: %earthc% / %wildc% :"
+    },
+    {
+     "type": "retaliate",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "When this %rift% or another %rift% is played, perform:"
+    },
+    {
+     "type": "heal",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Caress of the Night",
+  "level": 1,
+  "initiative": 87,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "INFUSION: %darkc% / %wildc% : Add %wound% and %muddle% to all your melee attacks."
+    },
+    {
+     "type": "custom",
+     "text": "When this %rift% or another %rift% is played, perform:"
+    },
+    {
+     "type": "condition",
+     "value": "strengthen",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %attack% : %dark%, %xp% 1"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Emerald Edge",
+  "level": 1,
+  "initiative": 70,
+  "top": {
+   "actions": [
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%earthc% %darkc% :"
+      }
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 5
+    },
+    {
+     "type": "condition",
+     "value": "ward",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %target% : %earth%"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Formless Bladestorm",
+  "level": 1,
+  "initiative": 33,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "subActions": [
+        {
+         "type": "pierce",
+         "value": 2
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "sttt"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%teleport% to any unoccupied hex adjacent to the furthest enemy targeted by the attack ability."
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "infuse": [
+    "air",
+    "dark"
+   ],
+   "infuseEither": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "pull",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %pull%, -1 %range% : %air%"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Onyx Shards",
+  "level": 1,
+  "initiative": 20,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "disarm",
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-2 %range% : %dark%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create four 1-hex obstacles in empty hexes within %range%3."
+    },
+    {
+     "type": "custom",
+     "text": "All enemies adjacent to at least two of the created obstacles suffer %damage%2."
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "infuse": [
+    "earth",
+    "dark"
+   ],
+   "infuseEither": true
+  }
+ },
+ {
+  "name": "Rising Momentum",
+  "level": 1,
+  "initiative": 25,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "+1 %attack% for each pair of active %rift%."
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%earth%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "+1 %move% for each pair of active %rift%."
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%air%"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Slashing Cyclone",
+  "level": 1,
+  "initiative": 14,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %attack% : %air%, %xp% 1"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All enemies adjacent to any hex you enter during this movement suffer %damage%1."
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "infuse": [
+    "air",
+    "earth"
+   ],
+   "infuseEither": true
+  }
+ },
+ {
+  "name": "Stoic Vigilance",
+  "level": 1,
+  "initiative": 12,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "shield",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 1,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All enemies within %range% 3 that target one of your adjacent allies with an attack this round target you with that attack instead, regardless of the attack's range."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Torrential Cleave",
+  "level": 1,
+  "initiative": 83,
+  "top": {
+   "actions": [
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "consume",
+       "elements": [
+        "air"
+       ]
+      },
+      {
+       "type": "consume",
+       "elements": [
+        "earth"
+       ]
+      },
+      {
+       "type": "custom",
+       "text": ":"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 4,
+       "subActions": [
+        {
+         "type": "push",
+         "value": 2,
+         "enhancement": [
+          "square"
+         ]
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "et_ts"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %move% : %earth%"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "immobilize"
+      },
+      {
+       "type": "area",
+       "pattern": "etx_ts"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Unstoppable Impulse",
+  "level": 1,
+  "initiative": 56,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %attack% : %dark%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "consume",
+       "elements": [
+        "air"
+       ]
+      },
+      {
+       "type": "consume",
+       "elements": [
+        "dark"
+       ]
+      },
+      {
+       "type": "custom",
+       "text": ":"
+      }
+     ]
+    },
+    {
+     "type": "push",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "push",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ],
+   "xp": 1
+  }
+ },
+ {
+  "name": "Battle Prowess",
+  "level": "X",
+  "initiative": 78,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one of your summons or self:"
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%dark%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %move% : %wild%, %xp% 1"
+      }
+     ]
+    },
+    {
+     "type": "loot",
+     "value": 2
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Crystalline Aegis",
+  "level": "X",
+  "initiative": 17,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "brittle",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %target% for each pair of active %rift%."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "regenerate"
+      },
+      {
+       "type": "custom",
+       "text": ","
+      },
+      {
+       "type": "condition",
+       "value": "ward",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Imbue with Life",
+  "level": "X",
+  "initiative": 42,
+  "top": {
+   "actions": [
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "consume",
+       "elements": [
+        "earth"
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "Summon Animated Claymore"
+      }
+     ]
+    },
+    {
+     "type": "summon",
+     "name": "Animated Claymore",
+     "stats": {
+      "health": 2,
+      "move": 3,
+      "attack": 3,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "%shield% 1"
+      }
+     ],
+     "enhancement": [
+      "square",
+      "square",
+      0,
+      0
+     ],
+     "image": "https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/MP/images/animated_claymore.jpg"
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Whenever you do not have %regenerate%, gain %regenerate%."
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "This summon is affected by all your active %rift%."
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 7,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-2 %heal% : %air%, %xp% 1 -2 %heal% : %earth%, %xp% 1 -2 %heal% : %dark%"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Remote Impact",
+  "level": 2,
+  "initiative": 72,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "group",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 3,
+         "enhancement": [
+          "square"
+         ]
+        },
+        {
+         "type": "optional",
+         "cost": null,
+         "actions": [
+          {
+           "type": "custom",
+           "text": "-1 %attack% : %push% 1, %air%, %xp% 1"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "ett_t"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "consume",
+       "elements": [
+        "earth"
+       ]
+      },
+      {
+       "type": "consume",
+       "elements": [
+        "air"
+       ]
+      },
+      {
+       "type": "custom",
+       "text": ":"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Create one 1-hex obstacle in an empty hex within %range% 5."
+    },
+    {
+     "type": "condition",
+     "value": "immobilize",
+     "subActions": [
+      {
+       "type": "custom",
+       "text": "%target% all enemies adjacent to the created obstacle"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  }
+ },
+ {
+  "name": "Veil of Protection",
+  "level": 2,
+  "initiative": 47,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 5,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-2 %heal% : %earth%, %xp% 1"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "consume",
+       "elements": [
+        "earth"
+       ]
+      },
+      {
+       "type": "consume",
+       "elements": [
+        "dark"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Your current and maximum hit point values are increased by 3. You are immune to %curse%."
+    },
+    {
+     "type": "custom",
+     "text": "When this %rift% or another %rift% is played, perform:"
+    },
+    {
+     "type": "condition",
+     "value": "ward",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Guide the Flow",
+  "level": 3,
+  "initiative": 35,
+  "top": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "optional",
+     "options": [
+      {
+       "cost": {
+        "consume": {
+         "elements": [
+          "air"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "custom",
+         "text": "%dark%"
+        }
+       ]
+      },
+      {
+       "cost": {
+        "consume": {
+         "elements": [
+          "earth"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "custom",
+         "text": "%air%"
+        }
+       ]
+      },
+      {
+       "cost": {
+        "consume": {
+         "elements": [
+          "dark"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "custom",
+         "text": "%earth%, %xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "optional",
+     "options": [
+      {
+       "cost": {
+        "consume": {
+         "elements": [
+          "air"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "custom",
+         "text": "%earth%"
+        }
+       ]
+      },
+      {
+       "cost": {
+        "consume": {
+         "elements": [
+          "earth"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "custom",
+         "text": "%dark%"
+        }
+       ]
+      },
+      {
+       "cost": {
+        "consume": {
+         "elements": [
+          "dark"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "custom",
+         "text": "%air%, %xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Reinforced Riposte",
+  "level": 3,
+  "initiative": 18,
+  "top": {
+   "actions": [
+    {
+     "type": "retaliate",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %retaliate% for each pair of active %rift%."
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%dark%"
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "condition",
+     "value": "wound",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Coalescing Darkness",
+  "level": 4,
+  "initiative": 85,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%rift% INFUSION:"
+      },
+      {
+       "type": "consume",
+       "elements": [
+        "air",
+        "dark"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "After an adjacent enemy attacks you, that enemy gains %curse%."
+    },
+    {
+     "type": "custom",
+     "text": "When this %rift% or another %rift% is played, perform:"
+    },
+    {
+     "type": "condition",
+     "value": "disarm",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "pull",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "condition",
+       "value": "muddle"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %pull%, -1 %range% : %air% -1 %target% : %dark%"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Desperate Throw",
+  "level": 4,
+  "initiative": 16,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "custom",
+       "text": "%target% 1 enemy within 4 hexes"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %attack% : %earth%"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "disarm",
+       "enhancement": [
+        "diamondPlus"
+       ],
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "Move any waning element to the strong column."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Gemstone Resonance",
+  "level": 5,
+  "initiative": 30,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%rift% INFUSION:"
+      },
+      {
+       "type": "consume",
+       "elements": [
+        "earth"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add %?magenta diamond with a tower or crown% to all your heal abilities."
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 ally"
+      },
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "While this card is in your active area this round, your abilities and attack modifier cards treat it as a pair of active %rift%."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Obsidian Spear",
+  "level": 5,
+  "initiative": 84,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "group",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 4,
+         "enhancement": [
+          "diamond"
+         ]
+        },
+        {
+         "type": "optional",
+         "cost": null,
+         "actions": [
+          {
+           "type": "custom",
+           "text": "-1 %attack% : %push% 1, %dark%, %xp% 1"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "tt"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "consume",
+       "elements": [
+        "earth",
+        "dark"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "condition",
+       "value": "stun"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  }
+ },
+ {
+  "name": "Gale Barrage",
+  "level": 6,
+  "initiative": 44,
+  "top": {
+   "actions": [
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "consume",
+       "elements": [
+        "air",
+        "dark"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": 3
+      },
+      {
+       "type": "pierce",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "You may target the same enemy multiple times with this ability."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +2 %attack% to your next attack ability this round."
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Add +1 %attack% instead: %air%, %xp% 1"
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Propulsive Tailwind",
+  "level": 6,
+  "initiative": 91,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%rift% INFUSION:"
+      },
+      {
+       "type": "consume",
+       "elements": [
+        "air",
+        "earth"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "After each of your attack abilities, perform %move% 2."
+    },
+    {
+     "type": "custom",
+     "text": "When this %rift% or another %rift% is played, perform:"
+    },
+    {
+     "type": "push",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      },
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %move% : %earth%"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Grant one adjacent ally:"
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %move% : %air%"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Diamondization",
+  "level": 7,
+  "initiative": 10,
+  "top": {
+   "actions": [
+    {
+     "type": "shield",
+     "value": 1,
+     "enhancement": [
+      "plus"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %shield% for each pair of active %rift%."
+    },
+    {
+     "type": "condition",
+     "value": "ward",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ],
+   "duration": "round",
+   "infuse": [
+    "earth",
+    "dark"
+   ],
+   "infuseEither": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "condition",
+         "value": "wound"
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "condition",
+         "value": "immobilize"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "et_tt_ttt_tt_et"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "infuse": [
+    "earth",
+    "dark"
+   ],
+   "infuseEither": true
+  }
+ },
+ {
+  "name": "Malachite Shockwave",
+  "level": 7,
+  "initiative": 68,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 4,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "stun"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "t_t_et"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "infuse": [
+    "earth",
+    "dark"
+   ],
+   "infuseEither": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %move% : %earth/dark%"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All adjacent enemies suffer %damage% 1."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Swift Pivot",
+  "level": 8,
+  "initiative": 8,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Negate the next %damage% you would suffer from a melee attack this round, and the attacker suffers %damage% 4."
+    }
+   ],
+   "xp": 1,
+   "duration": "round",
+   "infuse": [
+    "air",
+    "earth"
+   ],
+   "infuseEither": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 4,
+       "enhancement": [
+        "diamond"
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "t_t_st_ex"
+      }
+     ]
+    },
+    {
+     "type": "move",
+     "value": 2
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "infuse": [
+    "air",
+    "earth"
+   ],
+   "infuseEither": true
+  }
+ },
+ {
+  "name": "Untether the Shackles",
+  "level": 8,
+  "initiative": 61,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Spiritbound Falchion",
+     "stats": {
+      "health": 6,
+      "move": 3,
+      "attack": 4,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "%shield% 1"
+      },
+      {
+       "type": "custom",
+       "text": "%flying%"
+      }
+     ],
+     "enhancement": [
+      "square",
+      "square",
+      0,
+      0
+     ],
+     "image": "https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/MP/images/spiritbound_falchion.jpg"
+    },
+    {
+     "type": "custom",
+     "text": "Whenever you play an %rift%, you may have this summon perform all abilities triggered by that %rift% instead of you."
+    },
+    {
+     "type": "custom",
+     "text": "This summon is affected by all your active %rift%."
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    }
+   ],
+   "infuse": [
+    "air",
+    "dark"
+   ],
+   "infuseEither": true
+  }
+ },
+ {
+  "name": "Ancient Rites of Power",
+  "level": 9,
+  "initiative": 94,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%rift% INFUSION: %airc% %earthc% %darkc%"
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %target% to all your melee attack abilities."
+    },
+    {
+     "type": "custom",
+     "text": "When this %rift% or another %rift% is played, perform:"
+    },
+    {
+     "type": "condition",
+     "value": "bless",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 3
+      },
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %heal% : %dark% -1 %target% : %earth% -2 %range% : %air%"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Sky-Splitting Strike",
+  "level": 9,
+  "initiative": 50,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 6,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "options": [
+      {
+       "cost": {
+        "consume": {
+         "elements": [
+          "air"
+         ]
+        }
+       },
+       "actions": [],
+       "effects": [
+        {
+         "type": "pierce",
+         "value": 5
+        },
+        {
+         "type": "xp",
+         "value": 1
+        }
+       ]
+      },
+      {
+       "cost": {
+        "consume": {
+         "elements": [
+          "earth"
+         ]
+        }
+       },
+       "actions": [],
+       "effects": [
+        {
+         "type": "attack",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "condition",
+         "value": "wound"
+        }
+       ]
+      },
+      {
+       "cost": {
+        "consume": {
+         "elements": [
+          "dark"
+         ]
+        }
+       },
+       "actions": [],
+       "effects": [
+        {
+         "type": "condition",
+         "value": "disarm"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create one 3-hex obstacle in empty hexes within %range% 4."
+    },
+    {
+     "type": "custom",
+     "text": "All enemies adjacent to the created obstacle suffer %damage% 4 and gain %stun%."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      },
+      {
+       "type": "element",
+       "value": "earth"
+      },
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ }
+]

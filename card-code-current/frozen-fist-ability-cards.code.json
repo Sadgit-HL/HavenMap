@@ -1,0 +1,2144 @@
+[
+ {
+  "name": "One with the Mountain",
+  "level": 1,
+  "initiative": 83,
+  "sourceId": 360,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "At the end of each round, either before or after discarding all active round bonuses, you may %recover% one card you played this round from your discard pile by suffering %damage%2+(X/2) (rounded down), where X is equal to the card's level."
+    },
+    {
+     "type": "custom",
+     "text": "Whenever you do not have %regenerate%, gain %regenerate%."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 4,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      },
+      {
+       "type": "condition",
+       "value": "ward"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice/earth",
+       "either": true
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Cold Boulder",
+  "level": 1,
+  "initiative": 70,
+  "sourceId": 361,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create one 1-hex icy terrain tile in an adjacent featureless hex."
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all enemies occupying or adjacent to the hex"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Whenever you suffer %damage% from an attack this round, after the attack perform:"
+    },
+    {
+     "type": "heal",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "move",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Frost Eruption",
+  "level": 1,
+  "initiative": 61,
+  "sourceId": 362,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "push",
+         "value": 2
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "ett_st"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Create one 1-hex icy terrain tile in one featureless red hex of the attack ability."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "bless"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Fury of the Mountain",
+  "level": 1,
+  "initiative": 23,
+  "sourceId": 363,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Whenever you suffer %damage% this round, suffer 1 less %damage%."
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "retaliate",
+     "value": 1
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "retaliate",
+       "value": 1
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Encased Punch",
+  "level": 1,
+  "initiative": 19,
+  "sourceId": 364,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %attack% if the target is occupying icy terrain."
+    },
+    {
+     "type": "custom",
+     "text": "Whenever you suffer %damage% this round, one adjacent enemy suffers %damage%1."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Voice from Below",
+  "level": 1,
+  "initiative": 22,
+  "sourceId": 365,
+  "top": {
+   "actions": [
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %heal% to all heals targeting you this round."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Piercing Pummel",
+  "level": 1,
+  "initiative": 30,
+  "sourceId": 366,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "pierce",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "area",
+       "pattern": "stt"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    },
+    {
+     "type": "retaliate",
+     "value": 1
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%advantage%"
+      }
+     ]
+    },
+    {
+     "type": "heal",
+     "value": "X",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "where X is the amount of %damage% suffered by the targets of the attack ability."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  }
+ },
+ {
+  "name": "Ice Blast",
+  "level": 1,
+  "initiative": 32,
+  "sourceId": 367,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      },
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice/earth",
+       "either": true
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "wound",
+       "subActions": [
+        {
+         "type": "range",
+         "value": 1
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  }
+ },
+ {
+  "name": "Shard Launch",
+  "level": "X",
+  "initiative": 52,
+  "sourceId": 368,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "immobilize",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "The target suffers %damage%1."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Primal Bellow",
+  "level": "X",
+  "initiative": 84,
+  "sourceId": 369,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "All adjacent enemies suffer %damage%1."
+    },
+    {
+     "type": "custom",
+     "text": "Create one 1-hex icy terrain tile in a featureless hex within %range%3."
+    },
+    {
+     "type": "push",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Freezing Shell",
+  "level": "X",
+  "initiative": 17,
+  "sourceId": 370,
+  "top": {
+   "actions": [
+    {
+     "type": "shield",
+     "value": 1
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "shield",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Remove any %disarm% and %muddle% you have."
+    },
+    {
+     "type": "custom",
+     "text": "Whenever you would gain %disarm% or %muddle% this round, prevent the condition."
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "pull",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "One adjacent enemy suffers %damage%1."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Draw of the Bedrock",
+  "level": 2,
+  "initiative": 10,
+  "sourceId": 371,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "brittle"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    },
+    {
+     "type": "shield",
+     "value": 1
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [],
+     "effects": [
+      {
+       "type": "shield",
+       "value": 1
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "pull",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "immobilize",
+       "subActions": [
+        {
+         "type": "range",
+         "value": 1
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "retaliate",
+     "value": 2
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Crushing Crystals",
+  "level": 2,
+  "initiative": 67,
+  "sourceId": 372,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2
+      },
+      {
+       "type": "area",
+       "pattern": "et_st"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "disarm"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Create one 1-hex icy terrain tile in an adjacent featureless hex, %xp% 1."
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Lacerating Eruption",
+  "level": 3,
+  "initiative": 51,
+  "sourceId": 373,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3
+      },
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "ice"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "condition",
+         "value": "wound"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "et_st"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Frozen Over",
+  "level": 3,
+  "initiative": 20,
+  "sourceId": 374,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create two 1-hex icy terrain tiles in adjacent featureless hexes."
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Enemies in those hexes gain %brittle%, %xp% 1."
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "condition",
+     "value": "ward",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "shield",
+     "value": 1
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "move",
+       "value": 3
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "The Mountain s Fist",
+  "level": 4,
+  "initiative": 16,
+  "sourceId": 375,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If the attack ability killed an enemy, perform:"
+    },
+    {
+     "type": "heal",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "immobilize",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Packed Solid",
+  "level": 4,
+  "initiative": 55,
+  "sourceId": 376,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "stun"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "shield",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "retaliate",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Preserved Fury",
+  "level": 5,
+  "initiative": 49,
+  "sourceId": 377,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "You cannot use <i>One with the Mountain</i> to %recover% this card."
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%recover% up to one of your discarded cards."
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "wild"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "+1 %recover%"
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "You cannot use <i>One with the Mountain</i> to %recover% this card."
+    },
+    {
+     "type": "custom",
+     "text": "%recover% up to one of your discarded cards."
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "wild"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "+1 %recover%"
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  }
+ },
+ {
+  "name": "Ice Uppercut",
+  "level": 5,
+  "initiative": 15,
+  "sourceId": 378,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %attack% and %push%2 if the target is occupying icy terrain."
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "immobilize"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "wild"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "element",
+       "value": "wild"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Thick Frost",
+  "level": 6,
+  "initiative": 21,
+  "sourceId": 379,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "heal",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Whenever you suffer %damage% this round, suffer 1 less %damage%."
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "ward",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "bless"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Glacier Slam",
+  "level": 6,
+  "initiative": 84,
+  "sourceId": 380,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "muddle"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "et_ttt_est_ett"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add %pierce%3 if the target is occupying icy terrain."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "jump"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All adjacent enemies suffer %damage%1."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Gift of the Mountain",
+  "level": 7,
+  "initiative": 73,
+  "sourceId": 381,
+  "top": {
+   "actions": [
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "wild"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "strengthen",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "custom",
+     "text": "At the end of each of your move abilities this round, perform:"
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all enemies adjacent to at least one hex you entered during the move ability"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Perform these attacks regardless of your line-of-sight."
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "At the end of each of your turns, perform:"
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Seeing Stars",
+  "level": 7,
+  "initiative": 29,
+  "sourceId": 382,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "push",
+       "value": 1
+      },
+      {
+       "type": "condition",
+       "value": "muddle"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "wild"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "muddle"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Shattering Blow",
+  "level": 8,
+  "initiative": 18,
+  "sourceId": 383,
+  "top": {
+   "actions": [
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "brittle",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "all"
+        },
+        {
+         "type": "range",
+         "value": 1
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "attack",
+     "value": 6,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 2
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "shield",
+         "value": 2
+        },
+        {
+         "type": "mandatory",
+         "actions": [
+          {
+           "type": "custom",
+           "text": "%round%"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "heal",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Draw Strength",
+  "level": 8,
+  "initiative": 28,
+  "sourceId": 384,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 5,
+       "enhancement": [
+        "diamond"
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "et_st"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If the attack ability targeted two enemies, perform:"
+    },
+    {
+     "type": "condition",
+     "value": "ward",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "All enemies within %range%3 suffer %damage%1."
+    },
+    {
+     "type": "custom",
+     "text": "For each enemy that suffered %damage% with this action, perform:"
+    },
+    {
+     "type": "condition",
+     "value": "strengthen",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Bring Down the Mountain",
+  "level": 9,
+  "initiative": 9,
+  "sourceId": 385,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create three 1-hex obstacle tiles in empty hexes within %range%4."
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all enemies adjacent to at least one created obstacle"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "shield",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "retaliate",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "retaliate",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Frozen Spike",
+  "level": 9,
+  "initiative": 33,
+  "sourceId": 386,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ],
+       "subActions": [
+        {
+         "type": "range",
+         "value": 3
+        },
+        {
+         "type": "push",
+         "value": 1
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "ett_ttt_ett"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Create three 1-hex icy terrain tiles in featureless red hexes of the attack ability, %xp% 1."
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 6,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "One adjacent enemy suffers %damage%3, %xp% 1."
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      }
+     ]
+    }
+   ]
+  }
+ }
+]

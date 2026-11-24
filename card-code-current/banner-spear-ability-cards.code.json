@@ -1,0 +1,1685 @@
+[
+ {
+  "name": "At All Costs",
+  "level": 1,
+  "initiative": 60,
+  "sourceId": 61,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all allies"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Suffer %damage%1 for each ally whose hit point value increased with the heal ability."
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Reinforcement",
+     "stats": {
+      "health": 1,
+      "move": 2,
+      "attack": null,
+      "range": "-"
+     },
+     "special": [],
+     "enhancement": [
+      "heal",
+      "move"
+     ]
+    }
+   ],
+   "xp": 1,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Rallying Cry",
+  "level": 1,
+  "initiative": 71,
+  "sourceId": 62,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "disarm"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "ax_t_s"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Banner Of Strength",
+     "stats": {
+      "health": 3,
+      "move": null,
+      "attack": null,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "All allies within %range%2 add +1 %attack% to one of their attacks each turn."
+      }
+     ],
+     "enhancement": [
+      "heal"
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Unbreakable Wall",
+  "level": 1,
+  "initiative": 83,
+  "sourceId": 63,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "subActions": [
+        {
+         "type": "push",
+         "value": 1
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "ttt_as"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "shield",
+     "value": 1
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "All your ranged attacks have -1 %range%."
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Javelin",
+  "level": 1,
+  "initiative": 21,
+  "sourceId": 64,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 1,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "pull",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Deflecting Maneuver",
+  "level": 1,
+  "initiative": 15,
+  "sourceId": 65,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%advantage%"
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All attacks targeting you this round gain disadvantage."
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "shield",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "This %shield% only applies to ranged attacks."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Tip of the Spear",
+  "level": 1,
+  "initiative": 67,
+  "sourceId": 66,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "subActions": [
+        {
+         "type": "pierce",
+         "value": 3
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "eex_et_et_s_a"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Combined Effort",
+  "level": 1,
+  "initiative": 32,
+  "sourceId": 67,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "wound"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "et_sa"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Grant two allies within %range%2:"
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Set for the Charge",
+  "level": 1,
+  "initiative": 6,
+  "sourceId": 68,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Whenever an enemy moves or teleports from a hex not adjacent to you to a hex adjacent to you this round, that enemy suffers %damage%2."
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4
+    }
+   ]
+  }
+ },
+ {
+  "name": "Pincer Movement",
+  "level": 1,
+  "initiative": 69,
+  "sourceId": 69,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 5,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "muddle"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "ea_t_s"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 1,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "loot",
+     "value": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "Regroup",
+  "level": 1,
+  "initiative": 25,
+  "sourceId": 70,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      },
+      {
+       "type": "condition",
+       "value": "regenerate"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant two allies within %range%3:"
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Resolved Courage",
+  "level": "X",
+  "initiative": 10,
+  "sourceId": 71,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "immobilize"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "eet_ast_eet"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Add +1 %attack% to the next attack ability performed by you or an adjacent ally this round."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Incendiary Throw",
+  "level": "X",
+  "initiative": 22,
+  "sourceId": 72,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If the target suffers %damage% from this attack, the target and all enemies adjacent to the target gain %wound%."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Torch Bearer",
+     "stats": {
+      "health": 5,
+      "move": 2,
+      "attack": 1,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "condition",
+       "value": "wound"
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "attack"
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Driving Inspiration",
+  "level": "X",
+  "initiative": 18,
+  "sourceId": 73,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%advantage%"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "light"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Banner Of Hope",
+     "stats": {
+      "health": 4,
+      "move": null,
+      "attack": null,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "At the start of their turns, grant allies within %range%3:"
+      },
+      {
+       "type": "heal",
+       "value": 1,
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ],
+     "enhancement": [
+      "heal"
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Meat Grinder",
+  "level": 2,
+  "initiative": 62,
+  "sourceId": 74,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 4,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "wound"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "ea_tt_es"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "heal",
+     "value": 1,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      },
+      {
+       "type": "condition",
+       "value": "regenerate"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Pinning Charge",
+  "level": 2,
+  "initiative": 17,
+  "sourceId": 75,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "range",
+         "value": 1,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "condition",
+         "value": "immobilize"
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %attack% for each ally adjacent to the target."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant three allies within %range%4:"
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Let Them Come",
+  "level": 3,
+  "initiative": 24,
+  "sourceId": 76,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "poison"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "tt_t_as"
+      }
+     ]
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "the ally in the blue hey of the attack ability and self"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Banner Of Courage",
+     "stats": {
+      "health": 7,
+      "move": null,
+      "attack": null,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "All adjacent allies gain %shield%1."
+      }
+     ],
+     "enhancement": [
+      "heal"
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Head of the Hammer",
+  "level": 3,
+  "initiative": 87,
+  "sourceId": 77,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 7,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "stun"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "et_s_a"
+      }
+     ]
+    }
+   ],
+   "xp": 3,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "muddle",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Boldening Blow",
+  "level": 4,
+  "initiative": 72,
+  "sourceId": 78,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 4,
+       "subActions": [
+        {
+         "type": "target",
+         "value": "1 enemy in the red hexes"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "ett_ast_eat"
+      }
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "bless",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all allies in the blue hexes of the attack ability"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Grant two allies within %range%3:"
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Air Support",
+  "level": 4,
+  "initiative": 20,
+  "sourceId": 79,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "pierce",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Trained Falcon",
+     "stats": {
+      "health": 1,
+      "move": 3,
+      "attack": 2,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "fly"
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "move",
+      "attack"
+     ]
+    }
+   ],
+   "xp": 1,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Explosive Epicenter",
+  "level": 5,
+  "initiative": 78,
+  "sourceId": 80,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "subActions": [
+        {
+         "type": "push",
+         "value": 1
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "ttt_as_ttt"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Grant the ally in the blue hex of the attack ability and self:"
+    },
+    {
+     "type": "move",
+     "value": 1
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%data.custom.fh.banner-spear.abilities.80.2%"
+    },
+    {
+     "type": "move",
+     "value": 1
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Hold the Line",
+  "level": 5,
+  "initiative": 5,
+  "sourceId": 81,
+  "top": {
+   "actions": [
+    {
+     "type": "shield",
+     "value": 2,
+     "enhancement": [
+      "diamondPlus"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Grant all adjacent allies:"
+    },
+    {
+     "type": "shield",
+     "value": 2
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "shield",
+     "value": 2
+    },
+    {
+     "type": "retaliate",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Barricade",
+  "level": 6,
+  "initiative": 16,
+  "sourceId": 82,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "wound"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "tttt_asa"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Grant all allies in the blue hexes of the attack ability and self:"
+    },
+    {
+     "type": "shield",
+     "value": 1
+    }
+   ],
+   "xp": 1,
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Banner Of Valor",
+     "stats": {
+      "health": 5,
+      "move": null,
+      "attack": null,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "Negate the first source of %damage% to an adjacent ally each round."
+      }
+     ],
+     "enhancement": [
+      "heal"
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Bolstering Shout",
+  "level": 6,
+  "initiative": 75,
+  "sourceId": 83,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "condition",
+       "value": "regenerate"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "target",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "pull",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Tri-Thrust",
+  "level": 7,
+  "initiative": 27,
+  "sourceId": 84,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 7,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "stun"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "a_ta_s"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "target",
+       "value": "3 enemies within two hexes instead"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Lead from Afar",
+  "level": 7,
+  "initiative": 80,
+  "sourceId": 85,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +2 %attack% for each ally adjacent to the target."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Longbowman",
+     "stats": {
+      "health": 4,
+      "move": 2,
+      "attack": 2,
+      "range": 4
+     },
+     "special": [
+      {
+       "type": "condition",
+       "value": "muddle"
+      }
+     ],
+     "enhancement": [
+      "heal",
+      "move",
+      "range"
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Sweeping Aid",
+  "level": 8,
+  "initiative": 73,
+  "sourceId": 86,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 4,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "pierce",
+         "value": 2
+        },
+        {
+         "type": "condition",
+         "value": "immobilize"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "eet_sat_eet"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Taunting Howl",
+  "level": 8,
+  "initiative": 11,
+  "sourceId": 87,
+  "top": {
+   "actions": [
+    {
+     "type": "pull",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 4
+      },
+      {
+       "type": "condition",
+       "value": "muddle"
+      }
+     ]
+    },
+    {
+     "type": "shield",
+     "value": 3
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Grant two allies within %range%3:"
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Take no Prisoners",
+  "level": 9,
+  "initiative": 85,
+  "sourceId": 88,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "poison"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "ett_ttt_astt_att"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Banner Of Doom",
+     "stats": {
+      "health": 9,
+      "move": null,
+      "attack": null,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "All enemies within %range%4 suffer %damage%1 at the start of their turns."
+      }
+     ],
+     "enhancement": [
+      "heal"
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Hail of Spears",
+  "level": 9,
+  "initiative": 44,
+  "sourceId": 89,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %target% for each adjacent Banner summon."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%teleport% each adjacent Banner summon to a hex adjacent to one of the targets."
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4
+    },
+    {
+     "type": "custom",
+     "text": "%recover% up to two of your lost cards with Banner summon abilities. Immediately play the recovered cards and perform their Banner summon abilities."
+    }
+   ],
+   "lost": true,
+   "remove": true
+  }
+ }
+]

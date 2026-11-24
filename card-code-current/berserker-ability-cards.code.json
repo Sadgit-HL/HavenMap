@@ -1,0 +1,1497 @@
+[
+ {
+  "name": "Blood Pact",
+  "level": 1,
+  "initiative": 76,
+  "top": {
+   "actions": [
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Suffer %damage% equal to half your current hit point value (rounded down)."
+      }
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 6,
+     "enhancement": [
+      "diamond"
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Add +1 %attack% to all your attacks."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "At the start of each of your turns, if your current hit point value is greater than 1, suffer %damage%1."
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Cauterize",
+  "level": 1,
+  "initiative": 40,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "condition",
+       "value": "wound"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %target% and gain %xp% 1 if your current hit point value is half your maximum or less."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "You may suffer %damage%2 to perform:"
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "wound"
+      },
+      {
+       "type": "custom",
+       "text": ","
+      },
+      {
+       "type": "condition",
+       "value": "immobilize",
+       "subActions": [
+        {
+         "type": "range",
+         "value": 1
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Dazing Wound",
+  "level": 1,
+  "initiative": 29,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "You may suffer %damage%2 to add %stun% and gain %xp% 1."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Defiance of Death",
+  "level": 1,
+  "initiative": 31,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "You may suffer %damage%2 to add +2 %attack% and gain %xp% 1."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On the next source of %damage% you would suffer that would reduce your current hit point value to less than 1, negate the %damage%."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      1
+     ]
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Numb the Pain",
+  "level": 1,
+  "initiative": 9,
+  "top": {
+   "actions": [
+    {
+     "type": "retaliate",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Whenever you suffer %damage% this round, if your current hit point value is half your maximum or less, suffer 1 less %damage%."
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "heal",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Resolute Stand",
+  "level": 1,
+  "initiative": 10,
+  "top": {
+   "actions": [
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "heal",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "retaliate",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Gain %xp% 1 the next time you retaliate this round."
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4
+    }
+   ]
+  }
+ },
+ {
+  "name": "Shiny Distraction",
+  "level": 1,
+  "initiative": 11,
+  "top": {
+   "actions": [
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "shield",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Gain advantage on all your attacks this round."
+    },
+    {
+     "type": "custom",
+     "text": "All attacks targeting you this round gain disadvantage."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Strength in Agony",
+  "level": 1,
+  "initiative": 37,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +2 %attack% and gain %xp% 1 if your current hit point value is half your maximum or less."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "You may suffer up to %damage%3."
+    },
+    {
+     "type": "move",
+     "value": "4+X"
+    },
+    {
+     "type": "custom",
+     "text": "where X is the amount of %damage% you chose to suffer."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Unbridled Power",
+  "level": 1,
+  "initiative": 14,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "push",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%target% 1 enemy up to two hexes away instead, +1 %attack%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "retaliate",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "Gain %xp% 1 the next time you retaliate this round."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "From the Brink",
+  "level": "X",
+  "initiative": 24,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Remove all negative conditions you have. If your current hit point value is 1, you may %recover% one card from your lost pile."
+    },
+    {
+     "type": "custom",
+     "text": "Set your current hit point value to half of your maximum (rounded up) and gain %strengthen%."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "pull",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Glass Hammer",
+  "level": "X",
+  "initiative": 43,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": "X"
+    },
+    {
+     "type": "custom",
+     "text": "where X is your current hit point value. Gain %xp% 1 for every 5 %damage% an enemy suffers from this attack."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Set your current hit point value to 1."
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Growing Rage",
+  "level": "X",
+  "initiative": 85,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Whenever you retaliate, perform:"
+    },
+    {
+     "type": "heal",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If, after the heal, your current hit point value is half your maximum or less, repeat this ability once."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If your current hit point value is half your maximum or less, gain %xp% 1 and perform:"
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Inner Fire",
+  "level": 4,
+  "initiative": 38,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 4,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +2 %heal% and gain %xp% 1 if your current hit point value is half your maximum or less."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "move",
+     "value": 1,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Reckless Offensive",
+  "level": 2,
+  "initiative": 21,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "You may suffer %damage%2 to add +1 %target% and gain %xp% 1."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [],
+     "effects": [
+      {
+       "type": "move",
+       "value": 2,
+       "relative": true
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +2 %move% and gain %xp% 1 if your current hit point value is half your maximum or less."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Final Fight",
+  "level": 3,
+  "initiative": 89,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "When this card is moved from your active area to your lost pile, you become exhausted. At the end of this and your next three turns, perform:"
+    },
+    {
+     "type": "attack",
+     "value": 5,
+     "subActions": [
+      {
+       "type": "custom",
+       "text": "advantage"
+      }
+     ]
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      1,
+      1,
+      1
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Add +1 %attack% to all your attacks this round. %round%"
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  }
+ },
+ {
+  "name": "Tireless Retribution",
+  "level": 3,
+  "initiative": 7,
+  "top": {
+   "actions": [
+    {
+     "type": "retaliate",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Gain %xp% 1 the next time you retaliate this round."
+    },
+    {
+     "type": "custom",
+     "text": "All attacks targeting you this round gain disadvantage."
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "If you short rest at the end of this round, gain all the benefits of a long rest."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Into the Fight",
+  "level": 2,
+  "initiative": 78,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "pull",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add %muddle% and gain %xp% 1 if your current hit point value is half your maximum or less."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "You may suffer %damage%2 to %fire% and perform:"
+    },
+    {
+     "type": "condition",
+     "value": "stun",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Unstoppable Destruction",
+  "level": 4,
+  "initiative": 26,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "All enemies adjacent to the target but not adjacent to you suffer %damage%2."
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Seeing Red",
+  "level": 5,
+  "initiative": 57,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "You may suffer %damage%2 to add +2 %attack%."
+    },
+    {
+     "type": "custom",
+     "text": "If your current hit point value is half your maximum or less, gain %xp% 1 and perform:"
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%target% 2 enemies up to two hexes away instead"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Vengeful Barrage",
+  "level": 5,
+  "initiative": 16,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On the next six sources of %damage% you suffer while an enemy is adjacent to you, after the ability that caused you to suffer the %damage%, perform %attack% 4."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      1,
+      0,
+      1,
+      0,
+      1
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "retaliate",
+     "value": 2
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [],
+     "effects": [
+      {
+       "type": "retaliate",
+       "value": 1,
+       "relative": true
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Devil Horns",
+  "level": 6,
+  "initiative": 32,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "wound"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "et_st_et"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Flurry of Axes",
+  "level": 6,
+  "initiative": 17,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "You may suffer up to %damage%4."
+    },
+    {
+     "type": "attack",
+     "value": "X",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all enemies within 3 hexes"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "where X is the amount of %damage% you chose to suffer."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "remove": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Careless Charge",
+  "level": 7,
+  "initiative": 15,
+  "top": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "If you moved in a straight line in one direction with the move ability and you do not have %wound%, gain %wound% to add +X %attack%, where X is the number of hexes you moved with the move ability."
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Whenever you are attacked this round, gain %retaliate%X for the attack, where X is the number of enemies adjacent to you when the attack is performed."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Fueled by Pain",
+  "level": 7,
+  "initiative": 22,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "heal",
+       "value": "X",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "where X is the amount of %damage% enemies suffered from the attack ability."
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "You may suffer %damage%2 to add +2 %move% and gain %xp% 1."
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "custom",
+       "text": "%target% all enemies moved through with the move ability that have %wound%"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Bone Breaker",
+  "level": 8,
+  "initiative": 41,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "wound"
+      },
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add %push%2 and gain %xp% 1 if your current hit point value is half your maximum or less."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Place your character token on the target. The target loses %flying%."
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Spiked Armor",
+  "level": 8,
+  "initiative": 8,
+  "top": {
+   "actions": [
+    {
+     "type": "retaliate",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "You may suffer %damage%2 to add +1 %retaliate% and gain %xp% 1."
+    },
+    {
+     "type": "custom",
+     "text": "Whenever an enemy suffers %damage% from your %retaliate% this round, they gain %wound%."
+    },
+    {
+     "type": "custom",
+     "text": "Negate the next %damage% you suffer this round."
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 5,
+     "enhancement": [
+      "plus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add %strengthen% and gain %xp% 1 if your current hit point value is half your maximum or less."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Bathe in Blood",
+  "level": 9,
+  "initiative": 83,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Whenever you suffer %damage%, all enemies that have %wound% suffer %damage%1."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "pull",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "custom",
+       "text": "%target% all, %range% 2"
+      }
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "muddle",
+     "subActions": [
+      {
+       "type": "custom",
+       "text": "%target% all, %range% 1"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Burning Hatred",
+  "level": 9,
+  "initiative": 50,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%target% all enemies up to two hexes away instead"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "You may suffer %damage%2 to add +1 %attack% and gain %xp% 1."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "You may perform this action any number of times in succession, increasing the %damage% suffered by 1 each time."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Suffer %damage%1. This %damage% cannot be negated."
+      }
+     ]
+    },
+    {
+     "type": "move",
+     "value": 1
+    },
+    {
+     "type": "attack",
+     "value": 2
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "remove": true
+  }
+ }
+]

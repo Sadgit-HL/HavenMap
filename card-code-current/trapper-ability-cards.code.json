@@ -1,0 +1,1072 @@
+[
+ {
+  "name": "Caltrops",
+  "level": 1,
+  "initiative": 25,
+  "sourceId": 273,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create two %damage%1 traps in empty hexes within %range%2 ."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Furry facade",
+  "level": 1,
+  "initiative": 85,
+  "sourceId": 274,
+  "top": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 1
+    },
+    {
+     "type": "condition",
+     "value": "invisible",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Shaggy Lure",
+     "stats": {
+      "health": 2,
+      "move": null,
+      "attack": null,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "Perform:"
+      },
+      {
+       "type": "pull",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "range",
+         "value": 3
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "at end of turn."
+      }
+     ],
+     "enhancement": [
+      "heal"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "disarm",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Boar Catcher",
+  "level": 1,
+  "initiative": 20,
+  "sourceId": 275,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create one %damage%4 trap in an empty hex within %range%2."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Spike Pit",
+  "level": 1,
+  "initiative": 47,
+  "sourceId": 276,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create one %damage%3 , %immobilize% trap in an empty hex within %range%2."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Relocate up to two traps within %range%2 to empty hexes within %range%4."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Electrified net",
+  "level": 1,
+  "initiative": 53,
+  "sourceId": 277,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create three %damage%2, %stun% traps in empty hexes within %range%2."
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create one %strengthen% trap in an adjacent empty hex."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Honeypot",
+  "level": 1,
+  "initiative": 18,
+  "sourceId": 278,
+  "top": {
+   "actions": [
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "You may choose to not collect any number of loot tokens with this ability. For each empty hex with a loot token you did not collect, create one %damage%2 trap in that hex."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Create one %heal%2 trap in an adjacent empty hex."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Enticing Bait",
+  "level": 1,
+  "initiative": 30,
+  "sourceId": 279,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create one %heal%4 trap in an adjacent empty hex."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "muddle",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Control all enemies targeted by the muddle ability:"
+    },
+    {
+     "type": "move",
+     "value": 2
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  }
+ },
+ {
+  "name": "Exploding Decoy",
+  "level": 1,
+  "initiative": 62,
+  "sourceId": 280,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "pull",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Designate the hex you are occupying and perform:"
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If the designated hex is empty, create one %damage%2 trap in that hex, regardless of line-of-sight."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Flurry of Nails",
+  "level": 1,
+  "initiative": 68,
+  "sourceId": 281,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "push",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Increase the %damage% or %heal% value of up to two traps you move through by 1."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Dismantle",
+  "level": "X",
+  "initiative": 72,
+  "sourceId": 282,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Destroy one adjacent trap to perform:"
+    },
+    {
+     "type": "attack",
+     "value": "X",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "where X is the %damage% value of the destroyed trap. Also add all conditions of the destroyed trap to the attack."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Destroy one adjacent trap."
+    },
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "custom",
+     "text": "Add the effects of the destroyed trap to an adjacent trap."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Spring Loaded",
+  "level": "X",
+  "initiative": 15,
+  "sourceId": 283,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Whenever you or an ally springs a trap during a move ability, add +2 %move% and %jump% to that move ability."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Place a character token on an enemy with %flying% within %range%3. That enemy no longer has %flying%. When that enemy dies, discard this card."
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Improvised Improvement",
+  "level": "X",
+  "initiative": 58,
+  "sourceId": 284,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Replace one adjacent trap with a %damage%5 , %wound% trap."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Create one %bless% trap in an adjacent empty hex."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Unavoidable Outcome",
+  "level": 2,
+  "initiative": 45,
+  "sourceId": 285,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If the target is adjacent to a trap, spring the trap, applying its effects to the target."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On the next instance of an enemy ending its movement in a hex adjacent to any trap, regardless of your line-of-sight, spring one trap adjacent to that enemy and apply its effects to that enemy."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0
+     ]
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Path of Pain",
+  "level": 2,
+  "initiative": 38,
+  "sourceId": 286,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "push",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "For each trap the target springs due to this attack, add +2 %push%."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create one %wound% trap in an adjacent empty hex."
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Create one %wound% trap in an adjacent empty hex."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Extra Teeth",
+  "level": 3,
+  "initiative": 22,
+  "sourceId": 287,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create one %damage%5 trap in an empty hex within %range%3."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Destroy all adjacent traps to create a trap in an empty hex within %range%2 that has the effects of all the destroyed traps added together. The new trap cannot apply the same condition more than once."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Pyrotechnics",
+  "level": 3,
+  "initiative": 80,
+  "sourceId": 288,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create one %heal%3 , %strengthen%, %bless% trap in an adjacent empty hex."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Increase the %damage% or %heal% value of the next trap you create this round by 3."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Dangerous Ground",
+  "level": 4,
+  "initiative": 31,
+  "sourceId": 289,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create two %damage%3 traps in empty hexes within %range%2 ."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Regardless of your line-of-sight, spring all traps and apply the effects of each individual trap to one figure within %range%2 of that trap."
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  }
+ },
+ {
+  "name": "Stalker's Spoils",
+  "level": 4,
+  "initiative": 10,
+  "sourceId": 290,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create two %heal%3 traps in empty hexes within %range%2 ."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "heal",
+     "value": "X+1",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "where X is the number of loot tokens gained with the loot ability."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Lure of the Snare",
+  "level": 5,
+  "initiative": 59,
+  "sourceId": 291,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "pull",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Designate a hex containing a trap within %range%3. Spring the trap and apply its effects to one figure adjacent to the trap."
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "This movement must end in or adjacent to the designated hex."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Proficient Hunter",
+  "level": 5,
+  "initiative": 26,
+  "sourceId": 292,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Increase the %damage% or %heal% value of one trap you create each round by 2."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Create one %regenerate% trap in an adjacent empty hex."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Persistent Pitfalls",
+  "level": 6,
+  "initiative": 13,
+  "sourceId": 293,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Replace one adjacent trap with one %damage%6 , %stun% trap."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Immediately after any trap with a %damage% value of 2 or more is sprung this round and its effects are applied, create a trap that has half the %damage% value (rounded down) and all conditions of the sprung trap in the empty hex nearest to the sprung trap."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Cage of Thorns",
+  "level": 6,
+  "initiative": 55,
+  "sourceId": 294,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Create one %damage%1 trap in each empty hex adjacent to the target."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Relocate up to two traps within %range%4 to empty hexes adjacent to one enemy within %range%2."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Grasping Hazards",
+  "level": 7,
+  "initiative": 8,
+  "sourceId": 295,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create one %damage%2, %wound%, %poison%, %muddle%, %curse% trap in an adjacent empty hex."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "All traps affect figures with %flying% and %jump% movements this round. If any figure with %flying% is currently occupying a hex with a trap, it springs the trap."
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Foxhole",
+  "level": 7,
+  "initiative": 90,
+  "sourceId": 296,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Destroy one adjacent %damage% trap to perform:"
+    },
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": "X-1",
+       "subActions": [
+        {
+         "type": "range",
+         "value": 3,
+         "enhancement": [
+          "square"
+         ]
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "et_t"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "where X is the %damage% value of the destroyed trap. Also add all conditions of the destroyed trap to the attacks."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Defense Grid",
+     "stats": {
+      "health": 8,
+      "move": null,
+      "attack": 2,
+      "range": 3
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "Create one %damage%2 trap in an adjacent empty hex at end of turn."
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Spike Strip",
+  "level": 8,
+  "initiative": 67,
+  "sourceId": 297,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Designate an empty hex within %range%4. Create one %damage%2 trap in that hex and each empty hex on a direct path to it."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Create one %immobilize% trap in each empty hex you leave during the movement."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Magnetic Shards",
+  "level": 8,
+  "initiative": 37,
+  "sourceId": 298,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 3
+      },
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "push",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create two %heal%1 , %regenerate%, %ward% traps in adjacent empty hexes."
+    }
+   ],
+   "xp": 1
+  }
+ },
+ {
+  "name": "Dangerous Cargo",
+  "level": 9,
+  "initiative": 23,
+  "sourceId": 299,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Once each round, during one of your move abilities, place one %damage%3 trap in one empty hex you leave."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Designate all traps within %range%3."
+    },
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Regardless of your line-of-sight, relocate any number of designated traps to adjacent empty hexes."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Mother of All Traps",
+  "level": 9,
+  "initiative": 86,
+  "sourceId": 300,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Destroy three traps within %range%3 to create one %damage%9 , %wound%, %poison%, %stun% trap in an empty hex within %range%3."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "During this movement, you may apply any effects of traps sprung to any figure adjacent to the sprung trap instead of yourself."
+    }
+   ]
+  }
+ }
+]

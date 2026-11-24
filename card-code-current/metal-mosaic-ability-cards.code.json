@@ -1,0 +1,1731 @@
+[
+ {
+  "name": "Ancient Drill",
+  "level": 1,
+  "initiative": 90,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "pierce",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%?gauge icon, needle in red zone% +2 %attack%, +3 %pierce%, %xp% 1, %damage%1, %rift%"
+    },
+    {
+     "type": "custom",
+     "text": "%?gauge icon, needle in yellow zone% +1 %attack%, +2 %pierce%, %xp% 1, %rift%"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "You may destroy one adjacent obstacle to %classToken1%."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Beam Axe",
+  "level": 1,
+  "initiative": 29,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%?gauge icon, needle in red zone% %?small hex area, 3 red hexes and 1 grey hex%, %xp% 1, %damage%1, %rift% %rift%"
+    },
+    {
+     "type": "custom",
+     "text": "%?gauge icon, needle in yellow zone% %?small hex area, 2 red hexes and 1 grey hex%, %xp% 1, %damage%1, %rift%"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%?gauge icon, needle in red zone% All adjacent enemies suffer %damage%1, %xp% 1, %rift%"
+    },
+    {
+     "type": "custom",
+     "text": "%?gauge icon, needle in blue zone% %heal% 1 %target% all allies, %range% 1, %xp% 1, %classToken1%"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Memory Drive",
+  "level": 1,
+  "initiative": 64,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%recover% up to one level 1 card from your discard pile."
+    },
+    {
+     "type": "custom",
+     "text": "%?gauge icon, needle in green zone%"
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [],
+     "effects": [
+      {
+       "type": "recover",
+       "value": 1,
+       "relative": true
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%?gauge icon, needle in blue zone% +1 %recover%, %xp% 1, %classToken1%"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %move% for each pair of cards in your discard pile."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Power Core",
+  "level": 1,
+  "initiative": 83,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "stun"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%?gauge icon, needle in red zone% +1 %target%, %wound%, %xp% 1, %damage%1, %rift%"
+    },
+    {
+     "type": "custom",
+     "text": "%?gauge icon, needle in yellow zone% +1 %attack%, %wound%, %xp% 1, %rift%"
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%?gauge icon, needle in green zone% +1 %heal%"
+    },
+    {
+     "type": "custom",
+     "text": "%?gauge icon, needle in blue zone% +2 %heal%, %xp% 1"
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%classToken1%"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Pressure Build-Up",
+  "level": 1,
+  "initiative": 20,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 2,
+       "relative": true
+      },
+      {
+       "type": "xp",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%classToken1%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%?gauge icon, needle in blue zone% %shield% 1, %xp% 1, %round%"
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%classToken1%"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Rocket Boots",
+  "level": 1,
+  "initiative": 22,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "push",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%?gauge icon, needle in red zone% +3 %move%, %xp% 1, %damage%1, %rift%"
+    },
+    {
+     "type": "custom",
+     "text": "%?gauge icon, needle in yellow zone% +1 %move%"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Steam Armor",
+  "level": 1,
+  "initiative": 17,
+  "top": {
+   "actions": [
+    {
+     "type": "shield",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "%?gauge icon, needle in red zone% +2 %shield%, %xp% 1, %damage%1, %rift% %rift%"
+    },
+    {
+     "type": "custom",
+     "text": "%?gauge icon, needle in yellow zone% +1 %shield%, %xp% 1, %rift%"
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%?gauge icon, needle in green zone% %classToken1%"
+    },
+    {
+     "type": "custom",
+     "text": "%?gauge icon, needle in blue zone% %xp% 1, %classToken1%"
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Steel Piston",
+  "level": 1,
+  "initiative": 40,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Whenever you perform an attack ability, you may %rift% and discard this card to add +2 %attack% to one attack and gain %xp% 1."
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%?gauge icon, needle in red zone% %attack% 3, %xp% 1, %damage%1, %rift% %rift%"
+    },
+    {
+     "type": "custom",
+     "text": "%?gauge icon, needle in yellow zone% %attack% 2, %xp% 1, %rift%"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Super Heat Transfer",
+  "level": 1,
+  "initiative": 25,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [],
+     "effects": [
+      {
+       "type": "condition",
+       "value": "wound"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%?green gauge% : %?red flame with up arrow%"
+    },
+    {
+     "type": "custom",
+     "text": "%?blue gauge% : %xp% 1, %?red flame with up arrow%"
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%?red flame with up arrow%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "custom",
+     "text": "%?yellow gauge% : -1 %move%, %?red flame with up arrow%"
+    },
+    {
+     "type": "custom",
+     "text": "%?green gauge% : -1 %move%, %?blue flame with down arrow%"
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Curious Gear",
+  "level": "X",
+  "initiative": 12,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Spring one trap within %range% 3, applying its effects to one enemy adjacent to it."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%?red flame with up arrow%"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Control one enemy within %range% 4:"
+    },
+    {
+     "type": "move",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "%?crossed red gauge% : +1 %move%, %?blue flame with down arrow%"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Processing",
+  "level": "X",
+  "initiative": 95,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "At the start of the next round, discard this card to play three cards instead of two, using one as initiative. At least one top and one bottom action must still be performed."
+    },
+    {
+     "type": "custom",
+     "text": "%?green gauge% : %?red flame with up arrow%"
+    },
+    {
+     "type": "custom",
+     "text": "%?blue gauge% : %xp% 1, %?red flame with up arrow%"
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 1
+    },
+    {
+     "type": "loot",
+     "value": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "Recursion",
+  "level": "X",
+  "initiative": 50,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "On your next %?red flame with up arrow%, %?red flame with up arrow%%?red flame with up arrow% instead."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "On your next %?blue flame with down arrow%, %?blue flame with down arrow%%?blue flame with down arrow% instead."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0
+     ]
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Bronze Plating",
+  "level": 2,
+  "initiative": 18,
+  "top": {
+   "actions": [
+    {
+     "type": "shield",
+     "value": 1
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "You cannot perform move abilities."
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%?blue gauge%%?green gauge% : %ward% , %xp% 1, %?red flame with up arrow%"
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Add +1 %attack% to all your melee attacks this round."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%?red flame with up arrow%"
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Release Valve",
+  "level": 2,
+  "initiative": 30,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "All adjacent enemies suffer %damage% 2."
+    },
+    {
+     "type": "custom",
+     "text": "%?crossed red gauge% : +1 %damage%, %?blue flame with down arrow%"
+    },
+    {
+     "type": "custom",
+     "text": "%?yellow gauge% : %?blue flame with down arrow%"
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%?blue flame with down arrow%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%?crossed red gauge% :"
+    },
+    {
+     "type": "heal",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%xp% 1, %?blue flame with down arrow%"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Electrical Discharge",
+  "level": 3,
+  "initiative": 26,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "stun"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%?crossed red gauge% : +3 %attack%, %xp% 1, +2 %damage%, %?blue flame with down arrow%"
+    },
+    {
+     "type": "custom",
+     "text": "%?yellow gauge% : +1 %attack%, %?blue flame with down arrow%"
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%?blue flame with down arrow%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "stun",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%?green gauge%%?yellow gauge%%?crossed red gauge% : %stun%"
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%?blue flame with down arrow%"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Stress Vents",
+  "level": 3,
+  "initiative": 15,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Whenever you are attacked by an enemy within %range% 2, you may %?blue flame with down arrow% to cause the attacker to suffer %damage% 3 immediately after the attack."
+    },
+    {
+     "type": "custom",
+     "text": "Discard this card when you have %?blue gauge%."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%?red flame with up arrow%"
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "retaliate",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "%?crossed red gauge% : +2 %retaliate%, %xp% 1, +1 %damage%, %?blue flame with down arrow%"
+    },
+    {
+     "type": "custom",
+     "text": "%?yellow gauge% : +1 %retaliate%, %?blue flame with down arrow%"
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Energy Conversion",
+  "level": 4,
+  "initiative": 23,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 9,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "-1 %attack% : %rift% or %classToken1% -1 %attack% : %rift% or %classToken1% -1 %attack% : %rift% or %classToken1%"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 1,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [],
+     "effects": [
+      {
+       "type": "move",
+       "value": 2,
+       "relative": true
+      },
+      {
+       "type": "xp",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Whenever you are attacked this round, %rift%."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Magnetic Field",
+  "level": 4,
+  "initiative": 21,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "heal",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "custom",
+     "text": "%classToken2%"
+    },
+    {
+     "type": "heal",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%xp% 1, %rift%"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "pull",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "custom",
+       "text": "%target% all, %range% 5"
+      }
+     ]
+    },
+    {
+     "type": "pull",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "custom",
+       "text": "%target% all, %range% 2"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%classToken2%"
+    },
+    {
+     "type": "shield",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "%round%"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Heat Conduction",
+  "level": 5,
+  "initiative": 11,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%classToken2%"
+    },
+    {
+     "type": "retaliate",
+     "value": 3
+    },
+    {
+     "type": "custom",
+     "text": "%xp% 1, %classToken1%"
+    },
+    {
+     "type": "shield",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%classToken2%"
+    },
+    {
+     "type": "custom",
+     "text": "+2 %shield%, %xp% 1, %rift%"
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "ice"
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Whenever an ally ends their move ability adjacent to you, you may %rift% to perform:"
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Discard this card when you have %classToken2%."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%classToken1%"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Radiation",
+  "level": 5,
+  "initiative": 37,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "poison"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%classToken2%"
+    },
+    {
+     "type": "custom",
+     "text": "-1 %attack%, %rift%"
+    },
+    {
+     "type": "custom",
+     "text": "%classToken2%"
+    },
+    {
+     "type": "custom",
+     "text": "-1 %attack%, %classToken1%"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "On your next %?red box with gear star% X effect while adjacent to at least one enemy, one adjacent enemy suffers that %?gear star in red box% instead."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0
+     ]
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Scalding Blast",
+  "level": 6,
+  "initiative": 45,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5
+    },
+    {
+     "type": "custom",
+     "text": "%classToken2%"
+    },
+    {
+     "type": "custom",
+     "text": "+2 %target%, %xp% 1, %?red box with gear star% 2, %classToken1% %classToken1%"
+    },
+    {
+     "type": "custom",
+     "text": "%classToken2%"
+    },
+    {
+     "type": "custom",
+     "text": "+1 %target%, %xp% 1, %?red box with gear star% 1, %classToken1%"
+    },
+    {
+     "type": "custom",
+     "text": "%classToken2%"
+    },
+    {
+     "type": "custom",
+     "text": "+1 %attack%"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "pierce",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%rift%"
+      },
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Steam Core",
+  "level": 6,
+  "initiative": 71,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 5,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%classToken2%"
+    },
+    {
+     "type": "condition",
+     "value": "wound",
+     "subActions": [
+      {
+       "type": "custom",
+       "text": "%target% all, %range% 1"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%xp% 1, %classToken1%"
+    },
+    {
+     "type": "custom",
+     "text": "%classToken2%"
+    },
+    {
+     "type": "empower",
+     "subActions": [
+      {
+       "type": "custom",
+       "text": "%target% all allies, %range% 1"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%xp% 1, %rift%"
+    }
+   ],
+   "infuse": [
+    "fire",
+    "ice"
+   ],
+   "infuseEither": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Whenever you perform a move ability, you may %rift% and discard this card to add +2 %move% and gain %xp% 1."
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Cryogenic Hibernation",
+  "level": 7,
+  "initiative": 19,
+  "top": {
+   "actions": [
+    {
+     "type": "shield",
+     "value": 2
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "You cannot perform attack abilities."
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "At the end of each of your turns, gain %brittle%."
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%classToken2%"
+    },
+    {
+     "type": "heal",
+     "value": 4,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%xp% 1, %rift%"
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "custom",
+     "text": "%classToken2%"
+    },
+    {
+     "type": "custom",
+     "text": "+1 %move%"
+    },
+    {
+     "type": "custom",
+     "text": "%classToken2%"
+    },
+    {
+     "type": "custom",
+     "text": "+2 %move%, %rift%"
+    },
+    {
+     "type": "custom",
+     "text": "%classToken2%"
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "brittle",
+       "subActions": [
+        {
+         "type": "range",
+         "value": 1
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%xp% 1, %rift%"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Heated Drill",
+  "level": 7,
+  "initiative": 80,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 2,
+       "relative": true
+      },
+      {
+       "type": "xp",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%classToken2%"
+    },
+    {
+     "type": "custom",
+     "text": "%pierce% 4, %wound%, %xp% 1, %?red box with gear star% 1, %classToken1%"
+    },
+    {
+     "type": "custom",
+     "text": "%classToken2%"
+    },
+    {
+     "type": "custom",
+     "text": "%pierce% 2, %xp% 1"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%classToken2%"
+    },
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "pierce",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %pierce% for each pair of cards in your discard pile."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Curious Machinery",
+  "level": 8,
+  "initiative": 11,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Control one enemy within %range%3:"
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "stun"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%?pressure gauge dial, red row% %stun% %target% controlled enemy, %xp% 1, %damage%2, %?pressure down% %?pressure down%"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Treat the next %damage% trap you spring during this movement as a %heal% trap instead, with a %heal% value equal to the trap's %damage% value."
+    },
+    {
+     "type": "custom",
+     "text": "%?pressure gauge dial, yellow row% %ice%x : %xp% 1, %?pressure down% %?pressure down%"
+    },
+    {
+     "type": "custom",
+     "text": "%?pressure gauge dial, green row% %fire%x : %xp% 1, %?pressure up% %?pressure up%"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Piston Barrage",
+  "level": 8,
+  "initiative": 33,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "%?pressure gauge dial, red row% %attack%3, %attack%3, %xp% 1, %damage%1, %?pressure down%"
+    },
+    {
+     "type": "custom",
+     "text": "%?pressure gauge dial, yellow row% %attack%3, %xp% 1, %?pressure down%"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All adjacent enemies suffer %damage%2."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Destroy all adjacent obstacles."
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%?pressure up%"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Polarity Shift",
+  "level": 9,
+  "initiative": 79,
+  "top": {
+   "actions": [
+    {
+     "type": "pull",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "All adjacent enemies suffer %damage%1. ! %ice%"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "All adjacent enemies suffer %damage%1. ! %fire%"
+      }
+     ]
+    },
+    {
+     "type": "push",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%?pressure gauge dial, red row% %attack%5, %?pressure down% %?pressure down% %?pressure down%"
+    },
+    {
+     "type": "custom",
+     "text": "%?pressure gauge dial, yellow row% %move%5, %?pressure down% %?pressure down%"
+    },
+    {
+     "type": "custom",
+     "text": "%?pressure gauge dial, green row% %shield%2, %?pressure up% %?pressure up% %round%"
+    },
+    {
+     "type": "custom",
+     "text": "%?pressure gauge dial, blue row% %heal%6 self, %?pressure up% %?pressure up% %?pressure up%"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Unstable Core",
+  "level": 9,
+  "initiative": 10,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Play four cards from your lost pile and, for each card, perform either its top or bottom action, activating any one pressure effect on each action regardless of your current pressure."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "You become exhausted."
+      }
+     ]
+    }
+   ],
+   "lost": true,
+   "remove": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Once per turn, when you perform an attack ability, you may %?pressure down% to add +3 %attack% to one attack, or, when you perform a move ability, you may %?pressure up% to add +3 %move%."
+    },
+    {
+     "type": "custom",
+     "text": "When you have %?pressure gauge dial, blue% or %?pressure gauge dial, red% at the end of your turn, %damage%5 and discard this card."
+    }
+   ],
+   "duration": "persistent"
+  }
+ }
+]

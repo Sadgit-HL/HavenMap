@@ -1,0 +1,1739 @@
+[
+ {
+  "name": "Cooling",
+  "level": 1,
+  "initiative": 75,
+  "sourceId": 215,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Replace one 1-hex hazardous terrain tile in an unoccupied hex within %range%4 with one 1-hex obstacle tile. All enemies adjacent to that tile suffer %damage%2."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 5,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "On your next three move abilities, add -1 %move%."
+      }
+     ]
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Quenched Rage",
+  "level": 1,
+  "initiative": 30,
+  "sourceId": 216,
+  "top": {
+   "actions": [
+    {
+     "type": "push",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Double the %damage% inflicted by any hazardous terrain the target moved through, then, regardless of your line-of-sight, replace those hazardous terrain tiles with obstacle tiles of the same size, %xp% 1."
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On your next three attacks, add -1 %attack%, then double the value of your following attack."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      0,
+      0,
+      1
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Flowing Fire",
+  "level": 1,
+  "initiative": 20,
+  "sourceId": 217,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2,
+       "enhancement": [
+        "diamond"
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "eet_et_et_s"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Create hazardous terrain in each empty red hex of the attack ability, %xp% 1."
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 6,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Now and at the start of your next two turns, suffer %damage%1."
+      }
+     ]
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      0
+     ]
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Eruption",
+  "level": 1,
+  "initiative": 47,
+  "sourceId": 218,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create one 1-hex obstacle tile in an empty hex within %range%5."
+    },
+    {
+     "type": "custom",
+     "text": "Create 1-hex hazardous terrain tiles in all occupied featureless hexes adjacent to the obstacle. The figures in those hexes suffer %damage%4."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire/earth",
+       "either": true
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Lava Bomb",
+  "level": 1,
+  "initiative": 53,
+  "sourceId": 219,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Create one 1-hex hazardous terrain tile in the featureless hex occupied by the target."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Igneous Path",
+  "level": 1,
+  "initiative": 18,
+  "sourceId": 220,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Designate a featureless hex within %range%4. Create 1-hex hazardous terrain tiles in that hex and all featureless hexes on a direct path to it. Figures occupying hexes with the created tiles suffer %damage%3. Gain %xp% 1 for each figure damaged."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 1
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "move",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Create one 1-hex hazardous terrain tile in each featureless hex you leave during the movement."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Under Pressure",
+  "level": 1,
+  "initiative": 85,
+  "sourceId": 221,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +2 %attack% and gain %xp% 1 if the target is adjacent to at least 2 hexes with obstacles, objectives, or walls."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "All adjacent enemies suffer %damage%1."
+    },
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Melted Armor",
+  "level": 1,
+  "initiative": 62,
+  "sourceId": 222,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %attack%, %pierce%3, and gain %xp% 1 if the target is occupying hazardous terrain."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "All attacks targeting you add +1 %attack%."
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "On your next 3 attacks, add +1 %attack%."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      0,
+      1
+     ]
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Liquid Stone",
+  "level": 1,
+  "initiative": 28,
+  "sourceId": 223,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "push",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "push",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "push",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Cloud of Ash",
+  "level": 1,
+  "initiative": 23,
+  "sourceId": 224,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Designate a hex containing an obstacle tile within %range%4. Destroy the tile to perform:"
+    },
+    {
+     "type": "attack",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      },
+      {
+       "type": "push",
+       "value": 1
+      },
+      {
+       "type": "condition",
+       "value": "muddle"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Perform the attacks as if you were occupying the designated hex."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Replace one or two adjacent 1-hex hazardous terrain tiles in unoccupied hexes with 1-hex obstacle tiles. If you do, %earth% and %xp% 1."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Wildfire",
+  "level": "X",
+  "initiative": 72,
+  "sourceId": 225,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Destroy one adjacent hazardous terrain tile. If you do, on your next three attacks, add %wound%, %poison%, and %fire%."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      1,
+      0
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "wound",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "wound",
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Force of the Earth",
+  "level": "X",
+  "initiative": 15,
+  "sourceId": 226,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "pull",
+       "value": 2
+      },
+      {
+       "type": "condition",
+       "value": "muddle"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Destroy one adjacent obstacle tile. If you do, on the next two heals targeting you, add +3 %heal%."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      1
+     ]
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Metamorphic Rock",
+  "level": "X",
+  "initiative": 68,
+  "sourceId": 227,
+  "top": {
+   "actions": [
+    {
+     "type": "shield",
+     "value": 1
+    },
+    {
+     "type": "retaliate",
+     "value": 1
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Move the character token on one of your persistent abilities forward one space."
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Searing Smoke",
+  "level": 2,
+  "initiative": 45,
+  "sourceId": 228,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All enemies moved through gain %muddle%."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Deep Fury",
+  "level": 2,
+  "initiative": 38,
+  "sourceId": 229,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %attack%, %push%2, and gain %xp% 1 if you are occupying hazardous terrain."
+    },
+    {
+     "type": "custom",
+     "text": "If you are occupying hazardous terrain, perform:"
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "On your next attack targeting an enemy occupying hazardous terrain, double the value of the attack."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      2
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Living Magma",
+  "level": 3,
+  "initiative": 22,
+  "sourceId": 230,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Now and at the start of your next two turns, perform:"
+    },
+    {
+     "type": "attack",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 enemy adjacent to hazardous terrain"
+      },
+      {
+       "type": "pierce",
+       "value": 2
+      },
+      {
+       "type": "condition",
+       "value": "wound"
+      },
+      {
+       "type": "mandatory",
+       "actions": [
+        {
+         "type": "element",
+         "value": "fire"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      1
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 1,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Move one adjacent 1-hex hazardous terrain tile up to two hexes. If it enters any hex occupied by a figure, that figure suffers hazardous terrain damage."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Hardened Spike",
+  "level": 3,
+  "initiative": 80,
+  "sourceId": 231,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %attack% and gain %xp% 1 if the target is occupying hazardous terrain."
+    },
+    {
+     "type": "custom",
+     "text": "Now and at the start of your next two turns, suffer %damage%1."
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "mandatory",
+       "actions": [
+        {
+         "type": "element",
+         "value": "earth"
+        }
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      },
+      {
+       "type": "tokens",
+       "slots": [
+        0
+       ]
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %attack% to your next attack this round targeting an enemy adjacent to an obstacle."
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "+3 %attack% instead, %xp% 1."
+      }
+     ],
+     "noLine": true
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Hand of Flame",
+  "level": 4,
+  "initiative": 29,
+  "sourceId": 232,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "muddle"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Create one 1-hex hazardous terrain tile in the featureless hex occupied by the target."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "wound"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Heat Wave",
+  "level": 4,
+  "initiative": 8,
+  "sourceId": 233,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "All adjacent enemies suffer %damage%2."
+    },
+    {
+     "type": "push",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "At the start of your next turn, suffer %damage%2."
+      }
+     ]
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Create one 1-hex obstacle in an adjacent empty hex."
+      },
+      {
+       "type": "mandatory",
+       "actions": [
+        {
+         "type": "element",
+         "value": "earth"
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  }
+ },
+ {
+  "name": "Rain of Fire",
+  "level": 5,
+  "initiative": 21,
+  "sourceId": 234,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create two 1-hex hazardous terrain tiles in featureless hexes within %range%3."
+    },
+    {
+     "type": "custom",
+     "text": "All allies and enemies occupying or adjacent to any of those hexes suffer %damage%1."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Magma Orbs",
+  "level": 5,
+  "initiative": 82,
+  "sourceId": 235,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire",
+        "earth"
+       ],
+       "either": true
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "target",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create one 1-hex hazardous terrain tile in an adjacent empty hex."
+    },
+    {
+     "type": "pull",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Return to the Source",
+  "level": 6,
+  "initiative": 14,
+  "sourceId": 236,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      },
+      {
+       "type": "pull",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "When the next enemy would suffer %damage% from entering a hazardous terrain hex, negate the %damage%."
+      }
+     ]
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Ignore hazardous terrain during this movement."
+    },
+    {
+     "type": "heal",
+     "value": "X",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "where X is the number of different hazardous terrain hexes you entered during the move ability."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Obsidian Shield",
+  "level": 6,
+  "initiative": 19,
+  "sourceId": 237,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On the next four sources of %damage% you suffer from attacks targeting you, gain %shield%1."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      0,
+      0,
+      1
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "When your token moves off the last use slot, the attacking enemy suffers %damage%5, and you create one 1-hex obstacle in an adjacent empty hex."
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Suffer %damage%2 or destroy an adjacent obstacle."
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Negate the next %damage% you suffer this round."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Erupting Rage",
+  "level": 7,
+  "initiative": 70,
+  "sourceId": 238,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "push",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "You may push the target into hexes with 1-hex obstacle tiles. In each case, regardless of your line-of-sight, replace the obstacle tile with one 1-hex hazardous terrain tile, and the target suffers hazardous terrain damage."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create one 1-hex hazardous terrain tile in an adjacent empty hex."
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Create one 1-hex hazardous terrain tile in an adjacent empty hex."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Swelter",
+  "level": 7,
+  "initiative": 32,
+  "sourceId": 239,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Designate a hex containing a hazardous terrain tile within %range%4. Destroy the tile to perform:"
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all enemies occupying or adjacent to the designated hex"
+      },
+      {
+       "type": "range",
+       "value": 5
+      },
+      {
+       "type": "pierce",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "fire"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "All enemies in the same room as you suffer %damage% equal to the number of hazardous tiles in the room, up to a maximum of %damage%5 per enemy."
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  }
+ },
+ {
+  "name": "Feed the Beast",
+  "level": 8,
+  "initiative": 27,
+  "sourceId": 240,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Designate a hex containing a hazardous terrain tile within %range%3. Destroy one adjacent (to you) obstacle tile to create two 1-hex hazardous terrain tiles in featureless hexes adjacent to the designated hex. Each enemy occupying the designated hex or the hexes with the created tiles suffers %damage%5."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Destroy one adjacent hazardous terrain tile to cause the target of your next attack this round to suffer hazardous terrain damage after the attack."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Cinder Lance",
+  "level": 8,
+  "initiative": 90,
+  "sourceId": 241,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "mandatory",
+       "actions": [
+        {
+         "type": "damage",
+         "value": 2,
+         "subActions": [
+          {
+           "type": "target",
+           "value": "self"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "et_t_s"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Stone Armor",
+  "level": 9,
+  "initiative": 9,
+  "sourceId": 242,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Whenever you would suffer %damage%, you may destroy an adjacent obstacle to negate the %damage%."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "shield",
+     "value": "X"
+    },
+    {
+     "type": "custom",
+     "text": "where X is the number of adjacent hexes with obstacles or objectives."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Calamity",
+  "level": 9,
+  "initiative": 35,
+  "sourceId": 243,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create three 1-hex hazardous terrain tiles in featureless hexes and three 1-hex obstacle tiles in empty hexes in the same room as you. All enemies in this room suffer %damage%4."
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "+2 hazardous terrain tiles."
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "+2 obstacle tiles"
+      }
+     ],
+     "noLine": true
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Control all enemies in the same room as you:"
+    },
+    {
+     "type": "move",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "with you controlling the abilities."
+    }
+   ]
+  }
+ }
+]

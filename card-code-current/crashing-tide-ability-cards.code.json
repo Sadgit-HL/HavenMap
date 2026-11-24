@@ -1,0 +1,1838 @@
+[
+ {
+  "name": "Overwhelming Wave",
+  "level": 1,
+  "initiative": 86,
+  "sourceId": 474,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "diamond"
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "et_st_et"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%fh-tides% TIDE"
+    },
+    {
+     "type": "custom",
+     "text": "You may play three cards instead of two each round, using one card as initiative. At least one top and one bottom action must still be performed."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Soft Flesh",
+  "level": 1,
+  "initiative": 75,
+  "sourceId": 475,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%fh-tides% TIDE"
+    },
+    {
+     "type": "custom",
+     "text": "Whenever an adjacent enemy dies, perform:"
+    },
+    {
+     "type": "heal",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "light"
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If you are occupying water, perform:"
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Rancid Brine",
+  "level": 1,
+  "initiative": 62,
+  "sourceId": 476,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%fh-tides% TIDE"
+    },
+    {
+     "type": "custom",
+     "text": "Add %poison% to all your attacks."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "light"
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create one 1-hex water tile in an adjacent featureless hex."
+    },
+    {
+     "type": "condition",
+     "value": "poison",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "2 enemies occupying water"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Sharp Chitin",
+  "level": 1,
+  "initiative": 25,
+  "sourceId": 477,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%fh-tides% TIDE"
+    },
+    {
+     "type": "shield",
+     "value": 1
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "light"
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 1,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "All adjacent enemies suffer %damage%1, %xp% 1."
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  }
+ },
+ {
+  "name": "Down to the Depths",
+  "level": 1,
+  "initiative": 74,
+  "sourceId": 478,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%fh-tides% TIDE"
+    },
+    {
+     "type": "custom",
+     "text": "After each of your attacks, if the target has 3 or fewer hit points, the target gains %bane%."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "light"
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "custom",
+     "text": "Ignore hazardous terrain during this movement."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Pool of Power",
+  "level": 1,
+  "initiative": 41,
+  "sourceId": 479,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%fh-tides% TIDE"
+    },
+    {
+     "type": "custom",
+     "text": "When you rest, you may keep one %fh-tides% card in your active area."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Skitter",
+  "level": 1,
+  "initiative": 51,
+  "sourceId": 480,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "move",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 1
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%fh-tides% TIDE"
+    },
+    {
+     "type": "custom",
+     "text": "During all your move abilities, add +1 %move% and ignore difficult terrain."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Cleansing Swell",
+  "level": 1,
+  "initiative": 45,
+  "sourceId": 481,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 1,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "push",
+         "value": 2
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "et_st"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "push",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%fh-tides% TIDE"
+    },
+    {
+     "type": "custom",
+     "text": "At the start of your rest, you may perform:"
+    },
+    {
+     "type": "heal",
+     "value": "X",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "where X is the number of active %fh-tides%."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Cresting Force",
+  "level": 1,
+  "initiative": 87,
+  "sourceId": 482,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": "X"
+    },
+    {
+     "type": "custom",
+     "text": "where X is the number of active %fh-tides%."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "loot",
+     "value": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "Crashing Surge",
+  "level": 1,
+  "initiative": 34,
+  "sourceId": 483,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2,
+       "enhancement": [
+        "circle"
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "ett_stt_ett"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "You may create 1-hex water tiles in any number of featureless red hexes of the attack ability."
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Create one 1-hex water tile in an adjacent featureless hex."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Mighty Claws",
+  "level": 1,
+  "initiative": 23,
+  "sourceId": 484,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "pierce",
+       "value": 2
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "shield",
+     "value": 1,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "retaliate",
+     "value": 1,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "All attacks targeting you this round gain disadvantage, %xp% 1."
+      }
+     ],
+     "noLine": true
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Submerge",
+  "level": 1,
+  "initiative": 68,
+  "sourceId": 485,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "pierce",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +2 %attack% and gain %xp% 1 if the target is occupying water."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "move",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "The first four hexes with water tiles you enter with this movement cost 0 movement points to enter."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Rising flood",
+  "level": "X",
+  "initiative": 49,
+  "sourceId": 486,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Create one 2-hex water tile such that at least one hex is adjacent to you and both hexes are featureless."
+    },
+    {
+     "type": "custom",
+     "text": "Enemies in those hexes suffer %damage%1 and gain %immobilize%."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Designate one adjacent 1-hex water tile and perform:"
+    },
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "custom",
+     "text": "Regardless of your line-of-sight, relocate the designated water tile to an adjacent featureless hex."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Undertow",
+  "level": "X",
+  "initiative": 15,
+  "sourceId": 487,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "bane",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 adjacent normal or elite enemy occupying water"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 1,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "shield",
+     "value": 1
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Crush Armor",
+  "level": "X",
+  "initiative": 42,
+  "sourceId": 488,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "One adjacent normal enemy suffers %damage% equal to its %shield% value."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All enemies gain %shield%-1 this round while adjacent to you."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Smashing Torrent",
+  "level": 2,
+  "initiative": 79,
+  "sourceId": 489,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "stun"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%fh-tides% TIDE"
+    },
+    {
+     "type": "custom",
+     "text": "Immediately after one of your move abilities each turn, all adjacent enemies suffer %damage%1."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Blood in the Water",
+  "level": 2,
+  "initiative": 53,
+  "sourceId": 490,
+  "top": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "pull",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +2 %attack% and %wound% if the target is occupying water."
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Create one 2-hex water tile such that at least one hex is adjacent to you and both hexes are featureless."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Shuck",
+  "level": 3,
+  "initiative": 55,
+  "sourceId": 491,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%fh-tides% TIDE"
+    },
+    {
+     "type": "custom",
+     "text": "Add %pierce%2 and %wound% to all your attacks."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "light"
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "For each active %fh-tides%, perform:"
+    },
+    {
+     "type": "move",
+     "value": 1
+    },
+    {
+     "type": "attack",
+     "value": 1
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "move",
+       "value": 1
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "Endless Cycle",
+  "level": 3,
+  "initiative": 8,
+  "sourceId": 492,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%recover% up to X of your discarded cards, where X is the number of your active %fh-tides% at the start of this action."
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "+2 %recover%, %xp% 1."
+      }
+     ],
+     "noLine": true
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "custom",
+     "text": "If you are occupying water, perform:"
+    },
+    {
+     "type": "shield",
+     "value": 1
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Chaotic Refraction",
+  "level": 4,
+  "initiative": 26,
+  "sourceId": 493,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%fh-tides% TIDE"
+    },
+    {
+     "type": "shield",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "This %shield% only applies to melee attacks."
+    },
+    {
+     "type": "retaliate",
+     "value": 2
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "light"
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 1,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "loot",
+     "value": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "Clean Sweep",
+  "level": 4,
+  "initiative": 65,
+  "sourceId": 494,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "muddle"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 1,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "heal",
+       "value": 2
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Tidal Blast",
+  "level": 5,
+  "initiative": 71,
+  "sourceId": 495,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "X"
+      },
+      {
+       "type": "range",
+       "value": 4,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "where X is the number of active %fh-tides%."
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%fh-tides% TIDE"
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %attack% to one of your attacks and +1 %move% to one of your move abilities each turn."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Sodden Soil",
+  "level": 5,
+  "initiative": 17,
+  "sourceId": 496,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "wound"
+      },
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%teleport% to an unoccupied hex with a water tile within 5 hexes."
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%teleport% to any unoccupied and revealed hex with a water tile instead, %xp% 1."
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "Powerful Pincer",
+  "level": 6,
+  "initiative": 70,
+  "sourceId": 497,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%fh-tides% TIDE"
+    },
+    {
+     "type": "custom",
+     "text": "During your melee attack abilities, you may %light% %dark% to add %disarm% to one attack and gain %xp% 1."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "light"
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "immobilize",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "all"
+        },
+        {
+         "type": "range",
+         "value": 1
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  }
+ },
+ {
+  "name": "Twilight Grasp",
+  "level": 6,
+  "initiative": 33,
+  "sourceId": 498,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "diamond"
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "et_s_et"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2
+    },
+    {
+     "type": "condition",
+     "value": "bane",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "2 normal enemies occupying water"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  }
+ },
+ {
+  "name": "Dug In",
+  "level": 7,
+  "initiative": 76,
+  "sourceId": 499,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "custom",
+         "text": "You are immune to forced movement this round, %xp% 1."
+        },
+        {
+         "type": "mandatory",
+         "actions": [
+          {
+           "type": "custom",
+           "text": "%round%"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%fh-tides% TIDE"
+    },
+    {
+     "type": "custom",
+     "text": "At the end of each of your turns, if you did not move during your turn, perform:"
+    },
+    {
+     "type": "heal",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Drown beneath the Waves",
+  "level": 7,
+  "initiative": 9,
+  "sourceId": 500,
+  "top": {
+   "actions": [
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "custom",
+         "text": "The effects of <i>Smashing Torrent</i> and <i>Tidal Blast's</i> %fh-tides% abilities can be used more than once each turn this round."
+        },
+        {
+         "type": "mandatory",
+         "actions": [
+          {
+           "type": "custom",
+           "text": "%round%"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "move",
+     "value": 3
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "pull",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 3
+      },
+      {
+       "type": "range",
+       "value": 5
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All enemies within %range%5 occupying water suffer %damage%2."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Death on All Sides",
+  "level": 8,
+  "initiative": 73,
+  "sourceId": 501,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%fh-tides% TIDE"
+    },
+    {
+     "type": "custom",
+     "text": "Add +2 %attack% to all your attacks targeting enemies adjacent to at least one of your allies."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "light"
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ],
+   "xp": 1
+  }
+ },
+ {
+  "name": "Ebb and Flow",
+  "level": 8,
+  "initiative": 24,
+  "sourceId": 502,
+  "top": {
+   "actions": [
+    {
+     "type": "pull",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      },
+      {
+       "type": "push",
+       "value": 2
+      },
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "heal",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If the hex the target is occupying is featureless, you may create one 1-hex water tile in it."
+    }
+   ]
+  }
+ },
+ {
+  "name": "High Tide",
+  "level": 9,
+  "initiative": 90,
+  "sourceId": 503,
+  "top": {
+   "actions": [
+    {
+     "type": "move",
+     "value": "X",
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "where X is the number of active %fh-tides%."
+    },
+    {
+     "type": "attack",
+     "value": "X",
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "where X is the number of active %fh-tides%."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "You do not have to discard %fh-tides% cards when you rest."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "You cannot long rest."
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Low Tide",
+  "level": 9,
+  "initiative": 10,
+  "sourceId": 504,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Play two cards from your lost pile for their %fh-tides% actions and place character tokens on them. You may choose not to discard these cards when you rest. If they are removed from your active area, return them to your lost pile."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "remove": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If you have two or fewer active %fh-tides%, perform:"
+    },
+    {
+     "type": "shield",
+     "value": 2
+    }
+   ],
+   "duration": "round"
+  }
+ }
+]

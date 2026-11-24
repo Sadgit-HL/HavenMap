@@ -1,0 +1,1451 @@
+[
+ {
+  "name": "Trample",
+  "level": 1,
+  "initiative": 72,
+  "sourceId": 1,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "pierce",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all enemies moved through"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Gain %xp% 1 for each enemy targeted."
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Eye for an Eye",
+  "level": 1,
+  "initiative": 13,
+  "sourceId": 2,
+  "top": {
+   "actions": [
+    {
+     "type": "shield",
+     "value": 1
+    },
+    {
+     "type": "retaliate",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "Gain %xp% 1 the next time you retaliate this round."
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Skewer",
+  "level": 1,
+  "initiative": 35,
+  "sourceId": 3,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "optional",
+       "cost": {
+        "consume": {
+         "elements": [
+          "air"
+         ]
+        }
+       },
+       "actions": [
+        {
+         "type": "pierce",
+         "value": 1
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ],
+       "effects": [
+        {
+         "type": "attack",
+         "value": 1
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "eet_et_es"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 7,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  }
+ },
+ {
+  "name": "Overwhelming Assault",
+  "level": 1,
+  "initiative": 61,
+  "sourceId": 4,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 7,
+     "enhancement": [
+      "diamond"
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Balanced Measure",
+  "level": 1,
+  "initiative": 20,
+  "sourceId": 5,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": "X"
+    },
+    {
+     "type": "custom",
+     "text": "where X is the number of hexes you have moved this turn."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": "X"
+    },
+    {
+     "type": "custom",
+     "text": "where X is the amount of %damage% you have dealt this turn."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Grab and Go",
+  "level": 1,
+  "initiative": 87,
+  "sourceId": 6,
+  "top": {
+   "actions": [
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Warding Strength",
+  "level": 1,
+  "initiative": 32,
+  "sourceId": 7,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "disarm"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On the next six sources of %damage% from attacks targeting you, gain %shield%1, %retaliate%1 for the attack."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      1,
+      0,
+      1,
+      0,
+      1,
+      0
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Shield Bash",
+  "level": 1,
+  "initiative": 15,
+  "sourceId": 8,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "stun"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "shield",
+     "value": 1
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Leaping Cleave",
+  "level": 1,
+  "initiative": 54,
+  "sourceId": 9,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "et_st"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "push",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Spare Dagger",
+  "level": 1,
+  "initiative": 27,
+  "sourceId": 10,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "pierce",
+       "value": 1,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Sweeping Blow",
+  "level": "X",
+  "initiative": 23,
+  "sourceId": 11,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "condition",
+         "value": "muddle"
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "Add +1 %attack% on each undamaged target."
+      },
+      {
+       "type": "area",
+       "pattern": "xt_st_et"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4
+    }
+   ]
+  }
+ },
+ {
+  "name": "Fearsome Taunt",
+  "level": "X",
+  "initiative": 10,
+  "sourceId": 12,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "push",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "shield",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "Whenever an enemy would attack one of your adjacent allies this round, you may have that attack target you instead, regardless of the attack's range and line-of-sight limitations."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Wall of Doom",
+  "level": "X",
+  "initiative": 18,
+  "sourceId": 13,
+  "top": {
+   "actions": [
+    {
+     "type": "pull",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "condition",
+       "value": "muddle"
+      }
+     ]
+    },
+    {
+     "type": "retaliate",
+     "value": 2
+    },
+    {
+     "type": "custom",
+     "text": "Gain %xp% 1 the next time you retaliate this round."
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "pull",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Intimidating Growl",
+  "level": 2,
+  "initiative": 51,
+  "sourceId": 14,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ],
+       "subActions": [
+        {
+         "type": "push",
+         "value": 2
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "ett_stx"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "On your nex two move abilities, add +1 %move%."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      1
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Juggernaut",
+  "level": 2,
+  "initiative": 34,
+  "sourceId": 15,
+  "top": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "On the next four sources of %damage% you would suffer, negate that %damage%."
+    },
+    {
+     "type": "tokens",
+     "slots": [
+      0,
+      1,
+      0,
+      1
+     ]
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Hook and Chain",
+  "level": 3,
+  "initiative": 42,
+  "sourceId": 16,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      },
+      {
+       "type": "pull",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4
+    },
+    {
+     "type": "custom",
+     "text": "If you moved in a straight line in one direction with the move ability, perform:"
+    },
+    {
+     "type": "attack",
+     "value": "X"
+    },
+    {
+     "type": "custom",
+     "text": "where X is the number of hexes you moved."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Unstoppable Charge",
+  "level": 3,
+  "initiative": 86,
+  "sourceId": 17,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +2 %attack% and gain %xp% 1 if you have moved this turn."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4
+    },
+    {
+     "type": "condition",
+     "value": "stun",
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  }
+ },
+ {
+  "name": "Whirlwind",
+  "level": 4,
+  "initiative": 28,
+  "sourceId": 18,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Gain %xp% 1 for each enemy targeted."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "push",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Push Through",
+  "level": 4,
+  "initiative": 57,
+  "sourceId": 19,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "During you next attack ability this round, add +1 %attack% to all attacks."
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Skirmishing Maneuver",
+  "level": 5,
+  "initiative": 29,
+  "sourceId": 20,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Defensive Tactics",
+  "level": 5,
+  "initiative": 39,
+  "sourceId": 21,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "The first time each round that you gain %shield% or %retaliate% from one of your ability or attack modifier cards, gain %shield%1 and %retaliate%1 for the round."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "pull",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "range",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Run Through",
+  "level": 6,
+  "initiative": 33,
+  "sourceId": 22,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "pierce",
+         "value": 2
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "eex_et_et_t_s"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": null,
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Add +1 %attack% on each undamaged target."
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "push",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      },
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Immovable Phalanx",
+  "level": 6,
+  "initiative": 17,
+  "sourceId": 23,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "shield",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Once each turn, you may treat one move ability from your ability cards as an attack ability of equal value."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Let Fly",
+  "level": 7,
+  "initiative": 19,
+  "sourceId": 24,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "push",
+       "value": 4
+      },
+      {
+       "type": "condition",
+       "value": "wound"
+      },
+      {
+       "type": "condition",
+       "value": "stun"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Each enemy occupying a hex the target enters suffers %damage%4 and gains %wound%."
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "push",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Selfish Retribution",
+  "level": 7,
+  "initiative": 8,
+  "sourceId": 25,
+  "top": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 1,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "loot",
+     "value": 2
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "retaliate",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Gain %xp% 1 the next time you retaliate this round."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Frenzied Onslaught",
+  "level": 8,
+  "initiative": 41,
+  "sourceId": 26,
+  "top": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": "X",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "where X is the amount of %damage% you have dealt this turn."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Crippling Offensive",
+  "level": 8,
+  "initiative": 16,
+  "sourceId": 27,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "muddle",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "shield",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Brute Force",
+  "level": 9,
+  "initiative": 9,
+  "sourceId": 28,
+  "top": {
+   "actions": [
+    {
+     "type": "shield",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "After each attack targeting you this round, perform:"
+    },
+    {
+     "type": "move",
+     "value": 1
+    },
+    {
+     "type": "push",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 ally or enemy"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Add +1 %attack% to each of your %push% and %pull%. Whenever you %push% or %pull% an enemy at least one hex, after the forced movement, that enemy and all enemies adjacent to it siffer %damage%1."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Face Your End",
+  "level": 9,
+  "initiative": 67,
+  "sourceId": 29,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "range",
+       "value": 3
+      },
+      {
+       "type": "pull",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": 3,
+       "enhancement": [
+        "diamond"
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "et_st_et"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +3 %attack% and gain %xp% 1 if the target's current hit point value is lower than yours."
+    }
+   ]
+  }
+ }
+]

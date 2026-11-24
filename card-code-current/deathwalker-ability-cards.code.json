@@ -1,0 +1,1607 @@
+[
+ {
+  "name": "Call to the Abyss",
+  "level": 1,
+  "initiative": 82,
+  "sourceId": 90,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "During your and your summons' attacks, before drawing an attack modifier card, you may place one character token on the target of the attack. When that enemy dies, place one %fh-shadow% in or adjacent to the hex it occupied."
+    },
+    {
+     "type": "custom",
+     "text": "Whenever you place a character token with this ability, remove any other character token placed with this ability."
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Place one %fh-shadow% in a hex within %range%2."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Anger of the Dead",
+  "level": 1,
+  "initiative": 14,
+  "sourceId": 91,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": "2",
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2
+      },
+      {
+       "type": "group",
+       "actions": [
+        {
+         "type": "custom",
+         "text": "Remove any number of %fh-shadow% within %range%3 (of yourself). For each %fh-shadow% removed:"
+        },
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "attack",
+           "value": 1,
+           "relative": true
+          },
+          {
+           "type": "custom",
+           "text": ","
+          },
+          {
+           "type": "range",
+           "value": 1,
+           "relative": true
+          },
+          {
+           "type": "custom",
+           "text": ","
+          },
+          {
+           "type": "pierce",
+           "value": 1
+          },
+          {
+           "type": "custom",
+           "text": ","
+          },
+          {
+           "type": "custom",
+           "text": "%xp% 1"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "wound",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all enemies occupying a hex with a %fh-shadow%"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Whenever an enemy enters a hex with a %fh-shadow% this round, that enemy gains %wound%."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Sunless Apparition",
+  "level": 1,
+  "initiative": 96,
+  "sourceId": 92,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Shadow Beast",
+     "stats": {
+      "health": 1,
+      "move": 3,
+      "attack": 3,
+      "range": "-"
+     },
+     "special": [],
+     "enhancement": [
+      "heal"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "This ability can only be performed if you remove one %fh-shadow% from an adjacent hex."
+    }
+   ],
+   "xp": 1,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "teleport"
+      },
+      {
+       "type": "custom",
+       "text": "to a hex with a %fh-shadow%."
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Fluid night",
+  "level": 1,
+  "initiative": 24,
+  "sourceId": 93,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 5,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Perform the attack as if you were occupying a hex with a %fh-shadow%, then remove the %fh-shadow%."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Whenever you would suffer %damage%, you may instead %teleport% to a hex with a %fh-shadow%, remove the %fh-shadow%, negate the %damage%, and discard this card."
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Dark fog",
+  "level": 1,
+  "initiative": 46,
+  "sourceId": 94,
+  "top": {
+   "actions": [
+    {
+     "type": "group",
+     "actions": [
+      {
+       "type": "attack",
+       "value": "3",
+       "enhancement": [
+        "diamond"
+       ],
+       "subActions": [
+        {
+         "type": "range",
+         "value": 3
+        },
+        {
+         "type": "condition",
+         "value": "curse"
+        }
+       ]
+      },
+      {
+       "type": "area",
+       "pattern": "et_tt"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Move one %fh-shadow% up to 5 hexes."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Black Barrage",
+  "level": 1,
+  "initiative": 28,
+  "sourceId": 95,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Move all %fh-shadow% up to 2 hexes."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Call of Doom",
+  "level": 1,
+  "initiative": 32,
+  "sourceId": 96,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "muddle"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Perform the attacks as if you were occupying a hex with a %fh-shadow%."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Eclipse",
+  "level": 1,
+  "initiative": 86,
+  "sourceId": 97,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Place three %fh-shadow% in hexes within %range%3."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Lingering Rot",
+  "level": 1,
+  "initiative": 64,
+  "sourceId": 98,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      },
+      {
+       "type": "condition",
+       "value": "poison"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Perform the attacks as if you where occupying a hex with a %fh-shadow%, then remove the %fh-shadow%."
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "poison",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Shadow Step",
+  "level": 1,
+  "initiative": 19,
+  "sourceId": 99,
+  "top": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "This movement must end in a hex with a %fh-shadow%."
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 6,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Place one %fh-shadow% in the hex you are occupying."
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Strength of the Abyss",
+  "level": 1,
+  "initiative": 50,
+  "sourceId": 100,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": "X+1"
+    },
+    {
+     "type": "custom",
+     "text": "where X is the number of %fh-shadow% on the map."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Once during each of your move or attack abilities, you may remove one %fh-shadow% within %range%3 to gain %xp% 1 and add<br/><br/>+2 %move% to your move ability<br/>or<br/>+2 %attack% to one of your attacks."
+    }
+   ],
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Wave of Anguish",
+  "level": "X",
+  "initiative": 58,
+  "sourceId": 101,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "For each %fh-shadow% on the map at the start of this action, perform:"
+    },
+    {
+     "type": "attack",
+     "value": 3
+    },
+    {
+     "type": "custom",
+     "text": "Perform the attacks as if you where occupying the hex with the %fh-shadow%."
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Move all %fh-shadow% up to 1 hex."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Forceful Spirits",
+  "level": "X",
+  "initiative": 34,
+  "sourceId": 102,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "range",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%teleport% to a hex with a %fh-shadow% or adjacent to a %fh-shadow%."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Rest in the Shade",
+  "level": "X",
+  "initiative": 26,
+  "sourceId": 103,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "allies occupying hexes with %fh-shadow% and self"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Move all %fh-shadow% up to 6 hexes."
+    }
+   ],
+   "lost": true
+  }
+ },
+ {
+  "name": "Restless Spirits",
+  "level": 2,
+  "initiative": 20,
+  "sourceId": 104,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "curse"
+      },
+      {
+       "type": "group",
+       "actions": [
+        {
+         "type": "custom",
+         "text": "If you are occupying a hex with a %fh-shadow%, you may remove it:"
+        },
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "attack",
+           "value": 3,
+           "relative": true
+          },
+          {
+           "type": "custom",
+           "text": ","
+          },
+          {
+           "type": "custom",
+           "text": "%xp% 1"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Move one %fh-shadow% up to 4 hexes."
+    },
+    {
+     "type": "custom",
+     "text": "If the moved %fh-shadow% is in the same hex as an enemy, that enemy suffers %damage%3, remove the %fh-shadow%, and gain %xp% 1."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Deepening Despair",
+  "level": 2,
+  "initiative": 11,
+  "sourceId": 105,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 enemy at any %range% adjacent to at least two %fh-shadow%"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "You and all allies may treat each hex with a %fh-shadow% as being adjacent to each other hex with a %fh-shadow% during move abilities this round."
+    },
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Dead Bolt",
+  "level": 3,
+  "initiative": 88,
+  "sourceId": 106,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "curse"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Move all %fh-shadow% up to 3 hexes."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Ritual Sacrifice",
+  "level": 3,
+  "initiative": 13,
+  "sourceId": 107,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add +1 %attack% for each %fh-shadow% in or adjacent to the hex occupied by the target."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Remove any number of %fh-shadow% within %range%3. For each %fh-shadow% removed, gain %xp% 1 and grant one ally or self:"
+    },
+    {
+     "type": "shield",
+     "value": 1
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Fleeting Dusk",
+  "level": 4,
+  "initiative": 36,
+  "sourceId": 108,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      },
+      {
+       "type": "condition",
+       "value": "wound"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Perform the attacks as if you where occupying a hex with a %fh-shadow%."
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Place one %fh-shadow% in an adjacent hex."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Pulled Across",
+  "level": 4,
+  "initiative": 77,
+  "sourceId": 109,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "bane",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "one normal or elite enemy occupying a hex with a %fh-shadow%"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "invisible",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Medium",
+  "level": 5,
+  "initiative": 55,
+  "sourceId": 110,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "If the attack kills an enemy, place one %fh-shadow% in a hex adjacent to the hex the killed enemey occupied."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "At the start of each of your turns, move one %fh-shadow% up to 3 hexes."
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Dominate",
+  "level": 5,
+  "initiative": 29,
+  "sourceId": 111,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 6,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "disarm"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Perform the attack as if you were occupying the hex with a %fh-shadow%, then remove the %fh-shadow%."
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "The night Takes Shape",
+  "level": 6,
+  "initiative": 94,
+  "sourceId": 112,
+  "top": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Shadow Horror",
+     "stats": {
+      "health": 5,
+      "move": 3,
+      "attack": 3,
+      "range": "-"
+     },
+     "special": [],
+     "enhancement": [
+      "heal",
+      "attack"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "This ability can only be performed if you remove two %fh-shadow% from adjacent hexes."
+    },
+    {
+     "type": "custom",
+     "text": "All attacks targeting your summons gain disadvantage."
+    }
+   ],
+   "xp": 2,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Move one %fh-shadow% up to 3 hexes to an unoccupied hex."
+    },
+    {
+     "type": "custom",
+     "text": "%teleport% to the hex with the moved %fh-shadow%, then remove the %fh-shadow% and gain %xp% 1."
+    },
+    {
+     "type": "attack",
+     "value": 3
+    }
+   ]
+  }
+ },
+ {
+  "name": "Vengeful Storm",
+  "level": 6,
+  "initiative": 18,
+  "sourceId": 113,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "group",
+       "actions": [
+        {
+         "type": "custom",
+         "text": "Remove any number of %fh-shadow% within %range%3 (of yourself). For each %fh-shadow% removed:"
+        },
+        {
+         "type": "inline",
+         "actions": [
+          {
+           "type": "target",
+           "value": 1,
+           "relative": true
+          },
+          {
+           "type": "custom",
+           "text": ","
+          },
+          {
+           "type": "custom",
+           "text": "%xp% 1"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "inline",
+     "actions": [
+      {
+       "type": "condition",
+       "value": "wound"
+      },
+      {
+       "type": "custom",
+       "text": ","
+      },
+      {
+       "type": "condition",
+       "value": "stun",
+       "subActions": [
+        {
+         "type": "target",
+         "value": "all"
+        },
+        {
+         "type": "range",
+         "value": 1
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Perform this ability as if you were occupying a hex with a %fh-shadow%."
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "Proliferation of the Abyss",
+  "level": 7,
+  "initiative": 38,
+  "sourceId": 114,
+  "top": {
+   "actions": [
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Place one %fh-shadow% in an adjacent hex."
+      }
+     ],
+     "noLine": true
+    },
+    {
+     "type": "custom",
+     "text": "Whenever you or an ally would suffer %damage% while occupying or adjacent to a hex with a %fh-shadow%, you may remove the %fh-shadow%, gain %xp% 1, discard this card, and negate the %damage%."
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [],
+     "effects": [
+      {
+       "type": "move",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Move two %fh-shadow% up to 4 hexes."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Hungry Grasps",
+  "level": 7,
+  "initiative": 25,
+  "sourceId": 115,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "For up to two %fh-shadow% on the map at the start of this action, perform:"
+    },
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "pull",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Perform each attack as if you were occupying the hex with the %fh-shadow%."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "For each %fh-shadow% on the map at the start of this action, perform:"
+    },
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      },
+      {
+       "type": "condition",
+       "value": "bless"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Perform each heal as if you were occupying the hex with the %fh-shadow%."
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  }
+ },
+ {
+  "name": "Lashing Tendrils",
+  "level": 8,
+  "initiative": 80,
+  "sourceId": 116,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "You and all allies gain %retaliate%2, %range%2 while occupying hexes with %fh-shadow%."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Move two %fh-shadow% up to 3 hexes."
+    },
+    {
+     "type": "custom",
+     "text": "One enemy adjacent to both moved %fh-shadow% suffers %damage%3."
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "damage",
+       "value": 2,
+       "relative": true
+      }
+     ],
+     "noLine": true
+    }
+   ]
+  }
+ },
+ {
+  "name": "Frozen in Fear",
+  "level": 8,
+  "initiative": 21,
+  "sourceId": 117,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "immobilize",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Perform this ability as if you were occupying a hex with a %fh-shadow%."
+    },
+    {
+     "type": "custom",
+     "text": "All enemies that have %immobilize% suffer %damage%1."
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "damage",
+       "value": 1,
+       "relative": true
+      }
+     ],
+     "noLine": true
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Place two %fh-shadow% in adjacent hexes."
+    },
+    {
+     "type": "custom",
+     "text": "Move all %fh-shadow% up to 5 hexes."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "lost": true
+  }
+ },
+ {
+  "name": "When Your Time Comes",
+  "level": 9,
+  "initiative": 72,
+  "sourceId": 118,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Place one character token on an enemey within %range%4. When that enemy dies, all enemies adjacent to it suffer %damage%4."
+    },
+    {
+     "type": "attack",
+     "value": "2",
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      },
+      {
+       "type": "condition",
+       "value": "curse"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Whenever an enemy dies, you may %dark% to place one %fh-shadow% in the hex that enemy occupied."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Black Lance",
+  "level": 9,
+  "initiative": 16,
+  "sourceId": 119,
+  "top": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3
+    },
+    {
+     "type": "attack",
+     "value": 4,
+     "subActions": [
+      {
+       "type": "custom",
+       "text": "Remove any number of %fh-shadow% from hexes you entered with the move ability. For each %fh-shadow% removed:"
+      },
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 3,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All enemies moved through gain %curse%."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  }
+ }
+]
