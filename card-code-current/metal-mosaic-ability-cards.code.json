@@ -20,11 +20,11 @@
     },
     {
      "type": "custom",
-     "text": "%?gauge icon, needle in red zone% +2 %attack%, +3 %pierce%, %xp% 1, %damage%1, %rift%"
+     "text": "%over_pressure% +2 %attack%, +3 %pierce%, %xp% 1, %damage%1, %lose_pressure%"
     },
     {
      "type": "custom",
-     "text": "%?gauge icon, needle in yellow zone% +1 %attack%, +2 %pierce%, %xp% 1, %rift%"
+     "text": "%high_pressure% +1 %attack%, +2 %pierce%, %xp% 1, %lose_pressure%"
     }
    ]
   },
@@ -39,7 +39,7 @@
     },
     {
      "type": "custom",
-     "text": "You may destroy one adjacent obstacle to %classToken1%."
+     "text": "You may destroy one adjacent obstacle to %gain_pressure%."
     }
    ]
   }
@@ -58,12 +58,38 @@
      ]
     },
     {
-     "type": "custom",
-     "text": "%?gauge icon, needle in red zone% %?small hex area, 3 red hexes and 1 grey hex%, %xp% 1, %damage%1, %rift% %rift%"
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%over_pressure%"
+      },
+      {
+       "type": "area",
+       "pattern": "tt_st"
+      },
+      {
+       "type": "custom",
+       "text": ", %xp% 1, %damage%1, %lose_pressure% %lose_pressure%"
+      }
+     ]
     },
     {
-     "type": "custom",
-     "text": "%?gauge icon, needle in yellow zone% %?small hex area, 2 red hexes and 1 grey hex%, %xp% 1, %damage%1, %rift%"
+     "type": "inline",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%high_pressure%"
+      },
+      {
+       "type": "area",
+       "pattern": "et_st"
+      },
+      {
+       "type": "custom",
+       "text": ", %xp% 1, %damage%1, %lose_pressure%"
+      }
+     ]
     }
    ]
   },
@@ -78,11 +104,11 @@
     },
     {
      "type": "custom",
-     "text": "%?gauge icon, needle in red zone% All adjacent enemies suffer %damage%1, %xp% 1, %rift%"
+     "text": "%over_pressure% All adjacent enemies suffer %damage%1, %xp% 1, %lose_pressure%"
     },
     {
      "type": "custom",
-     "text": "%?gauge icon, needle in blue zone% %heal% 1 %target% all allies, %range% 1, %xp% 1, %classToken1%"
+     "text": "%low_pressure% %heal% 1 %target% all allies, %range% 1, %xp% 1, %gain_pressure%"
     }
    ]
   }
@@ -99,7 +125,7 @@
     },
     {
      "type": "custom",
-     "text": "%?gauge icon, needle in green zone%"
+     "text": "%regular_pressure%"
     },
     {
      "type": "optional",
@@ -121,7 +147,7 @@
     },
     {
      "type": "custom",
-     "text": "%?gauge icon, needle in blue zone% +1 %recover%, %xp% 1, %classToken1%"
+     "text": "%low_pressure% +1 %recover%, %xp% 1, %gain_pressure%"
     }
    ]
   },
@@ -159,11 +185,11 @@
     },
     {
      "type": "custom",
-     "text": "%?gauge icon, needle in red zone% +1 %target%, %wound%, %xp% 1, %damage%1, %rift%"
+     "text": "%over_pressure% +1 %target%, %wound%, %xp% 1, %damage%1, %lose_pressure%"
     },
     {
      "type": "custom",
-     "text": "%?gauge icon, needle in yellow zone% +1 %attack%, %wound%, %xp% 1, %rift%"
+     "text": "%high_pressure% +1 %attack%, %wound%, %xp% 1, %lose_pressure%"
     }
    ],
    "xp": 1,
@@ -186,18 +212,18 @@
     },
     {
      "type": "custom",
-     "text": "%?gauge icon, needle in green zone% +1 %heal%"
+     "text": "%regular_pressure% +1 %heal%"
     },
     {
      "type": "custom",
-     "text": "%?gauge icon, needle in blue zone% +2 %heal%, %xp% 1"
+     "text": "%low_pressure% +2 %heal%, %xp% 1"
     },
     {
      "type": "mandatory",
      "actions": [
       {
        "type": "custom",
-       "text": "%classToken1%"
+       "text": "%gain_pressure%"
       }
      ]
     }
@@ -244,7 +270,7 @@
      "actions": [
       {
        "type": "custom",
-       "text": "%classToken1%"
+       "text": "%gain_pressure%"
       }
      ]
     }
@@ -254,7 +280,7 @@
    "actions": [
     {
      "type": "custom",
-     "text": "%?gauge icon, needle in blue zone% %shield% 1, %xp% 1, %round%"
+     "text": "%low_pressure% %shield% 1, %xp% 1, %round%"
     },
     {
      "type": "move",
@@ -275,7 +301,7 @@
      "actions": [
       {
        "type": "custom",
-       "text": "%classToken1%"
+       "text": "%gain_pressure%"
       }
      ]
     }
@@ -328,11 +354,11 @@
     },
     {
      "type": "custom",
-     "text": "%?gauge icon, needle in red zone% +3 %move%, %xp% 1, %damage%1, %rift%"
+     "text": "%over_pressure% +3 %move%, %xp% 1, %damage%1, %lose_pressure%"
     },
     {
      "type": "custom",
-     "text": "%?gauge icon, needle in yellow zone% +1 %move%"
+     "text": "%high_pressure% +1 %move%"
     }
    ]
   }
@@ -349,11 +375,11 @@
     },
     {
      "type": "custom",
-     "text": "%?gauge icon, needle in red zone% +2 %shield%, %xp% 1, %damage%1, %rift% %rift%"
+     "text": "%over_pressure% +2 %shield%, %xp% 1, %damage%1, %lose_pressure% %lose_pressure%"
     },
     {
      "type": "custom",
-     "text": "%?gauge icon, needle in yellow zone% +1 %shield%, %xp% 1, %rift%"
+     "text": "%high_pressure% +1 %shield%, %xp% 1, %lose_pressure%"
     },
     {
      "type": "mandatory",
@@ -378,11 +404,11 @@
     },
     {
      "type": "custom",
-     "text": "%?gauge icon, needle in green zone% %classToken1%"
+     "text": "%regular_pressure% %gain_pressure%"
     },
     {
      "type": "custom",
-     "text": "%?gauge icon, needle in blue zone% %xp% 1, %classToken1%"
+     "text": "%low_pressure% %xp% 1, %gain_pressure%"
     },
     {
      "type": "mandatory",
@@ -411,7 +437,7 @@
     },
     {
      "type": "custom",
-     "text": "Whenever you perform an attack ability, you may %rift% and discard this card to add +2 %attack% to one attack and gain %xp% 1."
+     "text": "Whenever you perform an attack ability, you may %lose_pressure% and discard this card to add +2 %attack% to one attack and gain %xp% 1."
     }
    ],
    "duration": "persistent"
@@ -427,11 +453,11 @@
     },
     {
      "type": "custom",
-     "text": "%?gauge icon, needle in red zone% %attack% 3, %xp% 1, %damage%1, %rift% %rift%"
+     "text": "%over_pressure% %attack% 3, %xp% 1, %damage%1, %lose_pressure% %lose_pressure%"
     },
     {
      "type": "custom",
-     "text": "%?gauge icon, needle in yellow zone% %attack% 2, %xp% 1, %rift%"
+     "text": "%high_pressure% %attack% 2, %xp% 1, %lose_pressure%"
     }
    ]
   }
@@ -465,18 +491,18 @@
     },
     {
      "type": "custom",
-     "text": "%?green gauge% : %?red flame with up arrow%"
+     "text": "%regular_pressure% : %gain_pressure%"
     },
     {
      "type": "custom",
-     "text": "%?blue gauge% : %xp% 1, %?red flame with up arrow%"
+     "text": "%low_pressure% : %xp% 1, %gain_pressure%"
     },
     {
      "type": "mandatory",
      "actions": [
       {
        "type": "custom",
-       "text": "%?red flame with up arrow%"
+       "text": "%gain_pressure%"
       }
      ]
     }
@@ -490,11 +516,11 @@
     },
     {
      "type": "custom",
-     "text": "%?yellow gauge% : -1 %move%, %?red flame with up arrow%"
+     "text": "%high_pressure% : -1 %move%, %gain_pressure%"
     },
     {
      "type": "custom",
-     "text": "%?green gauge% : -1 %move%, %?blue flame with down arrow%"
+     "text": "%regular_pressure% : -1 %move%, %lose_pressure%"
     },
     {
      "type": "mandatory",
@@ -523,7 +549,7 @@
      "actions": [
       {
        "type": "custom",
-       "text": "%?red flame with up arrow%"
+       "text": "%gain_pressure%"
       }
      ]
     }
@@ -542,7 +568,7 @@
     },
     {
      "type": "custom",
-     "text": "%?crossed red gauge% : +1 %move%, %?blue flame with down arrow%"
+     "text": "%over_pressure% : +1 %move%, %lose_pressure%"
     }
    ]
   }
@@ -559,11 +585,11 @@
     },
     {
      "type": "custom",
-     "text": "%?green gauge% : %?red flame with up arrow%"
+     "text": "%regular_pressure% : %gain_pressure%"
     },
     {
      "type": "custom",
-     "text": "%?blue gauge% : %xp% 1, %?red flame with up arrow%"
+     "text": "%low_pressure% : %xp% 1, %gain_pressure%"
     }
    ],
    "duration": "persistent"
@@ -596,7 +622,7 @@
     },
     {
      "type": "custom",
-     "text": "On your next %?red flame with up arrow%, %?red flame with up arrow%%?red flame with up arrow% instead."
+     "text": "On your next %gain_pressure%, %gain_pressure%%gain_pressure% instead."
     },
     {
      "type": "tokens",
@@ -618,7 +644,7 @@
     },
     {
      "type": "custom",
-     "text": "On your next %?blue flame with down arrow%, %?blue flame with down arrow%%?blue flame with down arrow% instead."
+     "text": "On your next %lose_pressure%, %lose_pressure%%lose_pressure% instead."
     },
     {
      "type": "tokens",
@@ -651,7 +677,7 @@
     },
     {
      "type": "custom",
-     "text": "%?blue gauge%%?green gauge% : %ward% , %xp% 1, %?red flame with up arrow%"
+     "text": "%low_pressure%%regular_pressure% : %ward% , %xp% 1, %gain_pressure%"
     }
    ],
    "duration": "persistent"
@@ -667,7 +693,7 @@
      "actions": [
       {
        "type": "custom",
-       "text": "%?red flame with up arrow%"
+       "text": "%gain_pressure%"
       }
      ]
     }
@@ -687,18 +713,18 @@
     },
     {
      "type": "custom",
-     "text": "%?crossed red gauge% : +1 %damage%, %?blue flame with down arrow%"
+     "text": "%over_pressure% : +1 %damage%, %lose_pressure%"
     },
     {
      "type": "custom",
-     "text": "%?yellow gauge% : %?blue flame with down arrow%"
+     "text": "%high_pressure% : %lose_pressure%"
     },
     {
      "type": "mandatory",
      "actions": [
       {
        "type": "custom",
-       "text": "%?blue flame with down arrow%"
+       "text": "%lose_pressure%"
       }
      ]
     }
@@ -715,7 +741,7 @@
     },
     {
      "type": "custom",
-     "text": "%?crossed red gauge% :"
+     "text": "%over_pressure% :"
     },
     {
      "type": "heal",
@@ -729,7 +755,7 @@
     },
     {
      "type": "custom",
-     "text": "%xp% 1, %?blue flame with down arrow%"
+     "text": "%xp% 1, %lose_pressure%"
     }
    ]
   }
@@ -755,18 +781,18 @@
     },
     {
      "type": "custom",
-     "text": "%?crossed red gauge% : +3 %attack%, %xp% 1, +2 %damage%, %?blue flame with down arrow%"
+     "text": "%over_pressure% : +3 %attack%, %xp% 1, +2 %damage%, %lose_pressure%"
     },
     {
      "type": "custom",
-     "text": "%?yellow gauge% : +1 %attack%, %?blue flame with down arrow%"
+     "text": "%high_pressure% : +1 %attack%, %lose_pressure%"
     },
     {
      "type": "mandatory",
      "actions": [
       {
        "type": "custom",
-       "text": "%?blue flame with down arrow%"
+       "text": "%lose_pressure%"
       }
      ]
     }
@@ -793,14 +819,14 @@
     },
     {
      "type": "custom",
-     "text": "%?green gauge%%?yellow gauge%%?crossed red gauge% : %stun%"
+     "text": "%regular_pressure%%high_pressure%%over_pressure% : %stun%"
     },
     {
      "type": "mandatory",
      "actions": [
       {
        "type": "custom",
-       "text": "%?blue flame with down arrow%"
+       "text": "%lose_pressure%"
       }
      ]
     }
@@ -815,18 +841,18 @@
    "actions": [
     {
      "type": "custom",
-     "text": "Whenever you are attacked by an enemy within %range% 2, you may %?blue flame with down arrow% to cause the attacker to suffer %damage% 3 immediately after the attack."
+     "text": "Whenever you are attacked by an enemy within %range% 2, you may %lose_pressure% to cause the attacker to suffer %damage% 3 immediately after the attack."
     },
     {
      "type": "custom",
-     "text": "Discard this card when you have %?blue gauge%."
+     "text": "Discard this card when you have %low_pressure%."
     },
     {
      "type": "mandatory",
      "actions": [
       {
        "type": "custom",
-       "text": "%?red flame with up arrow%"
+       "text": "%gain_pressure%"
       }
      ]
     }
@@ -848,11 +874,11 @@
     },
     {
      "type": "custom",
-     "text": "%?crossed red gauge% : +2 %retaliate%, %xp% 1, +1 %damage%, %?blue flame with down arrow%"
+     "text": "%over_pressure% : +2 %retaliate%, %xp% 1, +1 %damage%, %lose_pressure%"
     },
     {
      "type": "custom",
-     "text": "%?yellow gauge% : +1 %retaliate%, %?blue flame with down arrow%"
+     "text": "%high_pressure% : +1 %retaliate%, %lose_pressure%"
     }
    ],
    "duration": "round"
@@ -877,7 +903,7 @@
      "actions": [
       {
        "type": "custom",
-       "text": "-1 %attack% : %rift% or %classToken1% -1 %attack% : %rift% or %classToken1% -1 %attack% : %rift% or %classToken1%"
+       "text": "-1 %attack% : %gain_pressure% or %lose_pressure% -1 %attack% : %gain_pressure% or %lose_pressure% -1 %attack% : %gain_pressure% or %lose_pressure%"
       }
      ]
     }
@@ -918,7 +944,7 @@
     },
     {
      "type": "custom",
-     "text": "Whenever you are attacked this round, %rift%."
+     "text": "Whenever you are attacked this round, %gain_pressure%."
     }
    ],
    "duration": "round"
@@ -966,7 +992,7 @@
     },
     {
      "type": "custom",
-     "text": "%classToken2%"
+     "text": "%low_pressure%"
     },
     {
      "type": "heal",
@@ -980,7 +1006,7 @@
     },
     {
      "type": "custom",
-     "text": "%xp% 1, %rift%"
+     "text": "%xp% 1, %gain_pressure%"
     }
    ]
   },
@@ -1008,7 +1034,7 @@
     },
     {
      "type": "custom",
-     "text": "%classToken2%"
+     "text": "%over_pressure%"
     },
     {
      "type": "shield",
@@ -1029,7 +1055,7 @@
    "actions": [
     {
      "type": "custom",
-     "text": "%classToken2%"
+     "text": "%over_pressure%"
     },
     {
      "type": "retaliate",
@@ -1037,7 +1063,7 @@
     },
     {
      "type": "custom",
-     "text": "%xp% 1, %classToken1%"
+     "text": "%xp% 1, %lose_pressure%"
     },
     {
      "type": "shield",
@@ -1048,11 +1074,11 @@
     },
     {
      "type": "custom",
-     "text": "%classToken2%"
+     "text": "%low_pressure%"
     },
     {
      "type": "custom",
-     "text": "+2 %shield%, %xp% 1, %rift%"
+     "text": "+2 %shield%, %xp% 1, %gain_pressure%"
     },
     {
      "type": "mandatory",
@@ -1070,7 +1096,7 @@
    "actions": [
     {
      "type": "custom",
-     "text": "Whenever an ally ends their move ability adjacent to you, you may %rift% to perform:"
+     "text": "Whenever an ally ends their move ability adjacent to you, you may %gain_pressure% to perform:"
     },
     {
      "type": "heal",
@@ -1084,14 +1110,14 @@
     },
     {
      "type": "custom",
-     "text": "Discard this card when you have %classToken2%."
+     "text": "Discard this card when you have %over_pressure%."
     },
     {
      "type": "mandatory",
      "actions": [
       {
        "type": "custom",
-       "text": "%classToken1%"
+       "text": "%lose_pressure%"
       }
      ]
     }
@@ -1121,19 +1147,19 @@
     },
     {
      "type": "custom",
-     "text": "%classToken2%"
+     "text": "%high_pressure%"
     },
     {
      "type": "custom",
-     "text": "-1 %attack%, %rift%"
+     "text": "-1 %attack%, %gain_pressure%"
     },
     {
      "type": "custom",
-     "text": "%classToken2%"
+     "text": "%regular_pressure%"
     },
     {
      "type": "custom",
-     "text": "-1 %attack%, %classToken1%"
+     "text": "-1 %attack%, %lose_pressure%"
     }
    ]
   },
@@ -1148,7 +1174,7 @@
     },
     {
      "type": "custom",
-     "text": "On your next %?red box with gear star% X effect while adjacent to at least one enemy, one adjacent enemy suffers that %?gear star in red box% instead."
+     "text": "On your next %self_dmg% X effect while adjacent to at least one enemy, one adjacent enemy suffers that %self_dmg% instead."
     },
     {
      "type": "tokens",
@@ -1172,23 +1198,23 @@
     },
     {
      "type": "custom",
-     "text": "%classToken2%"
+     "text": "%over_pressure%"
     },
     {
      "type": "custom",
-     "text": "+2 %target%, %xp% 1, %?red box with gear star% 2, %classToken1% %classToken1%"
+     "text": "+2 %target%, %xp% 1, %self_dmg% 2, %lose_pressure% %lose_pressure%"
     },
     {
      "type": "custom",
-     "text": "%classToken2%"
+     "text": "%high_pressure%"
     },
     {
      "type": "custom",
-     "text": "+1 %target%, %xp% 1, %?red box with gear star% 1, %classToken1%"
+     "text": "+1 %target%, %xp% 1, %self_dmg% 1, %lose_pressure%"
     },
     {
      "type": "custom",
-     "text": "%classToken2%"
+     "text": "%regular_pressure%"
     },
     {
      "type": "custom",
@@ -1216,7 +1242,7 @@
      "actions": [
       {
        "type": "custom",
-       "text": "%rift%"
+       "text": "%gain_pressure%"
       },
       {
        "type": "element",
@@ -1248,7 +1274,7 @@
     },
     {
      "type": "custom",
-     "text": "%classToken2%"
+     "text": "%over_pressure%"
     },
     {
      "type": "condition",
@@ -1262,14 +1288,15 @@
     },
     {
      "type": "custom",
-     "text": "%xp% 1, %classToken1%"
+     "text": "%xp% 1, %lose_pressure%"
     },
     {
      "type": "custom",
-     "text": "%classToken2%"
+     "text": "%low_pressure%"
     },
     {
-     "type": "empower",
+     "type": "condition",
+     "value": "regenerate",
      "subActions": [
       {
        "type": "custom",
@@ -1279,7 +1306,7 @@
     },
     {
      "type": "custom",
-     "text": "%xp% 1, %rift%"
+     "text": "%xp% 1, %gain_pressure%"
     }
    ],
    "infuse": [
@@ -1299,7 +1326,7 @@
     },
     {
      "type": "custom",
-     "text": "Whenever you perform a move ability, you may %rift% and discard this card to add +2 %move% and gain %xp% 1."
+     "text": "Whenever you perform a move ability, you may %gain_pressure% and discard this card to add +2 %move% and gain %xp% 1."
     }
    ],
    "duration": "persistent"
@@ -1335,7 +1362,7 @@
     },
     {
      "type": "custom",
-     "text": "%classToken2%"
+     "text": "%low_pressure%"
     },
     {
      "type": "heal",
@@ -1349,7 +1376,7 @@
     },
     {
      "type": "custom",
-     "text": "%xp% 1, %rift%"
+     "text": "%xp% 1, %gain_pressure%"
     }
    ],
    "duration": "persistent"
@@ -1362,7 +1389,7 @@
     },
     {
      "type": "custom",
-     "text": "%classToken2%"
+     "text": "%high_pressure%"
     },
     {
      "type": "custom",
@@ -1370,15 +1397,15 @@
     },
     {
      "type": "custom",
-     "text": "%classToken2%"
+     "text": "%regular_pressure%"
     },
     {
      "type": "custom",
-     "text": "+2 %move%, %rift%"
+     "text": "+2 %move%, %gain_pressure%"
     },
     {
      "type": "custom",
-     "text": "%classToken2%"
+     "text": "%low_pressure%"
     },
     {
      "type": "optional",
@@ -1404,7 +1431,7 @@
     },
     {
      "type": "custom",
-     "text": "%xp% 1, %rift%"
+     "text": "%xp% 1, %gain_pressure%"
     }
    ]
   }
@@ -1446,15 +1473,15 @@
     },
     {
      "type": "custom",
-     "text": "%classToken2%"
+     "text": "%over_pressure%"
     },
     {
      "type": "custom",
-     "text": "%pierce% 4, %wound%, %xp% 1, %?red box with gear star% 1, %classToken1%"
+     "text": "%pierce% 4, %wound%, %xp% 1, %self_dmg% 1, %lose_pressure%"
     },
     {
      "type": "custom",
-     "text": "%classToken2%"
+     "text": "%high_pressure%"
     },
     {
      "type": "custom",
@@ -1466,7 +1493,7 @@
    "actions": [
     {
      "type": "custom",
-     "text": "%classToken2%"
+     "text": "%over_pressure%"
     },
     {
      "type": "move",
@@ -1514,7 +1541,7 @@
     },
     {
      "type": "custom",
-     "text": "%?pressure gauge dial, red row% %stun% %target% controlled enemy, %xp% 1, %damage%2, %?pressure down% %?pressure down%"
+     "text": "%over_pressure% %stun% %target% controlled enemy, %xp% 1, %damage%2, %lose_pressure% %lose_pressure%"
     }
    ]
   },
@@ -1533,11 +1560,11 @@
     },
     {
      "type": "custom",
-     "text": "%?pressure gauge dial, yellow row% %ice%x : %xp% 1, %?pressure down% %?pressure down%"
+     "text": "%high_pressure% %ice%x : %xp% 1, %lose_pressure% %lose_pressure%"
     },
     {
      "type": "custom",
-     "text": "%?pressure gauge dial, green row% %fire%x : %xp% 1, %?pressure up% %?pressure up%"
+     "text": "%regular_pressure% %fire%x : %xp% 1, %gain_pressure% %gain_pressure%"
     }
    ]
   }
@@ -1557,11 +1584,11 @@
     },
     {
      "type": "custom",
-     "text": "%?pressure gauge dial, red row% %attack%3, %attack%3, %xp% 1, %damage%1, %?pressure down%"
+     "text": "%over_pressure% %attack%3, %attack%3, %xp% 1, %damage%1, %lose_pressure%"
     },
     {
      "type": "custom",
-     "text": "%?pressure gauge dial, yellow row% %attack%3, %xp% 1, %?pressure down%"
+     "text": "%high_pressure% %attack%3, %xp% 1, %lose_pressure%"
     }
    ]
   },
@@ -1592,7 +1619,7 @@
      "actions": [
       {
        "type": "custom",
-       "text": "%?pressure up%"
+       "text": "%gain_pressure%"
       }
      ]
     }
@@ -1674,19 +1701,19 @@
    "actions": [
     {
      "type": "custom",
-     "text": "%?pressure gauge dial, red row% %attack%5, %?pressure down% %?pressure down% %?pressure down%"
+     "text": "%over_pressure% %attack%5, %lose_pressure% %lose_pressure% %lose_pressure%"
     },
     {
      "type": "custom",
-     "text": "%?pressure gauge dial, yellow row% %move%5, %?pressure down% %?pressure down%"
+     "text": "%high_pressure% %move%5, %lose_pressure% %lose_pressure%"
     },
     {
      "type": "custom",
-     "text": "%?pressure gauge dial, green row% %shield%2, %?pressure up% %?pressure up% %round%"
+     "text": "%regular_pressure% %shield%2, %gain_pressure% %gain_pressure% %round%"
     },
     {
      "type": "custom",
-     "text": "%?pressure gauge dial, blue row% %heal%6 self, %?pressure up% %?pressure up% %?pressure up%"
+     "text": "%low_pressure% %heal%6 self, %gain_pressure% %gain_pressure% %gain_pressure%"
     }
    ]
   }
@@ -1718,11 +1745,11 @@
    "actions": [
     {
      "type": "custom",
-     "text": "Once per turn, when you perform an attack ability, you may %?pressure down% to add +3 %attack% to one attack, or, when you perform a move ability, you may %?pressure up% to add +3 %move%."
+     "text": "Once per turn, when you perform an attack ability, you may %lose_pressure% to add +3 %attack% to one attack, or, when you perform a move ability, you may %gain_pressure% to add +3 %move%."
     },
     {
      "type": "custom",
-     "text": "When you have %?pressure gauge dial, blue% or %?pressure gauge dial, red% at the end of your turn, %damage%5 and discard this card."
+     "text": "When you have %low_pressure% or %over_pressure% at the end of your turn, %damage%5 and discard this card."
     }
    ],
    "duration": "persistent"

@@ -68,8 +68,8 @@
        "value": 5
       },
       {
-       "type": "text",
-       "text": "plague"
+       "type": "condition",
+       "value": "plague"
       }
      ]
     },
@@ -173,8 +173,8 @@
        "text": ","
       },
       {
-       "type": "text",
-       "text": "plague"
+       "type": "condition",
+       "value": "plague"
       }
      ]
     }
@@ -269,7 +269,8 @@
        "text": ","
       },
       {
-       "type": "plague"
+       "type": "condition",
+       "value": "plague"
       }
      ]
     },
@@ -313,7 +314,8 @@
   "bottom": {
    "actions": [
     {
-     "type": "plague",
+     "type": "condition",
+     "value": "plague",
      "subActions": [
       {
        "type": "range",
@@ -563,8 +565,8 @@
      ],
      "subActions": [
       {
-       "type": "text",
-       "text": "plague"
+       "type": "condition",
+       "value": "plague"
       }
      ]
     }
@@ -585,7 +587,8 @@
        "text": ","
       },
       {
-       "type": "plague",
+       "type": "condition",
+       "value": "plague",
        "subActions": [
         {
          "type": "custom",
@@ -719,8 +722,8 @@
        "value": "disarm"
       },
       {
-       "type": "text",
-       "text": "plague"
+       "type": "condition",
+       "value": "plague"
       }
      ]
     }
@@ -827,8 +830,8 @@
      "value": 5,
      "subActions": [
       {
-       "type": "text",
-       "text": "plague"
+       "type": "condition",
+       "value": "plague"
       }
      ]
     }
@@ -900,7 +903,8 @@
        "text": ","
       },
       {
-       "type": "plague"
+       "type": "condition",
+       "value": "plague"
       }
      ]
     },
@@ -945,8 +949,8 @@
        "value": 5
       },
       {
-       "type": "text",
-       "text": "plague"
+       "type": "condition",
+       "value": "plague"
       }
      ]
     },
@@ -1092,7 +1096,8 @@
   "bottom": {
    "actions": [
     {
-     "type": "plague",
+     "type": "condition",
+     "value": "plague",
      "subActions": [
       {
        "type": "range",
@@ -1201,8 +1206,8 @@
        "value": "poison"
       },
       {
-       "type": "text",
-       "text": "plague"
+       "type": "condition",
+       "value": "plague"
       }
      ]
     }
@@ -1284,8 +1289,8 @@
        "value": 5
       },
       {
-       "type": "text",
-       "text": "plague"
+       "type": "condition",
+       "value": "plague"
       }
      ]
     },

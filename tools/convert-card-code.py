@@ -19,7 +19,7 @@ import sys
 import yaml
 
 LAYOUT = {'margin', 'padding', 'position', 'left', 'top', 'transform', 'lineHeight', 'fontSize', 'flexDirection', 'noLine', 'enhancement', 'sub', 'duration', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom', 'height', 'width', 'hpColor', 'hpTextColor', 'size'}
-CONDITIONS = {'wound', 'stun', 'immobilize', 'poison', 'muddle', 'curse', 'bless', 'strengthen', 'ward', 'safeguard', 'invisible', 'disarm', 'bane', 'brittle', 'impair', 'regenerate', 'infect', 'chill'}
+CONDITIONS = {'wound', 'stun', 'immobilize', 'poison', 'muddle', 'curse', 'bless', 'strengthen', 'ward', 'safeguard', 'invisible', 'disarm', 'bane', 'brittle', 'impair', 'regenerate', 'infect', 'chill', 'plague'}
 ELEMENTS = {'air', 'fire', 'ice', 'earth', 'light', 'dark', 'wild'}
 TOKEN_TYPES = CONDITIONS | {'scry', 'attack', 'move', 'heal', 'teleport', 'loot', 'push', 'pierce', 'range', 'target', 'damage', 'xp', 'resolve', 'lost', 'persistent', 'recover', 'jump', 'fly', 'pull', 'retaliate', 'shield'}
 COST = re.compile(r'^-(\d+|X)\s*%resolve%\s*:\s*(.*)$', re.S)
