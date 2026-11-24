@@ -23,7 +23,7 @@ export const AM_SPECIAL = [
 
 // The monster deck and the ally deck (Monsters tab, scripts/campaign/monsters.js): standard cards built from layers with an M or A badge, imbuement cards and bless and curse as pictures, no class and no perks. The
 // monster deck can be imbued (level 2 includes level 1), as in the map app (scripts/attackMods.js). An owner object
-// { group: 'm' | 'a', imb } stands in for the character in deckOf, drawState and amdAct.
+// { group: 'm' | 'a', imb, hail } stands in for the character in deckOf, drawState and amdAct.
 const amPic = k => imageFile(`images/common/attack_mods/${k}`, '../');
 const IMBUE_CARDS = [
   { key: 'i2m', face: '+2 Muddle', value: '+2', pic: 'plus2muddle' }, { key: 'i0p', face: '+0 Poison', value: '+0', pic: 'plus0poison' },
@@ -31,13 +31,18 @@ const IMBUE_CARDS = [
   { key: 'i1c', face: '+1 Curse', value: '+1', pic: 'plus1curse' }, { key: 'i0w', face: '+0 Wound', value: '+0', pic: 'plus0wound' },
 ];
 export const IMBUE = { 1: { m1: -3, p1: 3, i2m: 1, i0p: 1 }, 2: { m2: -1, p0: -2, i3: 1, i1h: 2, i1c: 1, i0w: 1 } };
-const groupCatalog = g => [
+// Hail's last perk (Mercenary Pack, perk 17) adds one "+1, Hail gains 1 resolve" card to the monster deck. The card is in the monster deck while a
+// Hail of the record has taken that perk (hailCards counts them; the owner object carries the count as `hail`).
+const HAIL_PERK = 17;
+export const hailCards = r => (r?.chars || []).filter(c => c.cls === 'Hail' && (c.pk?.perks || []).includes(HAIL_PERK)).length;
+const groupCatalog = (g, hail = 0) => [
   ...AM_STANDARD.map(t => ({ ...t, card: { kind: 'base', value: t.value, badge: g === 'a' ? 'A' : 'M' } })),   // plain cards with an M or A badge (scripts/amd/card.js)
   ...(g === 'm' ? IMBUE_CARDS.map(t => ({ key: t.key, face: t.face, value: t.value, count: 0, shuffle: false, extra: true, img: amPic(`imbuement/${t.pic}`) })) : []),
+  ...(g === 'm' && hail ? [{ key: 'hr', face: '+1 Resolve', value: '+1', count: 0, shuffle: false, extra: true, img: amPic('monster/hail-resolve') }] : []),
 ];
 const groupSpecial = g => AM_SPECIAL.map(s => (g === 'm' ? { ...s, img: amPic(`monster/${s.key}`) } : s));
-export const amOwner = (g, st = {}) => ({ group: g === 'a' ? 'a' : 'm', imb: g === 'a' ? 0 : Math.max(0, Math.min(2, st.imb || 0)) });
-const catalogOf = c => (c.group ? groupCatalog(c.group) : heroCatalog(c.cls, AM_STANDARD));
+export const amOwner = (g, st = {}, r) => ({ group: g === 'a' ? 'a' : 'm', imb: g === 'a' ? 0 : Math.max(0, Math.min(2, st.imb || 0)), hail: g === 'a' ? 0 : hailCards(r) });
+const catalogOf = c => (c.group ? groupCatalog(c.group, c.hail) : heroCatalog(c.cls, AM_STANDARD));
 const specialOf = c => (c.group ? groupSpecial(c.group) : AM_SPECIAL);
 
 export const perkList = cls => (heroPerkClass(cls)?.perks || []).map((p, index) => ({ ...p, index, boxes: perkBoxes(p), label: perkLabel(p) }));
@@ -48,6 +53,7 @@ export function deckOf(c, adj = {}) {
   const counts = Object.fromEntries(catalog.map(t => [t.key, t.extra ? 0 : t.count]));
   for (const i of c.pk?.perks || []) if (perks[i]) for (const [k, n] of Object.entries(perkDelta(perks[i]))) counts[k] = (counts[k] || 0) + n;
   for (let l = 1; l <= (c.imb || 0); l++) for (const [k, n] of Object.entries(IMBUE[l])) counts[k] = (counts[k] || 0) + n;
+  if (c.group === 'm' && c.hail) counts.hr = c.hail;
   return catalog.map(t => ({ ...t, base: Math.max(0, (counts[t.key] || 0) + (adj?.[t.key] || 0)) })).filter(t => t.base > 0);
 }
 

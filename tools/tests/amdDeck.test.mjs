@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { AM_STANDARD, IMBUE, amOwner, deckOf, drawState, drawOdds, cleanAmd, amdAct, amdRollCode, drawRandom, drawTwo, isRolling, perkList, shuffleDue, canDraw } from '../../scripts/campaign/amdDeck.js';
+import { AM_STANDARD, IMBUE, hailCards, amOwner, deckOf, drawState, drawOdds, cleanAmd, amdAct, amdRollCode, drawRandom, drawTwo, isRolling, perkList, shuffleDue, canDraw } from '../../scripts/campaign/amdDeck.js';
 import { emptyRecord } from '../../scripts/campaign/record.js';
 import { charAm, monAm } from '../../scripts/campaign/edit.js';
 import { describeChange } from '../../scripts/campaign/changelog.js';
@@ -17,6 +17,18 @@ export const tests = {
   'monster and ally decks start with the 20 standard cards'() {
     assert.equal(AM_STANDARD.reduce((s, t) => s + t.count, 0), 20);
     assert.equal(total(M), 20); assert.equal(total(A), 20);
+  },
+  "Hail's last perk puts one +1 Resolve card into the monster deck, not the ally deck"() {
+    const hail = { id: 'h', cls: 'Hail', pk: { perks: [17] } }, other = { id: 'o', cls: 'Hail', pk: { perks: [16] } };
+    assert.equal(hailCards({ chars: [other] }), 0);
+    assert.equal(hailCards({ chars: [hail, other] }), 1);
+    assert.equal(total(amOwner('m', {}, { chars: [other] })), 20);
+    const o = amOwner('m', {}, { chars: [hail] });
+    assert.equal(total(o), 21);
+    const t = drawState(o, {}).tiles.find(x => x.key === 'hr');
+    assert.equal(t.base, 1); assert.equal(t.face, '+1 Resolve'); assert.ok(t.img);
+    assert.equal(total(amOwner('a', {}, { chars: [hail] })), 20);
+    assert.ok(!drawState(M, {}).missing.some(x => x.key === 'hr'));
   },
   'imbuement changes the monster deck by its table, level 2 includes level 1'() {
     assert.equal(total(amOwner('m', { imb: 1 })), 20 + sum(IMBUE[1]));

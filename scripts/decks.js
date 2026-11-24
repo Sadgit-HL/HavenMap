@@ -263,7 +263,6 @@ function amTileHtml(c, s, special, g, editMode) {
   }
   const card = !special && stdCard(c, g);
   const src = card ? null : assetPath.attackMod(
-    g === 'a' && c.allyImg ? c.allyImg :
     special && c.heroImg && amIsPartySpecial(g) ? c.heroImg :
     c.img
   );

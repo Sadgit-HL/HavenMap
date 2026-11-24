@@ -20210,64 +20210,8 @@
   },
   {
    "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/ally/minus1.webp",
-   "dst": "attack-modifiers/common/ally-minus1.webp",
-   "status": "ok",
-   "bytes": 14512,
-   "size": null
-  },
-  {
-   "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/ally/minus2.webp",
-   "dst": "attack-modifiers/common/ally-minus2.webp",
-   "status": "ok",
-   "bytes": 14738,
-   "size": null
-  },
-  {
-   "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/ally/miss.webp",
-   "dst": "attack-modifiers/common/ally-miss.webp",
-   "status": "ok",
-   "bytes": 15360,
-   "size": null
-  },
-  {
-   "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/ally/plus0.webp",
-   "dst": "attack-modifiers/common/ally-plus0.webp",
-   "status": "ok",
-   "bytes": 14532,
-   "size": null
-  },
-  {
-   "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/ally/plus1.webp",
-   "dst": "attack-modifiers/common/ally-plus1.webp",
-   "status": "ok",
-   "bytes": 14936,
-   "size": null
-  },
-  {
-   "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/ally/plus2.webp",
-   "dst": "attack-modifiers/common/ally-plus2.webp",
-   "status": "ok",
-   "bytes": 15548,
-   "size": null
-  },
-  {
-   "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/ally/x2.webp",
-   "dst": "attack-modifiers/common/ally-x2.webp",
-   "status": "ok",
-   "bytes": 15276,
-   "size": null
-  },
-  {
-   "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Anaphi.webp",
-   "dst": "attack-modifiers/common/class_icons-Anaphi.webp",
+   "dst": "attack-modifiers/common/class_icons/Anaphi.webp",
    "status": "ok",
    "bytes": 4876,
    "size": null
@@ -20275,7 +20219,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Banner Spear.webp",
-   "dst": "attack-modifiers/common/class_icons-Banner Spear.webp",
+   "dst": "attack-modifiers/common/class_icons/Banner Spear.webp",
    "status": "ok",
    "bytes": 2644,
    "size": null
@@ -20283,7 +20227,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Berserker.webp",
-   "dst": "attack-modifiers/common/class_icons-Berserker.webp",
+   "dst": "attack-modifiers/common/class_icons/Berserker.webp",
    "status": "ok",
    "bytes": 4446,
    "size": null
@@ -20291,7 +20235,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Bladeswarm.webp",
-   "dst": "attack-modifiers/common/class_icons-Bladeswarm.webp",
+   "dst": "attack-modifiers/common/class_icons/Bladeswarm.webp",
    "status": "ok",
    "bytes": 4050,
    "size": null
@@ -20299,7 +20243,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Blinkblade.webp",
-   "dst": "attack-modifiers/common/class_icons-Blinkblade.webp",
+   "dst": "attack-modifiers/common/class_icons/Blinkblade.webp",
    "status": "ok",
    "bytes": 4054,
    "size": null
@@ -20307,7 +20251,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Boneshaper.webp",
-   "dst": "attack-modifiers/common/class_icons-Boneshaper.webp",
+   "dst": "attack-modifiers/common/class_icons/Boneshaper.webp",
    "status": "ok",
    "bytes": 3664,
    "size": null
@@ -20315,7 +20259,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Bruiser.webp",
-   "dst": "attack-modifiers/common/class_icons-Bruiser.webp",
+   "dst": "attack-modifiers/common/class_icons/Bruiser.webp",
    "status": "ok",
    "bytes": 4088,
    "size": null
@@ -20323,7 +20267,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Cassandra.webp",
-   "dst": "attack-modifiers/common/class_icons-Cassandra.webp",
+   "dst": "attack-modifiers/common/class_icons/Cassandra.webp",
    "status": "ok",
    "bytes": 4700,
    "size": null
@@ -20331,7 +20275,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Cragheart.webp",
-   "dst": "attack-modifiers/common/class_icons-Cragheart.webp",
+   "dst": "attack-modifiers/common/class_icons/Cragheart.webp",
    "status": "ok",
    "bytes": 3966,
    "size": null
@@ -20339,7 +20283,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Crashing Tide.webp",
-   "dst": "attack-modifiers/common/class_icons-Crashing Tide.webp",
+   "dst": "attack-modifiers/common/class_icons/Crashing Tide.webp",
    "status": "ok",
    "bytes": 6646,
    "size": null
@@ -20347,7 +20291,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Deathwalker.webp",
-   "dst": "attack-modifiers/common/class_icons-Deathwalker.webp",
+   "dst": "attack-modifiers/common/class_icons/Deathwalker.webp",
    "status": "ok",
    "bytes": 3008,
    "size": null
@@ -20355,7 +20299,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Deepwraith.webp",
-   "dst": "attack-modifiers/common/class_icons-Deepwraith.webp",
+   "dst": "attack-modifiers/common/class_icons/Deepwraith.webp",
    "status": "ok",
    "bytes": 7348,
    "size": null
@@ -20363,7 +20307,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Demolitionist.webp",
-   "dst": "attack-modifiers/common/class_icons-Demolitionist.webp",
+   "dst": "attack-modifiers/common/class_icons/Demolitionist.webp",
    "status": "ok",
    "bytes": 3746,
    "size": null
@@ -20371,7 +20315,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Doomstalker.webp",
-   "dst": "attack-modifiers/common/class_icons-Doomstalker.webp",
+   "dst": "attack-modifiers/common/class_icons/Doomstalker.webp",
    "status": "ok",
    "bytes": 4110,
    "size": null
@@ -20379,7 +20323,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Drifter.webp",
-   "dst": "attack-modifiers/common/class_icons-Drifter.webp",
+   "dst": "attack-modifiers/common/class_icons/Drifter.webp",
    "status": "ok",
    "bytes": 2774,
    "size": null
@@ -20387,7 +20331,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Elementalist.webp",
-   "dst": "attack-modifiers/common/class_icons-Elementalist.webp",
+   "dst": "attack-modifiers/common/class_icons/Elementalist.webp",
    "status": "ok",
    "bytes": 2854,
    "size": null
@@ -20395,7 +20339,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Frozen Fist.webp",
-   "dst": "attack-modifiers/common/class_icons-Frozen Fist.webp",
+   "dst": "attack-modifiers/common/class_icons/Frozen Fist.webp",
    "status": "ok",
    "bytes": 7518,
    "size": null
@@ -20403,7 +20347,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Geminate.webp",
-   "dst": "attack-modifiers/common/class_icons-Geminate.webp",
+   "dst": "attack-modifiers/common/class_icons/Geminate.webp",
    "status": "ok",
    "bytes": 7954,
    "size": null
@@ -20411,7 +20355,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/H.I.V.E..webp",
-   "dst": "attack-modifiers/common/class_icons-H.I.V.E..webp",
+   "dst": "attack-modifiers/common/class_icons/H.I.V.E..webp",
    "status": "ok",
    "bytes": 5014,
    "size": null
@@ -20419,7 +20363,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Hail.webp",
-   "dst": "attack-modifiers/common/class_icons-Hail.webp",
+   "dst": "attack-modifiers/common/class_icons/Hail.webp",
    "status": "ok",
    "bytes": 4038,
    "size": null
@@ -20427,7 +20371,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Hatchet.webp",
-   "dst": "attack-modifiers/common/class_icons-Hatchet.webp",
+   "dst": "attack-modifiers/common/class_icons/Hatchet.webp",
    "status": "ok",
    "bytes": 2956,
    "size": null
@@ -20435,7 +20379,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Infuser.webp",
-   "dst": "attack-modifiers/common/class_icons-Infuser.webp",
+   "dst": "attack-modifiers/common/class_icons/Infuser.webp",
    "status": "ok",
    "bytes": 4430,
    "size": null
@@ -20443,7 +20387,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Metal Mosaic.webp",
-   "dst": "attack-modifiers/common/class_icons-Metal Mosaic.webp",
+   "dst": "attack-modifiers/common/class_icons/Metal Mosaic.webp",
    "status": "ok",
    "bytes": 3564,
    "size": null
@@ -20451,7 +20395,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Mindthief.webp",
-   "dst": "attack-modifiers/common/class_icons-Mindthief.webp",
+   "dst": "attack-modifiers/common/class_icons/Mindthief.webp",
    "status": "ok",
    "bytes": 2392,
    "size": null
@@ -20459,7 +20403,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Nightshroud.webp",
-   "dst": "attack-modifiers/common/class_icons-Nightshroud.webp",
+   "dst": "attack-modifiers/common/class_icons/Nightshroud.webp",
    "status": "ok",
    "bytes": 4246,
    "size": null
@@ -20467,7 +20411,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Pain Conduit.webp",
-   "dst": "attack-modifiers/common/class_icons-Pain Conduit.webp",
+   "dst": "attack-modifiers/common/class_icons/Pain Conduit.webp",
    "status": "ok",
    "bytes": 6344,
    "size": null
@@ -20475,7 +20419,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Plagueherald.webp",
-   "dst": "attack-modifiers/common/class_icons-Plagueherald.webp",
+   "dst": "attack-modifiers/common/class_icons/Plagueherald.webp",
    "status": "ok",
    "bytes": 4960,
    "size": null
@@ -20483,7 +20427,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Pyroclast.webp",
-   "dst": "attack-modifiers/common/class_icons-Pyroclast.webp",
+   "dst": "attack-modifiers/common/class_icons/Pyroclast.webp",
    "status": "ok",
    "bytes": 3418,
    "size": null
@@ -20491,7 +20435,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Quartermaster.webp",
-   "dst": "attack-modifiers/common/class_icons-Quartermaster.webp",
+   "dst": "attack-modifiers/common/class_icons/Quartermaster.webp",
    "status": "ok",
    "bytes": 3006,
    "size": null
@@ -20499,7 +20443,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Red Guard.webp",
-   "dst": "attack-modifiers/common/class_icons-Red Guard.webp",
+   "dst": "attack-modifiers/common/class_icons/Red Guard.webp",
    "status": "ok",
    "bytes": 7430,
    "size": null
@@ -20507,7 +20451,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Satha.webp",
-   "dst": "attack-modifiers/common/class_icons-Satha.webp",
+   "dst": "attack-modifiers/common/class_icons/Satha.webp",
    "status": "ok",
    "bytes": 5926,
    "size": null
@@ -20515,7 +20459,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Sawbones.webp",
-   "dst": "attack-modifiers/common/class_icons-Sawbones.webp",
+   "dst": "attack-modifiers/common/class_icons/Sawbones.webp",
    "status": "ok",
    "bytes": 2956,
    "size": null
@@ -20523,7 +20467,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Shattersong.webp",
-   "dst": "attack-modifiers/common/class_icons-Shattersong.webp",
+   "dst": "attack-modifiers/common/class_icons/Shattersong.webp",
    "status": "ok",
    "bytes": 5766,
    "size": null
@@ -20531,7 +20475,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Silent Knife.webp",
-   "dst": "attack-modifiers/common/class_icons-Silent Knife.webp",
+   "dst": "attack-modifiers/common/class_icons/Silent Knife.webp",
    "status": "ok",
    "bytes": 7180,
    "size": null
@@ -20539,7 +20483,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Snowdancer.webp",
-   "dst": "attack-modifiers/common/class_icons-Snowdancer.webp",
+   "dst": "attack-modifiers/common/class_icons/Snowdancer.webp",
    "status": "ok",
    "bytes": 7180,
    "size": null
@@ -20547,7 +20491,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Soothsinger.webp",
-   "dst": "attack-modifiers/common/class_icons-Soothsinger.webp",
+   "dst": "attack-modifiers/common/class_icons/Soothsinger.webp",
    "status": "ok",
    "bytes": 4204,
    "size": null
@@ -20555,7 +20499,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Soultether.webp",
-   "dst": "attack-modifiers/common/class_icons-Soultether.webp",
+   "dst": "attack-modifiers/common/class_icons/Soultether.webp",
    "status": "ok",
    "bytes": 10324,
    "size": null
@@ -20563,7 +20507,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Spellweaver.webp",
-   "dst": "attack-modifiers/common/class_icons-Spellweaver.webp",
+   "dst": "attack-modifiers/common/class_icons/Spellweaver.webp",
    "status": "ok",
    "bytes": 6192,
    "size": null
@@ -20571,7 +20515,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Sunkeeper.webp",
-   "dst": "attack-modifiers/common/class_icons-Sunkeeper.webp",
+   "dst": "attack-modifiers/common/class_icons/Sunkeeper.webp",
    "status": "ok",
    "bytes": 5584,
    "size": null
@@ -20579,7 +20523,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Tinkerer.webp",
-   "dst": "attack-modifiers/common/class_icons-Tinkerer.webp",
+   "dst": "attack-modifiers/common/class_icons/Tinkerer.webp",
    "status": "ok",
    "bytes": 6438,
    "size": null
@@ -20587,7 +20531,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Trapper.webp",
-   "dst": "attack-modifiers/common/class_icons-Trapper.webp",
+   "dst": "attack-modifiers/common/class_icons/Trapper.webp",
    "status": "ok",
    "bytes": 5904,
    "size": null
@@ -20595,7 +20539,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Voidwarden.webp",
-   "dst": "attack-modifiers/common/class_icons-Voidwarden.webp",
+   "dst": "attack-modifiers/common/class_icons/Voidwarden.webp",
    "status": "ok",
    "bytes": 3090,
    "size": null
@@ -20603,7 +20547,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/class_icons/Wildfury.webp",
-   "dst": "attack-modifiers/common/class_icons-Wildfury.webp",
+   "dst": "attack-modifiers/common/class_icons/Wildfury.webp",
    "status": "ok",
    "bytes": 6148,
    "size": null
@@ -20611,7 +20555,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/add-target.webp",
-   "dst": "attack-modifiers/common/frames-add-target.webp",
+   "dst": "attack-modifiers/common/frames/add-target.webp",
    "status": "ok",
    "bytes": 64816,
    "size": null
@@ -20619,7 +20563,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/any-element.webp",
-   "dst": "attack-modifiers/common/frames-any-element.webp",
+   "dst": "attack-modifiers/common/frames/any-element.webp",
    "status": "ok",
    "bytes": 66710,
    "size": null
@@ -20627,7 +20571,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/bless.webp",
-   "dst": "attack-modifiers/common/frames-bless.webp",
+   "dst": "attack-modifiers/common/frames/bless.webp",
    "status": "ok",
    "bytes": 67900,
    "size": null
@@ -20635,7 +20579,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/brittle.webp",
-   "dst": "attack-modifiers/common/frames-brittle.webp",
+   "dst": "attack-modifiers/common/frames/brittle.webp",
    "status": "ok",
    "bytes": 63320,
    "size": null
@@ -20643,7 +20587,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/curse.webp",
-   "dst": "attack-modifiers/common/frames-curse.webp",
+   "dst": "attack-modifiers/common/frames/curse.webp",
    "status": "ok",
    "bytes": 61242,
    "size": null
@@ -20651,7 +20595,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/dark.webp",
-   "dst": "attack-modifiers/common/frames-dark.webp",
+   "dst": "attack-modifiers/common/frames/dark.webp",
    "status": "ok",
    "bytes": 54998,
    "size": null
@@ -20659,7 +20603,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/disarm.webp",
-   "dst": "attack-modifiers/common/frames-disarm.webp",
+   "dst": "attack-modifiers/common/frames/disarm.webp",
    "status": "ok",
    "bytes": 65706,
    "size": null
@@ -20667,7 +20611,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/earth.webp",
-   "dst": "attack-modifiers/common/frames-earth.webp",
+   "dst": "attack-modifiers/common/frames/earth.webp",
    "status": "ok",
    "bytes": 67444,
    "size": null
@@ -20675,7 +20619,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/fire.webp",
-   "dst": "attack-modifiers/common/frames-fire.webp",
+   "dst": "attack-modifiers/common/frames/fire.webp",
    "status": "ok",
    "bytes": 69220,
    "size": null
@@ -20683,7 +20627,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/ice.webp",
-   "dst": "attack-modifiers/common/frames-ice.webp",
+   "dst": "attack-modifiers/common/frames/ice.webp",
    "status": "ok",
    "bytes": 67004,
    "size": null
@@ -20691,7 +20635,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/immobilize.webp",
-   "dst": "attack-modifiers/common/frames-immobilize.webp",
+   "dst": "attack-modifiers/common/frames/immobilize.webp",
    "status": "ok",
    "bytes": 55358,
    "size": null
@@ -20699,7 +20643,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/invisible.webp",
-   "dst": "attack-modifiers/common/frames-invisible.webp",
+   "dst": "attack-modifiers/common/frames/invisible.webp",
    "status": "ok",
    "bytes": 44670,
    "size": null
@@ -20707,7 +20651,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/light.webp",
-   "dst": "attack-modifiers/common/frames-light.webp",
+   "dst": "attack-modifiers/common/frames/light.webp",
    "status": "ok",
    "bytes": 70556,
    "size": null
@@ -20715,7 +20659,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/mixed-elements-earth-dark.webp",
-   "dst": "attack-modifiers/common/frames-mixed-elements-earth-dark.webp",
+   "dst": "attack-modifiers/common/frames/mixed-elements-earth-dark.webp",
    "status": "ok",
    "bytes": 44638,
    "size": null
@@ -20723,7 +20667,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/mixed-elements-earth-fire.webp",
-   "dst": "attack-modifiers/common/frames-mixed-elements-earth-fire.webp",
+   "dst": "attack-modifiers/common/frames/mixed-elements-earth-fire.webp",
    "status": "ok",
    "bytes": 50268,
    "size": null
@@ -20731,7 +20675,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/mixed-elements-earth-ice.webp",
-   "dst": "attack-modifiers/common/frames-mixed-elements-earth-ice.webp",
+   "dst": "attack-modifiers/common/frames/mixed-elements-earth-ice.webp",
    "status": "ok",
    "bytes": 46262,
    "size": null
@@ -20739,7 +20683,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/mixed-elements-earth-light.webp",
-   "dst": "attack-modifiers/common/frames-mixed-elements-earth-light.webp",
+   "dst": "attack-modifiers/common/frames/mixed-elements-earth-light.webp",
    "status": "ok",
    "bytes": 49072,
    "size": null
@@ -20747,7 +20691,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/mixed-elements-earth-wind.webp",
-   "dst": "attack-modifiers/common/frames-mixed-elements-earth-wind.webp",
+   "dst": "attack-modifiers/common/frames/mixed-elements-earth-wind.webp",
    "status": "ok",
    "bytes": 45828,
    "size": null
@@ -20755,7 +20699,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/mixed-elements-fire-dark.webp",
-   "dst": "attack-modifiers/common/frames-mixed-elements-fire-dark.webp",
+   "dst": "attack-modifiers/common/frames/mixed-elements-fire-dark.webp",
    "status": "ok",
    "bytes": 50872,
    "size": null
@@ -20763,7 +20707,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/mixed-elements-fire-ice.webp",
-   "dst": "attack-modifiers/common/frames-mixed-elements-fire-ice.webp",
+   "dst": "attack-modifiers/common/frames/mixed-elements-fire-ice.webp",
    "status": "ok",
    "bytes": 50806,
    "size": null
@@ -20771,7 +20715,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/mixed-elements-fire-light.webp",
-   "dst": "attack-modifiers/common/frames-mixed-elements-fire-light.webp",
+   "dst": "attack-modifiers/common/frames/mixed-elements-fire-light.webp",
    "status": "ok",
    "bytes": 46792,
    "size": null
@@ -20779,7 +20723,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/mixed-elements-fire-wind.webp",
-   "dst": "attack-modifiers/common/frames-mixed-elements-fire-wind.webp",
+   "dst": "attack-modifiers/common/frames/mixed-elements-fire-wind.webp",
    "status": "ok",
    "bytes": 49094,
    "size": null
@@ -20787,7 +20731,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/mixed-elements-ice-wind.webp",
-   "dst": "attack-modifiers/common/frames-mixed-elements-ice-wind.webp",
+   "dst": "attack-modifiers/common/frames/mixed-elements-ice-wind.webp",
    "status": "ok",
    "bytes": 45730,
    "size": null
@@ -20795,7 +20739,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/mixed-elements-light-dark.webp",
-   "dst": "attack-modifiers/common/frames-mixed-elements-light-dark.webp",
+   "dst": "attack-modifiers/common/frames/mixed-elements-light-dark.webp",
    "status": "ok",
    "bytes": 40736,
    "size": null
@@ -20803,7 +20747,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/mixed-elements-light-wind.webp",
-   "dst": "attack-modifiers/common/frames-mixed-elements-light-wind.webp",
+   "dst": "attack-modifiers/common/frames/mixed-elements-light-wind.webp",
    "status": "ok",
    "bytes": 40814,
    "size": null
@@ -20811,7 +20755,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/mixed-elements-wind-dark.webp",
-   "dst": "attack-modifiers/common/frames-mixed-elements-wind-dark.webp",
+   "dst": "attack-modifiers/common/frames/mixed-elements-wind-dark.webp",
    "status": "ok",
    "bytes": 43674,
    "size": null
@@ -20819,7 +20763,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/muddle.webp",
-   "dst": "attack-modifiers/common/frames-muddle.webp",
+   "dst": "attack-modifiers/common/frames/muddle.webp",
    "status": "ok",
    "bytes": 62358,
    "size": null
@@ -20827,7 +20771,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/negative.webp",
-   "dst": "attack-modifiers/common/frames-negative.webp",
+   "dst": "attack-modifiers/common/frames/negative.webp",
    "status": "ok",
    "bytes": 67794,
    "size": null
@@ -20835,7 +20779,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/null.webp",
-   "dst": "attack-modifiers/common/frames-null.webp",
+   "dst": "attack-modifiers/common/frames/null.webp",
    "status": "ok",
    "bytes": 70098,
    "size": null
@@ -20843,7 +20787,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/p0.webp",
-   "dst": "attack-modifiers/common/frames-p0.webp",
+   "dst": "attack-modifiers/common/frames/p0.webp",
    "status": "ok",
    "bytes": 65484,
    "size": null
@@ -20851,7 +20795,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/pierce.webp",
-   "dst": "attack-modifiers/common/frames-pierce.webp",
+   "dst": "attack-modifiers/common/frames/pierce.webp",
    "status": "ok",
    "bytes": 70844,
    "size": null
@@ -20859,7 +20803,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/poison.webp",
-   "dst": "attack-modifiers/common/frames-poison.webp",
+   "dst": "attack-modifiers/common/frames/poison.webp",
    "status": "ok",
    "bytes": 64092,
    "size": null
@@ -20867,7 +20811,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/positive.webp",
-   "dst": "attack-modifiers/common/frames-positive.webp",
+   "dst": "attack-modifiers/common/frames/positive.webp",
    "status": "ok",
    "bytes": 68768,
    "size": null
@@ -20875,7 +20819,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/push-pull.webp",
-   "dst": "attack-modifiers/common/frames-push-pull.webp",
+   "dst": "attack-modifiers/common/frames/push-pull.webp",
    "status": "ok",
    "bytes": 59136,
    "size": null
@@ -20883,7 +20827,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/regenerate.webp",
-   "dst": "attack-modifiers/common/frames-regenerate.webp",
+   "dst": "attack-modifiers/common/frames/regenerate.webp",
    "status": "ok",
    "bytes": 64340,
    "size": null
@@ -20891,7 +20835,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/strengthen.webp",
-   "dst": "attack-modifiers/common/frames-strengthen.webp",
+   "dst": "attack-modifiers/common/frames/strengthen.webp",
    "status": "ok",
    "bytes": 68726,
    "size": null
@@ -20899,7 +20843,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/stun.webp",
-   "dst": "attack-modifiers/common/frames-stun.webp",
+   "dst": "attack-modifiers/common/frames/stun.webp",
    "status": "ok",
    "bytes": 65304,
    "size": null
@@ -20907,7 +20851,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/ward.webp",
-   "dst": "attack-modifiers/common/frames-ward.webp",
+   "dst": "attack-modifiers/common/frames/ward.webp",
    "status": "ok",
    "bytes": 63330,
    "size": null
@@ -20915,7 +20859,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/wind.webp",
-   "dst": "attack-modifiers/common/frames-wind.webp",
+   "dst": "attack-modifiers/common/frames/wind.webp",
    "status": "ok",
    "bytes": 61108,
    "size": null
@@ -20923,7 +20867,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/wound.webp",
-   "dst": "attack-modifiers/common/frames-wound.webp",
+   "dst": "attack-modifiers/common/frames/wound.webp",
    "status": "ok",
    "bytes": 69606,
    "size": null
@@ -20931,7 +20875,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/frames/x2.webp",
-   "dst": "attack-modifiers/common/frames-x2.webp",
+   "dst": "attack-modifiers/common/frames/x2.webp",
    "status": "ok",
    "bytes": 66302,
    "size": null
@@ -20939,7 +20883,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/hero/bless.webp",
-   "dst": "attack-modifiers/common/hero-bless.webp",
+   "dst": "attack-modifiers/common/hero/bless.webp",
    "status": "ok",
    "bytes": 25200,
    "size": null
@@ -20947,7 +20891,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/hero/curse.webp",
-   "dst": "attack-modifiers/common/hero-curse.webp",
+   "dst": "attack-modifiers/common/hero/curse.webp",
    "status": "ok",
    "bytes": 23658,
    "size": null
@@ -20955,7 +20899,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/conditions-add-target.webp",
-   "dst": "attack-modifiers/common/icons-conditions-add-target.webp",
+   "dst": "attack-modifiers/common/icons/center/conditions-add-target.webp",
    "status": "ok",
    "bytes": 12274,
    "size": null
@@ -20963,7 +20907,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/conditions-bless.webp",
-   "dst": "attack-modifiers/common/icons-conditions-bless.webp",
+   "dst": "attack-modifiers/common/icons/center/conditions-bless.webp",
    "status": "ok",
    "bytes": 11870,
    "size": null
@@ -20971,7 +20915,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/conditions-brittle.webp",
-   "dst": "attack-modifiers/common/icons-conditions-brittle.webp",
+   "dst": "attack-modifiers/common/icons/center/conditions-brittle.webp",
    "status": "ok",
    "bytes": 12558,
    "size": null
@@ -20979,7 +20923,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/conditions-curse.webp",
-   "dst": "attack-modifiers/common/icons-conditions-curse.webp",
+   "dst": "attack-modifiers/common/icons/center/conditions-curse.webp",
    "status": "ok",
    "bytes": 9372,
    "size": null
@@ -20987,7 +20931,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/conditions-disarm.webp",
-   "dst": "attack-modifiers/common/icons-conditions-disarm.webp",
+   "dst": "attack-modifiers/common/icons/center/conditions-disarm.webp",
    "status": "ok",
    "bytes": 9732,
    "size": null
@@ -20995,7 +20939,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/conditions-immobilize.webp",
-   "dst": "attack-modifiers/common/icons-conditions-immobilize.webp",
+   "dst": "attack-modifiers/common/icons/center/conditions-immobilize.webp",
    "status": "ok",
    "bytes": 10690,
    "size": null
@@ -21003,7 +20947,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/conditions-invisible.webp",
-   "dst": "attack-modifiers/common/icons-conditions-invisible.webp",
+   "dst": "attack-modifiers/common/icons/center/conditions-invisible.webp",
    "status": "ok",
    "bytes": 9730,
    "size": null
@@ -21011,7 +20955,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/conditions-muddle.webp",
-   "dst": "attack-modifiers/common/icons-conditions-muddle.webp",
+   "dst": "attack-modifiers/common/icons/center/conditions-muddle.webp",
    "status": "ok",
    "bytes": 9422,
    "size": null
@@ -21019,7 +20963,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/conditions-pierce.webp",
-   "dst": "attack-modifiers/common/icons-conditions-pierce.webp",
+   "dst": "attack-modifiers/common/icons/center/conditions-pierce.webp",
    "status": "ok",
    "bytes": 11000,
    "size": null
@@ -21027,7 +20971,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/conditions-poison.webp",
-   "dst": "attack-modifiers/common/icons-conditions-poison.webp",
+   "dst": "attack-modifiers/common/icons/center/conditions-poison.webp",
    "status": "ok",
    "bytes": 9660,
    "size": null
@@ -21035,7 +20979,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/conditions-push.webp",
-   "dst": "attack-modifiers/common/icons-conditions-push.webp",
+   "dst": "attack-modifiers/common/icons/center/conditions-push.webp",
    "status": "ok",
    "bytes": 9624,
    "size": null
@@ -21043,7 +20987,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/conditions-regenerate.webp",
-   "dst": "attack-modifiers/common/icons-conditions-regenerate.webp",
+   "dst": "attack-modifiers/common/icons/center/conditions-regenerate.webp",
    "status": "ok",
    "bytes": 11144,
    "size": null
@@ -21051,7 +20995,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/conditions-safeguard-ally.webp",
-   "dst": "attack-modifiers/common/icons-conditions-safeguard-ally.webp",
+   "dst": "attack-modifiers/common/icons/center/conditions-safeguard-ally.webp",
    "status": "ok",
    "bytes": 7320,
    "size": null
@@ -21059,7 +21003,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/conditions-strengthen.webp",
-   "dst": "attack-modifiers/common/icons-conditions-strengthen.webp",
+   "dst": "attack-modifiers/common/icons/center/conditions-strengthen.webp",
    "status": "ok",
    "bytes": 10344,
    "size": null
@@ -21067,7 +21011,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/conditions-stun.webp",
-   "dst": "attack-modifiers/common/icons-conditions-stun.webp",
+   "dst": "attack-modifiers/common/icons/center/conditions-stun.webp",
    "status": "ok",
    "bytes": 11314,
    "size": null
@@ -21075,7 +21019,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/conditions-ward-range.webp",
-   "dst": "attack-modifiers/common/icons-conditions-ward-range.webp",
+   "dst": "attack-modifiers/common/icons/center/conditions-ward-range.webp",
    "status": "ok",
    "bytes": 10592,
    "size": null
@@ -21083,7 +21027,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/conditions-wound.webp",
-   "dst": "attack-modifiers/common/icons-conditions-wound.webp",
+   "dst": "attack-modifiers/common/icons/center/conditions-wound.webp",
    "status": "ok",
    "bytes": 10906,
    "size": null
@@ -21091,7 +21035,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/effects-heal-ally.webp",
-   "dst": "attack-modifiers/common/icons-effects-heal-ally.webp",
+   "dst": "attack-modifiers/common/icons/center/effects-heal-ally.webp",
    "status": "ok",
    "bytes": 9848,
    "size": null
@@ -21099,7 +21043,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/effects-heal-self.webp",
-   "dst": "attack-modifiers/common/icons-effects-heal-self.webp",
+   "dst": "attack-modifiers/common/icons/center/effects-heal-self.webp",
    "status": "ok",
    "bytes": 10008,
    "size": null
@@ -21107,7 +21051,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/effects-retaliate.webp",
-   "dst": "attack-modifiers/common/icons-effects-retaliate.webp",
+   "dst": "attack-modifiers/common/icons/center/effects-retaliate.webp",
    "status": "ok",
    "bytes": 15110,
    "size": null
@@ -21115,7 +21059,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/effects-shield-self.webp",
-   "dst": "attack-modifiers/common/icons-effects-shield-self.webp",
+   "dst": "attack-modifiers/common/icons/center/effects-shield-self.webp",
    "status": "ok",
    "bytes": 8810,
    "size": null
@@ -21123,7 +21067,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/elements-any-element.webp",
-   "dst": "attack-modifiers/common/icons-elements-any-element.webp",
+   "dst": "attack-modifiers/common/icons/center/elements-any-element.webp",
    "status": "ok",
    "bytes": 13624,
    "size": null
@@ -21131,7 +21075,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/elements-dark.webp",
-   "dst": "attack-modifiers/common/icons-elements-dark.webp",
+   "dst": "attack-modifiers/common/icons/center/elements-dark.webp",
    "status": "ok",
    "bytes": 15052,
    "size": null
@@ -21139,7 +21083,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/elements-earth.webp",
-   "dst": "attack-modifiers/common/icons-elements-earth.webp",
+   "dst": "attack-modifiers/common/icons/center/elements-earth.webp",
    "status": "ok",
    "bytes": 13974,
    "size": null
@@ -21147,7 +21091,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/elements-fire.webp",
-   "dst": "attack-modifiers/common/icons-elements-fire.webp",
+   "dst": "attack-modifiers/common/icons/center/elements-fire.webp",
    "status": "ok",
    "bytes": 15000,
    "size": null
@@ -21155,7 +21099,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/elements-ice.webp",
-   "dst": "attack-modifiers/common/icons-elements-ice.webp",
+   "dst": "attack-modifiers/common/icons/center/elements-ice.webp",
    "status": "ok",
    "bytes": 18928,
    "size": null
@@ -21163,7 +21107,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/elements-light.webp",
-   "dst": "attack-modifiers/common/icons-elements-light.webp",
+   "dst": "attack-modifiers/common/icons/center/elements-light.webp",
    "status": "ok",
    "bytes": 18070,
    "size": null
@@ -21171,7 +21115,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/elements-wind.webp",
-   "dst": "attack-modifiers/common/icons-elements-wind.webp",
+   "dst": "attack-modifiers/common/icons/center/elements-wind.webp",
    "status": "ok",
    "bytes": 13812,
    "size": null
@@ -21179,7 +21123,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/mixed-elements-earth-dark.webp",
-   "dst": "attack-modifiers/common/icons-mixed-elements-earth-dark.webp",
+   "dst": "attack-modifiers/common/icons/center/mixed-elements-earth-dark.webp",
    "status": "ok",
    "bytes": 13108,
    "size": null
@@ -21187,7 +21131,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/mixed-elements-earth-fire.webp",
-   "dst": "attack-modifiers/common/icons-mixed-elements-earth-fire.webp",
+   "dst": "attack-modifiers/common/icons/center/mixed-elements-earth-fire.webp",
    "status": "ok",
    "bytes": 12236,
    "size": null
@@ -21195,7 +21139,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/mixed-elements-earth-ice.webp",
-   "dst": "attack-modifiers/common/icons-mixed-elements-earth-ice.webp",
+   "dst": "attack-modifiers/common/icons/center/mixed-elements-earth-ice.webp",
    "status": "ok",
    "bytes": 13868,
    "size": null
@@ -21203,7 +21147,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/mixed-elements-earth-light.webp",
-   "dst": "attack-modifiers/common/icons-mixed-elements-earth-light.webp",
+   "dst": "attack-modifiers/common/icons/center/mixed-elements-earth-light.webp",
    "status": "ok",
    "bytes": 13146,
    "size": null
@@ -21211,7 +21155,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/mixed-elements-earth-wind.webp",
-   "dst": "attack-modifiers/common/icons-mixed-elements-earth-wind.webp",
+   "dst": "attack-modifiers/common/icons/center/mixed-elements-earth-wind.webp",
    "status": "ok",
    "bytes": 11832,
    "size": null
@@ -21219,7 +21163,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/mixed-elements-fire-dark.webp",
-   "dst": "attack-modifiers/common/icons-mixed-elements-fire-dark.webp",
+   "dst": "attack-modifiers/common/icons/center/mixed-elements-fire-dark.webp",
    "status": "ok",
    "bytes": 13292,
    "size": null
@@ -21227,7 +21171,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/mixed-elements-fire-ice.webp",
-   "dst": "attack-modifiers/common/icons-mixed-elements-fire-ice.webp",
+   "dst": "attack-modifiers/common/icons/center/mixed-elements-fire-ice.webp",
    "status": "ok",
    "bytes": 13280,
    "size": null
@@ -21235,7 +21179,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/mixed-elements-fire-light.webp",
-   "dst": "attack-modifiers/common/icons-mixed-elements-fire-light.webp",
+   "dst": "attack-modifiers/common/icons/center/mixed-elements-fire-light.webp",
    "status": "ok",
    "bytes": 13336,
    "size": null
@@ -21243,7 +21187,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/mixed-elements-fire-wind.webp",
-   "dst": "attack-modifiers/common/icons-mixed-elements-fire-wind.webp",
+   "dst": "attack-modifiers/common/icons/center/mixed-elements-fire-wind.webp",
    "status": "ok",
    "bytes": 11932,
    "size": null
@@ -21251,7 +21195,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/mixed-elements-ice-wind.webp",
-   "dst": "attack-modifiers/common/icons-mixed-elements-ice-wind.webp",
+   "dst": "attack-modifiers/common/icons/center/mixed-elements-ice-wind.webp",
    "status": "ok",
    "bytes": 13680,
    "size": null
@@ -21259,7 +21203,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/mixed-elements-light-dark.webp",
-   "dst": "attack-modifiers/common/icons-mixed-elements-light-dark.webp",
+   "dst": "attack-modifiers/common/icons/center/mixed-elements-light-dark.webp",
    "status": "ok",
    "bytes": 14510,
    "size": null
@@ -21267,7 +21211,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/mixed-elements-light-wind.webp",
-   "dst": "attack-modifiers/common/icons-mixed-elements-light-wind.webp",
+   "dst": "attack-modifiers/common/icons/center/mixed-elements-light-wind.webp",
    "status": "ok",
    "bytes": 12954,
    "size": null
@@ -21275,7 +21219,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/center/mixed-elements-wind-dark.webp",
-   "dst": "attack-modifiers/common/icons-mixed-elements-wind-dark.webp",
+   "dst": "attack-modifiers/common/icons/center/mixed-elements-wind-dark.webp",
    "status": "ok",
    "bytes": 12958,
    "size": null
@@ -21283,7 +21227,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/side/rolling.webp",
-   "dst": "attack-modifiers/common/icons-rolling.webp",
+   "dst": "attack-modifiers/common/icons/side/rolling.webp",
    "status": "ok",
    "bytes": 5278,
    "size": null
@@ -21291,7 +21235,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/icons/small/target-ring.webp",
-   "dst": "attack-modifiers/common/icons-target-ring.webp",
+   "dst": "attack-modifiers/common/icons/small/target-ring.webp",
    "status": "ok",
    "bytes": 1380,
    "size": null
@@ -21299,7 +21243,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/imbuement/plus0poison.webp",
-   "dst": "attack-modifiers/common/imbuement-plus0poison.webp",
+   "dst": "attack-modifiers/common/imbuement/plus0poison.webp",
    "status": "ok",
    "bytes": 17860,
    "size": null
@@ -21307,7 +21251,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/imbuement/plus0wound.webp",
-   "dst": "attack-modifiers/common/imbuement-plus0wound.webp",
+   "dst": "attack-modifiers/common/imbuement/plus0wound.webp",
    "status": "ok",
    "bytes": 18656,
    "size": null
@@ -21315,7 +21259,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/imbuement/plus1curse.webp",
-   "dst": "attack-modifiers/common/imbuement-plus1curse.webp",
+   "dst": "attack-modifiers/common/imbuement/plus1curse.webp",
    "status": "ok",
    "bytes": 17046,
    "size": null
@@ -21323,7 +21267,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/imbuement/plus1heal1.webp",
-   "dst": "attack-modifiers/common/imbuement-plus1heal1.webp",
+   "dst": "attack-modifiers/common/imbuement/plus1heal1.webp",
    "status": "ok",
    "bytes": 18898,
    "size": null
@@ -21331,7 +21275,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/imbuement/plus2muddle.webp",
-   "dst": "attack-modifiers/common/imbuement-plus2muddle.webp",
+   "dst": "attack-modifiers/common/imbuement/plus2muddle.webp",
    "status": "ok",
    "bytes": 17568,
    "size": null
@@ -21339,7 +21283,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/imbuement/plus3.webp",
-   "dst": "attack-modifiers/common/imbuement-plus3.webp",
+   "dst": "attack-modifiers/common/imbuement/plus3.webp",
    "status": "ok",
    "bytes": 19072,
    "size": null
@@ -21347,7 +21291,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/monster/bless.webp",
-   "dst": "attack-modifiers/common/monster-bless.webp",
+   "dst": "attack-modifiers/common/monster/bless.webp",
    "status": "ok",
    "bytes": 24568,
    "size": null
@@ -21355,71 +21299,15 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/monster/curse.webp",
-   "dst": "attack-modifiers/common/monster-curse.webp",
+   "dst": "attack-modifiers/common/monster/curse.webp",
    "status": "ok",
    "bytes": 20150,
    "size": null
   },
   {
    "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/monster/minus1.webp",
-   "dst": "attack-modifiers/common/monster-minus1.webp",
-   "status": "ok",
-   "bytes": 20046,
-   "size": null
-  },
-  {
-   "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/monster/minus2.webp",
-   "dst": "attack-modifiers/common/monster-minus2.webp",
-   "status": "ok",
-   "bytes": 20362,
-   "size": null
-  },
-  {
-   "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/monster/miss.webp",
-   "dst": "attack-modifiers/common/monster-miss.webp",
-   "status": "ok",
-   "bytes": 21896,
-   "size": null
-  },
-  {
-   "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/monster/plus0.webp",
-   "dst": "attack-modifiers/common/monster-plus0.webp",
-   "status": "ok",
-   "bytes": 20308,
-   "size": null
-  },
-  {
-   "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/monster/plus1.webp",
-   "dst": "attack-modifiers/common/monster-plus1.webp",
-   "status": "ok",
-   "bytes": 21698,
-   "size": null
-  },
-  {
-   "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/monster/plus2.webp",
-   "dst": "attack-modifiers/common/monster-plus2.webp",
-   "status": "ok",
-   "bytes": 21542,
-   "size": null
-  },
-  {
-   "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/monster/x2.webp",
-   "dst": "attack-modifiers/common/monster-x2.webp",
-   "status": "ok",
-   "bytes": 21128,
-   "size": null
-  },
-  {
-   "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/numbers/c-m1.webp",
-   "dst": "attack-modifiers/common/numbers-c-m1.webp",
+   "dst": "attack-modifiers/common/numbers/c-m1.webp",
    "status": "ok",
    "bytes": 9370,
    "size": null
@@ -21427,7 +21315,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/numbers/c-m2.webp",
-   "dst": "attack-modifiers/common/numbers-c-m2.webp",
+   "dst": "attack-modifiers/common/numbers/c-m2.webp",
    "status": "ok",
    "bytes": 13728,
    "size": null
@@ -21435,7 +21323,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/numbers/c-p0.webp",
-   "dst": "attack-modifiers/common/numbers-c-p0.webp",
+   "dst": "attack-modifiers/common/numbers/c-p0.webp",
    "status": "ok",
    "bytes": 14050,
    "size": null
@@ -21443,7 +21331,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/numbers/c-p1.webp",
-   "dst": "attack-modifiers/common/numbers-c-p1.webp",
+   "dst": "attack-modifiers/common/numbers/c-p1.webp",
    "status": "ok",
    "bytes": 11558,
    "size": null
@@ -21451,7 +21339,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/numbers/c-p2.webp",
-   "dst": "attack-modifiers/common/numbers-c-p2.webp",
+   "dst": "attack-modifiers/common/numbers/c-p2.webp",
    "status": "ok",
    "bytes": 15608,
    "size": null
@@ -21459,7 +21347,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/numbers/c-p3.webp",
-   "dst": "attack-modifiers/common/numbers-c-p3.webp",
+   "dst": "attack-modifiers/common/numbers/c-p3.webp",
    "status": "ok",
    "bytes": 16380,
    "size": null
@@ -21467,7 +21355,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/numbers/c-p4.webp",
-   "dst": "attack-modifiers/common/numbers-c-p4.webp",
+   "dst": "attack-modifiers/common/numbers/c-p4.webp",
    "status": "ok",
    "bytes": 13732,
    "size": null
@@ -21475,7 +21363,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/numbers/c-x2.webp",
-   "dst": "attack-modifiers/common/numbers-c-x2.webp",
+   "dst": "attack-modifiers/common/numbers/c-x2.webp",
    "status": "ok",
    "bytes": 17860,
    "size": null
@@ -21483,7 +21371,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/spheres/badge-m1.webp",
-   "dst": "attack-modifiers/common/spheres-badge-m1.webp",
+   "dst": "attack-modifiers/common/spheres/badge-m1.webp",
    "status": "ok",
    "bytes": 6834,
    "size": null
@@ -21491,7 +21379,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/spheres/badge-m2.webp",
-   "dst": "attack-modifiers/common/spheres-badge-m2.webp",
+   "dst": "attack-modifiers/common/spheres/badge-m2.webp",
    "status": "ok",
    "bytes": 6912,
    "size": null
@@ -21499,7 +21387,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/spheres/badge-p0.webp",
-   "dst": "attack-modifiers/common/spheres-badge-p0.webp",
+   "dst": "attack-modifiers/common/spheres/badge-p0.webp",
    "status": "ok",
    "bytes": 6992,
    "size": null
@@ -21507,7 +21395,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/spheres/badge-p1.webp",
-   "dst": "attack-modifiers/common/spheres-badge-p1.webp",
+   "dst": "attack-modifiers/common/spheres/badge-p1.webp",
    "status": "ok",
    "bytes": 6970,
    "size": null
@@ -21515,7 +21403,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/spheres/badge-p2.webp",
-   "dst": "attack-modifiers/common/spheres-badge-p2.webp",
+   "dst": "attack-modifiers/common/spheres/badge-p2.webp",
    "status": "ok",
    "bytes": 7216,
    "size": null
@@ -21523,7 +21411,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/spheres/badge-p3.webp",
-   "dst": "attack-modifiers/common/spheres-badge-p3.webp",
+   "dst": "attack-modifiers/common/spheres/badge-p3.webp",
    "status": "ok",
    "bytes": 7268,
    "size": null
@@ -21531,7 +21419,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/spheres/class-circle.webp",
-   "dst": "attack-modifiers/common/spheres-class-circle.webp",
+   "dst": "attack-modifiers/common/spheres/class-circle.webp",
    "status": "ok",
    "bytes": 4984,
    "size": null
@@ -21539,7 +21427,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/spheres/shuffle.webp",
-   "dst": "attack-modifiers/common/spheres-shuffle.webp",
+   "dst": "attack-modifiers/common/spheres/shuffle.webp",
    "status": "ok",
    "bytes": 5958,
    "size": null
@@ -21547,7 +21435,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/an1.webp",
-   "dst": "attack-modifiers/common/unique-an1.webp",
+   "dst": "attack-modifiers/common/unique/an1.webp",
    "status": "ok",
    "bytes": 31404,
    "size": null
@@ -21555,7 +21443,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/an2.webp",
-   "dst": "attack-modifiers/common/unique-an2.webp",
+   "dst": "attack-modifiers/common/unique/an2.webp",
    "status": "ok",
    "bytes": 28616,
    "size": null
@@ -21563,7 +21451,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/bb1.webp",
-   "dst": "attack-modifiers/common/unique-bb1.webp",
+   "dst": "attack-modifiers/common/unique/bb1.webp",
    "status": "ok",
    "bytes": 31902,
    "size": null
@@ -21571,7 +21459,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/bb2.webp",
-   "dst": "attack-modifiers/common/unique-bb2.webp",
+   "dst": "attack-modifiers/common/unique/bb2.webp",
    "status": "ok",
    "bytes": 29544,
    "size": null
@@ -21579,7 +21467,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/be1.webp",
-   "dst": "attack-modifiers/common/unique-be1.webp",
+   "dst": "attack-modifiers/common/unique/be1.webp",
    "status": "ok",
    "bytes": 23746,
    "size": null
@@ -21587,7 +21475,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/be2.webp",
-   "dst": "attack-modifiers/common/unique-be2.webp",
+   "dst": "attack-modifiers/common/unique/be2.webp",
    "status": "ok",
    "bytes": 26506,
    "size": null
@@ -21595,7 +21483,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/bn1.webp",
-   "dst": "attack-modifiers/common/unique-bn1.webp",
+   "dst": "attack-modifiers/common/unique/bn1.webp",
    "status": "ok",
    "bytes": 30746,
    "size": null
@@ -21603,7 +21491,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/bo1.webp",
-   "dst": "attack-modifiers/common/unique-bo1.webp",
+   "dst": "attack-modifiers/common/unique/bo1.webp",
    "status": "ok",
    "bytes": 31486,
    "size": null
@@ -21611,7 +21499,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/bo2.webp",
-   "dst": "attack-modifiers/common/unique-bo2.webp",
+   "dst": "attack-modifiers/common/unique/bo2.webp",
    "status": "ok",
    "bytes": 32014,
    "size": null
@@ -21619,7 +21507,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/br1.webp",
-   "dst": "attack-modifiers/common/unique-br1.webp",
+   "dst": "attack-modifiers/common/unique/br1.webp",
    "status": "ok",
    "bytes": 28086,
    "size": null
@@ -21627,7 +21515,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/bs1.webp",
-   "dst": "attack-modifiers/common/unique-bs1.webp",
+   "dst": "attack-modifiers/common/unique/bs1.webp",
    "status": "ok",
    "bytes": 24610,
    "size": null
@@ -21635,7 +21523,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/ca1.webp",
-   "dst": "attack-modifiers/common/unique-ca1.webp",
+   "dst": "attack-modifiers/common/unique/ca1.webp",
    "status": "ok",
    "bytes": 32492,
    "size": null
@@ -21643,7 +21531,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/ca2.webp",
-   "dst": "attack-modifiers/common/unique-ca2.webp",
+   "dst": "attack-modifiers/common/unique/ca2.webp",
    "status": "ok",
    "bytes": 31498,
    "size": null
@@ -21651,7 +21539,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/ca3.webp",
-   "dst": "attack-modifiers/common/unique-ca3.webp",
+   "dst": "attack-modifiers/common/unique/ca3.webp",
    "status": "ok",
    "bytes": 35064,
    "size": null
@@ -21659,7 +21547,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/ch1.webp",
-   "dst": "attack-modifiers/common/unique-ch1.webp",
+   "dst": "attack-modifiers/common/unique/ch1.webp",
    "status": "ok",
    "bytes": 26370,
    "size": null
@@ -21667,7 +21555,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/cr1.webp",
-   "dst": "attack-modifiers/common/unique-cr1.webp",
+   "dst": "attack-modifiers/common/unique/cr1.webp",
    "status": "ok",
    "bytes": 32080,
    "size": null
@@ -21675,7 +21563,7 @@
   {
    "group": "repo images",
    "src": "D:/github/worldhaven/images/attack-modifiers/jaws-of-the-lion/de/jl-am-de-10.png",
-   "dst": "attack-modifiers/common/unique-de1.webp",
+   "dst": "attack-modifiers/common/unique/de1.webp",
    "status": "ok",
    "bytes": 50078,
    "size": [
@@ -21686,7 +21574,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/df1.webp",
-   "dst": "attack-modifiers/common/unique-df1.webp",
+   "dst": "attack-modifiers/common/unique/df1.webp",
    "status": "ok",
    "bytes": 31652,
    "size": null
@@ -21694,7 +21582,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/ds1.webp",
-   "dst": "attack-modifiers/common/unique-ds1.webp",
+   "dst": "attack-modifiers/common/unique/ds1.webp",
    "status": "ok",
    "bytes": 22720,
    "size": null
@@ -21702,7 +21590,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/ds2.webp",
-   "dst": "attack-modifiers/common/unique-ds2.webp",
+   "dst": "attack-modifiers/common/unique/ds2.webp",
    "status": "ok",
    "bytes": 25000,
    "size": null
@@ -21710,7 +21598,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/dt1.webp",
-   "dst": "attack-modifiers/common/unique-dt1.webp",
+   "dst": "attack-modifiers/common/unique/dt1.webp",
    "status": "ok",
    "bytes": 28992,
    "size": null
@@ -21718,7 +21606,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/ff1.webp",
-   "dst": "attack-modifiers/common/unique-ff1.webp",
+   "dst": "attack-modifiers/common/unique/ff1.webp",
    "status": "ok",
    "bytes": 32790,
    "size": null
@@ -21726,7 +21614,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/ge1.webp",
-   "dst": "attack-modifiers/common/unique-ge1.webp",
+   "dst": "attack-modifiers/common/unique/ge1.webp",
    "status": "ok",
    "bytes": 32326,
    "size": null
@@ -21734,7 +21622,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/ha1.webp",
-   "dst": "attack-modifiers/common/unique-ha1.webp",
+   "dst": "attack-modifiers/common/unique/ha1.webp",
    "status": "ok",
    "bytes": 31072,
    "size": null
@@ -21742,7 +21630,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/ha2.webp",
-   "dst": "attack-modifiers/common/unique-ha2.webp",
+   "dst": "attack-modifiers/common/unique/ha2.webp",
    "status": "ok",
    "bytes": 29926,
    "size": null
@@ -21750,7 +21638,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/hv1.webp",
-   "dst": "attack-modifiers/common/unique-hv1.webp",
+   "dst": "attack-modifiers/common/unique/hv1.webp",
    "status": "ok",
    "bytes": 31432,
    "size": null
@@ -21758,7 +21646,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/hv2.webp",
-   "dst": "attack-modifiers/common/unique-hv2.webp",
+   "dst": "attack-modifiers/common/unique/hv2.webp",
    "status": "ok",
    "bytes": 31234,
    "size": null
@@ -21766,7 +21654,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/if1.webp",
-   "dst": "attack-modifiers/common/unique-if1.webp",
+   "dst": "attack-modifiers/common/unique/if1.webp",
    "status": "ok",
    "bytes": 30936,
    "size": null
@@ -21774,7 +21662,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/if2.webp",
-   "dst": "attack-modifiers/common/unique-if2.webp",
+   "dst": "attack-modifiers/common/unique/if2.webp",
    "status": "ok",
    "bytes": 30984,
    "size": null
@@ -21782,7 +21670,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/me1.webp",
-   "dst": "attack-modifiers/common/unique-me1.webp",
+   "dst": "attack-modifiers/common/unique/me1.webp",
    "status": "ok",
    "bytes": 29328,
    "size": null
@@ -21790,7 +21678,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/me2.webp",
-   "dst": "attack-modifiers/common/unique-me2.webp",
+   "dst": "attack-modifiers/common/unique/me2.webp",
    "status": "ok",
    "bytes": 31278,
    "size": null
@@ -21798,7 +21686,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/mt1.webp",
-   "dst": "attack-modifiers/common/unique-mt1.webp",
+   "dst": "attack-modifiers/common/unique/mt1.webp",
    "status": "ok",
    "bytes": 25084,
    "size": null
@@ -21806,7 +21694,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/mt2.webp",
-   "dst": "attack-modifiers/common/unique-mt2.webp",
+   "dst": "attack-modifiers/common/unique/mt2.webp",
    "status": "ok",
    "bytes": 25470,
    "size": null
@@ -21814,7 +21702,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/ns1.webp",
-   "dst": "attack-modifiers/common/unique-ns1.webp",
+   "dst": "attack-modifiers/common/unique/ns1.webp",
    "status": "ok",
    "bytes": 25660,
    "size": null
@@ -21822,7 +21710,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/ns2.webp",
-   "dst": "attack-modifiers/common/unique-ns2.webp",
+   "dst": "attack-modifiers/common/unique/ns2.webp",
    "status": "ok",
    "bytes": 23300,
    "size": null
@@ -21830,7 +21718,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/ns3.webp",
-   "dst": "attack-modifiers/common/unique-ns3.webp",
+   "dst": "attack-modifiers/common/unique/ns3.webp",
    "status": "ok",
    "bytes": 26864,
    "size": null
@@ -21838,7 +21726,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/ns4.webp",
-   "dst": "attack-modifiers/common/unique-ns4.webp",
+   "dst": "attack-modifiers/common/unique/ns4.webp",
    "status": "ok",
    "bytes": 24712,
    "size": null
@@ -21846,7 +21734,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/pc1.webp",
-   "dst": "attack-modifiers/common/unique-pc1.webp",
+   "dst": "attack-modifiers/common/unique/pc1.webp",
    "status": "ok",
    "bytes": 30880,
    "size": null
@@ -21854,7 +21742,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/ph1.webp",
-   "dst": "attack-modifiers/common/unique-ph1.webp",
+   "dst": "attack-modifiers/common/unique/ph1.webp",
    "status": "ok",
    "bytes": 24804,
    "size": null
@@ -21862,7 +21750,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/ph2.webp",
-   "dst": "attack-modifiers/common/unique-ph2.webp",
+   "dst": "attack-modifiers/common/unique/ph2.webp",
    "status": "ok",
    "bytes": 24634,
    "size": null
@@ -21870,7 +21758,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/py1.webp",
-   "dst": "attack-modifiers/common/unique-py1.webp",
+   "dst": "attack-modifiers/common/unique/py1.webp",
    "status": "ok",
    "bytes": 33432,
    "size": null
@@ -21878,7 +21766,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/qm1.webp",
-   "dst": "attack-modifiers/common/unique-qm1.webp",
+   "dst": "attack-modifiers/common/unique/qm1.webp",
    "status": "ok",
    "bytes": 22946,
    "size": null
@@ -21886,7 +21774,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/qm2.webp",
-   "dst": "attack-modifiers/common/unique-qm2.webp",
+   "dst": "attack-modifiers/common/unique/qm2.webp",
    "status": "ok",
    "bytes": 23264,
    "size": null
@@ -21894,7 +21782,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/qm3.webp",
-   "dst": "attack-modifiers/common/unique-qm3.webp",
+   "dst": "attack-modifiers/common/unique/qm3.webp",
    "status": "ok",
    "bytes": 26154,
    "size": null
@@ -21902,7 +21790,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/sa1.webp",
-   "dst": "attack-modifiers/common/unique-sa1.webp",
+   "dst": "attack-modifiers/common/unique/sa1.webp",
    "status": "ok",
    "bytes": 30348,
    "size": null
@@ -21910,7 +21798,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/sa2.webp",
-   "dst": "attack-modifiers/common/unique-sa2.webp",
+   "dst": "attack-modifiers/common/unique/sa2.webp",
    "status": "ok",
    "bytes": 29392,
    "size": null
@@ -21918,7 +21806,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/sa3.webp",
-   "dst": "attack-modifiers/common/unique-sa3.webp",
+   "dst": "attack-modifiers/common/unique/sa3.webp",
    "status": "ok",
    "bytes": 27596,
    "size": null
@@ -21926,7 +21814,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/sb1.webp",
-   "dst": "attack-modifiers/common/unique-sb1.webp",
+   "dst": "attack-modifiers/common/unique/sb1.webp",
    "status": "ok",
    "bytes": 24172,
    "size": null
@@ -21934,7 +21822,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/sb2.webp",
-   "dst": "attack-modifiers/common/unique-sb2.webp",
+   "dst": "attack-modifiers/common/unique/sb2.webp",
    "status": "ok",
    "bytes": 23228,
    "size": null
@@ -21942,7 +21830,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/sb3.webp",
-   "dst": "attack-modifiers/common/unique-sb3.webp",
+   "dst": "attack-modifiers/common/unique/sb3.webp",
    "status": "ok",
    "bytes": 23506,
    "size": null
@@ -21950,7 +21838,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/sd1.webp",
-   "dst": "attack-modifiers/common/unique-sd1.webp",
+   "dst": "attack-modifiers/common/unique/sd1.webp",
    "status": "ok",
    "bytes": 31868,
    "size": null
@@ -21958,7 +21846,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/sd2.webp",
-   "dst": "attack-modifiers/common/unique-sd2.webp",
+   "dst": "attack-modifiers/common/unique/sd2.webp",
    "status": "ok",
    "bytes": 33174,
    "size": null
@@ -21966,7 +21854,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/sh1.webp",
-   "dst": "attack-modifiers/common/unique-sh1.webp",
+   "dst": "attack-modifiers/common/unique/sh1.webp",
    "status": "ok",
    "bytes": 31426,
    "size": null
@@ -21974,7 +21862,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/sh2.webp",
-   "dst": "attack-modifiers/common/unique-sh2.webp",
+   "dst": "attack-modifiers/common/unique/sh2.webp",
    "status": "ok",
    "bytes": 33564,
    "size": null
@@ -21982,7 +21870,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/sh3.webp",
-   "dst": "attack-modifiers/common/unique-sh3.webp",
+   "dst": "attack-modifiers/common/unique/sh3.webp",
    "status": "ok",
    "bytes": 28804,
    "size": null
@@ -21990,7 +21878,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/sk1.webp",
-   "dst": "attack-modifiers/common/unique-sk1.webp",
+   "dst": "attack-modifiers/common/unique/sk1.webp",
    "status": "ok",
    "bytes": 25432,
    "size": null
@@ -21998,7 +21886,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/sn1.webp",
-   "dst": "attack-modifiers/common/unique-sn1.webp",
+   "dst": "attack-modifiers/common/unique/sn1.webp",
    "status": "ok",
    "bytes": 25682,
    "size": null
@@ -22006,7 +21894,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/so1.webp",
-   "dst": "attack-modifiers/common/unique-so1.webp",
+   "dst": "attack-modifiers/common/unique/so1.webp",
    "status": "ok",
    "bytes": 26052,
    "size": null
@@ -22014,7 +21902,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/so2.webp",
-   "dst": "attack-modifiers/common/unique-so2.webp",
+   "dst": "attack-modifiers/common/unique/so2.webp",
    "status": "ok",
    "bytes": 20516,
    "size": null
@@ -22022,7 +21910,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/ss1.webp",
-   "dst": "attack-modifiers/common/unique-ss1.webp",
+   "dst": "attack-modifiers/common/unique/ss1.webp",
    "status": "ok",
    "bytes": 26950,
    "size": null
@@ -22030,7 +21918,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/ss2.webp",
-   "dst": "attack-modifiers/common/unique-ss2.webp",
+   "dst": "attack-modifiers/common/unique/ss2.webp",
    "status": "ok",
    "bytes": 24108,
    "size": null
@@ -22038,7 +21926,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/sw1.webp",
-   "dst": "attack-modifiers/common/unique-sw1.webp",
+   "dst": "attack-modifiers/common/unique/sw1.webp",
    "status": "ok",
    "bytes": 24682,
    "size": null
@@ -22046,7 +21934,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/ta1.webp",
-   "dst": "attack-modifiers/common/unique-ta1.webp",
+   "dst": "attack-modifiers/common/unique/ta1.webp",
    "status": "ok",
    "bytes": 32068,
    "size": null
@@ -22054,7 +21942,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/ta2.webp",
-   "dst": "attack-modifiers/common/unique-ta2.webp",
+   "dst": "attack-modifiers/common/unique/ta2.webp",
    "status": "ok",
    "bytes": 32320,
    "size": null
@@ -22062,7 +21950,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/ta3.webp",
-   "dst": "attack-modifiers/common/unique-ta3.webp",
+   "dst": "attack-modifiers/common/unique/ta3.webp",
    "status": "ok",
    "bytes": 31170,
    "size": null
@@ -22070,7 +21958,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/ta4.webp",
-   "dst": "attack-modifiers/common/unique-ta4.webp",
+   "dst": "attack-modifiers/common/unique/ta4.webp",
    "status": "ok",
    "bytes": 29564,
    "size": null
@@ -22078,7 +21966,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/wf1.webp",
-   "dst": "attack-modifiers/common/unique-wf1.webp",
+   "dst": "attack-modifiers/common/unique/wf1.webp",
    "status": "ok",
    "bytes": 26812,
    "size": null
@@ -22086,7 +21974,7 @@
   {
    "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/unique/wf2.webp",
-   "dst": "attack-modifiers/common/unique-wf2.webp",
+   "dst": "attack-modifiers/common/unique/wf2.webp",
    "status": "ok",
    "bytes": 25670,
    "size": null
@@ -44900,6 +44788,17 @@
     118
    ],
    "generated": "tools/make-fh-character-tokens.py"
+  },
+  {
+   "group": "repo images",
+   "dst": "attack-modifiers/common/monster/hail-resolve.webp",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/attack_mods/monster/hail-resolve.png",
+   "status": "ok",
+   "bytes": 46578,
+   "size": [
+    600,
+    391
+   ]
   }
  ],
  "missing": []

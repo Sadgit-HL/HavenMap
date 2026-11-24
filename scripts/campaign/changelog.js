@@ -326,7 +326,7 @@ function describeMonsters(a, b, add, how = '') {
     const sa = a.am[g] || {}, sb = b.am[g] || {};
     if (same(sa, sb)) continue;
     const deck = g === 'm' ? 'Monster modifier deck' : 'Ally modifier deck';
-    const da = drawState(amOwner(g, sa), sa), db = drawState(amOwner(g, sb), sb);
+    const da = drawState(amOwner(g, sa, a), sa), db = drawState(amOwner(g, sb, b), sb);
     const drawn = db.tiles.filter(tb => tb.d > (da.tiles.find(ta => ta.key === tb.key)?.d || 0)).map(x => x.face);
     if ((sa.imb || 0) !== (sb.imb || 0)) add('Monsters', 'Modifier deck', `${deck}: imbuement ${sa.imb || 0} to ${sb.imb || 0}`);
     else if (drawn.length) add('Monsters', 'Modifier deck', `${deck}: drew ${drawn.join(', ')} (${db.total} left)${how ? ` (${how})` : ''}`);

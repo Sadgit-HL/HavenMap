@@ -24,7 +24,7 @@ const statUrl = (m, lvl) => imageFile(`images/gh2/monsters/stats/${m.title.repla
 // V = { amg: 'm' | 'a', amEdit, amOpen }
 export function monstersHtml(r, V, esc) {
   const m = monOf(r), lvl = scenarioLevel(r), [lvMin, lvMax] = scenarioLevelRange(r), g = V.amg === 'a' ? 'a' : 'm', st = m.am[g] || {};
-  const A = drawState(amOwner(g, st), st);
+  const A = drawState(amOwner(g, st, r), st);
   const mode = V.amMode?.[g] ?? 'std';                                                             // the Std / Adv / Dis toggle of this deck
 
   const chosen = new Set(m.types);

@@ -3,7 +3,7 @@
 The Jaws decks are built like the others: base and decorated cards are drawn from layers (scripts/amd/compose.js), only the
 unique cards (perks.js kind "unique") are pictures. This copies those scans from a local clone of any2cards/worldhaven
 (images/attack-modifiers/jaws-of-the-lion/<class>/jl-am-<class>-NN.png, 600x391) to
-images/attack-modifiers/common/unique-<code>.webp, the file scripts/amd/card.js loads for a unique card, and records the source
+images/attack-modifiers/common/unique/<code>.webp, the file scripts/amd/card.js loads for a unique card, and records the source
 in tools/images-manifest.json. The address in scripts/images-index.js does not change.
 
 Jaws has one unique card: the Demolitionist's +0 "All adjacent enemies suffer 1 damage" (de1, two copies; card 140, the scan
@@ -19,7 +19,7 @@ from PIL import Image
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_WH = r'D:\github\worldhaven'
-OUT = os.path.join(ROOT, 'images', 'attack-modifiers', 'common')
+OUT = os.path.join(ROOT, 'images', 'attack-modifiers', 'common', 'unique')
 MANIFEST = os.path.join(ROOT, 'tools', 'images-manifest.json')
 UNIQUE = {'de1': 'de/jl-am-de-10.png'}          # unique code (perks.js) -> scan under images/attack-modifiers/jaws-of-the-lion/
 
@@ -30,7 +30,7 @@ def main():
         man = json.load(f)
     for code, rel in UNIQUE.items():
         src = os.path.join(wh, 'images', 'attack-modifiers', 'jaws-of-the-lion', *rel.split('/'))
-        dst_rel = f'attack-modifiers/common/unique-{code}.webp'
+        dst_rel = f'attack-modifiers/common/unique/{code}.webp'
         dst = os.path.join(ROOT, 'images', *dst_rel.split('/'))
         im = Image.open(src).convert('RGB')
         im.save(dst, 'WEBP', quality=85, method=6)

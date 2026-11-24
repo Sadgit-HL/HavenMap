@@ -1095,7 +1095,7 @@ export function charAm(r, cid, kind, key, opts = {}) {
 // Modifier deck g ('m' monsters, 'a' allies): the actions of amdDeck.js amdAct (draw, ret, add, rem, shuffle, plus, minus, move).
 export function monAm(r, g, kind, key, opts = {}) {
   if (g !== 'm' && g !== 'a') return r;
-  const st = monOf(r).am[g] || {}, next = amdAct(amOwner(g, st), st, kind, key, opts);
+  const st = monOf(r).am[g] || {}, next = amdAct(amOwner(g, st, r), st, kind, key, opts);
   if (JSON.stringify(next) === JSON.stringify(st)) return r;
   return monEdit(r, m => { m.am[g] = next; });
 }
@@ -1109,6 +1109,7 @@ export function monImbue(r, level) {
 // modifier deck with x2 or Miss in its discard, or with nothing left to draw, is shuffled. The round counts up.
 export function monEndRound(r) {
   return monEdit(r, m => {
+    const rec = { chars: r.chars };
     for (const slug of Object.keys(m.decks)) {
       const ds = deckState(m, slug);
       if (deckNeedsShuffle(slug, ds)) delete m.decks[slug];
@@ -1117,8 +1118,8 @@ export function monEndRound(r) {
     for (const g of ['m', 'a']) {
       const st = m.am[g];
       if (!st) continue;
-      const d = drawState(amOwner(g, st), st);
-      if (d.pool === 0 || d.tiles.some(t => t.shuffle && t.d > 0)) m.am[g] = amdAct(amOwner(g, st), st, 'shuffle');
+      const d = drawState(amOwner(g, st, rec), st);
+      if (d.pool === 0 || d.tiles.some(t => t.shuffle && t.d > 0)) m.am[g] = amdAct(amOwner(g, st, rec), st, 'shuffle');
     }
     m.round = (m.round || 1) + 1;
   });

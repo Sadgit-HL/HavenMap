@@ -1952,7 +1952,7 @@ function hydrateAmdModal() {
 // The Monsters tab: the monster and ally decks, with an owner object in place of the character (amOwner).
 function hydrateMonAm() {
   const g = main.querySelector('.monamv')?.dataset.amg === 'a' ? 'a' : 'm', st = monOf(record).am[g] || {};
-  fillAmSlots(amOwner(g, st), st);
+  fillAmSlots(amOwner(g, st, record), st);
 }
 function fillAmSlots(c, st) {
   const A = drawState(c, st);
@@ -2866,7 +2866,7 @@ async function amdDrawDialog({ title, name, who, mode, tab, deckNow, drawOnce })
   await showDraw(m0, hooks);
 }
 const heroDeckNow = id => () => { const k = record.chars.find(x => x.id === id); return { c: k, st: k.amd || {} }; };
-const monDeckNow = g => () => { const st = monOf(record).am[g] || {}; return { c: amOwner(g, st), st }; };
+const monDeckNow = g => () => { const st = monOf(record).am[g] || {}; return { c: amOwner(g, st, record), st }; };
 const drawMode = m => (m === 'adv' || m === 'dis' ? m : undefined);                                  // the toggle's 'std' is a standard draw
 const heroRandomDraw = (c, toggle) => {
   const mode = drawMode(toggle);

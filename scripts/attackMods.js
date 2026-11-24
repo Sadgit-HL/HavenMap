@@ -16,15 +16,15 @@ import { MERCENARIES } from './data.js';
 import { heroCatalog, heroPerkClass, perkDelta, perkBoxes, perkLabel, groupPerks } from './amd/heroDeck.js';
 
 // Order = order of faces in the GeekRoller code. Standard cards first, then cards added by imbuement.
-// allyImg: the ally deck's own badge ("A", vs the monster deck's "M") on otherwise identical cards.
+// Standard cards are drawn as layers (scripts/amd/card.js); the ally deck's badge is an A, the monster deck's an M.
 export const AM_TYPES = [
-  { key: 'p0',   face: '+0',   count: 6, value: '+0', img: 'monster/plus0',  allyImg: 'ally/plus0',  shuffle: false },
-  { key: 'p1',   face: '+1',   count: 5, value: '+1', img: 'monster/plus1',  allyImg: 'ally/plus1',  shuffle: false },
-  { key: 'm1',   face: '-1',   count: 5, value: '-1', img: 'monster/minus1', allyImg: 'ally/minus1', shuffle: false },
-  { key: 'p2',   face: '+2',   count: 1, value: '+2', img: 'monster/plus2',  allyImg: 'ally/plus2',  shuffle: false },
-  { key: 'm2',   face: '-2',   count: 1, value: '-2', img: 'monster/minus2', allyImg: 'ally/minus2', shuffle: false },
-  { key: 'x2',   face: 'x2',   count: 1, value: 'x2', img: 'monster/x2',    allyImg: 'ally/x2',     shuffle: true  },
-  { key: 'miss', face: 'Miss', count: 1, value: 'null', img: 'monster/miss', allyImg: 'ally/miss',   shuffle: true  },
+  { key: 'p0',   face: '+0',   count: 6, value: '+0', shuffle: false },
+  { key: 'p1',   face: '+1',   count: 5, value: '+1', shuffle: false },
+  { key: 'm1',   face: '-1',   count: 5, value: '-1', shuffle: false },
+  { key: 'p2',   face: '+2',   count: 1, value: '+2', shuffle: false },
+  { key: 'm2',   face: '-2',   count: 1, value: '-2', shuffle: false },
+  { key: 'x2',   face: 'x2',   count: 1, value: 'x2', shuffle: true  },
+  { key: 'miss', face: 'Miss', count: 1, value: 'null', shuffle: true  },
   // not in the standard deck (count 0); shown when present or in edit mode
   { key: 'i2m',  face: '+2 Muddle', count: 0, img: 'imbuement/plus2muddle', shuffle: false, extra: true },
   { key: 'i0p',  face: '+0 Poison', count: 0, img: 'imbuement/plus0poison', shuffle: false, extra: true },

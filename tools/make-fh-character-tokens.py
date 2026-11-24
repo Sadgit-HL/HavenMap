@@ -3,7 +3,7 @@
 The GH2E character tokens (images/icons/tokens-<class>.webp, 118x118) are a disc in the class colour with the class icon and a metal
 rim. This builds the same kind of token for each Frosthaven class from the owner's token template ring (DEFAULT_RING): the class colour
 of the Gloomhaven Secretariat data (data/fh/character/<icon>.json "color") as the face, the ring over it, and the class icon of the attack
-modifier cards (images/attack-modifiers/common/class_icons-<class>.webp) in black on top. Stand-ins until real token art is available.
+modifier cards (images/attack-modifiers/common/class_icons/<class>.webp) in black on top. Stand-ins until real token art is available.
 
 It also cuts the three scanned Frosthaven tokens already in images/icons (hive_mode, geminate_character, geminate_melee) to their
 coloured disc: they came on a grey stone background. Done once (the manifest record is marked 'cut').
@@ -87,7 +87,7 @@ def main():
     byd = {r.get('dst'): r for r in man['files']}
     for fn, name in FH.items():
         color = hex_rgb(json.load(open(os.path.join(sec, fn + '.json'), encoding='utf-8'))['color'])
-        icon = os.path.join(ROOT, 'images', 'attack-modifiers', 'common', f'class_icons-{name}.webp')
+        icon = os.path.join(ROOT, 'images', 'attack-modifiers', 'common', 'class_icons', f'{name}.webp')
         slug = slug_of(name)
         dst = f'icons/tokens-{slug}.webp'
         token(color, icon, ring).save(os.path.join(ROOT, 'images', *dst.split('/')), 'WEBP', quality=90, method=6)
