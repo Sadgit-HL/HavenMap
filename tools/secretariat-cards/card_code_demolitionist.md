@@ -309,7 +309,7 @@ bottom:
   - custom: "Create one 2-damage trap in an adjacent empty hex containing a destruction token."
 
 name: Level
-initiative: 0
+initiative: 61
 level: X
 top:
   actions:
@@ -437,7 +437,7 @@ bottom:
   lost: t
 
 name: Extra Fuel
-initiative: 3
+initiative: 17
 level: 4
 top:
   actions:

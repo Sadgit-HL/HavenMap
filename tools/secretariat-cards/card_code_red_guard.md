@@ -695,7 +695,7 @@ bottom:
     - custom: "%lost%"
 
 name: Soaring Shield
-initiative: 3
+initiative: 11
 level: 9
 top:
   actions:

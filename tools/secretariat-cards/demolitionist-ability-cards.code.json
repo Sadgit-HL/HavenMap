@@ -871,7 +871,7 @@
  {
   "name": "Level",
   "level": "X",
-  "initiative": 0,
+  "initiative": 61,
   "sourceId": 92,
   "top": {
    "actions": [
@@ -1254,7 +1254,7 @@
  {
   "name": "Extra Fuel",
   "level": 4,
-  "initiative": 3,
+  "initiative": 17,
   "sourceId": 99,
   "top": {
    "actions": [

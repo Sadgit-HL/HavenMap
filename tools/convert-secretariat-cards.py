@@ -469,6 +469,17 @@ def card_code(cls, cards):
     return '\n'.join(lines)
 
 
+def app_initiatives():
+    """{(class name, slug, level): initiative} of scripts/games/gh2_cards.js: the initiatives read from the card pictures, which win over the Secretariat's where they differ."""
+    root = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'scripts', 'games')
+    try:
+        classes = {c['i']: c['name'] for c in (json.loads(m) for m in re.findall(r'\{"i":\d+,"code":[^}]*\}', open(os.path.join(root, 'gh2_classes.js'), encoding='utf-8').read()))}
+        cards = [json.loads(m) for m in re.findall(r'\{"id":\d+,"cls":\d+,[^}]*\}', open(os.path.join(root, 'gh2_cards.js'), encoding='utf-8').read())]
+    except OSError:
+        return {}
+    return {(classes[c['cls']], c['slug'], str(c['lv'])): c['ini'] for c in cards if c.get('ini') is not None and c['cls'] in classes}
+
+
 def main():
     args = sys.argv[1:]
     if not args:
@@ -487,6 +498,7 @@ def main():
     only = {a.lower() for a in args}
     os.makedirs(out, exist_ok=True)
     labels = Labels(root)
+    app_ini = app_initiatives()
     for icon, cls in EDITIONS[edition].items():
         if only and cls.lower() not in only:
             continue
@@ -496,6 +508,13 @@ def main():
             print('%-12s skipped: the Secretariat has only placeholders (wip) for all %d cards' % (cls, len(deck['abilities'])))
             continue
         for c in deck['abilities']:
+            ini = c['initiative'] if 'initiative' in c else c['identityInitiative'][0]
+            mine = app_ini.get((cls, re.sub(r'[^a-z0-9]+', '-', c['name'].lower()).strip('-'), str(c['level'])))
+            if 'initiative' in c and mine is not None and mine != ini and any(o is not c and o.get('initiative') == mine for o in deck['abilities']):
+                print('  initiative of %s kept at %s: the app has %s, which is the initiative of another card of the deck (a name differs)' % (c['name'], ini, mine))
+            elif 'initiative' in c and mine is not None and mine != ini:
+                print('  initiative of %s: %s from the app (the Secretariat has %s)' % (c['name'], mine, ini))
+                c = dict(c, initiative=mine)
             cards.append({'name': c['name'], 'level': c['level'], 'initiative': c['initiative'] if 'initiative' in c else c['identityInitiative'][0], 'sourceId': c['cardId'], 'top': half(c, labels, False), 'bottom': half(c, labels, True), **({'identityInitiative': c['identityInitiative']} if 'identityInitiative' in c else {})})
         slug = re.sub(r'[^a-z0-9]+', '-', cls.lower()).strip('-')
         path = os.path.join(out, slug + '-ability-cards.code.json')

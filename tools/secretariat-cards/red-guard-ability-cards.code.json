@@ -2105,7 +2105,7 @@
  {
   "name": "Soaring Shield",
   "level": 9,
-  "initiative": 3,
+  "initiative": 11,
   "sourceId": 251,
   "top": {
    "actions": [
