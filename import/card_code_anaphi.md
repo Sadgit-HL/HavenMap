@@ -1,5 +1,5 @@
-# Anaphi (Mercenary Pack), card code read from the card pictures with tools/card-extraction. A first draft, not yet checked by the owner: look at the lines marked # check first.
-# Open: the Augment icon printed inside texts is written %classToken0% (written %classToken0%, to be linked to the Augment icon in the class properties). The AUGMENT ribbon is namedAbility, a key of the half next to actions.
+# Anaphi (Mercenary Pack), card code read from the card pictures with tools/card-extraction. Checked card by card by the owner; the summon art is not uploaded yet (the five summon image urls are placeholders).
+# The Augment icon printed inside texts is %classToken0%, linked in the class properties. The AUGMENT ribbon is namedAbility, a key of the half next to actions.
 name: Black Claws
 initiative: 79
 level: 1

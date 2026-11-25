@@ -1,0 +1,1520 @@
+[
+ {
+  "name": "Corrupting Parasites",
+  "level": 1,
+  "initiative": 97,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Summon Soul Leeches"
+    },
+    {
+     "type": "summon",
+     "name": "Soul Leeches",
+     "stats": {
+      "health": 4,
+      "move": 3,
+      "attack": "X",
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "X is the number of adjacent figures."
+      }
+     ],
+     "enhancement": [
+      "square",
+      "square",
+      0,
+      0
+     ],
+     "image": "https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/MP/images/soul_leeches.jpg"
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "wound",
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1,
+       "enhancement": [
+        "square"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "heal",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Death March",
+  "level": 1,
+  "initiative": 84,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Summon Creeping Beetles"
+    },
+    {
+     "type": "summon",
+     "name": "Creeping Beetles",
+     "stats": {
+      "health": 5,
+      "move": 2,
+      "attack": 2,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "At end of turn, grant all adjacent allies: %move% 1"
+      }
+     ],
+     "enhancement": [
+      "square",
+      "square",
+      "square",
+      0
+     ],
+     "image": "https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/MP/images/creeping_beetles.jpg"
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4
+    },
+    {
+     "type": "custom",
+     "text": "This movement ignores the effects of difficult and hazardous terrain."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Deflecting Blades",
+  "level": 1,
+  "initiative": 11,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "custom",
+       "text": "%target% 3 enemies within 2 hexes, %muddle%"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "When you are attacked this round, treat all positive and %amd-double% attack modifier cards drawn by enemies as %?+0 attack modifier card% instead."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Engulfing Stingers",
+  "level": 1,
+  "initiative": 88,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Summon Angry Wasps %flying%"
+    },
+    {
+     "type": "summon",
+     "name": "Angry Wasps",
+     "stats": {
+      "health": 3,
+      "move": 4,
+      "attack": "-",
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "%flying%"
+      },
+      {
+       "type": "custom",
+       "text": "At end of turn, all adjacent allies and enemies suffer %damage%2."
+      }
+     ],
+     "enhancement": [
+      "square",
+      0,
+      0,
+      0
+     ],
+     "image": "https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/MP/images/angry_wasps.jpg"
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "All adjacent allies and enemies suffer %damage%1."
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Focused Scourge",
+  "level": 1,
+  "initiative": 50,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "When you perform an attack ability that specifies \"%target%X\", you may target the same enemy multiple times with that ability, counting one target for each attack."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Whenever you perform an attack ability, you may %?element wheel with red cross% to add +1 %attack% to all your attacks."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Hive Mind",
+  "level": 1,
+  "initiative": 5,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "You control how your summons perform their abilities."
+    }
+   ],
+   "xp": 1,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "shield",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "Your summons gain %shield%1."
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Omniscient Assault",
+  "level": 1,
+  "initiative": 22,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2
+      },
+      {
+       "type": "pierce",
+       "value": 1
+      }
+     ]
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "When you attack this round, treat all negative and %amd-null% attack modifier cards you draw as %?+0 attack modifier card% instead."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Swarming Minions",
+  "level": 1,
+  "initiative": 61,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one of your summons, in either order:"
+    },
+    {
+     "type": "custom",
+     "text": "%move% +0"
+    },
+    {
+     "type": "custom",
+     "text": "%attack% +0"
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant all your summons, in either order:"
+    },
+    {
+     "type": "custom",
+     "text": "%move% +0"
+    },
+    {
+     "type": "custom",
+     "text": "%attack% +0"
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  }
+ },
+ {
+  "name": "Scattered Defense",
+  "level": 1,
+  "initiative": 13,
+  "top": {
+   "actions": [
+    {
+     "type": "shield",
+     "value": 1
+    },
+    {
+     "type": "retaliate",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ],
+   "xp": 1,
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Grant one of your summons:"
+    },
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "The Storm's Edge",
+  "level": 1,
+  "initiative": 37,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "wound",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "custom",
+       "text": "%target% 3 enemies within 2 hexes"
+      }
+     ]
+    },
+    {
+     "type": "heal",
+     "value": "X",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "where X is double the number of enemies targeted with the attack ability."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true
+  }
+ },
+ {
+  "name": "Grasping Advance",
+  "level": "X",
+  "initiative": 18,
+  "top": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "loot",
+     "value": 1
+    },
+    {
+     "type": "custom",
+     "text": "You may perform this loot ability as if you were occupying the same hex as one of your summons."
+    }
+   ]
+  }
+ },
+ {
+  "name": "Tomb of the Immortal",
+  "level": "X",
+  "initiative": 78,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%recover% one card from your lost pile and immediately play that card, performing either the top or bottom action of the card."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "light"
+      }
+     ]
+    }
+   ],
+   "lost": true,
+   "remove": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5
+    }
+   ]
+  }
+ },
+ {
+  "name": "Unstoppable Army",
+  "level": "X",
+  "initiative": 94,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 3,
+     "enhancement": [
+      "plus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "1 of your summons or self"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "light"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "summon",
+     "name": "Steel Scarabs",
+     "stats": {
+      "health": 4,
+      "move": 2,
+      "attack": 1,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "%shield% 1"
+      },
+      {
+       "type": "custom",
+       "text": "All adjacent allies gain %shield% 1."
+      }
+     ],
+     "enhancement": [
+      "square",
+      "square",
+      "square",
+      0
+     ],
+     "image": "https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/MP/images/steel_scarabs.jpg"
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Infest",
+  "level": 2,
+  "initiative": 43,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "poison"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Attach this to a summon ability card in your active area. All summons from that ability card add %poison% to all their attacks."
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Pressing Pursuit",
+  "level": 2,
+  "initiative": 12,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant all your summons:"
+    },
+    {
+     "type": "custom",
+     "text": "%move% +0"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "This round, whenever an enemy performs a move ability that exits a hex adjacent to you and ends in a hex not adjacent to you, after the move ability, you may %?stacked spring arrow on a base, probably jump% to an empty hex adjacent to that enemy."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Overwhelming Offensive",
+  "level": 3,
+  "initiative": 16,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Add %disarm% and gain %xp% 1 if the target is adjacent to any of your summons."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "shield",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Putrid Grubs",
+  "level": 3,
+  "initiative": 78,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Summon 3 Bloat Maggots"
+    },
+    {
+     "type": "summon",
+     "name": "Bloat Maggots",
+     "stats": {
+      "health": 3,
+      "move": 3,
+      "attack": 1,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "All adjacent enemies add -1 %attack% to all their attacks."
+      }
+     ],
+     "enhancement": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "image": "https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/MP/images/bloat_maggots.jpg"
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "At the end of each of your attack abilities, you may perform:"
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "wild"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "heal",
+       "value": 2,
+       "subActions": [
+        {
+         "type": "target",
+         "value": "self"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Incubation",
+  "level": 4,
+  "initiative": 9,
+  "top": {
+   "actions": [
+    {
+     "type": "heal",
+     "value": 2,
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "shield",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "retaliate",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ],
+   "xp": 1,
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Attach this to a summon ability card in your active area. All summons from that ability card gain %shield%1 and at the start of each of their turns perform:"
+    },
+    {
+     "type": "heal",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Vampiric Tempest",
+  "level": 4,
+  "initiative": 64,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all adjacent enemies"
+      },
+      {
+       "type": "condition",
+       "value": "wound"
+      }
+     ]
+    },
+    {
+     "type": "heal",
+     "value": "X",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "where X is the number of enemies targeted with the attack ability."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "All your attacks are unaffected by %retaliate% this round."
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Bioluminescence",
+  "level": 5,
+  "initiative": 80,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant all your summons:"
+    },
+    {
+     "type": "custom",
+     "text": "%attack% +0"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Summon 2 Lightning Moths %flying%"
+    },
+    {
+     "type": "summon",
+     "name": "Lightning Moths",
+     "stats": {
+      "health": 3,
+      "move": 3,
+      "attack": "-",
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "All adjacent summons add +1 %attack% to all their attacks."
+      }
+     ],
+     "enhancement": [
+      "square",
+      "square",
+      0,
+      0
+     ],
+     "image": "https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/MP/images/lightning_moths.jpg"
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "light"
+      }
+     ]
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Cyclone of Blades",
+  "level": 5,
+  "initiative": 27,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 4,
+     "enhancement": [
+      "circle"
+     ],
+     "subActions": [
+      {
+       "type": "jump"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "All allies and enemies moved through with the move ability suffer %damage%1."
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Blood Drain",
+  "level": 6,
+  "initiative": 10,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%attack% X+1"
+    },
+    {
+     "type": "custom",
+     "text": "where X is the number of your summons, up to a maximum of 4."
+    },
+    {
+     "type": "custom",
+     "text": "%heal% X+1"
+    },
+    {
+     "type": "custom",
+     "text": "where X is the number of your summons, up to a maximum of 4."
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "Grant all your summons:"
+    },
+    {
+     "type": "custom",
+     "text": "%move% +0"
+    }
+   ]
+  }
+ },
+ {
+  "name": "Sunstroke",
+  "level": 6,
+  "initiative": 32,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 1,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "condition",
+       "value": "wound"
+      },
+      {
+       "type": "custom",
+       "text": ","
+      },
+      {
+       "type": "condition",
+       "value": "stun"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "light"
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Attach this to a summon ability card in your active area. All attacks targeting summons from that ability card gain disadvantage. At the end of each of their turns, the summons perform:"
+    },
+    {
+     "type": "condition",
+     "value": "wound",
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Fury of the Horde",
+  "level": 7,
+  "initiative": 86,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Summon Rage Hornets %flying%"
+    },
+    {
+     "type": "summon",
+     "name": "Rage Hornets",
+     "stats": {
+      "health": 5,
+      "move": 3,
+      "attack": 3,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "Add +2 %attack% if the target is adjacent to any of your allies."
+      }
+     ],
+     "enhancement": [
+      "square",
+      "square",
+      0,
+      0
+     ],
+     "image": "https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/MP/images/rage_hornets.jpg"
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 3,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "All adjacent allies and enemies suffer %damage%2."
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Repulsive Host",
+  "level": 7,
+  "initiative": 19,
+  "top": {
+   "actions": [
+    {
+     "type": "condition",
+     "value": "poison",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "all"
+      },
+      {
+       "type": "range",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "type": "shield",
+     "value": 2
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "condition",
+     "value": "strengthen",
+     "subActions": [
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Bone Daggers",
+  "level": 8,
+  "initiative": 68,
+  "top": {
+   "actions": [
+    {
+     "type": "attack",
+     "value": 2,
+     "subActions": [
+      {
+       "type": "target",
+       "value": "4 enemies within 2 hexes"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "custom",
+       "text": "Suffer %damage%1 for each attack performed with the attack ability."
+      }
+     ]
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "retaliate",
+     "value": 1,
+     "enhancement": [
+      "square"
+     ]
+    },
+    {
+     "type": "attack",
+     "value": 2,
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "target",
+       "value": 2,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "condition",
+       "value": "wound"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ],
+   "duration": "round"
+  }
+ },
+ {
+  "name": "Endless Biting",
+  "level": 8,
+  "initiative": 41,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant all your summons, in either order:"
+    },
+    {
+     "type": "custom",
+     "text": "%move% +0"
+    },
+    {
+     "type": "custom",
+     "text": "%attack% +0"
+    }
+   ]
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Attach this to a summon ability card in your active area. All attacks performed by summons from that ability card gain advantage, add %pierce% 2, and are unaffected by %retaliate%."
+    }
+   ],
+   "duration": "persistent"
+  }
+ },
+ {
+  "name": "Oasis",
+  "level": 9,
+  "initiative": 4,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "%recover% two cards from your lost pile and immediately play them, performing at most one top and one bottom action of the cards."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "light"
+      }
+     ]
+    }
+   ],
+   "lost": true,
+   "remove": true
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "move",
+     "value": 5,
+     "enhancement": [
+      "circle"
+     ]
+    },
+    {
+     "type": "heal",
+     "value": 3,
+     "subActions": [
+      {
+       "type": "custom",
+       "text": "%target% all your summons adjacent to any hex you entered with the move ability and"
+      },
+      {
+       "type": "target",
+       "value": "self"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "light"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "Wasteland",
+  "level": 9,
+  "initiative": 96,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Summon Rust Vermin"
+    },
+    {
+     "type": "summon",
+     "name": "Rust Vermin",
+     "stats": {
+      "health": 7,
+      "move": 4,
+      "attack": 3,
+      "range": "-"
+     },
+     "special": [
+      {
+       "type": "custom",
+       "text": "Add %disarm% if the target has any negative conditions."
+      }
+     ],
+     "enhancement": [
+      "square",
+      0,
+      "square",
+      0
+     ],
+     "image": "https://raw.githubusercontent.com/Sadgit-HL/Wordhaven_Assets/refs/heads/main/MP/images/rust_vermin.jpg"
+    }
+   ],
+   "xp": 2,
+   "lost": true,
+   "duration": "persistent"
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "pull",
+     "value": 2,
+     "enhancement": [
+      "square"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 3,
+       "enhancement": [
+        "square"
+       ]
+      },
+      {
+       "type": "condition",
+       "value": "wound"
+      },
+      {
+       "type": "condition",
+       "value": "poison"
+      },
+      {
+       "type": "condition",
+       "value": "disarm"
+      }
+     ]
+    },
+    {
+     "type": "custom",
+     "text": "The target suffers %damage%2."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
+    }
+   ]
+  }
+ }
+]

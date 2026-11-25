@@ -10,12 +10,12 @@ Move a class's two files (`card_code_<class>.md` and `<class>-ability-cards.code
 
 | Folder | Class | Edition | Status | Card code from | JSON from |
 |---|---|---|---|---|---|
+| confirmed | Anaphi | mp | confirmed by the owner | import/card_code_anaphi.md | tools/anaphi-ability-cards.code.json |
 | confirmed | Berserker | gh2 | confirmed by the owner | import/card_code_berserker.md | tools/berserker-ability-cards.code.json |
 | confirmed | Cassandra | mp | confirmed by the owner | import/card_code_cassandra.md | tools/cassandra-ability-cards.code.json |
 | confirmed | Hail | mp | confirmed by the owner | import/card_code_hail.md | tools/hail-ability-cards.code.json |
 | confirmed | Satha | mp | confirmed by the owner | import/card_code_satha.md | tools/satha-ability-cards.code.json |
 | wip | Infuser | fh | read from the pictures, not checked | import/card_code_infuser.md | made from the card code with tools/convert-card-code.py |
-| start | Anaphi | mp | read from the pictures, not checked | import/card_code_anaphi.md | tools/anaphi-ability-cards.code.json |
 | start | Banner Spear | fh | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_banner_spear.md | tools/secretariat-cards/banner-spear-ability-cards.code.json |
 | start | Bladeswarm | gh2 | read from the pictures, not checked | import/card_code_bladeswarm.md | made from the card code with tools/convert-card-code.py |
 | start | Blinkblade | fh | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_blinkblade.md | tools/secretariat-cards/blinkblade-ability-cards.code.json |
@@ -53,3 +53,5 @@ Move a class's two files (`card_code_<class>.md` and `<class>-ability-cards.code
 | start | Trapper | fh | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_trapper.md | tools/secretariat-cards/trapper-ability-cards.code.json |
 | start | Voidwarden | jotl | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_voidwarden.md | tools/secretariat-cards/voidwarden-ability-cards.code.json |
 | start | Wildfury | gh2 | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_wildfury.md | tools/secretariat-cards/wildfury-ability-cards.code.json |
+| start | Bladeswarm (second reading) | gh2 | read again from the pictures, to compare with the row above | card_code_bladeswarm_imageread.md | bladeswarm_imageread-ability-cards.code.json |
+| start | Doomstalker (picture reading) | gh2 | read from the pictures, to compare with the Secretariat row above | card_code_doomstalker_imageread.md | doomstalker_imageread-ability-cards.code.json |
