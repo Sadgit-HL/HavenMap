@@ -11,6 +11,7 @@ import { MASTERIES } from '../games/masteries.js';
 import { BATTLE_GOALS } from '../games/battle_goals.js';
 import { GH2_PQ } from '../games/gh2_pq_text.js';
 import { ALL_CLASSES } from './classList.js';
+import { ITEMS } from './itemList.js';
 
 export const LOG_TABS = ['Overview', 'Scenarios', 'Mercenaries', 'Monsters', 'Items', 'Events', 'Cards', 'Resources'];
 export const LOG_MAX = 1000;                       // entries kept in the record
@@ -50,7 +51,7 @@ const FACTION = { demons: 'Demons', merchants: 'Merchants', guard: 'City Guard' 
 const SCN_FIELD = { l: 'level', p: 'party size', ch: 'chests', d: 'date' };
 const CHAR_FIELD = { lv: 'level', xp: 'XP', cls: 'class', name: 'name' };
 const HANDLED = new Set(['ver', 'log', 'v', 'evlog', 'name', 'players', 'party', 'rep', 'pros', 'imb', 'don', 'stk', 'cls', 'avail',
-  'scn', 'chars', 'items', 'events', 'decks', 'enh', 'retired', 'resLinks', 'bgs', 'pq', 'mon']);
+  'scn', 'chars', 'items', 'events', 'decks', 'enh', 'retired', 'resLinks', 'bgs', 'pq', 'mon', 'sup']);
 
 // Counters that change by small steps (XP, gold, tokens, quest counts) are folded: a change of the same counter by the same user within
 // `windowMs` of an earlier entry is merged into it ("Sam: gold 42 to 47 (+5)"), and the entry is dropped when the counter ends where it began.
@@ -152,7 +153,27 @@ export function describeChange(a, b, opts = {}) {
       if (!same(x, y)) add('Mercenaries', label, `${title(sl)}: ${holder(x, a.chars || [])} to ${holder(y, b.chars || [])}`);
     }
   }
-  const ca = new Map((a.chars || []).map(c => [c.id, c])), cb = new Map((b.chars || []).map(c => [c.id, c]));
+  // The loans of the supply (Sawbones medical packs, Quartermaster items) are described by one line each; what they do to a character's deck, owned items and
+  // piles is left out of the character lines.
+  const supKeys = [...new Set([...Object.keys(a.sup || {}), ...Object.keys(b.sup || {})])];
+  const cleanLoans = c => {
+    if (!supKeys.length) return c;
+    const cardIds = supKeys.filter(k => k.startsWith('c:')).map(k => Number(k.slice(2))), itemIds = supKeys.filter(k => k.startsWith('i:')).map(k => k.slice(2));
+    const dropC = l => (Array.isArray(l) ? l.filter(v => !cardIds.includes(v)) : l);
+    return { ...c, deck: dropC(c.deck), bench: dropC(c.bench), disc: dropC(c.disc), lost: dropC(c.lost), act: dropC(c.act), hord: dropC(c.hord),
+      play: (c.play || []).map(p => (p && cardIds.includes(p.id) ? null : p)), own: (c.own || []).filter(v => !itemIds.includes(String(v))), items: (c.items || []).filter(it => !itemIds.includes(String(it.id))) };
+  };
+  const ca = new Map((a.chars || []).map(c => [c.id, cleanLoans(c)])), cb = new Map((b.chars || []).map(c => [c.id, cleanLoans(c)]));
+  const supName = key => (key.startsWith('c:') ? cardLabel(Number(key.slice(2))).replace(/ \(.*$/, '') : (ITEMS.find(i => String(i.id) === key.slice(2))?.slug || key.slice(2)).replace(/-/g, ' ').replace(/\w/g, ch => ch.toUpperCase()) + ` (${key.slice(2)})`);
+  const holderName = (r, cid) => (r.chars || []).find(c => c.id === cid)?.name ?? '?';
+  for (const key of supKeys) {
+    const was = a.sup?.[key], now = b.sup?.[key];
+    if (was === now) continue;
+    const how = opts.draw ? ` (${opts.draw})` : '';
+    if (now && !was) add('Mercenaries', 'Supply', `${supName(key)} lent to ${holderName(b, now)}${how}`);
+    else if (was && !now) add('Mercenaries', 'Supply', `${supName(key)} back in the supply (from ${holderName(a, was)})`);
+    else add('Mercenaries', 'Supply', `${supName(key)} lent to ${holderName(b, now)} (was ${holderName(a, was)})`);
+  }
   for (const [id, c] of cb) {
     const o = ca.get(id);
     if (!o) { add('Mercenaries', 'Character', `Added ${c.name} (${c.cls})`); continue; }

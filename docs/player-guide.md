@@ -8,6 +8,8 @@ The Gloomhaven 2e campaign in the app has been brought up to date with where our
 
 Open the invite link you got. It is personal, so keep it to yourself. Your changes save on their own a few seconds after your last edit, and the top bar shows Saved, Saving or Offline. Next to it you can see who edited last.
 
+The gear in the top bar opens the settings: your name (Profile), the hand layout, card preview and how draws are rolled, GeekRoller or in the app (Display), loading and exporting the campaign (Campaign file), and the list of keys (Shortcuts). Display settings stay in this browser only.
+
 ## Your character
 
 Go to the **Mercenaries** tab and pick your character from the name in the top bar. It works on a phone too, with its own layout.

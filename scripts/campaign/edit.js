@@ -12,6 +12,7 @@ import { SPECIAL_TRAITS } from './traits.js';
 import { tokenDefs, markerTokens, MARK_STICKERS } from './classTokens.js';
 import { perkList, amdAct, amOwner, drawState, cleanAmd } from './amdDeck.js';
 import { restPool, canShortRest, restRedoable } from './rest.js';
+import { supplyKey, validSupplyKey, inSupply, cleanSup } from './supply.js';
 import { itemDesignPool, scenarioPool, pickOne } from './draws.js';
 import { MON_MAX, monOf, monsterById, deckCards, deckState, deckNeedsShuffle, monSlugs } from './monsters.js';
 import { MASTERIES } from '../games/masteries.js';
@@ -26,6 +27,7 @@ const toInt = v => { const n = Math.trunc(Number(v)); return Number.isFinite(n) 
 function edit(r, fn) {
   const n = structuredClone(r);
   fn(n);
+  if (n.sup && Object.keys(n.sup).length) n.sup = cleanSup(n.sup, n.chars);        // a loan whose card or item the character no longer holds is back in the supply
   n.ver = (r.ver || 0) + 1;
   return n;
 }
@@ -592,7 +594,72 @@ export function moveCard(r, cid, cardId, dest, opts = {}) {
       if (ch.play[i]) toHand(ch.play[i].id);
       ch.play[i] = { id: cardId, up: false };
     }
+    if ((dest === 'discard' || dest === 'lost') && x.sup && x.sup[supplyKey('c', cardId)] === cid) release(x, supplyKey('c', cardId));      // a lent medical pack that is discarded goes back to the supply
   });
+}
+
+// --- supply of the Sawbones and the Quartermaster (scripts/campaign/supply.js) ---------------------------------------------------------
+
+// Take a lent card or item away from its holder (a draft record): the card leaves every zone of the deck, the item the owned and equipped items;
+// markers on it go with it. The key is then in the supply.
+function release(x, key) {
+  const cid = x.sup && x.sup[key];
+  const ch = cid && x.chars.find(y => y.id === cid);
+  if (ch) {
+    if (key.startsWith('c:')) {
+      const id = Number(key.slice(2)), without = list => (list || []).filter(v => v !== id);
+      ch.deck = without(ch.deck); ch.bench = without(ch.bench); ch.disc = without(ch.disc); ch.lost = without(ch.lost); ch.act = without(ch.act);
+      ch.play = (ch.play || [null, null]).map(p => (p && p.id === id ? null : p));
+      if (Array.isArray(ch.hord)) ch.hord = without(ch.hord);
+      if (ch.hgrid) { delete ch.hgrid[id]; if (!Object.keys(ch.hgrid).length) ch.hgrid = null; }
+    } else {
+      const id = key.slice(2);
+      ch.own = (ch.own || []).filter(v => String(v) !== id);
+      ch.items = (ch.items || []).filter(it => String(it.id) !== id);
+    }
+    if (ch.mk) delete ch.mk[key];
+    if (ch.mp) delete ch.mp[key];
+  }
+  delete x.sup[key];
+}
+
+// Lend a card or item of the supply to a character: a medical pack joins the deck (in the hand), an item joins the owned and equipped items
+// (available, it takes no slot). Refused when the key is not a supply key, is lent already, or the character does not exist.
+export function lendFromSupply(r, key, cid) {
+  if (!validSupplyKey(key) || (r.sup && r.sup[key])) return r;
+  const c = r.chars.find(x => x.id === cid);
+  if (!c) return r;
+  return edit(r, x => {
+    const ch = x.chars.find(y => y.id === cid);
+    if (key.startsWith('c:')) {
+      const id = Number(key.slice(2));
+      ch.deck = [...ch.deck.filter(v => v !== id), id];
+      ch.bench = (ch.bench || []).filter(v => v !== id);
+      toHandOf(ch, id);
+    } else {
+      const id = key.slice(2);
+      ch.own = [...(ch.own || []).filter(v => String(v) !== id), id];
+      ch.items = [...(ch.items || []).filter(it => String(it.id) !== id), { id, st: [false, false, false], s: 0 }];
+    }
+    x.sup = { ...(x.sup || {}), [key]: cid };
+  });
+}
+
+// Put a lent card or item back in the supply (by hand: "Take back").
+export function returnToSupply(r, key) {
+  if (!r.sup || !r.sup[key]) return r;
+  return edit(r, x => { release(x, key); });
+}
+
+// Medical pack draw: one of the packs that are in the supply is lent to a character. The pick is made here from `rand` (a number in [0, 1), the
+// browser's crypto source by default); `pick` (a card id of a pack in the supply) is the pack a GeekRoller roll on BGG gave. Nothing in the supply:
+// the record is returned as it is.
+export function drawMedPack(r, cid, rand = cryptoRandom, pick = null) {
+  const pool = inSupply(r, 'c').map(k => Number(k.slice(2)));
+  if (!pool.length || !r.chars.some(c => c.id === cid)) return r;
+  if (pick !== null && !pool.includes(pick)) return r;
+  const id = pick !== null ? pick : pool[Math.floor(rand() * pool.length)];
+  return lendFromSupply(r, supplyKey('c', id), cid);
 }
 
 // --- short rest (scripts/campaign/rest.js) -----------------------------------------------------------------------------------------
@@ -775,7 +842,10 @@ export function setItemState(r, cid, itemId, state) {
   if (!c || s === null || s < 0 || s > 2) return r;
   const i = c.items.findIndex(it => String(it.id) === String(itemId));
   if (i < 0 || c.items[i].s === s) return r;
-  return edit(r, x => { x.chars.find(y => y.id === cid).items[i].s = s; });
+  return edit(r, x => {
+    x.chars.find(y => y.id === cid).items[i].s = s;
+    if (s > 0 && x.sup && x.sup[supplyKey('i', itemId)] === cid) release(x, supplyKey('i', itemId));      // a lent quartermaster item that is spent or consumed goes back to the supply
+  });
 }
 
 // Side of a flip item of a character: back true shows its back (f: 1), false its front. Only items with a back picture are flipped

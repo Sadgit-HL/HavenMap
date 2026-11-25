@@ -12,7 +12,7 @@ import { escapeHtml as esc } from '../scripts/escape.js';
 import { localStore } from '../scripts/campaign/store.js';
 import { api, loadConn, saveConn, clearConn, loadCache, saveCache, parseInvite, inviteUrl, merge3, same } from '../scripts/campaign/sync.js';
 import { cardImageUrl, itemImageUrl, itemBackUrl, eventImageUrl, matImageUrl, pqImageUrl, cardBackUrl, battleGoalImageUrl, matSlugOf } from '../scripts/campaign/cardImages.js';
-import { playmatHtml, markersHtml, XP_STEPS, turnPost, cardsPost, goalRollCode, questRollCode, cleanSettings, displaySettingsHtml } from './playmat.js';
+import { playmatHtml, markersHtml, XP_STEPS, turnPost, cardsPost, goalRollCode, questRollCode, cleanSettings, displaySettingsHtml, hasSupply } from './playmat.js';
 import { tokenDefs, markerTokens, MARK_STICKERS } from '../scripts/campaign/classTokens.js';
 import { bannerUrl, bannerCode } from '../scripts/campaign/bggBanners.js';
 import { GH2_PQ } from '../scripts/games/gh2_pq_text.js';
@@ -29,6 +29,7 @@ import {
 } from '../scripts/campaign/record.js';
 import * as ed from '../scripts/campaign/edit.js';
 import { canShortRest, restCandidates } from '../scripts/campaign/rest.js';
+import { isSupplyCard, lentCardCount } from '../scripts/campaign/supply.js';
 import { describeChange, foldLog, LOG_TABS, LOG_MAX } from '../scripts/campaign/changelog.js';
 import { CLASSES } from '../scripts/games/gh2_classes.js';
 import { ALL_CLASSES, classKnown } from '../scripts/campaign/classList.js';
@@ -910,7 +911,7 @@ function portraitStyle(c, size) {
 }
 // What the playmat remembers while the page is open: the open modal, the mat side, the history filter. Saved BGG codes of the user are kept
 // in this browser (not in the campaign record).
-const pm = { modal: null, matSide: 'front', histKind: 'all', jtab: 'goal', bgv: null, pqv: null, notesPreview: false, amZoom: null, dtab: 'hand', hsel: {}, hsArmed: false, itemId: null, isel: {}, ptab: 'cards', sheet: null, amMode: {}, mkKey: null, mkSel: null, pileZ: null, cf: null, mkIdx: -1, chMenu: false, hview: 'hand', amEdit: false };
+const pm = { supTo: null, modal: null, matSide: 'front', histKind: 'all', jtab: 'goal', bgv: null, pqv: null, notesPreview: false, amZoom: null, dtab: 'hand', hsel: {}, hsArmed: false, itemId: null, isel: {}, ptab: 'cards', sheet: null, amMode: {}, mkKey: null, mkSel: null, pileZ: null, cf: null, mkIdx: -1, chMenu: false, hview: 'hand', amEdit: false };
 const CODES_KEY = 'havenmap.campaign.codes';
 // Display settings of the playmat (gear in the top bar), kept in this browser.
 // Phones (700 px wide or less, or 500 px high or less: a phone held sideways) get the touch layout: the phone view of the Mercenaries
@@ -932,11 +933,13 @@ const pmState = c => ({
   bgs: record.bgs, pq: record.pq,
   itemId: pm.itemId, mkKey: pm.mkKey, mkIdx: pm.mkIdx, chars: subTabList(), chMenu: pm.chMenu, pileZ: pm.pileZ, restRoll: pm.restRoll, amMode: pm.amMode[c.id] || 'std', cf: pm.cf, players: record.players, classChips: classTraits({ ...c, cls: pm.cf?.cls || c.cls }).map(t => chip(t)).join(''), classOpts: pm.modal === 'char' ? charClassOptions(c) : [], mkSel: mkSelOf(c), set: pmset, ptab: pm.ptab, sheet: pm.sheet,
   items: pm.modal === 'items' ? { pool: ITEMS.filter(i => record.items.unl.includes(i.id) && ownsItem(c, i.id)), isel: c.items.map(it => String(it.id)), sell: !!pm.sellMode } : null,
-  deck: pm.modal === 'deck' ? { cards: CARDS.filter(k => k.cls === classByName(c.cls)?.i).sort((a, b) => cardLevel(a.id) - cardLevel(b.id) || (a.ini ?? 1e9) - (b.ini ?? 1e9)), hsel: pm.hsel[c.id] || [], armed: pm.hsArmed } : null,
+  sup: pm.modal === 'supply' || pm.modal === 'suproll' ? { loans: record.sup || {}, to: pm.supTo, chars: record.chars.map(x => ({ id: x.id, name: x.name })) } : null,
+  lentCards: lentCardCount(record, c),
+  deck: pm.modal === 'deck' ? { cards: CARDS.filter(k => k.cls === classByName(c.cls)?.i && !isSupplyCard(k.id)).sort((a, b) => cardLevel(a.id) - cardLevel(b.id) || (a.ini ?? 1e9) - (b.ini ?? 1e9)), hsel: pm.hsel[c.id] || [], armed: pm.hsArmed } : null,
   amd: pm.modal === 'amd' || pm.modal === 'amdpile' ? drawState(c, c.amd) : null, hview: pm.hview, amEdit: pm.amEdit, amv: pm.hview === 'amd' || pm.ptab === 'amd' ? drawState(c, c.amd) : null, amZoom: pm.modal === 'amd' ? pm.amZoom : null,
   customCodes: pm.modal === 'codes' ? loadCodes() : [],
   enh: pm.modal === 'enh' ? record.enh.map((e, i) => ({ e, i })).filter(x => x.e.cls === c.cls) : [],
-  enhCards: pm.modal === 'enh' ? CARDS.filter(k => k.cls === classByName(c.cls)?.i).map(k => pretty(k.slug)) : [],
+  enhCards: pm.modal === 'enh' ? CARDS.filter(k => k.cls === classByName(c.cls)?.i && !isSupplyCard(k.id)).map(k => pretty(k.slug)) : [],
   log: pm.modal === 'history' ? [...(record.log || [])].reverse().filter(e => String(e.d).startsWith(`${c.name}:`)) : [],
 });
 const playmatCtx = {
@@ -1786,6 +1789,7 @@ window.addEventListener('resize', sizePlaymat);
 
 function render() {
   renderTabs();
+  if ((pm.modal === 'supply' || pm.modal === 'suproll') && !hasSupply(pmChar())) pm.modal = null;                  // only the Sawbones and the Quartermaster have a supply
   if (pm.modal === 'rest' && !pmChar()?.rest) pm.modal = null;                               // the rest was undone: no result to show
   if (pm.modal === 'restroll' && !(pmChar() && restCandidates(pmChar(), pm.restRoll === 'redo').length)) pm.modal = null;   // nothing to roll over any more
   if (!record) {
@@ -2399,6 +2403,7 @@ registerMenu({
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && pm.modal) { pm.modal = null; render(); } });
 main.addEventListener('change', e => {
   if (e.target.matches?.('[data-histkind]')) { pm.histKind = e.target.value; render(); }
+  else if (e.target.matches?.('[data-supto]')) { pm.supTo = e.target.value; render(); }
   else if (e.target.matches?.('[data-logtab]')) { view.logTab = e.target.value; render(); }
   else if (e.target.matches?.('[data-logkind]')) { view.logKind = e.target.value; render(); }
   else if (e.target.matches?.('[data-loguser]')) { view.logUser = e.target.value; render(); }
@@ -2689,6 +2694,11 @@ function doShortRest(cid) {
   pm.sheet = null; pm.modal = 'rest';
   commit(next);
 }
+// The character the supply gives to: the one chosen in the Supply window, else the first other character.
+function supplyReceiver(c) {
+  const ids = record.chars.map(x => x.id);
+  return ids.includes(pm.supTo) ? pm.supTo : (record.chars.find(x => x.id !== c.id) || record.chars[0] || {}).id;
+}
 // The card a BGG roll gave for a short rest (pm.restRoll 'rest') or its redo ('redo'): it is lost; the result dialog follows.
 function pickRestCard(cid, id) {
   const next = pm.restRoll === 'redo' ? ed.shortRestRedo(record, cid, undefined, id) : ed.shortRest(record, cid, undefined, id);
@@ -2704,6 +2714,16 @@ main.addEventListener('click', e => {
   if (q('[data-restredo]')) { e.stopImmediatePropagation(); commit(ed.shortRestRedo(record, c.id)); return; }          // the dialog stays open and shows the new card
   const rr = q('[data-restroll]');                                                                                    // by a BGG roll: the dialog with the code and the cards to click
   if (rr) { e.stopImmediatePropagation(); if (!rr.disabled) { pm.sheet = null; pm.restRoll = rr.dataset.restroll === 'redo' ? 'redo' : 'rest'; pm.modal = 'restroll'; render(); } return; }
+  const sd = q('[data-supdraw]');                                                                                     // the supply: a medical pack at random, or by a BGG roll
+  if (sd) { e.stopImmediatePropagation(); if (!sd.disabled) commit(ed.drawMedPack(record, supplyReceiver(c)), 'random'); return; }
+  const sr = q('[data-suproll]');
+  if (sr) { e.stopImmediatePropagation(); if (!sr.disabled) { pm.modal = 'suproll'; render(); } return; }
+  const sp = q('[data-suppick]');
+  if (sp) { e.stopImmediatePropagation(); const next = ed.drawMedPack(record, supplyReceiver(c), undefined, Number(sp.dataset.suppick)); pm.modal = 'supply'; if (next !== record) commit(next, 'BGG roll'); else render(); return; }
+  const sl = q('[data-suplend]');
+  if (sl) { e.stopImmediatePropagation(); commit(ed.lendFromSupply(record, sl.dataset.suplend, supplyReceiver(c))); return; }
+  const sb = q('[data-supback]');
+  if (sb) { e.stopImmediatePropagation(); commit(ed.returnToSupply(record, sb.dataset.supback)); return; }
   const rp = q('[data-restpick]');
   if (rp) { e.stopImmediatePropagation(); pickRestCard(c.id, Number(rp.dataset.restpick)); return; }
   const rec = q('[data-pilerec]');

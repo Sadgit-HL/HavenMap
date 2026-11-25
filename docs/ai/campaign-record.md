@@ -26,6 +26,7 @@ The record is the one JSON document that holds a campaign. It is what the page s
 | `events` | `{ city, road: { top, bottom, out, locked }, marks, notes }`. Piles are ordered |
 | `evlog` | finished events |
 | `decks` | `{ bg, tre, mp }`: battle goals drawn, treasures claimed, medical packs |
+| `sup` | the supply of the Sawbones (the six medical packs) and the Quartermaster (items QM1 to QM9): `{ 'c:<card id>' or 'i:<item id>': charId }`, what is lent to whom; a key that is not listed is in the supply (`scripts/campaign/supply.js`). A lent pack is a card in the deck of the holder, a lent item an owned and equipped item without slot; `cleanSup` gives back what the holder no longer has |
 | `bgs`, `pq` | battle goals and personal quests out of the deck: `{ slug: { st, c } }`. A slug not listed is in the deck |
 | `enh` | enhancement log `[{ cls, card, top, bottom, price? }]`, campaign-wide |
 | `retired` | retired characters |

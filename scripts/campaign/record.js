@@ -8,6 +8,7 @@ import { ITEMS } from './itemList.js';
 import { SCENARIOS } from '../games/gh2_scenarios.js';
 import { cleanAmd } from './amdDeck.js';
 import { cleanRest } from './rest.js';
+import { cleanSup } from './supply.js';
 
 export const RECORD_VERSION = 1;
 
@@ -48,6 +49,7 @@ Record fields (all optional on load, defaults filled by normalize):
                     notes = { "road:4": "text" }   free note on a card
   evlog             finished events [{ kind, id, opt, votes, rnd?, closed?, place }]
   decks             { bg, tre, mp }                 battle goals drawn, treasures claimed, med packs
+  sup               { 'c:<card id>' | 'i:<item id>': charId }   the supply of the Sawbones (medical packs) and the Quartermaster (items QM1 to QM9): what is lent to whom; a key that is not listed is in the supply (scripts/campaign/supply.js)
   bgs, pq           battle goals of the current scenario and personal quests that are out of the deck: { slug: { st: 'mine'|'done'|'disc'|'locked', c: charId|null } }   (disc = discarded from this scenario's deck; locked = a personal quest not unlocked yet; no entry = unlocked, in the deck)
                     (c = the character who holds it, null = a player who is not in the app; a slug that is not listed is in the deck)
   enh, retired      enhancement log [{ cls, card, top, bottom, price? }] (top and bottom = what was added, price = gold paid), retired characters
@@ -67,7 +69,7 @@ export function emptyRecord() {
     rep: { demons: 0, merchants: 0, guard: 0 }, pros: 0, imb: 0, don: 0, stk: [], cls: [],
     scn: {}, chars: [], items: { unl: [], taken: {} },
     events: { city: { top: [], bottom: [], out: [], locked: [] }, road: { top: [], bottom: [], out: [], locked: [] }, marks: {}, notes: {} }, evlog: [],
-    decks: { bg: [], tre: [], mp: [] }, bgs: {}, pq: {}, enh: [], retired: [], resLinks: {}, log: [],
+    decks: { bg: [], tre: [], mp: [] }, sup: {}, bgs: {}, pq: {}, enh: [], retired: [], resLinks: {}, log: [],
   };
 }
 
@@ -113,6 +115,7 @@ export function normalize(raw) {
   r.scn = r.scn || {};
   for (const k of ['bgs', 'pq']) r[k] = r[k] && typeof r[k] === 'object' && !Array.isArray(r[k]) ? r[k] : {};
   r.chars = (r.chars || []).map(normalizeChar);
+  r.sup = cleanSup(r.sup, r.chars);
   // a monster level saved by the Monsters tab before 2026-11-18 (mon.lvl) becomes the difficulty: level minus the normal difficulty
   if (r.mon && r.mon.lvl != null) {
     r.party = { ...r.party, diff: Math.max(-2, Math.min(4, Number(r.mon.lvl) - normalDifficulty(r))) };

@@ -6,7 +6,8 @@ import { handList, handLimit, zoneOf, pendingPicks } from '../scripts/campaign/r
 import { tokenDefs, tokenImage } from '../scripts/campaign/classTokens.js';
 import { canShortRest } from '../scripts/campaign/rest.js';
 import { onlyApp, onlyGeek } from './rollmode.js';
-import { modalHtml, amViewHtml, XP_STEPS, levelOfXp, markersHtml } from './playmat.js';
+import { modalHtml, amViewHtml, XP_STEPS, levelOfXp, markersHtml, hasSupply } from './playmat.js';
+import { isSupplyCard, SUPPLY_OWNER } from '../scripts/campaign/supply.js';
 
 const UP = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>';
 const DN = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
@@ -31,13 +32,13 @@ export function phoneHtml(c, X, S = {}) {
   for (const id of c.deck) { const z = zoneOf(c, id); if (lists[z]) lists[z].push(id); }
   const active = c.act.filter(id => lists.active.includes(id)), hand = handList(c);
   const piled = z => (z === 'discard' ? c.disc : c.lost).filter(id => c.deck.includes(id));
-  const back = `<img src="${esc(X.cardBackUrl(c.cls))}" alt="${esc(c.cls)} card back" draggable="false">`;
+  const backFor = id => { const cls = isSupplyCard(id) ? SUPPLY_OWNER.c : c.cls; return `<img src="${esc(X.cardBackUrl(cls))}" alt="${esc(cls)} card back" draggable="false">`; };   // a lent medical pack shows the back of the Sawbones
   const slot = i => {
     const p = c.play[i], k = p && cardOf(p.id), ini = i === 0 ? (p && p.up ? (k?.ini ?? '?') : '?') : null;
     const lab = `<div class="lab">Slot ${i + 1}${ini !== null ? ` &middot; initiative <span class="ini">${ini}</span>` : ''}</div>`;
     if (!p) return `<div class="slot">${lab}<div class="empty" aria-label="empty">${i + 1}</div></div>`;
     const url = X.cardImageUrl(k);
-    return `<div class="slot">${lab}<div class="ac flip${p.up ? ' up' : ''}" data-card="${p.id}" data-char="${cid}" data-pslot="${i}" title="Tap to flip: ${esc(nameOf(p.id))}"><div class="inner"><div class="face back">${back}</div><div class="face front">${url ? `<img src="${esc(url)}" alt="${esc(nameOf(p.id))}" draggable="false">` : ''}</div></div>${markersHtml(c.mk?.[`c:${p.id}`])}<button type="button" class="more" data-more aria-label="Move ${esc(nameOf(p.id))}">&#8943;</button></div></div>`;
+    return `<div class="slot">${lab}<div class="ac flip${p.up ? ' up' : ''}" data-card="${p.id}" data-char="${cid}" data-pslot="${i}" title="Tap to flip: ${esc(nameOf(p.id))}"><div class="inner"><div class="face back">${backFor(p.id)}</div><div class="face front">${url ? `<img src="${esc(url)}" alt="${esc(nameOf(p.id))}" draggable="false">` : ''}</div></div>${markersHtml(c.mk?.[`c:${p.id}`])}<button type="button" class="more" data-more aria-label="Move ${esc(nameOf(p.id))}">&#8943;</button></div></div>`;
   };
   const strip = ids => (ids.length ? `<div class="strip">${ids.map(card).join('')}</div>` : '<div class="strip empty">empty</div>');
   const pileBtn = (z, label) => {
@@ -55,7 +56,7 @@ export function phoneHtml(c, X, S = {}) {
   if (tab === 'cards') {
     view = `<section class="pz pzplay"><h4>Play area</h4><div class="row2">${slot(0)}${slot(1)}</div></section>
       <section class="pz pzact"><h4>Active <span>${active.length}</span></h4>${strip(active)}</section>
-      <section class="pz pzhand"><h4>Hand <span class="hbtns"><span style="align-self:center">${hand.length}${handLimit(c) ? ` of ${handLimit(c)}` : ''}</span><button type="button" class="sm" data-psort="ini" title="Sort by initiative">Ini</button><button type="button" class="sm" data-psort="lvl" title="Sort by level">Lvl</button></span></h4>${strip(hand)}</section>
+      <section class="pz pzhand"><h4>Hand <span class="hbtns"><span style="align-self:center">${hand.length - (S.lentCards || 0)}${handLimit(c) ? ` of ${handLimit(c)}` : ''}</span><button type="button" class="sm" data-psort="ini" title="Sort by initiative">Ini</button><button type="button" class="sm" data-psort="lvl" title="Sort by level">Lvl</button></span></h4>${strip(hand)}</section>
       <div class="piles">${pileBtn('discard', 'Discard')}${pileBtn('lost', 'Lost')}</div>`;
   } else if (tab === 'amd') {
     // the modifier deck of the playmat (Modifiers view), in the phone's own tab: the same markup and buttons
@@ -88,7 +89,7 @@ export function phoneHtml(c, X, S = {}) {
   } else if (sh && sh.kind === 'chars') {
     sheet = `<h3>Characters<button type="button" data-sheetclose aria-label="Close">&times;</button></h3><div class="chpick">${(S.chars || []).map(t => `<button type="button" data-sub="${esc(t.id)}"${t.id === c.id ? ' aria-current="true"' : ''}>${t.id === 'add' ? '+ Add character' : esc(t.label)}</button>`).join('')}</div>`;
   } else if (sh && sh.kind === 'menu') {
-    sheet = `<h3>Open<button type="button" data-sheetclose aria-label="Close">&times;</button></h3><div class="opts">${PHONE_MODALS.map(([id, l]) => `<button type="button" data-modal="${id}">${l}</button>`).join('')}</div>`;
+    sheet = `<h3>Open<button type="button" data-sheetclose aria-label="Close">&times;</button></h3><div class="opts">${[...(hasSupply(c) ? [['supply', 'Supply']] : []), ...PHONE_MODALS].map(([id, l]) => `<button type="button" data-modal="${id}">${l}</button>`).join('')}</div>`;
   }
 
   return `<div class="pm pp" data-zactive="click" data-zplay="click" data-zhand="click" data-zpiles="click" data-zitems="click" data-inib="on" data-motion="full">

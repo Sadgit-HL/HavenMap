@@ -109,6 +109,7 @@ ul.tiles .cardrow.ins-before { box-shadow:inset 3px 0 0 var(--accent); } ul.tile
 #cardPreview .pc { border:0; }
 #cardPreview.pm .shelf6.cpvclone { display:block; overflow:visible; padding:0; gap:0; min-height:0; }
 #cardPreview.pm .shelf6.cpvclone .it { position:relative; }
+#cardPreview .tkh, #cardPreview .itflip, #cardPreview .cardmore { display:none; }                   /* buttons of the item in the shelf (tokens, flip, menu) are not part of the picture */
 #cardPreview.pinned { pointer-events:auto; cursor:zoom-out; box-shadow:0 0 0 2px #c7a44a, 0 10px 32px rgba(0,0,0,.75); }
 .zone ul.tiles { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:6px; }
 .cardrow.tile { flex-direction:column; align-items:stretch; gap:4px; padding:4px; margin:0; }

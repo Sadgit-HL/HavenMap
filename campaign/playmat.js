@@ -9,6 +9,7 @@ import { BGG_ICON_GROUPS } from '../scripts/campaign/bggIcons.js';
 import { BANNERS, bannerIcon } from '../scripts/campaign/bggBanners.js';
 import { halfLines, flagsLine } from '../scripts/turnTemplate.js';
 import { TURN } from '../scripts/games/turn_templates.js';
+import { MED_PACKS, QM_ITEMS, SUPPLY_OWNER, supplyKey, isSupplyCard } from '../scripts/campaign/supply.js';
 import { specialName, specialChoices } from '../scripts/campaign/traits.js';
 import { holdStatus, sellPrice } from '../scripts/campaign/edit.js';
 import { canShortRest, restRedoable, restCandidates, restRollCode } from '../scripts/campaign/rest.js';
@@ -131,12 +132,13 @@ export function playmatHtml(c, X, S = {}) {
   };
 
   // a face-down or face-up card in a play slot
-  const back = `<img class="realback" src="${esc(X.cardBackUrl(c.cls))}" alt="${esc(c.cls)} card back" draggable="false">`;
+  // a card lent from the supply (a medical pack) shows the back of the Sawbones, not the back of the character that plays it
+  const backFor = id => { const cls = isSupplyCard(id) ? SUPPLY_OWNER.c : c.cls; return `<img class="realback" src="${esc(X.cardBackUrl(cls))}" alt="${esc(cls)} card back" draggable="false">`; };
   const slotHtml = (i) => {
     const p = c.play[i];
     const inner = !p ? `<div class="slotempty">${i + 1}</div>` : (() => {
       const card = X.cardById.get(p.id), url = X.cardImageUrl(card), name = nameOf(p.id), ini = iniOf(p.id);
-      return `<div class="flipcard${p.up ? ' is-front settled' : ''}" data-card="${p.id}" data-char="${cid}" data-slot="${i}"${ini != null ? ` data-ini="${ini}"` : ''} role="button" tabindex="0" title="Click to flip: ${esc(name)}"><div class="flipinner"><div class="face back">${back}</div><div class="face front">${url ? `<img src="${esc(url)}" alt="${esc(name)}" draggable="false">` : `<div class="noimg">${esc(name)}</div>`}</div></div>${marks(`c:${p.id}`)}${MORE}</div>`;
+      return `<div class="flipcard${p.up ? ' is-front settled' : ''}" data-card="${p.id}" data-char="${cid}" data-slot="${i}"${ini != null ? ` data-ini="${ini}"` : ''} role="button" tabindex="0" title="Click to flip: ${esc(name)}"><div class="flipinner"><div class="face back">${backFor(p.id)}</div><div class="face front">${url ? `<img src="${esc(url)}" alt="${esc(name)}" draggable="false">` : `<div class="noimg">${esc(name)}</div>`}</div></div>${marks(`c:${p.id}`)}${MORE}</div>`;
     })();
     return `<div class="slot6${i === 0 ? ' first' : ''}" data-slot="${i + 1}" data-zone="play${i + 1}" data-char="${cid}"><div class="slotcard">${inner}</div></div>`;
   };
@@ -199,10 +201,10 @@ export function playmatHtml(c, X, S = {}) {
         <div class="zone"><span class="zlabel">Active &middot; <b>${active.length}</b></span><div class="activelist" data-zone="active" data-char="${cid}">${active.map(id => ac(id)).join('')}</div></div>
         <div class="zone play"><span class="zlabel">Play area &middot; Initiative <b>${playIni}</b></span>${slotHtml(0)}${slotHtml(1)}</div>
       </div>
-      <div class="hand6" data-hmode="${AMD ? 'amd' : 'hand'}" data-layout="${ST.layout === 'fan' ? 'fan' : ST.layout === 'grid' ? 'grid' : 'spread'}"><div class="hbar">${hviewTog}${AMD ? amBar : `<span class="zlabel">Hand &middot; <b class="${limit && hand.length > limit ? 'over-limit' : ''}">${hand.length}</b>${limit ? ` of <span>${esc(limit)}</span>` : ''}</span>${heBtn}<span class="hctl"><span class="sortlab">Sort</span>${`<span class="sortgrp"><button type="button" class="btn6" data-handsort="ini" data-char="${cid}" title="Sort by initiative and keep the hand sorted">Ini</button><button type="button" class="btn6" data-handsort="lvl" data-char="${cid}" title="Sort by level once">Lvl</button></span>`}</span>`}</div>${AMD ? amView : `<div class="fan6${ST.layout === 'grid' ? ' hgrid' : ''}" data-zone="hand" data-char="${cid}">${ST.layout === 'grid' ? `<div class="hgi" style="--hrows:${handGrid(c, limit).cells.length / 6}">${handGrid(c, limit).cells.map((id, i) => `<div class="hcell${id == null ? ' empty' : ''}" data-cell="${i}">${id == null ? '' : ac(id, i, true, true)}</div>`).join('')}</div>` : hand.map((id, i) => ac(id, i, true, true)).join('')}</div>`}</div>
+      <div class="hand6" data-hmode="${AMD ? 'amd' : 'hand'}" data-layout="${ST.layout === 'fan' ? 'fan' : ST.layout === 'grid' ? 'grid' : 'spread'}"><div class="hbar">${hviewTog}${AMD ? amBar : `<span class="zlabel">Hand &middot; <b class="${limit && hand.length - (S.lentCards || 0) > limit ? 'over-limit' : ''}">${hand.length - (S.lentCards || 0)}</b>${limit ? ` of <span>${esc(limit)}</span>` : ''}</span>${heBtn}<span class="hctl"><span class="sortlab">Sort</span>${`<span class="sortgrp"><button type="button" class="btn6" data-handsort="ini" data-char="${cid}" title="Sort by initiative and keep the hand sorted">Ini</button><button type="button" class="btn6" data-handsort="lvl" data-char="${cid}" title="Sort by level once">Lvl</button></span>`}</span>`}</div>${AMD ? amView : `<div class="fan6${ST.layout === 'grid' ? ' hgrid' : ''}" data-zone="hand" data-char="${cid}">${ST.layout === 'grid' ? `<div class="hgi" style="--hrows:${handGrid(c, limit).cells.length / 6}">${handGrid(c, limit).cells.map((id, i) => `<div class="hcell${id == null ? ' empty' : ''}" data-cell="${i}">${id == null ? '' : ac(id, i, true, true)}</div>`).join('')}</div>` : hand.map((id, i) => ac(id, i, true, true)).join('')}</div>`}</div>
     </section>
     <section class="piles6">${pile('discard', 'Discard', ' target')}${pile('lost', 'Lost', ' lost target')}</section>
-    ${dockHtml(pendingPicks(c))}
+    ${dockHtml(pendingPicks(c), c)}
   </div>${modalHtml(c, X, S)}</div>`;
 }
 
@@ -277,7 +279,10 @@ const DOCK = [
   ['codes', 'BGG codes', 'Copy a forum post code', ICON('<rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2"/>')],
   ['history', 'History', 'History of changes of this character', ICON('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>')],
 ];
-const dockHtml = pend => `<aside class="dock" aria-label="Modals">${DOCK.map(([id, label, tip, svg]) => `<button type="button" class="mbtn" data-modal="${id}" title="Opens modal: ${tip}">${svg}<span>${label}</span>${id === 'deck' && pend ? `<span class="pooldot" title="${pend} card pick pending">${pend}</span>` : ''}</button>`).join('')}</aside>`;
+const SUPPLY_BTN = ['supply', 'Supply', 'The supply: lend and take back', ICON('<path d="M4 8l8-4 8 4-8 4z"/><path d="M4 8v8l8 4 8-4V8M12 12v8"/>')];
+const hasSupply = c => Object.values(SUPPLY_OWNER).includes(c?.cls);
+export { hasSupply };
+const dockHtml = (pend, c) => `<aside class="dock" aria-label="Modals">${(hasSupply(c) ? [SUPPLY_BTN, ...DOCK] : DOCK).map(([id, label, tip, svg]) => `<button type="button" class="mbtn" data-modal="${id}" title="Opens modal: ${tip}">${svg}<span>${label}</span>${id === 'deck' && pend ? `<span class="pooldot" title="${pend} card pick pending">${pend}</span>` : ''}</button>`).join('')}</aside>`;
 
 export function modalHtml(c, X, S) {
   if (!S.modal) return '';
@@ -434,6 +439,32 @@ export function modalHtml(c, X, S) {
     const nm = id => X.pretty(X.cardById.get(id)?.slug ?? id), url = X.cardImageUrl(X.cardById.get(rs.x));
     title = 'Short rest';
     body = `<div class="itmodal restmodal"><div class="itcard">${url ? `<img src="${esc(url)}" alt="${esc(nm(rs.x))}" draggable="false">` : ''}</div><div class="itpanel"><div class="row"><span>${rs.roll ? 'Lost by the BGG roll' : 'Lost at random'}</span><b class="restname">${esc(nm(rs.x))}</b></div>${rs.first != null ? `<div class="row"><span>Redone (1 damage)</span><span>${esc(nm(rs.first))} is back in the hand</span></div>` : ''}<div class="row"><span>The rest of the discard pile</span><span>is back in the hand</span></div></div></div><div class="chfoot"><button type="button" class="btn6"${onlyApp()} data-restredo data-char="${esc(c.id)}"${restRedoable(c) ? '' : ' disabled'} title="${rs.redo ? 'A short rest is redone once' : restRedoable(c) ? 'Take 1 damage: the first card goes back to the hand and another card of the pile is lost instead' : 'Too late: a card of the pile was moved'}">Redo (take 1 damage)</button><button type="button" class="btn6 rollbtn"${onlyGeek()} data-restroll="redo" data-char="${esc(c.id)}"${restRedoable(c) ? '' : ' disabled'} title="Take 1 damage, roll on BGG, then click the card the roll gave">${DICE}<span>Redo by BGG roll</span></button><button type="button" class="btn6 ce-save" data-modalclose>Done</button></div>`;
+  } else if (S.modal === 'supply' || S.modal === 'suproll') {
+    // the supply of the Sawbones (medical packs) and the Quartermaster (items QM1 to QM9): what is in it, who holds the rest
+    const kind = c.cls === SUPPLY_OWNER.i ? 'i' : 'c', chars = (S.sup && S.sup.chars) || [], loans = (S.sup && S.sup.loans) || {};
+    const to = chars.some(x => x.id === (S.sup && S.sup.to)) ? S.sup.to : (chars.find(x => x.id !== c.id) || chars[0] || {}).id;
+    const keys = (kind === 'c' ? MED_PACKS : QM_ITEMS).map(id => supplyKey(kind, id)), free = keys.filter(k => !loans[k]);
+    const nameOfKey = key => (kind === 'c' ? X.pretty(X.cardById.get(Number(key.slice(2)))?.slug ?? key) : `${X.pretty(X.itemById.get(key.slice(2))?.slug ?? key)} (${key.slice(2)})`);
+    const urlOfKey = key => (kind === 'c' ? X.cardImageUrl(X.cardById.get(Number(key.slice(2)))) : X.itemImageUrl(X.itemById.get(key.slice(2))));
+    const img = key => { const url = urlOfKey(key), nm = nameOfKey(key); return url ? `<img src="${esc(url)}" alt="${esc(nm)}" draggable="false">` : `<div class="noimg">${esc(nm)}</div>`; };
+    const who = id => (chars.find(x => x.id === id) || {}).name || '?';
+    if (S.modal === 'suproll') {
+      // a medical pack decided by a GeekRoller roll on BGG: copy the code, roll, click the pack the roll gave
+      title = 'Medical pack by BGG roll'; big = ' big';
+      const code = restRollCode(free.map(k => nameOfKey(k)));
+      const cell = key => `<div class="pcell" data-suppick="${esc(key.slice(2))}" role="button" tabindex="0" title="${esc(nameOfKey(key))}: given by the roll" aria-label="${esc(nameOfKey(key))}: given by the roll">${img(key)}</div>`;
+      body = `<div class="poolbar"><span>${free.length} ${free.length === 1 ? 'pack' : 'packs'} in the supply &middot; for ${esc(who(to))}</span><span class="grow"></span><button type="button" class="btn6 rollbtn" data-code="${esc(code)}"${code ? '' : ' disabled'} title="${code ? 'Copy the GeekRoller code over these packs' : 'No code fits into 241 characters'}">${DICE}<span>BGG code for roll</span></button></div><div class="pilelist">${free.length ? free.map(cell).join('') : '<p class="mrow">The supply is empty.</p>'}</div>`;
+    } else {
+      title = kind === 'c' ? 'Medical packs' : 'Quartermaster items'; big = ' big';
+      const select = `<label class="suplab">Give to <select data-supto aria-label="Receiver">${chars.map(x => `<option value="${esc(x.id)}"${x.id === to ? ' selected' : ''}>${esc(x.name)}</option>`).join('')}</select></label>`;
+      const draw = kind === 'c' ? `<button type="button" class="btn6"${onlyApp()} data-supdraw title="${free.length ? `Draw one of the ${free.length} packs in the supply for ${esc(who(to))}` : 'The supply is empty'}"${free.length && to ? '' : ' disabled'}>Draw medical pack</button><button type="button" class="btn6 rollbtn"${onlyGeek()} data-suproll title="${free.length ? 'Roll on BGG, then click the pack the roll gave' : 'The supply is empty'}"${free.length && to ? '' : ' disabled'}>${DICE}<span>Draw by BGG roll</span></button>` : '';
+      const cell = key => {
+        const holder = loans[key], nm = nameOfKey(key);
+        if (holder) return `<div class="pcell${kind === 'i' ? ' itemcell' : ''} lent" data-supback="${esc(key)}" role="button" tabindex="0" title="${esc(nm)}: lent to ${esc(who(holder))}, click to take it back" aria-label="Take ${esc(nm)} back from ${esc(who(holder))}">${img(key)}<span class="suptag holder">${esc(who(holder))}</span></div>`;
+        return kind === 'i' ? `<div class="pcell itemcell" data-suplend="${esc(key)}" role="button" tabindex="0" title="${esc(nm)}: give to ${esc(who(to))}" aria-label="${esc(nm)}: give to ${esc(who(to))}">${img(key)}</div>` : `<div class="pcell${kind === 'i' ? ' itemcell' : ''}" data-suptile="${esc(key)}" title="${esc(nm)}">${img(key)}</div>`;
+      };
+      body = `<div class="poolbar"><span><b>${free.length}</b> of ${keys.length} in the supply</span><span class="grow"></span>${select}${draw}</div><div class="pilelist">${keys.map(cell).join('')}</div><div class="chfoot"><button type="button" class="btn6" data-modalclose>Close</button></div>`;
+    }
   } else if (S.modal === 'restroll') {
     // a short rest (or its redo) decided by a GeekRoller roll on BGG: copy the code, roll, click the card the roll gave
     const redo = S.restRoll === 'redo', ids = restCandidates(c, redo);

@@ -1,0 +1,57 @@
+[size=18][b]HavenMap: quick start for players[/b][/size]
+
+[size=14][b]Where we are[/b][/size]
+
+The Gloomhaven 2e campaign in the app has been brought up to date with where our play-by-forum game stands now: scenarios, items, prosperity, reputation and characters.
+
+[size=14][b]Getting in[/b][/size]
+
+Open the invite link you got. It is personal, so keep it to yourself. Your changes save on their own a few seconds after your last edit, and the top bar shows Saved, Saving or Offline. Next to it you can see who edited last.
+
+The gear in the top bar opens the settings: your name (Profile), the hand layout, card preview and how draws are rolled, GeekRoller or in the app (Display), loading and exporting the campaign (Campaign file), and the list of keys (Shortcuts). Display settings stay in this browser only.
+
+[size=14][b]Your character[/b][/size]
+
+Go to the [b]Mercenaries[/b] tab and pick your character from the name in the top bar. It works on a phone too, with its own layout.
+
+• [b]Hand:[/b] your ability cards. Drag them around freely
+• [b]Play slots:[/b] drag two cards from your hand into the two slots. Slot 1 sets your initiative. Click a card to flip it.
+• [b]Active, discard and lost:[/b] drag cards there as the game goes. At the end of a round, drag your played cards to discard.
+• [b]Pick your hand for a scenario:[/b] click your level badge to open the hand editor. Lock, unlock or choose your cards, then hit Confirm hand. At level-up you pick your new card there too.
+
+[size=14][b]Side buttons on the right[/b][/size]
+
+• [b]Perks & masteries:[/b] tick your perks. The checkmark boxes at the top count your battle goal checkmarks, and every 3 earn a perk.
+• [b]Journal:[/b] draw your battle goals and personal quest, and keep notes.
+• [b]Character mat, Enhancements, History:[/b] what they say.
+• [b]Modifiers[/b] (switch in the hand bar): draw, shuffle, bless and curse your attack modifier deck. It follows your perks.
+• [b]Draw:[/b] the Draw button draws a random card and logs it. A rolling card is followed by more cards: click the face-down card to reveal each one. The Std / Adv / Dis button next to it cycles the draw mode. With advantage or disadvantage the app picks the card by the rules, or lets you choose when it is your call. An empty deck is shuffled automatically.
+• [b]Short rest:[/b] click your discard pile, then Short rest (or press R over it). A random card of the discard is lost. You can redo it once. The BGG roll button does the same with a GeekRoller code.
+
+[size=14][b]Forum posts[/b][/size]
+
+The [b]Turn[/b] and [b]Cards[/b] buttons in the top bar build your BGG post for you. Copy it and paste it into the thread.
+
+[size=14][b]Items[/b][/size]
+
+The [b]Items[/b] tab shows what is unlocked and what is in the shop. You can buy an item for your gold there, and sell items back from your inventory.
+
+Items with a real back (shown by a flip button) turn over with the F key. Solo items of all classes are in the list.
+
+[size=14][b]Random draws[/b][/size]
+
+The [b]Monsters[/b] tab draws monster ability cards and monster modifier cards the same way (Draw, Std / Adv / Dis). In the Scenarios tab, Draw random scenario unlocks one of the side scenarios 67 to 74, and Draw random item design unlocks one of items 81 to 96. Every draw shows in the [b]History[/b] tab, marked (random) or (BGG roll); filter it with the type drop-down.
+
+[size=14][b]Monster turn on the map[/b][/size]
+
+Select a monster on the map page. [b]Monster turn[/b] sits above its ability card.
+
+• [b]Show[/b] marks the monster's focus (gold ring), the hex it attacks from (green) and the hexes it only moves to (blue). [b]Hide[/b] clears it.
+• [b]Move[/b] puts the monster on the chosen hex. With several equal options, click one of the hexes on the board first. Ctrl+Z undoes the move.
+• [b]BGG text[/b] copies the monster's turn for the forum: the move, the attack with its targets, and the other actions of the card. Elements consumed show with the consume icon, and advantage, disadvantage and effects of the stat card are part of the attack. The attack roll stays in GeekRoller.
+• The two small arrows: the next monster in turn order, and the details: notes of the card, the initiatives of the characters (type them in; they decide ties), and a [b]Values[/b] button for move, range and targets.
+• Elements follow the element bar: a consume that needs an infused element counts when that element is on. Muddle comes from the condition on the monster.
+• Nothing shows for a monster without a drawn card; the line under the buttons says so.
+• Conditions on the monster count: stunned does nothing, immobilized does not move, disarmed does not attack (it still moves as if it would). The BGG text ends with the conditions to remove.
+
+Gloomhaven 2e tiles only so far.
