@@ -1846,6 +1846,64 @@
        ]
       }
      ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": ","
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1,
+       "relative": true
+      },
+      {
+       "type": "pierce",
+       "value": 2
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "stun"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1,
+       "relative": true
+      }
+     ]
     }
    ],
    "xp": 1

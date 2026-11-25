@@ -430,6 +430,11 @@ top:
     - immobilize: ''
     - custom: "%xp1%"
     - custom: "+1 %attack%"
+  - optional:
+    - consume: [dark]
+    - stun: ''
+    - custom: "%xp1%"
+    - custom: "+1 %attack%"
   lost: t
 bottom:
   actions:
@@ -456,6 +461,11 @@ top:
     - custom: "+1 %attack%"
     - custom: "+1 %target%"
   - custom: "Add -1 %attack%, +2 %range% to each attack for each enemy already attacked with this ability. Each target after the first must be within %range%2 of the previous target."
+  - optional:
+    - consume: [light]
+    - custom: "%xp1%"
+    - custom: "+1 %attack%"
+    - custom: "+2 %pierce%"
   lost: t
 bottom:
   actions:
@@ -567,6 +577,11 @@ top:
     - consume: [dark]
     - custom: "All allies in the red hexes gain %invisible%."
     - consume: [fire/ice]
+  - optional:
+    - consume: [fire/ice]
+    - custom: "%?orange diamond icon%"
+    - custom: "%xp1%"
+    - custom: "+1 %attack%"
   xp: 1
 bottom:
   actions:
@@ -655,6 +670,14 @@ bottom:
     - ward: ''
     - ice
   - custom: "Add +1 %heal%, gain %xp1%, and %light% if you consume two or more elements."
+  - optional:
+    - consume: [air]
+    - bless: ''
+    - air
+  - optional:
+    - consume: [earth]
+    - regenerate: ''
+    - earth
 
 name: Eye of the Hurricane
 initiative: 25
@@ -668,6 +691,18 @@ top:
     - consume: [fire]
     - strengthen: ''
     - custom: "%xp1%"
+  - optional:
+    - consume: [ice]
+    - custom: "%target% all enemies adjacent to the target of the heal ability,"
+    - custom: "%?grey diamond with question mark%"
+    - custom: "%xp1%"
+    - custom: "+2 %attack%"
+  - optional:
+    - consume: [air]
+    - custom: "%target% all enemies at exactly %range% 2 from the target of the heal ability,"
+    - custom: "%?orange diamond icon 3%"
+    - custom: "%xp1%"
+    - custom: "+1 %attack%"
 bottom:
   actions:
   - attack: 2
@@ -678,6 +713,14 @@ bottom:
     - wound: ''
     - fire
   - custom: "Add +1 %attack%, gain %xp1%, and %dark% if you consume two or more elements."
+  - optional:
+    - consume: [air]
+    - air
+    - custom: "+3 %range%"
+  - optional:
+    - consume: [earth]
+    - custom: "%?grey skull diamond%"
+    - earth
 
 name: Ethereal Manifestation
 initiative: 98

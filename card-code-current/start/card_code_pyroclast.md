@@ -261,6 +261,10 @@ top:
     - consume: [fire]
     - custom: "%xp1%"
     - custom: "+1 %attack%"
+  - optional:
+    - consume: [earth]
+    - custom: "%?grey diamond with question mark%"
+    - custom: "%xp1%"
 bottom:
   actions:
   - move: 4
@@ -533,6 +537,14 @@ top:
     - consume: [fire]
     - mandatory:
       - damage: 2
+        sub:
+        - self
+    - custom: "%xp1%"
+    - custom: "+2 %attack%"
+  - optional:
+    - consume: [earth]
+    - mandatory:
+      - damage: 1
         sub:
         - self
     - custom: "%xp1%"

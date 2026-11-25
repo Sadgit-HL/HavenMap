@@ -483,7 +483,7 @@ initiative: 68
 level: 2
 top:
   actions:
-    - custom: 'Grant one ally withing %range% 3:'
+    - custom: 'Grant one ally within %range% 3:'
     - attack: 4
       enhancement: [diamond]  
 bottom:

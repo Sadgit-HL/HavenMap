@@ -771,6 +771,46 @@
        "value": 2
       }
      ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%?grey diamond icon 2%"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%?diamond with hand icon%"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
     }
    ],
    "lost": true
@@ -1016,6 +1056,15 @@
       {
        "type": "custom",
        "text": "%target% 1 ally or enemy."
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
       }
      ]
     }

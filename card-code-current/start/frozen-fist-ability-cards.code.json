@@ -200,6 +200,36 @@
        "value": "bless"
       }
      ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "heal",
+         "value": 2,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
     }
    ]
   }
@@ -1005,6 +1035,26 @@
       {
        "type": "area",
        "pattern": "et_st"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%?bigger attack area of six hexes%"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
       }
      ]
     }

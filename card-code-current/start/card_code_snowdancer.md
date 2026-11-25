@@ -276,6 +276,14 @@ top:
     - consume: [ice]
     - custom: "%xp1%"
     - custom: "+2 %attack%"
+  - optional:
+    - consume: [air]
+    - custom: "%?grey diamond icon 2%"
+    - custom: "%xp1%"
+  - optional:
+    - consume: [light]
+    - custom: "%?diamond with hand icon%"
+    - custom: "%xp1%"
   lost: t
 bottom:
   actions:
@@ -363,6 +371,8 @@ bottom:
     - range: 2
   - optional:
     - custom: "%target% 1 ally or enemy."
+  - mandatory:
+    - air
 
 name: Cold Snap
 initiative: 86

@@ -1587,11 +1587,22 @@
      ]
     },
     {
-     "type": "mandatory",
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
      "actions": [
       {
-       "type": "element",
-       "value": "dark"
+       "type": "custom",
+       "text": "Play a card from your hand to perform the top or bottom action of the card,"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
       }
      ]
     }
@@ -1738,6 +1749,15 @@
       {
        "type": "area",
        "pattern": "ebx_ttx_stb"
+      }
+     ]
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
       }
      ]
     }

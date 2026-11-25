@@ -1,4 +1,4 @@
-Doomstalker (Gloomhaven 2e), card code read from the card pictures with tools/card-extraction. A first draft, not yet checked by the owner: look at the lines marked # check first.
+Doomstalker (Gloomhaven 2e), card code read from the card pictures with tools/card-extraction, compared with the Secretariat conversion (tools/secretariat-cards). Not yet checked by the owner: look at the lines marked # check first.
 name: A Moment's Peace
 initiative: 88
 level: 1

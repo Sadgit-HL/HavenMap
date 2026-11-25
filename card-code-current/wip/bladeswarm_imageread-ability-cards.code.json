@@ -6,6 +6,10 @@
   "top": {
    "actions": [
     {
+     "type": "custom",
+     "text": "Summon Soul Leeches"
+    },
+    {
      "type": "summon",
      "name": "Soul Leeches",
      "stats": {
@@ -40,11 +44,16 @@
      "value": "wound",
      "enhancement": [
       "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 1,
+       "enhancement": [
+        "square"
+       ]
+      }
      ]
-    },
-    {
-     "type": "custom",
-     "text": "%range% 1"
     },
     {
      "type": "heal",
@@ -68,6 +77,10 @@
   "initiative": 84,
   "top": {
    "actions": [
+    {
+     "type": "custom",
+     "text": "Summon Creeping Beetles"
+    },
     {
      "type": "summon",
      "name": "Creeping Beetles",
@@ -121,7 +134,7 @@
      "subActions": [
       {
        "type": "custom",
-       "text": "%target% 3 enemies within 2 hexes, %?grey diamond with question mark%"
+       "text": "%target% 3 enemies within 2 hexes, %muddle%"
       }
      ]
     }
@@ -138,7 +151,7 @@
     },
     {
      "type": "custom",
-     "text": "When you are attacked this round, treat all positive and %amd-double% attack modifier cards drawn by enemies as +0 instead."
+     "text": "When you are attacked this round, treat all positive and %amd-double% attack modifier cards drawn by enemies as %amd-zero% instead."
     }
    ],
    "duration": "round"
@@ -150,6 +163,10 @@
   "initiative": 88,
   "top": {
    "actions": [
+    {
+     "type": "custom",
+     "text": "Summon Angry Wasps %flying%"
+    },
     {
      "type": "summon",
      "name": "Angry Wasps",
@@ -222,7 +239,7 @@
    "actions": [
     {
      "type": "custom",
-     "text": "Whenever you perform an attack ability, you may %wildc% to add +1 %attack% to all your attacks."
+     "text": "Whenever you perform an attack ability, you may %?element wheel with red cross% to add +1 %attack% to all your attacks."
     },
     {
      "type": "mandatory",
@@ -262,7 +279,7 @@
     },
     {
      "type": "custom",
-     "text": "Your summons gain %shield% 1."
+     "text": "Your summons gain %shield%1."
     }
    ],
    "xp": 2,
@@ -279,6 +296,9 @@
     {
      "type": "attack",
      "value": 2,
+     "enhancement": [
+      "square"
+     ],
      "subActions": [
       {
        "type": "target",
@@ -286,10 +306,7 @@
       },
       {
        "type": "pierce",
-       "value": 1,
-       "enhancement": [
-        "square"
-       ]
+       "value": 1
       }
      ]
     }
@@ -307,10 +324,50 @@
     },
     {
      "type": "custom",
-     "text": "When you attack this round, treat all negative and %amd-null% attack modifier cards you draw as +0 instead."
+     "text": "When you attack this round, treat all negative and %amd-null% attack modifier cards you draw as %amd-zero% instead."
     }
    ],
    "duration": "round"
+  }
+ },
+ {
+  "name": "Swarming Minions",
+  "level": 1,
+  "initiative": 61,
+  "top": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant one of your summons, in either order:"
+    },
+    {
+     "type": "custom",
+     "text": "%move% +0"
+    },
+    {
+     "type": "custom",
+     "text": "%attack% +0"
+    }
+   ],
+   "xp": 1
+  },
+  "bottom": {
+   "actions": [
+    {
+     "type": "custom",
+     "text": "Grant all your summons, in either order:"
+    },
+    {
+     "type": "custom",
+     "text": "%move% +0"
+    },
+    {
+     "type": "custom",
+     "text": "%attack% +0"
+    }
+   ],
+   "xp": 2,
+   "lost": true
   }
  },
  {
@@ -355,46 +412,6 @@
      ]
     }
    ]
-  }
- },
- {
-  "name": "Swarming Minions",
-  "level": 1,
-  "initiative": 61,
-  "top": {
-   "actions": [
-    {
-     "type": "custom",
-     "text": "Grant one of your summons, in either order:"
-    },
-    {
-     "type": "custom",
-     "text": "%move% +0"
-    },
-    {
-     "type": "custom",
-     "text": "%attack% +0"
-    }
-   ],
-   "xp": 1
-  },
-  "bottom": {
-   "actions": [
-    {
-     "type": "custom",
-     "text": "Grant all your summons, in either order:"
-    },
-    {
-     "type": "custom",
-     "text": "%move% +0"
-    },
-    {
-     "type": "custom",
-     "text": "%attack% +0"
-    }
-   ],
-   "xp": 2,
-   "lost": true
   }
  },
  {
@@ -542,7 +559,7 @@
      "type": "heal",
      "value": 3,
      "enhancement": [
-      "diamondPlus"
+      "plus"
      ],
      "subActions": [
       {
@@ -564,10 +581,6 @@
   },
   "bottom": {
    "actions": [
-    {
-     "type": "custom",
-     "text": "Summon Steel Scarabs"
-    },
     {
      "type": "summon",
      "name": "Steel Scarabs",
@@ -668,7 +681,7 @@
     },
     {
      "type": "custom",
-     "text": "This round, whenever an enemy performs a move ability that exits a hex adjacent to you and ends in a hex not adjacent to you, after the move ability, you may %jump% to an empty hex adjacent to that enemy."
+     "text": "This round, whenever an enemy performs a move ability that exits a hex adjacent to you and ends in a hex not adjacent to you, after the move ability, you may %teleport% to an empty hex adjacent to that enemy."
     },
     {
      "type": "mandatory",
@@ -728,6 +741,10 @@
   "initiative": 78,
   "top": {
    "actions": [
+    {
+     "type": "custom",
+     "text": "Summon 3 Bloat Maggots"
+    },
     {
      "type": "summon",
      "name": "Bloat Maggots",
@@ -937,6 +954,10 @@
   "bottom": {
    "actions": [
     {
+     "type": "custom",
+     "text": "Summon 2 Lightning Moths %flying%"
+    },
+    {
      "type": "summon",
      "name": "Lightning Moths",
      "stats": {
@@ -946,10 +967,6 @@
       "range": "-"
      },
      "special": [
-      {
-       "type": "custom",
-       "text": "%flying%"
-      },
       {
        "type": "custom",
        "text": "All adjacent summons add +1 %attack% to all their attacks."
@@ -1038,22 +1055,16 @@
   "top": {
    "actions": [
     {
-     "type": "attack",
-     "value": "X+1"
+     "type": "custom",
+     "text": "%attack% X+1"
     },
     {
      "type": "custom",
      "text": "where X is the number of your summons, up to a maximum of 4."
     },
     {
-     "type": "heal",
-     "value": "X+1",
-     "subActions": [
-      {
-       "type": "target",
-       "value": "self"
-      }
-     ]
+     "type": "custom",
+     "text": "%heal% X+1"
     },
     {
      "type": "custom",
@@ -1099,6 +1110,10 @@
        "value": "wound"
       },
       {
+       "type": "custom",
+       "text": ","
+      },
+      {
        "type": "condition",
        "value": "stun"
       }
@@ -1142,6 +1157,10 @@
   "top": {
    "actions": [
     {
+     "type": "custom",
+     "text": "Summon Rage Hornets %flying%"
+    },
+    {
      "type": "summon",
      "name": "Rage Hornets",
      "stats": {
@@ -1151,10 +1170,6 @@
       "range": "-"
      },
      "special": [
-      {
-       "type": "custom",
-       "text": "%flying%"
-      },
       {
        "type": "custom",
        "text": "Add +2 %attack% if the target is adjacent to any of your allies."
@@ -1341,12 +1356,12 @@
      "text": "Grant all your summons, in either order:"
     },
     {
-     "type": "move",
-     "value": 0
+     "type": "custom",
+     "text": "%move% +0"
     },
     {
-     "type": "attack",
-     "value": 0
+     "type": "custom",
+     "text": "%attack% +0"
     }
    ]
   },
@@ -1398,7 +1413,11 @@
      "subActions": [
       {
        "type": "custom",
-       "text": "%target% all your summons adjacent to any hex you entered with the move ability and self"
+       "text": "%target% all your summons adjacent to any hex you entered with the move ability and"
+      },
+      {
+       "type": "target",
+       "value": "self"
       }
      ]
     },

@@ -504,6 +504,9 @@ top:
   - optional:
     - consume: [light]
     - custom: "+1 %attack%"
+  - optional:
+    - consume: [dark]
+    - custom: "+1 %attack%"
   xp: 1
 bottom:
   actions:

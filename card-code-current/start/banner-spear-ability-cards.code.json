@@ -1344,6 +1344,26 @@
        "pattern": "a_ta_s"
       }
      ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%target% 3 enemies within two hexes instead,"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
     }
    ],
    "xp": 1

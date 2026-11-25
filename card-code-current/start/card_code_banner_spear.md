@@ -508,6 +508,10 @@ top:
       sub:
       - stun
     - hex: a_ta_s
+  - optional:
+    - consume: [air]
+    - custom: "%target% 3 enemies within two hexes instead,"
+    - custom: "%xp1%"
   xp: 1
 bottom:
   actions:

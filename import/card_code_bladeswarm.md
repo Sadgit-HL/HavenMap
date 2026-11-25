@@ -4,6 +4,7 @@ initiative: 97
 level: 1
 top:
   actions:
+    - custom: "Summon Soul Leeches"
     - summon:
         stats: [4, 3, X, '-']
         name: Soul Leeches
@@ -22,8 +23,9 @@ bottom:
   actions:
     - wound: ''
       enhancement: [diamond]
-    - custom: '%range% 1'
-      enhancement: [square]
+      sub:
+        - range: 1
+          enhancement: [square]
     - divider
     - heal: 1
       enhancement: [square]
@@ -35,6 +37,7 @@ initiative: 84
 level: 1
 top:
   actions:
+    - custom: "Summon Creeping Beetles"
     - summon:
         stats: [5, 2, 2, '-']
         name: Creeping Beetles
@@ -68,7 +71,7 @@ bottom:
     - move: 2
       enhancement: [circle]
     - divider
-    - custom: "When you are attacked this round, treat all positive and %amd-double% attack modifier cards drawn by enemies as +0 instead."
+    - custom: "When you are attacked this round, treat all positive and %amd-double% attack modifier cards drawn by enemies as %amd-zero% instead."
   duration: round
 
 name: Engulfing Stingers
@@ -76,6 +79,7 @@ initiative: 88
 level: 1
 top:
   actions:
+    - custom: "Summon Angry Wasps %flying%"
     - summon:
         stats: [3, 4, '-', '-']
         name: Angry Wasps
@@ -152,7 +156,7 @@ bottom:
     - move: 2
       enhancement: [circle]
     - divider
-    - custom: "When you attack this round, treat all negative and %amd-null% attack modifier cards you draw as +0 instead."
+    - custom: "When you attack this round, treat all negative and %amd-null% attack modifier cards you draw as %amd-zero% instead."
   duration: round
 
 name: Scattered Defense
@@ -305,8 +309,7 @@ bottom:
     - move: 3
       enhancement: [circle]
     - divider
-    # check: the icon in the text looks like jump (a figure landing on a base)
-    - custom: "This round, whenever an enemy performs a move ability that exits a hex adjacent to you and ends in a hex not adjacent to you, after the move ability, you may %jump% to an empty hex adjacent to that enemy."
+    - custom: "This round, whenever an enemy performs a move ability that exits a hex adjacent to you and ends in a hex not adjacent to you, after the move ability, you may %teleport% to an empty hex adjacent to that enemy."
     - mandatory:
         - air
   duration: round
@@ -333,6 +336,7 @@ initiative: 78
 level: 3
 top:
   actions:
+    - custom: "Summon 3 Bloat Maggots"
     - summon:
         stats: [3, 3, 1, '-']
         name: Bloat Maggots
@@ -421,6 +425,7 @@ top:
     - custom: "%attack% +0"
 bottom:
   actions:
+    - custom: "Summon 2 Lightning Moths %flying%"
     - summon:
         stats: [3, 3, '-', '-']
         name: Lightning Moths
@@ -504,6 +509,7 @@ initiative: 86
 level: 7
 top:
   actions:
+    - custom: "Summon Rage Hornets %flying%"
     - summon:
         stats: [5, 3, 3, '-']
         name: Rage Hornets

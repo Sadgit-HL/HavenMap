@@ -1437,6 +1437,24 @@
        "value": 1
       }
      ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1,
+       "relative": true
+      }
+     ]
     }
    ],
    "xp": 1

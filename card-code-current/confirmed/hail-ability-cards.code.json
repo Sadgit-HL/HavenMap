@@ -998,7 +998,7 @@
    "actions": [
     {
      "type": "custom",
-     "text": "Grant one ally withing %range% 3:"
+     "text": "Grant one ally within %range% 3:"
     },
     {
      "type": "attack",

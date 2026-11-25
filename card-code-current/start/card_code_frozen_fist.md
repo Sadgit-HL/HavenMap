@@ -67,6 +67,12 @@ bottom:
   - optional:
     - consume: [ice]
     - bless: ''
+  - optional:
+    - consume: [earth]
+    - multi:
+      - heal: 2
+      - custom: ","
+      - custom: "%xp1%"
 
 name: Fury of the Mountain
 initiative: 23
@@ -329,6 +335,10 @@ top:
       - consume: [ice]
       - wound: ''
     - hex: et_st
+  - optional:
+    - consume: [earth]
+    - custom: "%?bigger attack area of six hexes%"
+    - custom: "%xp1%"
 bottom:
   actions:
   - move: 3

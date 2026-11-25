@@ -44799,6 +44799,50 @@
     600,
     391
    ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/lost.png",
+   "dst": "icons/icons-lost.webp",
+   "status": "ok",
+   "bytes": 992,
+   "size": [
+    20,
+    20
+   ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/persistent.png",
+   "dst": "icons/icons-persistent.webp",
+   "status": "ok",
+   "bytes": 926,
+   "size": [
+    21,
+    20
+   ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/removed.png",
+   "dst": "icons/icons-removed.webp",
+   "status": "ok",
+   "bytes": 1230,
+   "size": [
+    27,
+    20
+   ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/round.png",
+   "dst": "icons/icons-round.webp",
+   "status": "ok",
+   "bytes": 906,
+   "size": [
+    21,
+    20
+   ]
   }
  ],
  "missing": []

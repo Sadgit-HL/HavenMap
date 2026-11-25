@@ -768,6 +768,26 @@
        "value": 1
       }
      ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%?grey diamond with question mark%"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ]
     }
    ]
   },
@@ -1589,6 +1609,44 @@
       {
        "type": "attack",
        "value": 2
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "mandatory",
+       "actions": [
+        {
+         "type": "damage",
+         "value": 1,
+         "subActions": [
+          {
+           "type": "target",
+           "value": "self"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 2,
+       "relative": true
       }
      ]
     }

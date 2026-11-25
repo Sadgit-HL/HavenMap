@@ -69,5 +69,6 @@ Treat the output as a first draft for the owner to correct: area patterns and `#
 | `compare.py` | compares two readings (card code `.md` or JSON) by what the cards do: abilities and numbers, conditions, elements, XP, lost, persistent, round, hex areas, summons. Layout, wording and enhancement markers do not count. Lists per half what only one reading has |
 | `check.py` | validates extracted card code (also `unusual:` notes from the priors and `word:` notes from `vocab.txt`), compares with known card code |
 | `gh2e-patterns.md` | what 205 Gloomhaven 2e cards look like: structures, marker shapes, values, flags, texts |
+| `elements.py` | finds the element icons on the card pictures (infusion banners and consumptions with a red badge) and compares them with the card code: `python tools/card-extraction/elements.py <class codes>`. Icon templates are learned from the Gloomhaven 2e pictures (cached in `work/`). Exact on Berserker (56 of 56 halves); the dark and air icons are found less often, and round class icons of a similar colour can fool it, so read its "picture shows more" lines as candidates to look at, not as errors |
 | `build-vocab.py`, `vocab.txt` | the word list (885 words of printed card texts) behind the `word:` notes |
 | `../convert-card-code.py` | card code to JSON actions (also used by the checker) |

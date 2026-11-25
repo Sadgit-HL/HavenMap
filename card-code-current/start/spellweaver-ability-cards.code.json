@@ -1180,6 +1180,22 @@
        "pattern": "etx_tt"
       }
      ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "immobilize"
+      }
+     ]
     }
    ],
    "xp": 1

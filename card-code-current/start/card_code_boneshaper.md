@@ -180,6 +180,12 @@ top:
     - consume: [earth]
     - multi:
       - heal: 2
+  - optional:
+    - consume: [dark]
+    - multi:
+      - heal: 2
+      - custom: ","
+      - custom: "%xp1%"
 bottom:
   actions:
   - heal: 1

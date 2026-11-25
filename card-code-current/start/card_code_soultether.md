@@ -642,6 +642,17 @@ top:
       - attack: 1
       - custom: ","
       - wound: ''
+  - optional:
+    - consume: [air]
+    - custom: ","
+    - custom: "%xp1%"
+    - custom: "+1 %attack%"
+    - custom: "+2 %pierce%"
+  - optional:
+    - consume: [dark]
+    - stun: ''
+    - custom: "%xp1%"
+    - custom: "+1 %attack%"
   xp: 1
 bottom:
   actions:

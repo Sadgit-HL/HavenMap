@@ -20,6 +20,10 @@ export const BGG_ICON_GROUPS = [
     {"n": "target", "c": "[ImageID=7410472 inline]", "img": "../images/common/perk-icons/target.png"},
     {"n": "teleport", "c": "[ImageID=7410473 inline]", "img": "../images/common/perk-icons/teleport.png"},
     {"n": "xp", "c": "[ImageID=4184470 inline]", "img": "../images/common/icons/xp.png", "inv": 1},
+    {"n": "lost", "c": "[ImageID=9944319 inline]", "img": "../images/common/icons/lost.png"},
+    {"n": "persistent", "c": "[ImageID=9944320 inline]", "img": "../images/common/icons/persistent.png"},
+    {"n": "removed", "c": "[ImageID=9944321 inline]", "img": "../images/common/icons/removed.png"},
+    {"n": "round", "c": "[ImageID=9944322 inline]", "img": "../images/common/icons/round.png"},
   ] },
   { h: "Conditions", icons: [
     {"n": "bane", "c": "[ImageID=7268961 inline]", "img": "../images/common/conditions/bane.png"},

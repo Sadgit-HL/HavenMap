@@ -397,6 +397,9 @@ top:
       - consume: [fire]
       - custom: "+2 %attack%"
     - hex: etx_tt
+  - optional:
+    - consume: [ice]
+    - immobilize: ''
   xp: 1
 bottom:
   actions:

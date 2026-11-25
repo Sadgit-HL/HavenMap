@@ -72,8 +72,7 @@ bottom:
   - move: 2
     enhancement: [circle]
   - divider
-  # check: +0 icon unnamed
-  - custom: "When you are attacked this round, treat all positive and %amd-double% attack modifier cards drawn by enemies as %?+0 attack modifier card% instead."
+  - custom: "When you are attacked this round, treat all positive and %amd-double% attack modifier cards drawn by enemies as %amd-zero% instead."
   duration: round
 
 name: Engulfing Stingers
@@ -159,8 +158,7 @@ bottom:
   - move: 2
     enhancement: [circle]
   - divider
-  # check: the +0 attack modifier icon has no known token
-  - custom: "When you attack this round, treat all negative and %amd-null% attack modifier cards you draw as %?+0 attack modifier card% instead."
+  - custom: "When you attack this round, treat all negative and %amd-null% attack modifier cards you draw as %amd-zero% instead."
   duration: round
 
 name: Swarming Minions
@@ -313,7 +311,7 @@ bottom:
     - move: 3
       enhancement: [circle]
     - divider
-    - custom: "This round, whenever an enemy performs a move ability that exits a hex adjacent to you and ends in a hex not adjacent to you, after the move ability, you may %?stacked spring arrow on a base, probably jump% to an empty hex adjacent to that enemy."
+    - custom: "This round, whenever an enemy performs a move ability that exits a hex adjacent to you and ends in a hex not adjacent to you, after the move ability, you may %teleport% to an empty hex adjacent to that enemy."
     - mandatory:
         - air
   duration: round

@@ -7,6 +7,8 @@ import { handList, handGrid, handLimit, zoneOf, ownedCards, pendingPicks, cardLe
 import { tokenDefs, tokenImage, stickerImage, markerTokens, MARK_STICKERS, markLabel } from '../scripts/campaign/classTokens.js';
 import { BGG_ICON_GROUPS } from '../scripts/campaign/bggIcons.js';
 import { BANNERS, bannerIcon } from '../scripts/campaign/bggBanners.js';
+import { halfLines, flagsLine } from '../scripts/turnTemplate.js';
+import { TURN } from '../scripts/games/turn_templates.js';
 import { specialName, specialChoices } from '../scripts/campaign/traits.js';
 import { holdStatus, sellPrice } from '../scripts/campaign/edit.js';
 import { canShortRest, restRedoable, restCandidates, restRollCode } from '../scripts/campaign/rest.js';
@@ -207,11 +209,29 @@ export function playmatHtml(c, X, S = {}) {
 // BGG forum posts of the play-by-forum template: the turn (class banner and the two cards in the play slots, slot 1 = top, slot 2 = bottom)
 // and the cards for the next round (initiative of slot 1, both cards, the character's name). Everything else stays as in the template.
 // bannerUrl = the class banner image, pretty = card name, cardById = card data.
-export function turnPost(c, { bannerUrl, pretty, cardById }) {
-  const name = i => (c.play[i] ? pretty(cardById.get(c.play[i].id)?.slug ?? c.play[i].id) : 'XXX');
+// A card with a generated template (scripts/games/turn_templates.js) gets its action lines instead of the placeholder, with the stickers laid on the
+// card (`c.mk['c:<card id>']`, in percent of the card, as the Markers dialog saves them): those on the upper half go with the top action, those on
+// the lower half with the bottom action. The top action takes the top half of the slot 1 card, the bottom action the bottom half of the slot 2 card.
+const HALF_TOP = [8, 53], HALF_BOTTOM = [55, 95];           // the vertical extent of the two halves of a card picture, in percent
+const place = (y, [a, b]) => Math.max(0, Math.min(1, (y - a) / (b - a)));
+export function stickersOf(c, card, key) {
+  const list = (c.mk && card ? c.mk[`c:${card.id}`] : null) || [];
+  return list.filter(m => m && m.s && (key === 't' ? m.y < 54 : m.y >= 54)).map(m => ({ k: m.k, ry: place(m.y, key === 't' ? HALF_TOP : HALF_BOTTOM) })).sort((x, y) => x.ry - y.ry);
+}
+export function turnPost(c, { bannerUrl, pretty, cardById, templates = TURN }) {
+  const card = i => (c.play[i] ? cardById.get(c.play[i].id) : null);
+  const name = i => (c.play[i] ? pretty(card(i)?.slug ?? c.play[i].id) : 'XXX');
+  const body = (i, key, fallback) => {
+    const t = card(i) && templates[card(i).id];
+    if (!t) return fallback;
+    const lines = halfLines(t[key], stickersOf(c, card(i), key));
+    const fl = flagsLine(t[key + 'f']);
+    if (fl && lines.length) lines.push(fl);
+    return lines.length ? lines.join('\n') : fallback;
+  };
   return `[inlineimg]${bannerUrl}[/inlineimg]\n` +
-    `[u][b]${name(0)} - top action[/b][/u]\n[imageid=7410469  inline] X\n\n` +
-    `[u][b]${name(1)} - bottom action[/b][/u]\n[imageid=7410466  inline] X\n\n` +
+    `[u][b]${name(0)} - top action[/b][/u]\n${body(0, 't', '[imageid=7410469  inline] X')}\n\n` +
+    `[u][b]${name(1)} - bottom action[/b][/u]\n${body(1, 'b', '[imageid=7410466  inline] X')}\n\n` +
     '[b]End of Turn[/b]\n---------------------';
 }
 export function cardsPost(c, { pretty, cardById }) {

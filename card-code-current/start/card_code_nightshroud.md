@@ -553,8 +553,10 @@ top:
   - group:
     - custom: "Enemies in the red hexes suffer %damage%2."
     - hex: etb_stx
-  - mandatory:
-    - dark
+  - optional:
+    - consume: [dark]
+    - custom: "Play a card from your hand to perform the top or bottom action of the card,"
+    - custom: "%xp1%"
 bottom:
   actions:
   - multi:
@@ -600,6 +602,8 @@ top:
     - custom: "Grant all allies in the red hexes:"
     - teleport: 3
     - hex: ebx_ttx_stb
+  - mandatory:
+    - dark
 bottom:
   actions:
   - move: 4

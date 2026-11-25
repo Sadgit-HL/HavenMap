@@ -304,6 +304,8 @@ top:
 bottom:
   actions:
   - custom: "Place a character token on a normal or elite enemy within %range%4. This round, during that enemy's turn, it treats its enemies as allies and its allies as enemies, with you controlling its abilities."
+  - mandatory:
+    - dark
   xp: 2
   lost: t
   duration: round
@@ -481,6 +483,12 @@ top:
     enhancement: [diamond]
   - optional:
     - consume: [ice]
+    - multi:
+      - attack: 2
+      - custom: ","
+      - custom: "%xp1%"
+  - optional:
+    - consume: [dark]
     - multi:
       - attack: 2
       - custom: ","

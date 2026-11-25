@@ -1312,6 +1312,33 @@
        "value": 1
       }
      ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "stun"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1,
+       "relative": true
+      }
+     ]
     }
    ],
    "lost": true
@@ -1396,6 +1423,33 @@
     {
      "type": "custom",
      "text": "Add -1 %attack%, +2 %range% to each attack for each enemy already attacked with this ability. Each target after the first must be within %range%2 of the previous target."
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "light"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1,
+       "relative": true
+      },
+      {
+       "type": "pierce",
+       "value": 2
+      }
+     ]
     }
    ],
    "lost": true
@@ -1785,6 +1839,35 @@
        "either": true
       }
      ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "fire",
+        "ice"
+       ],
+       "either": true
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%?orange diamond icon%"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1,
+       "relative": true
+      }
+     ]
     }
    ],
    "xp": 1
@@ -2073,6 +2156,46 @@
     {
      "type": "custom",
      "text": "Add +1 %heal%, gain %xp% 1, and %light% if you consume two or more elements."
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "bless"
+      },
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "condition",
+       "value": "regenerate"
+      },
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
     }
    ]
   }
@@ -2113,6 +2236,68 @@
        "text": "%xp% 1"
       }
      ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%target% all enemies adjacent to the target of the heal ability,"
+      },
+      {
+       "type": "custom",
+       "text": "%?grey diamond with question mark%"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 2,
+       "relative": true
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%target% all enemies at exactly %range% 2 from the target of the heal ability,"
+      },
+      {
+       "type": "custom",
+       "text": "%?orange diamond icon 3%"
+      },
+      {
+       "type": "custom",
+       "text": "%xp% 1"
+      }
+     ],
+     "effects": [
+      {
+       "type": "attack",
+       "value": 1,
+       "relative": true
+      }
+     ]
     }
    ]
   },
@@ -2151,6 +2336,49 @@
     {
      "type": "custom",
      "text": "Add +1 %attack%, gain %xp% 1, and %dark% if you consume two or more elements."
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "air"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "element",
+       "value": "air"
+      }
+     ],
+     "effects": [
+      {
+       "type": "range",
+       "value": 3,
+       "relative": true
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "earth"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%?grey skull diamond%"
+      },
+      {
+       "type": "element",
+       "value": "earth"
+      }
+     ]
     }
    ]
   }

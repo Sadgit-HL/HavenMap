@@ -825,6 +825,15 @@
     {
      "type": "custom",
      "text": "Place a character token on a normal or elite enemy within %range%4. This round, during that enemy's turn, it treats its enemies as allies and its allies as enemies, with you controlling its abilities."
+    },
+    {
+     "type": "mandatory",
+     "actions": [
+      {
+       "type": "element",
+       "value": "dark"
+      }
+     ]
     }
    ],
    "xp": 2,
@@ -1299,6 +1308,36 @@
       "consume": {
        "elements": [
         "ice"
+       ]
+      }
+     },
+     "actions": [
+      {
+       "type": "inline",
+       "actions": [
+        {
+         "type": "attack",
+         "value": 2,
+         "relative": true
+        },
+        {
+         "type": "custom",
+         "text": ","
+        },
+        {
+         "type": "custom",
+         "text": "%xp% 1"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "optional",
+     "cost": {
+      "consume": {
+       "elements": [
+        "dark"
        ]
       }
      },
