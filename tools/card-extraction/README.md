@@ -1,6 +1,6 @@
 # Card extraction: ability card pictures to card code
 
-For the classes that have no Secretariat data (the Gloomhaven 2e classes without a deck file, and the Mercenary Pack classes). A reader (a Claude agent or a person) looks at the card picture and writes the card code, the structured text the owner writes cards with (`import/card_code_*.md`). `tools/convert-card-code.py` turns card code into JSON actions.
+For the classes that have no usable Secretariat data (Bladeswarm and Plagueherald in Gloomhaven 2e, Infuser and Metal Mosaic in Frosthaven, and the Mercenary Pack classes). The other classes are converted from the Secretariat by `../convert-secretariat-cards.py`. A reader (a Claude agent or a person) looks at the card picture and writes the card code, the structured text the owner writes cards with (`import/card_code_*.md`). `tools/convert-card-code.py` turns card code into JSON actions.
 
 What the first two classes (Hail, Cassandra; 57 cards written by the owner) taught, and what the tool now builds in:
 
@@ -15,6 +15,8 @@ What the first two classes (Hail, Cassandra; 57 cards written by the owner) taug
 The card code is the syntax of the Card Creator of the Gloomhaven and Frosthaven Enhanced Tabletop Simulator mod (the web tool the owner pastes it into, https://gloomhaven-party-tracker.herokuapp.com/). Its documentation, the authority for keys, conditions, elements, hex letters, tokens, summons and flags: https://gloomhaven-tts-enhanced.github.io/public-scripts/creator/card_creator.html (source of the pages: github.com/gloomhaven-tts-enhanced/public-scripts, folder docs; the creator itself is not in that repository). `brief.md` follows it; `check.py` knows its vocabulary.
 
 ## Use
+
+The pictures are read from `images/character-abilities/` (`pictures.py`: `gh2/bs2-brute-force.webp`, `mp/hl-...webp`, `fh/me-fh-ancient-drill.webp`). `--assets` points to an older Wordhaven_Assets clone instead. Frosthaven classes work (Infuser, Metal Mosaic).
 
 ```
 python tools/card-extraction/prepare.py <class code, name or index> [--batch 7] [--only slug,slug] [--out DIR]
@@ -63,6 +65,8 @@ Treat the output as a first draft for the owner to correct: area patterns and `#
 | `hexes.py` | reads the hex areas of a card picture by colour and shape (red target hexes, the grey self hex, the small enhancement hexagons) and writes the `hex:` pattern: exact, no tokens; `--test` checks it against the confirmed patterns; `prepare.py` puts the result in the task table |
 | `merge.py` | merges the readers' batch files into one card code file in the order of the class's card list; a card read twice is kept once and the two readings are compared |
 | `review.py` | builds a page with each card picture next to its extracted card code, the checker's notes, a copy button and a frame for a screenshot of the rendered card |
+| `pictures.py` | where the card pictures are (the repo's `images/character-abilities/`, or an older Wordhaven_Assets clone) |
+| `compare.py` | compares two readings (card code `.md` or JSON) by what the cards do: abilities and numbers, conditions, elements, XP, lost, persistent, round, hex areas, summons. Layout, wording and enhancement markers do not count. Lists per half what only one reading has |
 | `check.py` | validates extracted card code (also `unusual:` notes from the priors and `word:` notes from `vocab.txt`), compares with known card code |
 | `gh2e-patterns.md` | what 205 Gloomhaven 2e cards look like: structures, marker shapes, values, flags, texts |
 | `build-vocab.py`, `vocab.txt` | the word list (885 words of printed card texts) behind the `word:` notes |
