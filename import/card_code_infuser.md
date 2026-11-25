@@ -530,7 +530,7 @@ top:
             - attack: 4
               enhancement: [diamond]
             - optional:
-                - custom: "-1 %attack% : %push% 1, %dark%, %xp1%"
+                - custom: "-1 %attack% : %pull% 1, %dark%, %xp1%"
         - hex: sbttx
 bottom:
   actions:

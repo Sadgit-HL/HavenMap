@@ -1418,7 +1418,7 @@
          "actions": [
           {
            "type": "custom",
-           "text": "-1 %attack% : %push% 1, %dark%, %xp% 1"
+           "text": "-1 %attack% : %pull% 1, %dark%, %xp% 1"
           }
          ]
         }
