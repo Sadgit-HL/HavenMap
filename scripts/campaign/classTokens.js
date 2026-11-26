@@ -7,8 +7,8 @@ export const TOKEN_DEFS = {
   quartermaster: [{ k: 'supply', l: 'Supply', img: 'quartermaster_supply', step: 10, max: 50 }],
   soothsinger: [{ k: 'high', l: 'High note', img: 'soothsinger_high_note', max: 2 }, { k: 'low', l: 'Low note', img: 'soothsinger_low_note', max: 2 }],
   geminate: [{ k: 'form', l: 'Form', states: ['Melee', 'Ranged'], imgs: ['images/common/conditions/geminate_melee', 'images/common/conditions/geminate_range'] }],   // the two condition pictures: no ranged token picture exists
-  hive: [{ k: 'steam', l: 'Steam', states: ['Low pressure', 'Regular pressure', 'High pressure', 'Overpressure'],
-    imgs: ['hive_steam_blue', 'hive_steam_green', 'hive_steam_yellow', 'hive_steam_red'] }],      // the steam gauge, blue to red (scripts: tools/make-hive-steam-tokens.py)
+  hive: [{ k: 'pressure', l: 'Pressure', states: ['Low pressure', 'Regular pressure', 'High pressure', 'Overpressure'],
+    imgs: ['hive_pressure_low', 'hive_pressure_regular', 'hive_pressure_high', 'hive_pressure_over'] }],      // the pressure gauge (tools/make-hive-pressure-tokens.py)
   deepwraith: [{ k: 'trophy', l: 'Trophy', img: 'deepwraith_trophy', max: 5 }],
   shattersong: [{ k: 'resonance', l: 'Resonance', img: 'shattersong_resonance', max: 5 }],
   blinkblade: [{ k: 'time', l: 'Time', img: 'blinkblade_time', max: 5 },

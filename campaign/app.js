@@ -752,7 +752,13 @@ function bumpToken(el, dir) {
 }
 main.addEventListener('contextmenu', e => {                                                               // right click on the picture takes one step away (no menu)
   const tc = e.target.closest?.('[data-tkc]');
-  if (tc) { e.preventDefault(); e.stopPropagation(); bumpToken(tc, -1); }
+  if (tc) { e.preventDefault(); e.stopPropagation(); bumpToken(tc, -1); return; }
+  const ts = e.target.closest?.('button[data-tk]:not([data-d])');                                         // a toggle token (states): right click goes back one state
+  if (ts) {
+    e.preventDefault(); e.stopPropagation();
+    const c = record?.chars.find(x => x.id === ts.dataset.char), d = c && tokenDefs(c.cls).find(t => t.k === ts.dataset.tk);
+    if (d?.states) commit(ed.setToken(record, c.id, d.k, ((c.tok?.[d.k] || 0) - 1 + d.states.length) % d.states.length));
+  }
 });
 document.addEventListener('keydown', e => {
   if (e.code !== 'Space' || !flowOver || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return;

@@ -191,7 +191,7 @@ function main() {
     const cm = clsSrc.match(new RegExp(`\\{"i":(\\d+),"code":"${code}","name":"([^"]+)"`));
     if (!cm) { console.error(`unknown class code ${code}`); process.exitCode = 1; continue; }
     const idx = +cm[1], name = cm[2];
-    const file = ['confirmed', 'wip', 'start'].map(f => join(ROOT, 'card-code-current', f, `${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-ability-cards.code.json`)).find(existsSync);
+    const file = ['confirmed', 'wip', 'start'].map(f => join(ROOT, 'card-code-current', f, `${name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}-ability-cards.code.json`)).find(existsSync);
     if (!file) { console.error(`no card code JSON for ${name}`); process.exitCode = 1; continue; }
     const list = JSON.parse(readFileSync(file, 'utf8'));
     const mine = cards.filter(c => c.cls === idx);

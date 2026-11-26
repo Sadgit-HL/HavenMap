@@ -44845,52 +44845,52 @@
    ]
   },
   {
-   "group": "generated tokens",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/mercenary_tokens/hive_steam_blue.png",
-   "dst": "icons/tokens-hive_steam_blue.webp",
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/mercenary_tokens/hive_pressure_low.png",
+   "dst": "icons/tokens-hive_pressure_low.webp",
    "status": "ok",
-   "bytes": 6310,
+   "bytes": 8088,
    "size": [
-    156,
-    156
+    150,
+    150
    ],
-   "generated": "tools/make-hive-steam-tokens.py"
+   "generated": "tools/make-hive-pressure-tokens.py"
   },
   {
-   "group": "generated tokens",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/mercenary_tokens/hive_steam_green.png",
-   "dst": "icons/tokens-hive_steam_green.webp",
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/mercenary_tokens/hive_pressure_regular.png",
+   "dst": "icons/tokens-hive_pressure_regular.webp",
    "status": "ok",
-   "bytes": 5934,
+   "bytes": 7468,
    "size": [
-    156,
-    156
+    150,
+    150
    ],
-   "generated": "tools/make-hive-steam-tokens.py"
+   "generated": "tools/make-hive-pressure-tokens.py"
   },
   {
-   "group": "generated tokens",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/mercenary_tokens/hive_steam_yellow.png",
-   "dst": "icons/tokens-hive_steam_yellow.webp",
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/mercenary_tokens/hive_pressure_high.png",
+   "dst": "icons/tokens-hive_pressure_high.webp",
    "status": "ok",
-   "bytes": 5378,
+   "bytes": 7790,
    "size": [
-    156,
-    156
+    150,
+    150
    ],
-   "generated": "tools/make-hive-steam-tokens.py"
+   "generated": "tools/make-hive-pressure-tokens.py"
   },
   {
-   "group": "generated tokens",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/mercenary_tokens/hive_steam_red.png",
-   "dst": "icons/tokens-hive_steam_red.webp",
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/mercenary_tokens/hive_pressure_over.png",
+   "dst": "icons/tokens-hive_pressure_over.webp",
    "status": "ok",
-   "bytes": 6080,
+   "bytes": 7942,
    "size": [
-    156,
-    156
+    150,
+    150
    ],
-   "generated": "tools/make-hive-steam-tokens.py"
+   "generated": "tools/make-hive-pressure-tokens.py"
   }
  ],
  "missing": []
