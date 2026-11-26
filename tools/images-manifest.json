@@ -45058,7 +45058,7 @@
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/over_pressure.png",
    "dst": "icons/icons-over_pressure.webp",
    "status": "ok",
-   "bytes": 4676,
+   "bytes": 1996,
    "size": [
     96,
     96
@@ -45069,7 +45069,7 @@
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/high_pressure.png",
    "dst": "icons/icons-high_pressure.webp",
    "status": "ok",
-   "bytes": 4704,
+   "bytes": 2332,
    "size": [
     96,
     96
@@ -45080,7 +45080,7 @@
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/regular_pressure.png",
    "dst": "icons/icons-regular_pressure.webp",
    "status": "ok",
-   "bytes": 4558,
+   "bytes": 2048,
    "size": [
     96,
     96
@@ -45091,7 +45091,7 @@
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/low_pressure.png",
    "dst": "icons/icons-low_pressure.webp",
    "status": "ok",
-   "bytes": 4714,
+   "bytes": 1934,
    "size": [
     96,
     96

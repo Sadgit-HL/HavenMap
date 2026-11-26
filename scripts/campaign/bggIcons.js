@@ -108,9 +108,9 @@ export const BGG_ICON_GROUPS = [
     {"n": "prism-mode", "c": "[ImageID=9946807 inline]", "img": "../images/common/icons/hive-mode.png"},
     {"n": "fh-mode", "c": "[ImageID=9946807 inline]", "img": "../images/common/icons/hive-mode.png"},
     {"n": "hive-transfer", "c": "[ImageID=9946806 inline]", "img": "../images/common/icons/hive-transfer.png"},
-    {"n": "low_pressure", "c": "[ImageID=9946837 inline]", "img": "../images/common/icons/low_pressure.png"},
-    {"n": "regular_pressure", "c": "[ImageID=9946836 inline]", "img": "../images/common/icons/regular_pressure.png"},
-    {"n": "high_pressure", "c": "[ImageID=9946835 inline]", "img": "../images/common/icons/high_pressure.png"},
-    {"n": "over_pressure", "c": "[ImageID=9946834 inline]", "img": "../images/common/icons/over_pressure.png"},
+    {"n": "low_pressure", "c": "[ImageID=9946848 inline]", "img": "../images/common/icons/low_pressure.png"},
+    {"n": "regular_pressure", "c": "[ImageID=9946850 inline]", "img": "../images/common/icons/regular_pressure.png"},
+    {"n": "high_pressure", "c": "[ImageID=9946847 inline]", "img": "../images/common/icons/high_pressure.png"},
+    {"n": "over_pressure", "c": "[ImageID=9946849 inline]", "img": "../images/common/icons/over_pressure.png"},
   ] },
 ];
