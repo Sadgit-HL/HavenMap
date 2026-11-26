@@ -1,6 +1,7 @@
 // Shared by the card generators (build-turn-templates.mjs, build-card-actions.mjs): the card code of the classes named by class code, matched to the
 // app's card ids (scripts/games/gh2_cards.js).
-// Source: card-code-current/<folder>/<class>-ability-cards.code.json. A card is matched by name, else by initiative and level, else by initiative alone
+// Source: card-code-current/<folder>/<class>-ability-cards.code.json. A card is matched by name and level (the Jaws of the Lion files also hold the tutorial
+// cards A and B under the same names), else by name, else by initiative and level, else by initiative alone
 // when that is unique in the class (the app has level X cards that the card code spells differently).
 import { readFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -25,7 +26,7 @@ export function eachCard(classCodes, onCard) {
     const list = JSON.parse(readFileSync(file, 'utf8'));
     const mine = cards.filter(c => c.cls === idx);
     for (const c of mine) {
-      let j = list.find(x => norm(x.name) === c.slug) || list.find(x => x.initiative === c.ini && levelKey(x.level) === c.lv);
+      let j = list.find(x => norm(x.name) === c.slug && levelKey(x.level) === c.lv) || list.find(x => norm(x.name) === c.slug) || list.find(x => x.initiative === c.ini && levelKey(x.level) === c.lv);
       if (!j) {
         const same = list.filter(x => x.initiative === c.ini);
         if (same.length === 1) { j = same[0]; console.log(`${name}: ${c.slug} matched by initiative ${c.ini} alone (level ${c.lv} here, ${same[0].level} in the card code)`); }

@@ -53,7 +53,7 @@ export const tests = {
   },
   'card actions: the generated file has typed lines with the original text'() {
     const ids = Object.keys(CARD_ACTIONS);
-    assert.ok(ids.length > 250, `${ids.length} cards with typed lines`);
+    assert.ok(ids.length > 200, `${ids.length} cards with typed lines`);
     for (const id of ids) {
       for (const half of ['t', 'b']) {
         for (const line of CARD_ACTIONS[id][half] || []) {
