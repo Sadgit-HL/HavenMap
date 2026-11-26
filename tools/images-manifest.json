@@ -44843,6 +44843,54 @@
     21,
     20
    ]
+  },
+  {
+   "group": "generated tokens",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/mercenary_tokens/hive_steam_blue.png",
+   "dst": "icons/tokens-hive_steam_blue.webp",
+   "status": "ok",
+   "bytes": 6310,
+   "size": [
+    156,
+    156
+   ],
+   "generated": "tools/make-hive-steam-tokens.py"
+  },
+  {
+   "group": "generated tokens",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/mercenary_tokens/hive_steam_green.png",
+   "dst": "icons/tokens-hive_steam_green.webp",
+   "status": "ok",
+   "bytes": 5934,
+   "size": [
+    156,
+    156
+   ],
+   "generated": "tools/make-hive-steam-tokens.py"
+  },
+  {
+   "group": "generated tokens",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/mercenary_tokens/hive_steam_yellow.png",
+   "dst": "icons/tokens-hive_steam_yellow.webp",
+   "status": "ok",
+   "bytes": 5378,
+   "size": [
+    156,
+    156
+   ],
+   "generated": "tools/make-hive-steam-tokens.py"
+  },
+  {
+   "group": "generated tokens",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/mercenary_tokens/hive_steam_red.png",
+   "dst": "icons/tokens-hive_steam_red.webp",
+   "status": "ok",
+   "bytes": 6080,
+   "size": [
+    156,
+    156
+   ],
+   "generated": "tools/make-hive-steam-tokens.py"
   }
  ],
  "missing": []

@@ -1037,12 +1037,12 @@ export function setMastery(r, cid, index, on) {
   return edit(r, x => { const pk = x.chars.find(y => y.id === cid).pk; pk.ms = on ? [...pk.ms, i].sort((p, q) => p - q) : pk.ms.filter(m => m !== i); });
 }
 
-// A class token of a character: a count (0 to 99) or, for a token with states, the state index. Keys the class does not have are ignored.
+// A class token of a character: a count (0 to its max, 99 unless the token has one) or, for a token with states, the state index. Keys the class does not have are ignored.
 export function setToken(r, cid, key, value) {
   const c = r.chars.find(x => x.id === cid);
   const d = c && tokenDefs(c.cls).find(t => t.k === key), n = toInt(value);
   if (!d || n === null) return r;
-  const v = d.states ? clamp(n, 0, d.states.length - 1) : d.step ? clamp(Math.round(n / d.step) * d.step, 0, 99 - (99 % d.step)) : clamp(n, 0, 99);   // a token with a step (the supply: 10) holds multiples of it
+  const v = d.states ? clamp(n, 0, d.states.length - 1) : d.step ? clamp(Math.round(n / d.step) * d.step, 0, (d.max ?? 99) - ((d.max ?? 99) % d.step)) : clamp(n, 0, d.max ?? 99);   // a token with a step (the supply: 10) holds multiples of it
   if ((c.tok?.[key] || 0) === v) return r;
   return edit(r, x => { const ch = x.chars.find(y => y.id === cid); ch.tok = { ...(ch.tok || {}), [key]: v }; });
 }

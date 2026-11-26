@@ -2418,7 +2418,8 @@ registerMenu({
     const cur = hud ? c[key] || 0 : c.tok?.[key] || 0, set = v => commit(hud ? ed.setCharacter(record, c.id, key, v) : ed.setToken(record, c.id, key, v));
     if (!hud && tokenDefs(c.cls).find(t => t.k === key)?.step === 10)
       return [{ label: '+10', run: () => set(cur + 10) }, { label: '−10', disabled: cur < 1, run: () => set(Math.max(0, cur - 10)) }, { sep: true }, { label: 'Reset to 0', danger: true, disabled: !cur, run: () => set(0) }];
-    return [{ label: '+10', run: () => set(cur + 10) }, { label: '+5', run: () => set(cur + 5) }, { label: '+1', run: () => set(cur + 1) }, { label: '\u22121', disabled: cur < 1, run: () => set(Math.max(0, cur - 1)) }, { label: '\u22125', disabled: cur < 1, run: () => set(Math.max(0, cur - 5)) }, { label: '\u221210', disabled: cur < 1, run: () => set(Math.max(0, cur - 10)) }, { sep: true },
+    const max = hud ? 99 : tokenDefs(c.cls).find(t => t.k === key)?.max ?? 99, ns = [10, 5, 1].filter(n => n <= max);       // a token with a low maximum offers the small steps only
+    return [...ns.map(n => ({ label: `+${n}`, disabled: cur >= max, run: () => set(cur + n) })), ...[...ns].reverse().map(n => ({ label: `−${n}`, disabled: cur < 1, run: () => set(Math.max(0, cur - n)) })), { sep: true },
       { label: 'Reset to 0', danger: true, disabled: !cur, run: async () => { if (hud && !await ask({ title: 'Reset value', text: 'Reset this value to 0?', ok: 'Reset', danger: true })) return; set(0); } }];
   },
 });
