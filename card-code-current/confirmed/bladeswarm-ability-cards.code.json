@@ -134,7 +134,7 @@
      "subActions": [
       {
        "type": "custom",
-       "text": "%target% 3 enemies within 2 hexes, %?grey diamond with question mark%"
+       "text": "%target% 3 enemies within 2 hexes, %muddle%"
       }
      ]
     }
@@ -177,10 +177,6 @@
       "range": "-"
      },
      "special": [
-      {
-       "type": "custom",
-       "text": "%flying%"
-      },
       {
        "type": "custom",
        "text": "At end of turn, all adjacent allies and enemies suffer %damage%2."
@@ -973,10 +969,6 @@
      "special": [
       {
        "type": "custom",
-       "text": "%flying%"
-      },
-      {
-       "type": "custom",
        "text": "All adjacent summons add +1 %attack% to all their attacks."
       }
      ],
@@ -1180,10 +1172,6 @@
       "range": "-"
      },
      "special": [
-      {
-       "type": "custom",
-       "text": "%flying%"
-      },
       {
        "type": "custom",
        "text": "Add +2 %attack% if the target is adjacent to any of your allies."

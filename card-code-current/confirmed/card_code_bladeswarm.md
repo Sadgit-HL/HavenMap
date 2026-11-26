@@ -65,7 +65,7 @@ top:
     - attack: 1
       sub:
         # check: the grey diamond with a question mark at the end may be muddle
-        - custom: '%target% 3 enemies within 2 hexes, %?grey diamond with question mark%'
+        - custom: '%target% 3 enemies within 2 hexes, %muddle%'
 bottom:
   actions:
     - move: 2
@@ -85,7 +85,6 @@ top:
         name: Angry Wasps
         enhancement: [square, 0, 0, 0]
         special:
-          - custom: '%flying%'
           - custom: "At end of turn, all adjacent allies and enemies suffer %damage%2."
         # check: the summon art is not in the assets yet
         image:
@@ -431,7 +430,6 @@ bottom:
         name: Lightning Moths
         enhancement: [square, square, 0, 0]
         special:
-          - custom: '%flying%'
           - custom: "All adjacent summons add +1 %attack% to all their attacks."
         # check: the summon art is not in the assets yet
         image:
@@ -515,7 +513,6 @@ top:
         name: Rage Hornets
         enhancement: [square, square, 0, 0]
         special:
-          - custom: '%flying%'
           - custom: "Add +2 %attack% if the target is adjacent to any of your allies."
         # check: the summon art is not in the assets yet
         image:

@@ -17,7 +17,7 @@ Move a class's two files (`card_code_<class>.md` and `<class>-ability-cards.code
 | confirmed | Satha | mp | confirmed by the owner | import/card_code_satha.md | tools/satha-ability-cards.code.json |
 | wip | Infuser | fh | read from the pictures, not checked | import/card_code_infuser.md | made from the card code with tools/convert-card-code.py |
 | start | Banner Spear | fh | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_banner_spear.md | tools/secretariat-cards/banner-spear-ability-cards.code.json |
-| wip | Bladeswarm | gh2 | read from the pictures, not checked | import/card_code_bladeswarm.md | made from the card code with tools/convert-card-code.py |
+| confirmed | Bladeswarm | gh2 | two picture readings compared, the 6 disputed halves checked against the pictures; muddle icon and spurious flying entries fixed (2026-11-26) | import/card_code_bladeswarm.md | made from the card code with tools/convert-card-code.py |
 | start | Blinkblade | fh | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_blinkblade.md | tools/secretariat-cards/blinkblade-ability-cards.code.json |
 | start | Boneshaper | fh | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_boneshaper.md | tools/secretariat-cards/boneshaper-ability-cards.code.json |
 | start | Bruiser | gh2 | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_bruiser.md | tools/secretariat-cards/bruiser-ability-cards.code.json |
