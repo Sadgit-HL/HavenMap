@@ -1406,7 +1406,7 @@
    ],
    "xp": 2,
    "lost": true,
-   "duration": "round"
+   "duration": "persistent"
   }
  },
  {
@@ -1701,7 +1701,7 @@
    "actions": [
     {
      "type": "custom",
-     "text": "%data.custom.gh2e.saw.abilities.445.1%"
+     "text": "Remove one negative condition you have."
     },
     {
      "type": "heal",

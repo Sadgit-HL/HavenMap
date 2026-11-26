@@ -539,7 +539,7 @@ bottom:
   - custom: "Whenever you or an ally perform a heal ability on a \"Medical Pack\" ability card, that character may add +4 %attack% to their next attack that round of +4 %move% to their next move ability that round."
   xp: 2
   lost: t
-  duration: round
+  duration: persistent
 
 name: Grisly Trauma
 initiative: 81
@@ -654,7 +654,7 @@ top:
     - self
 bottom:
   actions:
-  - custom: "%data.custom.gh2e.saw.abilities.445.1%"
+  - custom: "Remove one negative condition you have."
   - heal: 3
     sub:
     - self

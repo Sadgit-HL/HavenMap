@@ -40,7 +40,7 @@ Move a class's two files (`card_code_<class>.md` and `<class>-ability-cards.code
 | start | Pyroclast | fh | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_pyroclast.md | tools/secretariat-cards/pyroclast-ability-cards.code.json |
 | start | Quartermaster | gh2 | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_quartermaster.md | tools/secretariat-cards/quartermaster-ability-cards.code.json |
 | start | Red Guard | jotl | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_red_guard.md | tools/secretariat-cards/red-guard-ability-cards.code.json |
-| start | Sawbones | gh2 | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_sawbones.md | tools/secretariat-cards/sawbones-ability-cards.code.json |
+| confirmed | Sawbones | gh2 | Secretariat conversion checked by a blind re-reading of the pictures; two errors fixed (Secret of the Oak bottom persistent, Medical Pack 6 text) (2026-11-26) | tools/secretariat-cards/card_code_sawbones.md | tools/secretariat-cards/sawbones-ability-cards.code.json |
 | start | Shattersong | fh | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_shattersong.md | tools/secretariat-cards/shattersong-ability-cards.code.json |
 | start | Silent Knife | gh2 | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_silent_knife.md | tools/secretariat-cards/silent-knife-ability-cards.code.json |
 | start | Snowdancer | fh | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_snowdancer.md | tools/secretariat-cards/snowdancer-ability-cards.code.json |
