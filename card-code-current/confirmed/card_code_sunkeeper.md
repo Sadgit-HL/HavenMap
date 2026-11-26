@@ -191,10 +191,7 @@ bottom:
       enhancement: [square]
   - optional:
     - consume: [light]
-    - multi:
-      - range: 1
-      - custom: ","
-      - custom: "%xp1%"
+    - custom: "+1 %range%, %xp1%"
 
 name: Protective Blessing
 initiative: 16
@@ -414,10 +411,7 @@ bottom:
     - range: 3
   - optional:
     - consume: [light]
-    - multi:
-      - target: 1
-      - custom: ","
-      - custom: "%xp1%"
+    - custom: "+1 %target%, %xp1%"
 
 name: Cautious Advance
 initiative: 18
@@ -513,7 +507,7 @@ bottom:
   - optional:
     - consume: [light]
     - multi:
-      - custom: "Treat all positive and %double% attack modifier cards drawn by enemies this round to be %plus0% instead, %xp1%."
+      - custom: "Treat all positive and %amd-double% attack modifier cards drawn by enemies this round to be %amd-zero% instead, %xp1%."
     noLine: true
   duration: round
 
@@ -528,7 +522,7 @@ top:
   duration: persistent
 bottom:
   actions:
-  - custom: "Whenever you %light% during one of your attack abilities, add +1 %attack%, %pierce%1 to all the attacks and treat all %null% attack modifier cards drawn as %double% instead."
+  - custom: "Whenever you %light% during one of your attack abilities, add +1 %attack%, %pierce%1 to all the attacks and treat all %amd-null% attack modifier cards drawn as %amd-double% instead."
   xp: 1
   lost: t
   duration: persistent

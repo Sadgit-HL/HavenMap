@@ -64,9 +64,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     }
    ],
@@ -124,9 +125,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     },
     {
@@ -199,9 +201,10 @@
      },
      "special": [],
      "enhancement": [
-      "heal",
-      "move",
-      "range"
+      "square",
+      "square",
+      0,
+      "square"
      ]
     }
    ],
@@ -253,7 +256,10 @@
       }
      ],
      "enhancement": [
-      "heal"
+      "square",
+      0,
+      0,
+      0
      ]
     }
    ],
@@ -583,22 +589,8 @@
      },
      "actions": [
       {
-       "type": "inline",
-       "actions": [
-        {
-         "type": "target",
-         "value": 1,
-         "relative": true
-        },
-        {
-         "type": "custom",
-         "text": ","
-        },
-        {
-         "type": "custom",
-         "text": "%xp% 1"
-        }
-       ]
+       "type": "custom",
+       "text": "+1 %target%, %xp% 1"
       }
      ]
     }
@@ -747,7 +739,10 @@
       }
      ],
      "enhancement": [
-      "heal"
+      "square",
+      0,
+      0,
+      0
      ]
     },
     {
@@ -814,40 +809,8 @@
      },
      "actions": [
       {
-       "type": "inline",
-       "actions": [
-        {
-         "type": "attack",
-         "value": 1,
-         "relative": true
-        },
-        {
-         "type": "custom",
-         "text": ","
-        },
-        {
-         "type": "range",
-         "value": 1,
-         "relative": true
-        },
-        {
-         "type": "custom",
-         "text": ","
-        },
-        {
-         "type": "push",
-         "value": 1,
-         "relative": true
-        },
-        {
-         "type": "custom",
-         "text": ","
-        },
-        {
-         "type": "custom",
-         "text": "%xp% 1"
-        }
-       ]
+       "type": "custom",
+       "text": "+1 %attack%, +1 %range%, +1 %push%, %xp% 1"
       }
      ]
     }
@@ -1165,9 +1128,10 @@
      },
      "special": [],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     }
    ],
@@ -1326,7 +1290,10 @@
       }
      ],
      "enhancement": [
-      "heal"
+      "square",
+      0,
+      0,
+      0
      ]
     },
     {
@@ -1367,9 +1334,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     }
    ],
@@ -1540,9 +1508,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     }
    ],
@@ -1695,9 +1664,10 @@
      },
      "special": [],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     },
     {
@@ -1978,10 +1948,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move",
-      "attack",
-      "range"
+      "square",
+      "square",
+      "square",
+      "square"
      ]
     }
    ],
@@ -2024,9 +1994,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     }
    ],

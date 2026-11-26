@@ -744,7 +744,10 @@
       }
      ],
      "enhancement": [
-      "heal"
+      "square",
+      0,
+      0,
+      0
      ]
     }
    ],
@@ -1027,7 +1030,10 @@
       }
      ],
      "enhancement": [
-      "heal"
+      "square",
+      0,
+      0,
+      0
      ]
     }
    ],
@@ -1542,22 +1548,8 @@
      },
      "actions": [
       {
-       "type": "inline",
-       "actions": [
-        {
-         "type": "target",
-         "value": 1,
-         "relative": true
-        },
-        {
-         "type": "custom",
-         "text": ","
-        },
-        {
-         "type": "custom",
-         "text": "%xp% 2"
-        }
-       ]
+       "type": "custom",
+       "text": "+1 %target%, %xp% 2"
       }
      ]
     }
@@ -1869,7 +1861,10 @@
       }
      ],
      "enhancement": [
-      "heal"
+      "square",
+      0,
+      0,
+      0
      ]
     }
    ],

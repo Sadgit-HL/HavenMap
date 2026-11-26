@@ -559,22 +559,8 @@
      },
      "actions": [
       {
-       "type": "inline",
-       "actions": [
-        {
-         "type": "range",
-         "value": 1,
-         "relative": true
-        },
-        {
-         "type": "custom",
-         "text": ","
-        },
-        {
-         "type": "custom",
-         "text": "%xp% 1"
-        }
-       ]
+       "type": "custom",
+       "text": "+1 %range%, %xp% 1"
       }
      ]
     }
@@ -1216,22 +1202,8 @@
      },
      "actions": [
       {
-       "type": "inline",
-       "actions": [
-        {
-         "type": "target",
-         "value": 1,
-         "relative": true
-        },
-        {
-         "type": "custom",
-         "text": ","
-        },
-        {
-         "type": "custom",
-         "text": "%xp% 1"
-        }
-       ]
+       "type": "custom",
+       "text": "+1 %target%, %xp% 1"
       }
      ]
     }
@@ -1526,7 +1498,7 @@
        "actions": [
         {
          "type": "custom",
-         "text": "Treat all positive and %double% attack modifier cards drawn by enemies this round to be %plus0% instead, %xp% 1."
+         "text": "Treat all positive and %amd-double% attack modifier cards drawn by enemies this round to be %amd-zero% instead, %xp% 1."
         }
        ]
       }
@@ -1557,7 +1529,7 @@
    "actions": [
     {
      "type": "custom",
-     "text": "Whenever you %light% during one of your attack abilities, add +1 %attack%, %pierce%1 to all the attacks and treat all %null% attack modifier cards drawn as %double% instead."
+     "text": "Whenever you %light% during one of your attack abilities, add +1 %attack%, %pierce%1 to all the attacks and treat all %amd-null% attack modifier cards drawn as %amd-double% instead."
     }
    ],
    "xp": 1,

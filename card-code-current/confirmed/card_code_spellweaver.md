@@ -509,7 +509,7 @@ top:
       - consume: [fire]
       - pierce: 3
       - custom: "%xp1%"
-    - hex: t_et_et_eet_eet
+    - hex: t_t_et_et_eet
   - mandatory:
     - ice
   xp: 1

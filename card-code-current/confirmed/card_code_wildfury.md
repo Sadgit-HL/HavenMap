@@ -257,7 +257,7 @@ top:
       stats: [1, -, -, -]
       special:
       - custom: "All allies within %range%3 add %pierce%1 to all their attacks."
-      enhancement: [heal]
+      enhancement: [square, 0, 0, 0]
   xp: 1
   duration: persistent
 bottom:
@@ -357,7 +357,7 @@ top:
       stats: [2, -, -, -]
       special:
       - custom: "All allies within %range%3 gain %shield%1."
-      enhancement: [heal]
+      enhancement: [square, 0, 0, 0]
   xp: 1
   duration: persistent
 bottom:
@@ -531,10 +531,7 @@ top:
     - disarm
   - optional:
     - consume: [air/earth]
-    - multi:
-      - target: 1
-      - custom: ","
-      - custom: "%xp2%"
+    - custom: "+1 %target%, %xp2%"
 bottom:
   actions:
   - move: 4
@@ -645,7 +642,7 @@ top:
       stats: [3, -, -, -]
       special:
       - custom: "All allies within %range%3 add +2 %attack% to their first attack each round."
-      enhancement: [heal]
+      enhancement: [square, 0, 0, 0]
   xp: 1
   duration: persistent
 bottom:

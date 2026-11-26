@@ -26,7 +26,7 @@ top:
       stats: [7, 2, 1, -]
       special:
       - shield: 1
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   xp: 1
   lost: t
   duration: persistent
@@ -49,7 +49,7 @@ top:
       stats: [2, 3, 2, -]
       special:
       - pierce: 1
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   - custom: "Whenever a Shadow Wolf dies, %dark% and all Shadow Wolves gain %invisible%."
   xp: 1
   lost: t
@@ -76,7 +76,7 @@ bottom:
   - summon:
       name: Thorn Shooter
       stats: [3, 2, "%poison%", 4]
-      enhancement: [heal, move, range]
+      enhancement: [square, square, 0, square]
   xp: 1
   lost: t
   duration: persistent
@@ -97,7 +97,7 @@ bottom:
       special:
       - custom: "At end of turn, grant one ally within %range%3:"
       - shield: 1
-      enhancement: [heal]
+      enhancement: [square, 0, 0, 0]
   xp: 1
   lost: t
   duration: persistent
@@ -212,10 +212,7 @@ top:
     - wound
   - optional:
     - consume: [fire]
-    - multi:
-      - target: 1
-      - custom: ","
-      - custom: "%xp1%"
+    - custom: "+1 %target%, %xp1%"
 bottom:
   actions:
   - teleport: 3
@@ -263,7 +260,7 @@ top:
       stats: [5, 1, 3, -]
       special:
       - fly: ''
-      enhancement: [heal]
+      enhancement: [square, 0, 0, 0]
   - mandatory:
     - air
   xp: 1
@@ -287,14 +284,7 @@ top:
       enhancement: [square]
   - optional:
     - consume: [air]
-    - multi:
-      - attack: 1
-      - custom: ","
-      - range: 1
-      - custom: ","
-      - push: 1
-      - custom: ","
-      - custom: "%xp1%"
+    - custom: "+1 %attack%, +1 %range%, +1 %push%, %xp1%"
 bottom:
   actions:
   - custom: "Grant one of your summons:"
@@ -400,7 +390,7 @@ top:
   - summon:
       name: Covetous Imp
       stats: [5, 3, 3, -]
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   xp: 1
   lost: t
   duration: persistent
@@ -455,7 +445,7 @@ bottom:
       stats: [3, 3, 1, 3]
       special:
       - custom: "All allies within %range%3 gain %retaliate%1 %range%3 while %fire% is strong or waning."
-      enhancement: [heal]
+      enhancement: [square, 0, 0, 0]
   - mandatory:
     - fire
   xp: 1
@@ -472,7 +462,7 @@ top:
       stats: [12, 2, 1, -]
       special:
       - muddle: ''
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   xp: 1
   lost: t
   duration: persistent
@@ -538,7 +528,7 @@ top:
       stats: [5, 2, 2, -]
       special:
       - poison: ''
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   xp: 1
   lost: t
   duration: persistent
@@ -590,7 +580,7 @@ top:
   - summon:
       name: Void Eater
       stats: [6, 3, 4, -]
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   - mandatory:
     - dark
   xp: 1
@@ -678,7 +668,7 @@ top:
       stats: [4, 2, 1, 4]
       special:
       - fly: ''
-      enhancement: [heal, move, attack, range]
+      enhancement: [square, square, square, square]
   xp: 1
   lost: t
   duration: persistent
@@ -699,7 +689,7 @@ top:
       stats: [8, 4, 3, -]
       special:
       - pierce: 2
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   xp: 1
   lost: t
   duration: persistent
