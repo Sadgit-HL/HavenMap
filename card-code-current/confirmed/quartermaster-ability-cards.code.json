@@ -302,7 +302,7 @@
       },
       {
        "type": "area",
-       "pattern": "et_st"
+       "pattern": "et_st_ex"
       }
      ]
     },
@@ -1324,7 +1324,7 @@
   }
  },
  {
-  "name": "Armed th the Teeth",
+  "name": "Armed to the Teeth",
   "level": 8,
   "initiative": 10,
   "sourceId": 232,

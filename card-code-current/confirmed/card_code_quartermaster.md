@@ -120,7 +120,7 @@ top:
   - group:
     - attack: 4
       enhancement: [diamond]
-    - hex: et_st
+    - hex: et_st_ex
   - custom: "Give one ally within %range%2 the <i>Sturdy Spear</i> item to gain %xp1%."
   lost: t
 bottom:
@@ -500,7 +500,7 @@ bottom:
   - move: 2
     enhancement: [circle]
 
-name: Armed th the Teeth
+name: Armed to the Teeth
 initiative: 10
 level: 8
 top:
