@@ -44843,6 +44843,215 @@
     150,
     150
    ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/augment.png",
+   "dst": "icons/icons-augment.webp",
+   "status": "ok",
+   "bytes": 2382,
+   "size": [
+    96,
+    96
+   ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/bear-summon.png",
+   "dst": "icons/icons-bear-summon.webp",
+   "status": "ok",
+   "bytes": 1680,
+   "size": [
+    96,
+    96
+   ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/blinkblade-0.png",
+   "dst": "icons/icons-blinkblade-0.webp",
+   "status": "ok",
+   "bytes": 1620,
+   "size": [
+    96,
+    96
+   ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/blinkblade-1.png",
+   "dst": "icons/icons-blinkblade-1.webp",
+   "status": "ok",
+   "bytes": 3020,
+   "size": [
+    96,
+    96
+   ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/command.png",
+   "dst": "icons/icons-command.webp",
+   "status": "ok",
+   "bytes": 2006,
+   "size": [
+    96,
+    96
+   ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/doom.png",
+   "dst": "icons/icons-doom.webp",
+   "status": "ok",
+   "bytes": 2306,
+   "size": [
+    96,
+    96
+   ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/fh-resonance.png",
+   "dst": "icons/icons-fh-resonance.webp",
+   "status": "ok",
+   "bytes": 1752,
+   "size": [
+    96,
+    96
+   ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/fh-tides.png",
+   "dst": "icons/icons-fh-tides.webp",
+   "status": "ok",
+   "bytes": 1898,
+   "size": [
+    96,
+    96
+   ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/gain_pressure.png",
+   "dst": "icons/icons-gain_pressure.webp",
+   "status": "ok",
+   "bytes": 2104,
+   "size": [
+    96,
+    96
+   ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/high-note.png",
+   "dst": "icons/icons-high-note.webp",
+   "status": "ok",
+   "bytes": 2438,
+   "size": [
+    96,
+    96
+   ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/hive-mode.png",
+   "dst": "icons/icons-hive-mode.webp",
+   "status": "ok",
+   "bytes": 1494,
+   "size": [
+    96,
+    96
+   ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/hive-transfer.png",
+   "dst": "icons/icons-hive-transfer.webp",
+   "status": "ok",
+   "bytes": 2088,
+   "size": [
+    96,
+    96
+   ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/infusion.png",
+   "dst": "icons/icons-infusion.webp",
+   "status": "ok",
+   "bytes": 3978,
+   "size": [
+    96,
+    96
+   ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/lose_pressure.png",
+   "dst": "icons/icons-lose_pressure.webp",
+   "status": "ok",
+   "bytes": 1990,
+   "size": [
+    96,
+    96
+   ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/low-note.png",
+   "dst": "icons/icons-low-note.webp",
+   "status": "ok",
+   "bytes": 2520,
+   "size": [
+    96,
+    96
+   ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/prescription.png",
+   "dst": "icons/icons-prescription.webp",
+   "status": "ok",
+   "bytes": 2050,
+   "size": [
+    96,
+    96
+   ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/song.png",
+   "dst": "icons/icons-song.webp",
+   "status": "ok",
+   "bytes": 2264,
+   "size": [
+    96,
+    96
+   ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/supplies.png",
+   "dst": "icons/icons-supplies.webp",
+   "status": "ok",
+   "bytes": 1676,
+   "size": [
+    96,
+    96
+   ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/tear.png",
+   "dst": "icons/icons-tear.webp",
+   "status": "ok",
+   "bytes": 1666,
+   "size": [
+    96,
+    96
+   ]
   }
  ],
  "missing": []
