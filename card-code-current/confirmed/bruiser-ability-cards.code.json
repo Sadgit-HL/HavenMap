@@ -544,7 +544,7 @@
   }
  },
  {
-  "name": "Wall of Doom",
+  "name": "Provoking Roar",
   "level": "X",
   "initiative": 18,
   "sourceId": 13,
@@ -634,7 +634,7 @@
       },
       {
        "type": "area",
-       "pattern": "ett_stx"
+       "pattern": "ex_tt_stx"
       }
      ]
     }

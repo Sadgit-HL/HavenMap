@@ -216,7 +216,7 @@ bottom:
   - custom: "Whenever an enemy would attack one of your adjacent allies this round, you may have that attack target you instead, regardless of the attack's range and line-of-sight limitations."
   duration: round
 
-name: Wall of Doom
+name: Provoking Roar
 initiative: 18
 level: X
 top:
@@ -252,7 +252,7 @@ top:
       enhancement: [square]
       sub:
       - push: 2
-    - hex: ett_stx
+    - hex: ex_tt_stx
   xp: 1
 bottom:
   actions:
