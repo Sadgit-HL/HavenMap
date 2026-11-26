@@ -208,7 +208,7 @@ bottom:
 
 name: Feedback Loop
 initiative: 51
-level: 1
+level: X
 top:
   actions:
   - custom: "%augment% Augment"
@@ -258,7 +258,7 @@ top:
       stats: [5, 2, 2, -]
       special:
       - poison: ''
-      enhancement: [heal, attack, move]
+      enhancement: [square, square, square, 0]
   xp: 2
   lost: t
   duration: persistent
@@ -442,7 +442,7 @@ top:
       stats: [8, 3, 3, -]
       special:
       - custom: "Add +1 %attack% if the target has a negative condition."
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   xp: 2
   lost: t
   duration: persistent
@@ -610,7 +610,7 @@ top:
       stats: [10, 3, X, -]
       special:
       - custom: "Where X is half the Rat King's current hit point value (rounded up)."
-      enhancement: [heal, move]
+      enhancement: [square, square, 0, 0]
   xp: 2
   lost: t
   duration: persistent

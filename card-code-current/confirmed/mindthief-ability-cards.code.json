@@ -560,7 +560,7 @@
  },
  {
   "name": "Feedback Loop",
-  "level": 1,
+  "level": "X",
   "initiative": 51,
   "sourceId": 156,
   "top": {
@@ -696,9 +696,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "attack",
-      "move"
+      "square",
+      "square",
+      "square",
+      0
      ]
     }
    ],
@@ -1205,9 +1206,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     }
    ],
@@ -1707,8 +1709,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move"
+      "square",
+      "square",
+      0,
+      0
      ]
     }
    ],
