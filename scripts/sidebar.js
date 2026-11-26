@@ -608,6 +608,10 @@ function handlePanelClick(e) {
   if (actionBtn) handleAction(actionBtn.dataset);
 }
 
+// Conditions that can be held several times (Plague 1 to 3): stored as repeated titles in obj.conditions, shown once with a count.
+const STACKING = { Plague: 3 };
+const condCount = (conds, c) => conds.filter(x => x === c).length;
+
 function addCondition(cond) {
   const sel = uiState.selected;
   if (!sel || (sel.kind !== 'mercenary' && sel.kind !== 'summon' && sel.kind !== 'monster')) return;
@@ -615,7 +619,7 @@ function addCondition(cond) {
   const obj = arr[sel.idx];
   if (!obj) return;
   const existing = Array.isArray(obj.conditions) ? obj.conditions : [];
-  if (existing.includes(cond)) return;
+  if (existing.includes(cond) && !(STACKING[cond] && condCount(existing, cond) < STACKING[cond])) return;
   patchKind(sel.kind, arr.map((x, i) => i === sel.idx ? { ...x, conditions: [...existing, cond] } : x));
 }
 
@@ -871,7 +875,9 @@ function handleAction(dataset) {
 
   if (action === 'remove-condition' && (kind === 'mercenary' || kind === 'summon' || kind === 'monster')) {
     const conds = Array.isArray(obj.conditions) ? obj.conditions : [];
-    patchKind(kind, arr.map((x, i) => i === idx ? { ...x, conditions: conds.filter(c => c !== dataset.cond) } : x));
+    const at = conds.lastIndexOf(dataset.cond);      // a stacking condition loses one count, the others disappear
+    const next = STACKING[dataset.cond] ? conds.filter((_, j) => j !== at) : conds.filter(c => c !== dataset.cond);
+    patchKind(kind, arr.map((x, i) => i === idx ? { ...x, conditions: next } : x));
     return;
   }
 
@@ -1126,7 +1132,7 @@ function mercenaryStats(obj, kind = 'mercenary') {
     if (levelStats.xp != null) xp = levelStats.xp;
   }
   const conds     = Array.isArray(obj.conditions) ? obj.conditions : [];
-  const available = CONDITIONS.map(c => c.title).filter(t => !conds.includes(t));
+  const available = CONDITIONS.map(c => c.title).filter(t => !conds.includes(t) || (STACKING[t] && condCount(conds, t) < STACKING[t]));
 
   const STAT_STYLE = {
     level:      { color: '#9a7f5e' },
@@ -1172,9 +1178,10 @@ function mercenaryStats(obj, kind = 'mercenary') {
     ? readOnlyCounter('Standee #', 'standeenum', obj.standeeNum)
     : '';
 
-  const activeTiles = conds.map(c => `
-    <div class="sp-cond-tile" title="${c}">
+  const activeTiles = [...new Set(conds)].map(c => `
+    <div class="sp-cond-tile" title="${c}${condCount(conds, c) > 1 ? ' x' + condCount(conds, c) : ''}">
       <img class="sp-cond-img" src="${condImg(c)}" alt="${c}">
+      ${condCount(conds, c) > 1 ? `<span class="sp-cond-count">${condCount(conds, c)}</span>` : ''}
       <button class="sp-cond-remove" data-action="remove-condition" data-cond="${c}">×</button>
     </div>`).join('');
 

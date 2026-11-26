@@ -1011,7 +1011,7 @@ export function setToken(r, cid, key, value) {
   const c = r.chars.find(x => x.id === cid);
   const d = c && tokenDefs(c.cls).find(t => t.k === key), n = toInt(value);
   if (!d || n === null) return r;
-  const v = d.states ? clamp(n, 0, d.states.length - 1) : clamp(n, 0, 99);
+  const v = d.states ? clamp(n, 0, d.states.length - 1) : d.step ? clamp(Math.round(n / d.step) * d.step, 0, 99 - (99 % d.step)) : clamp(n, 0, 99);   // a token with a step (the supply: 10) holds multiples of it
   if ((c.tok?.[key] || 0) === v) return r;
   return edit(r, x => { const ch = x.chars.find(y => y.id === cid); ch.tok = { ...(ch.tok || {}), [key]: v }; });
 }

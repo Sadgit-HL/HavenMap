@@ -243,6 +243,9 @@ function svgStatsLabel(hp, xp, gold, col, row, maxHp = null, standeeNum = null, 
 
 function svgConditions(conditions, col, row) {
   if (!conditions || conditions.length === 0) return null;
+  const counts = new Map();                                    // a repeated condition (Plague 1 to 3) is drawn once with a count badge
+  conditions.forEach(c => counts.set(c, (counts.get(c) || 0) + 1));
+  conditions = [...counts.keys()];
   const { x: cx, y: cy } = hexCenter(col, row);
   const size = 24, gap = -10;
   const totalH = conditions.length * size + (conditions.length - 1) * gap;
@@ -269,6 +272,19 @@ function svgConditions(conditions, col, row) {
     img.setAttribute('width', size);
     img.setAttribute('height', size);
     g.appendChild(img);
+
+    const n = counts.get(cond);
+    if (n > 1) {
+      const bx = iconX + size - 3, by = iconY + size - 3;
+      const disc = document.createElementNS(SVG_NS, 'circle');
+      disc.setAttribute('cx', bx); disc.setAttribute('cy', by); disc.setAttribute('r', 6.5);
+      disc.setAttribute('fill', '#1b1b1b'); disc.setAttribute('stroke', '#fff'); disc.setAttribute('stroke-width', 1);
+      const txt = document.createElementNS(SVG_NS, 'text');
+      txt.setAttribute('x', bx); txt.setAttribute('y', by + 3.6); txt.setAttribute('text-anchor', 'middle');
+      txt.setAttribute('font-size', 10); txt.setAttribute('font-weight', 700); txt.setAttribute('fill', '#fff');
+      txt.textContent = String(n);
+      g.appendChild(disc); g.appendChild(txt);
+    }
   });
 
   return g;

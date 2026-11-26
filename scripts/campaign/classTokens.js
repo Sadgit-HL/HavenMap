@@ -4,7 +4,7 @@ import { imageFile } from '../images.js';
 // A character keeps them in `tok` as { key: count } or { key: state index }. Images: images/common/mercenary_tokens/<img>
 export const TOKEN_DEFS = {
   hail: [{ k: 'resolve', l: 'Resolve', img: 'hail_resolve' }],
-  quartermaster: [{ k: 'supply', l: 'Supply', img: 'quartermaster_supply' }],
+  quartermaster: [{ k: 'supply', l: 'Supply', img: 'quartermaster_supply', step: 10 }],
   soothsinger: [{ k: 'high', l: 'High note', img: 'soothsinger_high_note' }, { k: 'low', l: 'Low note', img: 'soothsinger_low_note' }],
   deepwraith: [{ k: 'trophy', l: 'Trophy', img: 'deepwraith_trophy' }],
   shattersong: [{ k: 'resonance', l: 'Resonance', img: 'shattersong_resonance' }],

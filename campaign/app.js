@@ -2391,6 +2391,8 @@ registerMenu({
     if (!c) return [];                                                                                     // the level and the other counters have no menu
     const hud = b.dataset.hud, key = HUD_KEY[hud] || b.dataset.tk;
     const cur = hud ? c[key] || 0 : c.tok?.[key] || 0, set = v => commit(hud ? ed.setCharacter(record, c.id, key, v) : ed.setToken(record, c.id, key, v));
+    if (!hud && tokenDefs(c.cls).find(t => t.k === key)?.step === 10)
+      return [{ label: '+10', run: () => set(cur + 10) }, { label: '−10', disabled: cur < 1, run: () => set(Math.max(0, cur - 10)) }, { sep: true }, { label: 'Reset to 0', danger: true, disabled: !cur, run: () => set(0) }];
     return [{ label: '+10', run: () => set(cur + 10) }, { label: '+5', run: () => set(cur + 5) }, { label: '+1', run: () => set(cur + 1) }, { label: '\u22121', disabled: cur < 1, run: () => set(Math.max(0, cur - 1)) }, { label: '\u22125', disabled: cur < 1, run: () => set(Math.max(0, cur - 5)) }, { label: '\u221210', disabled: cur < 1, run: () => set(Math.max(0, cur - 10)) }, { sep: true },
       { label: 'Reset to 0', danger: true, disabled: !cur, run: async () => { if (hud && !await ask({ title: 'Reset value', text: 'Reset this value to 0?', ok: 'Reset', danger: true })) return; set(0); } }];
   },
@@ -2977,7 +2979,7 @@ main.addEventListener('click', e => {
   const tk = e.target.closest?.('button[data-tk]');
   if (tk) {
     const c = record.chars.find(x => x.id === tk.dataset.char), d = c && tokenDefs(c.cls).find(t => t.k === tk.dataset.tk);
-    if (d) commit(ed.setToken(record, c.id, d.k, d.states ? ((c.tok?.[d.k] || 0) + 1) % d.states.length : (c.tok?.[d.k] || 0) + Number(tk.dataset.d)));
+    if (d) commit(ed.setToken(record, c.id, d.k, d.states ? ((c.tok?.[d.k] || 0) + 1) % d.states.length : (c.tok?.[d.k] || 0) + Number(tk.dataset.d) * (d.step || 1)));
     return;
   }
   const bgg = e.target.closest?.('button[data-bgg]');
