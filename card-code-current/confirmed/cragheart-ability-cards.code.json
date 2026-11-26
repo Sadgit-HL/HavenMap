@@ -473,8 +473,8 @@
      },
      "actions": [
       {
-       "type": "target",
-       "value": "all enemies up to two hexes away instead"
+       "type": "custom",
+       "text": "%target% all enemies up to two hexes away instead"
       },
       {
        "type": "custom",

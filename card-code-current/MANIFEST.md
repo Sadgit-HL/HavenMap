@@ -21,7 +21,7 @@ Move a class's two files (`card_code_<class>.md` and `<class>-ability-cards.code
 | start | Blinkblade | fh | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_blinkblade.md | tools/secretariat-cards/blinkblade-ability-cards.code.json |
 | start | Boneshaper | fh | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_boneshaper.md | tools/secretariat-cards/boneshaper-ability-cards.code.json |
 | start | Bruiser | gh2 | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_bruiser.md | tools/secretariat-cards/bruiser-ability-cards.code.json |
-| start | Cragheart | gh2 | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_cragheart.md | tools/secretariat-cards/cragheart-ability-cards.code.json |
+| confirmed | Cragheart | gh2 | Secretariat conversion checked by a blind re-reading and hexes.py; Unstable Upheaval target put in a custom line (2026-11-26) | tools/secretariat-cards/card_code_cragheart.md | tools/secretariat-cards/cragheart-ability-cards.code.json |
 | start | Crashing Tide | fh | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_crashing_tide.md | tools/secretariat-cards/crashing-tide-ability-cards.code.json |
 | start | Deathwalker | fh | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_deathwalker.md | tools/secretariat-cards/deathwalker-ability-cards.code.json |
 | start | Deepwraith | fh | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_deepwraith.md | tools/secretariat-cards/deepwraith-ability-cards.code.json |
@@ -48,7 +48,7 @@ Move a class's two files (`card_code_<class>.md` and `<class>-ability-cards.code
 | start | Soultether | gh2 | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_soultether.md | tools/secretariat-cards/soultether-ability-cards.code.json |
 | start | Spellweaver | gh2 | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_spellweaver.md | tools/secretariat-cards/spellweaver-ability-cards.code.json |
 | start | Sunkeeper | gh2 | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_sunkeeper.md | tools/secretariat-cards/sunkeeper-ability-cards.code.json |
-| start | Tinkerer | gh2 | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_tinkerer.md | tools/secretariat-cards/tinkerer-ability-cards.code.json |
+| confirmed | Tinkerer | gh2 | Secretariat conversion checked with check.py and hexes.py (no blind reading); summon enhancement markers of the three Contraption cards fixed (2026-11-26) | tools/secretariat-cards/card_code_tinkerer.md | tools/secretariat-cards/tinkerer-ability-cards.code.json |
 | start | Trapper | fh | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_trapper.md | tools/secretariat-cards/trapper-ability-cards.code.json |
 | start | Voidwarden | jotl | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_voidwarden.md | tools/secretariat-cards/voidwarden-ability-cards.code.json |
 | start | Wildfury | gh2 | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_wildfury.md | tools/secretariat-cards/wildfury-ability-cards.code.json |

@@ -26,7 +26,7 @@ top:
   - summon:
       name: Decoy
       stats: [10, 3, -, -]
-      enhancement: [heal, move]
+      enhancement: [square, square, 0, 0]
   xp: 3
   lost: t
   duration: persistent
@@ -355,7 +355,7 @@ top:
   - summon:
       name: Battle Bot
       stats: [7, 3, 3, -]
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   xp: 3
   lost: t
   duration: persistent
@@ -490,7 +490,7 @@ top:
       stats: [8, 4, 3, -]
       special:
       - hex: et_t_s
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   xp: 3
   lost: t
   duration: persistent

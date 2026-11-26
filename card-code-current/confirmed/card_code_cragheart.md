@@ -157,7 +157,7 @@ top:
     - target: "all adjacent enemies"
   - optional:
     - consume: [earth]
-    - target: "all enemies up to two hexes away instead"
+    - custom: "%target% all enemies up to two hexes away instead"
     - custom: "%xp1%"
   - mandatory:
     - custom: "All adjacent allies suffer %damage%2."

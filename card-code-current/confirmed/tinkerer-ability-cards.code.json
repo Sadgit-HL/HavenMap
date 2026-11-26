@@ -63,8 +63,10 @@
      },
      "special": [],
      "enhancement": [
-      "heal",
-      "move"
+      "square",
+      "square",
+      0,
+      0
      ]
     }
    ],
@@ -882,9 +884,10 @@
      },
      "special": [],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     }
    ],
@@ -1247,9 +1250,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     }
    ],
