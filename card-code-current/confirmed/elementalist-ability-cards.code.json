@@ -1854,7 +1854,7 @@
      "actions": [
       {
        "type": "custom",
-       "text": "%?orange diamond icon%"
+       "text": "%wound%"
       },
       {
        "type": "custom",
@@ -1917,8 +1917,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move"
+      "square",
+      "square",
+      0,
+      0
      ]
     }
    ],
@@ -2253,7 +2255,7 @@
       },
       {
        "type": "custom",
-       "text": "%?grey diamond with question mark%"
+       "text": "%muddle%"
       },
       {
        "type": "custom",
@@ -2284,7 +2286,7 @@
       },
       {
        "type": "custom",
-       "text": "%?orange diamond icon 3%"
+       "text": "%pierce% 3"
       },
       {
        "type": "custom",
@@ -2372,7 +2374,7 @@
      "actions": [
       {
        "type": "custom",
-       "text": "%?grey skull diamond%"
+       "text": "%poison%"
       },
       {
        "type": "element",
@@ -2409,8 +2411,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move"
+      "square",
+      "square",
+      0,
+      0
      ]
     }
    ],

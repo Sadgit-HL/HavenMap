@@ -579,7 +579,7 @@ top:
     - consume: [fire/ice]
   - optional:
     - consume: [fire/ice]
-    - custom: "%?orange diamond icon%"
+    - custom: "%wound%"
     - custom: "%xp1%"
     - custom: "+1 %attack%"
   xp: 1
@@ -600,7 +600,7 @@ top:
       stats: [7, 3, 0, -]
       special:
       - custom: "Add +1 %attack% for each element that is strong or waning."
-      enhancement: [heal, move]
+      enhancement: [square, square, 0, 0]
   xp: 2
   lost: t
   duration: persistent
@@ -694,13 +694,13 @@ top:
   - optional:
     - consume: [ice]
     - custom: "%target% all enemies adjacent to the target of the heal ability,"
-    - custom: "%?grey diamond with question mark%"
+    - custom: "%muddle%"
     - custom: "%xp1%"
     - custom: "+2 %attack%"
   - optional:
     - consume: [air]
     - custom: "%target% all enemies at exactly %range% 2 from the target of the heal ability,"
-    - custom: "%?orange diamond icon 3%"
+    - custom: "%pierce% 3"
     - custom: "%xp1%"
     - custom: "+1 %attack%"
 bottom:
@@ -719,7 +719,7 @@ bottom:
     - custom: "+3 %range%"
   - optional:
     - consume: [earth]
-    - custom: "%?grey skull diamond%"
+    - custom: "%poison%"
     - earth
 
 name: Ethereal Manifestation
@@ -733,7 +733,7 @@ top:
       special:
       - fly: ''
       - custom: "After each attack, %wild%."
-      enhancement: [heal, move]
+      enhancement: [square, square, 0, 0]
   xp: 2
   lost: t
   duration: persistent
