@@ -468,7 +468,7 @@ bottom:
   - mandatory:
     - dark
 
-name: Quiet Frenzy
+name: Concealed Dominance
 initiative: 26
 level: 7
 top:
