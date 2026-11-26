@@ -9,6 +9,7 @@ import { SCENARIOS } from '../games/gh2_scenarios.js';
 import { cleanAmd } from './amdDeck.js';
 import { cleanRest } from './rest.js';
 import { cleanSup } from './supply.js';
+import { cleanRx, cleanRxOf } from './prescription.js';
 
 export const RECORD_VERSION = 1;
 
@@ -116,6 +117,7 @@ export function normalize(raw) {
   for (const k of ['bgs', 'pq']) r[k] = r[k] && typeof r[k] === 'object' && !Array.isArray(r[k]) ? r[k] : {};
   r.chars = (r.chars || []).map(normalizeChar);
   r.sup = cleanSup(r.sup, r.chars);
+  cleanRx(r.chars);                                                                  // a prescription whose receiver is gone goes back to the Sawbones' discard pile
   // a monster level saved by the Monsters tab before 2026-11-18 (mon.lvl) becomes the difficulty: level minus the normal difficulty
   if (r.mon && r.mon.lvl != null) {
     r.party = { ...r.party, diff: Math.max(-2, Math.min(4, Number(r.mon.lvl) - normalDifficulty(r))) };
@@ -157,6 +159,7 @@ function normalizeChar(c) {
   const play = Array.isArray(ch.play) ? ch.play : [];
   ch.play = [0, 1].map(i => { const p = play[i]; return p && ch.deck.includes(p.id) && !seen.has(p.id) && seen.add(p.id) ? { id: p.id, up: !!p.up } : null; });
   ch.act = take(ch.act);
+  { const rx = cleanRxOf(ch.rx, ch.deck, seen); if (Object.keys(rx).length) ch.rx = rx; else delete ch.rx; }   // prescriptions given to other characters (scripts/campaign/prescription.js)
   ch.bgo = Array.isArray(ch.bgo) ? ch.bgo.slice(0, 3) : null;
   ch.pqo = Array.isArray(ch.pqo) ? ch.pqo.slice(0, 2) : null;
   if (!ch.pqc || typeof ch.pqc !== 'object' || Array.isArray(ch.pqc)) ch.pqc = {};
@@ -222,7 +225,7 @@ export function prosperityLevel(checks) {
 
 export const classByName = name => CLASSES.find(c => c.name.toLowerCase() === String(name || '').toLowerCase());
 
-// Where an ability card of the character's deck is: 'hand', 'active', 'play1', 'play2', 'discard' or 'lost'.
+// Where an ability card of the character's deck is: 'hand', 'active', 'play1', 'play2', 'discard', 'lost' or 'lent' (a prescription given away; not a zone to move to).
 export const CARD_ZONES = ['hand', 'active', 'play1', 'play2', 'discard', 'lost'];
 export function zoneOf(c, id) {
   if ((c.lost || []).includes(id)) return 'lost';
@@ -231,12 +234,13 @@ export function zoneOf(c, id) {
   if (play[0]?.id === id) return 'play1';
   if (play[1]?.id === id) return 'play2';
   if ((c.act || []).includes(id)) return 'active';
+  if (c.rx && Object.hasOwn(c.rx, id)) return 'lent';                                // a prescription given to another character
   return 'hand';
 }
 
 // Ability card ids in the hand (deck order): the selected deck minus lost, discard, play slots and the active area.
 export function handOf(c) {
-  const out = new Set([...(c.disc || []), ...(c.act || []), ...(c.lost || []), ...(c.play || []).filter(Boolean).map(p => p.id)]);
+  const out = new Set([...(c.disc || []), ...(c.act || []), ...(c.lost || []), ...Object.keys(c.rx || {}).map(Number), ...(c.play || []).filter(Boolean).map(p => p.id)]);
   return (c.deck || []).filter(id => !out.has(id));
 }
 

@@ -30,6 +30,7 @@ import {
 import * as ed from '../scripts/campaign/edit.js';
 import { canShortRest, restCandidates } from '../scripts/campaign/rest.js';
 import { isSupplyCard, lentCardCount } from '../scripts/campaign/supply.js';
+import { rxHeld } from '../scripts/campaign/prescription.js';
 import { describeChange, foldLog, LOG_TABS, LOG_MAX } from '../scripts/campaign/changelog.js';
 import { CLASSES } from '../scripts/games/gh2_classes.js';
 import { ALL_CLASSES, classKnown } from '../scripts/campaign/classList.js';
@@ -745,6 +746,14 @@ window.addEventListener('mouseup', () => { if (!flowPan) return; flowSwallow = f
 // a drag that ends on a box does not open it; the right button pans, so the chart has no browser menu (as on the map)
 main.addEventListener('click', e => { if (flowSwallow && e.target.closest?.('.flowsvg')) { e.stopImmediatePropagation(); e.preventDefault(); } }, true);
 main.addEventListener('contextmenu', e => { if (e.target.closest?.('.flowsvg')) e.preventDefault(); });
+function bumpToken(el, dir) {
+  const c = record?.chars.find(x => x.id === el.dataset.char), d = c && tokenDefs(c.cls).find(t => t.k === el.dataset.tkc);
+  if (d && !d.states) commit(ed.setToken(record, c.id, d.k, (c.tok?.[d.k] || 0) + dir * (d.step || 1)));
+}
+main.addEventListener('contextmenu', e => {                                                               // right click on the picture takes one step away (no menu)
+  const tc = e.target.closest?.('[data-tkc]');
+  if (tc) { e.preventDefault(); e.stopPropagation(); bumpToken(tc, -1); }
+});
 document.addEventListener('keydown', e => {
   if (e.code !== 'Space' || !flowOver || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return;
   e.preventDefault(); e.stopImmediatePropagation();   // over the chart, Space pans (it does not open the focused box or scroll the page)
@@ -931,10 +940,11 @@ const matSlug = c => matSlugOf(c.cls);   // the class slug, as the portrait focu
 const pmState = c => ({
   modal: pm.modal, matSide: pm.matSide, histKind: pm.histKind, jtab: pm.jtab, bgv: pm.bgv, pqv: pm.pqv, notesPreview: pm.notesPreview,
   bgs: record.bgs, pq: record.pq,
-  itemId: pm.itemId, mkKey: pm.mkKey, mkIdx: pm.mkIdx, chars: subTabList(), chMenu: pm.chMenu, pileZ: pm.pileZ, restRoll: pm.restRoll, amMode: pm.amMode[c.id] || 'std', cf: pm.cf, players: record.players, classChips: classTraits({ ...c, cls: pm.cf?.cls || c.cls }).map(t => chip(t)).join(''), classOpts: pm.modal === 'char' ? charClassOptions(c) : [], mkSel: mkSelOf(c), set: pmset, ptab: pm.ptab, sheet: pm.sheet,
+  itemId: pm.itemId, mkKey: pm.mkKey, mkIdx: pm.mkIdx, chars: subTabList(), chMenu: pm.chMenu, pileZ: pm.pileZ, restRoll: pm.restRoll, amMode: pm.amMode[c.id] || 'std', cf: pm.cf, players: record.players, classChips: classTraits({ ...c, cls: pm.cf?.cls || c.cls }).map(t => chip(t)).join(''), classOpts: pm.modal === 'char' ? charClassOptions(c) : [], mkSel: mkSelOf(mkChar()), mkc: pm.modal === 'cardmk' && pm.mkOwner ? mkChar() : null, set: pmset, ptab: pm.ptab, sheet: pm.sheet,
   items: pm.modal === 'items' ? { pool: ITEMS.filter(i => record.items.unl.includes(i.id) && ownsItem(c, i.id)), isel: c.items.map(it => String(it.id)), sell: !!pm.sellMode } : null,
   sup: pm.modal === 'supply' || pm.modal === 'suproll' ? { loans: record.sup || {}, to: pm.supTo, chars: record.chars.map(x => ({ id: x.id, name: x.name })) } : null,
   lentCards: lentCardCount(record, c),
+  rx: rxHeld(record.chars, c.id).map(e => { const o = record.chars.find(x => x.id === e.owner); return { ...e, ownerName: o?.name || '', mk: o?.mk?.[`c:${e.card}`] }; }),      // prescriptions given to this character
   deck: pm.modal === 'deck' ? { cards: CARDS.filter(k => k.cls === classByName(c.cls)?.i && !isSupplyCard(k.id)).sort((a, b) => cardLevel(a.id) - cardLevel(b.id) || (a.ini ?? 1e9) - (b.ini ?? 1e9)), hsel: pm.hsel[c.id] || [], armed: pm.hsArmed } : null,
   amd: pm.modal === 'amd' || pm.modal === 'amdpile' ? drawState(c, c.amd) : null, hview: pm.hview, amEdit: pm.amEdit, amv: pm.hview === 'amd' || pm.ptab === 'amd' ? drawState(c, c.amd) : null, amZoom: pm.modal === 'amd' ? pm.amZoom : null,
   customCodes: pm.modal === 'codes' ? loadCodes() : [],
@@ -2052,7 +2062,7 @@ main.addEventListener('click', e => {
 // --- card preview: one floating picture for every tab (campaign/preview.js) ---
 const coarse = matchMedia('(pointer: coarse)');
 // Playmat cards with a preview, and the cards whose long press opens the context menu (which has Zoom) instead of pinning.
-const PM_PREVIEW = '.mon .mab:not(.back), .mon .mstat, .pp .ac[data-card], .pm .fan6 .ac, .pm .activelist .ac, .pm .flipcard.is-front, .pm .shelf6 .it, .pm .amv .stk, .pm .amv .mini, .pm .pilelist .pcell, .pm .mmodal .pcard, .pm .am-perk-cards .pc';
+const PM_PREVIEW = '.pm .rxcard, .mon .mab:not(.back), .mon .mstat, .pp .ac[data-card], .pm .fan6 .ac, .pm .activelist .ac, .pm .flipcard.is-front, .pm .shelf6 .it, .pm .amv .stk, .pm .amv .mini, .pm .pilelist .pcell, .pm .mmodal .pcard, .pm .am-perk-cards .pc';
 const MENU_CARDS = '.pm .fan6 .ac, .pm .activelist .ac, .pm .flipcard, .pm .it, .pm .pilelist .pcell[data-pcard]';
 const cardPreview = createPreview({
   selector: `[data-img], [data-amzoom], ${PM_PREVIEW}`,
@@ -2293,6 +2303,18 @@ function flipPlayed(f) {
   setTimeout(() => commit(ed.flipPlayCard(record, char, Number(slot))), 560);
 }
 // Context menu of the playmat (right click, long press): cards, piles, counters, deck cards. Each action calls the same edit functions as the normal UI.
+registerMenu({
+  sel: '.pm .rxcard',
+  title: el => el.title || 'Prescription',
+  actions: el => {
+    const owner = el.dataset.owner, id = Number(el.dataset.card), e = record?.chars.find(x => x.id === owner)?.rx?.[id];
+    if (!e) return [];
+    return [{ label: 'Zoom', run: () => cardPreview.show(el, true) }, { label: 'Edit marker or sticker', run: () => openMarkers(`c:${id}`, owner) },
+      { sep: true }, { header: 'Return to the Sawbones' },
+      { label: 'Discard', run: () => commit(ed.returnPrescription(record, owner, id, 'discard')) },
+      { label: 'Lost', run: () => commit(ed.returnPrescription(record, owner, id, 'lost')) }];
+  },
+});
 const ZONE_LABEL = { hand: 'Hand', active: 'Active area', play1: 'Play slot 1', play2: 'Play slot 2', discard: 'Discard', lost: 'Lost' };
 registerMenu({
   sel: '.pm .fan6 .ac, .pm .activelist .ac, .pm .flipcard',
@@ -2316,7 +2338,10 @@ registerMenu({
         { label: 'Move to end', run: () => commit(ed.moveCard(record, c.id, id, 'hand', { before: null })) },
         { sep: true }, zoom, marker];
     }
-    if (flip) return [zoom, { sep: true }, { header: 'Move to' }, ...moves];
+    if (flip) {
+      const give = c.cls === 'Sawbones' ? record.chars.filter(x => x.id !== c.id).map(x => ({ label: x.name, run: () => commit(ed.givePrescription(record, c.id, id, x.id)) })) : [];
+      return [zoom, ...(give.length ? [{ sep: true }, { header: 'Give prescription to' }, ...give] : []), { sep: true }, { header: 'Move to' }, ...moves];
+    }
     return [zoom, marker, { sep: true }, { header: 'Move to' }, ...moves];
   },
 });
@@ -2533,9 +2558,10 @@ function mkSelOf(c) {
   if (s && (s.s ? MARK_STICKERS.includes(s.k) : toks.includes(s.k))) return s;
   return toks.length ? { k: toks[0], s: 0 } : { k: MARK_STICKERS[0], s: 1 };
 }
+const mkChar = () => (pm.modal === 'cardmk' && pm.mkOwner ? record?.chars.find(x => x.id === pm.mkOwner) : null) || pmChar();   // the marker editor works on the owner of a given prescription
 const mkKeyNow = () => (pm.modal === 'item' ? `i:${pm.itemId}` : pm.modal === 'cardmk' ? pm.mkKey : null);
-function openMarkers(key) {
-  pm.sheet = null; pm.mkIdx = -1;
+function openMarkers(key, owner = null) {
+  pm.sheet = null; pm.mkIdx = -1; pm.mkOwner = owner;
   if (key.startsWith('i:')) { pm.itemId = key.slice(2); pm.modal = 'item'; } else { pm.mkKey = key; pm.modal = 'cardmk'; }
   render();
 }
@@ -2543,12 +2569,14 @@ const mkPct = (card, e, clamp = true) => { const r = card.getBoundingClientRect(
 const mkOver = (card, e) => { const r = card.getBoundingClientRect(); return e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom; };
 let mkBlock = false;
 main.addEventListener('click', e => {
-  const q = sel => e.target.closest?.(sel), c = pmChar();
+  const q = sel => e.target.closest?.(sel), c = mkChar();
   if (!c) return;
   const more = q('[data-cardmore]');
   if (more) { e.stopImmediatePropagation(); e.preventDefault(); const card = more.closest('.ac') || more.parentElement, r = more.getBoundingClientRect(); openMenuFor(card, r.right, r.bottom); return; }
   const h = q('.pm .tkh, .pm .opts [data-mkopen]');
   if (h) { e.stopImmediatePropagation(); e.preventDefault(); openMarkers(h.dataset.mkopen); return; }
+  const rx = q('.pm .rxcard');                                                                           // a given prescription: the marker editor of its owner
+  if (rx && !pm.modal && !q('.tk')) { e.stopImmediatePropagation(); openMarkers(`c:${rx.dataset.card}`, rx.dataset.owner); return; }
   const hc = q('.pm .fan6 .ac, .pm .activelist .ac');                                                    // a click opens the card modal
   if (hc && !pm.modal && !q('.tk, .inib')) { e.stopImmediatePropagation(); openMarkers(`c:${hc.dataset.card}`); return; }
   if (!q('.pm .mmodal')) return;
@@ -2578,7 +2606,7 @@ main.addEventListener('click', e => {
 (() => {
   let drag = null;
   main.addEventListener('pointerdown', e => {
-    const c = pmChar(), pick = e.target.closest?.('.pm [data-mkpick]'), tk = e.target.closest?.('.pm .itcard .tk'), card = e.target.closest?.('.pm .itcard[data-mkcard]');
+    const c = mkChar(), pick = e.target.closest?.('.pm [data-mkpick]'), tk = e.target.closest?.('.pm .itcard .tk'), card = e.target.closest?.('.pm .itcard[data-mkcard]');
     if (!c || e.button) return;
     if (pick) { drag = { kind: 'pick', pick, x: e.clientX, y: e.clientY, ghost: null }; pick.setPointerCapture(e.pointerId); }
     else if (tk && card) { drag = { kind: 'move', tk, card, moved: false }; tk.setPointerCapture(e.pointerId); e.preventDefault(); document.body.style.cursor = 'grabbing'; }
@@ -2605,7 +2633,7 @@ main.addEventListener('click', e => {
   const end = e => {
     if (!drag) return;
     const d = drag; drag = null; document.body.style.cursor = '';
-    const c = pmChar(), key = mkKeyNow();
+    const c = mkChar(), key = mkKeyNow();
     if (d.kind === 'pick') {
       if (!d.ghost) return;
       d.ghost.remove(); mkBlock = true; setTimeout(() => { mkBlock = false; }, 0);
@@ -2976,6 +3004,8 @@ main.addEventListener('click', e => {
   if (cd) { const a = loadCodes(); a.splice(Number(cd.dataset.codedel), 1); saveCodes(a); render(); return; }
   const f = e.target.closest?.('.flipcard[data-slot]');
   if (f) { flipPlayed(f); return; }
+  const tc = e.target.closest?.('[data-tkc]');                                                           // the picture of a counted class token: left click adds one step
+  if (tc) { bumpToken(tc, 1); return; }
   const tk = e.target.closest?.('button[data-tk]');
   if (tk) {
     const c = record.chars.find(x => x.id === tk.dataset.char), d = c && tokenDefs(c.cls).find(t => t.k === tk.dataset.tk);

@@ -476,3 +476,5 @@ html.phone .pm .restmodal .itcard{width:min(240px,70vw)}
 .pm .suplab{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:12px}
 .pm .suplab select{height:34px;border-radius:6px;border:1px solid var(--line);background:#2d2519;color:var(--text);padding:0 8px}
 .pm .pcell.itemcell{aspect-ratio:196/300}
+.pm .rxcard{position:relative;aspect-ratio:5/7;border-radius:8px;overflow:hidden;background:#120f0b;box-shadow:0 4px 10px rgba(0,0,0,.5);flex:none;outline:2px solid var(--accent);outline-offset:-2px}
+.pm .rxcard img{display:block;width:100%;height:100%;object-fit:cover}

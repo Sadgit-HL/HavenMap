@@ -13,6 +13,7 @@ import { tokenDefs, markerTokens, MARK_STICKERS } from './classTokens.js';
 import { perkList, amdAct, amOwner, drawState, cleanAmd } from './amdDeck.js';
 import { restPool, canShortRest, restRedoable } from './rest.js';
 import { supplyKey, validSupplyKey, inSupply, cleanSup } from './supply.js';
+import { cleanRx } from './prescription.js';
 import { itemDesignPool, scenarioPool, pickOne } from './draws.js';
 import { MON_MAX, monOf, monsterById, deckCards, deckState, deckNeedsShuffle, monSlugs } from './monsters.js';
 import { MASTERIES } from '../games/masteries.js';
@@ -28,6 +29,7 @@ function edit(r, fn) {
   const n = structuredClone(r);
   fn(n);
   if (n.sup && Object.keys(n.sup).length) n.sup = cleanSup(n.sup, n.chars);        // a loan whose card or item the character no longer holds is back in the supply
+  cleanRx(n.chars);                                                                // a prescription whose receiver is gone goes back to the discard pile
   n.ver = (r.ver || 0) + 1;
   return n;
 }
@@ -565,6 +567,7 @@ export function moveCard(r, cid, cardId, dest, opts = {}) {
   const c = r.chars.find(x => x.id === cid);
   if (!c || !CARD_ZONES.includes(dest) || !c.deck.includes(cardId)) return r;
   const now = zoneOf(c, cardId);
+  if (now === 'lent') return r;                                                      // a given prescription is returned with returnPrescription
   const pos = dest === 'hand' && 'before' in opts ? opts.before : undefined;      // undefined = no place given
   if (pos === cardId) return r;
   if (now === dest && pos === undefined) return r;
@@ -595,6 +598,34 @@ export function moveCard(r, cid, cardId, dest, opts = {}) {
       ch.play[i] = { id: cardId, up: false };
     }
     if ((dest === 'discard' || dest === 'lost') && x.sup && x.sup[supplyKey('c', cardId)] === cid) release(x, supplyKey('c', cardId));      // a lent medical pack that is discarded goes back to the supply
+  });
+}
+
+// --- prescriptions of the Sawbones (scripts/campaign/prescription.js) ---------------------------------------------------------
+
+// Give a card of a play slot to another character: it leaves the slot and sits in that character's active area.
+export function givePrescription(r, cid, cardId, toCid) {
+  const c = r.chars.find(x => x.id === cid);
+  if (!c || toCid === cid || !r.chars.some(x => x.id === toCid)) return r;
+  const z = zoneOf(c, cardId);
+  if (z !== 'play1' && z !== 'play2') return r;
+  return edit(r, x => {
+    const ch = x.chars.find(y => y.id === cid);
+    ch.play = ch.play.map(p => (p && p.id === cardId ? null : p));
+    ch.rx = { ...(ch.rx || {}), [cardId]: { to: toCid } };
+  });
+}
+
+// Take a given prescription back from its receiver into the discard or lost pile of its owner; the token on it is removed.
+export function returnPrescription(r, cid, cardId, dest) {
+  const c = r.chars.find(x => x.id === cid);
+  if (!c?.rx?.[cardId] || (dest !== 'discard' && dest !== 'lost')) return r;
+  return edit(r, x => {
+    const ch = x.chars.find(y => y.id === cid);
+    delete ch.rx[cardId];
+    if (!Object.keys(ch.rx).length) delete ch.rx;
+    if (ch.mk) delete ch.mk[`c:${cardId}`];
+    if (dest === 'discard') ch.disc = [...(ch.disc || []), cardId]; else ch.lost = [...(ch.lost || []), cardId];
   });
 }
 

@@ -148,6 +148,10 @@ export function playmatHtml(c, X, S = {}) {
   const lists = { active: [], discard: [], lost: [] };
   for (const id of c.deck) { const z = zoneOf(c, id); if (lists[z]) lists[z].push(id); }
   const active = c.act.filter(id => lists.active.includes(id));
+  const rxCard = e => {                                                          // a prescription given to this character: the Sawbones' card, with the token slot
+    const card = X.cardById.get(e.card), url = X.cardImageUrl(card), name = nameOf(e.card), body = url ? `<img src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false">` : `<div class="noimg">${esc(name)}</div>`;
+    return `<div class="rxcard" data-card="${e.card}" data-owner="${esc(e.owner)}" data-char="${cid}" title="${esc(name)} (from ${esc(e.ownerName)})">${body}${markersHtml(e.mk)}</div>`;
+  };
   const hand = handList(c);
   const top = z => { const a = z === 'discard' ? c.disc : c.lost; const id = a.filter(x => c.deck.includes(x)).at(-1); return id == null ? '<div class="slotempty"></div>' : ac(id, undefined, false); };
   const pile = (z, title, cls) => `<div class="pile6${cls}" data-pile="${z}" data-zone="${z}" data-char="${cid}"><h4>${title} <b>${lists[z].length}</b></h4><div class="pilecard">${top(z)}</div></div>`;
@@ -161,7 +165,7 @@ export function playmatHtml(c, X, S = {}) {
   const tokens = tokenDefs(c.cls).map(d => {
     const v = c.tok?.[d.k] || 0;
     if (d.states) return `<span class="ctr" title="${esc(d.l)}: ${esc(d.states[v])} (click to change)"><button type="button" data-tk="${d.k}" data-char="${cid}" style="width:auto;height:auto;padding:2px;background:none;border:0" aria-label="${esc(d.l)}: ${esc(d.states[v])}">${tkImg(d.imgs[v], `${d.l} ${d.states[v]}`)}</button></span>`;
-    return `<span class="ctr" title="${esc(d.l)}">${tkImg(d.img, d.l)}<span class="sp"><b>${v}</b><span class="spc"><button type="button" data-tk="${d.k}" data-char="${cid}" data-d="1" aria-label="Increase ${esc(d.l)}">${UP}</button><button type="button" data-tk="${d.k}" data-char="${cid}" data-d="-1" aria-label="Decrease ${esc(d.l)}"${v ? '' : ' disabled'}>${DN}</button></span></span></span>`;
+    return `<span class="ctr" title="${esc(d.l)} (left click: more, right click: less)"><span data-tkc="${d.k}" data-char="${cid}" style="cursor:pointer">${tkImg(d.img, d.l)}</span><span class="sp"><b>${v}</b><span class="spc"><button type="button" data-tk="${d.k}" data-char="${cid}" data-d="1" aria-label="Increase ${esc(d.l)}">${UP}</button><button type="button" data-tk="${d.k}" data-char="${cid}" data-d="-1" aria-label="Decrease ${esc(d.l)}"${v ? '' : ' disabled'}>${DN}</button></span></span></span>`;
   }).join('');
   const DOC = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg>';
   const DICE = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="8.5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="8.5" cy="15.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></g></svg>';
@@ -198,7 +202,7 @@ export function playmatHtml(c, X, S = {}) {
     <section class="shelf6" aria-label="Items"><h4>Items <span class="itbar"><span>${c.items.length}</span><button type="button" class="btn6" data-itemssort="${cid}" title="Sort by slot" aria-label="Sort by slot">Slot</button><button type="button" class="btn6 equipbtn" data-itemsedit="${cid}" title="Inventory" aria-label="Inventory"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1-4 11-11a2 2 0 0 1 3 3L8 19z"/><path d="M14 7l3 3"/></svg></button></span></h4>${items}</section>
     <section class="board6">
       <div class="toprow">
-        <div class="zone"><span class="zlabel">Active &middot; <b>${active.length}</b></span><div class="activelist" data-zone="active" data-char="${cid}">${active.map(id => ac(id)).join('')}</div></div>
+        <div class="zone"><span class="zlabel">Active &middot; <b>${active.length}</b></span><div class="activelist" data-zone="active" data-char="${cid}">${active.map(id => ac(id)).join('')}${(S.rx || []).map(rxCard).join('')}</div></div>
         <div class="zone play"><span class="zlabel">Play area &middot; Initiative <b>${playIni}</b></span>${slotHtml(0)}${slotHtml(1)}</div>
       </div>
       <div class="hand6" data-hmode="${AMD ? 'amd' : 'hand'}" data-layout="${ST.layout === 'fan' ? 'fan' : ST.layout === 'grid' ? 'grid' : 'spread'}"><div class="hbar">${hviewTog}${AMD ? amBar : `<span class="zlabel">Hand &middot; <b class="${limit && hand.length - (S.lentCards || 0) > limit ? 'over-limit' : ''}">${hand.length - (S.lentCards || 0)}</b>${limit ? ` of <span>${esc(limit)}</span>` : ''}</span>${heBtn}<span class="hctl"><span class="sortlab">Sort</span>${`<span class="sortgrp"><button type="button" class="btn6" data-handsort="ini" data-char="${cid}" title="Sort by initiative and keep the hand sorted">Ini</button><button type="button" class="btn6" data-handsort="lvl" data-char="${cid}" title="Sort by level once">Lvl</button></span>`}</span>`}</div>${AMD ? amView : `<div class="fan6${ST.layout === 'grid' ? ' hgrid' : ''}" data-zone="hand" data-char="${cid}">${ST.layout === 'grid' ? `<div class="hgi" style="--hrows:${handGrid(c, limit).cells.length / 6}">${handGrid(c, limit).cells.map((id, i) => `<div class="hcell${id == null ? ' empty' : ''}" data-cell="${i}">${id == null ? '' : ac(id, i, true, true)}</div>`).join('')}</div>` : hand.map((id, i) => ac(id, i, true, true)).join('')}</div>`}</div>
@@ -318,7 +322,8 @@ export function modalHtml(c, X, S) {
     const id = Number(String(S.mkKey || '').slice(2)), card = X.cardById.get(id);
     if (!card) return '';
     title = X.pretty(card.slug); const url = X.cardImageUrl(card);
-    body = `<div class="itmodal"><div class="itcard pick" data-mkcard="c:${id}">${url ? `<img src="${esc(url)}" alt="${esc(title)}" draggable="false">` : ''}${markersHtml(c.mk?.[`c:${id}`], S.mkIdx)}</div><div class="itpanel">${markPanel(c, S, esc, `c:${id}`)}<div class="row"><button type="button" class="btn6" data-mkclear="c:${id}">Clear all</button></div></div></div>`;
+    const mc = S.mkc || c;                                                         // a given prescription: the markers are the owner's
+    body = `<div class="itmodal"><div class="itcard pick" data-mkcard="c:${id}">${url ? `<img src="${esc(url)}" alt="${esc(title)}" draggable="false">` : ''}${markersHtml(mc.mk?.[`c:${id}`], S.mkIdx)}</div><div class="itpanel">${markPanel(mc, S, esc, `c:${id}`)}<div class="row"><button type="button" class="btn6" data-mkclear="c:${id}">Clear all</button></div></div></div>`;
   } else if (S.modal === 'items') {
     title = 'Inventory'; big = ' huge';
     const I = S.items || { pool: [], isel: [] }, sel = new Set(I.isel.map(String));
