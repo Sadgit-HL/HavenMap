@@ -25178,50 +25178,6 @@
   },
   {
    "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/mercenary_tokens/metal_mosaic_pressure_0.png",
-   "dst": "icons/tokens-metal_mosaic_pressure_0.webp",
-   "status": "ok",
-   "bytes": 7620,
-   "size": [
-    164,
-    164
-   ]
-  },
-  {
-   "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/mercenary_tokens/metal_mosaic_pressure_1.png",
-   "dst": "icons/tokens-metal_mosaic_pressure_1.webp",
-   "status": "ok",
-   "bytes": 7476,
-   "size": [
-    164,
-    164
-   ]
-  },
-  {
-   "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/mercenary_tokens/metal_mosaic_pressure_2.png",
-   "dst": "icons/tokens-metal_mosaic_pressure_2.webp",
-   "status": "ok",
-   "bytes": 7336,
-   "size": [
-    164,
-    164
-   ]
-  },
-  {
-   "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/mercenary_tokens/metal_mosaic_pressure_3.png",
-   "dst": "icons/tokens-metal_mosaic_pressure_3.webp",
-   "status": "ok",
-   "bytes": 7506,
-   "size": [
-    164,
-    164
-   ]
-  },
-  {
-   "group": "repo images",
    "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/mercenary_tokens/mindthief.png",
    "dst": "icons/tokens-mindthief.webp",
    "status": "ok",
@@ -44846,51 +44802,47 @@
   },
   {
    "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/mercenary_tokens/hive_pressure_low.png",
-   "dst": "icons/tokens-hive_pressure_low.webp",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/mercenary_tokens/metal_mosaic_pressure_low.png",
+   "dst": "icons/tokens-metal_mosaic_pressure_low.webp",
    "status": "ok",
    "bytes": 8088,
    "size": [
     150,
     150
-   ],
-   "generated": "tools/make-hive-pressure-tokens.py"
+   ]
   },
   {
    "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/mercenary_tokens/hive_pressure_regular.png",
-   "dst": "icons/tokens-hive_pressure_regular.webp",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/mercenary_tokens/metal_mosaic_pressure_regular.png",
+   "dst": "icons/tokens-metal_mosaic_pressure_regular.webp",
    "status": "ok",
    "bytes": 7468,
    "size": [
     150,
     150
-   ],
-   "generated": "tools/make-hive-pressure-tokens.py"
+   ]
   },
   {
    "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/mercenary_tokens/hive_pressure_high.png",
-   "dst": "icons/tokens-hive_pressure_high.webp",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/mercenary_tokens/metal_mosaic_pressure_high.png",
+   "dst": "icons/tokens-metal_mosaic_pressure_high.webp",
    "status": "ok",
    "bytes": 7790,
    "size": [
     150,
     150
-   ],
-   "generated": "tools/make-hive-pressure-tokens.py"
+   ]
   },
   {
    "group": "repo images",
-   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/mercenary_tokens/hive_pressure_over.png",
-   "dst": "icons/tokens-hive_pressure_over.webp",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/mercenary_tokens/metal_mosaic_pressure_over.png",
+   "dst": "icons/tokens-metal_mosaic_pressure_over.webp",
    "status": "ok",
    "bytes": 7942,
    "size": [
     150,
     150
-   ],
-   "generated": "tools/make-hive-pressure-tokens.py"
+   ]
   }
  ],
  "missing": []

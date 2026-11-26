@@ -32,7 +32,7 @@ The mockup class list (`CHAR_CLASSES`) now has all 43 classes (GH2e, Mercenary P
 | Shattersong | Resonance | count | yes (selectable since all 43 classes were added) | `images/common/mercenary_tokens/shattersong_resonance.png` |
 | Blinkblade | Time | count | yes (selectable since all 43 classes were added) | `images/common/mercenary_tokens/blinkblade_time.png` (184x184, renamed from `fh-blinkblade-time-token-orig.png`, not listed in `CLASS_TOKENS`) |
 | Blinkblade | Speed (Fast, Slow) | cycle, 2 states | yes (selectable since all 43 classes were added) | `images/common/mercenary_tokens/blinkblade_speed_fast.png` (Fast), `images/common/mercenary_tokens/blinkblade_speed_slow.png` (Slow) |
-| Metal Mosaic | Pressure (0 to 3) | cycle, 4 states, one token shown | yes (selectable since all 43 classes were added) | `images/common/mercenary_tokens/metal_mosaic_pressure_0.png` to `_3.png` (state n uses `metal_mosaic_pressure_n.png`, renamed from `mm_steam_n.png`) |
+| Metal Mosaic | Pressure (Low, Regular, High, Over) | cycle (left click forward, right click back), 4 states, one token shown | yes | `images/common/mercenary_tokens/metal_mosaic_pressure_low`, `_regular`, `_high`, `_over` (since 2026-11-26; before: `_0` to `_3`) |
 
 Owner's wording: Blinkblade has two token types, Time (counted) and Speed (states fast or slow). Hail has Resolve. Metal Mosaic has pressure tokens of which one is displayed and clicking cycles them (4 states). The Blinkblade Speed states follow that wording and have not been checked against the printed class. Metal Mosaic Pressure 0 to 3 is confirmed by the owner.
 

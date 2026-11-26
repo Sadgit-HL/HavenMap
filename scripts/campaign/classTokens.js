@@ -7,16 +7,14 @@ export const TOKEN_DEFS = {
   quartermaster: [{ k: 'supply', l: 'Supply', img: 'quartermaster_supply', step: 10, max: 50 }],
   soothsinger: [{ k: 'high', l: 'High note', img: 'soothsinger_high_note', max: 2 }, { k: 'low', l: 'Low note', img: 'soothsinger_low_note', max: 2 }],
   geminate: [{ k: 'form', l: 'Form', states: ['Melee', 'Ranged'], imgs: ['images/common/conditions/geminate_melee', 'images/common/conditions/geminate_range'] }],   // the two condition pictures: no ranged token picture exists
-  hive: [{ k: 'pressure', l: 'Pressure', states: ['Low pressure', 'Regular pressure', 'High pressure', 'Overpressure'],
-    imgs: ['hive_pressure_low', 'hive_pressure_regular', 'hive_pressure_high', 'hive_pressure_over'] }],      // the pressure gauge (tools/make-hive-pressure-tokens.py)
   deepwraith: [{ k: 'trophy', l: 'Trophy', img: 'deepwraith_trophy', max: 5 }],
   shattersong: [{ k: 'resonance', l: 'Resonance', img: 'shattersong_resonance', max: 5 }],
   blinkblade: [{ k: 'time', l: 'Time', img: 'blinkblade_time', max: 5 },
     { k: 'speed', l: 'Speed', states: ['Fast', 'Slow'], imgs: ['blinkblade_speed_fast', 'blinkblade_speed_slow'] }],
-  metalmosaic: [{ k: 'pressure', l: 'Pressure', states: ['0', '1', '2', '3'],
-    imgs: ['metal_mosaic_pressure_0', 'metal_mosaic_pressure_1', 'metal_mosaic_pressure_2', 'metal_mosaic_pressure_3'] }],
+  metalmosaic: [{ k: 'pressure', l: 'Pressure', states: ['Low', 'Regular', 'High', 'Over'],
+    imgs: ['metal_mosaic_pressure_low', 'metal_mosaic_pressure_regular', 'metal_mosaic_pressure_high', 'metal_mosaic_pressure_over'] }],      // the pressure gauge (tools/make-metal-mosaic-pressure-tokens.py)
 };
-export const tokenDefs = cls => TOKEN_DEFS[String(cls || '').toLowerCase().replace(/[ .]/g, '')] || [];   // H.I.V.E. -> hive
+export const tokenDefs = cls => TOKEN_DEFS[String(cls || '').toLowerCase().replace(/ /g, '')] || [];
 // The picture of a class token (a file under images/common/mercenary_tokens, flattened into the edition-free folder).
 export const tokenImage = name => imageFile(name.includes('/') ? name : 'images/common/mercenary_tokens/' + name, '../');   // a name with a folder is a full image key
 
