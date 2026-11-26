@@ -190,7 +190,7 @@ export const CARDS = [
   {"id":711,"cls":7,"slug":"feral-aid","lv":"X","ini":35},
   {"id":712,"cls":7,"slug":"fierce-fighter","lv":"X","ini":78},
   {"id":713,"cls":7,"slug":"give-chase","lv":"X","ini":80},
-  {"id":714,"cls":7,"slug":"the-hunt-begins","lv":"X","ini":20},
+  {"id":714,"cls":7,"slug":"the-hunt-begins","lv":1,"ini":20},
   {"id":715,"cls":7,"slug":"dual-shot","lv":2,"ini":52},
   {"id":716,"cls":7,"slug":"relentless-offensive","lv":2,"ini":63},
   {"id":717,"cls":7,"slug":"swift-trickery","lv":3,"ini":10},

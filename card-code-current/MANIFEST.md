@@ -36,7 +36,7 @@ Move a class's two files (`card_code_<class>.md` and `<class>-ability-cards.code
 | start | Mindthief | gh2 | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_mindthief.md | tools/secretariat-cards/mindthief-ability-cards.code.json |
 | start | Nightshroud | gh2 | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_nightshroud.md | tools/secretariat-cards/nightshroud-ability-cards.code.json |
 | start | Pain Conduit | fh | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_pain_conduit.md | tools/secretariat-cards/pain-conduit-ability-cards.code.json |
-| start | Plagueherald | gh2 | read from the pictures, not checked | import/card_code_plagueherald.md | made from the card code with tools/convert-card-code.py |
+| confirmed | Plagueherald | gh2 | blind re-reading matched on 57 of 58 halves, the owner checked the other (2026-11-26) | import/card_code_plagueherald.md | made from the card code with tools/convert-card-code.py |
 | start | Pyroclast | fh | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_pyroclast.md | tools/secretariat-cards/pyroclast-ability-cards.code.json |
 | start | Quartermaster | gh2 | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_quartermaster.md | tools/secretariat-cards/quartermaster-ability-cards.code.json |
 | start | Red Guard | jotl | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_red_guard.md | tools/secretariat-cards/red-guard-ability-cards.code.json |
@@ -53,4 +53,4 @@ Move a class's two files (`card_code_<class>.md` and `<class>-ability-cards.code
 | start | Voidwarden | jotl | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_voidwarden.md | tools/secretariat-cards/voidwarden-ability-cards.code.json |
 | start | Wildfury | gh2 | converted from the Gloomhaven Secretariat, not checked | tools/secretariat-cards/card_code_wildfury.md | tools/secretariat-cards/wildfury-ability-cards.code.json |
 | wip | Bladeswarm (second reading) | gh2 | read again from the pictures, to compare with the row above | card_code_bladeswarm_imageread.md | bladeswarm_imageread-ability-cards.code.json |
-| wip | Doomstalker | gh2 | picture reading checked against the Secretariat conversion, not yet checked by the owner | card_code_doomstalker.md | doomstalker-ability-cards.code.json |
+| confirmed | Doomstalker | gh2 | picture reading, the Secretariat conversion and a blind re-reading agree; the owner checked the disputes (2026-11-26) | card_code_doomstalker.md | doomstalker-ability-cards.code.json |

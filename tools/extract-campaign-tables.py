@@ -61,7 +61,7 @@ CARD_FIX = {
 # Levels the Card DB has wrong: (class code, slug) -> the level printed on the card. Found 2026-11-24 on a contact sheet of the printed levels of the Berserker
 # cards: Inner Fire is level 4 and Into the Fight level 2 (the DB has them the other way round); confirmed by the owner. Only the level changes: card ids
 # come from the DB's order (sorted by its levels) and are kept, because saved campaigns refer to them.
-LEVEL_FIX = {('be2', 'inner-fire'): 4, ('be2', 'into-the-fight'): 2}
+LEVEL_FIX = {('be2', 'inner-fire'): 4, ('be2', 'into-the-fight'): 2, ('ds2', 'the-hunt-begins'): 1}
 # Rows of the Card DB that are not cards: (class code, slug, level). Satha has 29 cards, numbered 01 to 29 on the pictures (the folder has 29 pictures); the DB has a
 # second "Blade of the North" at level 9 with the same picture as the level 1 card. Found 2026-11-24 with the owner. Its id (1428) is left unused, the ids of the
 # cards after it (1429, 1430) stay, because saved campaigns refer to them.
