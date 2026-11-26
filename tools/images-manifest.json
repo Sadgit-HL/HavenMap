@@ -45096,6 +45096,78 @@
     96,
     96
    ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/card_backs/gh2-bruiser-back.png",
+   "dst": "card-backs/gh2/gh2-bruiser-back.webp",
+   "status": "ok",
+   "bytes": 88820,
+   "size": [
+    750,
+    1050
+   ],
+   "source": "https://gloomhaven.smigiel.us/card-image/a13927-7a15a569-6667-446f-841e-d839140360ca/8179/8945.image.webp"
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/card_backs/gh2-cragheart-back.png",
+   "dst": "card-backs/gh2/gh2-cragheart-back.webp",
+   "status": "ok",
+   "bytes": 95608,
+   "size": [
+    750,
+    1050
+   ],
+   "source": "https://gloomhaven.smigiel.us/card-image/a13927-7a15a569-6667-446f-841e-d839140360ca/8179/8975.image.webp"
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/card_backs/gh2-mindthief-back.png",
+   "dst": "card-backs/gh2/gh2-mindthief-back.webp",
+   "status": "ok",
+   "bytes": 148808,
+   "size": [
+    750,
+    1050
+   ],
+   "source": "https://gloomhaven.smigiel.us/card-image/a13927-7a15a569-6667-446f-841e-d839140360ca/8179/9006.image.webp"
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/card_backs/gh2-silentknife-back.png",
+   "dst": "card-backs/gh2/gh2-silentknife-back.webp",
+   "status": "ok",
+   "bytes": 108980,
+   "size": [
+    750,
+    1050
+   ],
+   "source": "https://gloomhaven.smigiel.us/card-image/a13927-7a15a569-6667-446f-841e-d839140360ca/8179/9036.image.webp"
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/card_backs/gh2-spellweaver-back.png",
+   "dst": "card-backs/gh2/gh2-spellweaver-back.webp",
+   "status": "ok",
+   "bytes": 72430,
+   "size": [
+    750,
+    1050
+   ],
+   "source": "https://gloomhaven.smigiel.us/card-image/a13927-7a15a569-6667-446f-841e-d839140360ca/8179/9065.image.webp"
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/card_backs/gh2-tinkerer-back.png",
+   "dst": "card-backs/gh2/gh2-tinkerer-back.webp",
+   "status": "ok",
+   "bytes": 122824,
+   "size": [
+    750,
+    1050
+   ],
+   "source": "https://gloomhaven.smigiel.us/card-image/a13927-7a15a569-6667-446f-841e-d839140360ca/8179/9093.image.webp"
   }
  ],
  "missing": []
