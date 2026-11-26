@@ -45052,6 +45052,50 @@
     96,
     96
    ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/over_pressure.png",
+   "dst": "icons/icons-over_pressure.webp",
+   "status": "ok",
+   "bytes": 4676,
+   "size": [
+    96,
+    96
+   ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/high_pressure.png",
+   "dst": "icons/icons-high_pressure.webp",
+   "status": "ok",
+   "bytes": 4704,
+   "size": [
+    96,
+    96
+   ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/regular_pressure.png",
+   "dst": "icons/icons-regular_pressure.webp",
+   "status": "ok",
+   "bytes": 4558,
+   "size": [
+    96,
+    96
+   ]
+  },
+  {
+   "group": "repo images",
+   "src": "C:/Users/hansen/ai/games/HavenMap/HavenMap/images/common/icons/low_pressure.png",
+   "dst": "icons/icons-low_pressure.webp",
+   "status": "ok",
+   "bytes": 4714,
+   "size": [
+    96,
+    96
+   ]
   }
  ],
  "missing": []

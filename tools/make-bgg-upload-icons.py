@@ -11,6 +11,8 @@ Usage: python -I tools/make-bgg-upload-icons.py
 import os
 import subprocess
 
+from PIL import Image
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, 'images', 'icons', 'sources')
 OUT = os.path.join(ROOT, 'tools', 'bgg-icons-upload')
@@ -23,6 +25,10 @@ ICONS = {                                  # output name: source svg
     'hive-mode': 'Hive0x', 'hive-transfer': 'Hive2x',                 # hive-mode is the icon of both prism-mode and fh-mode
     'gain_pressure': 'SteamPlus', 'lose_pressure': 'SteamMinus', 'blinkblade-1': 'blinkblade_fast', 'blinkblade-0': 'blinkblade_slow',
 }
+RASTER = {                                 # output name: picture under images/ (no SVG source: the Metal Mosaic pressure gauge tokens)
+    'low_pressure': 'icons/tokens-metal_mosaic_pressure_low.webp', 'regular_pressure': 'icons/tokens-metal_mosaic_pressure_regular.webp',
+    'high_pressure': 'icons/tokens-metal_mosaic_pressure_high.webp', 'over_pressure': 'icons/tokens-metal_mosaic_pressure_over.webp',
+}
 
 
 def main():
@@ -33,6 +39,12 @@ def main():
                         '-gravity', 'center', '-extent', f'{SIZE}x{SIZE}', out], check=True)
         small = os.path.join(OUT, name + '.png')                                       # 20 px high, the width follows the picture
         subprocess.run(['magick', '-background', 'none', '-density', '600', os.path.join(SRC, svg + '.svg'), '-trim', '+repage', '-resize', f'x{HEIGHT}', small], check=True)
+        print(small)
+    for name, rel in RASTER.items():
+        im = Image.open(os.path.join(ROOT, 'images', *rel.split('/'))).convert('RGBA')
+        im.resize((SIZE, SIZE), Image.LANCZOS).save(os.path.join(OUT, 'large', name + '.png'))
+        small = os.path.join(OUT, name + '.png')
+        im.resize((round(im.width * HEIGHT / im.height), HEIGHT), Image.LANCZOS).save(small)
         print(small)
 
 
