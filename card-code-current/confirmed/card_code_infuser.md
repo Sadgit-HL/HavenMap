@@ -307,7 +307,7 @@ top:
           size: 100%
           position: '0px 0px'
     - mandatory:
-        - custom: "Whenever you do not have %regenerate%, gain %regenerate%."
+        - custom: "Whenever you do not have %disarm%, gain %disarm%."
     - divider
     - custom: "This summon is affected by all your active %infusion%."
   duration: persistent
@@ -371,7 +371,7 @@ bottom:
     - custom: "Your current and maximum hit point values are increased by 3. You are immune to %curse%."
     - divider
     - custom: "When this %infusion% or another %infusion% is played, perform:"
-    - regenerate: ''
+    - ward: ''
       sub:
         - self
   xp: 2
@@ -383,7 +383,7 @@ initiative: 35
 level: 3
 top:
   actions:
-    - move: 2
+    - move: 3
       enhancement: [square]
     - optional:
         - group:
@@ -604,10 +604,10 @@ level: 7
 top:
   actions:
     - shield: 1
-      enhancement: [plus]
+      enhancement: [square]
     - custom: "Add +1 %shield% for each pair of active %infusion%."
     - divider
-    - regenerate: ''
+    - ward: ''
       sub:
         - self
   infuse: [earth/dark]
