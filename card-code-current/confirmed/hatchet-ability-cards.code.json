@@ -315,7 +315,7 @@
     },
     {
      "type": "custom",
-     "text": "%recover% if the target has your Favorite Token."
+     "text": "%?hatchet with red check mark% if the target has your Favorite Token."
     }
    ]
   },
@@ -1512,7 +1512,7 @@
    "actions": [
     {
      "type": "custom",
-     "text": "If you killed an enemy this round, %recover% and gain %xp% 1."
+     "text": "If you killed an enemy this round, %?hatchet with red check mark% and gain %xp% 1."
     }
    ]
   }

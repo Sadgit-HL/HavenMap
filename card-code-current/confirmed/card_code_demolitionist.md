@@ -1,5 +1,6 @@
 # Demolitionist (Jaws of the Lion, Gloomhaven 2nd edition update). The regular cards (level 1 to 9 and X) are read from the card pictures (blind reading,
-# 2026-11-26, Claude readers;  comments mark the readers' doubts). The tutorial cards (level A and B) are the Secretariat conversion, not checked and not used.
+# 2026-11-26, Claude readers; the pictures were checked again for every reader doubt on 2026-11-28 and the enhancement marker shapes were confirmed on
+# the review page). The check comments left only note how a dark banner inside a pill is written (as a plain sub item). The tutorial cards (level A and B) are the Secretariat conversion, not checked and not used.
 
 name: Crushing Weight
 initiative: 22
@@ -44,7 +45,6 @@ top:
   actions:
     - attack: 2
       sub:
-        # check: the square enhancement marker sits after the range pill, so it is taken as the range marker
         - range: 4
           enhancement: [square]
     - mandatory:
@@ -194,7 +194,6 @@ initiative: 52
 level: X
 top:
   actions:
-    # check: the first icon of the trap may be a damage-like trap icon
     - custom: "Create one %damage% 3, %muddle% trap in an empty hex within %range% 3."
     - mandatory:
         - fire
@@ -239,7 +238,6 @@ level: 2
 top:
   actions:
     - custom: "On your next four attacks targeting enemies adjacent to a wall, add +2 %attack%."
-    # check: four circles (first dashed); xp bursts at upper right of the 2nd and 4th circles
     - tokens: [0, 1, 0, 1]
   duration: persistent
   lost: t
@@ -325,7 +323,6 @@ bottom:
     - move: 5
       enhancement: [circle]
     - divider
-    # check: no T-line seen, treated as standalone
     - optional:
         - consume: [fire]
         - attack: 1
@@ -425,7 +422,6 @@ bottom:
     - move: 4
       enhancement: [circle]
     - divider
-    # check: the icon may be impair rather than immobilize
     - custom: "Add %immobilize% to all your attacks this round."
     - optional:
         - consume: [earth]

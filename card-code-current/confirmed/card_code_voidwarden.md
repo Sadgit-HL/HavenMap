@@ -1,5 +1,6 @@
 # Voidwarden (Jaws of the Lion, Gloomhaven 2nd edition update). The regular cards (level 1 to 9 and X) are read from the card pictures (blind reading,
-# 2026-11-26, Claude readers;  comments mark the readers' doubts). The tutorial cards (level A and B) are the Secretariat conversion, not checked and not used.
+# 2026-11-26, Claude readers; the pictures were checked again for every reader doubt on 2026-11-28 and the enhancement marker shapes were confirmed on
+# the review page). The check comments left only note how a dark banner inside a pill is written (as a plain sub item). The tutorial cards (level A and B) are the Secretariat conversion, not checked and not used.
 
 name: Black Boon
 initiative: 43
@@ -145,7 +146,6 @@ initiative: 83
 level: 1
 top:
   actions:
-    # check: the any-element consume icon is written %wildc%
     - custom: "The first attack performed in each of your attack granting actions gains advantage, and you may %wildc% to +1 %attack% to it."
     - divider
     - custom: "Whenever you control enemies to attack, they use your attack modifier deck."
@@ -170,7 +170,6 @@ level: 1
 top:
   actions:
     - custom: "One ally within %range% 3 may perform:"
-    # check: the shield marker is a small diamond with a cross, may be diamondPlus or plus
     - shield: 1
       enhancement: [diamondPlus]
     - move: 2
@@ -179,7 +178,6 @@ top:
 bottom:
   actions:
     - custom: "At the start of your next five turns, perform %curse% %range% 2."
-    # check: first circle dashed (no xp), 3rd and 5th circles carry xp 1
     - tokens: [0, 0, 1, 0, 1]
   duration: persistent
   lost: t
@@ -301,7 +299,6 @@ top:
 bottom:
   actions:
     - move: 4
-    # check: the dashed box has a short line above it, may be standalone (divider and noLine) instead of attached to the move
     - optional:
         - consume: [dark]
         - custom: "-1 %move%, %xp1%"
@@ -324,7 +321,6 @@ top:
       sub:
         - self
     - custom: "."
-    # check: three circles (dashed, solid, solid with xp 1); the last has a red persistent mark
     - tokens: [0, 0, 1]
     - mandatory:
         - dark
@@ -408,7 +404,6 @@ level: 3
 top:
   actions:
     - custom: "At the start of your next five turns, one ally within %range% 3 may perform %attack% 2."
-    # check: five circles (dashed, then four solid, xp 1 on the third and fifth); the fifth has a red persistent mark
     - tokens: [0, 0, 1, 0, 1]
   duration: persistent
   lost: t
@@ -434,7 +429,6 @@ initiative: 13
 level: 3
 top:
   actions:
-    # check: the enhancement marker after the heal value may be a diamond with a dot (diamondPlus)
     - heal: 6
       enhancement: [diamondPlus]
       sub:
@@ -464,7 +458,6 @@ top:
       enhancement: [diamond]
       sub:
         - custom: "%target% all adjacent enemies of you"
-    # check: the damage icon is read as %damage%
     - custom: "The controlled enemy suffers %damage%1 for each of its allies it targets."
   xp: 2
   lost: t
@@ -532,7 +525,6 @@ top:
         - range: 3
         # check: the dark banner with a muddle icon inside the pill is written as a plain sub item
         - muddle
-    # check: the gear-like star icon may be a class token rather than damage
     - custom: "where X is all %damage% on the target."
     - mandatory:
         - dark
@@ -631,7 +623,6 @@ level: 8
 top:
   actions:
     - custom: "On your next three %heal% abilities when possible, %target% an additional ally."
-    # check: xp bursts sit at the top right of the first (dashed) and third circles; the first circle may be the dashed one that gives xp
     - tokens: [1, 0, 1]
   duration: persistent
   lost: t

@@ -1,5 +1,6 @@
 # Red Guard (Jaws of the Lion, Gloomhaven 2nd edition update). The regular cards (level 1 to 9 and X) are read from the card pictures (blind reading,
-# 2026-11-26, Claude readers;  comments mark the readers' doubts). The tutorial cards (level A and B) are the Secretariat conversion, not checked and not used.
+# 2026-11-26, Claude readers; the pictures were checked again for every reader doubt on 2026-11-28 and the enhancement marker shapes were confirmed on
+# the review page). The check comments left only note how a dark banner inside a pill is written (as a plain sub item). The tutorial cards (level A and B) are the Secretariat conversion, not checked and not used.
 
 name: Blinding Sickle
 initiative: 87
@@ -29,7 +30,6 @@ top:
     - attack: 2
       enhancement: [diamond]
       sub:
-        # check: pill text is "1 enemy within two hexes," then the disarm icon
         - target: 1 enemy within two hexes
         - disarm
     - mandatory:
@@ -40,7 +40,6 @@ bottom:
     - move: 6
       enhancement: [circle]
       sub:
-        # check: the pill icon is a curved arrow landing on a base (jump)
         - jump
   xp: 1
   lost: t
@@ -51,7 +50,6 @@ level: 1
 top:
   actions:
     - custom: "The next five times an enemy enters a hex adjacent to you, that enemy suffers %damage%2."
-    # check: five circles, the first one dashed; xp on the 2nd and 5th
     - tokens: [0, 1, 0, 0, 1]
     - mandatory:
         - fire
@@ -141,7 +139,6 @@ top:
   lost: t
 bottom:
   actions:
-    # check: the marker after the heal value is a small diamond with a plus
     - heal: 2
       enhancement: [diamondPlus]
       sub:
@@ -159,7 +156,6 @@ top:
       sub:
         - immobilize
     - divider
-    # check: no T-line above the dashed box, only a plain divider, so standalone
     - optional:
         - consume: [light]
         - custom: "%shield% 1, %xp1%"
@@ -189,7 +185,6 @@ bottom:
       sub:
         - jump
     - divider
-    # check: the marker after shield 1 is a small diamond with a plus
     - shield: 1
       enhancement: [diamondPlus]
   duration: round
@@ -276,7 +271,6 @@ initiative: 13
 level: X
 top:
   actions:
-    # check: the shield marker looks like a diamond with a cross inside (diamondPlus)
     - shield: 1
       enhancement: [diamondPlus]
     - divider
@@ -299,7 +293,6 @@ initiative: 12
 level: 2
 top:
   actions:
-    # check: the shield marker looks like a diamond with a cross inside (diamondPlus)
     - shield: 1
       enhancement: [diamondPlus]
     - divider
@@ -480,7 +473,6 @@ top:
       enhancement: [diamond]
       sub:
         - range: 4
-        # check: the second pill icon is a dark diamond with a down arrow, read as pull
         - pull: 3
     - mandatory:
         - air
@@ -514,7 +506,6 @@ bottom:
       enhancement: [circle]
     - divider
     - shield: 3
-      # check: the marker after the shield value is a small diamond with a dot, read as plus
       enhancement: [diamondPlus]
     - optional:
         - consume: [light]
@@ -567,7 +558,6 @@ bottom:
     - heal: 3
       sub:
         - self
-    # check: which circles give xp (burst at upper right of circle 2 and circle 5); first circle is dashed
     - tokens: [0, 1, 0, 0, 1]
     - mandatory:
         - light

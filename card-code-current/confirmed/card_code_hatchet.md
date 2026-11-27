@@ -1,5 +1,6 @@
 # Hatchet (Jaws of the Lion, Gloomhaven 2nd edition update). The regular cards (level 1 to 9 and X) are read from the card pictures (blind reading,
-# 2026-11-26, Claude readers;  comments mark the readers' doubts). The tutorial cards (level A and B) are the Secretariat conversion, not checked and not used.
+# 2026-11-26, Claude readers; the pictures were checked again for every reader doubt on 2026-11-28 and the enhancement marker shapes were confirmed on
+# the review page). The check comments left only note how a dark banner inside a pill is written (as a plain sub item). The tutorial cards (level A and B) are the Secretariat conversion, not checked and not used.
 
 name: Center Mass
 initiative: 24
@@ -9,7 +10,6 @@ top:
     - attack: 3
       enhancement: [diamond]
       sub:
-        # check: the square marker sits after the range value inside the pill
         - range: 3
           enhancement: [square]
 bottom:
@@ -45,7 +45,6 @@ top:
   actions:
     - attack: 1
       sub:
-        # check: square markers after the target and range values inside the pill
         - target: 3
           enhancement: [square]
         - range: 3
@@ -73,7 +72,6 @@ top:
     - attack: 3
       enhancement: [diamond]
       sub:
-        # check: square marker after the target value inside the pill
         - target: 2
           enhancement: [square]
         - range: 4
@@ -135,8 +133,7 @@ top:
   actions:
     - attack: 2
       enhancement: [diamond]
-    # check: the icon is a card with a red check mark, read as recover
-    - custom: "%recover% if the target has your Favorite Token."
+    - custom: "%?hatchet with red check mark% if the target has your Favorite Token."
 bottom:
   actions:
     - move: 1
@@ -195,7 +192,6 @@ level: 1
 top:
   actions:
     - custom: "Place a +3 %attack% Favorite Token on your character mat while this card is active."
-    # check: the token is a hatchet circle with +3 attack, no name known
     - custom: "%?hatchet circle token with +3 attack%"
   xp: 2
   duration: persistent
@@ -235,7 +231,6 @@ bottom:
           enhancement: [square]
     - mandatory:
         - earth
-  # check: the banner shows a green leaf, read as earth
 
 name: Extra Lift
 initiative: 21
@@ -255,7 +250,6 @@ bottom:
     - move: 4
     - divider
     - custom: "On your next four move abilities, add +2 %move%."
-    # check: first circle dashed, three solid; xp over the 2nd and 4th circle; small red marks beside the last circle ignored
     - tokens: [0, 1, 0, 1]
     - mandatory:
         - air
@@ -269,10 +263,8 @@ top:
   actions:
     - move: 3
     - divider
-    # check: the marker after the shield value is a small diamond with a cross, may be plus
     - shield: 2
       enhancement: [diamondPlus]
-    # check: the banner icon is a dark circle with a crescent, read as dark
     - mandatory:
         - dark
   xp: 1
@@ -391,11 +383,9 @@ top:
   actions:
     - loot: 1
     - divider
-    # check: the Favorite Token recall icon (hatchet with red check mark) is unnamed
     - custom: "If an adjacent enemy has your Favorite Token, you may %?hatchet with red check mark%. If you do, the adjacent enemy suffers %damage%2 and gains %wound%."
 bottom:
   actions:
-    # check: the marker after heal is a small diamond with a dot, read as diamondPlus
     - heal: 3
       enhancement: [diamondPlus]
       sub:
@@ -409,9 +399,7 @@ initiative: 15
 level: 5
 top:
   actions:
-    # check: the attack bonus sits in a pill with wound and push 1
     - custom: "Place a +3 %attack%, %wound%, %push% 1 Favorite Token on your character mat while this card is active."
-    # check: the round token picture under the text repeats "+3 attack, wound, push 1"; written as text only
     - custom: "This card cannot be active while The Favorite is active."
   xp: 2
   duration: persistent
@@ -487,7 +475,6 @@ top:
   actions:
     - attack: 4
       enhancement: [diamond]
-    # check: the recall icon (hatchet with red check mark) is unnamed
     - custom: "Add +2 %attack% and gain %xp1% if the target has your Favorite Token, then %?hatchet with red check mark%."
 bottom:
   actions:
@@ -507,7 +494,6 @@ level: 7
 top:
   actions:
     - custom: "On your next five attacks targeting an enemy that has your Favorite Token, add +2 %attack%."
-    # check: first circle is dashed; xp bursts on circles 1, 3 and 5 (a small red mark beside the last circle)
     - tokens: [1, 0, 1, 0, 1]
   duration: persistent
   lost: t
@@ -528,13 +514,11 @@ initiative: 75
 level: 8
 top:
   actions:
-    # check: heal marker is a diamond with a plus, written diamondPlus
     - heal: 3
       enhancement: [diamondPlus]
       sub:
         - self
     - divider
-    # check: heal marker is a diamond with a plus, written diamondPlus
     - heal: 3
       enhancement: [diamondPlus]
       sub:
@@ -565,7 +549,6 @@ top:
 bottom:
   actions:
     - custom: "The next five times you kill an enemy, all enemies adjacent to the hex in which it died suffer %damage% 2."
-    # check: first circle is dashed, xp on the 3rd and 5th circle
     - tokens: [0, 0, 1, 0, 1]
   duration: persistent
   lost: t
@@ -582,7 +565,7 @@ top:
   lost: t
 bottom:
   actions:
-    - custom: "If you killed an enemy this round, %recover% and gain %xp1%."
+    - custom: "If you killed an enemy this round, %?hatchet with red check mark% and gain %xp1%."
 
 name: Heart Seeker
 initiative: 32
@@ -604,7 +587,6 @@ bottom:
       sub:
         - range: 2
         - bless
-    # check: first circle is dashed, xp on the 2nd and 4th circle
     - tokens: [0, 1, 0, 1]
   duration: persistent
   lost: t
