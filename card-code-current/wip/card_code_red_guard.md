@@ -121,7 +121,7 @@ top:
 bottom:
   actions:
     - shield: 3
-      enhancement: [plus]
+      enhancement: [diamondPlus]
     - mandatory:
         - fire
         - light
@@ -515,7 +515,7 @@ bottom:
     - divider
     - shield: 3
       # check: the marker after the shield value is a small diamond with a dot, read as plus
-      enhancement: [plus]
+      enhancement: [diamondPlus]
     - optional:
         - consume: [light]
         - custom: "+1 %shield%, %xp1%"
