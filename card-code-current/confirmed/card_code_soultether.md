@@ -689,7 +689,7 @@ top:
       stats: [8, 4, 3, -]
       special:
       - pierce: 2
-      enhancement: [square, square, square, 0]
+      enhancement: [square, 0, square, 0]
   xp: 1
   lost: t
   duration: persistent

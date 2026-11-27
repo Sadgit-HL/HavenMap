@@ -28,6 +28,7 @@ top:
   actions:
   - custom: "Whenever you kill an enemy, you may discard this card to place one %tear% in the hex they occupied."
   - attack: 4
+    enhancement: [diamond]
   - mandatory:
     - dark
   duration: persistent
@@ -79,6 +80,7 @@ level: 1
 top:
   actions:
   - attack: 4
+    enhancement: [diamond]
   - optional:
     - consume: [dark]
     - custom: "%xp1%"

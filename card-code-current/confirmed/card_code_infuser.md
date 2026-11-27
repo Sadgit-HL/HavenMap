@@ -127,6 +127,7 @@ top:
       enhancement: [diamond]
       sub:
         - range: 4
+          enhancement: [square]
     - optional:
         - custom: "-2 %range% : %dark%"
 bottom:
@@ -209,7 +210,7 @@ top:
           sub:
             - push: 2
               enhancement: [square]
-        - hex: et_ts
+        - hex: etx_ts
   xp: 1
 bottom:
   actions:
@@ -338,7 +339,7 @@ top:
               enhancement: [square]
             - optional:
                 - custom: "-1 %attack% : %push% 1, %air%, %xp1%"
-        - hex: ett_t
+        - hex: ettx_t_x
 bottom:
   actions:
     - mandatory:

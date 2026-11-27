@@ -33,7 +33,10 @@
     },
     {
      "type": "move",
-     "value": 1
+     "value": 1,
+     "enhancement": [
+      "square"
+     ]
     },
     {
      "type": "optional",
@@ -1256,7 +1259,7 @@
      "type": "condition",
      "value": "invisible",
      "enhancement": [
-      "diamond"
+      "diamondPlus"
      ],
      "subActions": [
       {

@@ -6,7 +6,7 @@ export const CARD_ACTIONS = {
   307: {"t":[{"n":0,"text":"%xp% 1","a":[{"type":"xp","value":1}]}]},
   502: {"t":[{"n":0,"text":"Place one %rift% in an hex within %range%3 .","a":[{"type":"create","kind":"token","token":"rift","count":1,"where":{"rel":"range","range":3}}]}]},
   503: {"t":[{"n":0,"text":"Place one %rift% in an hex within %range%4 .","a":[{"type":"create","kind":"token","token":"rift","count":1,"where":{"rel":"range","range":4}}]}]},
-  504: {"t":[{"n":1,"text":"Place one %rift% in the hex the target is occupying.","a":[{"type":"create","kind":"token","token":"rift","count":1,"where":{"rel":"target","require":[]}}]}]},
+  504: {"t":[{"n":2,"text":"Place one %rift% in the hex the target is occupying.","a":[{"type":"create","kind":"token","token":"rift","count":1,"where":{"rel":"target","require":[]}}]}]},
   506: {"b":[{"n":0,"text":"Place one %rift% in an occupied hex within %range% 4, %xp% 1","a":[{"type":"create","kind":"token","token":"rift","count":1,"where":{"rel":"range","range":4,"require":["occupied"]}},{"type":"xp","value":1}]}]},
   507: {"b":[{"n":1,"text":"Place one %rift% in an unoccupied hex within %range% 4, %xp% 1","a":[{"type":"create","kind":"token","token":"rift","count":1,"where":{"rel":"range","range":4,"require":["empty"]}},{"type":"xp","value":1}]}]},
   510: {"t":[{"n":0,"text":"Place one %rift% in an hex within %range%3 .","a":[{"type":"create","kind":"token","token":"rift","count":1,"where":{"rel":"range","range":3}}]}]},

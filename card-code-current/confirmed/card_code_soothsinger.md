@@ -146,7 +146,7 @@ top:
   - custom: "%high-note%"
 bottom:
   actions:
-  - custom: "Grant one ally within %range%3 :"
+  - custom: "Grant one ally within %range%3 %enhancement-square% :"
   - move: 4
     enhancement: [square]
   - custom: "%low-note%"
@@ -177,7 +177,7 @@ initiative: 27
 level: 1
 top:
   actions:
-  - custom: "Grant one ally within %range%3 :"
+  - custom: "Grant one ally within %range%3 %enhancement-square% :"
   - move: 3
     enhancement: [square]
   - divider
@@ -202,7 +202,7 @@ top:
   - custom: "%high-note%"
 bottom:
   actions:
-  - custom: "Grant one ally within %range%3 :"
+  - custom: "Grant one ally within %range%3 %enhancement-square% :"
   - attack: 2
     enhancement: [diamond]
     sub:
@@ -268,7 +268,7 @@ initiative: 91
 level: 2
 top:
   actions:
-  - custom: "Grant one ally within %range%3 :"
+  - custom: "Grant one ally within %range%3 %enhancement-square% :"
   - attack: 4
     enhancement: [diamond]
   - custom: "%high-note%"
@@ -481,7 +481,7 @@ top:
   duration: persistent
 bottom:
   actions:
-  - custom: "Grant one ally within %range%3 :"
+  - custom: "Grant one ally within %range%3 %enhancement-square% :"
   - retaliate: 2
     enhancement: [square]
     sub:
@@ -494,7 +494,7 @@ initiative: 65
 level: 8
 top:
   actions:
-  - custom: "Grant one ally within %range%3 :"
+  - custom: "Grant one ally within %range%3 %enhancement-square% :"
   - attack: 3
     sub:
     - target: "all adjacent enemies"

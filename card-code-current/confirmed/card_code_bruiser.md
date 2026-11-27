@@ -306,6 +306,7 @@ top:
 bottom:
   actions:
   - move: 4
+    enhancement: [square]
   - divider
   - stun: ''
     enhancement: [diamond]
@@ -345,7 +346,7 @@ level: 4
 top:
   actions:
   - heal: 5
-    enhancement: [diamond]
+    enhancement: [diamondPlus]
     sub:
     - self
 bottom:

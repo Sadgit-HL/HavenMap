@@ -237,7 +237,7 @@ initiative: 22
 level: X
 top:
   actions:
-  - custom: "Create one %damage%4 ,%muddle% trap in an adjacent empty hey."
+  - custom: "Create one %damage%4 %enhancement-square% ,%muddle% trap in an adjacent empty hey."
 bottom:
   actions:
   - move: 4
@@ -256,7 +256,7 @@ top:
   - custom: "The target may %recover% one level 1 card from their discard pile."
 bottom:
   actions:
-  - custom: "Create one %damage%2 ,%poison% trap in an adjacent empty hey."
+  - custom: "Create one %damage%2 %enhancement-square% ,%poison% trap in an adjacent empty hey."
 
 name: Hook Gun
 initiative: 72
@@ -380,7 +380,7 @@ top:
   - custom: "All enemies adjacent to the target gain %muddle%."
 bottom:
   actions:
-  - custom: "Create one %damage%2 ,%immobilize% trap in an empty hey within %range%2 ."
+  - custom: "Create one %damage%2 %enhancement-square% ,%immobilize% trap in an empty hey within %range%2 %enhancement-square% ."
 
 name: Noxious Vials
 initiative: 75
@@ -527,7 +527,7 @@ initiative: 15
 level: 8
 top:
   actions:
-  - custom: "Create one %damage%4 ,%wound%, %stun% trap in an empty hey within %range%2 ."
+  - custom: "Create one %damage%4 %enhancement-square% ,%wound%, %stun% trap in an empty hey within %range%2 %enhancement-square% ."
   - mandatory:
     - ice
 bottom:
@@ -554,7 +554,7 @@ top:
     enhancement: [square]
 bottom:
   actions:
-  - custom: "Control one enemy within %range%3 :"
+  - custom: "Control one enemy within %range%3 %enhancement-square% :"
   - attack: 2
     sub:
     - target: "all adjacent enemies"

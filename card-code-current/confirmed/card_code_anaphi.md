@@ -155,7 +155,7 @@ top:
       enhancement: [diamond]
       sub:
         - pierce: 2
-          enhancement: [square]
+          enhancement: [circle]
 bottom:
   actions:
     - move: 3
@@ -545,7 +545,7 @@ top:
       enhancement: [diamond]
     - divider
     - invisible: ''
-      enhancement: [diamond]
+      enhancement: [diamondPlus]
       sub:
         - self
   xp: 1
@@ -614,7 +614,7 @@ bottom:
   actions:
     - custom: "Grant one of your summons:"
     - heal: 3
-      enhancement: [plus]
+      enhancement: [square]
       sub:
         - self
     - move: 3

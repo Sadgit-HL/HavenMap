@@ -1642,7 +1642,7 @@
      "type": "heal",
      "value": 2,
      "enhancement": [
-      "diamond"
+      "diamondPlus"
      ],
      "subActions": [
       {

@@ -131,7 +131,7 @@ initiative: 41
 level: 1
 top:
   actions:
-  - custom: "Create two 1-hex obstacle tiles in empty hexes within %range%3 ."
+  - custom: "Create two 1-hex obstacle tiles in empty hexes within %range%3 %enhancement-square% ."
   - optional:
     - consume: [earth]
     - custom: "All allies adjacent to at least one created tile suffer %damage%1 and gain %ward%, %xp1%."
@@ -363,6 +363,7 @@ top:
 bottom:
   actions:
   - move: 2
+    enhancement: [circle]
   - divider
   - heal: 1
     enhancement: [square]
@@ -432,7 +433,7 @@ level: 4
 top:
   actions:
   - multi:
-    - custom: "Create three 1-hex obstacle tiles in empty hexes within %range%3 ."
+    - custom: "Create three 1-hex obstacle tiles in empty hexes within %range%3 %enhancement-square% ."
     - custom: "All allies and enemies adjacent to at least one created tile suffer %damage%1 and gain %muddle%."
   - mandatory:
     - earth
@@ -506,7 +507,7 @@ top:
   actions:
   - group:
     - attack: 4
-      enhancement: [diamond]
+      enhancement: [square]
     - hex: eetx_tst_xt
   - mandatory:
     - earth

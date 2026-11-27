@@ -776,7 +776,10 @@
    "actions": [
     {
      "type": "move",
-     "value": 4
+     "value": 4,
+     "enhancement": [
+      "square"
+     ]
     },
     {
      "type": "condition",
@@ -876,7 +879,7 @@
      "type": "heal",
      "value": 5,
      "enhancement": [
-      "diamond"
+      "diamondPlus"
      ],
      "subActions": [
       {

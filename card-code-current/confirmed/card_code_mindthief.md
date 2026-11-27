@@ -14,6 +14,7 @@ bottom:
   actions:
   - custom: "Control one enemy within %range%4:"
   - move: 1
+    enhancement: [square]
   - optional:
     - consume: [ice]
     - custom: "The controlled enemy suffers %damage%2."
@@ -463,7 +464,7 @@ top:
   - attack: 0
   - divider
   - invisible: ''
-    enhancement: [diamond]
+    enhancement: [diamondPlus]
     sub:
     - self
 bottom:

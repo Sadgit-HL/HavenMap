@@ -184,7 +184,7 @@ top:
 bottom:
   actions:
   - multi:
-    - custom: "Grant one ally within %range%3 :"
+    - custom: "Grant one ally within %range%3 %enhancement-square% :"
     - shield: 1
   - mandatory:
     - ice

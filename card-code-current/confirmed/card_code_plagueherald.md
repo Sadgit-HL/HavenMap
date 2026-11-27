@@ -371,7 +371,7 @@ top:
         - plague: ''
       sub:
         - range: 4
-    # check: the square marker sits after the range 4 pill
+          enhancement: [square]
     - divider
     - custom: "Whenever an enemy draws a %curse% during its attack, you may discard this card to have that enemy gain %curse%, %curse%, %plague%, %plague%."
   duration: persistent

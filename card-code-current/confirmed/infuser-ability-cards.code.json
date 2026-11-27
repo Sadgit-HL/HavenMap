@@ -314,7 +314,10 @@
      "subActions": [
       {
        "type": "range",
-       "value": 4
+       "value": 4,
+       "enhancement": [
+        "square"
+       ]
       }
      ]
     },
@@ -547,7 +550,7 @@
       },
       {
        "type": "area",
-       "pattern": "et_ts"
+       "pattern": "etx_ts"
       }
      ]
     }
@@ -892,7 +895,7 @@
       },
       {
        "type": "area",
-       "pattern": "ett_t"
+       "pattern": "ettx_t_x"
       }
      ]
     }

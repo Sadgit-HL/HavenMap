@@ -142,7 +142,7 @@ initiative: 14
 level: 1
 top:
   actions:
-  - custom: "Grant one ally within %range%3 :"
+  - custom: "Grant one ally within %range%3 %enhancement-square% :"
   - move: 2
     enhancement: [square]
     sub:
@@ -156,7 +156,7 @@ top:
     noLine: true
 bottom:
   actions:
-  - custom: "Grant one ally within %range%3 :"
+  - custom: "Grant one ally within %range%3 %enhancement-square% :"
   - shield: 2
     enhancement: [square]
   - divider
@@ -295,6 +295,7 @@ level: X
 top:
   actions:
   - invisible: ''
+    enhancement: [diamondPlus]
     sub:
     - target: "1 ally"
     - range: 4
@@ -313,7 +314,7 @@ initiative: 10
 level: 2
 top:
   actions:
-  - custom: "Grant one ally within %range%3 :"
+  - custom: "Grant one ally within %range%3 %enhancement-square% :"
   - move: 2
     enhancement: [square]
   - divider

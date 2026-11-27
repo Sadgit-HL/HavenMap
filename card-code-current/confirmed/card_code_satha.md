@@ -633,7 +633,7 @@ top:
 bottom:
   actions:
   - heal: 2
-    enhancement: [diamond]
+    enhancement: [diamondPlus]
     sub:
     - target: 1 ally
     - range: 3

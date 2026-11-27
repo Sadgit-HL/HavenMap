@@ -1096,7 +1096,10 @@
    "actions": [
     {
      "type": "move",
-     "value": 2
+     "value": 2,
+     "enhancement": [
+      "circle"
+     ]
     },
     {
      "type": "heal",
@@ -1518,7 +1521,7 @@
        "type": "attack",
        "value": 4,
        "enhancement": [
-        "diamond"
+        "square"
        ]
       },
       {

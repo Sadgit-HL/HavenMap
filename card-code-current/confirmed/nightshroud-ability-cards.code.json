@@ -68,7 +68,10 @@
     },
     {
      "type": "attack",
-     "value": 4
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ]
     },
     {
      "type": "mandatory",
@@ -207,7 +210,10 @@
    "actions": [
     {
      "type": "attack",
-     "value": 4
+     "value": 4,
+     "enhancement": [
+      "diamond"
+     ]
     },
     {
      "type": "optional",

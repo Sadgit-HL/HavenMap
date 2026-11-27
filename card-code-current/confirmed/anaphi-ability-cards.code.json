@@ -388,7 +388,7 @@
        "type": "pierce",
        "value": 2,
        "enhancement": [
-        "square"
+        "circle"
        ]
       }
      ]
@@ -1395,7 +1395,7 @@
      "type": "condition",
      "value": "invisible",
      "enhancement": [
-      "diamond"
+      "diamondPlus"
      ],
      "subActions": [
       {
@@ -1634,7 +1634,7 @@
      "type": "heal",
      "value": 3,
      "enhancement": [
-      "plus"
+      "square"
      ],
      "subActions": [
       {
