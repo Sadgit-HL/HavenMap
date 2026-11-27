@@ -171,7 +171,7 @@ top:
       enhancement: [diamondPlus]
       sub:
         - range: 3
-          enhancement: [circle]
+          enhancement: [square]
         - custom: '%scry% 2'
 
       margin: 50px
