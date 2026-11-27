@@ -87,7 +87,7 @@ bottom:
     - custom: "Perform this ability as if you occupied a hex containing a %classToken0%."     
       margin: 15px 
 
-name: Approach the Void
+name: Approach of the Void
 initiative: 21
 level: 1
 top:
@@ -104,7 +104,7 @@ bottom:
     - teleport: 4
       enhancement: [circle]
 
-name: Otherwordly Journey
+name: Otherworldly Journey
 initiative: 34
 level: 1
 top:
@@ -167,7 +167,7 @@ initiative: 48
 level: 1
 top:
   actions:
-    - heal: 2
+    - heal: 3
       enhancement: [diamondPlus]
       sub:
         - range: 3
@@ -528,7 +528,7 @@ top:
     - mandatory:
       - light       
       margin: 15px 0px 0px 0px
-  duration: persistent
+  duration: round
 bottom:
   actions:
     - teleport: 5
@@ -601,10 +601,10 @@ bottom:
       enhancement: [diamond]
       sub:
       - range: 4
-    - custom: Add +1 for each revealed negative %lf%and %amd-null% cards in the monster %lf% attack modifier deck.
+    - custom: Add +1 %attack% for each revealed negative %lf%and %amd-null% cards in the monster %lf% attack modifier deck.
       fontSize: 22px
   infuse: [light/dark]
-name: Contstant Flux
+name: Constant Flux
 initiative: 37
 level: 5
 top:

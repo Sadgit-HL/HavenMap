@@ -182,7 +182,7 @@
   }
  },
  {
-  "name": "Approach the Void",
+  "name": "Approach of the Void",
   "level": 1,
   "initiative": 21,
   "top": {
@@ -210,7 +210,7 @@
   }
  },
  {
-  "name": "Otherwordly Journey",
+  "name": "Otherworldly Journey",
   "level": 1,
   "initiative": 34,
   "top": {
@@ -373,7 +373,7 @@
    "actions": [
     {
      "type": "heal",
-     "value": 2,
+     "value": 3,
      "enhancement": [
       "diamondPlus"
      ],
@@ -478,7 +478,13 @@
    "actions": [
     {
      "type": "custom",
-     "text": "%stun%"
+     "text": "%stun%",
+     "subActions": [
+      {
+       "type": "custom",
+       "text": "%target% 1 ally or enemy, %range% 3 %enhancement-square%"
+      }
+     ]
     },
     {
      "type": "custom",
@@ -1166,7 +1172,12 @@
        ]
       }
      },
-     "actions": [],
+     "actions": [
+      {
+       "type": "custom",
+       "text": "%target% all allies occupying hexes containing %rift%"
+      }
+     ],
      "effects": [
       {
        "type": "condition",
@@ -1229,7 +1240,7 @@
      ]
     }
    ],
-   "duration": "persistent"
+   "duration": "round"
   },
   "bottom": {
    "actions": [
@@ -1385,7 +1396,7 @@
     },
     {
      "type": "custom",
-     "text": "Add +1 for each revealed negative and %amd-null% cards in the monster attack modifier deck."
+     "text": "Add +1 %attack% for each revealed negative and %amd-null% cards in the monster attack modifier deck."
     }
    ],
    "infuse": [
@@ -1396,7 +1407,7 @@
   }
  },
  {
-  "name": "Contstant Flux",
+  "name": "Constant Flux",
   "level": 5,
   "initiative": 37,
   "top": {
@@ -1977,23 +1988,7 @@
    "actions": [
     {
      "type": "custom",
-     "text": "%rift%"
-    },
-    {
-     "type": "custom",
-     "text": "%rift%"
-    },
-    {
-     "type": "custom",
-     "text": "%rift%"
-    },
-    {
-     "type": "custom",
-     "text": "%rift%"
-    },
-    {
-     "type": "custom",
-     "text": "You may place more than one in the same hex. Whenever you place a , any enemy occupying that hex suffers %damage% 1 for each in that hex. Whenever you perform an ability that affects figures occupying hexes containing , each figure is affected by the ability a number of times equal to the number of in their hex."
+     "text": "You may place more than one %rift% in the same hex. Whenever you place a %rift%, any enemy occupying that hex suffers %damage% 1 for each %rift% in that hex. Whenever you perform an ability that affects figures occupying hexes containing %rift%, each figure is affected by the ability a number of times equal to the number of %rift% in their hex."
     }
    ],
    "xp": 2,
@@ -2009,27 +2004,37 @@
    "actions": [
     {
      "type": "custom",
-     "text": "%shuffle%"
+     "text": "%stun%,%curse%",
+     "enhancement": [
+      "diamond"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
     },
     {
      "type": "custom",
-     "text": "%shuffle%"
+     "text": "Remove one revealed attack modifier card without %amd-rolling% from the monster attack modifier deck or discard pile from the scenario."
     },
     {
      "type": "custom",
-     "text": "%stun%,%curse%"
+     "text": "%regenerate%,%bless%",
+     "enhancement": [
+      "diamondPlus"
+     ],
+     "subActions": [
+      {
+       "type": "range",
+       "value": 4
+      }
+     ]
     },
     {
      "type": "custom",
-     "text": "Remove one revealed attack modifier card without from the monster attack modifier deck or discard pile from the scenario."
-    },
-    {
-     "type": "custom",
-     "text": "%regenerate%,%bless%"
-    },
-    {
-     "type": "custom",
-     "text": "Remove one revealed attack modifier card without from the target's attack modifier deck or discard pile from the scenario."
+     "text": "Remove one revealed attack modifier card without %amd-rolling% from the target's attack modifier deck or discard pile from the scenario."
     }
    ]
   },
@@ -2052,7 +2057,7 @@
      "actions": [
       {
        "type": "custom",
-       "text": "%shuffle% Remove an additional card from the same deck. This card may not have , %xp% 1."
+       "text": "Remove an additional card from the same deck. This card may not have %amd-rolling%, %xp% 1."
       }
      ]
     }
