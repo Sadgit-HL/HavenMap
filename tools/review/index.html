@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marker review</title>
+<style>
+:root{--bg:#16130f;--panel:#231d17;--line:#3a3026;--text:#ecdfc8;--muted:#a89a82;--accent:#c7a44a;--ok:#6cae75;--warn:#d9a441;--bad:#c9604f;--info:#6b9fd4;--fill:#2d2519;--deep:#120f0b}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:14px/1.35 system-ui,"Segoe UI",Roboto,sans-serif}
+button,select,textarea{font:inherit;color:var(--text);background:var(--fill);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+button{cursor:pointer}button:hover{border-color:#6b5a3c}button:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid rgba(199,164,74,.25);border-color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#16130f;font-weight:600}
+button:disabled{opacity:.45;cursor:not-allowed}
+#app{display:grid;grid-template-columns:270px minmax(0,1fr) 320px;grid-template-rows:auto minmax(0,1fr);height:100vh;gap:12px;padding:12px}
+#top{grid-column:1/4;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#top .grow{flex:1}
+#top .stat{color:var(--muted);font-size:12px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;min-height:0}
+#list{overflow:auto;padding:6px}
+#list .row{display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:8px;cursor:pointer;border:1px solid transparent}
+#list .row:hover{border-color:#6b5a3c}
+#list .row.cur{background:rgba(199,164,74,.1);border-color:var(--accent)}
+#list .row .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#list .row .cl{color:var(--muted);font-size:12px}
+.chip{display:inline-block;min-width:22px;text-align:center;border-radius:999px;padding:0 7px;font-size:11px;border:1px solid var(--line)}
+.chip.ok{color:var(--ok);border-color:var(--ok)}.chip.bad{color:var(--bad);border-color:var(--bad)}.chip.gold{color:var(--accent);border-color:var(--accent)}
+#stagewrap{display:flex;align-items:center;justify-content:center;padding:10px;overflow:hidden}
+#stage{position:relative;height:100%;max-width:100%;aspect-ratio:750/1050;user-select:none;touch-action:none;cursor:crosshair}
+#stage img{width:100%;height:100%;display:block;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.6);pointer-events:none}
+#stage .none{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.mk{position:absolute;width:4.2%;aspect-ratio:1;transform:translate(-50%,-50%);cursor:grab;touch-action:none}
+.mk svg{width:100%;height:100%;display:block;overflow:visible}
+.mk .g{fill:rgba(0,0,0,.001);stroke:var(--accent);stroke-width:2.2;vector-effect:non-scaling-stroke}
+.mk.det .g{stroke:var(--info)}
+.mk.sel .g{stroke:#fff;stroke-width:3}
+.mk .n{position:absolute;left:105%;top:-30%;font-size:11px;color:#fff;text-shadow:0 0 3px #000,0 0 3px #000;pointer-events:none}
+#side{display:flex;flex-direction:column;gap:10px;padding:14px;overflow:auto}
+#side h2{margin:0;font-size:17px;color:var(--accent)}
+#side h4{margin:0 0 4px;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--accent)}
+.sec{background:rgba(0,0,0,.18);border:1px solid var(--line);border-radius:10px;padding:10px}
+.muted{color:var(--muted);font-size:12px}
+.ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}
+.tools{display:flex;gap:6px;flex-wrap:wrap}
+.tools button{display:flex;gap:6px;align-items:center;padding:4px 8px}
+.tools button.on{border-color:var(--accent);background:rgba(199,164,74,.1)}
+.tools svg{width:16px;height:16px}
+.mrow{display:flex;gap:6px;align-items:center;margin:3px 0;padding:2px 4px;border-radius:6px}
+.mrow.sel{background:rgba(199,164,74,.1)}
+.mrow .i{width:18px;color:var(--muted)}
+.mrow select{flex:1;padding:3px 6px}
+#note{width:100%;min-height:64px;background:var(--deep);resize:vertical}
+.btns{display:flex;gap:6px;flex-wrap:wrap}
+@media (max-width:1000px){#app{grid-template-columns:1fr;grid-template-rows:auto auto auto auto;height:auto}#top{grid-column:1}#list{max-height:200px}#stage{height:auto;width:100%}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="top">
+    <select id="fClass" title="Class"></select>
+    <select id="fState" title="Show">
+      <option value="need">Need review</option>
+      <option value="bad">Mismatch</option>
+      <option value="agree">Agrees, not confirmed</option>
+      <option value="done">Confirmed or edited</option>
+      <option value="all">All cards</option>
+    </select>
+    <span class="stat" id="stat"></span>
+    <span class="grow"></span>
+    <span class="stat" id="saved"></span>
+    <button id="bLink" title="Write every change into import/enhancement-overrides.json">Link file</button>
+    <button id="bDown" title="Download the overrides as a file">Download</button>
+    <button id="bNotes" title="Download the notes as a text file">Notes</button>
+  </div>
+  <div id="list" class="panel"></div>
+  <div id="stagewrap" class="panel"><div id="stage"></div></div>
+  <div id="side" class="panel"></div>
+</div>
+<script type="module">
+const SHAPES = ['square', 'diamond', 'diamondPlus', 'circle', 'hex'];
+const LABEL = { square: 'Square', diamond: 'Diamond', diamondPlus: 'Diamond+', circle: 'Circle', hex: 'Hex dot' };
+const KEYS = { 1: 'square', 2: 'diamond', 3: 'diamondPlus', 4: 'circle', 5: 'hex' };
+const GLYPH = {
+  square: '<rect class="g" x="14" y="14" width="72" height="72"/>',
+  diamond: '<path class="g" d="M50 6 L94 50 L50 94 L6 50 Z"/>',
+  diamondPlus: '<path class="g" d="M50 6 L94 50 L50 94 L6 50 Z"/><path class="g" d="M50 30 V70 M30 50 H70"/>',
+  circle: '<circle class="g" cx="50" cy="50" r="40"/>',
+  hex: '<path class="g" d="M50 6 L88 28 L88 72 L50 94 L12 72 L12 28 Z"/>',
+};
+const svg = k => `<svg viewBox="0 0 100 100" aria-hidden="true">${GLYPH[k]}</svg>`;
+const $ = id => document.getElementById(id);
+const r4 = v => Math.round(v * 10000) / 10000;
+const clamp = v => Math.min(1, Math.max(0, v));
+
+let data = {}, ids = [], ov = {}, shown = [], cur = null, work = [], sel = -1, tool = 'square', fileHandle = null, saveTimer = 0;
+const LS = 'havenmap.review.overrides';
+
+async function load() {
+  data = await (await fetch('review-data.json', { cache: 'no-store' })).json();
+  try { const r = await fetch('../../import/enhancement-overrides.json', { cache: 'no-store' }); if (r.ok) ov = await r.json(); } catch { /* none yet */ }
+  try { const l = JSON.parse(localStorage.getItem(LS) || 'null'); if (l?.dirty) { ov = l.data; $('saved').textContent = 'unsaved changes restored'; } } catch { /* ignore */ }
+  ids = Object.keys(data).map(Number).sort((a, b) => a - b).filter(id => hasMarkers(data[id]) || ov[id]);
+  const classes = [...new Set(ids.map(id => data[id].class))].sort();
+  $('fClass').innerHTML = '<option value="">All classes</option>' + classes.map(c => `<option>${c}</option>`).join('');
+  const p = new URLSearchParams(location.search);
+  if (p.get('class')) $('fClass').value = p.get('class');
+  if (p.get('state')) $('fState').value = p.get('state');
+  refilter(Number(p.get('id')) || null);
+}
+const hasMarkers = r => r.expected.shapes.length + r.expected.hex > 0 || r.detected.length > 0;
+
+function state(id) {
+  const o = ov[id];
+  if (o?.markers) return o.status === 'confirmed' ? 'confirmed' : 'edited';
+  return data[id].ok ? 'ok' : 'bad';
+}
+const need = id => !ov[id]?.markers && !data[id].ok;
+const decided = id => !!ov[id]?.markers;
+
+function refilter(keep) {
+  const c = $('fClass').value, s = $('fState').value;
+  shown = ids.filter(id => (!c || data[id].class === c) && (s === 'all' || (s === 'need' && need(id)) || (s === 'bad' && !data[id].ok && !decided(id)) || (s === 'agree' && data[id].ok && !decided(id)) || (s === 'done' && decided(id))));
+  $('stat').textContent = `${shown.length} cards, ${ids.filter(decided).length} decided, ${ids.filter(need).length} to review`;
+  renderList();
+  if (keep && shown.includes(keep)) open(keep); else if (shown.length) open(shown.includes(cur) ? cur : shown[0]); else { cur = null; renderStage(); renderSide(); }
+}
+
+function renderList() {
+  $('list').innerHTML = shown.map(id => {
+    const r = data[id], st = state(id), chip = st === 'ok' ? '<span class="chip ok">ok</span>' : st === 'bad' ? '<span class="chip bad">!</span>' : `<span class="chip gold">${st === 'confirmed' ? 'c' : 'e'}</span>`;
+    return `<div class="row${id === cur ? ' cur' : ''}" data-id="${id}">${chip}<span class="nm">${esc(r.name)}</span><span class="cl">${esc(r.cls)}</span></div>`;
+  }).join('');
+}
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+
+function open(id) {
+  cur = id; sel = -1;
+  const o = ov[id];
+  work = (o?.markers || data[id].detected).map(m => ({ x: m.x, y: m.y, k: m.k }));
+  renderList(); renderStage(); renderSide();
+  $('list').querySelector('.row.cur')?.scrollIntoView({ block: 'nearest' });
+}
+
+function renderStage() {
+  const st = $('stage');
+  if (cur == null) { st.innerHTML = ''; return; }
+  const r = data[cur];
+  const keepImg = st.dataset.id === String(cur);
+  if (!keepImg) { st.dataset.id = cur; st.innerHTML = `<img alt="" src="../../${r.pic}"><div class="mk-layer"></div>`; st.querySelector('img').onerror = e => { e.target.remove(); st.insertAdjacentHTML('afterbegin', '<div class="none">No picture</div>'); }; }
+  let layer = st.querySelector('.mk-layer');
+  layer.innerHTML = work.map((m, i) => `<div class="mk${i === sel ? ' sel' : ''}${decided(cur) ? '' : ' det'}" data-i="${i}" style="left:${m.x * 100}%;top:${m.y * 100}%">${svg(m.k)}<span class="n">${i + 1}</span></div>`).join('');
+}
+
+function check(r, mk) {
+  const kinds = mk.map(m => m.k), rest = [...kinds], miss = [];
+  for (const s of r.expected.shapes) { const w = s === 'plus' ? 'diamondPlus' : s; const i = rest.indexOf(w); if (i < 0) miss.push(s); else rest.splice(i, 1); }
+  return { miss, extra: rest.length - r.expected.hex };
+}
+
+function renderSide() {
+  const side = $('side');
+  if (cur == null) { side.innerHTML = '<div class="muted">No cards</div>'; return; }
+  const r = data[cur], c = check(r, work), exp = r.expected, o = ov[cur];
+  const expTxt = [...Object.entries(exp.shapes.reduce((a, s) => (a[s] = (a[s] || 0) + 1, a), {})).map(([k, n]) => `${k}${n > 1 ? ' x' + n : ''}`), exp.hex ? `${exp.hex} hex dot${exp.hex > 1 ? 's' : ''}` : ''].filter(Boolean).join(', ') || 'none';
+  const good = !c.miss.length && c.extra === 0;
+  side.innerHTML = `
+    <div><h2>${esc(r.name)}</h2><div class="muted">${esc(r.class)}, level ${esc(r.lv)}, id ${cur}</div></div>
+    <div class="sec"><h4>Card code</h4><div>${esc(expTxt)}</div>
+      <div class="${good ? 'ok' : 'bad'}" style="margin-top:4px">${work.length} on the card${good ? ', agrees' : c.miss.length ? `, missing ${esc(c.miss.join(', '))}` : `, ${c.extra > 0 ? c.extra + ' more' : -c.extra + ' fewer'} than the card code`}</div>
+      ${o?.markers ? `<div class="muted">${o.status === 'confirmed' ? 'Confirmed' : 'Edited'}</div>` : ''}</div>
+    <div class="sec"><h4>New marker</h4><div class="tools">${SHAPES.map((k, i) => `<button type="button" data-tool="${k}" class="${tool === k ? 'on' : ''}" title="${i + 1}">${svg(k)}${LABEL[k]}</button>`).join('')}</div></div>
+    <div class="sec"><h4>Markers</h4>${work.map((m, i) => `<div class="mrow${i === sel ? ' sel' : ''}" data-i="${i}"><span class="i">${i + 1}</span><select data-k="${i}">${SHAPES.map(k => `<option value="${k}"${m.k === k ? ' selected' : ''}>${LABEL[k]}</option>`).join('')}</select><button type="button" data-del="${i}" title="Remove">&times;</button></div>`).join('') || '<div class="muted">None</div>'}</div>
+    <div class="sec"><h4>Note</h4><textarea id="note">${esc(o?.note || '')}</textarea></div>
+    <div class="btns"><button type="button" class="primary" id="bOk">Confirm</button><button type="button" id="bReset">Reset</button><button type="button" id="bPrev">Prev</button><button type="button" id="bNext">Next</button></div>`;
+}
+
+function commit(status) {
+  const id = cur, markers = work.map(m => ({ x: r4(m.x), y: r4(m.y), k: m.k })), note = $('note')?.value || ov[id]?.note;
+  ov[id] = { status, markers };
+  if (note) ov[id].note = note;
+  persist();
+}
+function edited() {                                                       // a change on the picture or in the list
+  const id = cur, markers = work.map(m => ({ x: r4(m.x), y: r4(m.y), k: m.k }));
+  ov[id] = { ...(ov[id] || {}), status: 'edited', markers };
+  persist(); renderStage(); renderSide();
+  $('stat').textContent = `${shown.length} cards, ${ids.filter(decided).length} decided, ${ids.filter(need).length} to review`;
+  const row = $('list').querySelector(`.row[data-id="${id}"] .chip`); if (row) { row.className = 'chip gold'; row.textContent = 'e'; }
+}
+
+function persist() {
+  $('saved').textContent = 'unsaved';
+  try { localStorage.setItem(LS, JSON.stringify({ dirty: true, data: ov })); } catch { /* ignore */ }
+  clearTimeout(saveTimer); saveTimer = setTimeout(writeFile, 400);
+}
+async function writeFile() {
+  if (!fileHandle) return;
+  try { const w = await fileHandle.createWritable(); await w.write(JSON.stringify(ov, null, 1) + '\n'); await w.close(); $('saved').textContent = 'saved to file'; try { localStorage.setItem(LS, JSON.stringify({ dirty: false, data: ov })); } catch { /* ignore */ } }
+  catch (e) { $('saved').textContent = 'write failed: ' + e.message; }
+}
+function download(name, text, type) {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+function step(d) { if (!shown.length) return; const i = shown.indexOf(cur); open(shown[(i + d + shown.length) % shown.length]); }
+
+// events
+$('list').addEventListener('click', e => { const row = e.target.closest('.row'); if (row) open(Number(row.dataset.id)); });
+$('fClass').addEventListener('change', () => refilter());
+$('fState').addEventListener('change', () => refilter());
+$('bDown').addEventListener('click', () => download('enhancement-overrides.json', JSON.stringify(ov, null, 1) + '\n', 'application/json'));
+$('bNotes').addEventListener('click', () => {
+  const lines = Object.entries(ov).filter(([, v]) => v.note).map(([id, v]) => `${data[id]?.class} / ${data[id]?.name} (id ${id}): ${v.note}`);
+  download('enhancement-notes.txt', lines.join('\n') + '\n', 'text/plain');
+});
+$('bLink').addEventListener('click', async () => {
+  if (!window.showOpenFilePicker) { $('saved').textContent = 'this browser cannot write files, use Download'; return; }
+  try {
+    [fileHandle] = await window.showOpenFilePicker({ types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }] });
+    $('bLink').textContent = 'Linked'; await writeFile();
+  } catch { /* cancelled */ }
+});
+
+const stage = $('stage');
+let drag = null;
+stage.addEventListener('pointerdown', e => {
+  const mk = e.target.closest('.mk');
+  const rect = stage.getBoundingClientRect();
+  if (mk) { sel = Number(mk.dataset.i); drag = { i: sel, moved: false }; stage.setPointerCapture(e.pointerId); renderStage(); renderSide(); e.preventDefault(); return; }
+  if (cur == null) return;
+  work.push({ x: r4(clamp((e.clientX - rect.left) / rect.width)), y: r4(clamp((e.clientY - rect.top) / rect.height)), k: tool });
+  sel = work.length - 1; edited();
+});
+stage.addEventListener('pointermove', e => {
+  if (!drag) return;
+  const rect = stage.getBoundingClientRect(), m = work[drag.i];
+  m.x = r4(clamp((e.clientX - rect.left) / rect.width)); m.y = r4(clamp((e.clientY - rect.top) / rect.height)); drag.moved = true;
+  const el = stage.querySelector(`.mk[data-i="${drag.i}"]`); if (el) { el.style.left = m.x * 100 + '%'; el.style.top = m.y * 100 + '%'; }
+});
+const endDrag = () => { if (drag?.moved) edited(); drag = null; };
+stage.addEventListener('pointerup', endDrag); stage.addEventListener('pointercancel', endDrag);
+
+$('side').addEventListener('click', e => {
+  const t = e.target.closest('button'), row = e.target.closest('.mrow');
+  if (t?.dataset.tool) { tool = t.dataset.tool; renderSide(); return; }
+  if (t?.dataset.del != null) { work.splice(Number(t.dataset.del), 1); sel = -1; edited(); return; }
+  if (t?.id === 'bOk') {
+    const pos = shown.indexOf(cur), narrowing = ['need', 'bad', 'agree'].includes($('fState').value);
+    commit('confirmed'); refilter();
+    if (narrowing && shown.length) open(shown[Math.min(pos, shown.length - 1)]); else if (!narrowing) step(1);
+    return;
+  }
+  if (t?.id === 'bReset') { delete ov[cur]; persist(); open(cur); refilter(cur); return; }
+  if (t?.id === 'bPrev') { step(-1); return; }
+  if (t?.id === 'bNext') { step(1); return; }
+  if (row && !t) { sel = Number(row.dataset.i); renderStage(); renderSide(); }
+});
+$('side').addEventListener('change', e => { const k = e.target.dataset?.k; if (k != null) { work[Number(k)].k = e.target.value; edited(); } });
+$('side').addEventListener('input', e => { if (e.target.id === 'note' && cur != null) { ov[cur] = { ...(ov[cur] || { status: 'edited', markers: work.map(m => ({ x: r4(m.x), y: r4(m.y), k: m.k })) }), note: e.target.value }; persist(); } });
+
+document.addEventListener('keydown', e => {
+  if (e.target.closest('input, textarea, select') || e.ctrlKey || e.metaKey || e.altKey) return;
+  if (KEYS[e.key]) { if (sel >= 0) { work[sel].k = KEYS[e.key]; edited(); } else { tool = KEYS[e.key]; renderSide(); } return; }
+  if (e.key === 'Delete' || e.key === 'Backspace') { if (sel >= 0) { work.splice(sel, 1); sel = -1; edited(); } e.preventDefault(); return; }
+  if (e.key === 'Escape') { sel = -1; renderStage(); renderSide(); return; }
+  if (e.key.startsWith('Arrow') && sel >= 0) {
+    const d = e.shiftKey ? 0.005 : 0.0013, m = work[sel];
+    if (e.key === 'ArrowLeft') m.x = r4(clamp(m.x - d)); if (e.key === 'ArrowRight') m.x = r4(clamp(m.x + d));
+    if (e.key === 'ArrowUp') m.y = r4(clamp(m.y - d)); if (e.key === 'ArrowDown') m.y = r4(clamp(m.y + d));
+    edited(); e.preventDefault(); return;
+  }
+  if (e.key === 'c' || e.key === 'C') { $('bOk')?.click(); return; }
+  if (e.key === 'n' || e.key === 'j') step(1);
+  if (e.key === 'p' || e.key === 'k') step(-1);
+});
+
+load();
+</script>
+</body>
+</html>
