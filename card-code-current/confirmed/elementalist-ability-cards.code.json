@@ -1710,7 +1710,7 @@
     },
     {
      "type": "custom",
-     "text": "Grant one ally within %range%3 :"
+     "text": "Grant one ally within %range%3 %enhancement-square% :"
     },
     {
      "type": "attack",

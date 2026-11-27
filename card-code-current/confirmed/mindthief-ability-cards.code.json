@@ -71,7 +71,10 @@
    "actions": [
     {
      "type": "attack",
-     "value": 3
+     "value": 3,
+     "enhancement": [
+      "diamond"
+     ]
     },
     {
      "type": "optional",
@@ -91,7 +94,7 @@
      "type": "condition",
      "value": "invisible",
      "enhancement": [
-      "diamond"
+      "diamondPlus"
      ],
      "subActions": [
       {
@@ -914,6 +917,9 @@
        "type": "target",
        "value": "self"
       }
+     ],
+     "enhancement": [
+      "diamondPlus"
      ]
     }
    ]

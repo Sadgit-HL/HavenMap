@@ -537,7 +537,7 @@ bottom:
       - custom: ","
       - custom: "%xp1%"
     noLine: true
-  - custom: "Grant one ally within %range%3 :"
+  - custom: "Grant one ally within %range%3 %enhancement-square% :"
   - attack: 3
     enhancement: [diamond]
 

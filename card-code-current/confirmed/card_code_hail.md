@@ -86,7 +86,7 @@ level: 1
 top:
   actions:
     - heal: 4
-      enhancement: [plus]
+      enhancement: [diamondPlus]
       sub:
       - range: 2
     - divider
@@ -610,7 +610,7 @@ level: 4
 top:
   actions:
     - invisible:
-      enhancement: [plus]
+      enhancement: [diamondPlus]
       sub:
       - self
     - divider
@@ -665,7 +665,7 @@ top:
     - custom: You may gain %curse% to gain 1 %resol%.
     - divider
     - strengthen: 
-      enhancement: [plus]
+      enhancement: [diamondPlus]
       sub:
       - self
     - divider
@@ -815,7 +815,7 @@ top:
     - divider 
     - custom: "If the attack killed an enemy, %lf% perform:"
     - bless:
-      enhancement: [plus]
+      enhancement: [diamondPlus]
       sub:
       - self
 bottom:

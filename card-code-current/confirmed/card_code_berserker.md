@@ -548,7 +548,7 @@ bottom:
   actions:
   - heal: 5
     enhancement:
-    - plus
+    - diamondPlus
     sub:
     - self
   - custom: "Add %strengthen% and gain %xp1% if your current hit point value is half your maximum or less."

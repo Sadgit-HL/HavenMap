@@ -27,11 +27,12 @@ level: 1
 top:
   actions:
   - attack: 3
+    enhancement: [diamond]
   - optional:
     - custom: "advantage"
   - custom: "If the attack ability killed an enemy, perform:"
   - invisible: ''
-    enhancement: [diamond]
+    enhancement: [diamondPlus]
     sub:
     - self
 bottom:
@@ -333,6 +334,7 @@ bottom:
     enhancement: [square]
   - custom: "If you performed the attack ability, perform:"
   - strengthen: ''
+    enhancement: [diamondPlus]
     sub:
     - self
 

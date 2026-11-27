@@ -225,7 +225,7 @@
      "type": "heal",
      "value": 4,
      "enhancement": [
-      "plus"
+      "diamondPlus"
      ],
      "subActions": [
       {
@@ -1301,7 +1301,7 @@
      "type": "condition",
      "value": "invisible",
      "enhancement": [
-      "plus"
+      "diamondPlus"
      ],
      "subActions": [
       {
@@ -1427,7 +1427,7 @@
      "type": "condition",
      "value": "strengthen",
      "enhancement": [
-      "plus"
+      "diamondPlus"
      ],
      "subActions": [
       {
@@ -1817,7 +1817,7 @@
      "type": "condition",
      "value": "bless",
      "enhancement": [
-      "plus"
+      "diamondPlus"
      ],
      "subActions": [
       {
