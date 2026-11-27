@@ -14,6 +14,8 @@ import { api, loadConn, saveConn, clearConn, loadCache, saveCache, parseInvite, 
 import { cardImageUrl, itemImageUrl, itemBackUrl, eventImageUrl, matImageUrl, pqImageUrl, cardBackUrl, battleGoalImageUrl, matSlugOf } from '../scripts/campaign/cardImages.js';
 import { playmatHtml, markersHtml, XP_STEPS, turnPost, cardsPost, goalRollCode, questRollCode, cleanSettings, displaySettingsHtml, hasSupply } from './playmat.js';
 import { tokenDefs, markerTokens, MARK_STICKERS } from '../scripts/campaign/classTokens.js';
+import { snapToSlot, stepToSlot, slotCardId, trackAtPoint, lastTokenOnTrack, slotOf, forwardSlot } from '../scripts/campaign/tokenSnap.js';
+import { TOKEN_SLOTS } from '../scripts/games/card_token_slots.js';
 import { bannerUrl, bannerCode } from '../scripts/campaign/bggBanners.js';
 import { GH2_PQ } from '../scripts/games/gh2_pq_text.js';
 import { morphInto } from './morph.js';
@@ -2308,6 +2310,21 @@ function flipPlayed(f) {
   const { char, slot } = f.dataset;
   setTimeout(() => commit(ed.flipPlayCard(record, char, Number(slot))), 560);
 }
+// Context menu entries that move a token on a card with circles one circle forward along its track: one line for a token in the top half and one for
+// a token in the bottom half of the card (the last token placed in that half); disabled at the end of the track. Nothing for a card without circles or tokens.
+function tokenMoveEntries(c, id) {
+  const key = `c:${id}`, list = c?.mk?.[key] || [], asp = 1050 / 750;
+  if (!TOKEN_SLOTS[id] || !list.some(m => !m.s)) return [];
+  const last = {};                                                                      // half -> index of its last token
+  list.forEach((m, i) => { if (!m.s) { const at = slotOf(key, m.x, m.y, asp); if (at) last[at.h] = i; } });
+  const halves = ['t', 'b'].filter(h => last[h] != null);
+  const lines = halves.map(h => {
+    const idx = last[h], m = list[idx], to = forwardSlot(key, m.x, m.y, asp, list.filter((_, i) => i !== idx));
+    const label = halves.length > 1 ? `Move ${h === 't' ? 'top' : 'bottom'} token forward` : 'Move token forward';
+    return { label, disabled: !to, run: () => to && commit(ed.moveMarker(record, c.id, key, idx, to.x, to.y)) };
+  });
+  return lines.length ? [{ sep: true }, ...lines] : [];
+}
 // Context menu of the playmat (right click, long press): cards, piles, counters, deck cards. Each action calls the same edit functions as the normal UI.
 registerMenu({
   sel: '.pm .rxcard',
@@ -2316,6 +2333,7 @@ registerMenu({
     const owner = el.dataset.owner, id = Number(el.dataset.card), e = record?.chars.find(x => x.id === owner)?.rx?.[id];
     if (!e) return [];
     return [{ label: 'Zoom', run: () => cardPreview.show(el, true) }, { label: 'Edit marker or sticker', run: () => openMarkers(`c:${id}`, owner) },
+      ...tokenMoveEntries(record.chars.find(x => x.id === owner), id),
       { sep: true }, { header: 'Return to the Sawbones' },
       { label: 'Discard', run: () => commit(ed.returnPrescription(record, owner, id, 'discard')) },
       { label: 'Lost', run: () => commit(ed.returnPrescription(record, owner, id, 'lost')) }];
@@ -2342,13 +2360,13 @@ registerMenu({
       return [{ header: 'Move to' }, ...moves, { sep: true },
         { label: 'Move to start', run: () => commit(ed.moveCard(record, c.id, id, 'hand', { before: hand0[0] })) },
         { label: 'Move to end', run: () => commit(ed.moveCard(record, c.id, id, 'hand', { before: null })) },
-        { sep: true }, zoom, marker];
+        { sep: true }, zoom, marker, ...tokenMoveEntries(c, id)];
     }
     if (flip) {
       const give = c.cls === 'Sawbones' ? record.chars.filter(x => x.id !== c.id).map(x => ({ label: x.name, run: () => commit(ed.givePrescription(record, c.id, id, x.id)) })) : [];
       return [zoom, ...(give.length ? [{ sep: true }, { header: 'Give prescription to' }, ...give] : []), { sep: true }, { header: 'Move to' }, ...moves];
     }
-    return [zoom, marker, { sep: true }, { header: 'Move to' }, ...moves];
+    return [zoom, marker, ...tokenMoveEntries(c, id), { sep: true }, { header: 'Move to' }, ...moves];
   },
 });
 registerMenu({
@@ -2573,7 +2591,61 @@ function openMarkers(key, owner = null) {
   render();
 }
 const mkPct = (card, e, clamp = true) => { const r = card.getBoundingClientRect(), f = v => (clamp ? Math.min(100, Math.max(0, v)) : v); return { x: f(((e.clientX - r.left) / r.width) * 100), y: f(((e.clientY - r.top) / r.height) * 100) }; };
+// Where a marker lands: tokens snap to the nearest free token circle printed on the card (scripts/campaign/tokenSnap.js), stickers stay where they are dropped.
+const mkAt = (card, e, key, c, sticker, skip = -1) => {
+  const p = mkPct(card, e);
+  if (sticker || !c) return p;
+  const r = card.getBoundingClientRect(), sn = snapToSlot(key, p.x, p.y, r.height / r.width, (c.mk?.[key] || []).filter((_, i) => i !== skip));
+  return sn ? { x: sn.x, y: sn.y } : p;
+};
 const mkOver = (card, e) => { const r = card.getBoundingClientRect(); return e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom; };
+// The screen position (client px) a marker snaps to under the pointer, or null when it stays free (the preview while dragging).
+function mkSnapPoint(card, e, key, c, sticker, skip = -1) {
+  if (sticker) return null;
+  const r = card.getBoundingClientRect(), p = mkPct(card, e), sn = snapToSlot(key, p.x, p.y, r.height / r.width, (c.mk?.[key] || []).filter((_, i) => i !== skip));
+  return sn ? { cx: r.left + (sn.x / 100) * r.width, cy: r.top + (sn.y / 100) * r.height } : null;
+}
+// The arrow buttons and keys: a token on a card with circles hops to the next free circle in that direction (stays when none is free), anything else moves by (dx, dy) percent.
+// idx is the marker's index in c.mk[key]; aspect is the card picture's height over width (the open editor's card, else the printed 1050 to 750).
+function mkNudge(c, key, idx, dx, dy, aspect = null) {
+  const m = c.mk?.[key]?.[idx];
+  if (!m) return;
+  const cr = main.querySelector('.pm .itcard[data-mkcard]')?.getBoundingClientRect(), asp = aspect || (cr ? cr.height / cr.width : 1050 / 750);
+  const hop = !m.s && stepToSlot(key, m.x, m.y, asp, (c.mk[key] || []).filter((_, i) => i !== idx), dx, dy);
+  if (hop) { commit(ed.moveMarker(record, c.id, key, idx, hop.x, hop.y)); return; }
+  if (!m.s && slotCardId(key) != null && TOKEN_SLOTS[slotCardId(key)]) return;
+  commit(ed.moveMarker(record, c.id, key, idx, Math.min(100, Math.max(0, m.x + dx)), Math.min(100, Math.max(0, m.y + dy))));
+}
+// Arrow keys: in the open marker editor they move the selected marker like the arrow buttons; over a card on the playmat (no modal) they hop its
+// character token to the next circle. Not while typing in a field.
+const MK_KEYS = { ArrowLeft: [-2, 0], ArrowRight: [2, 0], ArrowUp: [0, -2], ArrowDown: [0, 2] };
+let hoverAc = null;                                                                     // the playmat card under the pointer: { el, card, owner, cx, cy }
+const hoverCard = e => {
+  const el = e.target.closest?.('.pm .ac[data-card], .pm .rxcard[data-card]');
+  hoverAc = el ? { el, card: el.dataset.card, owner: el.dataset.owner || el.dataset.char, cx: e.clientX, cy: e.clientY } : null;   // el stays in place when the hand zooms; its face (.acf) is what the pointer sees
+};
+main.addEventListener('pointerover', hoverCard);
+main.addEventListener('pointermove', hoverCard);
+main.addEventListener('pointerleave', () => { hoverAc = null; });
+document.addEventListener('keydown', e => {
+  const d = MK_KEYS[e.key];
+  if (!d || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || e.target.closest?.('input, textarea, select, [contenteditable]')) return;
+  if (pm.modal === 'cardmk' || pm.modal === 'item') {
+    const c = mkChar(), key = mkKeyNow();
+    if (pm.mkIdx < 0 || !c?.mk?.[key]?.[pm.mkIdx]) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    mkNudge(c, key, pm.mkIdx, d[0], d[1]);
+    return;
+  }
+  if (pm.modal || !hoverAc || !TOKEN_SLOTS[hoverAc.card] || !hoverAc.el.isConnected) return;
+  const c = record?.chars.find(x => x.id === hoverAc.owner), key = `c:${hoverAc.card}`, list = c?.mk?.[key] || [];
+  const r = (hoverAc.el.querySelector(':scope > .acf') || hoverAc.el).getBoundingClientRect(), asp = 1050 / 750;     // the zoomed face, not the card's resting place
+  const track = trackAtPoint(key, ((hoverAc.cx - r.left) / r.width) * 100, ((hoverAc.cy - r.top) / r.height) * 100, asp);    // the track of the hovered half, nearest to the pointer
+  const idx = track == null ? -1 : lastTokenOnTrack(key, list, asp, track);                       // the last token placed on that track
+  if (idx < 0) return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  mkNudge(c, key, idx, d[0], d[1], asp);
+}, true);
 let mkBlock = false;
 main.addEventListener('click', e => {
   const q = sel => e.target.closest?.(sel), c = mkChar();
@@ -2598,7 +2670,7 @@ main.addEventListener('click', e => {
     if (!m) return;
     if (rm) { const i = pm.mkIdx; pm.mkIdx = -1; commit(ed.removeMarker(record, c.id, key, i)); render(); return; }
     const [dx, dy] = nudge.dataset.mknudge.split(',').map(Number);
-    commit(ed.moveMarker(record, c.id, key, pm.mkIdx, Math.min(100, Math.max(0, m.x + dx)), Math.min(100, Math.max(0, m.y + dy)))); return;
+    mkNudge(c, key, pm.mkIdx, dx, dy); return;
   }
   const placed = q('.pm .itcard .tk');
   if (placed) { e.stopImmediatePropagation(); pm.mkIdx = pm.mkIdx === Number(placed.dataset.i) ? -1 : Number(placed.dataset.i); render(); return; }   // tap a marker to select it
@@ -2607,7 +2679,7 @@ main.addEventListener('click', e => {
     e.stopImmediatePropagation();
     const sel = mkSelOf(c);
     if (sel.s && card.dataset.mkcard.startsWith('i:')) return;                      // items take tokens only
-    commit(ed.addMarker(record, c.id, card.dataset.mkcard, { k: sel.k, ...(sel.s ? { s: 1 } : {}), ...mkPct(card, e) }));
+    commit(ed.addMarker(record, c.id, card.dataset.mkcard, { k: sel.k, ...(sel.s ? { s: 1 } : {}), ...mkAt(card, e, card.dataset.mkcard, c, sel.s) }));
   }
 }, true);
 (() => {
@@ -2628,12 +2700,14 @@ main.addEventListener('click', e => {
         g.style.cssText = `position:fixed;z-index:999;width:${sticker ? (drag.pick.dataset.mkpick === 'hex_attack' ? 36 : 27) : 44}px;pointer-events:none;transform:translate(-50%,-50%);filter:drop-shadow(0 4px 8px #000)`;
         document.body.appendChild(g); drag.ghost = g; document.body.style.cursor = 'grabbing';
       }
-      drag.ghost.style.left = `${e.clientX}px`; drag.ghost.style.top = `${e.clientY}px`;
+      const card = main.querySelector('.pm .itcard[data-mkcard]'), c = mkChar(), at = card && c && drag.pick.dataset.s !== '1' && mkOver(card, e) ? mkSnapPoint(card, e, mkKeyNow(), c, drag.pick.dataset.s === '1') : null;
+      drag.ghost.style.left = `${at ? at.cx : e.clientX}px`; drag.ghost.style.top = `${at ? at.cy : e.clientY}px`;
     } else {
       drag.moved = true;
       const s = drag.tk.style;                                                        // fixed while dragging: it may leave the card (and the clipped modal box)
       if (s.position !== 'fixed') { s.width = `${drag.tk.getBoundingClientRect().width}px`; s.position = 'fixed'; s.zIndex = '999'; }
-      s.left = `${e.clientX}px`; s.top = `${e.clientY}px`;
+      const c = mkChar(), over = mkOver(drag.card, e), at = over && c ? mkSnapPoint(drag.card, e, mkKeyNow(), c, c.mk?.[mkKeyNow()]?.[Number(drag.tk.dataset.i)]?.s, Number(drag.tk.dataset.i)) : null;
+      s.left = `${at ? at.cx : e.clientX}px`; s.top = `${at ? at.cy : e.clientY}px`;      // snapped to a token circle while it is in reach
       drag.tk.style.opacity = mkOver(drag.card, e) ? '' : '.3';                      // faded outside the card: releasing there removes it
     }
   });
@@ -2647,12 +2721,12 @@ main.addEventListener('click', e => {
       const card = main.querySelector('.pm .itcard[data-mkcard]');
       if (e.type === 'pointerup' && c && key && card && mkOver(card, e)) {
         pm.mkSel = { k: d.pick.dataset.mkpick, s: Number(d.pick.dataset.s) };
-        commit(ed.addMarker(record, c.id, key, { k: pm.mkSel.k, ...(pm.mkSel.s ? { s: 1 } : {}), ...mkPct(card, e) }));
+        commit(ed.addMarker(record, c.id, key, { k: pm.mkSel.k, ...(pm.mkSel.s ? { s: 1 } : {}), ...mkAt(card, e, key, c, pm.mkSel.s) }));
         render();
       }
     } else if (d.moved && c && key) {
       const i = Number(d.tk.dataset.i);
-      if (e.type === 'pointerup' && mkOver(d.card, e)) { const q = mkPct(d.card, e); commit(ed.moveMarker(record, c.id, key, i, q.x, q.y)); }
+      if (e.type === 'pointerup' && mkOver(d.card, e)) { const q = mkAt(d.card, e, key, c, c.mk?.[key]?.[i]?.s, i); commit(ed.moveMarker(record, c.id, key, i, q.x, q.y)); }
       else commit(ed.removeMarker(record, c.id, key, i));
       render();
     }
@@ -3180,10 +3254,12 @@ const SHORTCUTS = [
     [[['Right-click'], ['Menu'], ['Shift', 'F10']], 'Context menu of a card, pile, counter or history row'],
     [[['Up'], ['Down'], ['Home'], ['End']], 'Move in the context menu; Tab closes it'],
     [[['Enter'], ['Space']], 'Flip the focused played card'],
+    [[['Left'], ['Right'], ['Up'], ['Down']], 'Marker editor: move the selected marker; a token hops to the next free circle of its track'],
   ]],
   ['Under the pointer', [
     { obj: 'Ability card', keys: [['D', 'Discard'], ['L', 'Lost'], ['A', 'Active area']] },
     { obj: 'Item', keys: [['D', 'Spent or available'], ['L', 'Consumed'], ['F', 'Flip (items with a back)']] },
+    { obj: 'Card with token circles', keys: [['Arrow keys', 'Move its token to the next circle on the track of the hovered half']] },
     { obj: 'Modifier card', keys: [['D', 'Discard (deck: draw one)']] },
     { obj: 'Discard pile', keys: [['R', 'Short rest']] },
   ]],
