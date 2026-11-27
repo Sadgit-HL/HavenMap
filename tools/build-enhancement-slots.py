@@ -137,14 +137,15 @@ def expected_raw(d):
 
 
 def load_md(path):
-    """{card name: parsed YAML} of a card code text, or {} when there is none."""
+    """{card name: parsed YAML, (card name, level): parsed YAML} of a card code text, or {} when there is none. The name alone gives the first card of that name (the
+    Jaws of the Lion files also hold the tutorial cards A and B under the same names, after the regular cards)."""
     if not os.path.exists(path): return {}
     import yaml
     text = open(path, encoding='utf-8', newline=None).read()          # universal newlines: CRLF becomes LF
     out = {}
     for first, chunk in ccc.split_cards(text):
         try:
-            d = yaml.safe_load(chunk); out[str(d['name']).strip()] = d
+            d = yaml.safe_load(chunk); nm = str(d['name']).strip(); out.setdefault(nm, d); out[(nm, str(d.get('level')).upper())] = d
         except Exception:
             pass
     return out
@@ -264,10 +265,12 @@ def overrides_only():
     mds = {}
     for rec in review.values():                                            # the card code may have changed since the last full run: refresh what the page compares with
         if rec['cls'] not in mds:
-            mds[rec['cls']] = load_md(os.path.join(ROOT, 'card-code-current', 'confirmed', f"card_code_{ts.norm(byc[rec['cls']]['name']).replace('-', '_')}.md"))
+            fn = f"card_code_{ts.norm(byc[rec['cls']]['name']).replace('-', '_')}.md"
+            mds[rec['cls']] = next((m for m in (load_md(os.path.join(ROOT, 'card-code-current', f, fn)) for f in ('confirmed', 'wip', 'start')) if m), {})
         md = mds[rec['cls']]
-        if rec['name'] not in md: continue
-        shapes, hexes = expected_raw(md[rec['name']])
+        card_md = md.get((rec['name'], str(rec['lv']).upper())) or md.get(rec['name'])
+        if card_md is None: continue
+        shapes, hexes = expected_raw(card_md)
         rec['expected'] = {'shapes': shapes, 'hex': hexes}
         rest, missing = [m['k'] for m in rec['detected']], []
         for sh in shapes:
@@ -342,7 +345,8 @@ def main():
         md = load_md(os.path.join(ROOT, 'card-code-current', folder, f"card_code_{ts.norm(cls['name']).replace('-', '_')}.md"))
         def expect(c):
             j = card_json(c)
-            return expected_raw(md[j['name']]) if j and j['name'] in md else (expected(j) if j else ([], 0))
+            md_card = j and (md.get((j['name'], str(j['level']).upper())) or md.get(j['name']))
+            return expected_raw(md_card) if md_card else (expected(j) if j else ([], 0))
         if boot:
             got = bootstrap(cls, [(ts.image_path(assets, cls, c), expect(c)[0]) for c in mine if card_json(c)], seeds)
             print(f"{cls['name']}: class templates from {got}")
