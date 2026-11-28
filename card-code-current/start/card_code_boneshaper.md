@@ -9,7 +9,7 @@ top:
   - summon:
       name: Shambling Skeleton
       stats: [3, 2, 2, -]
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   - mandatory:
     - damage: 2
       sub:
@@ -31,7 +31,7 @@ top:
   - summon:
       name: Shambling Skeleton
       stats: [3, 2, 2, -]
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   - mandatory:
     - damage: 2
       sub:
@@ -51,7 +51,7 @@ top:
   - summon:
       name: Shambling Skeleton
       stats: [3, 2, 2, -]
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   - mandatory:
     - damage: 2
       sub:
@@ -78,17 +78,13 @@ top:
     - range: 3
   - optional:
     - consume: [dark]
-    - multi:
-      - target: 1
+    - custom: "+1 %target%"
   - poison: ''
     sub:
     - range: 3
   - optional:
     - consume: [earth]
-    - multi:
-      - target: 1
-      - custom: ","
-      - custom: "%xp1%"
+    - custom: "+1 %target%, %xp1%"
 bottom:
   actions:
   - heal: 5
@@ -154,7 +150,7 @@ top:
       stats: [1, 2, 1, 3]
       special:
       - fly: ''
-      enhancement: [heal, move, range]
+      enhancement: [square, square, 0, square]
   - mandatory:
     - dark
   xp: 2
@@ -350,7 +346,7 @@ top:
   - summon:
       name: Raging Corpse
       stats: [6, 2, 3, -]
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   - mandatory:
     - earth
   xp: 2
@@ -388,8 +384,7 @@ bottom:
       enhancement: [square]
   - optional:
     - consume: [dark]
-    - multi:
-      - range: 2
+    - custom: "+2 %range%"
   - custom: "If the target dies this round, immediately play a card from your discard pile to perform a summon action of the card, reducing any %damage% you suffer by 2."
   duration: round
 
@@ -401,7 +396,7 @@ top:
   - summon:
       name: Shambling Skeleton
       stats: [3, 2, 2, -]
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   - mandatory:
     - damage: 1
       sub:
@@ -504,7 +499,7 @@ top:
       stats: [8, 2, 3, -]
       special:
       - wound: ''
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   - mandatory:
     - damage: 2
       sub:
@@ -519,10 +514,7 @@ bottom:
     - range: 2
   - optional:
     - consume: [earth]
-    - multi:
-      - heal: 1
-      - custom: ","
-      - range: 1
+    - custom: "+1 %heal%, +1 %range%"
 
 name: Solid Bones
 initiative: 32
@@ -548,7 +540,7 @@ top:
   - summon:
       name: Shambling Skeleton
       stats: [3, 2, 2, -]
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   - mandatory:
     - damage: 6
       sub:
@@ -638,7 +630,7 @@ top:
       stats: [7, 3, 3, -]
       special:
       - custom: "+1 %attack% for each token on this card."
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   - custom: "Shambling Skeletons may end their move abilities on this summon. If they do, kill them and add a token to this card, up to a maximum of five. Whenever this summon would suffer %damage%, you may remove a token to negate the %damage%."
   xp: 2
   lost: t
@@ -650,11 +642,9 @@ bottom:
   - custom: "Grant one of your summons:"
   - optional:
     - consume: [dark]
-    - multi:
-      - wound: ''
-      - custom: ","
+    - wound: ''
+      sub:
       - target: "all"
-      - custom: ","
       - range: 1
     noLine: true
 
@@ -697,7 +687,7 @@ top:
   - summon:
       name: Skeleton Sorcerer
       stats: [6, 3, 3, 3]
-      enhancement: [heal, move, attack, range]
+      enhancement: [square, square, square, square]
   - custom: "All Shambling Skeletons have +1 %heal%."
   - custom: "Whenever one of your summons kills an enemy with a ranged attack, %earth%/%dark%."
   xp: 2

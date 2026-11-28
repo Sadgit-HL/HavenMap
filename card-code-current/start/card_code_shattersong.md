@@ -42,8 +42,7 @@ bottom:
     - target: "all"
     - range: 2
     - group:
-      - custom: "-1 %fh-resonance%:"
-      - range: 3
+      - custom: "-1 %fh-resonance%: +3 %range%"
 
 name: Heartening Harmony
 initiative: 30
@@ -78,13 +77,7 @@ top:
     sub:
     - range: 2
     - group:
-      - custom: "-1 %fh-resonance%:"
-      - multi:
-        - range: 1
-        - custom: ","
-        - push: 2
-        - custom: ","
-        - muddle: ''
+      - custom: "-1 %fh-resonance%: +1 %range%, %push% 2, %muddle%"
 bottom:
   actions:
   - move: 5
@@ -194,8 +187,7 @@ bottom:
   - custom: "Reveal the top card of the monster ability deck of one monster within %range%2."
   - optional:
     - consume: [air]
-    - range: 3
-    - custom: "%xp1%"
+    - custom: "+3 %range%, %xp1%"
     noLine: true
 
 name: Empowering Pulse
@@ -286,8 +278,7 @@ bottom:
   actions:
   - custom: "You and all allies within %range%1 each add +1 %attack% to one of your attacks this round."
   - group:
-    - custom: "-X %fh-resonance%:"
-    - range: X
+    - custom: "-X %fh-resonance%: +X %range%"
   duration: round
 
 name: Illuminative Tone
@@ -359,8 +350,7 @@ bottom:
     - target: "all"
     - range: 2
     - group:
-      - custom: "-1 %fh-resonance%:"
-      - range: 1
+      - custom: "-1 %fh-resonance%: +1 %range%"
 
 name: Shape the Path
 initiative: 40
@@ -415,8 +405,7 @@ top:
     sub:
     - range: 3
     - group:
-      - custom: "-1 %fh-resonance%:"
-      - target: 1
+      - custom: "-1 %fh-resonance%: +1 %target%"
       - custom: "-2 %fh-resonance%:"
       - multi:
         - stun: ''
@@ -428,8 +417,7 @@ bottom:
     enhancement: [square]
   - divider
   - group:
-    - custom: "-1 %fh-resonance%:"
-    - custom: "One adjacent enemy suffers %damage%2."
+    - custom: "-1 %fh-resonance%: One adjacent enemy suffers %damage%2."
   - mandatory:
     - air
 
@@ -529,8 +517,7 @@ top:
       enhancement: [square]
   - custom: "Reveal the top cards of the monster ability decks of all targets."
   - group:
-    - custom: "-1 %fh-resonance%:"
-    - target: 1
+    - custom: "-1 %fh-resonance%: +1 %target%"
 bottom:
   actions:
   - move: 7
@@ -600,11 +587,7 @@ top:
     - range: 2
       enhancement: [square]
     - group:
-      - custom: "-1 %fh-resonance%, %air%:"
-      - multi:
-        - target: 1
-        - custom: ","
-        - custom: "%xp1%"
+      - custom: "-1 %fh-resonance%, %air%: +1 %target%, %xp1%"
 bottom:
   actions:
   - move: 5
@@ -638,8 +621,7 @@ bottom:
     - target: "all"
     - range: 2
     - group:
-      - custom: "-1 %fh-resonance%:"
-      - range: 3
+      - custom: "-1 %fh-resonance%: +3 %range%"
   - mandatory:
     - air
 
@@ -652,11 +634,11 @@ top:
   - custom: "All allies and enemies within %range%2 suffer %damage%X."
   - optional:
     - consume: [wild]
-    - range: 1
+    - custom: "+1 %range%"
     noLine: true
   - optional:
     - consume: [wild]
-    - range: 1
+    - custom: "+1 %range%"
     noLine: true
   xp: 1
 bottom:

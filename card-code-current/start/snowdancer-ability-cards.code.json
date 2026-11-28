@@ -240,9 +240,10 @@
      },
      "special": [],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     }
    ],
@@ -784,7 +785,7 @@
      "actions": [
       {
        "type": "custom",
-       "text": "%?grey diamond icon 2%"
+       "text": "%push% 2"
       },
       {
        "type": "custom",
@@ -804,7 +805,7 @@
      "actions": [
       {
        "type": "custom",
-       "text": "%?diamond with hand icon%"
+       "text": "%disarm%"
       },
       {
        "type": "custom",
@@ -939,9 +940,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     },
     {
@@ -1544,9 +1546,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     }
    ],

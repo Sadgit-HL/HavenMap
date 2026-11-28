@@ -50,42 +50,7 @@
        "actions": [
         {
          "type": "custom",
-         "text": "Remove any number of %fh-shadow% within %range%3 (of yourself). For each %fh-shadow% removed:"
-        },
-        {
-         "type": "inline",
-         "actions": [
-          {
-           "type": "attack",
-           "value": 1,
-           "relative": true
-          },
-          {
-           "type": "custom",
-           "text": ","
-          },
-          {
-           "type": "range",
-           "value": 1,
-           "relative": true
-          },
-          {
-           "type": "custom",
-           "text": ","
-          },
-          {
-           "type": "pierce",
-           "value": 1
-          },
-          {
-           "type": "custom",
-           "text": ","
-          },
-          {
-           "type": "custom",
-           "text": "%xp% 1"
-          }
-         ]
+         "text": "Remove any number of %fh-shadow% within %range%3 (of yourself). For each %fh-shadow% removed: +1 %attack%, +1 %range%, %pierce% 1, %xp% 1"
         }
        ]
       }
@@ -131,7 +96,10 @@
      },
      "special": [],
      "enhancement": [
-      "heal"
+      "square",
+      0,
+      0,
+      0
      ]
     },
     {
@@ -1104,8 +1072,10 @@
      },
      "special": [],
      "enhancement": [
-      "heal",
-      "attack"
+      "square",
+      0,
+      "square",
+      0
      ]
     },
     {
@@ -1160,25 +1130,7 @@
        "actions": [
         {
          "type": "custom",
-         "text": "Remove any number of %fh-shadow% within %range%3 (of yourself). For each %fh-shadow% removed:"
-        },
-        {
-         "type": "inline",
-         "actions": [
-          {
-           "type": "target",
-           "value": 1,
-           "relative": true
-          },
-          {
-           "type": "custom",
-           "text": ","
-          },
-          {
-           "type": "custom",
-           "text": "%xp% 1"
-          }
-         ]
+         "text": "Remove any number of %fh-shadow% within %range%3 (of yourself). For each %fh-shadow% removed: +1 %target%, %xp% 1"
         }
        ]
       }

@@ -151,7 +151,7 @@ top:
       stats: [7, 2, 1, -]
       special:
       - custom: "When attacking, ignore %retaliate%"
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   xp: 2
   lost: t
   duration: persistent
@@ -258,7 +258,7 @@ top:
         - target: "all enemies within 2 hexes"
       - mandatory:
         - fire
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   xp: 2
   lost: t
   duration: persistent

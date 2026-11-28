@@ -430,7 +430,7 @@
       },
       {
        "type": "area",
-       "pattern": "tt_et_es"
+       "pattern": "ett_xet_ees"
       }
      ]
     },
@@ -1341,47 +1341,8 @@
        "value": 2
       },
       {
-       "type": "group",
-       "actions": [
-        {
-         "type": "inline",
-         "actions": [
-          {
-           "type": "condition",
-           "value": "disarm",
-           "subActions": [
-            {
-             "type": "target",
-             "value": "self"
-            }
-           ]
-          },
-          {
-           "type": "custom",
-           "text": ":"
-          }
-         ]
-        },
-        {
-         "type": "inline",
-         "actions": [
-          {
-           "type": "retaliate",
-           "value": 1,
-           "relative": true
-          },
-          {
-           "type": "custom",
-           "text": ","
-          },
-          {
-           "type": "range",
-           "value": 1,
-           "relative": true
-          }
-         ]
-        }
-       ]
+       "type": "custom",
+       "text": "%disarm% self: +1 %retaliate%, +1 %range%"
       }
      ]
     },
@@ -1731,31 +1692,8 @@
      },
      "actions": [
       {
-       "type": "inline",
-       "actions": [
-        {
-         "type": "target",
-         "value": 1,
-         "relative": true
-        },
-        {
-         "type": "custom",
-         "text": ","
-        },
-        {
-         "type": "element",
-         "value": "fire/ice",
-         "either": true
-        },
-        {
-         "type": "custom",
-         "text": ","
-        },
-        {
-         "type": "custom",
-         "text": "%xp% 1"
-        }
-       ]
+       "type": "custom",
+       "text": "+1 %target%, %fire%/%ice%, %xp% 1"
       }
      ]
     }
@@ -1800,31 +1738,8 @@
      },
      "actions": [
       {
-       "type": "inline",
-       "actions": [
-        {
-         "type": "target",
-         "value": 1,
-         "relative": true
-        },
-        {
-         "type": "custom",
-         "text": ","
-        },
-        {
-         "type": "element",
-         "value": "fire/ice",
-         "either": true
-        },
-        {
-         "type": "custom",
-         "text": ","
-        },
-        {
-         "type": "custom",
-         "text": "%xp% 1"
-        }
-       ]
+       "type": "custom",
+       "text": "+1 %target%, %fire%/%ice%, %xp% 1"
       }
      ]
     }
@@ -2189,51 +2104,12 @@
        "type": "group",
        "actions": [
         {
-         "type": "inline",
-         "actions": [
-          {
-           "type": "condition",
-           "value": "immobilize",
-           "subActions": [
-            {
-             "type": "target",
-             "value": "self"
-            }
-           ]
-          },
-          {
-           "type": "custom",
-           "text": ":"
-          }
-         ]
+         "type": "custom",
+         "text": "%immobilize% self: %immobilize%"
         },
         {
-         "type": "condition",
-         "value": "immobilize"
-        },
-        {
-         "type": "inline",
-         "actions": [
-          {
-           "type": "condition",
-           "value": "curse",
-           "subActions": [
-            {
-             "type": "target",
-             "value": "self"
-            }
-           ]
-          },
-          {
-           "type": "custom",
-           "text": ":"
-          }
-         ]
-        },
-        {
-         "type": "target",
-         "value": 1,
-         "relative": true
+         "type": "custom",
+         "text": "%curse% self: +1 %target%"
         }
        ]
       }

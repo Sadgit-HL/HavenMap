@@ -337,7 +337,7 @@ top:
     - hex: et_st
   - optional:
     - consume: [earth]
-    - custom: "%?bigger attack area of six hexes%"
+    - hex: et_tt_stt
     - custom: "%xp1%"
 bottom:
   actions:

@@ -22,9 +22,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     },
     {
@@ -105,9 +106,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move",
-      "range"
+      "square",
+      "square",
+      0,
+      "square"
      ]
     },
     {
@@ -190,9 +192,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     },
     {
@@ -262,8 +265,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "attack"
+      "square",
+      0,
+      "square",
+      0
      ]
     },
     {
@@ -318,8 +323,10 @@
      },
      "special": [],
      "enhancement": [
-      "heal",
-      "range"
+      "square",
+      0,
+      0,
+      "square"
      ]
     },
     {
@@ -636,13 +643,19 @@
      },
      "special": [
       {
-       "type": "target",
-       "value": "all adjacent enemies"
+       "type": "custom",
+       "text": "%target% all adjacent enemies"
+      },
+      {
+       "type": "custom",
+       "text": "%pierce% 2"
       }
      ],
      "enhancement": [
-      "heal",
-      "move"
+      "square",
+      "square",
+      0,
+      0
      ]
     },
     {
@@ -784,9 +797,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move",
-      "range"
+      "square",
+      "square",
+      0,
+      "square"
      ]
     },
     {
@@ -865,12 +879,15 @@
      },
      "special": [
       {
-       "type": "target",
-       "value": 2
+       "type": "custom",
+       "text": "%target% 2"
       }
      ],
      "enhancement": [
-      "heal"
+      "square",
+      0,
+      0,
+      0
      ]
     },
     {
@@ -988,9 +1005,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     },
     {
@@ -1104,8 +1122,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "attack"
+      "square",
+      0,
+      "square",
+      0
      ]
     },
     {
@@ -1218,9 +1238,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     },
     {
@@ -1341,8 +1362,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "range"
+      "square",
+      0,
+      0,
+      "square"
      ]
     },
     {
@@ -1459,9 +1482,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     },
     {
@@ -1596,9 +1620,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     },
     {

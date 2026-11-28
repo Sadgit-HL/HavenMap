@@ -433,25 +433,7 @@
        "actions": [
         {
          "type": "custom",
-         "text": "-1 %fh-trophy% %dark%:"
-        },
-        {
-         "type": "inline",
-         "actions": [
-          {
-           "type": "target",
-           "value": 1,
-           "relative": true
-          },
-          {
-           "type": "custom",
-           "text": ","
-          },
-          {
-           "type": "custom",
-           "text": "%xp% 1"
-          }
-         ]
+         "text": "-1 %fh-trophy% %dark%: +1 %target%, %xp% 1"
         }
        ]
       }
@@ -954,12 +936,7 @@
        "actions": [
         {
          "type": "custom",
-         "text": "-1 %fh-trophy%:"
-        },
-        {
-         "type": "target",
-         "value": 1,
-         "relative": true
+         "text": "-1 %fh-trophy%: +1 %target%"
         }
        ]
       }

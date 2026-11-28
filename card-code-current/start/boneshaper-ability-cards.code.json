@@ -17,9 +17,10 @@
      },
      "special": [],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     },
     {
@@ -78,9 +79,10 @@
      },
      "special": [],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     },
     {
@@ -132,9 +134,10 @@
      },
      "special": [],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     },
     {
@@ -213,14 +216,8 @@
      },
      "actions": [
       {
-       "type": "inline",
-       "actions": [
-        {
-         "type": "target",
-         "value": 1,
-         "relative": true
-        }
-       ]
+       "type": "custom",
+       "text": "+1 %target%"
       }
      ]
     },
@@ -245,22 +242,8 @@
      },
      "actions": [
       {
-       "type": "inline",
-       "actions": [
-        {
-         "type": "target",
-         "value": 1,
-         "relative": true
-        },
-        {
-         "type": "custom",
-         "text": ","
-        },
-        {
-         "type": "custom",
-         "text": "%xp% 1"
-        }
-       ]
+       "type": "custom",
+       "text": "+1 %target%, %xp% 1"
       }
      ]
     }
@@ -451,9 +434,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move",
-      "range"
+      "square",
+      "square",
+      0,
+      "square"
      ]
     },
     {
@@ -1058,9 +1042,10 @@
      },
      "special": [],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     },
     {
@@ -1174,14 +1159,8 @@
      },
      "actions": [
       {
-       "type": "inline",
-       "actions": [
-        {
-         "type": "range",
-         "value": 2,
-         "relative": true
-        }
-       ]
+       "type": "custom",
+       "text": "+2 %range%"
       }
      ]
     },
@@ -1211,9 +1190,10 @@
      },
      "special": [],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     },
     {
@@ -1528,9 +1508,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     },
     {
@@ -1576,23 +1557,8 @@
      },
      "actions": [
       {
-       "type": "inline",
-       "actions": [
-        {
-         "type": "heal",
-         "value": 1,
-         "relative": true
-        },
-        {
-         "type": "custom",
-         "text": ","
-        },
-        {
-         "type": "range",
-         "value": 1,
-         "relative": true
-        }
-       ]
+       "type": "custom",
+       "text": "+1 %heal%, +1 %range%"
       }
      ]
     }
@@ -1654,9 +1620,10 @@
      },
      "special": [],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     },
     {
@@ -1939,9 +1906,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     },
     {
@@ -1981,23 +1949,12 @@
        },
        "actions": [
         {
-         "type": "inline",
-         "actions": [
-          {
-           "type": "condition",
-           "value": "wound"
-          },
-          {
-           "type": "custom",
-           "text": ","
-          },
+         "type": "condition",
+         "value": "wound",
+         "subActions": [
           {
            "type": "target",
            "value": "all"
-          },
-          {
-           "type": "custom",
-           "text": ","
           },
           {
            "type": "range",
@@ -2135,10 +2092,10 @@
      },
      "special": [],
      "enhancement": [
-      "heal",
-      "move",
-      "attack",
-      "range"
+      "square",
+      "square",
+      "square",
+      "square"
      ]
     },
     {

@@ -113,12 +113,7 @@
        "actions": [
         {
          "type": "custom",
-         "text": "-1 %fh-resonance%:"
-        },
-        {
-         "type": "range",
-         "value": 3,
-         "relative": true
+         "text": "-1 %fh-resonance%: +3 %range%"
         }
        ]
       }
@@ -214,33 +209,7 @@
        "actions": [
         {
          "type": "custom",
-         "text": "-1 %fh-resonance%:"
-        },
-        {
-         "type": "inline",
-         "actions": [
-          {
-           "type": "range",
-           "value": 1,
-           "relative": true
-          },
-          {
-           "type": "custom",
-           "text": ","
-          },
-          {
-           "type": "push",
-           "value": 2
-          },
-          {
-           "type": "custom",
-           "text": ","
-          },
-          {
-           "type": "condition",
-           "value": "muddle"
-          }
-         ]
+         "text": "-1 %fh-resonance%: +1 %range%, %push% 2, %muddle%"
         }
        ]
       }
@@ -589,13 +558,8 @@
      },
      "actions": [
       {
-       "type": "range",
-       "value": 3,
-       "relative": true
-      },
-      {
        "type": "custom",
-       "text": "%xp% 1"
+       "text": "+3 %range%, %xp% 1"
       }
      ],
      "noLine": true
@@ -856,12 +820,7 @@
      "actions": [
       {
        "type": "custom",
-       "text": "-X %fh-resonance%:"
-      },
-      {
-       "type": "range",
-       "value": "X",
-       "relative": true
+       "text": "-X %fh-resonance%: +X %range%"
       }
      ]
     }
@@ -1076,12 +1035,7 @@
        "actions": [
         {
          "type": "custom",
-         "text": "-1 %fh-resonance%:"
-        },
-        {
-         "type": "range",
-         "value": 1,
-         "relative": true
+         "text": "-1 %fh-resonance%: +1 %range%"
         }
        ]
       }
@@ -1236,12 +1190,7 @@
        "actions": [
         {
          "type": "custom",
-         "text": "-1 %fh-resonance%:"
-        },
-        {
-         "type": "target",
-         "value": 1,
-         "relative": true
+         "text": "-1 %fh-resonance%: +1 %target%"
         },
         {
          "type": "custom",
@@ -1284,11 +1233,7 @@
      "actions": [
       {
        "type": "custom",
-       "text": "-1 %fh-resonance%:"
-      },
-      {
-       "type": "custom",
-       "text": "One adjacent enemy suffers %damage%2."
+       "text": "-1 %fh-resonance%: One adjacent enemy suffers %damage%2."
       }
      ]
     },
@@ -1592,12 +1537,7 @@
      "actions": [
       {
        "type": "custom",
-       "text": "-1 %fh-resonance%:"
-      },
-      {
-       "type": "target",
-       "value": 1,
-       "relative": true
+       "text": "-1 %fh-resonance%: +1 %target%"
       }
      ]
     }
@@ -1800,25 +1740,7 @@
        "actions": [
         {
          "type": "custom",
-         "text": "-1 %fh-resonance%, %air%:"
-        },
-        {
-         "type": "inline",
-         "actions": [
-          {
-           "type": "target",
-           "value": 1,
-           "relative": true
-          },
-          {
-           "type": "custom",
-           "text": ","
-          },
-          {
-           "type": "custom",
-           "text": "%xp% 1"
-          }
-         ]
+         "text": "-1 %fh-resonance%, %air%: +1 %target%, %xp% 1"
         }
        ]
       }
@@ -1908,12 +1830,7 @@
        "actions": [
         {
          "type": "custom",
-         "text": "-1 %fh-resonance%:"
-        },
-        {
-         "type": "range",
-         "value": 3,
-         "relative": true
+         "text": "-1 %fh-resonance%: +3 %range%"
         }
        ]
       }
@@ -1957,9 +1874,8 @@
      },
      "actions": [
       {
-       "type": "range",
-       "value": 1,
-       "relative": true
+       "type": "custom",
+       "text": "+1 %range%"
       }
      ],
      "noLine": true
@@ -1975,9 +1891,8 @@
      },
      "actions": [
       {
-       "type": "range",
-       "value": 1,
-       "relative": true
+       "type": "custom",
+       "text": "+1 %range%"
       }
      ],
      "noLine": true

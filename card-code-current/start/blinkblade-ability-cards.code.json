@@ -918,11 +918,9 @@
       {
        "type": "condition",
        "value": "bless"
-      },
-      {
-       "type": "custom",
-       "text": ","
-      },
+      }
+     ],
+     "subActions": [
       {
        "type": "target",
        "value": "self"

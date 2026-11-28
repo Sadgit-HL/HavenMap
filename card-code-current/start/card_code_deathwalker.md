@@ -24,15 +24,7 @@ top:
     sub:
     - range: 2
     - group:
-      - custom: "Remove any number of %fh-shadow% within %range%3 (of yourself). For each %fh-shadow% removed:"
-      - multi:
-        - attack: 1
-        - custom: ","
-        - range: 1
-        - custom: ","
-        - pierce: 1
-        - custom: ","
-        - custom: "%xp1%"
+      - custom: "Remove any number of %fh-shadow% within %range%3 (of yourself). For each %fh-shadow% removed: +1 %attack%, +1 %range%, %pierce% 1, %xp1%"
 bottom:
   actions:
   - wound: ''
@@ -49,7 +41,7 @@ top:
   - summon:
       name: Shadow Beast
       stats: [1, 3, 3, -]
-      enhancement: [heal]
+      enhancement: [square, 0, 0, 0]
   - custom: "This ability can only be performed if you remove one %fh-shadow% from an adjacent hex."
   xp: 1
   duration: persistent
@@ -408,7 +400,7 @@ top:
   - summon:
       name: Shadow Horror
       stats: [5, 3, 3, -]
-      enhancement: [heal, attack]
+      enhancement: [square, 0, square, 0]
   - custom: "This ability can only be performed if you remove two %fh-shadow% from adjacent hexes."
   - custom: "All attacks targeting your summons gain disadvantage."
   xp: 2
@@ -429,11 +421,7 @@ top:
     - range: 4
       enhancement: [square]
     - group:
-      - custom: "Remove any number of %fh-shadow% within %range%3 (of yourself). For each %fh-shadow% removed:"
-      - multi:
-        - target: 1
-        - custom: ","
-        - custom: "%xp1%"
+      - custom: "Remove any number of %fh-shadow% within %range%3 (of yourself). For each %fh-shadow% removed: +1 %target%, %xp1%"
 bottom:
   actions:
   - multi:

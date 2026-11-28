@@ -11,7 +11,7 @@ top:
       stats: [6, 2, 2, -]
       special:
       - shield: 1
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   - custom: "%prism-mode%"
   - custom: ":"
   - shield: 1
@@ -42,7 +42,7 @@ top:
       - heal: 1
         sub:
         - range: 3
-      enhancement: [heal, move, range]
+      enhancement: [square, square, 0, square]
   - custom: "%prism-mode%"
   - custom: ":"
   - custom: "At the start of each of your turns, perform:"
@@ -72,7 +72,7 @@ top:
       stats: [4, 3, 2, -]
       special:
       - wound: ''
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   - custom: "%prism-mode%"
   - custom: ":"
   - custom: "At the start of each of your turns, suffer %damage%2."
@@ -99,7 +99,7 @@ top:
       stats: [7, 5, 1, -]
       special:
       - shield: 1
-      enhancement: [heal, attack]
+      enhancement: [square, 0, square, 0]
   - custom: "%prism-mode%"
   - custom: ":"
   - custom: "Add %jump% to all your move abilities."
@@ -121,7 +121,7 @@ top:
   - summon:
       name: Sniper Turret
       stats: [3, -, 2, 4]
-      enhancement: [heal, range]
+      enhancement: [square, 0, 0, square]
   - custom: "%prism-mode%"
   - custom: ":"
   - custom: "All your single-target melee attack abilities have +2 %range%."
@@ -243,8 +243,9 @@ top:
       name: Arcing Generator
       stats: [5, 4, 2, -]
       special:
-      - target: "all adjacent enemies"
-      enhancement: [heal, move]
+      - custom: '%target% all adjacent enemies'
+      - custom: '%pierce% 2'
+      enhancement: [square, square, 0, 0]
   - custom: "%prism-mode%"
   - custom: ":"
   - custom: "Add -1 %attack% and %pierce%5 to all your attacks."
@@ -298,7 +299,7 @@ top:
       stats: [5, 2, 1, 2]
       special:
       - custom: "All adjacent allies gain %shield%1."
-      enhancement: [heal, move, range]
+      enhancement: [square, square, 0, square]
   - custom: "%prism-mode%"
   - custom: ":"
   - custom: "Gain %shield%2 for the first attack that damages you each round."
@@ -332,8 +333,8 @@ top:
       name: Machine Bolter
       stats: [3, -, 2, 3]
       special:
-      - target: 2
-      enhancement: [heal]
+      - custom: '%target% 2'
+      enhancement: [square, 0, 0, 0]
   - custom: "%prism-mode%"
   - custom: ":"
   - custom: "Add +1 %target% to all your ranged attack abilities."
@@ -376,7 +377,7 @@ top:
       stats: [6, 2, 2, -]
       special:
       - poison: ''
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   - custom: "%prism-mode%"
   - custom: ":"
   - custom: "Heals targeting you do not increase your hit point value."
@@ -419,7 +420,7 @@ top:
       stats: [7, 3, 2, -]
       special:
       - custom: "When attacked reduce %damage% by 1 for each negative condition the attacker has."
-      enhancement: [heal, attack]
+      enhancement: [square, 0, square, 0]
   - custom: "%prism-mode%"
   - custom: ":"
   - custom: "You cannot perform move abilities."
@@ -461,7 +462,7 @@ top:
       stats: [1, 5, 2, -]
       special:
       - custom: "Give %wound% to all adjacent figures and self at the end of turn."
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   - custom: "%prism-mode%"
   - custom: ":"
   - custom: "At the end of each of your turns, one adjacent enemy suffers %damage%2 and you suffer %damage%1."
@@ -508,7 +509,7 @@ top:
       stats: [5, 1, 2, 4]
       special:
       - hex: tt_t
-      enhancement: [heal, range]
+      enhancement: [square, 0, 0, square]
   - custom: "%prism-mode%"
   - custom: ":"
   - custom: "Whenever you suffer %damage%, one adjacent ally suffers %damage%1."
@@ -552,7 +553,7 @@ top:
       - ward: ''
         sub:
         - range: 4
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   - custom: "%prism-mode%"
   - custom: ":"
   - custom: "At the start of each of your turns, perform:"
@@ -602,7 +603,7 @@ top:
       stats: [9, 2, 4, -]
       special:
       - shield: 1
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   - custom: "%prism-mode%"
   - custom: ":"
   - custom: "During ordering of initiative each round, increase your initiative value by 15."

@@ -34,7 +34,7 @@ bottom:
         sub:
         - range: 3
       - custom: "at end of turn."
-      enhancement: [heal]
+      enhancement: [square, 0, 0, 0]
   - mandatory:
     - disarm: ''
       sub:

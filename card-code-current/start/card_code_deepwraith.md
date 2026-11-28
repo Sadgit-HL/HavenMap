@@ -161,11 +161,7 @@ top:
     sub:
     - range: 1
     - group:
-      - custom: "-1 %fh-trophy% %dark%:"
-      - multi:
-        - target: 1
-        - custom: ","
-        - custom: "%xp1%"
+      - custom: "-1 %fh-trophy% %dark%: +1 %target%, %xp1%"
 bottom:
   actions:
   - move: 2
@@ -343,8 +339,7 @@ top:
     - target: 3
     - range: 1
     - group:
-      - custom: "-1 %fh-trophy%:"
-      - target: 1
+      - custom: "-1 %fh-trophy%: +1 %target%"
   - custom: "Add +1 %range% if you have %invisible%."
 bottom:
   actions:

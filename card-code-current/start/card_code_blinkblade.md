@@ -160,8 +160,8 @@ top:
     - ward: ''
     - custom: ","
     - bless: ''
-    - custom: ","
-    - target: "self"
+    sub:
+    - self
   lost: t
 bottom:
   actions:

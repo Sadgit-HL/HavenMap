@@ -93,7 +93,7 @@ top:
   - summon:
       name: Snow Fox
       stats: [5, 3, 2, -]
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   xp: 2
   lost: t
   duration: persistent
@@ -278,11 +278,11 @@ top:
     - custom: "+2 %attack%"
   - optional:
     - consume: [air]
-    - custom: "%?grey diamond icon 2%"
+    - custom: "%push% 2"
     - custom: "%xp1%"
   - optional:
     - consume: [light]
-    - custom: "%?diamond with hand icon%"
+    - custom: "%disarm%"
     - custom: "%xp1%"
   lost: t
 bottom:
@@ -329,7 +329,7 @@ top:
       stats: [3, 3, 2, -]
       special:
       - fly: ''
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   - mandatory:
     - air
   xp: 2
@@ -533,7 +533,7 @@ bottom:
       stats: [6, 3, 2, -]
       special:
       - pierce: 3
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   xp: 2
   lost: t
   duration: persistent

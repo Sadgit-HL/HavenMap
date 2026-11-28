@@ -1049,8 +1049,8 @@
      },
      "actions": [
       {
-       "type": "custom",
-       "text": "%?bigger attack area of six hexes%"
+       "type": "area",
+       "pattern": "et_tt_stt"
       },
       {
        "type": "custom",

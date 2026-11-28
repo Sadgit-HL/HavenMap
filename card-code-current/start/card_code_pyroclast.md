@@ -263,7 +263,7 @@ top:
     - custom: "+1 %attack%"
   - optional:
     - consume: [earth]
-    - custom: "%?grey diamond with question mark%"
+    - custom: "%muddle%"
     - custom: "%xp1%"
 bottom:
   actions:

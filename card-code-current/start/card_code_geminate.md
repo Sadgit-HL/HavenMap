@@ -145,7 +145,7 @@ top:
       enhancement: [square]
       sub:
       - immobilize
-    - hex: tt_et_es
+    - hex: ett_xet_ees
   - mandatory:
     - custom: "%fh-switch-range%"
 bottom:
@@ -457,16 +457,7 @@ top:
   - retaliate: 2
     sub:
     - range: 2
-    - group:
-      - multi:
-        - disarm: ''
-          sub:
-          - self
-        - custom: ":"
-      - multi:
-        - retaliate: 1
-        - custom: ","
-        - range: 1
+    - custom: "%disarm% self: +1 %retaliate%, +1 %range%"
   - custom: "Gain %xp1% whenever you retaliate this round."
   lost: t
   duration: round
@@ -588,12 +579,7 @@ bottom:
       enhancement: [square]
   - optional:
     - consume: [light]
-    - multi:
-      - target: 1
-      - custom: ","
-      - consume: [fire/ice]
-      - custom: ","
-      - custom: "%xp1%"
+    - custom: "+1 %target%, %fire%/%ice%, %xp1%"
 
 name: Luminous Descent
 initiative: 67
@@ -608,12 +594,7 @@ top:
       enhancement: [square]
   - optional:
     - consume: [light]
-    - multi:
-      - target: 1
-      - custom: ","
-      - consume: [fire/ice]
-      - custom: ","
-      - custom: "%xp1%"
+    - custom: "+1 %target%, %fire%/%ice%, %xp1%"
 bottom:
   actions:
   - move: 5
@@ -737,18 +718,8 @@ bottom:
     enhancement: [square]
     sub:
     - group:
-      - multi:
-        - immobilize: ''
-          sub:
-          - self
-        - custom: ":"
-      - immobilize: ''
-      - multi:
-        - curse: ''
-          sub:
-          - self
-        - custom: ":"
-      - target: 1
+      - custom: "%immobilize% self: %immobilize%"
+      - custom: "%curse% self: +1 %target%"
   - optional:
     - custom: "only %range%3/4"
 

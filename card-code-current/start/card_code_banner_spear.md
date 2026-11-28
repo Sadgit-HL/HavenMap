@@ -17,7 +17,7 @@ bottom:
   - summon:
       name: Reinforcement
       stats: [1, 2, -, -]
-      enhancement: [heal, move]
+      enhancement: [square, square, 0, 0]
   xp: 1
   duration: persistent
 
@@ -39,7 +39,7 @@ bottom:
       stats: [3, -, -, -]
       special:
       - custom: "All allies within %range%2 add +1 %attack% to one of their attacks each turn."
-      enhancement: [heal]
+      enhancement: [square, 0, 0, 0]
   xp: 2
   lost: t
   duration: persistent
@@ -225,7 +225,7 @@ bottom:
       stats: [5, 2, 1, -]
       special:
       - wound: ''
-      enhancement: [heal, attack]
+      enhancement: [square, 0, square, 0]
   xp: 2
   lost: t
   duration: persistent
@@ -253,7 +253,7 @@ bottom:
       - heal: 1
         sub:
         - self
-      enhancement: [heal]
+      enhancement: [square, 0, 0, 0]
   xp: 2
   lost: t
   duration: persistent
@@ -291,12 +291,7 @@ top:
     - range: 3
   - optional:
     - consume: [air]
-    - multi:
-      - range: 1
-      - custom: ","
-      - immobilize: ''
-      - custom: ","
-      - custom: "%xp1%"
+    - custom: "+1 %range%, %immobilize%, %xp1%"
   - custom: "Add +1 %attack% for each ally adjacent to the target."
 bottom:
   actions:
@@ -326,7 +321,7 @@ bottom:
       stats: [7, -, -, -]
       special:
       - custom: "All adjacent allies gain %shield%1."
-      enhancement: [heal]
+      enhancement: [square, 0, 0, 0]
   xp: 2
   lost: t
   duration: persistent
@@ -398,7 +393,7 @@ bottom:
       stats: [1, 3, 2, -]
       special:
       - fly: ''
-      enhancement: [heal, move, attack]
+      enhancement: [square, square, square, 0]
   xp: 1
   duration: persistent
 
@@ -467,7 +462,7 @@ bottom:
       stats: [5, -, -, -]
       special:
       - custom: "Negate the first source of %damage% to an adjacent ally each round."
-      enhancement: [heal]
+      enhancement: [square, 0, 0, 0]
   xp: 2
   lost: t
   duration: persistent
@@ -524,8 +519,7 @@ bottom:
     - target: 3
   - optional:
     - consume: [air]
-    - target: "3 enemies within two hexes instead"
-    - custom: "%xp1%"
+    - custom: "%target% 3 enemies within two hexes instead, %xp1%"
 
 name: Lead from Afar
 initiative: 80
@@ -544,7 +538,7 @@ bottom:
       stats: [4, 2, 2, 4]
       special:
       - muddle: ''
-      enhancement: [heal, move, range]
+      enhancement: [square, square, 0, square]
   xp: 2
   lost: t
   duration: persistent
@@ -617,7 +611,7 @@ bottom:
       stats: [9, -, -, -]
       special:
       - custom: "All enemies within %range%4 suffer %damage%1 at the start of their turns."
-      enhancement: [heal]
+      enhancement: [square, 0, 0, 0]
   xp: 2
   lost: t
   duration: persistent

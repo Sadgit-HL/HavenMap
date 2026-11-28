@@ -41,8 +41,10 @@
      },
      "special": [],
      "enhancement": [
-      "heal",
-      "move"
+      "square",
+      "square",
+      0,
+      0
      ]
     }
    ],
@@ -97,7 +99,10 @@
       }
      ],
      "enhancement": [
-      "heal"
+      "square",
+      0,
+      0,
+      0
      ]
     }
    ],
@@ -586,8 +591,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "attack"
+      "square",
+      0,
+      "square",
+      0
      ]
     }
    ],
@@ -665,7 +672,10 @@
       }
      ],
      "enhancement": [
-      "heal"
+      "square",
+      0,
+      0,
+      0
      ]
     }
    ],
@@ -763,30 +773,8 @@
      },
      "actions": [
       {
-       "type": "inline",
-       "actions": [
-        {
-         "type": "range",
-         "value": 1,
-         "relative": true
-        },
-        {
-         "type": "custom",
-         "text": ","
-        },
-        {
-         "type": "condition",
-         "value": "immobilize"
-        },
-        {
-         "type": "custom",
-         "text": ","
-        },
-        {
-         "type": "custom",
-         "text": "%xp% 1"
-        }
-       ]
+       "type": "custom",
+       "text": "+1 %range%, %immobilize%, %xp% 1"
       }
      ]
     },
@@ -869,7 +857,10 @@
       }
      ],
      "enhancement": [
-      "heal"
+      "square",
+      0,
+      0,
+      0
      ]
     }
    ],
@@ -1060,9 +1051,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move",
-      "attack"
+      "square",
+      "square",
+      "square",
+      0
      ]
     }
    ],
@@ -1230,7 +1222,10 @@
       }
      ],
      "enhancement": [
-      "heal"
+      "square",
+      0,
+      0,
+      0
      ]
     }
    ],
@@ -1401,12 +1396,8 @@
      },
      "actions": [
       {
-       "type": "target",
-       "value": "3 enemies within two hexes instead"
-      },
-      {
        "type": "custom",
-       "text": "%xp% 1"
+       "text": "%target% 3 enemies within two hexes instead, %xp% 1"
       }
      ]
     }
@@ -1457,9 +1448,10 @@
       }
      ],
      "enhancement": [
-      "heal",
-      "move",
-      "range"
+      "square",
+      "square",
+      0,
+      "square"
      ]
     }
    ],
@@ -1643,7 +1635,10 @@
       }
      ],
      "enhancement": [
-      "heal"
+      "square",
+      0,
+      0,
+      0
      ]
     }
    ],
