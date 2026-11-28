@@ -7,7 +7,7 @@
 //   onConfirm   (sticker key, price) => void, called once after Confirm
 // Closes on Escape, on a click outside and on Cancel. Returns a function that closes it.
 const css = document.createElement('style');
-css.textContent = `.dotpop{position:fixed;z-index:10000;width:min(300px,92vw);max-height:80vh;overflow:auto;background:#231d17;color:#ecdfc8;border:1px solid #3a3026;border-radius:12px;padding:12px;box-shadow:0 14px 40px rgba(0,0,0,.7);font:14px/1.35 system-ui,"Segoe UI",Roboto,sans-serif}
+css.textContent = `.dotpop{position:fixed;z-index:10000;box-sizing:border-box;width:min(326px,92vw);max-height:calc(100vh - 16px);overflow:auto;background:#231d17;color:#ecdfc8;border:1px solid #3a3026;border-radius:12px;padding:12px;box-shadow:0 14px 40px rgba(0,0,0,.7);font:14px/1.35 system-ui,"Segoe UI",Roboto,sans-serif}
 .dotpop h3{margin:0;font-size:15px;color:#c7a44a}
 .dotpop .dpsub{margin:2px 0 8px;color:#a89a82;font-size:12px}
 .dotpop .dplist{display:flex;flex-direction:column;gap:4px}
@@ -43,15 +43,25 @@ export function openDotPopover({ x, y, title = '', subtitle = '', options = [], 
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
   const head = `<h3>${esc(title)}</h3>${subtitle ? `<div class="dpsub">${esc(subtitle)}</div>` : ''}`;
   let closed = false, chosen = null;
-  const close = () => { if (closed) return; closed = true; document.removeEventListener('pointerdown', outside, true); document.removeEventListener('keydown', onKey, true); el.remove(); if (open?.el === el) open = null; };
+  const close = () => { if (closed) return; closed = true; document.removeEventListener('pointerdown', outside, true); document.removeEventListener('keydown', onKey, true); window.removeEventListener('resize', place); el.remove(); if (open?.el === el) open = null; };
   const outside = e => { if (!el.contains(e.target)) close(); };
   const onKey = e => { if (e.key === 'Escape') { e.stopPropagation(); close(); } };
+  // The popover stays next to its dot but never leaves the window. It is placed again after every render, because the confirm step is taller than the sticker list,
+  // and when the window changes size; what does not fit scrolls inside it (max-height in the style).
+  const place = () => {
+    if (!el.isConnected) return;
+    el.style.maxHeight = `${Math.max(120, window.innerHeight - 16)}px`;           // from the visible height, not vh (vh can be taller than the window on some screens)
+    const r = el.getBoundingClientRect();
+    el.style.left = `${Math.max(8, Math.min(window.innerWidth - r.width - 8, x + 18))}px`;
+    el.style.top = `${Math.max(8, Math.min(window.innerHeight - r.height - 8, y - 20))}px`;
+  };
 
   const list = () => {
     el.innerHTML = `${head}${options.length
       ? `<div class="dplist">${options.map((o, i) => `<button type="button" class="dpopt" data-i="${i}"><img src="${esc(o.img ?? '')}" alt=""><span class="dpn">${esc(o.label)}</span><span class="dpc${o.cost === null ? ' none' : ''}">${o.cost === null ? 'no price' : o.cost + ' gold'}</span></button>`).join('')}</div>`
       : '<div class="dpempty">No sticker fits this dot</div>'}
       <div class="dpbtns" style="margin-top:8px"><button type="button" data-cancel>Cancel</button></div>`;
+    place();
   };
   const confirm = o => {
     chosen = o;
@@ -71,6 +81,7 @@ export function openDotPopover({ x, y, title = '', subtitle = '', options = [], 
     input.addEventListener('input', update);
     input.addEventListener('keydown', e => { if (e.key === 'Enter' && !ok.disabled) ok.click(); });
     update();
+    place();
     input.focus(); input.select();
   };
   el.addEventListener('click', e => {
@@ -87,9 +98,8 @@ export function openDotPopover({ x, y, title = '', subtitle = '', options = [], 
   });
   list();
   document.body.appendChild(el);
-  const r = el.getBoundingClientRect();
-  el.style.left = `${Math.max(8, Math.min(window.innerWidth - r.width - 8, x + 18))}px`;
-  el.style.top = `${Math.max(8, Math.min(window.innerHeight - r.height - 8, y - 20))}px`;
+  place();
+  window.addEventListener('resize', place);
   document.addEventListener('pointerdown', outside, true);
   document.addEventListener('keydown', onKey, true);
   open = { el, close };
