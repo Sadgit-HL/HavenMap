@@ -17,61 +17,12 @@
      "type": "inline",
      "actions": [
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 0,
-        "subActions": [
-         {
-          "type": "concatenation",
-          "value": ",",
-          "subActions": [
-           {
-            "type": "attack",
-            "value": 1,
-            "valueType": "add",
-            "small": true
-           },
-           {
-            "type": "condition",
-            "value": "wound",
-            "small": true
-           },
-           {
-            "type": "card",
-            "value": "experience:1",
-            "small": true
-           }
-          ]
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-1% +1 %attack%, %wound%, %xp% 1"
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "concatenation",
-          "value": ",",
-          "subActions": [
-           {
-            "type": "attack",
-            "value": 1,
-            "valueType": "subtract",
-            "small": true
-           },
-           {
-            "type": "condition",
-            "value": "muddle",
-            "small": true
-           }
-          ]
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% -1 %attack%, %muddle%"
       }
      ]
     }
@@ -83,19 +34,8 @@
      "type": "inline",
      "actions": [
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 0,
-        "subActions": [
-         {
-          "type": "move",
-          "value": 2,
-          "valueType": "add",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-1% +2 %move%"
       },
       {
        "type": "move",
@@ -105,35 +45,14 @@
        ]
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "move",
-          "value": 1,
-          "valueType": "subtract",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% -1 %move%"
       }
      ]
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 1,
-      "subActions": [
-       {
-        "type": "custom",
-        "value": "%data.custom.fh.blinkblade.abilities.32.1%",
-        "small": true
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-0% One adjacent enemy suffers %damage%1."
     }
    ]
   },
@@ -160,45 +79,14 @@
        ]
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "attack",
-          "value": 1,
-          "valueType": "subtract",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% -1 %attack%"
       }
      ]
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 0,
-      "subActions": [
-       {
-        "type": "concatenation",
-        "value": ",",
-        "subActions": [
-         {
-          "type": "move",
-          "value": 2
-         },
-         {
-          "type": "card",
-          "value": "experience:1",
-          "small": true
-         }
-        ]
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-1% %move% 2, %xp% 1"
     },
     {
      "type": "inline",
@@ -211,19 +99,8 @@
        ]
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "attack",
-          "value": 1,
-          "valueType": "subtract",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% -1 %attack%"
       }
      ]
     }
@@ -242,19 +119,8 @@
        ]
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "move",
-          "value": 2,
-          "valueType": "subtract",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% -2 %move%"
       }
      ]
     },
@@ -262,57 +128,12 @@
      "type": "inline",
      "actions": [
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 0,
-        "subActions": [
-         {
-          "type": "custom",
-          "value": "%data.custom.fh.blinkblade.abilities.33.1%",
-          "small": true
-         },
-         {
-          "type": "concatenation",
-          "value": "",
-          "subActions": [
-           {
-            "type": "element",
-            "value": "air"
-           },
-           {
-            "type": "card",
-            "value": "round",
-            "small": true
-           }
-          ]
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-1% Add %pierce% 2 to all your attacks this round. %air% %round%"
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "heal",
-          "value": 2,
-          "subActions": [
-           {
-            "type": "specialTarget",
-            "value": "self",
-            "small": true
-           }
-          ]
-         },
-         {
-          "type": "element",
-          "value": "earth"
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% %heal% 2 self, %earth%"
       }
      ]
     }
@@ -344,36 +165,8 @@
      ]
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 0,
-      "subActions": [
-       {
-        "type": "concatenation",
-        "value": ",",
-        "subActions": [
-         {
-          "type": "attack",
-          "value": 1,
-          "valueType": "add",
-          "small": true
-         },
-         {
-          "type": "custom",
-          "value": "%game.custom.advantage%",
-          "small": true
-         },
-         {
-          "type": "card",
-          "value": "experience:1",
-          "small": true
-         }
-        ]
-       }
-      ],
-      "noDivider": true
-     }
+     "type": "custom",
+     "text": "%blinkblade-1% +1 %attack%, advantage, %xp% 1"
     }
    ]
   },
@@ -383,19 +176,8 @@
      "type": "inline",
      "actions": [
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 0,
-        "subActions": [
-         {
-          "type": "target",
-          "value": 2,
-          "valueType": "add",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-1% +2 %target%"
       },
       {
        "type": "condition",
@@ -410,18 +192,8 @@
      ]
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 1,
-      "subActions": [
-       {
-        "type": "custom",
-        "value": "%data.custom.fh.blinkblade.abilities.34.1%",
-        "small": true
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-0% Ignore the %blinkblade-0% effects of your other actions this turn."
     }
    ]
   },
@@ -448,19 +220,8 @@
        ]
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "move",
-          "value": 1,
-          "valueType": "subtract",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% -1 %move%"
       }
      ]
     },
@@ -468,17 +229,8 @@
      "type": "inline",
      "actions": [
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 0,
-        "subActions": [
-         {
-          "type": "push",
-          "value": 3
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-1% %push% 3"
       },
       {
        "type": "attack",
@@ -488,19 +240,8 @@
        ]
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "range",
-          "value": 1,
-          "valueType": "add",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% +1 %range%"
       }
      ]
     },
@@ -508,30 +249,12 @@
      "type": "inline",
      "actions": [
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 0,
-        "subActions": [
-         {
-          "type": "element",
-          "value": "fire"
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-1% %fire%"
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "element",
-          "value": "ice"
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% %ice%"
       }
      ]
     }
@@ -550,35 +273,14 @@
        ]
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "move",
-          "value": 1,
-          "valueType": "subtract",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% -1 %move%"
       }
      ]
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 0,
-      "subActions": [
-       {
-        "type": "custom",
-        "value": "%data.custom.fh.blinkblade.abilities.35.1%",
-        "small": true
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-1% All adjacent allies and enemies suffer %damage%1."
     },
     {
      "type": "group",
@@ -650,39 +352,14 @@
        ]
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "range",
-          "value": 1,
-          "valueType": "add",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% +1 %range%"
       }
      ]
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 0,
-      "subActions": [
-       {
-        "type": "custom",
-        "value": "%data.custom.fh.blinkblade.abilities.36.3%",
-        "small": true
-       },
-       {
-        "type": "card",
-        "value": "round"
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-1% All your attacks targeting enemies that have %muddle% are unaffected by %retaliate% this round. %round%"
     }
    ]
   },
@@ -703,39 +380,12 @@
      "value": 4
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 0,
-      "subActions": [
-       {
-        "type": "custom",
-        "value": "%data.custom.fh.blinkblade.abilities.37.1%",
-        "small": true
-       }
-      ],
-      "noDivider": true
-     }
+     "type": "custom",
+     "text": "%blinkblade-1% If you do not have %poison%, gain %poison% to add +1 %target%, %xp% 1."
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 1,
-      "subActions": [
-       {
-        "type": "condition",
-        "value": "muddle",
-        "subActions": [
-         {
-          "type": "specialTarget",
-          "value": "self",
-          "small": true
-         }
-        ]
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-0% %muddle% self"
     }
    ]
   },
@@ -745,19 +395,8 @@
      "type": "inline",
      "actions": [
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 0,
-        "subActions": [
-         {
-          "type": "move",
-          "value": 4,
-          "valueType": "add",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-1% +4 %move%"
       },
       {
        "type": "move",
@@ -769,29 +408,8 @@
      ]
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 1,
-      "subActions": [
-       {
-        "type": "heal",
-        "value": 2,
-        "subActions": [
-         {
-          "type": "specialTarget",
-          "value": "all",
-          "small": true
-         },
-         {
-          "type": "range",
-          "value": 1,
-          "small": true
-         }
-        ]
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-0% %heal% 2 all, %range% 1"
     }
    ],
    "xp": 1,
@@ -826,45 +444,14 @@
        ]
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "attack",
-          "value": 1,
-          "valueType": "subtract",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% -1 %attack%"
       }
      ]
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 0,
-      "subActions": [
-       {
-        "type": "concatenation",
-        "value": ",",
-        "subActions": [
-         {
-          "type": "move",
-          "value": 2
-         },
-         {
-          "type": "card",
-          "value": "experience:1",
-          "small": true
-         }
-        ]
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-1% %move% 2, %xp% 1"
     }
    ]
   },
@@ -946,17 +533,8 @@
        ]
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "condition",
-          "value": "regenerate"
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% %regenerate%"
       }
      ]
     }
@@ -978,28 +556,8 @@
      "type": "inline",
      "actions": [
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 0,
-        "subActions": [
-         {
-          "type": "concatenation",
-          "value": ",",
-          "subActions": [
-           {
-            "type": "condition",
-            "value": "wound"
-           },
-           {
-            "type": "card",
-            "value": "experience:1",
-            "small": true
-           }
-          ]
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-1% %wound%, %xp% 1"
       },
       {
        "type": "attack",
@@ -1018,19 +576,8 @@
        "value": 3
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "move",
-          "value": 1,
-          "valueType": "subtract",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% -1 %move%"
       }
      ]
     },
@@ -1038,28 +585,8 @@
      "type": "inline",
      "actions": [
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 0,
-        "subActions": [
-         {
-          "type": "concatenation",
-          "value": ",",
-          "subActions": [
-           {
-            "type": "condition",
-            "value": "wound"
-           },
-           {
-            "type": "card",
-            "value": "experience:1",
-            "small": true
-           }
-          ]
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-1% %wound%, %xp% 1"
       },
       {
        "type": "attack",
@@ -1080,39 +607,14 @@
        "value": 4
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "move",
-          "value": 1,
-          "valueType": "subtract",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% -1 %move%"
       }
      ]
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 0,
-      "subActions": [
-       {
-        "type": "custom",
-        "value": "%data.custom.fh.blinkblade.abilities.40.1%",
-        "small": true
-       },
-       {
-        "type": "card",
-        "value": "round"
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-1% All allies add +1 %move% to their move abilities that move from a hex adjacent to you to a hex not adjacent to you this round. %round%"
     }
    ]
   },
@@ -1129,17 +631,8 @@
   "top": {
    "actions": [
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 0,
-      "subActions": [
-       {
-        "type": "move",
-        "value": 2
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-1% %move% 2"
     },
     {
      "type": "loot",
@@ -1153,19 +646,8 @@
      "type": "inline",
      "actions": [
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 0,
-        "subActions": [
-         {
-          "type": "range",
-          "value": 2,
-          "valueType": "add",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-1% +2 %range%"
       },
       {
        "type": "attack",
@@ -1175,19 +657,8 @@
        ]
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "attack",
-          "value": 1,
-          "valueType": "subtract",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% -1 %attack%"
       }
      ]
     }
@@ -1224,79 +695,18 @@
      "type": "inline",
      "actions": [
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 0,
-        "subActions": [
-         {
-          "type": "custom",
-          "value": "%data.custom.fh.blinkblade.abilities.42.1%",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-1% All enemies within %range%2 suffer %damage%1."
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "concatenation",
-          "value": ",",
-          "subActions": [
-           {
-            "type": "condition",
-            "value": "immobilize"
-           },
-           {
-            "type": "condition",
-            "value": "muddle"
-           }
-          ]
-         },
-         {
-          "type": "concatenation",
-          "value": ",",
-          "subActions": [
-           {
-            "type": "specialTarget",
-            "value": "all",
-            "small": true
-           },
-           {
-            "type": "range",
-            "value": 2,
-            "small": true
-           }
-          ]
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% %immobilize%, %muddle%, all, %range% 2"
       }
      ]
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 0,
-      "subActions": [
-       {
-        "type": "condition",
-        "value": "invisible",
-        "subActions": [
-         {
-          "type": "specialTarget",
-          "value": "self",
-          "small": true
-         }
-        ]
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-1% %invisible% self"
     }
    ]
   },
@@ -1310,19 +720,8 @@
        "value": 2
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "move",
-          "value": 2,
-          "valueType": "add",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% +2 %move%"
       }
      ]
     },
@@ -1330,37 +729,12 @@
      "type": "inline",
      "actions": [
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 0,
-        "subActions": [
-         {
-          "type": "loot",
-          "value": 1
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-1% %loot% 1"
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "condition",
-          "value": "immobilize",
-          "subActions": [
-           {
-            "type": "specialTarget",
-            "value": "self",
-            "small": true
-           }
-          ]
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% %immobilize% self"
       }
      ]
     }
@@ -1379,24 +753,8 @@
   "top": {
    "actions": [
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 0,
-      "subActions": [
-       {
-        "type": "condition",
-        "value": "wound",
-        "subActions": [
-         {
-          "type": "range",
-          "value": 1,
-          "small": true
-         }
-        ]
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-1% %wound% %range% 1"
     },
     {
      "type": "custom",
@@ -1468,35 +826,8 @@
      ]
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 0,
-      "subActions": [
-       {
-        "type": "box",
-        "value": "",
-        "subActions": [
-         {
-          "type": "concatenation",
-          "value": "",
-          "subActions": [
-           {
-            "type": "custom",
-            "value": "-1 %data.action.custom.fh-hourglass%:",
-            "small": true
-           },
-           {
-            "type": "custom",
-            "value": "%data.custom.fh.blinkblade.abilities.43.2%",
-            "small": true
-           }
-          ]
-         }
-        ]
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-1% -1 %fh-hourglass%: At the end of your turn, play one card from your hand to immediately perform the top or bottom action of the card."
     }
    ]
   },
@@ -1537,52 +868,18 @@
      "type": "inline",
      "actions": [
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 0,
-        "subActions": [
-         {
-          "type": "custom",
-          "value": "%data.custom.fh.blinkblade.abilities.44.2%",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-1% All allies add -1 %move% to their move abilities this round."
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "custom",
-          "value": "%data.custom.fh.blinkblade.abilities.44.3%",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% All allies add +1 %move% to their move abilities this round."
       }
      ]
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 0,
-      "subActions": [
-       {
-        "type": "move",
-        "value": "X"
-       },
-       {
-        "type": "custom",
-        "value": "%data.custom.fh.blinkblade.abilities.44.4%",
-        "small": true
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-1% %move% X where X is twice the number of your allies."
     }
    ],
    "duration": "round"
@@ -1630,19 +927,8 @@
      "type": "inline",
      "actions": [
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 0,
-        "subActions": [
-         {
-          "type": "move",
-          "value": 2,
-          "valueType": "add",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-1% +2 %move%"
       },
       {
        "type": "move",
@@ -1651,33 +937,8 @@
      ]
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 1,
-      "subActions": [
-       {
-        "type": "boxFhSubActions",
-        "subActions": [
-         {
-          "type": "grid",
-          "subActions": [
-           {
-            "type": "custom",
-            "value": "-1 %data.action.custom.fh-hourglass%: ",
-            "small": true
-           },
-           {
-            "type": "custom",
-            "value": "%data.custom.fh.blinkblade.abilities.45.3%",
-            "small": true
-           }
-          ]
-         }
-        ]
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-0% -1 %fh-hourglass%: Trigger the %blinkblade-1% effects instead of the %blinkblade-0% effects of your other actions this turn."
     }
    ]
   },
@@ -1697,30 +958,8 @@
      "type": "inline",
      "actions": [
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 0,
-        "subActions": [
-         {
-          "type": "concatenation",
-          "value": ",",
-          "subActions": [
-           {
-            "type": "attack",
-            "value": 2,
-            "valueType": "add",
-            "small": true
-           },
-           {
-            "type": "pierce",
-            "value": 1,
-            "small": true
-           }
-          ]
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-1% +2 %attack%, %pierce% 1"
       },
       {
        "type": "attack",
@@ -1732,36 +971,8 @@
      ]
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 0,
-      "subActions": [
-       {
-        "type": "concatenation",
-        "value": ",",
-        "subActions": [
-         {
-          "type": "damage",
-          "value": 1,
-          "small": true,
-          "subActions": [
-           {
-            "type": "specialTarget",
-            "value": "self",
-            "small": true
-           }
-          ]
-         },
-         {
-          "type": "card",
-          "value": "experience:1",
-          "small": true
-         }
-        ]
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-1% %damage% 1 self, %xp% 1"
     }
    ]
   },
@@ -1775,56 +986,12 @@
      ]
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 0,
-      "subActions": [
-       {
-        "type": "concatenation",
-        "value": ",",
-        "subActions": [
-         {
-          "type": "damage",
-          "value": 1,
-          "small": true,
-          "subActions": [
-           {
-            "type": "specialTarget",
-            "value": "self",
-            "small": true
-           }
-          ]
-         },
-         {
-          "type": "card",
-          "value": "experience:1",
-          "small": true
-         }
-        ]
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-1% %damage% 1 self, %xp% 1"
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 0,
-      "subActions": [
-       {
-        "type": "condition",
-        "value": "ward",
-        "subActions": [
-         {
-          "type": "specialTarget",
-          "value": "self",
-          "small": true
-         }
-        ]
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-1% %ward% self"
     }
    ]
   },
@@ -1858,96 +1025,27 @@
      ]
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 0,
-      "subActions": [
-       {
-        "type": "concatenation",
-        "value": ",",
-        "subActions": [
-         {
-          "type": "heal",
-          "value": 2,
-          "valueType": "add",
-          "small": true
-         },
-         {
-          "type": "target",
-          "value": 1,
-          "valueType": "subtract",
-          "small": true
-         },
-         {
-          "type": "range",
-          "value": 1,
-          "valueType": "subtract",
-          "small": true
-         },
-         {
-          "type": "card",
-          "value": "experience:1",
-          "small": true
-         }
-        ]
-       }
-      ],
-      "noDivider": true
-     }
+     "type": "custom",
+     "text": "%blinkblade-1% +2 %heal%, -1 %target%, -1 %range%, %xp% 1"
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 1,
-      "subActions": [
-       {
-        "type": "condition",
-        "value": "bless",
-        "subActions": [
-         {
-          "type": "specialTarget",
-          "value": "self",
-          "small": true
-         }
-        ]
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-0% %bless% self"
     }
    ]
   },
   "bottom": {
    "actions": [
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 0,
-      "subActions": [
-       {
-        "type": "move",
-        "value": 1
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-1% %move% 2"
     },
     {
      "type": "inline",
      "actions": [
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 0,
-        "subActions": [
-         {
-          "type": "condition",
-          "value": "wound"
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-1% %wound%"
       },
       {
        "type": "attack",
@@ -1957,17 +1055,8 @@
        ]
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "condition",
-          "value": "muddle"
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% %muddle%"
       }
      ]
     }
@@ -1996,19 +1085,8 @@
        ]
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "attack",
-          "value": 1,
-          "valueType": "subtract",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% -1 %attack%"
       }
      ]
     },
@@ -2020,28 +1098,8 @@
      ]
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 0,
-      "subActions": [
-       {
-        "type": "concatenation",
-        "value": ",",
-        "subActions": [
-         {
-          "type": "move",
-          "value": 2
-         },
-         {
-          "type": "card",
-          "value": "experience:1",
-          "small": true
-         }
-        ]
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-1% %move% 2, %xp% 1"
     }
    ]
   },
@@ -2098,28 +1156,8 @@
      ]
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 0,
-      "subActions": [
-       {
-        "type": "concatenation",
-        "value": ",",
-        "subActions": [
-         {
-          "type": "attack",
-          "value": 2
-         },
-         {
-          "type": "card",
-          "value": "experience:1",
-          "small": true
-         }
-        ]
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-1% %attack% 2, %xp% 1"
     },
     {
      "type": "inline",
@@ -2132,19 +1170,8 @@
        ]
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "move",
-          "value": 1,
-          "valueType": "subtract",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% -1 %move%"
       }
      ]
     }
@@ -2230,24 +1257,8 @@
      ]
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 1,
-      "subActions": [
-       {
-        "type": "damage",
-        "value": 2,
-        "subActions": [
-         {
-          "type": "specialTarget",
-          "value": "self",
-          "small": true
-         }
-        ]
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-0% %damage% 2 self"
     }
    ]
   },
@@ -2293,61 +1304,16 @@
      "type": "inline",
      "actions": [
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 0,
-        "subActions": [
-         {
-          "type": "concatenation",
-          "value": ",",
-          "subActions": [
-           {
-            "type": "target",
-            "value": 1,
-            "valueType": "add",
-            "small": true
-           },
-           {
-            "type": "range",
-            "value": 2,
-            "valueType": "add",
-            "small": true
-           },
-           {
-            "type": "card",
-            "value": "experience:1",
-            "small": true
-           }
-          ]
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-1% +1 %target%, +2 %range%, %xp% 1"
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "concatenation",
-          "value": ",",
-          "subActions": [
-           {
-            "type": "attack",
-            "value": 1,
-            "valueType": "subtract",
-            "small": true
-           },
-           {
-            "type": "area",
-            "value": "(0,1,active)|(1,0,target)|(1,1,target)"
-           }
-          ]
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% -1 %attack%"
+      },
+      {
+       "type": "area",
+       "pattern": "et_st"
       }
      ]
     }
@@ -2397,17 +1363,8 @@
      "value": 2
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 0,
-      "subActions": [
-       {
-        "type": "move",
-        "value": 2
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-1% %move% 2"
     },
     {
      "type": "attack",
@@ -2417,17 +1374,8 @@
      ]
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 0,
-      "subActions": [
-       {
-        "type": "move",
-        "value": 2
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-1% %move% 2"
     },
     {
      "type": "attack",
@@ -2445,37 +1393,12 @@
      "type": "inline",
      "actions": [
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 0,
-        "subActions": [
-         {
-          "type": "move",
-          "value": 3
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-1% %move% 3"
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "condition",
-          "value": "ward",
-          "subActions": [
-           {
-            "type": "specialTarget",
-            "value": "self",
-            "small": true
-           }
-          ]
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% %ward% self"
       }
      ]
     },
@@ -2512,18 +1435,8 @@
      "type": "inline",
      "actions": [
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 0,
-        "subActions": [
-         {
-          "type": "specialTarget",
-          "value": "enemiesAdjacent",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-1% %target% all adjacent enemies"
       },
       {
        "type": "attack",
@@ -2541,38 +1454,12 @@
      "type": "inline",
      "actions": [
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 0,
-        "subActions": [
-         {
-          "type": "custom",
-          "value": "%data.custom.fh.blinkblade.abilities.54.1%",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-1% Suffer %damage%1 for each enemy targeted with the attack ability."
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "damage",
-          "value": 1,
-          "subActions": [
-           {
-            "type": "specialTarget",
-            "value": "self",
-            "small": true
-           }
-          ]
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% %damage% 1 self"
       }
      ]
     }
@@ -2594,17 +1481,8 @@
      ]
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 0,
-      "subActions": [
-       {
-        "type": "move",
-        "value": 2
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-1% %move% 2"
     }
    ]
   },
@@ -2642,19 +1520,8 @@
        ]
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "move",
-          "value": 1,
-          "valueType": "subtract",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% -1 %move%"
       }
      ]
     },
@@ -2680,30 +1547,8 @@
      "type": "inline",
      "actions": [
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 0,
-        "subActions": [
-         {
-          "type": "concatenation",
-          "value": ",",
-          "subActions": [
-           {
-            "type": "attack",
-            "value": 1,
-            "valueType": "add",
-            "small": true
-           },
-           {
-            "type": "card",
-            "value": "experience:1",
-            "small": true
-           }
-          ]
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-1% +1 %attack%, %xp% 1"
       },
       {
        "type": "attack",
@@ -2760,19 +1605,8 @@
          ]
         },
         {
-         "type": "raw",
-         "secretariat": {
-          "type": "identity",
-          "value": 1,
-          "subActions": [
-           {
-            "type": "move",
-            "value": 2,
-            "valueType": "add",
-            "small": true
-           }
-          ]
-         }
+         "type": "custom",
+         "text": "%blinkblade-0% +2 %move%"
         }
        ]
       }
@@ -2789,19 +1623,8 @@
        ]
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "move",
-          "value": 2,
-          "valueType": "subtract",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% -2 %move%"
       }
      ]
     }
@@ -2830,32 +1653,12 @@
      "type": "inline",
      "actions": [
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 0,
-        "subActions": [
-         {
-          "type": "custom",
-          "value": "%data.custom.fh.blinkblade.abilities.57.1%",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-1% Treat any %amd-null% attack modifier cards drawn as %amd-double% instead."
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "custom",
-          "value": "%data.custom.fh.blinkblade.abilities.57.2%",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% Treat any %amd-double% attack modifier cards drawn as %amd-null% instead."
       }
      ]
     }
@@ -2874,19 +1677,8 @@
        ]
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "move",
-          "value": 1,
-          "valueType": "subtract",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% -1 %move%"
       }
      ]
     },
@@ -2894,44 +1686,12 @@
      "type": "inline",
      "actions": [
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 0,
-        "subActions": [
-         {
-          "type": "condition",
-          "value": "invisible",
-          "subActions": [
-           {
-            "type": "specialTarget",
-            "value": "self",
-            "small": true
-           }
-          ]
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-1% %invisible% self"
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "condition",
-          "value": "strengthen",
-          "subActions": [
-           {
-            "type": "specialTarget",
-            "value": "self",
-            "small": true
-           }
-          ]
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% %strengthen% self"
       }
      ]
     }
@@ -2964,19 +1724,8 @@
      ]
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 0,
-      "subActions": [
-       {
-        "type": "custom",
-        "value": "%data.custom.fh.blinkblade.abilities.58.1%",
-        "small": true
-       }
-      ],
-      "noDivider": true
-     }
+     "type": "custom",
+     "text": "%blinkblade-1% Add +2 %attack% to all attacks targeting enemies that have %immobilize%, %stun%, or whose revealed ability card contains no move abilities."
     }
    ],
    "xp": 1
@@ -2987,19 +1736,8 @@
      "type": "inline",
      "actions": [
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 0,
-        "subActions": [
-         {
-          "type": "move",
-          "value": 2,
-          "valueType": "add",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-1% +2 %move%"
       },
       {
        "type": "move",
@@ -3009,19 +1747,8 @@
        ]
       },
       {
-       "type": "raw",
-       "secretariat": {
-        "type": "identity",
-        "value": 1,
-        "subActions": [
-         {
-          "type": "move",
-          "value": 2,
-          "valueType": "subtract",
-          "small": true
-         }
-        ]
-       }
+       "type": "custom",
+       "text": "%blinkblade-0% -2 %move%"
       }
      ]
     }
@@ -3106,25 +1833,8 @@
      ]
     },
     {
-     "type": "raw",
-     "secretariat": {
-      "type": "identity",
-      "value": 1,
-      "subActions": [
-       {
-        "type": "damage",
-        "value": 2,
-        "small": true,
-        "subActions": [
-         {
-          "type": "specialTarget",
-          "value": "self",
-          "small": true
-         }
-        ]
-       }
-      ]
-     }
+     "type": "custom",
+     "text": "%blinkblade-0% %damage% 2 self"
     }
    ]
   },

@@ -9,16 +9,16 @@ top:
   - attack: 3
     enhancement: [diamond]
   - multi:
-    # raw: {"type": "identity", "value": 0, "subActions": [{"type": "concatenation", "value": ",", "subActions": [{"type": "attack", "value": 1, "valueType": "add", "small": true}, {"type": "condition", "value": "wound", "small": true}, {"type": "card", "value": "experience:1", "small": true}]}]}
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "concatenation", "value": ",", "subActions": [{"type": "attack", "value": 1, "valueType": "subtract", "small": true}, {"type": "condition", "value": "muddle", "small": true}]}]}
+    - custom: "%blinkblade-1% +1 %attack%, %wound%, %xp1%"
+    - custom: "%blinkblade-0% -1 %attack%, %muddle%"
 bottom:
   actions:
   - multi:
-    # raw: {"type": "identity", "value": 0, "subActions": [{"type": "move", "value": 2, "valueType": "add", "small": true}]}
+    - custom: "%blinkblade-1% +2 %move%"
     - move: 3
       enhancement: [circle]
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "move", "value": 1, "valueType": "subtract", "small": true}]}
-  # raw: {"type": "identity", "value": 1, "subActions": [{"type": "custom", "value": "%data.custom.fh.blinkblade.abilities.32.1%", "small": true}]}
+    - custom: "%blinkblade-0% -1 %move%"
+  - custom: "%blinkblade-0% One adjacent enemy suffers %damage%1."
 
 name: Twin Strike
 initiative: 24
@@ -28,21 +28,21 @@ top:
   - multi:
     - attack: 2
       enhancement: [square]
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "attack", "value": 1, "valueType": "subtract", "small": true}]}
-  # raw: {"type": "identity", "value": 0, "subActions": [{"type": "concatenation", "value": ",", "subActions": [{"type": "move", "value": 2}, {"type": "card", "value": "experience:1", "small": true}]}]}
+    - custom: "%blinkblade-0% -1 %attack%"
+  - custom: "%blinkblade-1% %move% 2, %xp1%"
   - multi:
     - attack: 3
       enhancement: [diamond]
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "attack", "value": 1, "valueType": "subtract", "small": true}]}
+    - custom: "%blinkblade-0% -1 %attack%"
 bottom:
   actions:
   - multi:
     - move: 3
       enhancement: [circle]
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "move", "value": 2, "valueType": "subtract", "small": true}]}
+    - custom: "%blinkblade-0% -2 %move%"
   - multi:
-    # raw: {"type": "identity", "value": 0, "subActions": [{"type": "custom", "value": "%data.custom.fh.blinkblade.abilities.33.1%", "small": true}, {"type": "concatenation", "value": "", "subActions": [{"type": "element", "value": "air"}, {"type": "card", "value": "round", "small": true}]}]}
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "heal", "value": 2, "subActions": [{"type": "specialTarget", "value": "self", "small": true}]}, {"type": "element", "value": "earth"}]}
+    - custom: "%blinkblade-1% Add %pierce% 2 to all your attacks this round. %air% %round%"
+    - custom: "%blinkblade-0% %heal% 2 self, %earth%"
 
 name: Sap Speed
 initiative: 45
@@ -52,15 +52,15 @@ top:
   - group:
     - attack: 2
     - hex: et_st
-  # raw: {"type": "identity", "value": 0, "subActions": [{"type": "concatenation", "value": ",", "subActions": [{"type": "attack", "value": 1, "valueType": "add", "small": true}, {"type": "custom", "value": "%game.custom.advantage%", "small": true}, {"type": "card", "value": "experience:1", "small": true}]}], "noDivider": true}
+  - custom: "%blinkblade-1% +1 %attack%, advantage, %xp1%"
 bottom:
   actions:
   - multi:
-    # raw: {"type": "identity", "value": 0, "subActions": [{"type": "target", "value": 2, "valueType": "add", "small": true}]}
+    - custom: "%blinkblade-1% +2 %target%"
     - immobilize: ''
       sub:
       - range: 1
-  # raw: {"type": "identity", "value": 1, "subActions": [{"type": "custom", "value": "%data.custom.fh.blinkblade.abilities.34.1%", "small": true}]}
+  - custom: "%blinkblade-0% Ignore the %blinkblade-0% effects of your other actions this turn."
 
 name: Kinetic Transfer
 initiative: 36
@@ -70,22 +70,22 @@ top:
   - multi:
     - move: 2
       enhancement: [circle]
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "move", "value": 1, "valueType": "subtract", "small": true}]}
+    - custom: "%blinkblade-0% -1 %move%"
   - multi:
-    # raw: {"type": "identity", "value": 0, "subActions": [{"type": "push", "value": 3}]}
+    - custom: "%blinkblade-1% %push% 3"
     - attack: 2
       enhancement: [diamond]
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "range", "value": 1, "valueType": "add", "small": true}]}
+    - custom: "%blinkblade-0% +1 %range%"
   - multi:
-    # raw: {"type": "identity", "value": 0, "subActions": [{"type": "element", "value": "fire"}]}
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "element", "value": "ice"}]}
+    - custom: "%blinkblade-1% %fire%"
+    - custom: "%blinkblade-0% %ice%"
 bottom:
   actions:
   - multi:
     - move: 4
       enhancement: [circle]
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "move", "value": 1, "valueType": "subtract", "small": true}]}
-  # raw: {"type": "identity", "value": 0, "subActions": [{"type": "custom", "value": "%data.custom.fh.blinkblade.abilities.35.1%", "small": true}]}
+    - custom: "%blinkblade-0% -1 %move%"
+  - custom: "%blinkblade-1% All adjacent allies and enemies suffer %damage%1."
   - group:
     - custom: "-1 %fh-hourglass%:"
     - push: 3
@@ -110,8 +110,8 @@ bottom:
       sub:
       - target: "all"
       - range: 2
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "range", "value": 1, "valueType": "add", "small": true}]}
-  # raw: {"type": "identity", "value": 0, "subActions": [{"type": "custom", "value": "%data.custom.fh.blinkblade.abilities.36.3%", "small": true}, {"type": "card", "value": "round"}]}
+    - custom: "%blinkblade-0% +1 %range%"
+  - custom: "%blinkblade-1% All your attacks targeting enemies that have %muddle% are unaffected by %retaliate% this round. %round%"
 
 name: Power Leak
 initiative: 17
@@ -119,15 +119,15 @@ level: 1
 top:
   actions:
   - attack: 4
-  # raw: {"type": "identity", "value": 0, "subActions": [{"type": "custom", "value": "%data.custom.fh.blinkblade.abilities.37.1%", "small": true}], "noDivider": true}
-  # raw: {"type": "identity", "value": 1, "subActions": [{"type": "condition", "value": "muddle", "subActions": [{"type": "specialTarget", "value": "self", "small": true}]}]}
+  - custom: "%blinkblade-1% If you do not have %poison%, gain %poison% to add +1 %target%, %xp1%."
+  - custom: "%blinkblade-0% %muddle% self"
 bottom:
   actions:
   - multi:
-    # raw: {"type": "identity", "value": 0, "subActions": [{"type": "move", "value": 4, "valueType": "add", "small": true}]}
+    - custom: "%blinkblade-1% +4 %move%"
     - move: 3
       enhancement: [circle]
-  # raw: {"type": "identity", "value": 1, "subActions": [{"type": "heal", "value": 2, "subActions": [{"type": "specialTarget", "value": "all", "small": true}, {"type": "range", "value": 1, "small": true}]}]}
+  - custom: "%blinkblade-0% %heal% 2 all, %range% 1"
   xp: 1
   lost: t
 
@@ -141,8 +141,8 @@ top:
       enhancement: [circle]
       sub:
       - immobilize
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "attack", "value": 1, "valueType": "subtract", "small": true}]}
-  # raw: {"type": "identity", "value": 0, "subActions": [{"type": "concatenation", "value": ",", "subActions": [{"type": "move", "value": 2}, {"type": "card", "value": "experience:1", "small": true}]}]}
+    - custom: "%blinkblade-0% -1 %attack%"
+  - custom: "%blinkblade-1% %move% 2, %xp1%"
 bottom:
   actions:
   - custom: "On your next five attack actions while %blinkblade-0%, perform %move%3 at the end of the action."
@@ -169,7 +169,7 @@ bottom:
     - heal: 2
       sub:
       - self
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "condition", "value": "regenerate"}]}
+    - custom: "%blinkblade-0% %regenerate%"
 
 name: Cascading Reaction
 initiative: 19
@@ -177,37 +177,37 @@ level: 1
 top:
   actions:
   - multi:
-    # raw: {"type": "identity", "value": 0, "subActions": [{"type": "concatenation", "value": ",", "subActions": [{"type": "condition", "value": "wound"}, {"type": "card", "value": "experience:1", "small": true}]}]}
+    - custom: "%blinkblade-1% %wound%, %xp1%"
     - attack: 3
       enhancement: [circle]
   - multi:
     - move: 3
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "move", "value": 1, "valueType": "subtract", "small": true}]}
+    - custom: "%blinkblade-0% -1 %move%"
   - multi:
-    # raw: {"type": "identity", "value": 0, "subActions": [{"type": "concatenation", "value": ",", "subActions": [{"type": "condition", "value": "wound"}, {"type": "card", "value": "experience:1", "small": true}]}]}
+    - custom: "%blinkblade-1% %wound%, %xp1%"
     - attack: 3
   lost: t
 bottom:
   actions:
   - multi:
     - move: 4
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "move", "value": 1, "valueType": "subtract", "small": true}]}
-  # raw: {"type": "identity", "value": 0, "subActions": [{"type": "custom", "value": "%data.custom.fh.blinkblade.abilities.40.1%", "small": true}, {"type": "card", "value": "round"}]}
+    - custom: "%blinkblade-0% -1 %move%"
+  - custom: "%blinkblade-1% All allies add +1 %move% to their move abilities that move from a hex adjacent to you to a hex not adjacent to you this round. %round%"
 
 name: Temporal Displacement
 initiative: 44
 level: 1
 top:
   actions:
-  # raw: {"type": "identity", "value": 0, "subActions": [{"type": "move", "value": 2}]}
+  - custom: "%blinkblade-1% %move% 2"
   - loot: 1
 bottom:
   actions:
   - multi:
-    # raw: {"type": "identity", "value": 0, "subActions": [{"type": "range", "value": 2, "valueType": "add", "small": true}]}
+    - custom: "%blinkblade-1% +2 %range%"
     - attack: 3
       enhancement: [circle]
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "attack", "value": 1, "valueType": "subtract", "small": true}]}
+    - custom: "%blinkblade-0% -1 %attack%"
 
 name: Experimental Adjustment
 initiative: 12
@@ -219,24 +219,24 @@ top:
       sub:
       - self
   - multi:
-    # raw: {"type": "identity", "value": 0, "subActions": [{"type": "custom", "value": "%data.custom.fh.blinkblade.abilities.42.1%", "small": true}]}
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "concatenation", "value": ",", "subActions": [{"type": "condition", "value": "immobilize"}, {"type": "condition", "value": "muddle"}]}, {"type": "concatenation", "value": ",", "subActions": [{"type": "specialTarget", "value": "all", "small": true}, {"type": "range", "value": 2, "small": true}]}]}
-  # raw: {"type": "identity", "value": 0, "subActions": [{"type": "condition", "value": "invisible", "subActions": [{"type": "specialTarget", "value": "self", "small": true}]}]}
+    - custom: "%blinkblade-1% All enemies within %range%2 suffer %damage%1."
+    - custom: "%blinkblade-0% %immobilize%, %muddle%, all, %range% 2"
+  - custom: "%blinkblade-1% %invisible% self"
 bottom:
   actions:
   - multi:
     - move: 2
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "move", "value": 2, "valueType": "add", "small": true}]}
+    - custom: "%blinkblade-0% +2 %move%"
   - multi:
-    # raw: {"type": "identity", "value": 0, "subActions": [{"type": "loot", "value": 1}]}
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "condition", "value": "immobilize", "subActions": [{"type": "specialTarget", "value": "self", "small": true}]}]}
+    - custom: "%blinkblade-1% %loot% 1"
+    - custom: "%blinkblade-0% %immobilize% self"
 
 name: Sand in the Hourglass
 initiative: 52
 level: X
 top:
   actions:
-  # raw: {"type": "identity", "value": 0, "subActions": [{"type": "condition", "value": "wound", "subActions": [{"type": "range", "value": 1, "small": true}]}]}
+  - custom: "%blinkblade-1% %wound% %range% 1"
   - custom: "All enemies that have %wound% suffer %damage%2."
   - optional:
     - consume: [light]
@@ -255,7 +255,7 @@ bottom:
     sub:
     - target: "all"
     - range: 1
-  # raw: {"type": "identity", "value": 0, "subActions": [{"type": "box", "value": "", "subActions": [{"type": "concatenation", "value": "", "subActions": [{"type": "custom", "value": "-1 %data.action.custom.fh-hourglass%:", "small": true}, {"type": "custom", "value": "%data.custom.fh.blinkblade.abilities.43.2%", "small": true}]}]}]}
+  - custom: "%blinkblade-1% -1 %fh-hourglass%: At the end of your turn, play one card from your hand to immediately perform the top or bottom action of the card."
 
 name: Borrowed Time
 initiative: 2
@@ -269,9 +269,9 @@ top:
 bottom:
   actions:
   - multi:
-    # raw: {"type": "identity", "value": 0, "subActions": [{"type": "custom", "value": "%data.custom.fh.blinkblade.abilities.44.2%", "small": true}]}
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "custom", "value": "%data.custom.fh.blinkblade.abilities.44.3%", "small": true}]}
-  # raw: {"type": "identity", "value": 0, "subActions": [{"type": "move", "value": "X"}, {"type": "custom", "value": "%data.custom.fh.blinkblade.abilities.44.4%", "small": true}]}
+    - custom: "%blinkblade-1% All allies add -1 %move% to their move abilities this round."
+    - custom: "%blinkblade-0% All allies add +1 %move% to their move abilities this round."
+  - custom: "%blinkblade-1% %move% X where X is twice the number of your allies."
   duration: round
 
 name: Systems Reboot
@@ -290,9 +290,9 @@ bottom:
   actions:
   - custom: "This action may be performed while you have %stun%. Remove all negative conditions you have."
   - multi:
-    # raw: {"type": "identity", "value": 0, "subActions": [{"type": "move", "value": 2, "valueType": "add", "small": true}]}
+    - custom: "%blinkblade-1% +2 %move%"
     - move: 2
-  # raw: {"type": "identity", "value": 1, "subActions": [{"type": "boxFhSubActions", "subActions": [{"type": "grid", "subActions": [{"type": "custom", "value": "-1 %data.action.custom.fh-hourglass%: ", "small": true}, {"type": "custom", "value": "%data.custom.fh.blinkblade.abilities.45.3%", "small": true}]}]}]}
+  - custom: "%blinkblade-0% -1 %fh-hourglass%: Trigger the %blinkblade-1% effects instead of the %blinkblade-0% effects of your other actions this turn."
 
 name: Reckless Augmentation
 initiative: 10
@@ -300,16 +300,16 @@ level: 2
 top:
   actions:
   - multi:
-    # raw: {"type": "identity", "value": 0, "subActions": [{"type": "concatenation", "value": ",", "subActions": [{"type": "attack", "value": 2, "valueType": "add", "small": true}, {"type": "pierce", "value": 1, "small": true}]}]}
+    - custom: "%blinkblade-1% +2 %attack%, %pierce% 1"
     - attack: 3
       enhancement: [diamond]
-  # raw: {"type": "identity", "value": 0, "subActions": [{"type": "concatenation", "value": ",", "subActions": [{"type": "damage", "value": 1, "small": true, "subActions": [{"type": "specialTarget", "value": "self", "small": true}]}, {"type": "card", "value": "experience:1", "small": true}]}]}
+  - custom: "%blinkblade-1% %damage% 1 self, %xp1%"
 bottom:
   actions:
   - move: 3
     enhancement: [circle]
-  # raw: {"type": "identity", "value": 0, "subActions": [{"type": "concatenation", "value": ",", "subActions": [{"type": "damage", "value": 1, "small": true, "subActions": [{"type": "specialTarget", "value": "self", "small": true}]}, {"type": "card", "value": "experience:1", "small": true}]}]}
-  # raw: {"type": "identity", "value": 0, "subActions": [{"type": "condition", "value": "ward", "subActions": [{"type": "specialTarget", "value": "self", "small": true}]}]}
+  - custom: "%blinkblade-1% %damage% 1 self, %xp1%"
+  - custom: "%blinkblade-1% %ward% self"
 
 name: Make It Count
 initiative: 51
@@ -321,16 +321,16 @@ top:
     sub:
     - target: 3
     - range: 3
-  # raw: {"type": "identity", "value": 0, "subActions": [{"type": "concatenation", "value": ",", "subActions": [{"type": "heal", "value": 2, "valueType": "add", "small": true}, {"type": "target", "value": 1, "valueType": "subtract", "small": true}, {"type": "range", "value": 1, "valueType": "subtract", "small": true}, {"type": "card", "value": "experience:1", "small": true}]}], "noDivider": true}
-  # raw: {"type": "identity", "value": 1, "subActions": [{"type": "condition", "value": "bless", "subActions": [{"type": "specialTarget", "value": "self", "small": true}]}]}
+  - custom: "%blinkblade-1% +2 %heal%, -1 %target%, -1 %range%, %xp1%"
+  - custom: "%blinkblade-0% %bless% self"
 bottom:
   actions:
-  # raw: {"type": "identity", "value": 0, "subActions": [{"type": "move", "value": 1}]}
+  - custom: "%blinkblade-1% %move% 2"
   - multi:
-    # raw: {"type": "identity", "value": 0, "subActions": [{"type": "condition", "value": "wound"}]}
+    - custom: "%blinkblade-1% %wound%"
     - attack: 2
       enhancement: [circle]
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "condition", "value": "muddle"}]}
+    - custom: "%blinkblade-0% %muddle%"
 
 name: Double Time
 initiative: 22
@@ -340,10 +340,10 @@ top:
   - multi:
     - attack: 3
       enhancement: [circle]
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "attack", "value": 1, "valueType": "subtract", "small": true}]}
+    - custom: "%blinkblade-0% -1 %attack%"
   - attack: 2
     enhancement: [diamond]
-  # raw: {"type": "identity", "value": 0, "subActions": [{"type": "concatenation", "value": ",", "subActions": [{"type": "move", "value": 2}, {"type": "card", "value": "experience:1", "small": true}]}]}
+  - custom: "%blinkblade-1% %move% 2, %xp1%"
 bottom:
   actions:
   - custom: "On your next three turns while %blinkblade-0%, trigger all %blinkblade-0% effects twice."
@@ -365,11 +365,11 @@ bottom:
   actions:
   - move: 2
     enhancement: [circle]
-  # raw: {"type": "identity", "value": 0, "subActions": [{"type": "concatenation", "value": ",", "subActions": [{"type": "attack", "value": 2}, {"type": "card", "value": "experience:1", "small": true}]}]}
+  - custom: "%blinkblade-1% %attack% 2, %xp1%"
   - multi:
     - move: 2
       enhancement: [circle]
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "move", "value": 1, "valueType": "subtract", "small": true}]}
+    - custom: "%blinkblade-0% -1 %move%"
 
 name: Potential Energy
 initiative: 32
@@ -399,7 +399,7 @@ bottom:
   actions:
   - teleport: 5
     enhancement: [circle]
-  # raw: {"type": "identity", "value": 1, "subActions": [{"type": "damage", "value": 2, "subActions": [{"type": "specialTarget", "value": "self", "small": true}]}]}
+  - custom: "%blinkblade-0% %damage% 2 self"
 
 name: Flashing Flurry
 initiative: 40
@@ -412,8 +412,9 @@ top:
     - multi:
       - attack: 1
   - multi:
-    # raw: {"type": "identity", "value": 0, "subActions": [{"type": "concatenation", "value": ",", "subActions": [{"type": "target", "value": 1, "valueType": "add", "small": true}, {"type": "range", "value": 2, "valueType": "add", "small": true}, {"type": "card", "value": "experience:1", "small": true}]}]}
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "concatenation", "value": ",", "subActions": [{"type": "attack", "value": 1, "valueType": "subtract", "small": true}, {"type": "area", "value": "(0,1,active)|(1,0,target)|(1,1,target)"}]}]}
+    - custom: "%blinkblade-1% +1 %target%, +2 %range%, %xp1%"
+    - custom: "%blinkblade-0% -1 %attack%"
+    - hex: et_st
 bottom:
   actions:
   - stun: ''
@@ -431,18 +432,18 @@ level: 6
 top:
   actions:
   - attack: 2
-  # raw: {"type": "identity", "value": 0, "subActions": [{"type": "move", "value": 2}]}
+  - custom: "%blinkblade-1% %move% 2"
   - attack: 2
     enhancement: [circle]
-  # raw: {"type": "identity", "value": 0, "subActions": [{"type": "move", "value": 2}]}
+  - custom: "%blinkblade-1% %move% 2"
   - attack: 1
     enhancement: [diamond]
   xp: 1
 bottom:
   actions:
   - multi:
-    # raw: {"type": "identity", "value": 0, "subActions": [{"type": "move", "value": 3}]}
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "condition", "value": "ward", "subActions": [{"type": "specialTarget", "value": "self", "small": true}]}]}
+    - custom: "%blinkblade-1% %move% 3"
+    - custom: "%blinkblade-0% %ward% self"
   - custom: "Whenever an enemy ends its teleport or move ability adjacent to you, after their ability, perform:"
   - attack: 2
     sub:
@@ -455,20 +456,20 @@ level: 6
 top:
   actions:
   - multi:
-    # raw: {"type": "identity", "value": 0, "subActions": [{"type": "specialTarget", "value": "enemiesAdjacent", "small": true}]}
+    - custom: "%blinkblade-1% %target% all adjacent enemies"
     - attack: 3
       sub:
       - wound
   - multi:
-    # raw: {"type": "identity", "value": 0, "subActions": [{"type": "custom", "value": "%data.custom.fh.blinkblade.abilities.54.1%", "small": true}]}
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "damage", "value": 1, "subActions": [{"type": "specialTarget", "value": "self", "small": true}]}]}
+    - custom: "%blinkblade-1% Suffer %damage%1 for each enemy targeted with the attack ability."
+    - custom: "%blinkblade-0% %damage% 1 self"
 bottom:
   actions:
   - heal: 4
     enhancement: [square]
     sub:
     - self
-  # raw: {"type": "identity", "value": 0, "subActions": [{"type": "move", "value": 2}]}
+  - custom: "%blinkblade-1% %move% 2"
 
 name: Phasing Blades
 initiative: 63
@@ -484,7 +485,7 @@ bottom:
   - multi:
     - move: 4
       enhancement: [circle]
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "move", "value": 1, "valueType": "subtract", "small": true}]}
+    - custom: "%blinkblade-0% -1 %move%"
   - custom: "If you are adjacent to three or more enemies, gain 1 %fh-hourglass%."
 
 name: Rushed to the End
@@ -493,7 +494,7 @@ level: 7
 top:
   actions:
   - multi:
-    # raw: {"type": "identity", "value": 0, "subActions": [{"type": "concatenation", "value": ",", "subActions": [{"type": "attack", "value": 1, "valueType": "add", "small": true}, {"type": "card", "value": "experience:1", "small": true}]}]}
+    - custom: "%blinkblade-1% +1 %attack%, %xp1%"
     - attack: 4
       enhancement: [diamond]
   - group:
@@ -508,11 +509,11 @@ bottom:
   - multi:
     - move: 4
       enhancement: [circle]
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "move", "value": 2, "valueType": "add", "small": true}]}
+    - custom: "%blinkblade-0% +2 %move%"
   - multi:
     - move: 4
       enhancement: [circle]
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "move", "value": 2, "valueType": "subtract", "small": true}]}
+    - custom: "%blinkblade-0% -2 %move%"
 
 name: Quantum Uncertainty
 initiative: 35
@@ -522,17 +523,17 @@ top:
   - attack: 5
     enhancement: [diamond]
   - multi:
-    # raw: {"type": "identity", "value": 0, "subActions": [{"type": "custom", "value": "%data.custom.fh.blinkblade.abilities.57.1%", "small": true}]}
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "custom", "value": "%data.custom.fh.blinkblade.abilities.57.2%", "small": true}]}
+    - custom: "%blinkblade-1% Treat any %amd-null% attack modifier cards drawn as %amd-double% instead."
+    - custom: "%blinkblade-0% Treat any %amd-double% attack modifier cards drawn as %amd-null% instead."
 bottom:
   actions:
   - multi:
     - move: 3
       enhancement: [circle]
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "move", "value": 1, "valueType": "subtract", "small": true}]}
+    - custom: "%blinkblade-0% -1 %move%"
   - multi:
-    # raw: {"type": "identity", "value": 0, "subActions": [{"type": "condition", "value": "invisible", "subActions": [{"type": "specialTarget", "value": "self", "small": true}]}]}
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "condition", "value": "strengthen", "subActions": [{"type": "specialTarget", "value": "self", "small": true}]}]}
+    - custom: "%blinkblade-1% %invisible% self"
+    - custom: "%blinkblade-0% %strengthen% self"
 
 name: Fastest Alive
 initiative: 1
@@ -543,15 +544,15 @@ top:
     sub:
     - target: 3
     - muddle
-  # raw: {"type": "identity", "value": 0, "subActions": [{"type": "custom", "value": "%data.custom.fh.blinkblade.abilities.58.1%", "small": true}], "noDivider": true}
+  - custom: "%blinkblade-1% Add +2 %attack% to all attacks targeting enemies that have %immobilize%, %stun%, or whose revealed ability card contains no move abilities."
   xp: 1
 bottom:
   actions:
   - multi:
-    # raw: {"type": "identity", "value": 0, "subActions": [{"type": "move", "value": 2, "valueType": "add", "small": true}]}
+    - custom: "%blinkblade-1% +2 %move%"
     - move: 6
       enhancement: [circle]
-    # raw: {"type": "identity", "value": 1, "subActions": [{"type": "move", "value": 2, "valueType": "subtract", "small": true}]}
+    - custom: "%blinkblade-0% -2 %move%"
 
 name: Reverse the Flow
 initiative: 58
@@ -585,4 +586,4 @@ bottom:
   actions:
   - teleport: 7
     enhancement: [circle]
-  # raw: {"type": "identity", "value": 1, "subActions": [{"type": "damage", "value": 2, "small": true, "subActions": [{"type": "specialTarget", "value": "self", "small": true}]}]}
+  - custom: "%blinkblade-0% %damage% 2 self"

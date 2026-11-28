@@ -111,7 +111,7 @@ export const CARD_ACTIONS = {
   5123: {"t":[{"n":0,"text":"%xp% 1","a":[{"type":"xp","value":1}]}]},
   5125: {"t":[{"n":1,"text":"%xp% 1","a":[{"type":"xp","value":1}]}]},
   5215: {"t":[{"n":0,"text":"%recover% one of your lost cards.","a":[{"type":"recoverCards","who":"self","from":"lost","count":1}]}]},
-  5225: {"t":[{"n":2,"text":"%xp% 1","a":[{"type":"xp","value":1}]}]},
+  5225: {"t":[{"n":3,"text":"%xp% 1","a":[{"type":"xp","value":1}]}]},
   5229: {"b":[{"n":1,"text":"%recover% up to two of your lost cards.","a":[{"type":"recoverCards","who":"self","from":"lost","count":{"max":2}}]}]},
   5304: {"t":[{"n":1,"text":"%xp% 1","a":[{"type":"xp","value":1}]}]},
   5307: {"t":[{"n":1,"text":"%xp% 1","a":[{"type":"xp","value":1}]}]},
