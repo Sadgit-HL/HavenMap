@@ -97,8 +97,10 @@ const LS = 'havenmap.review.overrides';
 
 async function load() {
   data = await (await fetch('review-data.json', { cache: 'no-store' })).json();
-  try { const r = await fetch('../../import/enhancement-overrides.json', { cache: 'no-store' }); if (r.ok) ov = await r.json(); } catch { /* none yet */ }
-  try { const l = JSON.parse(localStorage.getItem(LS) || 'null'); if (l?.dirty) { ov = l.data; $('saved').textContent = 'unsaved changes restored'; } } catch { /* ignore */ }
+  for (const f of ['enhancement-overrides.json', 'enhancement-overrides_fh.json']) {   // later sources win
+    try { const r = await fetch('../../import/' + f, { cache: 'no-store' }); if (r.ok) ov = { ...ov, ...(await r.json()) }; } catch { /* none yet */ }
+  }
+  try { const l = JSON.parse(localStorage.getItem(LS) || 'null'); if (l?.dirty) { ov = { ...ov, ...l.data }; $('saved').textContent = 'unsaved changes restored'; } } catch { /* ignore */ }
   ids = Object.keys(data).map(Number).sort((a, b) => a - b).filter(id => hasMarkers(data[id]) || ov[id]);
   const classes = [...new Set(ids.map(id => data[id].class))].sort();
   $('fClass').innerHTML = '<option value="">All classes</option>' + classes.map(c => `<option>${c}</option>`).join('');
