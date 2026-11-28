@@ -1,1 +1,1 @@
-classes 43, cards 1264, written 1264 (2286 markers), not written 0
+classes 43, cards 1264, written 1264 (2282 markers), not written 0

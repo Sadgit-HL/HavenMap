@@ -14,7 +14,7 @@ import { api, loadConn, saveConn, clearConn, loadCache, saveCache, parseInvite, 
 import { cardImageUrl, itemImageUrl, itemBackUrl, eventImageUrl, matImageUrl, pqImageUrl, cardBackUrl, battleGoalImageUrl, matSlugOf } from '../scripts/campaign/cardImages.js';
 import { playmatHtml, markersHtml, XP_STEPS, turnPost, cardsPost, goalRollCode, questRollCode, cleanSettings, displaySettingsHtml, hasSupply } from './playmat.js';
 import { tokenDefs, markerTokens, MARK_STICKERS } from '../scripts/campaign/classTokens.js';
-import { snapToSlot, stepToSlot, slotCardId, trackAtPoint, lastTokenOnTrack, slotOf, forwardSlot } from '../scripts/campaign/tokenSnap.js';
+import { snapToSlot, stepToSlot, snapToEnhancement, stepToEnhancement, hasEnhancementSlots, slotCardId, trackAtPoint, lastTokenOnTrack, slotOf, forwardSlot } from '../scripts/campaign/tokenSnap.js';
 import { TOKEN_SLOTS } from '../scripts/games/card_token_slots.js';
 import { bannerUrl, bannerCode } from '../scripts/campaign/bggBanners.js';
 import { GH2_PQ } from '../scripts/games/gh2_pq_text.js';
@@ -2591,18 +2591,18 @@ function openMarkers(key, owner = null) {
   render();
 }
 const mkPct = (card, e, clamp = true) => { const r = card.getBoundingClientRect(), f = v => (clamp ? Math.min(100, Math.max(0, v)) : v); return { x: f(((e.clientX - r.left) / r.width) * 100), y: f(((e.clientY - r.top) / r.height) * 100) }; };
-// Where a marker lands: tokens snap to the nearest free token circle printed on the card (scripts/campaign/tokenSnap.js), stickers stay where they are dropped.
+// Where a marker lands: tokens snap to the nearest free token circle printed on the card, stickers to the nearest free enhancement dot (scripts/campaign/tokenSnap.js).
+const mkSnap = (key, p, aspect, c, sticker, skip) => (sticker ? snapToEnhancement : snapToSlot)(key, p.x, p.y, aspect, (c.mk?.[key] || []).filter((_, i) => i !== skip));
 const mkAt = (card, e, key, c, sticker, skip = -1) => {
   const p = mkPct(card, e);
-  if (sticker || !c) return p;
-  const r = card.getBoundingClientRect(), sn = snapToSlot(key, p.x, p.y, r.height / r.width, (c.mk?.[key] || []).filter((_, i) => i !== skip));
+  if (!c) return p;
+  const r = card.getBoundingClientRect(), sn = mkSnap(key, p, r.height / r.width, c, sticker, skip);
   return sn ? { x: sn.x, y: sn.y } : p;
 };
 const mkOver = (card, e) => { const r = card.getBoundingClientRect(); return e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom; };
 // The screen position (client px) a marker snaps to under the pointer, or null when it stays free (the preview while dragging).
 function mkSnapPoint(card, e, key, c, sticker, skip = -1) {
-  if (sticker) return null;
-  const r = card.getBoundingClientRect(), p = mkPct(card, e), sn = snapToSlot(key, p.x, p.y, r.height / r.width, (c.mk?.[key] || []).filter((_, i) => i !== skip));
+  const r = card.getBoundingClientRect(), p = mkPct(card, e), sn = mkSnap(key, p, r.height / r.width, c, sticker, skip);
   return sn ? { cx: r.left + (sn.x / 100) * r.width, cy: r.top + (sn.y / 100) * r.height } : null;
 }
 // The arrow buttons and keys: a token on a card with circles hops to the next free circle in that direction (stays when none is free), anything else moves by (dx, dy) percent.
@@ -2611,9 +2611,9 @@ function mkNudge(c, key, idx, dx, dy, aspect = null) {
   const m = c.mk?.[key]?.[idx];
   if (!m) return;
   const cr = main.querySelector('.pm .itcard[data-mkcard]')?.getBoundingClientRect(), asp = aspect || (cr ? cr.height / cr.width : 1050 / 750);
-  const hop = !m.s && stepToSlot(key, m.x, m.y, asp, (c.mk[key] || []).filter((_, i) => i !== idx), dx, dy);
+  const hop = (m.s ? stepToEnhancement : stepToSlot)(key, m.x, m.y, asp, (c.mk[key] || []).filter((_, i) => i !== idx), dx, dy);
   if (hop) { commit(ed.moveMarker(record, c.id, key, idx, hop.x, hop.y)); return; }
-  if (!m.s && slotCardId(key) != null && TOKEN_SLOTS[slotCardId(key)]) return;
+  if (slotCardId(key) != null && (m.s ? hasEnhancementSlots(key) : TOKEN_SLOTS[slotCardId(key)])) return;
   commit(ed.moveMarker(record, c.id, key, idx, Math.min(100, Math.max(0, m.x + dx)), Math.min(100, Math.max(0, m.y + dy))));
 }
 // Arrow keys: in the open marker editor they move the selected marker like the arrow buttons; over a card on the playmat (no modal) they hop its
@@ -2700,7 +2700,7 @@ main.addEventListener('click', e => {
         g.style.cssText = `position:fixed;z-index:999;width:${sticker ? (drag.pick.dataset.mkpick === 'hex_attack' ? 36 : 27) : 44}px;pointer-events:none;transform:translate(-50%,-50%);filter:drop-shadow(0 4px 8px #000)`;
         document.body.appendChild(g); drag.ghost = g; document.body.style.cursor = 'grabbing';
       }
-      const card = main.querySelector('.pm .itcard[data-mkcard]'), c = mkChar(), at = card && c && drag.pick.dataset.s !== '1' && mkOver(card, e) ? mkSnapPoint(card, e, mkKeyNow(), c, drag.pick.dataset.s === '1') : null;
+      const card = main.querySelector('.pm .itcard[data-mkcard]'), c = mkChar(), at = card && c && mkOver(card, e) ? mkSnapPoint(card, e, mkKeyNow(), c, drag.pick.dataset.s === '1') : null;
       drag.ghost.style.left = `${at ? at.cx : e.clientX}px`; drag.ghost.style.top = `${at ? at.cy : e.clientY}px`;
     } else {
       drag.moved = true;

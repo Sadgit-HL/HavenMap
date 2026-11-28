@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dot review</title>
+<style>
+:root{--bg:#16130f;--panel:#231d17;--line:#3a3026;--text:#ecdfc8;--muted:#a89a82;--accent:#c7a44a;--ok:#6cae75;--warn:#d9a441;--bad:#c9604f;--info:#6b9fd4;--fill:#2d2519;--deep:#120f0b}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:14px/1.35 system-ui,"Segoe UI",Roboto,sans-serif}
+button,select,input{font:inherit;color:var(--text);background:var(--fill);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+button{cursor:pointer}button:hover{border-color:#6b5a3c}button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid rgba(199,164,74,.25);border-color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#16130f;font-weight:600}
+#app{display:grid;grid-template-columns:260px minmax(0,1fr) 360px;grid-template-rows:auto minmax(0,1fr);height:100vh;gap:12px;padding:12px}
+#top{grid-column:1/4;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#top .grow{flex:1}#top .stat{color:var(--muted);font-size:12px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;min-height:0}
+#list{overflow:auto;padding:6px}
+#list .row{display:flex;gap:8px;align-items:center;padding:5px 8px;border-radius:8px;cursor:pointer;border:1px solid transparent}
+#list .row:hover{border-color:#6b5a3c}#list .row.cur{background:rgba(199,164,74,.1);border-color:var(--accent)}
+#list .row .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#list .row .w{color:var(--muted);font-size:12px}
+.chip{display:inline-block;min-width:22px;text-align:center;border-radius:999px;padding:0 7px;font-size:11px;border:1px solid var(--line)}
+.chip.ok{color:var(--ok);border-color:var(--ok)}.chip.bad{color:var(--bad);border-color:var(--bad)}.chip.warn{color:var(--warn);border-color:var(--warn)}
+#stagewrap{display:flex;align-items:center;justify-content:center;padding:10px;overflow:hidden}
+#stage{position:relative;height:100%;max-width:100%;aspect-ratio:750/1050;user-select:none}
+#stage img{width:100%;height:100%;display:block;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.6)}
+.dt{position:absolute;width:5%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;border:2px solid var(--info);cursor:pointer}
+.dt:hover{border-color:#fff}
+.dt.todo{border-color:var(--warn)}.dt.same{border-color:var(--ok);box-shadow:0 0 0 2px rgba(108,174,117,.35)}
+.dt.cur{border-color:#fff;width:8%;box-shadow:0 0 0 3px var(--bad),0 0 18px 6px rgba(201,96,79,.8);animation:p 1s infinite alternate}
+@keyframes p{to{box-shadow:0 0 0 5px var(--bad),0 0 26px 10px rgba(201,96,79,.5)}}
+.dt .l{position:absolute;left:115%;top:-10%;font-size:11px;white-space:nowrap;color:#fff;text-shadow:0 0 3px #000,0 0 3px #000;pointer-events:none}
+.drow{display:flex;gap:8px;align-items:center;padding:3px 6px;border-radius:6px;cursor:pointer}.drow:hover{background:rgba(199,164,74,.06)}.drow.cur{background:rgba(199,164,74,.14)}.drow .i{width:18px;color:var(--muted)}.drow .s{color:var(--muted);font-size:12px;width:78px}
+#side{display:flex;flex-direction:column;gap:10px;padding:14px;overflow:auto}
+#side h2{margin:0;font-size:17px;color:var(--accent)}
+#side h4{margin:0 0 6px;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--accent)}
+.sec{background:rgba(0,0,0,.18);border:1px solid var(--line);border-radius:10px;padding:10px}
+.muted{color:var(--muted);font-size:12px}.ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}
+.grid{display:flex;gap:5px;flex-wrap:wrap}
+.grid button{padding:4px 8px;display:flex;gap:6px;align-items:center}
+.grid button kbd{font:11px ui-monospace,monospace;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 4px}
+.grid button.on{border-color:var(--accent);background:rgba(199,164,74,.14)}
+.tog{display:flex;gap:14px;align-items:center}.tog label{display:flex;gap:6px;align-items:center;cursor:pointer}
+.tog input{width:auto}
+select{width:100%}
+.btns{display:flex;gap:6px;flex-wrap:wrap}
+@media (max-width:1000px){#app{grid-template-columns:1fr;grid-template-rows:auto auto auto auto;height:auto}#top{grid-column:1}#list{max-height:200px}#stage{height:auto;width:100%}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="top">
+    <select id="fState" title="Show">
+      <option value="open">Open</option>
+      <option value="unmatched">Open, not in the card code</option>
+      <option value="check">Open, to check</option>
+      <option value="recheck">Recheck</option>
+      <option value="done">Decided</option>
+      <option value="all">All</option>
+    </select>
+    <span class="stat" id="stat"></span>
+    <span class="grow"></span>
+    <span class="stat" id="saved"></span>
+    <button id="bLink" title="Write every change into import/enhancement-dot-overrides.json">Link file</button>
+    <button id="bDown" title="Download the decisions as a file">Download</button>
+  </div>
+  <div id="list" class="panel"></div>
+  <div id="stagewrap" class="panel"><div id="stage"></div></div>
+  <div id="side" class="panel"></div>
+</div>
+<script type="module">
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const ABILITY = [['attack', 'A'], ['move', 'M'], ['heal', 'H'], ['range', 'R'], ['target', 'T'], ['push', 'U'], ['pull', 'L'], ['pierce', 'I'], ['shield', 'S'], ['retaliate', 'E'], ['teleport', 'P'], ['condition', 'D']];
+const SUMMON = [['summon_health', '1'], ['summon_move', '2'], ['summon_attack', '3'], ['summon_range', '4']];
+const KEY = Object.fromEntries([...ABILITY, ...SUMMON].map(([w, k]) => [k.toLowerCase(), w]));
+const LS = 'havenmap.review.dotoverrides';
+let data = {}, items = [], ov = {}, shown = [], cur = null, fileHandle = null, saveTimer = 0, tog = { m: 0, l: 0 }, gSel = null, nSel = 0, aSel = '';
+const PLUS_ONE = ['attack', 'move', 'heal', 'range', 'target', 'push', 'pull', 'pierce', 'shield', 'retaliate', 'teleport', 'summon_health', 'summon_move', 'summon_attack', 'summon_range'];
+
+const dec = it => ov[it.id]?.[it.i];
+const label = d => (d.w === null ? '?' : d.w === 'none' ? 'stray' : d.w) + (d.n ? ` (${d.n})` : '');
+
+async function load() {
+  data = await (await fetch('dots-data.json', { cache: 'no-store' })).json();
+  try { const r = await fetch('../../import/enhancement-dot-overrides.json', { cache: 'no-store' }); if (r.ok) ov = await r.json(); } catch { /* none yet */ }
+  try { const l = JSON.parse(localStorage.getItem(LS) || 'null'); if (l?.dirty) { ov = { ...ov, ...l.data }; $('saved').textContent = 'unsaved changes restored'; } } catch { /* ignore */ }
+  for (const id of Object.keys(data).map(Number).sort((a, b) => a - b)) {
+    const c = data[id], re = new Set(c.recheck || []);
+    for (const i of new Set([...c.todo, ...re])) items.push({ id, i, kind: !c.todo.includes(i) ? 'recheck' : c.dots[i].w === null ? 'unmatched' : 'check', re: re.has(i) });
+  }
+  const p = new URLSearchParams(location.search);
+  if (p.get('state')) $('fState').value = p.get('state');
+  refilter();
+}
+
+function refilter(keep) {
+  const s = $('fState').value;
+  shown = items.filter(it => s === 'all' || (s === 'done' && dec(it)) || (s === 'recheck' && it.re) || (!dec(it) && it.kind !== 'recheck' && (s === 'open' || s === it.kind)));
+  const open = items.filter(it => !dec(it) && it.kind !== 'recheck');
+  $('stat').textContent = `${items.length - open.length} of ${items.length} decided, ${open.filter(i => i.kind === 'unmatched').length} not in the card code and ${open.filter(i => i.kind === 'check').length} to check still open, ${items.filter(it => it.re).length} to recheck`;
+  renderList();
+  const same = keep && shown.find(it => it.id === keep.id && it.i === keep.i);
+  if (same) open_(same); else if (shown.length) open_(shown[Math.min(keep?.pos ?? 0, shown.length - 1)]); else { cur = null; renderStage(); renderSide(); }
+}
+
+function renderList() {
+  $('list').innerHTML = shown.map((it, n) => {
+    const c = data[it.id], d = dec(it), chip = it.kind === 'recheck' && !d ? '<span class="chip warn">~</span>' : d ? '<span class="chip ok">ok</span>' : it.kind === 'check' ? '<span class="chip warn">?</span>' : '<span class="chip bad">!</span>';
+    return `<div class="row${cur && cur.id === it.id && cur.i === it.i ? ' cur' : ''}" data-n="${n}">${chip}<span class="nm">${esc(c.name)}</span><span class="w">#${it.i}${d ? ' ' + esc(label(d)) : ''}</span></div>`;
+  }).join('');
+}
+
+// the action a dot most likely belongs to: the action of the nearest other dot of the same half
+function nearestG(c, i) {
+  const me = c.slots[i]; let best = null;
+  c.dots.forEach((d, j) => { if (j === i || !d.g) return; const s = c.slots[j]; if (s.h !== me.h) return; const dist = Math.hypot(s.x - me.x, (s.y - me.y) * 1.4); if (!best || dist < best.dist) best = { dist, g: d.g }; });
+  return best?.g ?? null;
+}
+
+function open_(it) {
+  cur = it;
+  const c = data[it.id], raw = c.dots[it.i], d = dec(it), half = c.slots[it.i].h;
+  tog = { m: d ? d.m : raw.m, l: d ? d.l : (c.lost[half] ? 1 : 0) };
+  gSel = d?.g ?? raw.g ?? nearestG(c, it.i) ?? '';
+  nSel = d?.n ?? raw.n ?? 0;
+  aSel = d && 'a' in d ? (d.a === null ? 'none' : d.a) : '';
+  renderList(); renderStage(); renderSide();
+  $('list').querySelector('.row.cur')?.scrollIntoView({ block: 'nearest' });
+}
+
+const gOf = (c, j) => (ov[c.id]?.[j]?.g ?? c.dots[j].g);
+function renderStage() {
+  const st = $('stage');
+  if (!cur) { st.innerHTML = ''; return; }
+  const c = data[cur.id];
+  if (st.dataset.id !== String(cur.id)) { st.dataset.id = cur.id; st.innerHTML = `<img alt="" src="../../${c.pic}"><div id="dl"></div>`; }
+  $('dl').innerHTML = c.slots.map((s, j) => {
+    const d = ov[c.id]?.[j] ? { ...c.dots[j], ...ov[c.id][j] } : c.dots[j], isCur = j === cur.i, same = !isCur && gSel && gOf(c, j) === gSel, todo = c.todo.includes(j) && !ov[c.id]?.[j];
+    return `<div class="dt${isCur ? ' cur' : same ? ' same' : todo ? ' todo' : ''}" data-j="${j}" style="left:${s.x * 100}%;top:${s.y * 100}%"><span class="l">${esc(label(d))}${gOf(c, j) ? ' ' + gOf(c, j) : ''}</span></div>`;
+  }).join('');
+}
+
+function renderSide() {
+  const side = $('side');
+  if (!cur) { side.innerHTML = '<div class="muted">Nothing to show</div>'; return; }
+  const c = data[cur.id], slot = c.slots[cur.i], raw = c.dots[cur.i], d = dec(cur), half = slot.h;
+  const gs = [...new Set([...c.code.map(x => x.g), ...c.dots.map((x, j) => gOf(c, j))].filter(Boolean))].sort();
+  const gName = g => `${g} ${g[0] === 't' ? 'top' : 'bottom'}: ${[...new Set([...c.code.filter(x => x.g === g).map(x => x.w), ...c.dots.filter((x, j) => gOf(c, j) === g).map(x => x.w)].filter(Boolean))].join(', ')}`;
+  const btn = ([w, k]) => `<button type="button" data-w="${w}" class="${d?.w === w ? 'on' : ''}"><kbd>${k}</kbd>${w.replace('summon_', 'summon ')}</button>`;
+  side.innerHTML = `
+    <div><h2>${esc(c.name)}</h2><div class="muted">${esc(c.class)}, level ${esc(c.lv)}, card ${c.id}</div></div>
+    <div class="sec"><h4>Dot ${cur.i + 1} of ${c.slots.length}</h4><div>${slot.k}, ${half === 't' ? 'top' : 'bottom'} half${c.lost[half] ? ', lost action' : ''}</div>
+      <div class="${raw.w === null ? 'bad' : 'warn'}" style="margin-top:4px">${raw.w === null ? 'The card code has no dot for this one' : `Guessed: ${esc(label(raw))}${raw.shape ? ', the card code says ' + raw.shape : ''}`}</div>
+      <div class="muted" style="margin-top:6px">Card code dots: ${c.code.map(x => `${x.shape} ${x.w}`).join(', ') || 'none'}</div></div>
+    <div class="sec"><h4>What it enhances</h4><div class="grid">${ABILITY.map(btn).join('')}</div></div>
+    <div class="sec"><h4>Summon</h4><div class="grid">${SUMMON.map(btn).join('')}</div></div>
+    <div class="sec"><h4>Other</h4><div class="grid"><button type="button" data-w="area_hex" class="${d?.w === 'area_hex' ? 'on' : ''}"><kbd>X</kbd>area hex</button><input type="number" id="nHex" min="1" max="30" value="${nSel || ''}" placeholder="hexes" style="width:84px" title="Hexes of the area"><button type="button" data-w="custom" class="${d?.w === 'custom' ? 'on' : ''}"><kbd>C</kbd>other</button><button type="button" data-w="none" class="${d?.w === 'none' ? 'on' : ''}"><kbd>N</kbd>not a dot</button></div></div>
+    <div class="sec"><h4>+1 priced as</h4><select id="aSel" title="The ability a +1 sticker on this dot is priced as. Default: what it enhances; a condition dot then takes no +1"><option value=""${aSel === '' ? ' selected' : ''}>Default</option><option value="none"${aSel === 'none' ? ' selected' : ''}>No +1</option>${PLUS_ONE.map(a => `<option value="${a}"${a === aSel ? ' selected' : ''}>${a.replace('summon_', 'summon ')}</option>`).join('')}</select></div>
+    <div class="sec"><h4>Action</h4><select id="gSel"><option value=""${gSel ? '' : ' selected'}>Its own action</option>${gs.map(g => `<option value="${g}"${g === gSel ? ' selected' : ''}>${esc(gName(g))}</option>`).join('')}</select></div>
+    <div class="sec"><div class="tog"><label><input type="checkbox" id="tM"${tog.m ? ' checked' : ''}> Multiple targets <kbd class="muted">G</kbd></label><label><input type="checkbox" id="tL"${tog.l ? ' checked' : ''}> Lost action <kbd class="muted">O</kbd></label></div></div>
+    <div class="sec"><h4>Dots of this card</h4>${c.slots.map((s2, j) => { const dd = ov[c.id]?.[j] ? { ...c.dots[j], ...ov[c.id][j] } : c.dots[j]; return `<div class="drow${j === cur.i ? ' cur' : ''}" data-j="${j}"><span class="i">${j + 1}</span><span class="s">${s2.k}</span><span>${esc(label(dd))}${gOf(c, j) ? ' ' + gOf(c, j) : ''}</span></div>`; }).join('')}</div>
+    <div class="btns"><button type="button" id="bKeep" class="primary"${raw.w === null ? ' disabled' : ''}>Keep guess</button><button type="button" id="bPrev">Previous</button><button type="button" id="bNext">Next</button><button type="button" id="bClear"${d ? '' : ' disabled'}>Clear</button></div>`;
+}
+
+function decide(w) {
+  const it = cur, c = data[it.id];
+  const n = w === 'area_hex' ? Number($('nHex')?.value) || nSel || 0 : 0;
+  if (w === 'area_hex' && !n) { $('nHex').focus(); return; }
+  const lost = w.startsWith('summon_') || w === 'none' ? 0 : tog.l;
+  const patch = { w, m: w === 'none' ? 0 : tog.m, l: lost, ...(gSel ? { g: gSel } : {}), ...(n ? { n } : {}), ...(aSel === '' ? {} : { a: aSel === 'none' ? null : aSel }) };
+  (ov[it.id] = ov[it.id] || {})[it.i] = patch;
+  persist();
+  const pos = shown.findIndex(x => x.id === it.id && x.i === it.i);
+  if (it.kind === 'manual') { refilter(); open_(it); return; }                      // a dot picked on the card: stay on it
+  refilter({ id: it.id, i: it.i, pos });                                       // a decided dot leaves the Open lists: the next one opens at its position
+  if (cur && cur.id === it.id && cur.i === it.i) step(1);                    // in All and Decided it stays in the list: go on to the next
+}
+function keep() { const raw = data[cur.id].dots[cur.i]; if (raw.w !== null) { if (raw.n) nSel = raw.n; decide(raw.w); } }
+function pick(id, j) { open_(items.find(it => it.id === id && it.i === j) || { id, i: j, kind: 'manual' }); }
+function step(dx) { if (!shown.length) return; const i = shown.findIndex(x => x.id === cur?.id && x.i === cur?.i); open_(shown[(i + dx + shown.length) % shown.length]); }
+
+function persist() {
+  $('saved').textContent = 'unsaved';
+  try { localStorage.setItem(LS, JSON.stringify({ dirty: true, data: ov })); } catch { /* ignore */ }
+  clearTimeout(saveTimer); saveTimer = setTimeout(writeFile, 400);
+}
+async function writeFile() {
+  if (!fileHandle) return;
+  try { const w = await fileHandle.createWritable(); await w.write(JSON.stringify(ov, null, 1) + '\n'); await w.close(); $('saved').textContent = 'saved to file'; try { localStorage.setItem(LS, JSON.stringify({ dirty: false, data: ov })); } catch { /* ignore */ } }
+  catch (e) { $('saved').textContent = 'write failed: ' + e.message; }
+}
+
+$('list').addEventListener('click', e => { const r = e.target.closest('.row'); if (r) open_(shown[Number(r.dataset.n)]); });
+$('fState').addEventListener('change', () => refilter());
+$('bDown').addEventListener('click', () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(ov, null, 1) + '\n'], { type: 'application/json' })); a.download = 'enhancement-dot-overrides.json'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); });
+$('bLink').addEventListener('click', async () => {
+  if (!window.showOpenFilePicker) { $('saved').textContent = 'this browser cannot write files, use Download'; return; }
+  try { [fileHandle] = await window.showOpenFilePicker({ types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }] }); $('bLink').textContent = 'Linked'; await writeFile(); } catch { /* cancelled */ }
+});
+$('stage').addEventListener('click', e => { const t = e.target.closest('.dt'); if (t && cur) pick(cur.id, Number(t.dataset.j)); });
+$('side').addEventListener('click', e => {
+  const row = e.target.closest('.drow');
+  if (row && cur) { pick(cur.id, Number(row.dataset.j)); return; }
+  const b = e.target.closest('button');
+  if (!b) return;
+  if (b.dataset.w) decide(b.dataset.w);
+  else if (b.id === 'bKeep') keep();
+  else if (b.id === 'bPrev') step(-1);
+  else if (b.id === 'bNext') step(1);
+  else if (b.id === 'bClear') { delete ov[cur.id][cur.i]; if (!Object.keys(ov[cur.id]).length) delete ov[cur.id]; persist(); refilter({ id: cur.id, i: cur.i, pos: 0 }); }
+});
+$('side').addEventListener('change', e => {
+  if (e.target.id === 'tM') tog.m = e.target.checked ? 1 : 0;
+  else if (e.target.id === 'tL') tog.l = e.target.checked ? 1 : 0;
+  else if (e.target.id === 'gSel') { gSel = e.target.value; renderStage(); }
+  else if (e.target.id === 'aSel') aSel = e.target.value;
+  else if (e.target.id === 'nHex') nSel = Number(e.target.value) || 0;
+});
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey || e.metaKey || e.altKey || !cur) return;
+  if (e.target.matches('input[type=number], select')) { if (e.key === 'Enter' && e.target.id === 'nHex') { e.preventDefault(); decide('area_hex'); } return; }
+  const k = e.key.toLowerCase();
+  if (KEY[k]) { e.preventDefault(); decide(KEY[k]); }
+  else if (k === 'x') { e.preventDefault(); decide('area_hex'); }
+  else if (k === 'c') { e.preventDefault(); decide('custom'); }
+  else if (k === 'n') { e.preventDefault(); decide('none'); }
+  else if (k === 'g') { tog.m = tog.m ? 0 : 1; $('tM').checked = !!tog.m; }
+  else if (k === 'o') { tog.l = tog.l ? 0 : 1; $('tL').checked = !!tog.l; }
+  else if (e.key === 'Enter') { e.preventDefault(); keep(); }
+  else if (e.key === 'ArrowRight') step(1);
+  else if (e.key === 'ArrowLeft') step(-1);
+  else if (e.key === 'ArrowDown' || e.key === ']') { e.preventDefault(); pick(cur.id, (cur.i + 1) % data[cur.id].slots.length); }
+  else if (e.key === 'ArrowUp' || e.key === '[') { e.preventDefault(); pick(cur.id, (cur.i + data[cur.id].slots.length - 1) % data[cur.id].slots.length); }
+});
+load();
+</script>
+</body>
+</html>

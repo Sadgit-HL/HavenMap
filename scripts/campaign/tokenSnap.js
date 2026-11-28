@@ -1,6 +1,7 @@
 // Snapping of character tokens to the token circles printed on an ability card (circle positions: scripts/games/card_token_slots.js).
 // Markers are stored as x, y in percent of the card picture (0 to 100), see addMarker in edit.js.
 import { TOKEN_SLOTS } from '../games/card_token_slots.js';
+import { ENHANCE_SLOTS } from '../games/card_enhancement_slots.js';
 
 export const SNAP_REACH = 1.2;   // a drop snaps when it lands within this many circle radii of a circle centre (0.6 of the diameter)
 const TAKEN = 0.5;               // a circle is taken when a token already sits within this many radii of its centre
@@ -114,3 +115,42 @@ export function forwardSlot(key, x, y, aspect, others = []) {
   }
   return null;
 }
+
+// --- enhancement dots: stickers snap to the enhancement markers printed on an ability card (positions: scripts/games/card_enhancement_slots.js) ---
+// A sticker takes any shape of dot (the owner confirmed the positions of all cards; no rule for which sticker fits which shape is checked). Tokens take no dot.
+export const ENH_REACH = 0.05;      // a drop snaps when it lands within this many card widths of a dot centre
+const ENH_TAKEN = 0.015;            // a dot is taken when a sticker already sits within this many card widths of its centre
+
+const enhTaken = (others, s, aspect) => others.some(m => m.s && Math.hypot(m.x / 100 - s.x, (m.y / 100 - s.y) * aspect) < ENH_TAKEN);
+
+// Snaps a point to the nearest free enhancement dot of a card. `others` are the markers already on the card ({ x, y, s? }), without the one being moved; only stickers (s) take a dot.
+// Returns { x, y, slot } (percent, index in reading order) or null when the card has no dots or none is free in reach.
+export function snapToEnhancement(key, x, y, aspect, others = []) {
+  const slots = ENHANCE_SLOTS[slotCardId(key)];
+  if (!slots?.length) return null;
+  let best = null;
+  slots.forEach((s, slot) => {
+    if (enhTaken(others, s, aspect)) return;
+    const dist = Math.hypot(x / 100 - s.x, (y / 100 - s.y) * aspect);
+    if (dist <= ENH_REACH && (!best || dist < best.dist)) best = { slot, dist, x: s.x * 100, y: s.y * 100 };
+  });
+  return best && { x: best.x, y: best.y, slot: best.slot };
+}
+
+// The arrows on a sticker of a card with dots: the nearest free dot in the direction (dx, dy) (y down), sideways offset weighing double; null when none lies that way.
+export function stepToEnhancement(key, x, y, aspect, others, dx, dy) {
+  const slots = ENHANCE_SLOTS[slotCardId(key)];
+  if (!slots?.length) return null;
+  const n = Math.hypot(dx, dy) || 1, ux = dx / n, uy = dy / n;
+  let best = null;
+  slots.forEach((s, slot) => {
+    const vx = s.x - x / 100, vy = (s.y - y / 100) * aspect, ahead = vx * ux + vy * uy, side = Math.abs(-vx * uy + vy * ux);
+    if (Math.hypot(vx, vy) < ENH_TAKEN || ahead <= 0 || enhTaken(others, s, aspect)) return;
+    const score = ahead + 2 * side;
+    if (!best || score < best.score) best = { score, slot, x: s.x * 100, y: s.y * 100 };
+  });
+  return best && { x: best.x, y: best.y, slot: best.slot };
+}
+
+// True when the card has enhancement dots (a sticker on it snaps and its arrows hop).
+export const hasEnhancementSlots = key => !!ENHANCE_SLOTS[slotCardId(key)]?.length;

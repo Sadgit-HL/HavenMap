@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
-import { snapToSlot, stepToSlot, slotOf, forwardSlot, trackOf, trackAtPoint, lastTokenOnTrack, slotCardId, SNAP_REACH } from '../../scripts/campaign/tokenSnap.js';
+import { snapToEnhancement, stepToEnhancement, hasEnhancementSlots, snapToSlot, stepToSlot, slotOf, forwardSlot, trackOf, trackAtPoint, lastTokenOnTrack, slotCardId, SNAP_REACH } from '../../scripts/campaign/tokenSnap.js';
 import { TOKEN_SLOTS } from '../../scripts/games/card_token_slots.js';
+import { ENHANCE_SLOTS } from '../../scripts/games/card_enhancement_slots.js';
 
 const ASPECT = 1050 / 750;
 const id = Object.keys(TOKEN_SLOTS).find(k => TOKEN_SLOTS[k].length >= 3);
@@ -57,6 +58,22 @@ export const tests = {
     assert.equal(hop(0, -1), null);
     assert.equal(hop(0, 1), 1);
     assert.equal(hop(1, 1, [{ x: P[2].x, y: P[2].y }]), 3);                 // a taken circle is skipped, on to the next row
+  },
+  'enhancement snap: a sticker lands on the nearest free dot, a token takes no dot'() {
+    const eid = Object.keys(ENHANCE_SLOTS).find(k => ENHANCE_SLOTS[k].length >= 2), ek = `c:${eid}`, es = ENHANCE_SLOTS[eid], P = es.map(pct);
+    assert.ok(hasEnhancementSlots(ek) && !hasEnhancementSlots('i:5'));
+    const r = snapToEnhancement(ek, P[1].x + 1, P[1].y - 0.5, ASPECT);
+    assert.deepEqual([r.x, r.y, r.slot], [P[1].x, P[1].y, 1]);
+    assert.equal(snapToEnhancement(ek, 1, 1, ASPECT), null);                                                             // the corner is out of reach
+    assert.notEqual(snapToEnhancement(ek, P[0].x, P[0].y, ASPECT, [{ x: P[0].x, y: P[0].y, s: 1 }])?.slot, 0);   // taken by a sticker
+    assert.equal(snapToEnhancement(ek, P[0].x, P[0].y, ASPECT, [{ x: P[0].x, y: P[0].y }]).slot, 0);                     // a token does not take it
+    assert.equal(snapToEnhancement('c:99999', 50, 50, ASPECT), null);
+  },
+  'enhancement snap: arrows hop a sticker to the next free dot in that direction'() {
+    const eid = Object.keys(ENHANCE_SLOTS).find(k => ENHANCE_SLOTS[k].length >= 2 && new Set(ENHANCE_SLOTS[k].map(s => s.y)).size === 1), es = ENHANCE_SLOTS[eid], ek = `c:${eid}`;
+    const P = es.map(pct), left = P.reduce((a, b) => (b.x < a.x ? b : a)), i = P.indexOf(left), r = stepToEnhancement(ek, left.x, left.y, ASPECT, [], 1, 0);
+    assert.ok(r && r.slot !== i && r.x > left.x);
+    assert.equal(stepToEnhancement(ek, left.x, left.y, ASPECT, [], -1, 0), null);
   },
   'token snap: two-track cards keep hops inside a track and find the hovered track'() {
     const two = TOKEN_SLOTS[2010], A = ASPECT;                                // Spellweaver, Ice Armor: a track in each half
