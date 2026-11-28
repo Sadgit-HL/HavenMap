@@ -33,6 +33,22 @@ export function stepToSlot(key, x, y, aspect, others, dx, dy) {
   const slots = TOKEN_SLOTS[slotCardId(key)];
   if (!slots) return null;
   const n = Math.hypot(dx, dy) || 1, ux = dx / n, uy = dy / n, track = trackOf(key, x, y, aspect);
+  if (dy === 0 && dx !== 0) {                                               // left and right follow the reading order of the track: along the row, then on to the next row (right) or back to the previous row (left)
+    const free = [];
+    slots.forEach((s, slot) => {
+      if ((s.t || 0) !== track) return;
+      const vx = s.x - x / 100, vy = (s.y - y / 100) * aspect;
+      if (Math.hypot(vx, vy) < 0.5 * s.r || others.some(m => !m.s && Math.hypot(m.x / 100 - s.x, (m.y / 100 - s.y) * aspect) < 0.5 * s.r)) return;
+      free.push({ s, slot, vx, vy, row: Math.abs(vy) < 0.5 * s.r });
+    });
+    const sgn = Math.sign(dx), along = free.filter(c => c.row && c.vx * sgn > 0).sort((a, b) => Math.abs(a.vx) - Math.abs(b.vx))[0];
+    let pick = along;
+    if (!pick) {                                                           // the row is used up: the nearest row below (right) or above (left), its first (right) or last (left) free circle
+      const rows = free.filter(c => !c.row && c.vy * sgn > 0), near = Math.min(...rows.map(c => Math.abs(c.vy)));
+      pick = rows.filter(c => Math.abs(c.vy) < near + 0.5 * c.s.r).sort((a, b) => (a.vx - b.vx) * sgn)[0];
+    }
+    return pick ? { x: pick.s.x * 100, y: pick.s.y * 100, slot: pick.slot } : null;
+  }
   let best = null;
   slots.forEach((s, slot) => {
     if ((s.t || 0) !== track) return;                                       // a token stays on its own track

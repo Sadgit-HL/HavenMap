@@ -48,6 +48,16 @@ export const tests = {
     assert.equal(stepToSlot(key, p0.x, p0.y, ASPECT, [], 0, -1), null);
     assert.equal(stepToSlot('i:5', p0.x, p0.y, ASPECT, [], 1, 0), null);
   },
+  'token snap: left and right wrap between the rows of one track (Snowball, 3 circles above 2)'() {
+    const k = 'c:6610', sl = TOKEN_SLOTS[6610], P = sl.map(pct), hop = (i, dx, others = []) => stepToSlot(k, P[i].x, P[i].y, ASPECT, others, dx, 0)?.slot ?? null;
+    assert.deepEqual(sl.map(s => s.t), [0, 0, 0, 0, 0]);
+    assert.equal(hop(2, 1), 3);                                             // end of the first row to the start of the second
+    assert.equal(hop(3, -1), 2);                                            // and back
+    assert.equal(hop(4, 1), null);                                          // the last circle stays
+    assert.equal(hop(0, -1), null);
+    assert.equal(hop(0, 1), 1);
+    assert.equal(hop(1, 1, [{ x: P[2].x, y: P[2].y }]), 3);                 // a taken circle is skipped, on to the next row
+  },
   'token snap: two-track cards keep hops inside a track and find the hovered track'() {
     const two = TOKEN_SLOTS[2010], A = ASPECT;                                // Spellweaver, Ice Armor: a track in each half
     const top = two.filter(s => s.t === 0), bot = two.filter(s => s.t === 1);

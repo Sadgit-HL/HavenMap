@@ -1,1 +1,1 @@
-classes 23, cards with tokens 82, written 82 (275 circles), not written 0
+classes 4, cards with tokens 18, written 18 (73 circles), not written 0

@@ -111,6 +111,19 @@ def group_rows(circles):
     return [sorted(r, key=lambda c: c[0]) for r in rows]
 
 
+def repo_picture(cls, card):
+    """The card picture as the repo keeps it (images/character-abilities), used when the asset clone has none."""
+    slug = re.sub('[‐-―]', '-', card['slug'])
+    name = f"{cls['code'].lower()}-fh-{slug}.webp" if cls['src'] == 'fh' else f"{cls['code'].lower()}-{slug}.webp"
+    return os.path.join(ROOT, 'images', 'character-abilities', cls['src'], name)
+
+
+def read_output():
+    """{card id: slots} of the existing output."""
+    if not os.path.exists(OUT): return {}
+    return {int(m.group(1)): json.loads(m.group(2)) for m in re.finditer(r'^\s*(\d+):\s*(\[.*\]),?\s*$', open(OUT, encoding='utf8').read(), re.M)}
+
+
 def main():
     args = sys.argv[1:]
     assets, folder, debug, codes = 'D:/github/Wordhaven_Assets', 'confirmed', None, []
@@ -122,6 +135,9 @@ def main():
         else: codes.append(a)
     classes = load_classes(); cards = load_cards()
     out, report = {}, []
+    if codes:                                                              # a run for some classes keeps what the other classes already have
+        done = {c['i'] for c in classes if c['code'] in codes}
+        out = {k: v for k, v in read_output().items() if k // 100 not in done}
     stats = {'classes': 0, 'cards': 0, 'ok': 0, 'bad': 0, 'circles': 0}
     for cls in classes:
         if codes and cls['code'] not in codes: continue
@@ -138,6 +154,7 @@ def main():
             stats['cards'] += 1
             tag = f"{cls['name']} / {card['slug']} (id {card['id']})"
             p = image_path(assets, cls, card)
+            if not (p and os.path.exists(p)): p = repo_picture(cls, card)                    # no asset clone: the repo's own picture
             circles, info = detect(p) if p and os.path.exists(p) else (None, None)
             if circles is None:
                 report.append(f'NO PICTURE  {tag}: {p}'); stats['bad'] += 1; continue
