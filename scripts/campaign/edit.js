@@ -1093,8 +1093,8 @@ export function setCardActive(r, cid, cardId, active) {
   return zoneOf(c, cardId) === 'active' ? moveCard(r, cid, cardId, 'hand') : r;
 }
 
-// --- markers on ability cards and items ('c:<card id>' or 'i:<item id>'; x and y in percent of the card) -----------------------------------------
-const markKeyOk = (c, key) => (/^c:\d+$/.test(key) && [...c.deck, ...c.bench].includes(Number(key.slice(2)))) || (/^i:\w+$/.test(key) && c.items.some(it => `i:${it.id}` === key));
+// --- markers on ability cards and items ('c:<card id>', 'i:<item id>' for the front of an item and 'i:<item id>b' for its back; x and y in percent of the card) -----------------------------------------
+const markKeyOk = (c, key) => (/^c:\d+$/.test(key) && [...c.deck, ...c.bench].includes(Number(key.slice(2)))) || (/^i:\w+$/.test(key) && c.items.some(it => `i:${it.id}` === key || `i:${it.id}b` === key));   // 'i:<id>b' = markers on the back of a flip item
 const pct = v => Math.round(clamp(Number(v), 0, 100) * 10) / 10;
 
 export function addMarker(r, cid, key, m) {

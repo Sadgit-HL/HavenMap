@@ -1,22 +1,31 @@
 // Snapping of character tokens to the token circles printed on an ability card (circle positions: scripts/games/card_token_slots.js).
 // Markers are stored as x, y in percent of the card picture (0 to 100), see addMarker in edit.js.
 import { TOKEN_SLOTS } from '../games/card_token_slots.js';
+import { ITEM_TOKEN_SLOTS } from '../games/item_token_slots.js';
 import { ENHANCE_SLOTS } from '../games/card_enhancement_slots.js';
 
 export const SNAP_REACH = 1.2;   // a drop snaps when it lands within this many circle radii of a circle centre (0.6 of the diameter)
 const TAKEN = 0.5;               // a circle is taken when a token already sits within this many radii of its centre
 
-// The card id of a marker key 'c:<id>', else null (items and other keys have no circles).
+// The card id of a marker key 'c:<id>', else null (items and other keys have no enhancement dots).
 export const slotCardId = key => (/^c:\d+$/.test(String(key)) ? Number(String(key).slice(2)) : null);
 
-// Snaps a point to the nearest free token circle of a card.
-//   key      marker key of the card ('c:<id>')
+// The token circles of the card or item side a marker key stands for: 'c:<card id>' an ability card, 'i:<item id>' the front of an item and 'i:<item id>b' its back
+// (scripts/games/item_token_slots.js); undefined when it has none.
+export const tokenSlots = key => {
+  const k = String(key);
+  return k.startsWith('i:') ? ITEM_TOKEN_SLOTS[k.slice(2)] : TOKEN_SLOTS[slotCardId(k)];
+};
+export const hasTokenSlots = key => !!tokenSlots(key)?.length;
+
+// Snaps a point to the nearest free token circle of a card or an item side.
+//   key      marker key of the card ('c:<id>') or the item ('i:<id>', 'i:<id>b' for its back)
 //   x, y     the point, percent of the card picture
 //   aspect   card picture height divided by width (distances are measured in card widths)
 //   others   the markers already on the card ({ x, y, s? }), without the one being moved; stickers (s) do not take a circle
 // Returns { x, y, slot } (percent, index in reading order) or null when no free circle is in reach.
 export function snapToSlot(key, x, y, aspect, others = []) {
-  const slots = TOKEN_SLOTS[slotCardId(key)];
+  const slots = tokenSlots(key);
   if (!slots) return null;
   const d = (px, py, s) => Math.hypot(px / 100 - s.x, (py / 100 - s.y) * aspect);   // card widths, like r
   let best = null;
@@ -31,7 +40,7 @@ export function snapToSlot(key, x, y, aspect, others = []) {
 // The arrow buttons on a card with circles: the nearest free circle of the token's own track in the direction (dx, dy) from the point (a unit step of the arrows, y down), or null when none lies that way.
 // A circle counts when it is ahead of the point; sideways offset weighs double, so a row is followed along its line. The circle the point sits on is skipped.
 export function stepToSlot(key, x, y, aspect, others, dx, dy) {
-  const slots = TOKEN_SLOTS[slotCardId(key)];
+  const slots = tokenSlots(key);
   if (!slots) return null;
   const n = Math.hypot(dx, dy) || 1, ux = dx / n, uy = dy / n, track = trackOf(key, x, y, aspect);
   if (dy === 0 && dx !== 0) {                                               // left and right follow the reading order of the track: along the row, then on to the next row (right) or back to the previous row (left)
@@ -63,7 +72,7 @@ export function stepToSlot(key, x, y, aspect, others, dx, dy) {
 
 // The track (number of the tokens action on the card) of the circle nearest to a point, or null when the card has no circles.
 export function trackOf(key, x, y, aspect) {
-  const slots = TOKEN_SLOTS[slotCardId(key)];
+  const slots = tokenSlots(key);
   if (!slots) return null;
   let best = null;
   for (const s of slots) {
@@ -76,7 +85,7 @@ export function trackOf(key, x, y, aspect) {
 // The track under the pointer on a card: among the tracks of the hovered half ('t' top, 'b' bottom, the initiative band is at half the height)
 // the one whose nearest circle is closest to the point; null when that half has no track.
 export function trackAtPoint(key, x, y, aspect) {
-  const slots = TOKEN_SLOTS[slotCardId(key)];
+  const slots = tokenSlots(key);
   if (!slots) return null;
   const half = y < 50 ? 't' : 'b';
   let best = null;
@@ -93,7 +102,7 @@ export const lastTokenOnTrack = (key, markers, aspect, track) => markers.reduce(
 
 // The circle a token sits on: the one nearest to the point. { slot, t (track), h (half) } or null when the card has no circles.
 export function slotOf(key, x, y, aspect) {
-  const slots = TOKEN_SLOTS[slotCardId(key)];
+  const slots = tokenSlots(key);
   if (!slots) return null;
   let best = null;
   slots.forEach((s, slot) => {
@@ -105,7 +114,7 @@ export function slotOf(key, x, y, aspect) {
 
 // One circle forward on the token's track: the next free circle after the one it sits on, in reading order; null at the end of the track.
 export function forwardSlot(key, x, y, aspect, others = []) {
-  const slots = TOKEN_SLOTS[slotCardId(key)], at = slotOf(key, x, y, aspect);
+  const slots = tokenSlots(key), at = slotOf(key, x, y, aspect);
   if (!slots || !at) return null;
   for (let i = at.slot + 1; i < slots.length; i++) {
     const s = slots[i];

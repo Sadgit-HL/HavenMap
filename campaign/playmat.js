@@ -189,7 +189,8 @@ export function playmatHtml(c, X, S = {}) {
   const items = c.items.map(it => {
     const item = X.itemById.get(it.id), back = X.itemBackUrl(item), url = it.f && back ? back : X.itemImageUrl(item), name = X.pretty(item?.slug ?? it.id), s = it.s || 0;
     const flip = back ? `<button type="button" class="itflip" data-itflip="${it.f ? 0 : 1}" data-id="${esc(it.id)}" data-char="${cid}" title="Flip to the ${it.f ? 'front' : 'back'}" aria-label="Flip ${esc(name)} to the ${it.f ? 'front' : 'back'}" draggable="false">${FLIP_ICON}</button>` : '';
-    return `<div class="it${s === 1 ? ' spent' : s === 2 ? ' consumed' : ''}${it.f && back ? ' flipped' : ''}" data-itemstate data-id="${esc(it.id)}" data-char="${cid}" title="${esc(name)}${item?.slot ? ` (${esc(item.slot)})` : ''}${it.f && back ? ', back' : ''} \u2014 ${ITEM_STATE[s]}, click to open">${url ? `<img src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false">` : `<div class="noimg">${esc(name)}</div>`}${STATE_ICON[s] ? `<span class="itbadge"><img src="${STATE_ICON[s]}" alt="" draggable="false"></span>` : ''}${marks(`i:${it.id}`)}${handle(`i:${it.id}`)}${flip}</div>`;
+    const mkey = `i:${it.id}${it.f && back ? 'b' : ''}`;                                    // the markers belong to the side that shows
+    return `<div class="it${s === 1 ? ' spent' : s === 2 ? ' consumed' : ''}${it.f && back ? ' flipped' : ''}" data-itemstate data-id="${esc(it.id)}" data-char="${cid}" title="${esc(name)}${item?.slot ? ` (${esc(item.slot)})` : ''}${it.f && back ? ', back' : ''} \u2014 ${ITEM_STATE[s]}, click to open">${url ? `<img src="${esc(url)}" alt="${esc(name)}" loading="lazy" draggable="false">` : `<div class="noimg">${esc(name)}</div>`}${STATE_ICON[s] ? `<span class="itbadge"><img src="${STATE_ICON[s]}" alt="" draggable="false"></span>` : ''}${marks(mkey)}${handle(`i:${it.id}`)}${flip}</div>`;
   }).join('');
 
   // hand or modifiers in the hand's place (same toggle in both views)
@@ -332,9 +333,9 @@ export function modalHtml(c, X, S) {
     const it = c.items.find(x => String(x.id) === String(S.itemId)), item = it && X.itemById.get(it.id);
     if (!it) return '';
     title = X.pretty(item?.slug ?? it.id);
-    const back = X.itemBackUrl(item), url = it.f && back ? back : X.itemImageUrl(item), st = it.s || 0;
+    const back = X.itemBackUrl(item), url = it.f && back ? back : X.itemImageUrl(item), st = it.s || 0, mkey = `i:${it.id}${it.f && back ? 'b' : ''}`;
     const side = back ? `<div class="row"><span>Side</span><span class="seg">${['Front', 'Back'].map((n, k) => `<button type="button" class="btn6" data-itflip="${k}" data-id="${esc(it.id)}" data-char="${esc(c.id)}" aria-pressed="${!!it.f === !!k}">${n}</button>`).join('')}</span></div>` : '';
-    body = `<div class="itmodal"><div class="itcard pick" data-mkcard="i:${esc(it.id)}">${url ? `<img src="${esc(url)}" alt="${esc(title)}" draggable="false">` : ''}${markersHtml(c.mk?.[`i:${it.id}`], S.mkIdx)}</div><div class="itpanel"><div class="row"><span>State</span><span class="seg">${['Available', 'Spent', 'Consumed'].map((n, k) => `<button type="button" class="btn6 stbtn" data-itstate="${k}" data-id="${esc(it.id)}" data-char="${esc(c.id)}" aria-pressed="${st === k}" title="${n}" aria-label="${n}">${STATE_BTN[k]}</button>`).join('')}</span></div>${side}${markPanel(c, S, esc, `i:${it.id}`)}<div class="row"><button type="button" class="btn6" data-mkclear="i:${esc(it.id)}">Clear all</button></div></div></div>`;
+    body = `<div class="itmodal"><div class="itcard pick" data-mkcard="${esc(mkey)}">${url ? `<img src="${esc(url)}" alt="${esc(title)}" draggable="false">` : ''}${markersHtml(c.mk?.[mkey], S.mkIdx)}</div><div class="itpanel"><div class="row"><span>State</span><span class="seg">${['Available', 'Spent', 'Consumed'].map((n, k) => `<button type="button" class="btn6 stbtn" data-itstate="${k}" data-id="${esc(it.id)}" data-char="${esc(c.id)}" aria-pressed="${st === k}" title="${n}" aria-label="${n}">${STATE_BTN[k]}</button>`).join('')}</span></div>${side}${markPanel(c, S, esc, `i:${it.id}`)}<div class="row"><button type="button" class="btn6" data-mkclear="i:${esc(it.id)}">Clear all</button></div></div></div>`;
   } else if (S.modal === 'cardmk') {
     const id = Number(String(S.mkKey || '').slice(2)), card = X.cardById.get(id);
     if (!card) return '';

@@ -16,7 +16,7 @@ import { playmatHtml, markersHtml, XP_STEPS, turnPost, cardsPost, goalRollCode, 
 import { tokenDefs, markerTokens, MARK_STICKERS, markLabel, stickerImage } from '../scripts/campaign/classTokens.js';
 import { dotAt, dotChoices, dotName } from '../scripts/campaign/enhanceDot.js';
 import { openDotPopover } from './dotPopover.js';
-import { snapToSlot, stepToSlot, snapToEnhancement, stepToEnhancement, hasEnhancementSlots, slotCardId, trackAtPoint, lastTokenOnTrack, slotOf, forwardSlot } from '../scripts/campaign/tokenSnap.js';
+import { snapToSlot, stepToSlot, snapToEnhancement, stepToEnhancement, hasEnhancementSlots, hasTokenSlots, slotCardId, trackAtPoint, lastTokenOnTrack, slotOf, forwardSlot } from '../scripts/campaign/tokenSnap.js';
 import { TOKEN_SLOTS } from '../scripts/games/card_token_slots.js';
 import { bannerUrl, bannerCode } from '../scripts/campaign/bggBanners.js';
 import { GH2_PQ } from '../scripts/games/gh2_pq_text.js';
@@ -2289,11 +2289,12 @@ main.addEventListener('drop', e => { evDrop(e); });
 // and in the item dialog) turns to its edge, shows the other side and turns back; the change is saved when the turn ends. The item's
 // markup stays (badges, markers), only its picture turns (Web Animations, so a redraw in between does not cut it). Reduce motion: at once.
 function flipItem(cid, id, back) {
-  const save = () => commit(ed.setItemFlipped(record, cid, id, back));
+  const save = () => { if (pm.modal === 'item') pm.mkIdx = -1; commit(ed.setItemFlipped(record, cid, id, back)); };      // the selected marker belonged to the other side
+
   const item = ITEMS.find(x => String(x.id) === String(id)), to = item && (back ? itemBackUrl(item) : itemImageUrl(item));
   const sel = `[data-char="${CSS.escape(cid)}"][data-id="${CSS.escape(String(id))}"]`;
   const tile = main.querySelector(`.it[data-itemstate]${sel}`);
-  const imgs = [tile?.querySelector(':scope > img'), document.querySelector(`.itmodal .itcard[data-mkcard="i:${CSS.escape(String(id))}"] > img`)].filter(Boolean);
+  const imgs = [tile?.querySelector(':scope > img'), document.querySelector(`.itmodal .itcard:is([data-mkcard="i:${CSS.escape(String(id))}"], [data-mkcard="i:${CSS.escape(String(id))}b"]) > img`)].filter(Boolean);
   if (!to || !imgs.length || tile?.dataset.turning || pmset.reduce) { save(); return; }          // the playmat's own Reduce motion setting, as for played cards
   if (tile) tile.dataset.turning = '1';
   new Image().src = to;                                                                       // load the other side while the first half runs
@@ -2586,7 +2587,9 @@ function mkSelOf(c) {
   return toks.length ? { k: toks[0], s: 0 } : null;
 }
 const mkChar = () => (pm.modal === 'cardmk' && pm.mkOwner ? record?.chars.find(x => x.id === pm.mkOwner) : null) || pmChar();   // the marker editor works on the owner of a given prescription
-const mkKeyNow = () => (pm.modal === 'item' ? `i:${pm.itemId}` : pm.modal === 'cardmk' ? pm.mkKey : null);
+// The marker key of the card in the editor: 'c:<id>', 'i:<id>' for an item, 'i:<id>b' while the item shows its back (the markers belong to the side that shows).
+const itemSide = () => { const it = mkChar()?.items.find(x => String(x.id) === String(pm.itemId)); return it?.f && itemBackUrl(itemById.get(it.id)) ? 'b' : ''; };
+const mkKeyNow = () => (pm.modal === 'item' ? `i:${pm.itemId}${itemSide()}` : pm.modal === 'cardmk' ? pm.mkKey : null);
 function openMarkers(key, owner = null) {
   pm.sheet = null; pm.mkIdx = -1; pm.mkOwner = owner;
   if (key.startsWith('i:')) { pm.itemId = key.slice(2); pm.modal = 'item'; } else { pm.mkKey = key; pm.modal = 'cardmk'; }
@@ -2615,7 +2618,7 @@ function mkNudge(c, key, idx, dx, dy, aspect = null) {
   const cr = main.querySelector('.pm .itcard[data-mkcard]')?.getBoundingClientRect(), asp = aspect || (cr ? cr.height / cr.width : 1050 / 750);
   const hop = (m.s ? stepToEnhancement : stepToSlot)(key, m.x, m.y, asp, (c.mk[key] || []).filter((_, i) => i !== idx), dx, dy);
   if (hop) { commit(ed.moveMarker(record, c.id, key, idx, hop.x, hop.y)); return; }
-  if (slotCardId(key) != null && (m.s ? hasEnhancementSlots(key) : TOKEN_SLOTS[slotCardId(key)])) return;
+  if (m.s ? (slotCardId(key) != null && hasEnhancementSlots(key)) : hasTokenSlots(key)) return;
   commit(ed.moveMarker(record, c.id, key, idx, Math.min(100, Math.max(0, m.x + dx)), Math.min(100, Math.max(0, m.y + dy))));
 }
 // Arrow keys: in the open marker editor they move the selected marker like the arrow buttons; over a card on the playmat (no modal) they hop its

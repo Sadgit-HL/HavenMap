@@ -1,6 +1,12 @@
 import assert from 'node:assert/strict';
 import { snapToEnhancement, stepToEnhancement, hasEnhancementSlots, snapToSlot, stepToSlot, slotOf, forwardSlot, trackOf, trackAtPoint, lastTokenOnTrack, slotCardId, SNAP_REACH } from '../../scripts/campaign/tokenSnap.js';
 import { TOKEN_SLOTS } from '../../scripts/games/card_token_slots.js';
+import { ITEM_TOKEN_SLOTS } from '../../scripts/games/item_token_slots.js';
+import { tokenSlots, hasTokenSlots } from '../../scripts/campaign/tokenSnap.js';
+import { ITEMS } from '../../scripts/campaign/itemList.js';
+import { addMarker, giveItem, setItemUnlocked, setEquippedItems } from '../../scripts/campaign/edit.js';
+import { withChars } from './helpers.mjs';
+import { existsSync } from 'node:fs';
 import { ENHANCE_SLOTS } from '../../scripts/games/card_enhancement_slots.js';
 
 const ASPECT = 1050 / 750;
@@ -110,5 +116,61 @@ export const tests = {
     assert.equal(forwardSlot(k, p(top[2]).x, p(top[2]).y, A), null);            // end of the track: the bottom track is not entered
     assert.equal(forwardSlot('c:1116', TOKEN_SLOTS[1116][0].x * 100, TOKEN_SLOTS[1116][0].y * 100, A), null);   // one-circle tracks have no next circle
     assert.equal(forwardSlot('i:5', 50, 50, A), null);
+  },
+  // ---- the circles of the item cards (front 'i:<id>', back 'i:<id>b')
+  'item circles: the lookup serves cards, item fronts and item backs'() {
+    assert.equal(tokenSlots('i:28').length, 3);
+    assert.equal(tokenSlots('i:72').length, 3);
+    assert.equal(tokenSlots('i:72b').length, 3);
+    assert.equal(tokenSlots('i:69').length, 5);
+    assert.equal(tokenSlots('i:5'), undefined);
+    assert.equal(tokenSlots(key), slots, 'an ability card as before');
+    assert.equal(hasTokenSlots('i:252'), true);
+    assert.equal(hasTokenSlots('i:74b'), false, 'a back without circles');
+  },
+  'item circles: every entry is an item (or its back) with a picture, with a dashed start, even rows inside the card'() {
+    for (const [k, list] of Object.entries(ITEM_TOKEN_SLOTS)) {
+      const item = ITEMS.find(i => String(i.id) === k.replace(/b$/, ''));
+      assert.ok(item, `item ${k}`);
+      if (k.endsWith('b')) assert.ok(existsSync(`images/items/${item.ed || 'gh2'}/${String(item.id).padStart(3, '0')}b.webp`) || existsSync(`images/items/${item.ed || 'gh2'}/${item.id}b.webp`), `back picture of ${k}`);
+      assert.ok([2, 3, 5].includes(list.length), `${k}: ${list.length} circles`);
+      for (const s of list) {
+        assert.ok(s.x - s.r >= 0 && s.x + s.r <= 1 && s.y > 0.5 && s.y < 1 && s.r > 0.05 && s.r < 0.1, `${k} inside the card`);
+        assert.equal(s.h, 'b'); assert.equal(s.t, 0);
+      }
+      assert.ok(list.every(s => s.r === list[0].r), `${k}: one size`);
+    }
+  },
+  'item circles: a token snaps to the nearest free circle of the item, front and back apart'() {
+    const s = ITEM_TOKEN_SLOTS['28'], p = pct(s[1]);
+    const r = snapToSlot('i:28', p.x + 2, p.y - 1.5, ASPECT);
+    assert.deepEqual([r.x, r.y, r.slot], [p.x, p.y, 1]);
+    assert.equal(snapToSlot('i:28', p.x, p.y, ASPECT, [{ x: p.x, y: p.y }]), null, 'a taken circle');
+    assert.equal(snapToSlot('i:28b', p.x, p.y, ASPECT), null, 'the back of item 28 has none');
+    const b = pct(ITEM_TOKEN_SLOTS['72b'][0]);
+    assert.equal(snapToSlot('i:72b', b.x, b.y, ASPECT).slot, 0);
+  },
+  'item circles: the arrows follow the track, and the five circles of Plate Mail wrap onto the second row'() {
+    const a = ITEM_TOKEN_SLOTS['28'].map(pct);
+    assert.equal(stepToSlot('i:28', a[0].x, a[0].y, ASPECT, [], 1, 0).slot, 1);
+    assert.equal(stepToSlot('i:28', a[2].x, a[2].y, ASPECT, [], 1, 0), null, 'the end of the track');
+    assert.equal(stepToSlot('i:28', a[1].x, a[1].y, ASPECT, [], -1, 0).slot, 0);
+    const five = ITEM_TOKEN_SLOTS['69'].map(pct);
+    assert.equal(stepToSlot('i:69', five[2].x, five[2].y, ASPECT, [], 1, 0).slot, 3, 'right from the end of the first row: the start of the second');
+    assert.equal(stepToSlot('i:69', five[3].x, five[3].y, ASPECT, [], -1, 0).slot, 2, 'and back');
+    const f = forwardSlot('i:28', a[0].x, a[0].y, ASPECT);
+    assert.equal(f.slot, 1);
+    assert.equal(forwardSlot('i:28', a[2].x, a[2].y, ASPECT), null);
+  },
+  'item circles: the record takes a marker on the back of an item the character owns, not on any other back'() {
+    let r = withChars(1);
+    const c = r.chars[0];
+    r = setItemUnlocked(r, 72, true); r = giveItem(r, c.id, 72); r = setEquippedItems(r, c.id, ['72']);
+    r.chars[0].mk = r.chars[0].mk || {};                                          // a character of the record has its marker lists
+    const m = { k: 'plus_one', s: 1, x: 50, y: 50 };
+    const ok = addMarker(r, c.id, 'i:72b', m);
+    assert.deepEqual(ok.chars[0].mk['i:72b'].length, 1);
+    assert.equal(addMarker(r, c.id, 'i:73b', m), r, 'an item the character does not own');
+    assert.equal(addMarker(r, c.id, 'i:72bb', m), r);
   },
 };
