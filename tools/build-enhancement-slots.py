@@ -26,12 +26,11 @@ ROOT = os.path.abspath(os.path.join(HERE, '..'))
 OUT = os.path.join(ROOT, 'scripts', 'games', 'card_enhancement_slots.js')
 REPORT = os.path.join(HERE, 'enhancement-slots-report.txt')
 OVERRIDES = os.path.join(ROOT, 'import', 'enhancement-overrides.json')      # decisions made in tools/review/index.html: { card id: { status, markers, note } }
-OVERRIDES_FH = os.path.join(ROOT, 'import', 'enhancement-overrides_fh.json')   # second source (the Frosthaven review done on another machine); read after the first, so it wins
 
 
 def load_overrides():
     ov = {}
-    for f in (OVERRIDES, OVERRIDES_FH):
+    for f in (OVERRIDES,):
         if os.path.exists(f): ov.update(json.load(open(f, encoding='utf8')))
     return ov
 REVIEW = os.path.join(HERE, 'review', 'review-data.json')          # what the review page shows: every card with its expected and detected markers
@@ -332,7 +331,44 @@ def overrides_only():
     print(f"overrides applied: {len(ov)} decisions, {changed} cards changed; written {len(out)} cards")
 
 
+def review_all():
+    """--review-all: add every card the review data lacks (all classes, with or without markers) from the existing output and the overrides, without any detection,
+    so the review page can show the whole card set for a spot check. A card gets its current placement (what card_enhancement_slots.js has)."""
+    review = json.load(open(REVIEW, encoding='utf8')) if os.path.exists(REVIEW) else {}
+    out, ov, added = read_output(), load_overrides(), 0
+    classes = {c['i']: c for c in ts.load_classes()}
+    for cls in classes.values():
+        folder = next((f for f in ('confirmed', 'wip', 'start') if os.path.exists(os.path.join(ROOT, 'card-code-current', f, f"{ts.norm(cls['name'])}-ability-cards.code.json"))), None)
+        if not folder: continue
+        lst = json.load(open(os.path.join(ROOT, 'card-code-current', folder, f"{ts.norm(cls['name'])}-ability-cards.code.json"), encoding='utf8'))
+        md = load_md(os.path.join(ROOT, 'card-code-current', folder, f"card_code_{ts.norm(cls['name']).replace('-', '_')}.md"))
+        for card in (c for c in ts.load_cards() if c['cls'] == cls['i']):
+            if str(card['id']) in review: continue
+            lv = str(card['lv']).upper()
+            j = next((x for x in lst if ts.norm(x['name']) == card['slug'] and str(x['level']).upper() == lv), None) or next((x for x in lst if ts.norm(x['name']) == card['slug']), None)
+            md_card = j and (md.get((j['name'], str(j['level']).upper())) or md.get(j['name']))
+            shapes, hexes = expected_raw(md_card) if md_card else (expected(j) if j else ([], 0))
+            det = [{'x': m['x'], 'y': m['y'], 'k': m['k'], 'h': m.get('h', 't' if m['y'] < 0.5 else 'b')} for m in out.get(card['id'], [])]
+            rest, missing = [m['k'] for m in det], []
+            for sh in shapes:
+                want = 'diamondPlus' if sh == 'plus' else sh
+                if want in rest: rest.remove(want)
+                else: missing.append(sh)
+            agrees = not (missing or len(rest) != hexes)
+            rec = {'cls': cls['code'], 'class': cls['name'], 'name': j['name'] if j else card['slug'], 'slug': card['slug'], 'lv': card['lv'], 'pic': picture_path(cls, card),
+                   'expected': {'shapes': shapes, 'hex': hexes}, 'detected': det, 'ok': agrees, 'ok_detected': agrees}
+            o = ov.get(str(card['id']))
+            if o and o.get('markers') is not None: rec.update(ok=True, status=o.get('status', 'edited'), markers=det, note=o.get('note', ''))
+            review[str(card['id'])] = rec
+            added += 1
+    with open(REVIEW, 'w', encoding='utf8', newline='\n') as f:
+        json.dump({k: review[k] for k in sorted(review, key=int)}, f, separators=(',', ':'))
+    print(f"review data: {added} cards added, {len(review)} in all")
+
+
 def main():
+    if '--review-all' in sys.argv[1:]:
+        review_all(); return
     if '--overrides-only' in sys.argv[1:]:
         overrides_only(); return
     args = sys.argv[1:]

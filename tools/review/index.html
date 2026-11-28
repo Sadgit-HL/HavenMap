@@ -63,6 +63,7 @@ button:disabled{opacity:.45;cursor:not-allowed}
       <option value="bad">Mismatch</option>
       <option value="agree">Agrees, not confirmed</option>
       <option value="done">Confirmed or edited</option>
+      <option value="unconf">Not confirmed</option>
       <option value="all">All cards</option>
     </select>
     <span class="stat" id="stat"></span>
@@ -92,17 +93,18 @@ const $ = id => document.getElementById(id);
 const r4 = v => Math.round(v * 10000) / 10000;
 const clamp = v => Math.min(1, Math.max(0, v));
 
-let data = {}, ids = [], ov = {}, shown = [], cur = null, work = [], sel = -1, tool = 'square', fileHandle = null, saveTimer = 0;
+let data = {}, ids = [], allIds = [], ov = {}, shown = [], cur = null, work = [], sel = -1, tool = 'square', fileHandle = null, saveTimer = 0;
 const LS = 'havenmap.review.overrides';
 
 async function load() {
   data = await (await fetch('review-data.json', { cache: 'no-store' })).json();
-  for (const f of ['enhancement-overrides.json', 'enhancement-overrides_fh.json']) {   // later sources win
+  for (const f of ['enhancement-overrides.json']) {
     try { const r = await fetch('../../import/' + f, { cache: 'no-store' }); if (r.ok) ov = { ...ov, ...(await r.json()) }; } catch { /* none yet */ }
   }
   try { const l = JSON.parse(localStorage.getItem(LS) || 'null'); if (l?.dirty) { ov = { ...ov, ...l.data }; $('saved').textContent = 'unsaved changes restored'; } } catch { /* ignore */ }
-  ids = Object.keys(data).map(Number).sort((a, b) => a - b).filter(id => hasMarkers(data[id]) || ov[id]);
-  const classes = [...new Set(ids.map(id => data[id].class))].sort();
+  allIds = Object.keys(data).map(Number).sort((a, b) => a - b);                  // every card, for the All cards filter
+  ids = allIds.filter(id => hasMarkers(data[id]) || ov[id]);
+  const classes = [...new Set(allIds.map(id => data[id].class))].sort();
   $('fClass').innerHTML = '<option value="">All classes</option>' + classes.map(c => `<option>${c}</option>`).join('');
   const p = new URLSearchParams(location.search);
   if (p.get('class')) $('fClass').value = p.get('class');
@@ -121,7 +123,7 @@ const decided = id => !!ov[id]?.markers;
 
 function refilter(keep) {
   const c = $('fClass').value, s = $('fState').value;
-  shown = ids.filter(id => (!c || data[id].class === c) && (s === 'all' || (s === 'need' && need(id)) || (s === 'bad' && !data[id].ok && !decided(id)) || (s === 'agree' && data[id].ok && !decided(id)) || (s === 'done' && decided(id))));
+  shown = (s === 'all' || s === 'unconf' ? allIds : ids).filter(id => (!c || data[id].class === c) && (s === 'all' || (s === 'unconf' && state(id) !== 'confirmed') || (s === 'need' && need(id)) || (s === 'bad' && !data[id].ok && !decided(id)) || (s === 'agree' && data[id].ok && !decided(id)) || (s === 'done' && decided(id))));
   $('stat').textContent = `${shown.length} cards, ${ids.filter(decided).length} decided, ${ids.filter(need).length} to review`;
   renderList();
   if (keep && shown.includes(keep)) open(keep); else if (shown.length) open(shown.includes(cur) ? cur : shown[0]); else { cur = null; renderStage(); renderSide(); }
