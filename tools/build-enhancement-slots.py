@@ -26,6 +26,14 @@ ROOT = os.path.abspath(os.path.join(HERE, '..'))
 OUT = os.path.join(ROOT, 'scripts', 'games', 'card_enhancement_slots.js')
 REPORT = os.path.join(HERE, 'enhancement-slots-report.txt')
 OVERRIDES = os.path.join(ROOT, 'import', 'enhancement-overrides.json')      # decisions made in tools/review/index.html: { card id: { status, markers, note } }
+OVERRIDES_FH = os.path.join(ROOT, 'import', 'enhancement-overrides_fh.json')   # second source (the Frosthaven review done on another machine); read after the first, so it wins
+
+
+def load_overrides():
+    ov = {}
+    for f in (OVERRIDES, OVERRIDES_FH):
+        if os.path.exists(f): ov.update(json.load(open(f, encoding='utf8')))
+    return ov
 REVIEW = os.path.join(HERE, 'review', 'review-data.json')          # what the review page shows: every card with its expected and detected markers
 W0, R0, THR, THR_CLASS = 750.0, 13, 0.72, 0.85     # reference picture width, template half size, match threshold (generic seeds, class templates: real markers score 0.88 and up, letters and pill edges 0.72 to 0.79)
 
@@ -157,7 +165,20 @@ def on_badge(im, x, y):
     return int(((p[..., 2] > 200) & (p[..., 1] < 125) & (p[..., 0] < 125)).sum()) >= 25
 
 
-def detect(im, templates, mode=MATCH, thr=None):
+def ring_marker(gray, x, y):
+    """A circle marker is a thin ring with a filled centre that is lighter than the card around it and nothing bright just outside the ring. The letters o, c and e
+    of a printed text match the circle template too: their centre is the card background (not lighter than the surroundings) and the strokes of the next letters
+    lie just outside. Measured on the confirmed Frosthaven cards: markers have outside strokes 0 and centre minus surroundings 12 to 77, letters 0.1 to 0.3 and -54 to -2."""
+    h, w = gray.shape
+    yy, xx = np.ogrid[max(0, y - 18):y + 19, max(0, x - 18):x + 19]
+    d2 = (xx - x) ** 2 + (yy - y) ** 2
+    patch = gray[max(0, y - 18):y + 19, max(0, x - 18):x + 19]
+    out = patch[(d2 > 14 ** 2) & (d2 < 17 ** 2)]
+    if out.size == 0: return True
+    return float(patch[d2 < 5 ** 2].mean()) - float(out.mean()) > 5 and float((out > out.mean() + 40).mean()) < 0.05
+
+
+def detect(im, templates, mode=MATCH, thr=None, ring=False):
     """Markers [(x, y, kind)] in pixels of the picture scaled to 750 px width, plus that scale factor."""
     k = W0 / im.shape[1]
     im = scale(im)
@@ -166,6 +187,7 @@ def detect(im, templates, mode=MATCH, thr=None):
     gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
     out = []
     for s, x, y, kind in keep:
+        if ring and kind == 'circle' and not ring_marker(gray, x, y): continue                  # a letter o, c or e of a text
         if kind == 'diamond' and 'diamondPlus' not in templates and float(gray[y - 1:y + 2, x - 1:x + 2].mean()) - float(np.mean([gray[y + dy, x + dx] for dx in (-3, 3) for dy in (-3, 3)])) > 30: kind = 'diamondPlus'   # a light plus in the diamond: its centre is brighter than the fill beside it (only for a class without a diamondPlus template of its own)
         out.append((x, y, kind))
     return out, k, (w, h, im)
@@ -257,7 +279,7 @@ def overrides_only():
     """--overrides-only: apply import/enhancement-overrides.json to the existing output and review data without any detection.
     A card with an override takes its markers; a card that had one and has none now (Reset on the review page) goes back to its detection,
     or out of the output when that did not agree with the card code."""
-    ov = json.load(open(OVERRIDES, encoding='utf8')) if os.path.exists(OVERRIDES) else {}
+    ov = load_overrides()
     review = json.load(open(REVIEW, encoding='utf8'))
     out = read_output()
     changed = 0
@@ -325,7 +347,7 @@ def main():
     seeds = load_templates('', 'bp')
     classes, cards = ts.load_classes(), ts.load_cards()
     out, report, review = {}, [], {}
-    overrides = json.load(open(OVERRIDES, encoding='utf8')) if os.path.exists(OVERRIDES) else {}
+    overrides = load_overrides()
     if codes:                                                              # a run for some classes keeps what the other classes already have
         done = {c['i'] for c in classes if c['code'] in codes}
         out = {k: v for k, v in read_output().items() if k // 100 not in done}
@@ -360,11 +382,12 @@ def main():
             st['cards'] += 1
             tag = f"{cls['name']} / {card['slug']} (id {card['id']})"
             p = ts.image_path(assets, cls, card)
+            if not (p and os.path.exists(p)): p = os.path.join(ROOT, picture_path(cls, card).replace('/', os.sep))      # no asset clone: the repo's own picture
             im = cv2.imread(p) if p and os.path.exists(p) else None
             if im is None:
                 report.append(f'NO PICTURE  {tag}: {p}'); st['bad'] += 1; continue
             for thr in ([THR_CLASS, THR] if mode == 'bgr' else [THR]):                    # the strict threshold first; a card that does not agree with its card code gets a second try with the loose one
-                found, k, (w, h, scaled) = detect(im, templates, mode, thr)
+                found, k, (w, h, scaled) = detect(im, templates, mode, thr, ring=cls['src'] == 'fh')
                 rest0 = [kk for _, _, kk in found]; miss0 = []
                 for sh in shapes:
                     want = 'diamondPlus' if sh == 'plus' else sh
