@@ -239,13 +239,15 @@ export function stickersOf(c, card, key) {
   const list = (c.mk && card ? c.mk[`c:${card.id}`] : null) || [];
   return list.filter(m => m && m.s && (key === 't' ? m.y < 54 : m.y >= 54)).map(m => ({ k: m.k, ry: place(m.y, key === 't' ? HALF_TOP : HALF_BOTTOM) })).sort((x, y) => x.ry - y.ry);
 }
+// The mode of a Blinkblade ('fast' or 'slow', from the Speed token, Fast until it is changed); null for any other class.
+export const modeOf = c => (tokenDefs(c.cls).some(d => d.k === 'speed' && d.states?.[0] === 'Fast') ? ((c.tok?.speed || 0) === 1 ? 'slow' : 'fast') : null);
 export function turnPost(c, { bannerUrl, pretty, cardById, templates = TURN }) {
   const card = i => (c.play[i] ? cardById.get(c.play[i].id) : null);
   const name = i => (c.play[i] ? pretty(card(i)?.slug ?? c.play[i].id) : 'XXX');
   const body = (i, key, fallback) => {
     const t = card(i) && templates[card(i).id];
     if (!t) return fallback;
-    const lines = halfLines(t[key], stickersOf(c, card(i), key));
+    const lines = halfLines(t[key], stickersOf(c, card(i), key), { mode: modeOf(c) });
     const fl = flagsLine(t[key + 'f']);
     if (fl && lines.length) lines.push(fl);
     return lines.length ? lines.join('\n') : fallback;

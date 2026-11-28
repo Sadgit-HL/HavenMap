@@ -19,12 +19,40 @@ export function textCode(s) {
   }).replace(/\s+/g, ' ').trim();
 }
 
-// A card half as lines of text. `lines` is the generated list (a line is its parts, or { p: parts, e: dots }). `stickers` are the stickers laid on
+// The mode boxes of a Blinkblade card (a line with `m`: 'fast' or 'slow'). Without a mode (`null`) every box is a line of its own, led by its mode icon.
+// With the character's mode only the boxes of that mode stay: their modifiers (`mods`, each linked by `to` to the line it changes) are added to the printed
+// value there ("move 3+2"), the other items of the box (`rest`) follow on that line, and a box with no link stands alone, without its icon.
+const MODE_ICON = { fast: 'blinkblade-1', slow: 'blinkblade-0' };
+function modeRows(rows, mode) {
+  if (!mode) {
+    rows.forEach(r => { if (r.m) r.p.unshift({ i: MODE_ICON[r.m] }); });
+    return rows;
+  }
+  const merged = new Set();
+  for (const r of rows) {
+    if (r.m !== mode || !r.mods || !r.mods.length) continue;
+    let target = null;
+    for (const md of r.mods) {
+      const t = rows[md.to];
+      const part = t && !t.m && t.p.find(x => typeof x === 'object' && x.i === md.i && typeof x.v === 'number');
+      if (part) { part.add = (part.add || 0) + md.d; target = target || t; }
+    }
+    if (target) {
+      if (r.rest && r.rest.length) target.p.push(',', ...r.rest);
+      merged.add(r);
+    }
+  }
+  return rows.filter(r => !r.m || (r.m === mode && !merged.has(r)));
+}
+
+// A card half as lines of text (`opts.mode`: 'fast' or 'slow' for a Blinkblade, see modeRows). `lines` is the generated list (a line is its parts, or { p: parts, e: dots }). `stickers` are the stickers laid on
 // this half of the card: { k: name, ry: place in the half from top (0) to bottom (1) }. The card's picture is not known here, so a sticker goes to the
 // line with enhancement dots that its place in the half points to (the dotted lines spread evenly over the half): a +1 adds to the first value of
 // that line (not the range), any other sticker is written after the action as its icon (or its name).
-export function halfLines(lines, stickers = []) {
-  const rows = (lines || []).map(l => (Array.isArray(l) ? { p: l.map(x => (typeof x === 'object' ? { ...x } : x)), e: 0 } : { p: l.p.map(x => (typeof x === 'object' ? { ...x } : x)), e: l.e || 0 }));
+export function halfLines(lines, stickers = [], opts = {}) {
+  const copy = a => a.map(x => (typeof x === 'object' ? { ...x } : x));
+  let rows = (lines || []).map(l => (Array.isArray(l) ? { p: copy(l), e: 0 } : { p: copy(l.p), e: l.e || 0, m: l.m, mods: l.mods, rest: l.rest && copy(l.rest) }));
+  rows = modeRows(rows, opts.mode || null);
   const dotted = rows.map((r, i) => (r.e ? i : -1)).filter(i => i >= 0);
   for (const s of stickers) {
     if (!rows.length) { rows.push({ p: [], e: 0 }); }

@@ -115,6 +115,51 @@ function optional(a) {
   return one(a);
 }
 
+// A Blinkblade mode box (the card code writes it "%blinkblade-1% +1 %attack%, %wound%, %xp1%": fast is %blinkblade-1%, slow %blinkblade-0%) is a line with
+// a mode: { p: parts as printed, m: 'fast' | 'slow' }. When its items are all short, the modifiers ("+2 %move%") are split off and linked to the action
+// line they change, so that scripts/turnTemplate.js can write them into that line once the mode is known:
+//   mods: [{ i: 'move', d: 2, to: index of the action line }]   rest: parts of the other items (they go to the line of the first modifier, or stand alone)
+const BOX = /^%blinkblade-([01])%\s+([\s\S]+)$/;
+const SHORT = /^(%[\w-]+%(\s+(\d+|X))?|[+-]\d+ %\w+%|self|all|advantage)$/;
+const MOD = /^([+-])(\d+) %(attack|move|range|target|heal)%$/;
+function boxLine(m) {
+  const body = m[2].trim();
+  const line = words(body);
+  line.box = { m: m[1] === '1' ? 'fast' : 'slow' };
+  const items = body.split(/,\s*/);
+  if (items.every(s => SHORT.test(s))) {
+    const mods = items.map(s => s.match(MOD)).filter(Boolean).map(x => ({ i: x[3], d: (x[1] === '-' ? -1 : 1) * Number(x[2]) }));
+    if (mods.length) { line.box.mods = mods; line.box.items = items; }
+  }
+  return line;
+}
+// link the modifiers of the box lines to the nearest action line (not a box) with a printed value of that icon; what is not linked is written as text
+function linkBoxes(lines) {
+  lines.forEach((l, k) => {
+    const b = l.box;
+    if (!b || !b.mods) return;
+    const linked = [], restItems = [];
+    for (const item of b.items) {
+      const mm = item.match(MOD);
+      const mod = mm && b.mods.find(x => !x.used && x.i === mm[3] && x.d === (mm[1] === '-' ? -1 : 1) * Number(mm[2]));
+      let to = -1, best = Infinity;
+      if (mod) {
+        mod.used = true;
+        lines.forEach((c, j) => {
+          if (c.box || !c.some(x => x && typeof x === 'object' && x.i === mod.i && typeof x.v === 'number')) return;
+          const dist = Math.abs(j - k) + (j > k ? 0.5 : 0);                         // a tie goes to the line before the box
+          if (dist < best) { best = dist; to = j; }
+        });
+      }
+      if (mod && to >= 0) linked.push({ i: mod.i, d: mod.d, to }); else restItems.push(item);
+    }
+    const rest = [];
+    restItems.forEach((item, n) => { if (n) rest.push(','); rest.push(...words(item)); });
+    if (linked.length) { b.mods = linked; if (rest.length) b.rest = rest; } else { delete b.mods; }
+    delete b.items;
+  });
+}
+
 // the enhancement dots printed on an action (and its parts): where a sticker of the card can sit
 function dots(a) {
   if (!a || typeof a !== 'object') return 0;
@@ -145,6 +190,8 @@ function half(h) {
           takeNext = null;
         }
       }
+      const bm = a && a.type === 'custom' && BOX.exec(a.text || '');
+      if (bm) { lines.push(boxLine(bm)); continue; }                                      // a Blinkblade mode box: a line of its own, with its mode
       if (a && (a.type === 'group' || a.type === 'inline') && Array.isArray(a.actions)) { visit(a.actions); continue; }     // a layout group: its actions are lines of their own
       if (a && a.type === 'optional') {
         const p = optional(a);
@@ -162,7 +209,8 @@ function half(h) {
     }
   };
   visit(h && h.actions);
-  return lines.map(l => (l.e ? { p: [...l], e: l.e } : [...l]));
+  linkBoxes(lines);
+  return lines.map(l => (l.box ? { p: [...l], ...l.box } : l.e ? { p: [...l], e: l.e } : [...l]));
 }
 
 // what happens to the card after this half: experience, persistent or round bonus, lost, removed (words; scripts/turnTemplate.js writes an icon where there is one)
