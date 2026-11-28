@@ -1104,6 +1104,19 @@ export function addMarker(r, cid, key, m) {
   return edit(r, x => { const ch = x.chars.find(y => y.id === cid); (ch.mk[key] = ch.mk[key] || []).push({ k: m.k, ...(m.s ? { s: 1 } : {}), x: pct(m.x), y: pct(m.y) }); });
 }
 
+// Place an enhancement sticker on a dot of an ability card and pay for it: the sticker is added, the price (gold, 0 to 9999) is taken from the character's gold and added
+// to the card's price in the Enhancements table (c.mp). Refused (the record stays) when the gold is not enough or the sticker is not a known one. { k, x, y } = sticker and its dot.
+export function enhanceCard(r, cid, key, m, price) {
+  const c = r.chars.find(x => x.id === cid), p = toInt(price);
+  if (!c || !/^c:\d+$/.test(key) || !markKeyOk(c, key) || !m || !MARK_STICKERS.includes(m.k) || !Number.isFinite(Number(m.x)) || !Number.isFinite(Number(m.y))) return r;
+  if (p === null || p < 0 || p > 9999 || (c.gold || 0) < p) return r;
+  return edit(r, x => {
+    const ch = x.chars.find(y => y.id === cid);
+    (ch.mk[key] = ch.mk[key] || []).push({ k: m.k, s: 1, x: pct(m.x), y: pct(m.y) });
+    if (p > 0) { ch.gold -= p; ch.mp = ch.mp || {}; ch.mp[key] = Math.min(9999, (ch.mp[key] || 0) + p); }
+  });
+}
+
 export function moveMarker(r, cid, key, i, px, py) {
   const c = r.chars.find(x => x.id === cid), m = c?.mk?.[key]?.[i];
   if (!m || !Number.isFinite(Number(px)) || !Number.isFinite(Number(py)) || (m.x === pct(px) && m.y === pct(py))) return r;

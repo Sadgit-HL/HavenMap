@@ -5,6 +5,9 @@ import { onlyApp, onlyGeek } from './rollmode.js';
 // pure edit functions in scripts/campaign/edit.js, so everything done here is saved, undoable and logged in the history.
 import { handList, handGrid, handLimit, zoneOf, ownedCards, pendingPicks, cardLevel, SLOT_ORDER, SLOT_LABEL, slotLimits, slotUse, itemFits } from '../scripts/campaign/record.js';
 import { tokenDefs, tokenImage, stickerImage, markerTokens, MARK_STICKERS, markLabel } from '../scripts/campaign/classTokens.js';
+import { ENHANCE_SLOTS } from '../scripts/games/card_enhancement_slots.js';
+import { ENHANCE_DOTS } from '../scripts/games/card_enhancement_dots.js';
+import { occupiedDots, dotName } from '../scripts/campaign/enhanceDot.js';
 import { BGG_ICON_GROUPS } from '../scripts/campaign/bggIcons.js';
 import { BANNERS, bannerIcon } from '../scripts/campaign/bggBanners.js';
 import { halfLines, flagsLine } from '../scripts/turnTemplate.js';
@@ -38,13 +41,25 @@ const STATE_BTN = [REC_ICON.replace('<img ', '<img width="24" height="24" '),
 export function markersHtml(list, sel = -1) {
   return (list || []).map((m, i) => `<div class="tk${i === sel ? ' sel' : ''}" data-i="${i}" style="left:${m.x}%;top:${m.y}%${m.s ? `;--tkw:${m.k === 'hex_attack' ? 12 : 9}%` : ''}"><img src="${(m.s ? stickerImage(m.k) : tokenImage(m.k)) ?? ''}" alt="${m.k}" draggable="false"></div>`).join('');
 }
+// The enhancement dots of an ability card in the marker editor: a gold ring on every empty dot (its title says what it enhances), and a line with the counts and the gold spent.
+// A dot is empty when no sticker sits on it; a stray marker of the dot data is not a dot.
+export function dotRingsHtml(cardId, list, esc) {
+  const slots = ENHANCE_SLOTS[cardId] || [], dots = ENHANCE_DOTS[cardId] || [], occ = occupiedDots(cardId, list || [], 1050 / 750);
+  return slots.map((s, i) => (occ.has(i) || dots[i]?.x ? '' : `<div class="edot" style="left:${s.x * 100}%;top:${s.y * 100}%" title="${esc(dotName(dots[i]))}"></div>`)).join('');
+}
+export function dotSummaryHtml(cardId, list, price, esc) {
+  const real = (ENHANCE_SLOTS[cardId] || []).filter((s, i) => !ENHANCE_DOTS[cardId]?.[i]?.x).length;
+  if (!real) return '';
+  const done = [...occupiedDots(cardId, list || [], 1050 / 750)].filter(i => !ENHANCE_DOTS[cardId]?.[i]?.x).length;
+  return `<div class="row"><span>Enhancements</span><span>${real} dot${real === 1 ? '' : 's'}, ${done} enhanced${price ? `, ${esc(price)} gold spent` : ''}</span></div>`;
+}
 const pickSize = (k, sticker) => (sticker ? (k === 'hex_attack' ? 36 : 27) : 44);   // same size as placed on the 300 px card
-function markPanel(c, S, esc, key, stickers = true) {
+function markPanel(c, S, esc, key) {
   const sel = S.mkSel || {}, btn = (k, s) => `<button type="button" style="--sz:${pickSize(k, s)}px" data-mkpick="${k}" data-s="${s ? 1 : 0}" aria-pressed="${sel.k === k && !!sel.s === s}" title="${esc(markLabel(k))}"><img src="${esc((s ? stickerImage(k) : tokenImage(k)) ?? '')}" alt="${k}" draggable="false"></button>`;
   const toks = markerTokens(c.cls);
   const n = c.mk?.[key]?.length || 0, si = S.mkIdx ?? -1, nb = (d, l, t) => `<button type="button" class="btn6" data-mknudge="${d}" aria-label="${t}">${l}</button>`;
   const selRow = si >= 0 && si < n ? `<div class="row"><span>Selected marker</span><span class="nudge">${nb('-2,0', '&larr;', 'Move left')}${nb('0,-2', '&uarr;', 'Move up')}${nb('0,2', '&darr;', 'Move down')}${nb('2,0', '&rarr;', 'Move right')}<button type="button" class="btn6" data-mkremove>Remove</button></span></div>` : '';
-  return `${selRow}${toks.length ? `<div class="row"><span>Tokens</span><span class="tkpick">${toks.map(k => btn(k, false)).join('')}</span></div>` : ''}${stickers ? `<div class="row"><span>Stickers</span><span class="tkpick" id="stkpick">${MARK_STICKERS.map(k => btn(k, true)).join('')}</span></div>` : ''}`;
+  return `${selRow}${toks.length ? `<div class="row"><span>Tokens</span><span class="tkpick">${toks.map(k => btn(k, false)).join('')}</span></div>` : ''}`;
 }
 
 // X = helpers of the page: { esc, pretty, cardById, itemById, cardImageUrl, itemImageUrl, itemBackUrl, cardBackUrl, portraitStyle, traitChips, playerName }
@@ -317,13 +332,13 @@ export function modalHtml(c, X, S) {
     title = X.pretty(item?.slug ?? it.id);
     const back = X.itemBackUrl(item), url = it.f && back ? back : X.itemImageUrl(item), st = it.s || 0;
     const side = back ? `<div class="row"><span>Side</span><span class="seg">${['Front', 'Back'].map((n, k) => `<button type="button" class="btn6" data-itflip="${k}" data-id="${esc(it.id)}" data-char="${esc(c.id)}" aria-pressed="${!!it.f === !!k}">${n}</button>`).join('')}</span></div>` : '';
-    body = `<div class="itmodal"><div class="itcard pick" data-mkcard="i:${esc(it.id)}">${url ? `<img src="${esc(url)}" alt="${esc(title)}" draggable="false">` : ''}${markersHtml(c.mk?.[`i:${it.id}`], S.mkIdx)}</div><div class="itpanel"><div class="row"><span>State</span><span class="seg">${['Available', 'Spent', 'Consumed'].map((n, k) => `<button type="button" class="btn6 stbtn" data-itstate="${k}" data-id="${esc(it.id)}" data-char="${esc(c.id)}" aria-pressed="${st === k}" title="${n}" aria-label="${n}">${STATE_BTN[k]}</button>`).join('')}</span></div>${side}${markPanel(c, S, esc, `i:${it.id}`, false)}<div class="row"><button type="button" class="btn6" data-mkclear="i:${esc(it.id)}">Clear all</button></div></div></div>`;
+    body = `<div class="itmodal"><div class="itcard pick" data-mkcard="i:${esc(it.id)}">${url ? `<img src="${esc(url)}" alt="${esc(title)}" draggable="false">` : ''}${markersHtml(c.mk?.[`i:${it.id}`], S.mkIdx)}</div><div class="itpanel"><div class="row"><span>State</span><span class="seg">${['Available', 'Spent', 'Consumed'].map((n, k) => `<button type="button" class="btn6 stbtn" data-itstate="${k}" data-id="${esc(it.id)}" data-char="${esc(c.id)}" aria-pressed="${st === k}" title="${n}" aria-label="${n}">${STATE_BTN[k]}</button>`).join('')}</span></div>${side}${markPanel(c, S, esc, `i:${it.id}`)}<div class="row"><button type="button" class="btn6" data-mkclear="i:${esc(it.id)}">Clear all</button></div></div></div>`;
   } else if (S.modal === 'cardmk') {
     const id = Number(String(S.mkKey || '').slice(2)), card = X.cardById.get(id);
     if (!card) return '';
     title = X.pretty(card.slug); const url = X.cardImageUrl(card);
     const mc = S.mkc || c;                                                         // a given prescription: the markers are the owner's
-    body = `<div class="itmodal"><div class="itcard pick" data-mkcard="c:${id}">${url ? `<img src="${esc(url)}" alt="${esc(title)}" draggable="false">` : ''}${markersHtml(mc.mk?.[`c:${id}`], S.mkIdx)}</div><div class="itpanel">${markPanel(mc, S, esc, `c:${id}`)}<div class="row"><button type="button" class="btn6" data-mkclear="c:${id}">Clear all</button></div></div></div>`;
+    body = `<div class="itmodal"><div class="itcard pick" data-mkcard="c:${id}">${url ? `<img src="${esc(url)}" alt="${esc(title)}" draggable="false">` : ''}${markersHtml(mc.mk?.[`c:${id}`], S.mkIdx)}${dotRingsHtml(id, mc.mk?.[`c:${id}`], esc)}</div><div class="itpanel">${markPanel(mc, S, esc, `c:${id}`)}${dotSummaryHtml(id, mc.mk?.[`c:${id}`], mc.mp?.[`c:${id}`], esc)}<div class="row"><button type="button" class="btn6" data-mkclear="c:${id}">Clear all</button></div></div></div>`;
   } else if (S.modal === 'items') {
     title = 'Inventory'; big = ' huge';
     const I = S.items || { pool: [], isel: [] }, sel = new Set(I.isel.map(String));

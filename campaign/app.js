@@ -13,7 +13,9 @@ import { localStore } from '../scripts/campaign/store.js';
 import { api, loadConn, saveConn, clearConn, loadCache, saveCache, parseInvite, inviteUrl, merge3, same } from '../scripts/campaign/sync.js';
 import { cardImageUrl, itemImageUrl, itemBackUrl, eventImageUrl, matImageUrl, pqImageUrl, cardBackUrl, battleGoalImageUrl, matSlugOf } from '../scripts/campaign/cardImages.js';
 import { playmatHtml, markersHtml, XP_STEPS, turnPost, cardsPost, goalRollCode, questRollCode, cleanSettings, displaySettingsHtml, hasSupply } from './playmat.js';
-import { tokenDefs, markerTokens, MARK_STICKERS } from '../scripts/campaign/classTokens.js';
+import { tokenDefs, markerTokens, MARK_STICKERS, markLabel, stickerImage } from '../scripts/campaign/classTokens.js';
+import { dotAt, dotChoices, dotName } from '../scripts/campaign/enhanceDot.js';
+import { openDotPopover } from './dotPopover.js';
 import { snapToSlot, stepToSlot, snapToEnhancement, stepToEnhancement, hasEnhancementSlots, slotCardId, trackAtPoint, lastTokenOnTrack, slotOf, forwardSlot } from '../scripts/campaign/tokenSnap.js';
 import { TOKEN_SLOTS } from '../scripts/games/card_token_slots.js';
 import { bannerUrl, bannerCode } from '../scripts/campaign/bggBanners.js';
@@ -2580,8 +2582,8 @@ document.addEventListener('keydown', e => {
 // and click the card, or drag it from the picker onto the card; drag a placed marker to move it, drop it outside the card to remove it.
 function mkSelOf(c) {
   const s = pm.mkSel, toks = c ? markerTokens(c.cls) : [];
-  if (s && (s.s ? MARK_STICKERS.includes(s.k) : toks.includes(s.k))) return s;
-  return toks.length ? { k: toks[0], s: 0 } : { k: MARK_STICKERS[0], s: 1 };
+  if (s && !s.s && toks.includes(s.k)) return s;                                  // stickers are placed on the enhancement dots (the dot popover), not picked here
+  return toks.length ? { k: toks[0], s: 0 } : null;
 }
 const mkChar = () => (pm.modal === 'cardmk' && pm.mkOwner ? record?.chars.find(x => x.id === pm.mkOwner) : null) || pmChar();   // the marker editor works on the owner of a given prescription
 const mkKeyNow = () => (pm.modal === 'item' ? `i:${pm.itemId}` : pm.modal === 'cardmk' ? pm.mkKey : null);
@@ -2646,6 +2648,21 @@ document.addEventListener('keydown', e => {
   e.preventDefault(); e.stopImmediatePropagation();
   mkNudge(c, key, idx, d[0], d[1], asp);
 }, true);
+// A click on an empty enhancement dot of an ability card: the popover with the stickers the dot takes, their prices, and a confirm step that pays from the character's gold.
+function openDotPopoverAt(card, e, c, key) {
+  const r = card.getBoundingClientRect(), asp = r.height / r.width, p = mkPct(card, e), markers = c.mk?.[key] || [];
+  const slot = dotAt(key, p.x, p.y, asp, markers);
+  if (slot === null) return false;
+  const id = Number(key.slice(2)), info = cardById.get(id), cls = CLASSES.find(x => x.i === info?.cls);
+  const ch = dotChoices(key, slot, markers, asp, { level: Number(info?.lv) || 1, jotl: cls?.src === 'jotl', stickers: MARK_STICKERS });
+  if (!ch) return false;
+  openDotPopover({
+    x: e.clientX, y: e.clientY, title: pretty(info?.slug ?? id), subtitle: `${ch.shape} dot, ${dotName(ch.dot)}`, gold: c.gold || 0,
+    options: ch.options.map(o => ({ ...o, label: markLabel(o.k), img: stickerImage(o.k) })),
+    onConfirm: (k, price) => commit(ed.enhanceCard(record, c.id, key, { k, x: ch.x, y: ch.y }, price)),
+  });
+  return true;
+}
 let mkBlock = false;
 main.addEventListener('click', e => {
   const q = sel => e.target.closest?.(sel), c = mkChar();
@@ -2678,8 +2695,9 @@ main.addEventListener('click', e => {
   if (card && !q('.tk')) {
     e.stopImmediatePropagation();
     const sel = mkSelOf(c);
-    if (sel.s && card.dataset.mkcard.startsWith('i:')) return;                      // items take tokens only
-    commit(ed.addMarker(record, c.id, card.dataset.mkcard, { k: sel.k, ...(sel.s ? { s: 1 } : {}), ...mkAt(card, e, card.dataset.mkcard, c, sel.s) }));
+    if (card.dataset.mkcard.startsWith('c:') && openDotPopoverAt(card, e, c, card.dataset.mkcard)) return;      // an empty enhancement dot: its popover
+    if (!sel) return;                                                               // no token of this class
+    commit(ed.addMarker(record, c.id, card.dataset.mkcard, { k: sel.k, ...mkAt(card, e, card.dataset.mkcard, c, false) }));
   }
 }, true);
 (() => {

@@ -58,18 +58,21 @@ export function baseCost(sticker, dot) {
 
 // Cost in gold of placing a sticker on a dot, with the modifiers applied one at a time in the order of the rules:
 //   1 multiple targets doubles it (not for target, area hex or element enhancements), 2 a lost action halves it (rounded up),
-//   3 +25 for each card level above 1, 4 +75 for each enhancement already on the action.
-// opts: level (1 to 9; X counts as 1), existing (enhancements already on the action). Returns { cost, steps } or { cost: null, steps: [] }.
+//   3 +25 for each card level above 1, 4 +75 for each enhancement already on the action (an action is a half of the card, the lines on it are its abilities;
+//   multiple targets belongs to the ability, the lost icon to the action).
+// opts: level (1 to 9; X counts as 1), existing (enhancements already on the action). Returns { cost, steps } or { cost: null, steps: [] };
+// steps are the lines of the sum: the base, then what each modifier added or took away (value, signed; the values add up to cost), sum = the running total.
 export function enhancementCost(sticker, dot, opts = {}) {
   const base = baseCost(sticker, dot);
   if (base === null) return { cost: null, steps: [] };
   const lv = Math.max(1, Number(opts.level) || 1), ex = Math.max(0, Number(opts.existing) || 0);
-  const steps = [{ label: 'Base', value: base }];
+  const steps = [{ label: 'Base', value: base, sum: base }];
   let c = base;
+  const step = (label, next) => { steps.push({ label, value: next - c, sum: next }); c = next; };
   const noDouble = sticker === 'hex_attack' || ELEMENTS.includes(sticker) || (sticker === 'plus_one' && plusOneAbility(dot) === 'target');
-  if (dot?.m && !noDouble) { c *= 2; steps.push({ label: 'Multiple targets', value: c }); }
-  if (dot?.l) { c = Math.ceil(c / 2); steps.push({ label: 'Lost', value: c }); }
-  if (lv > 1) { c += LEVEL_COST * (lv - 1); steps.push({ label: `Level ${lv}`, value: c }); }
-  if (ex) { c += EXISTING_COST * ex; steps.push({ label: `${ex} already on the action`, value: c }); }
+  if (dot?.m && !noDouble) step('Multiple targets', c * 2);
+  if (dot?.l) step('Lost action', Math.ceil(c / 2));
+  if (lv > 1) step(`Card level ${lv}`, c + LEVEL_COST * (lv - 1));
+  if (ex) step(ex === 1 ? 'Enhancement already on the action' : `${ex} enhancements already on the action`, c + EXISTING_COST * ex);
   return { cost: c, steps };
 }

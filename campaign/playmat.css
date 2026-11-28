@@ -119,6 +119,8 @@ html.phone .pm .restmodal .itcard{width:min(240px,70vw)}
 .pm .itcard .tk{pointer-events:auto;cursor:grab;touch-action:none}
 .pm .itcard .tk:active, .pm .tkpick button:active{cursor:grabbing}
 .pm .itcard .tk:hover{filter:brightness(1.15)}
+.pm .itcard .edot{position:absolute;width:6.4%;aspect-ratio:1;transform:translate(-50%,-50%);border:2px solid rgba(199,164,74,.95);border-radius:50%;box-shadow:0 0 7px 1px rgba(199,164,74,.55);cursor:pointer;z-index:5}
+.pm .itcard .edot:hover{background:rgba(199,164,74,.22)}
 .pm .tk .mkx{position:absolute;right:-4px;top:-4px;width:14px;height:14px;border-radius:50%;background:#c98a8a;color:#120f0b;font-size:11px;line-height:14px;cursor:pointer;padding:0;border:0}
 .pm .tkh{position:absolute;left:3px;bottom:3px;width:20px;height:20px;padding:1px;border-radius:50%;background:rgba(18,15,11,.85);border:1.5px solid var(--accent);cursor:pointer;z-index:8;opacity:.75}
 .pm .tkh:hover{opacity:1}

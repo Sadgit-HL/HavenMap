@@ -7,7 +7,8 @@
 //   i  index of the dot in ENHANCE_SLOTS[id]
 //   w  what it enhances: attack, move, heal, range, target, push, pull, pierce, shield, retaliate, teleport, a condition name (poison, wound ...),
 //      summon_health, summon_move, summon_attack, summon_range, area_hex, custom (the card code has no name for it), null (no dot in the card code fits)
-//   g  the action it belongs to (t0, t1 ... top half, b0 ... bottom half): the enhancements already on the action raise the price
+//   g  the ability (line) it belongs to (t0, t1 ... on the top half, b0 ... on the bottom half). An action is a half of the card: the stickers already on the half raise the price (+75 each),
+//      counted by the half of the dot, not by g
 //   m  1 when the ability targets multiple figures or tiles (doubles the price), 0 otherwise
 //   l  1 when the action has a lost icon and is not a summon action (halves the price)
 //   n  area_hex only: the number of hexes of the area (t and x cells of the pattern)
